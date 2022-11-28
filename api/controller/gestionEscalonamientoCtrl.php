@@ -15,6 +15,12 @@ if (isset($data->method)) {
             $user->gestionEscalonamiento();
             break;
 
+        case 'datosescalamientosprioridad2':
+            require_once '../class/gestionEscalonamiento.php';
+            $user = new gestionEscalonamiento();
+            $user->datosescalamientosprioridad2();
+            break;
+
 
     }
 } else {

@@ -523,11 +523,12 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     obj.datosgestionescalamientos = function () {
         var data = {method: 'datosescalamientos'}
-        return $http.post(serviceBase1 + 'gestionEscalonamientoCtrl', data);
+        return $http.post(serviceBase1 + 'gestionEscalonamientoCtrl.php', data);
     };
 
     obj.datosgestionescalamientosprioridad2 = function () {
-        return $http.get(serviceBase + 'datosescalamientosprioridad2');
+        var data = {method: 'datosescalamientosprioridad2'}
+        return $http.post(serviceBase1 + 'gestionEscalonamientoCtrl.php', data);
     };
 
     obj.UpdatePedidosEngestion = function (login) {
@@ -765,8 +766,8 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
     obj.getSubAcciones = function (proceso, accion) {
-        var data = {data:{proceso,accion}, method:SubAcciones}
-        return $http.post(serviceBase1 + 'subAccionesCtrl.php',data);
+        var data = {data: {proceso, accion}, method: 'SubAcciones'}
+        return $http.post(serviceBase1 + 'subAccionesCtrl.php', data);
     };
 
     obj.getCodigos = function (proceso, UNESourceSystem) {
