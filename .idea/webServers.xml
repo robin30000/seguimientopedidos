@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="9d85f800-2c47-442b-9b2c-734c05f05e08" name="seguimientopedidos">
+        <fileTransfer rootFolder="/var/www/html/seguimientopedidos" accessType="SFTP" host="10.100.88.230" port="22" sshConfigId="e9973dfa-302c-4b15-8209-871176870e0d" sshConfig="lmacevedg@10.100.88.230:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
