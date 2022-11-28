@@ -522,7 +522,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
     obj.datosgestionescalamientos = function () {
-        var data = {method:'datosescalamientos'}
+        var data = {method: 'datosescalamientos'}
         return $http.post(serviceBase1 + 'gestionEscalonamientoCtrl', data);
     };
 
@@ -531,7 +531,8 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
     obj.UpdatePedidosEngestion = function (login) {
-        return $http.post(serviceBase + 'updateEnGestion', {"login": login});
+        var data = {method: 'updateEnGestion', data: {login: login}}
+        return $http.post(serviceBase1 + 'gestionAprovisionamientoCtrl.php', data);
     };
 
     /*Servicio para traer el estado y las observaciones de los pedidos en BrutalForce*/

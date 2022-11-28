@@ -225,14 +225,20 @@ class ModelContingencia
 				ORDER BY c.horagestion");
             $stmt->execute();
 
-
             if ($stmt->rowCount()) {
                 $resultadoTV         = [];
                 $resultadoOTROS      = [];
                 $resultadoPORTAFOLIO = [];
-                while ($row = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
-
-                    echo $row['grupo'];exit();
+                foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    if ($row['grupo'] == "TV") {
+                        $resultadoTV[] = $row;
+                    } elseif ($row['grupo'] == "INTER") {
+                        $resultadoOTROS[] = $row;
+                    } elseif ($row['grupo'] == "PORTAFOLIO") {
+                        $resultadoOTROS[] = $row;
+                    }
+                }
+                /*while ($row = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
 
                     $row['pedido']                      = utf8_encode($row['pedido']);
                     $row['macEntra']                    = utf8_encode($row['macEntra']);
@@ -257,18 +263,9 @@ class ModelContingencia
                     $row['fechaClickMarcaPortafolio']   = utf8_encode($row['fechaClickMarcaPortafolio']);
                     $row['alerta']                      = utf8_encode($row['alerta']);
 
-                    if ($row['grupo'] == "TV") {
-                        $resultadoTV[] = $row;
-                    } elseif ($row['grupo'] == "INTER") {
-                        $resultadoOTROS[] = $row;
-                    } elseif ($row['grupo'] == "PORTAFOLIO") {
-                        $resultadoPORTAFOLIO[] = $row;
-                    }
-                }
-            }
 
-            var_dump($resultadoOTROS);
-            exit();
+                }*/
+            }
 
         } catch (PDOException $e) {
             var_dump($e->getMessage());
