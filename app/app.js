@@ -764,7 +764,8 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
     obj.getSubAcciones = function (proceso, accion) {
-        return $http.get(serviceBase + 'SubAcciones?proceso=' + proceso + '&accion=' + accion);
+        var data = {data:{proceso,accion}, method:SubAcciones}
+        return $http.post(serviceBase1 + 'subAccionesCtrl.php',data);
     };
 
     obj.getCodigos = function (proceso, UNESourceSystem) {
