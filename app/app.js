@@ -547,8 +547,8 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     /*Servicio para traer el estado y las observaciones de los pedidos en BrutalForce*/
     obj.ObsPedidosBF = function (login) {
-        console.log(login, 'pedidos de aca??')
-        return $http.post(serviceBase1 + 'BFobservaciones', {"login": login});
+        var data = {method: 'BFobservaciones'}
+        return $http.post(serviceBase1 + 'novedadesTecnicoCtrl.php', data);
     };
 
     obj.registrosOffline = function () {

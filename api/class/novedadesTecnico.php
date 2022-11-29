@@ -65,4 +65,8 @@ class novedadesTecnico
         $this->_model->DetalleNovedadesVisitas($data);
     }
 
+    public function BFobservaciones(){
+        $this->_model->BFobservaciones();
+    }
+
 }
