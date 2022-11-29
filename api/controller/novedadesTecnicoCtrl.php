@@ -29,6 +29,16 @@ if (isset($data->method)) {
             $user = new novedadesTecnico();
             $user->csvNovedadesTecnico($data->data);
             break;
+        case 'Regiones':
+            require_once '../class/novedadesTecnico.php';
+            $user = new novedadesTecnico();
+            $user->Regiones();
+            break;
+        case 'Municipios':
+            require_once '../class/novedadesTecnico.php';
+            $user = new novedadesTecnico();
+            $user->Municipios($data->region);
+            break;
 
         default:
             echo 'ninguna opción valida.';

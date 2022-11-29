@@ -65,6 +65,7 @@ class modelNovedadesTecnico
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
 
         return $response;
     }
@@ -308,7 +309,7 @@ class modelNovedadesTecnico
             }*/
 
         }
-
+        $this->_DB = null;
         echo json_encode($response);
     }
 
@@ -325,6 +326,7 @@ class modelNovedadesTecnico
         } else {
             $response = ['Error' . 400];
         }
+        $this->_DB = null;
         echo json_encode($response);
     }
 
@@ -372,7 +374,7 @@ class modelNovedadesTecnico
             $stmt->execute([':fechaini' => "$fechaini 00:00:00", ':fechafin' => "$fechaini 23-59-59"]);
 
             if ($stmt->rowCount()) {
-                $fp     = fopen("../tmp/$filename", 'w');
+                $fp       = fopen("../tmp/$filename", 'w');
                 $columnas = [
                     'Fecha',
                     'Despachador',
@@ -428,6 +430,47 @@ class modelNovedadesTecnico
         }
 
         $rst = $this->connseguimiento->query($query) or die($this->connseguimiento->error . __LINE__);*/
+        $this->_DB = null;
+        echo json_encode($response);
+    }
+
+    public function Regiones()
+    {
+        try {
+            $stmt = $this->_DB->query("SELECT region FROM regiones ORDER BY region");
+            $stmt->execute();
+            if ($stmt->rowCount()) {
+                $response = [$stmt->fetchAll(PDO::FETCH_ASSOC), 200];
+            } else {
+                $response = ['Error', 400];
+            }
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+        $this->_DB = null;
+        echo json_encode($response);
+    }
+
+    public function Municipios($data)
+    {
+
+        try {
+            $stmt = $this->_DB->prepare("SELECT municipio
+                                            FROM municipios m
+                                            INNER JOIN regiones r ON m.codigoRg=r.codigoRg
+                                            WHERE region = ?
+                                            ORDER BY municipio");
+            $stmt->bindParam(1, $data, PDO::PARAM_STR);
+            $stmt->execute();
+
+            if ($stmt->rowCount()) {
+                $response = [$stmt->fetchAll(PDO::PARAM_STR), 201];
+            } else {
+                $response = ["error", 400];
+            }
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
         echo json_encode($response);
     }
 }

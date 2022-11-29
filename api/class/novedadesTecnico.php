@@ -45,4 +45,14 @@ class novedadesTecnico
         $this->_model->csvNovedadesTecnico($data);
     }
 
+    public function Regiones()
+    {
+        $this->_model->Regiones();
+    }
+
+    public function Municipios($data)
+    {
+        $this->_model->Municipios($data);
+    }
+
 }

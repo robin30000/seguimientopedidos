@@ -457,25 +457,27 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     obj.guardarNovedadesTecnico = function (registrosTenicos, login) {
         var data = {method: 'guardarNovedadesTecnico', data: {registrosTenicos, login}}
-        return $http.post(serviceBase + 'novedadesTecnicoCtrl.php', data);
+        return $http.post(serviceBase1 + 'novedadesTecnicoCtrl.php', data);
     };
 
     obj.updateNovedadesTecnico = (observacionCCO, pedido) => {
         var data = {method: 'updateNovedadesTecnico', data: {observacionCCO, pedido}}
-        return $http.post(serviceBase + 'novedadesTecnicoCtrl.php', data);
+        return $http.post(serviceBase1 + 'novedadesTecnicoCtrl.php', data);
     }
 
     obj.expCsvNovedadesTecnico = function (datos, datosLogin) {
         var data = {method: 'csvNovedadesTecnico', data: {datos, datosLogin}}
-        return $http.post(serviceBase + 'novedadesTecnicoCtrl.php', data);
+        return $http.post(serviceBase1 + 'novedadesTecnicoCtrl.php', data);
     };
 
     obj.getRegiones = function () {
-        return $http.get(serviceBase + 'Regiones');
+        var data = {method: 'Regiones'}
+        return $http.post(serviceBase1 + 'novedadesTecnicoCtrl.php', data);
     };
 
     obj.getMunicipios = function (region) {
-        return $http.get(serviceBase + 'Municipios?region=' + region);
+        var data = {method: 'Municipios', region}
+        return $http.post(serviceBase1 + 'novedadesTecnicoCtrl.php', data);
     };
 
     obj.getSituacion = function () {
