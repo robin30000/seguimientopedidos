@@ -495,5 +495,26 @@ class modelNovedadesTecnico
         echo json_encode($response);
     }
 
+    public function DetalleNovedadesVisitas($data)
+    {
+        try {
+            $stmt = $this->_DB->prepare("SELECT dnv.detalle
+					FROM DetalleNovedadesVisitas dnv
+					INNER JOIN SituacionNovedadesVisitas snv ON dnv.situacionId=snv.situacionId
+					WHERE snv.situacion = ?
+					ORDER BY dnv.detalle ");
+            $stmt->bindParam(1, $data, PDO::PARAM_STR);
+            $stmt->execute();
+
+            if ($stmt->rowCount()) {
+                $response = [$stmt->fetchAll(PDO::PARAM_STR), 201];
+            } else {
+                $response = ["error", 400];
+            }
+        }catch (PDOException $e){
+            var_dump($e->getMessage());
+        }
+
+    }
 
 }

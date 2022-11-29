@@ -486,7 +486,8 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
     obj.getDetalle = function (situacion) {
-        return $http.get(serviceBase + 'DetalleNovedadesVisitas?situacion=' + situacion);
+        var data = {method: 'DetalleNovedadesVisitas', situacion}
+        return $http.get(serviceBase1 + 'novedadesTecnicoCtrl.php' + data);
     };
 
     /*------------->INICIO SERVICIOS PARA QUEJASGO<------------*/
