@@ -60,4 +60,9 @@ class novedadesTecnico
         $this->_model->SituacionNovedadesVisitas();
     }
 
+    public function DetalleNovedadesVisitas($data)
+    {
+        $this->_model->DetalleNovedadesVisitas($data);
+    }
+
 }
