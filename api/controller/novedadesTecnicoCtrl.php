@@ -40,6 +40,12 @@ if (isset($data->method)) {
             $user->Municipios($data->region);
             break;
 
+        case 'SituacionNovedadesVisitas':
+            require_once '../class/novedadesTecnico.php';
+            $user = new novedadesTecnico();
+            $user->SituacionNovedadesVisitas();
+            break;
+
         default:
             echo 'ninguna opción valida.';
             break;

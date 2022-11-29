@@ -473,4 +473,27 @@ class modelNovedadesTecnico
         }
         echo json_encode($response);
     }
+
+    public function SituacionNovedadesVisitas()
+    {
+        try {
+            $stmt = $this->_DB->query("SELECT situacion
+					FROM SituacionNovedadesVisitas
+					ORDER BY situacion");
+
+            if ($stmt->rowCount()) {
+
+                $response = [$stmt->fetchAll(PDO::FETCH_ASSOC), 201];
+
+            } else {
+                $response = ["error", 400];
+            } // If no records "No Content" status
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+
+        echo json_encode($response);
+    }
+
+
 }

@@ -482,7 +482,8 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
     obj.getSituacion = function () {
-        return $http.get(serviceBase + 'SituacionNovedadesVisitas');
+        var data = {method: 'SituacionNovedadesVisitas'}
+        return $http.post(serviceBase1 + 'novedadesTecnicoCtrl.php',data);
     };
 
     obj.getDetalle = function (situacion) {
