@@ -52,6 +52,12 @@ if (isset($data->method)) {
             $user->DetalleNovedadesVisitas($data->situacion);
             break;
 
+        case 'BFobservaciones':
+            require_once '../class/novedadesTecnico.php';
+            $user = new novedadesTecnico();
+            $user->BFobservaciones();
+            break;
+
         default:
             echo 'ninguna opción valida.';
             break;

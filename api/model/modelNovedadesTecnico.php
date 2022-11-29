@@ -507,13 +507,37 @@ class modelNovedadesTecnico
             $stmt->execute();
 
             if ($stmt->rowCount()) {
-                $response = [$stmt->fetchAll(PDO::PARAM_STR), 201];
+                $response = [$stmt->fetchAll(PDO::FETCH_ASSOC), 201];
             } else {
                 $response = ["error", 400];
             }
-        }catch (PDOException $e){
+        } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        echo json_encode($response);
+    }
+
+    public function BFobservaciones()
+    {
+        session_start();
+        $hoy = date("Y-m-d");
+        try {
+            $stmt = $this->_DB->prepare("SELECT PedidoDespacho, observacionAsesor, pedidobloqueado, gestionAsesor, estado, AccionDespacho
+						FROM BrutalForce
+						WHERE loginDespacho = :login
+						AND (FechaGestionDespacho BETWEEN (:fechaini) AND (:fechafin) OR fechagestionAsesor BETWEEN (:fechaini) AND (:fechafin))");
+            $stmt->execute([':login' => $_SESSION['login'], ':fechaini' => "$hoy 00:00:00", ':fechafin' => "$hoy 23:59:59"]);
+
+            if ($stmt->rowCount()) {
+                $response = [$stmt->fetchAll(PDO::FETCH_ASSOC), 201];
+            } else {
+                $response = ['Error', 400];
+            }
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+        $this->_DB = null;
+        echo json_encode($response);
 
     }
 
