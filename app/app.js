@@ -483,7 +483,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     obj.getSituacion = function () {
         var data = {method: 'SituacionNovedadesVisitas'}
-        return $http.post(serviceBase1 + 'novedadesTecnicoCtrl.php',data);
+        return $http.post(serviceBase1 + 'novedadesTecnicoCtrl.php', data);
     };
 
     obj.getDetalle = function (situacion) {
@@ -878,7 +878,8 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
     obj.getListaPendientesSoporteGpon = function (task) {
-        return $http.get(serviceBase + 'getListaPendientesSoporteGpon');
+        var data = {method: 'getListaPendientesSoporteGpon'}
+        return $http.post(serviceBase1 + 'soporteGponCtrl.php', data);
     };
 
     obj.gestionarSoporteGpon = function (id_soporte, tipificacion, observacion, login) {
