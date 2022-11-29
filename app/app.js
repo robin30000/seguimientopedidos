@@ -125,8 +125,9 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'auntenticationCtrl.php', data);
     };
 
-    obj.cerrarsesion = function (USUARIO_ID, PERFIl, tiempo) {
-        return $http.post(serviceBase + 'logout', {'USUARIO_ID': USUARIO_ID, 'PERFIl': PERFIl, 'fecha': tiempo});
+    obj.cerrarsesion = function () {
+        var data = {method: 'logout'}
+        return $http.post(serviceBase1 + 'auntenticationCtrl.php', data);
     };
 
     obj.editarUsuario = function (datosEdicion) {
@@ -7751,19 +7752,13 @@ app.run(['$rootScope', 'services', function ($rootScope, services) {
 app.run(['$location', '$rootScope', '$cookies', 'services', function ($location, $rootScope, $cookies, services) {
 
     $rootScope.logout = function () {
-        var tiempo = $rootScope.fechaProceso();
-        services.cerrarsesion($rootScope.galletainfo.LOGIN, $rootScope.galletainfo.PERFIL, tiempo);
-        /* if($cookies.get('usuarioInfo')!=undefined){ */
+        console.log('cerrar session');
+        services.cerrarsesion();
         $cookies.remove('usuarioseguimiento');
         $location.path('/');
-        $rootScope.galletainfo = undefined;
-        $rootScope.permiso = false;
-        //$rootScope.error="Desconectado";
-        console.log("Desconectado");
-        //console.log($rootScope.galletainfo);
-        //$route.reload();
+        $rootScope = undefined;
+        $scope = undefined;
 
-        //}
     };
 }]);
 //fin de la APP AngularJS

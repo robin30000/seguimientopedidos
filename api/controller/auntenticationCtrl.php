@@ -14,6 +14,11 @@ if (isset($data->method)) {
             $user = new user();
             $user->login($data->data);
             break;
+        case 'logout':
+            require_once '../class/user.php';
+            $user = new user();
+            $user->logout();
+            break;
 
         default:
             echo 'ninguna opción valida.';

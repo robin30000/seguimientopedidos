@@ -1,5 +1,5 @@
 <?php
-error_reporting(E_ALL);
+
 require_once '../class/conection.php';
 
 class Modelauthentication
@@ -13,17 +13,93 @@ class Modelauthentication
 
     public function loginUser($usuarioid, $password)
     {
-        $res = '';
+        $today      = date('Y-m-d');
+        $fecha      = date('Y-m-d H:i:s');
+        $usuarioIp  = $_SERVER['REMOTE_ADDR'];
+        $usuarioPc  = gethostbyaddr($usuarioIp);
+        $aplicacion = "Seguimiento";
+
         try {
-            $stmt = $this->_DB->prepare("SELECT id, login, nombre, identificacion, perfil, password FROM usuarios WHERE login = ? AND password = ?");
+            $stmt = $this->_DB->prepare("SELECT id, login, nombre, identificacion, perfil FROM usuarios WHERE login = ? AND password = ?");
             $stmt->bindParam(1, $usuarioid, PDO::PARAM_STR);
             $stmt->bindParam(2, $password, PDO::PARAM_STR);
             $stmt->execute();
 
             if ($stmt->rowCount() == 1) {
-                $res = $stmt->fetch(PDO::FETCH_OBJ);
+                $resLogin = $stmt->fetch(PDO::FETCH_OBJ);
+                session_destroy();
+                session_start();
+
+                $_SESSION["logueado"]      = true;
+                $_SESSION['timeOnline']    = time() * 1000;
+                $_SESSION['online']        = date("H:i:s");
+                $_SESSION["login"]         = $resLogin->login;
+                $_SESSION['id']            = $resLogin->id;
+                $_SESSION['token_session'] = uniqid();
+                $_SESSION['fecha_ingreso'] = date('Y-m-d H:i:s');
+                $_SESSION['perfil']        = $resLogin->perfil;
+
+                $stmtIngreso = $this->_DB->prepare("SELECT id
+                                                         , fecha_ingreso
+                                                         , date_format(fecha_ingreso, '%H:%i:%s') as hora_ingreso
+                                                    FROM registro_ingresoSeguimiento
+                                                    WHERE fecha_ingreso between :fechaini
+                                                        and :fechafin
+                                                      and idusuario = :usuario_id");
+
+                $stmtIngreso->execute([':fechaini' => "$today 00:00:00", ':fechafin' => "$today 23:59:59", ':usuario_id' => $resLogin->login]);
+
+                if ($stmtIngreso->rowCount()) {
+                    $resStmtIngreso = $stmtIngreso->fetch(PDO::FETCH_OBJ);
+                    $stmt           = $this->_DB->prepare("update registro_ingresoSeguimiento set status='logged in', ingresos=ingresos+1 where id=?");
+                    $stmt->bindParam(1, $resLogin->id, PDO::PARAM_INT);
+                    $stmt->execute();
+
+                    $fecha_ingreso = $resStmtIngreso->fecha_ingreso;
+                    $hora_ingreso  = $resStmtIngreso->hora_ingreso;
+                } else {
+
+                    $otherStmt = $this->_DB->prepare("insert into registro_ingresoSeguimiento (idusuario,status,fecha_ingreso, ip, pc, aplicacion) " .
+                                                     "values(:usuario_id,'logged in',:fechaIngreso, :ip, :usuarioPc, :aplicacion)");
+                    $otherStmt->execute([
+                        ':usuario_id'   => $resLogin->login,
+                        ':fechaIngreso' => date('Y-m-d H:i:s'),
+                        ':ip'           => $usuarioIp,
+                        ':usuarioPc'    => $usuarioPc,
+                        ':aplicacion'   => $aplicacion,
+                    ]);
+
+                    $otherStmt->execute();
+
+                    $stmt = $this->_DB->prepare("SELECT fecha_ingreso, date_format(fecha_ingreso,'%H:%i:%s') AS hora_ingreso
+                                                        FROM registro_ingresoSeguimiento
+                                                        WHERE fecha_ingreso between :fechaini and :fechafin
+                                                          and idusuario = :usuario_id
+                                                        limit 1");
+
+                    $stmt->execute([':fechaini' => "$today 00:00:00", ':fechafin' => "$today 23:59:59", ':usuario_id' => $resLogin->id]);
+
+                    if ($stmt->rowCount()) {
+                        $res           = $stmt->fetch(PDO::FETCH_OBJ);
+                        $fecha_ingreso = $res->fecha_ingreso;
+                        $hora_ingreso  = $res->hora_ingreso;
+                    } else {
+                        $fecha_ingreso = 'SinFecha';
+                        $hora_ingreso  = 'SinHora';
+                    }
+                }
+
+                http_response_code(201);
+                header("Content-type: application/json; charset=utf-8");
+                echo json_encode($resLogin);
+                die();
+
             } else {
-                $res = 0;
+                $body = 'Error';
+                http_response_code(406);
+                header("Content-type: application/json; charset=utf-8");
+                echo json_encode($body);
+                die();
             }
 
 
@@ -35,114 +111,60 @@ class Modelauthentication
         return $res;
     }
 
-    public function getIngresosalida($today, $usuarioid, $fecha)
+    public function updatesalida()
     {
-        try {
-            $todayStart = $today . ' 00:00:00';
-            $todayEnd   = $today . ' 23:59:59';
-            $res        = 0;
+        session_start();
+        $today = date('Y-m-d');
+        $stmt  = $this->_DB->prepare("SELECT id, fecha_ingreso 
+                 , date_format(fecha_ingreso,'%H:%i:%s') as hora_ingreso, SEC_TO_TIME((TIMESTAMPDIFF(second, fecha_ingreso, ? ))) total FROM 
+                                    registro_ingresoSeguimiento 
+                 WHERE fecha_ingreso between ? and ? 
+                 and idusuario = ? limit 1");
+        $stmt->bindParam(1, $_SESSION['fecha_ingreso']);
+        $stmt->bindValue(2, "$today 00:00:00");
+        $stmt->bindValue(3, "$today 23:59:59");
+        $stmt->bindParam(4, $_SESSION['login']);
 
-            /*$stmt = $this->_DB->prepare("SELECT id, fecha_ingreso, date_format(fecha_ingreso,'%H:%i:%s') as hora_ingreso, SEC_TO_TIME((TIMESTAMPDIFF(second, fecha_ingreso, :fecha ))) total FROM registro_ingresoSeguimiento WHERE fecha_ingreso BETWEEN :todayStart AND :todayStart AND idusuario = :usuarioid LIMIT 1");
-            $stmt->execute(array(':fecha' => $fecha, ':todayStart' => $todayStart, ':todayEnd' => $todayEnd, ':usuarioid' => $usuarioid));
+        $stmt->execute();
 
+        $result = $stmt->fetch(PDO::FETCH_OBJ);
 
-            /*$stmt->bindParam(1, $fecha, PDO::PARAM_STR);
-            $stmt->bindParam(2, $todayStart, PDO::PARAM_STR);
-            $stmt->bindParam(3, $todayEnd, PDO::PARAM_STR);
-            $stmt->bindParam(4, $usuarioid, PDO::PARAM_STR);*/
-            //$stmt->execute();
-            //var_dump($stmt->debugDumpParams());
-            //var_dump( $stmt->queryString, $stmt->_debugQuery() );
+        $total_dia = $result->total;
 
-            /*if ($stmt->rowCount() == 1) {
-                $res = $stmt->fetch(PDO::FETCH_OBJ);
-            } else {
-                $res = 0;
-            }*/
+        $hora     = substr($total_dia, 0, 2);
+        $minutos  = substr($total_dia, 3, 2);
+        $segundos = substr($total_dia, 6, 2);
 
-            return $res;
-        } catch (PDOException $e) {
-            //throw $th;
-            die($e->getMessage());
-        }
-        $this->_DB = null;
+        $totalminutos = round((($hora * 60) + $minutos + $segundos) / 60, 2);
 
-        return $res;
-    }
+        $stmt = $this->_DB->prepare("update registro_ingresoSeguimiento
+                        set status='logged off',
+                            fecha_salida = :fechaSal,
+                            salidas=salidas + 1,
+                            total_dia = :total_dia, hora = :hora, minutos = :minutos, segundos = :segundos, total_factura = :total_factura
+                        where id= :id");
+        $stmt->execute([
+            ':fechaSal'      => date('Y-m-d H:i:s'),
+            ':total_dia'     => $total_dia,
+            ':hora'          => $hora,
+            ':minutos'       => $minutos,
+            ':segundos'      => $segundos,
+            ':total_factura' => $totalminutos,
+            ':id'            => $result->id,
+        ]);
 
-    public function createingresosalida($usuarioid, $fecha, $usuarioIp, $usuarioPc, $aplicacion)
-    {
-        //echo $usuarioid . $fecha . $usuarioIp . $usuarioPc . $aplicacion;
+        if ($stmt->rowCount() == 1) {
 
-        //CRAMICEB 2022-11-27 12:54:30 10.183.120.43 10.183.120.43 Seguimiento
-        try {
-            $stmt = $this->_DB->prepare("INSERT INTO registro_ingresoSeguimiento (idusuario, status, fecha_ingreso, ip, pc, aplicacion) VALUES (?, 'logged in', ?, ?, ?, ?)");
-            $stmt->bindParam(1, $usuarioid, PDO::PARAM_STR);
-            $stmt->bindParam(2, $fecha, PDO::PARAM_STR);
-            $stmt->bindParam(3, $usuarioIp, PDO::PARAM_STR);
-            $stmt->bindParam(4, $usuarioPc, PDO::PARAM_STR);
-            $stmt->bindParam(5, $aplicacion, PDO::PARAM_STR);
-            $stmt->execute();
-            if ($stmt->rowCount() == 1) {
-                $res = $stmt->rowCount();
-            } else {
-                $res = 0;
+            if (isset($_COOKIE[session_name()])) {
+                setcookie(session_name(), "", time() - 3600, "/");
             }
-
-
-        } catch (\Exception $e) {
-            //throw $th;
-            //die($e->getMessage());
-            return -1;
+            session_start();
+            $_SESSION = [];
+            session_destroy();
+            $response = ['logged out', 201];
+        } else {
+            $response = ['Error', 400];
         }
-
-        return $res;
-    }
-
-    public function updateingreso($idd)
-    {
-        try {
-            $stmt = $this->_DB->prepare("UPDATE registro_ingresoSeguimiento SET status = 'logged in', ingresos = ingresos+1 WHERE id = ?");
-            $stmt->bindParam(1, $idd, PDO::PARAM_STR);
-            $stmt->execute();
-            if ($stmt->rowCount()) {
-                $res = $stmt->rowCount();
-            } else {
-                $res = 0;
-            }
-
-            return $res;
-        } catch (\Exception $e) {
-            //throw $th;
-            //die($e->getMessage());
-            return -1;
-        }
-    }
-
-    public function updatesalida($idd, $fecha, $total_dia, $hora, $minutos, $segundos, $totalminutos)
-    {
-
-        try {
-            $stmt = $this->_DB->prepare("UPDATE registro_ingresoSeguimiento SET status = 'logged off', fecha_salida = ?,salidas = salidas+1, total_dia = ?, hora = ?, minutos = ?, segundos = ?, total_factura = ? WHERE id = ?");
-            $stmt->bindParam(1, $fecha, PDO::PARAM_STR);
-            $stmt->bindParam(2, $total_dia, PDO::PARAM_STR);
-            $stmt->bindParam(3, $hora, PDO::PARAM_STR);
-            $stmt->bindParam(4, $minutos, PDO::PARAM_STR);
-            $stmt->bindParam(5, $segundos, PDO::PARAM_STR);
-            $stmt->bindParam(6, $totalminutos, PDO::PARAM_STR);
-            $stmt->bindParam(7, $idd, PDO::PARAM_STR);
-            $stmt->execute();
-            if ($stmt->rowCount() == 1) {
-                $res = $stmt->rowCount();
-            } else {
-                $res = 0;
-            }
-
-            return $res;
-        } catch (\Exception $e) {
-            //throw $th;
-            //die($e->getMessage());
-            return -1;
-        }
+        echo json_encode($response);
     }
 }
