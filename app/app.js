@@ -451,19 +451,23 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     /*===========================================================*/
 
     obj.novedadesTecnicoService = function (page, datos) {
-        return $http.post(serviceBase + 'novedadesTecnico', {"page": page, "datos": datos});
+        var data = {method: 'novedadesTecnico', data: {page, datos}}
+        return $http.post(serviceBase1 + 'novedadesTecnicoCtrl.php', data);
     };
 
     obj.guardarNovedadesTecnico = function (registrosTenicos, login) {
-        return $http.post(serviceBase + 'guardarNovedadesTecnico', {'datosEdicion': registrosTenicos, "login": login});
+        var data = {method: 'guardarNovedadesTecnico', data: {registrosTenicos, login}}
+        return $http.post(serviceBase + 'novedadesTecnicoCtrl.php', data);
     };
 
     obj.updateNovedadesTecnico = (observacionCCO, pedido) => {
-        return $http.post(serviceBase + 'updateNovedadesTecnico', {'datosEditar': observacionCCO, "pedido": pedido});
+        var data = {method: 'updateNovedadesTecnico', data: {observacionCCO, pedido}}
+        return $http.post(serviceBase + 'novedadesTecnicoCtrl.php', data);
     }
 
     obj.expCsvNovedadesTecnico = function (datos, datosLogin) {
-        return $http.post(serviceBase + 'csvNovedadesTecnico', {"datos": datos, "datosLogin": datosLogin});
+        var data = {method: 'csvNovedadesTecnico', data: {datos, datosLogin}}
+        return $http.post(serviceBase + 'novedadesTecnicoCtrl.php', data);
     };
 
     obj.getRegiones = function () {
@@ -515,7 +519,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     /*------------->FIN SERVICIOS PARA QUEJASGO<------------*/
 
 
-    // /*RETORNO DE LA INFORMACION DEL APPI DE LA FUNCION datoscontingencias*/
+// /*RETORNO DE LA INFORMACION DEL APPI DE LA FUNCION datoscontingencias*/
     obj.datosgestioncontingencias = function () {
         var data = {method: 'datoscontingencias'}
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
@@ -563,9 +567,9 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase + 'marcaPortafolio', {"datos": datos, "login": login});
     };
 
-    // obj.marcarEnGestionCEQPorta = function (datos, login) {
-    //     return $http.post(serviceBase + 'marcaCEQPortafolio', { "datos": datos, "login": login });
-    // };
+// obj.marcarEnGestionCEQPorta = function (datos, login) {
+//     return $http.post(serviceBase + 'marcaCEQPortafolio', { "datos": datos, "login": login });
+// };
 
     obj.editarregistrocontingencia = function (datos, login) {
         return $http.post(serviceBase + 'guardarpedidocontingencia', {"datos": datos, "login": login});
@@ -593,12 +597,12 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase + 'graficaAcumulados', {"pregunta": pregunta, "mes": mes});
     };
 
-    //------------------reparacion----
+//------------------reparacion----
     obj.getgraficaAcumuladosrepa = function (pregunta, mes) {
         return $http.post(serviceBase + 'graficaAcumuladosrepa', {"pregunta": pregunta, "mes": mes});
     };
 
-    //-------------fin reparacion
+//-------------fin reparacion
 
     obj.getDepartamentosContratos = function (mes) {
         return $http.post(serviceBase + 'DepartamentosContratos', {"mes": mes});
@@ -779,7 +783,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
 
-    //Turnos
+//Turnos
     obj.getusuariosTurnos = function () {
         return $http.get(serviceBase + 'usuariosTurnos');
     };
@@ -808,7 +812,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.get(serviceBase + 'deleteTurno?idTurno=' + idTurno);
     };
 
-    //Servicio para guardar la información de recogidad de equipos
+//Servicio para guardar la información de recogidad de equipos
     obj.recogidaEquipos = function (equiposRecoger) {
         return $http.post(serviceBase + 'guardarRecogerEquipos', {'equipos': equiposRecoger});
     };
@@ -817,11 +821,11 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.get(serviceBase + 'exportEscalamientos');
     }
 
-    // obj.cambiarPWD = function (id, datos) {
-    //     return $http.post(serviceBase + 'cambiarPWD',{"id":id,"datos":datos});
-    // };
+// obj.cambiarPWD = function (id, datos) {
+//     return $http.post(serviceBase + 'cambiarPWD',{"id":id,"datos":datos});
+// };
 
-    // Turnos
+// Turnos
 
     /* -------------------------------- SOPORTE GPON -------------------------------- */
 
