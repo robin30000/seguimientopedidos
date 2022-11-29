@@ -55,4 +55,9 @@ class novedadesTecnico
         $this->_model->Municipios($data);
     }
 
+    public function SituacionNovedadesVisitas()
+    {
+        $this->_model->SituacionNovedadesVisitas();
+    }
+
 }
