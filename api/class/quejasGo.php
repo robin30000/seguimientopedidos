@@ -15,9 +15,9 @@ class quejasGo
         $this->_model = new modelQuejasGo();
     }
 
-    public function extraeQuejasGoDia($data)
+    public function listaQuejasGoDia($data)
     {
-        $this->_model->extraeQuejasGoDia($data);
+        $this->_model->listaQuejasGoDia($data);
     }
 
 

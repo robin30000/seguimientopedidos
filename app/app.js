@@ -495,7 +495,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     obj.listaQuejasGoDia = function (page, datos) {
         var data = {method: 'extraeQuejasGoDia', data:{page,datos}}
-        return $http.post(serviceBase1 + 'extraeQuejasGoDia', data);
+        return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
     obj.expCsvQuejasGo = function (datos, datosLogin) {

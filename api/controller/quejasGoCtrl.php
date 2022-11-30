@@ -13,7 +13,7 @@ if (isset($data->method)) {
         case 'extraeQuejasGoDia':
             require_once '../class/quejasGo.php';
             $user = new quejasGo();
-            $user->novedadesTecnico($data->data);
+            $user->listaQuejasGoDia($data->data);
             break;
 
         default:
