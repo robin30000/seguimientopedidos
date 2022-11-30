@@ -851,7 +851,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
             method: 'getSoporteGponByTask',
             data: task
         }
-        return $http.get(serviceBase1 + 'soporteGponCtrl.php', data);
+        return $http.post(serviceBase1 + 'soporteGponCtrl.php', data);
     };
 
     obj.validarLlenadoSoporteGpon = function (task) {
@@ -859,7 +859,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
             method: 'validarLlenadoSoporteGpon',
             data: task
         }
-        return $http.get(serviceBase + 'soporteGponCtrl.php', data);
+        return $http.post(serviceBase1 + 'soporteGponCtrl.php', data);
     };
 
     obj.postPendientesSoporteGpon = function (task, arpon, nap, hilo, internet1, internet2, internet3, internet4, television1, television2, television3, television4, numeroContacto, nombreContacto, user_id, request_id, user_identification, fecha_solicitud, unepedido, tasktypecategory, unemunicipio, uneproductos, datoscola, engineer_id, engineer_name, mobile_phone, serial, mac, tipo_equipo, velocidad_navegacion, observacionTerreno) {
