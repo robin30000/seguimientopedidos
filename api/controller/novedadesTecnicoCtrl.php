@@ -57,6 +57,22 @@ if (isset($data->method)) {
             $user = new novedadesTecnico();
             $user->BFobservaciones();
             break;
+        case 'registrospwdTecnicos':
+            require_once '../class/novedadesTecnico.php';
+            $user = new novedadesTecnico();
+            $user->registrospwdTecnicos($data->data);
+            break;
+        case 'editarPwdTecnicos':
+            require_once '../class/novedadesTecnico.php';
+            $user = new novedadesTecnico();
+            $user->editarPwdTecnicos($data->data);
+            break;
+        case 'csvContrasenasTecnicos':
+            require_once '../class/novedadesTecnico.php';
+            $user = new novedadesTecnico();
+            $user->csvContrasenasTecnicos();
+            break;
+
 
         default:
             echo 'ninguna opción valida.';

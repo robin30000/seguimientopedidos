@@ -541,4 +541,84 @@ class modelNovedadesTecnico
 
     }
 
+    public function registrospwdTecnicos($data)
+    {
+
+        try {
+
+            $datos    = $data->datos;
+            $concepto = $datos['concepto'];
+            $buscar   = $datos['buscar'];
+
+            $stmt = $this->_DB->query("SELECT c.cedula, c.login, c.nombre, c.password, c.expiraCuenta, c.expirapsw FROM cuentasTecnicos c where 1=1 And :parametro");
+            $stmt->execute([':parametro' => " $concepto = '$buscar'"]);
+            if ($stmt->rowCount()) {
+                $response = [$stmt->fetchAll(PDO::FETCH_ASSOC), 201];
+            } else {
+                $response = ['', 400];
+            }
+
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+
+        echo json_encode($response);
+    }
+
+    public function editarPwdTecnicos($data)
+    {
+        try {
+            $datos  = $data->datosEdicion;
+            $cedula = $datos['cedula'];
+            $pwd    = $datos['newpwd'];
+
+            $stmt = $this->_DB->prepare("update cuentasTecnicos set password = :password where cedula = :cedula");
+            $stmt->execute([':password' => $pwd, ':cedula' => $cedula]);
+            if ($stmt->rowCount()) {
+                $response = ['Usuario actualizado', 201];
+            } else {
+                $response = ['Ah ocurrido un error intentalo de nuevo', 400];
+            }
+
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+        echo json_encode($response);
+    }
+
+    public function csvContrasenasTecnicos()
+    {
+        try {
+            $usuarioid = $_SESSION['login'];
+            $filename  = "ContrasenasTecnicosClick" . "_" . $usuarioid . ".csv";
+
+            $stmt = $this->_DB->query("SELECT c.cedula, c.login, c.nombre, c.password, c.expiraCuenta, c.expirapsw
+						FROM cuentasTecnicos c");
+            $stmt->execute();
+
+            if ($stmt->rowCount()) {
+                $fp = fopen("../tmp/$filename", 'w');
+
+                $columnas = [
+                    'Fecha',
+                    'Login',
+                    'Nombre',
+                    'Password',
+                    'Expira Cuenta',
+                    'Expira PSW',
+                ];
+
+                fputcsv($fp, $columnas);
+                fputcsv($fp, $stmt->fetchAll(PDO::FETCH_ASSOC));
+                fclose($fp);
+                $response = [$filename, 201];
+            } else {
+                $response = ['', 400];
+            }
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+        echo json_encode($response);
+    }
+
 }
