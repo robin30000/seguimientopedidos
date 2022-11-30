@@ -431,15 +431,26 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
 
     obj.registrosContrasenasTecnicos = function (datos) {
-        return $http.post(serviceBase + 'registrospwdTecnicos', {"datos": datos});
+        var data = {
+            method: 'registrospwdTecnicos',
+            data: datos
+        }
+        return $http.post(serviceBase + 'novedadesTecnicoCtrl.php', data);
     };
 
     obj.editarPasswordTecnicos = function (datosEdicion) {
-        return $http.post(serviceBase + 'editarPwdTecnicos', {'datosEdicion': datosEdicion});
+        var data = {
+            method: 'editarPwdTecnicos',
+            data: datosEdicion
+        }
+        return $http.post(serviceBase + 'novedadesTecnicoCtrl.php', data);
     };
 
-    obj.expCsvContrasenasTecnicos = function (datosLogin) {
-        return $http.post(serviceBase + 'csvContrasenasTecnicos', {"datosLogin": datosLogin});
+    obj.expCsvContrasenasTecnicos = function () {
+        var data = {
+            method: 'csvContrasenasTecnicos'
+        }
+        return $http.post(serviceBase + 'novedadesTecnicoCtrl', data);
     };
 
     /*===========================================================*/
