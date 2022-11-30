@@ -69,8 +69,6 @@ class Modelauthentication
                         ':aplicacion'   => $aplicacion,
                     ]);
 
-                    $otherStmt->execute();
-
                     $stmt = $this->_DB->prepare("SELECT fecha_ingreso, date_format(fecha_ingreso,'%H:%i:%s') AS hora_ingreso
                                                         FROM registro_ingresoSeguimiento
                                                         WHERE fecha_ingreso between :fechaini and :fechafin
