@@ -392,41 +392,65 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     //Servivio para subir la informacion de la tabla a la vista
     obj.premisasVisitasEnConjunto = function (page, datos) {
-        return $http.post(serviceBase + 'visitasEnConjunto', {"page": page, "datos": datos});
+        var data = {
+            method: 'visitasEnConjunto',
+            data: {page, datos}
+        }
+        return $http.post(serviceBase1 + 'visitasEnConjuntoCtrl.php', data);
     };
 
     // Servicio para llamar la informacion de grupo en las visitas en conjunto
     obj.getGrupoVisitasEnConjunto = function () {
-        return $http.get(serviceBase + 'GrupoVisitasEnConjunto');
+        var data = {method: 'GrupoVisitasEnConjunto'}
+        return $http.post(serviceBase1 + 'visitasEnConjuntoCtrl.php', data);
     };
 
     //servicio para guardar la información de visitas en conjunto
     obj.guardarFormVisitasEnConjunto = function (visitasEnConjunto) {
-        return $http.post(serviceBase + 'infoVisitasEnConjunto', {'datosEdicion': visitasEnConjunto});
+        var data = {
+            method: 'infoVisitasEnConjunto',
+            data: visitasEnConjunto
+        }
+        return $http.post(serviceBase1 + 'visitasEnConjuntoCtrl.php', data);
     };
 
-    //Servicio para exportar la información de las vistas en conjunto
+//Servicio para exportar la información de las vistas en conjunto
     obj.expCsvVisitasEnConjunto = function (datos, datosLogin) {
-        return $http.post(serviceBase + 'csvVisitasEnConjuntoExp', {"datos": datos, "datosLogin": datosLogin});
+        var data = {
+            method: 'csvVisitasEnConjuntoExp',
+            data: {datos, datosLogin}
+        }
+        return $http.post(serviceBase1 + 'visitasEnConjuntoCtrl.php', data);
     };
 
-    // Servicio para llamar las Regiones en visitas en conjunto
+// Servicio para llamar las Regiones en visitas en conjunto
     obj.RegionesVisConj = function () {
-        return $http.get(serviceBase + 'RegionesVisConjunto');
+        var data = {
+            method: 'RegionesVisConjunto'
+        }
+        return $http.post(serviceBase1 + 'visitasEnConjuntoCtrl.php',data);
     };
 
-    // Servicio para llamar las ciudades en vistas en conjunto, frm registro nuevo
+// Servicio para llamar las ciudades en vistas en conjunto, frm registro nuevo
     obj.MunicipiosVisConj = function (region) {
-        return $http.get(serviceBase + 'MunicipiosVisConjunto?region=' + region);
+        var data = {
+            method: 'MunicipiosVisConjunto',
+            data: region
+        }
+        return $http.get(serviceBase1 + 'visitasEnConjuntoCtrl.php', data);
     };
 
-    // Servicio para llamar la ciudad en vistas en conjunto, frm update
+// Servicio para llamar la ciudad en vistas en conjunto, frm update
     obj.municipiovisconjupdate = function (idregistro) {
-        return $http.get(serviceBase + 'MunicipioVisConjuntoUpdate?idregistro=' + idregistro);
+        var data = {
+            method: 'MunicipioVisConjuntoUpdate',
+            data: idregistro
+        }
+        return $http.post(serviceBase1 + 'visitasEnConjuntoCtrl.php',data);
     };
 
     /*===========================================================*/
-    //INICIO SERVICIOS PARA CONTRASEÑAS TECNICOS
+//INICIO SERVICIOS PARA CONTRASEÑAS TECNICOS
     /*===========================================================*/
 
 
@@ -454,11 +478,11 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
     /*===========================================================*/
-    //FIN SERVICIOS PARA CONTRASEÑAS TECNICOS
+//FIN SERVICIOS PARA CONTRASEÑAS TECNICOS
     /*===========================================================*/
     /*===========================================================*/
 
-    //SERVICIOS PARA NOVEDADES DE VISITAS DE LOS TECNICOS
+//SERVICIOS PARA NOVEDADES DE VISITAS DE LOS TECNICOS
 
     /*===========================================================*/
 
@@ -505,7 +529,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     /*------------->INICIO SERVICIOS PARA QUEJASGO<------------*/
 
     obj.listaQuejasGoDia = function (page, datos) {
-        var data = {method: 'extraeQuejasGoDia', data:{page,datos}}
+        var data = {method: 'extraeQuejasGoDia', data: {page, datos}}
         return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
