@@ -16,6 +16,38 @@ if (isset($data->method)) {
             $user->listaQuejasGoDia($data->data);
             break;
 
+        case 'csvQuejasGo':
+            require_once '../class/quejasGo.php';
+            $user = new quejasGo();
+            $user->csvQuejasGo($data->data);
+            break;
+
+        case 'traerTecnico':
+            require_once '../class/quejasGo.php';
+            $user = new quejasGo();
+            $user->buscarTecnico($data->cedula);
+            break;
+
+        case 'crearTecnicoQuejasGo':
+            require_once '../class/quejasGo.php';
+            $user = new quejasGo();
+            $user->crearTecnicoQuejasGo($data->crearTecnicoquejasGoSel);
+            break;
+        case 'ciudadesQGo':
+            require_once '../class/quejasGo.php';
+            $user = new quejasGo();
+            $user->ciudadesQGo();
+            break;
+        case 'registrarQuejaGo':
+            require_once '../class/quejasGo.php';
+            $user = new quejasGo();
+            $user->guardarQuejaGo($data->data);
+            break;
+        case 'ActualizarObserQuejasGo':
+            require_once '../class/quejasGo.php';
+            $user = new quejasGo();
+            $user->ActualizarObserQuejasGo($data->data);
+            break;
         default:
             echo 'ninguna opción valida.';
             break;

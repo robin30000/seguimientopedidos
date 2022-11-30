@@ -510,27 +510,33 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
     obj.expCsvQuejasGo = function (datos, datosLogin) {
-        return $http.post(serviceBase + 'csvQuejasGo', {"datos": datos, "datosLogin": datosLogin});
+        var data = {method: 'csvQuejasGo', data:{datos,datosLogin}}
+        return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
     obj.traerTecnico = function (cedula) {
-        return $http.get(serviceBase + 'buscarTecnico?cedula=' + cedula);
+        var data = {method: 'traerTecnico', cedula}
+        return $http.post(serviceBase1 + 'quejasGoCtrl.php' + data);
     };
 
     obj.creaTecnicoQuejasGo = function (crearTecnicoquejasGoSel) {
-        return $http.post(serviceBase + 'crearTecnicoQuejasGo', {'crearTecnicoquejasGoSel': crearTecnicoquejasGoSel});
+        var data = {method: 'creaTecnicoQuejasGo', crearTecnicoquejasGoSel: crearTecnicoquejasGoSel}
+        return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
     obj.getCiudadesQuejasGo = function () {
-        return $http.get(serviceBase + 'ciudadesQGo');
+        var data = {method: 'ciudadesQGo'}
+        return $http.post(serviceBase1 + 'quejasGoCtrl.php',data);
     };
 
     obj.guardarQuejaGo = function (dataquejago, duracion, login) {
-        return $http.post(serviceBase + 'registrarQuejaGo', {'dataquejago': dataquejago, 'duracion': duracion, 'login': login});
+        var data = {method: 'registrarQuejaGo', data:{dataquejago,duracion,login}}
+        return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
     obj.modiObserQuejasGo = function (observacion, idqueja) {
-        return $http.post(serviceBase + 'ActualizarObserQuejasGo', {'observacion': observacion, 'idqueja': idqueja});
+        var data= {method:'ActualizarObserQuejasGo',data:{observacion,idqueja}}
+        return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
     /*------------->FIN SERVICIOS PARA QUEJASGO<------------*/
