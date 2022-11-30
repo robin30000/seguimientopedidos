@@ -835,73 +835,103 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     /* -------------------------------- SOPORTE GPON -------------------------------- */
 
     obj.getPendientesSoporteGpon = function (task) {
-        return $http.get(serviceBase + 'getSoporteGponByTask?task=' + task);
+        var data = {
+            method: 'getSoporteGponByTask',
+            data: task
+        }
+        return $http.get(serviceBase1 + 'soporteGponCtrl.php', data);
     };
 
     obj.validarLlenadoSoporteGpon = function (task) {
-        return $http.get(serviceBase + 'validarLlenadoSoporteGpon?task=' + task);
+        var data = {
+            method: 'validarLlenadoSoporteGpon',
+            data: task
+        }
+        return $http.get(serviceBase + 'soporteGponCtrl.php', data);
     };
 
     obj.postPendientesSoporteGpon = function (task, arpon, nap, hilo, internet1, internet2, internet3, internet4, television1, television2, television3, television4, numeroContacto, nombreContacto, user_id, request_id, user_identification, fecha_solicitud, unepedido, tasktypecategory, unemunicipio, uneproductos, datoscola, engineer_id, engineer_name, mobile_phone, serial, mac, tipo_equipo, velocidad_navegacion, observacionTerreno) {
-        return $http.post(serviceBase + 'postPendientesSoporteGpon', {
-            "task": task,
-            "arpon": arpon,
-            "nap": nap,
-            "hilo": hilo,
-            "internet1": internet1,
-            "internet2": internet2,
-            "internet3": internet3,
-            "internet4": internet4,
-            "television1": television1,
-            "television2": television2,
-            "television3": television3,
-            "television4": television4,
-            "numeroContacto": numeroContacto,
-            "nombreContacto": nombreContacto,
-            "user_id": user_id,
-            "request_id": request_id,
-            "user_identification": user_identification,
-            "fecha_solicitud": fecha_solicitud,
-            "unepedido": unepedido,
-            "tasktypecategory": tasktypecategory,
-            "unemunicipio": unemunicipio,
-            "uneproductos": uneproductos,
-            "datoscola": datoscola,
-            "engineer_id": engineer_id,
-            "engineer_name": engineer_name,
-            "mobile_phone": mobile_phone,
-            "serial": serial,
-            "mac": mac,
-            "tipo_equipo": tipo_equipo,
-            "velocidad_navegacion": velocidad_navegacion,
-            "observacionTerreno": observacionTerreno
-        });
+        var data = {
+            method: 'postPendientesSoporteGpon',
+            data: {
+                "task": task,
+                "arpon": arpon,
+                "nap": nap,
+                "hilo": hilo,
+                "internet1": internet1,
+                "internet2": internet2,
+                "internet3": internet3,
+                "internet4": internet4,
+                "television1": television1,
+                "television2": television2,
+                "television3": television3,
+                "television4": television4,
+                "numeroContacto": numeroContacto,
+                "nombreContacto": nombreContacto,
+                "user_id": user_id,
+                "request_id": request_id,
+                "user_identification": user_identification,
+                "fecha_solicitud": fecha_solicitud,
+                "unepedido": unepedido,
+                "tasktypecategory": tasktypecategory,
+                "unemunicipio": unemunicipio,
+                "uneproductos": uneproductos,
+                "datoscola": datoscola,
+                "engineer_id": engineer_id,
+                "engineer_name": engineer_name,
+                "mobile_phone": mobile_phone,
+                "serial": serial,
+                "mac": mac,
+                "tipo_equipo": tipo_equipo,
+                "velocidad_navegacion": velocidad_navegacion,
+                "observacionTerreno": observacionTerreno
+            }
+        }
+        return $http.post(serviceBase1 + 'soporteGponCtrl.php', data);
     };
 
-    obj.getListaPendientesSoporteGpon = function (task) {
-        var data = {method: 'getListaPendientesSoporteGpon'}
+    obj.getListaPendientesSoporteGpon = function () {
+        var data = {
+            method: 'getListaPendientesSoporteGpon'
+        }
         return $http.post(serviceBase1 + 'soporteGponCtrl.php', data);
     };
 
     obj.gestionarSoporteGpon = function (id_soporte, tipificacion, observacion, login) {
-        return $http.post(serviceBase + 'gestionarSoporteGpon', {
-            'id_soporte': id_soporte,
-            'tipificacion': tipificacion,
-            'observacion': observacion,
-            'login': login
-        });
+        var data = {
+            method: 'gestionarSoporteGpon',
+            data: {
+                id_soporte,
+                tipificacion,
+                observacion,
+                login
+            }
+        }
+        return $http.post(serviceBase1 + 'soporteGponCtrl.php', data);
     };
 
     obj.registrossoportegpon = function (page, datos) {
-        return $http.post(serviceBase + 'registrossoportegpon', {"page": page, "datos": datos});
+        var data = {
+            method: 'registrossoportegpon',
+            data: {page, datos}
+        }
+        return $http.post(serviceBase1 + 'soporteGponCtrl.php', data);
     };
 
     obj.expCsvRegistrosSoporteGpon = function (datos, datosLogin) {
-        return $http.post(serviceBase + 'csvRegistrosSoporteGpon', {"datos": datos, "datosLogin": datosLogin});
+        var data = {
+            method: 'csvRegistrosSoporteGpon',
+            data: {datos, datosLogin}
+        }
+        return $http.post(serviceBase1 + 'soporteGponCtrl.php', data);
     };
 
     obj.marcarEngestionGpon = function (datos, login) {
-        return $http.post(serviceBase + 'marcarEngestionGpon', {"datos": datos, "login": login});
+        var data = {
+            method: 'marcarEngestionGpon',
+            data: {datos, login}
+        }
+        return $http.post(serviceBase1 + 'soporteGponCtrl.php', data);
     };
 
     /* -------------------------------- SOPORTE GPON -------------------------------- */
