@@ -909,24 +909,37 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     /* ------------------------------- CODIGO INCOMPLETO ---------------------------- */
 
     obj.getListaCodigoIncompleto = function () {
-        return $http.get(serviceBase + 'getListaCodigoIncompleto');
+        var data = {method: 'getListaCodigoIncompleto'}
+        return $http.post(serviceBase1 + 'codigoIncompletoCtrl.php', data);
     };
 
     obj.gestionarCodigoIncompleto = function (id_codigo_incompleto, tipificacion, observacion, login) {
-        return $http.post(serviceBase + 'gestionarCodigoIncompleto', {
-            'id_codigo_incompleto': id_codigo_incompleto,
-            'tipificacion': tipificacion,
-            'observacion': observacion,
-            'login': login
-        });
+        var data = {
+            method: 'gestionarCodigoIncompleto',
+            data: {
+                'id_codigo_incompleto': id_codigo_incompleto,
+                'tipificacion': tipificacion,
+                'observacion': observacion,
+                'login': login
+            }
+        }
+        return $http.post(serviceBase1 + 'codigoIncompletoCtrl.php', data);
     };
 
     obj.registroscodigoincompleto = function (page, datos) {
-        return $http.post(serviceBase + 'registroscodigoincompleto', {"page": page, "datos": datos});
+        var data = {
+            method: 'registroscodigoincompleto',
+            data: {"page": page, "datos": datos}
+        }
+        return $http.post(serviceBase1 + 'codigoIncompletoCtrl.php', data);
     };
 
     obj.expCsvRegistrosCodigoIncompleto = function (datos, datosLogin) {
-        return $http.post(serviceBase + 'csvRegistrosCodigoIncompleto', {"datos": datos, "datosLogin": datosLogin});
+        var data = {
+            method: 'csvRegistrosCodigoIncompleto',
+            data: {"datos": datos, "datosLogin": datosLogin}
+        }
+        return $http.post(serviceBase1 + 'csvRegistrosCodigoIncompleto', data);
     };
 
     /* ------------------------------- CODIGO INCOMPLETO ---------------------------- */
