@@ -495,31 +495,37 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     obj.listaQuejasGoDia = function (page, datos) {
         var data = {method: 'extraeQuejasGoDia', data:{page,datos}}
-        return $http.post(serviceBase1 + 'extraeQuejasGoDia', data);
+        return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
     obj.expCsvQuejasGo = function (datos, datosLogin) {
-        return $http.post(serviceBase + 'csvQuejasGo', {"datos": datos, "datosLogin": datosLogin});
+        var data = {method: 'csvQuejasGo', data:{datos,datosLogin}}
+        return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
     obj.traerTecnico = function (cedula) {
-        return $http.get(serviceBase + 'buscarTecnico?cedula=' + cedula);
+        var data = {method: 'traerTecnico', cedula}
+        return $http.post(serviceBase1 + 'quejasGoCtrl.php' + data);
     };
 
     obj.creaTecnicoQuejasGo = function (crearTecnicoquejasGoSel) {
-        return $http.post(serviceBase + 'crearTecnicoQuejasGo', {'crearTecnicoquejasGoSel': crearTecnicoquejasGoSel});
+        var data = {method: 'creaTecnicoQuejasGo', crearTecnicoquejasGoSel: crearTecnicoquejasGoSel}
+        return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
     obj.getCiudadesQuejasGo = function () {
-        return $http.get(serviceBase + 'ciudadesQGo');
+        var data = {method: 'ciudadesQGo'}
+        return $http.post(serviceBase1 + 'quejasGoCtrl.php',data);
     };
 
     obj.guardarQuejaGo = function (dataquejago, duracion, login) {
-        return $http.post(serviceBase + 'registrarQuejaGo', {'dataquejago': dataquejago, 'duracion': duracion, 'login': login});
+        var data = {method: 'registrarQuejaGo', data:{dataquejago,duracion,login}}
+        return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
     obj.modiObserQuejasGo = function (observacion, idqueja) {
-        return $http.post(serviceBase + 'ActualizarObserQuejasGo', {'observacion': observacion, 'idqueja': idqueja});
+        var data= {method:'ActualizarObserQuejasGo',data:{observacion,idqueja}}
+        return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
     /*------------->FIN SERVICIOS PARA QUEJASGO<------------*/
@@ -910,24 +916,37 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     /* ------------------------------- CODIGO INCOMPLETO ---------------------------- */
 
     obj.getListaCodigoIncompleto = function () {
-        return $http.get(serviceBase + 'getListaCodigoIncompleto');
+        var data = {method: 'getListaCodigoIncompleto'}
+        return $http.post(serviceBase1 + 'codigoIncompletoCtrl.php', data);
     };
 
     obj.gestionarCodigoIncompleto = function (id_codigo_incompleto, tipificacion, observacion, login) {
-        return $http.post(serviceBase + 'gestionarCodigoIncompleto', {
-            'id_codigo_incompleto': id_codigo_incompleto,
-            'tipificacion': tipificacion,
-            'observacion': observacion,
-            'login': login
-        });
+        var data = {
+            method: 'gestionarCodigoIncompleto',
+            data: {
+                'id_codigo_incompleto': id_codigo_incompleto,
+                'tipificacion': tipificacion,
+                'observacion': observacion,
+                'login': login
+            }
+        }
+        return $http.post(serviceBase1 + 'codigoIncompletoCtrl.php', data);
     };
 
     obj.registroscodigoincompleto = function (page, datos) {
-        return $http.post(serviceBase + 'registroscodigoincompleto', {"page": page, "datos": datos});
+        var data = {
+            method: 'registroscodigoincompleto',
+            data: {"page": page, "datos": datos}
+        }
+        return $http.post(serviceBase1 + 'codigoIncompletoCtrl.php', data);
     };
 
     obj.expCsvRegistrosCodigoIncompleto = function (datos, datosLogin) {
-        return $http.post(serviceBase + 'csvRegistrosCodigoIncompleto', {"datos": datos, "datosLogin": datosLogin});
+        var data = {
+            method: 'csvRegistrosCodigoIncompleto',
+            data: {"datos": datos, "datosLogin": datosLogin}
+        }
+        return $http.post(serviceBase1 + 'csvRegistrosCodigoIncompleto', data);
     };
 
     /* ------------------------------- CODIGO INCOMPLETO ---------------------------- */

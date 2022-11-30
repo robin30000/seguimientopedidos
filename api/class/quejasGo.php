@@ -15,10 +15,38 @@ class quejasGo
         $this->_model = new modelQuejasGo();
     }
 
-    public function extraeQuejasGoDia($data)
+    public function listaQuejasGoDia($data)
     {
-        $this->_model->extraeQuejasGoDia($data);
+        $this->_model->listaQuejasGoDia($data);
     }
 
+    public function csvQuejasGo($data)
+    {
+        $this->_model->csvQuejasGo($data);
+    }
 
+    public function buscarTecnico($data)
+    {
+        $this->_model->buscarTecnico($data);
+    }
+
+    public function crearTecnicoQuejasGo($data)
+    {
+        $this->_model->crearTecnicoQuejasGo($data);
+    }
+
+    public function ciudadesQGo()
+    {
+        $this->_model->ciudadesQGo();
+    }
+
+    public function guardarQuejaGo($data)
+    {
+        $this->_model->guardarQuejaGo($data);
+    }
+
+    public function ActualizarObserQuejasGo($data)
+    {
+        $this->_model->ActualizarObserQuejasGo($data);
+    }
 }
