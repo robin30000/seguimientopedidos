@@ -517,7 +517,7 @@ class modelNovedadesTecnico
         echo json_encode($response);
     }
 
-    public function BFobservaciones()
+    public function BFobservaciones($data)
     {
         session_start();
         $hoy = date("Y-m-d");
@@ -526,8 +526,8 @@ class modelNovedadesTecnico
 						FROM BrutalForce
 						WHERE loginDespacho = :login
 						AND (FechaGestionDespacho BETWEEN (:fechaini) AND (:fechafin) OR fechagestionAsesor BETWEEN (:fechaini) AND (:fechafin))");
-            $stmt->execute([':login' => $_SESSION['login'], ':fechaini' => "$hoy 00:00:00", ':fechafin' => "$hoy 23:59:59"]);
-
+            $stmt->execute([':login' => $data, ':fechaini' => "$hoy 00:00:00", ':fechafin' => "$hoy 23:59:59"]);
+            echo 'Por aqui';
             if ($stmt->rowCount()) {
                 $response = [$stmt->fetchAll(PDO::FETCH_ASSOC), 201];
             } else {

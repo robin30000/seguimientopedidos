@@ -20,6 +20,42 @@ if (isset($data->method)) {
             $user->datoscontingencias();
             break;
 
+        case 'registrosOffline':
+            require_once '../class/contingencia.php';
+            $user = new contingencia();
+            $user->registrosOffline();
+            break;
+
+        case 'graficaDepartamento':
+            require_once '../class/contingencia.php';
+            $user = new contingencia();
+            $user->graficaDepartamento($data->data);
+            break;
+
+        case 'marcaPortafolio':
+            require_once '../class/contingencia.php';
+            $user = new contingencia();
+            $user->marcaPortafolio($data->data);
+            break;
+        case 'guardarpedidocontingencia':
+            require_once '../class/contingencia.php';
+            $user = new contingencia();
+            $user->guardarpedidocontingencia($data->data);
+            break;
+        case 'guardarescalamiento':
+            require_once '../class/contingencia.php';
+            $user = new contingencia();
+            $user->guardarescalamiento($data->data);
+            break;
+        case 'cerrarMasivamenteContingencias':
+            require_once '../class/contingencia.php';
+            $user = new contingencia();
+            $user->cerrarMasivamenteContingencias($data->data);
+            break;
+
+        default:
+            echo 'ninguna opción valida.';
+            break;
     }
 } else {
     echo 'ninguna opción valida.';

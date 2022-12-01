@@ -55,7 +55,7 @@ if (isset($data->method)) {
         case 'BFobservaciones':
             require_once '../class/novedadesTecnico.php';
             $user = new novedadesTecnico();
-            $user->BFobservaciones();
+            $user->BFobservaciones($data->data);
             break;
         case 'registrospwdTecnicos':
             require_once '../class/novedadesTecnico.php';

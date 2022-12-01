@@ -101,4 +101,34 @@ class contingencia
         $this->_utils->response($this->_utils->json([$response[0], $response[1], $response[2]]), 201);
 
     }
+
+    public function registrosOffline()
+    {
+        $this->_model->registrosOffline();
+    }
+
+    public function graficaDepartamento($data)
+    {
+        $this->_model->graficaDepartamento($data);
+    }
+
+    public function marcaPortafolio($data)
+    {
+        $this->_model->marcaPortafolio($data);
+    }
+
+    public function guardarpedidocontingencia($data)
+    {
+        $this->_model->guardarpedidocontingencia($data);
+    }
+
+    public function guardarescalamiento($data)
+    {
+        $this->_model->guardarescalamiento($data);
+    }
+
+    public function cerrarMasivamenteContingencias($data)
+    {
+        $this->_model->cerrarMasivamenteContingencias($data);
+    }
 }
