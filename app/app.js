@@ -860,31 +860,69 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
 //Turnos
     obj.getusuariosTurnos = function () {
-        return $http.get(serviceBase + 'usuariosTurnos');
+        var data = {
+            method: 'usuariosTurnos'
+        }
+        return $http.post(serviceBase1 + 'turnosCtrl.php', data);
     };
 
     obj.getlistaTurnos = function (fechaini, fechafin) {
-        return $http.get(serviceBase + 'listaTurnos?fechaini=' + fechaini + '&fechafin=' + fechafin);
+        var data = {
+            method: 'listaTurnos',
+            data: {
+                'fechaini': fechaini,
+                'fechafin': fechafin
+            }
+        }
+        return $http.post(serviceBase1 + 'turnosCtrl.php', data);
     };
 
     obj.getcumplmientoTurnos = function (datos) {
-        return $http.post(serviceBase + 'cumpleTurnos', {"datos": datos});
+        var data = {
+            method: 'cumpleTurnos',
+            data: {
+                'datos': datos
+            }
+        }
+        return $http.post(serviceBase1 + 'turnosCtrl.php', data);
     };
 
     obj.getguardarTurnos = function (datosTurnos) {
-        return $http.post(serviceBase + 'guardarTurnos', {"datosTurnos": datosTurnos});
+        var data = {
+            method: 'guardarTurnos',
+            data: datosTurnos
+        }
+        return $http.post(serviceBase1 + 'turnosCtrl.php', data);
     };
 
     obj.updateTurnos = function (datos) {
-        return $http.post(serviceBase + 'updateTurno', {"datos": datos});
+        var data = {
+            method: 'updateTurno',
+            data: {
+                "datos": datos
+            }
+        }
+        return $http.post(serviceBase1 + 'updateTurno.php', data);
     };
 
     obj.csvAdherenciaTurnos = function (fechaIni, fechaFin, login) {
-        return $http.post(serviceBase + 'CsvExporteAdherencia', {"fechaIni": fechaIni, "fechaFin": fechaFin, "login": login});
+        var data = {
+            method: 'CsvExporteAdherencia',
+            data: {
+                "fechaIni": fechaIni,
+                "fechaFin": fechaFin,
+                "login": login
+            }
+        }
+        return $http.post(serviceBase1 + 'turnosCtrl.php', data);
     };
 
     obj.borrarTurno = function (idTurno) {
-        return $http.get(serviceBase + 'deleteTurno?idTurno=' + idTurno);
+        var data = {
+            method: 'deleteTurno',
+            data: idTurno
+        }
+        return $http.post(serviceBase1 + 'turnosCtrl.php', data);
     };
 
 //Servicio para guardar la información de recogidad de equipos
