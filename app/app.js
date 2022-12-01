@@ -357,35 +357,63 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     //Servivio para subir la informacion de la tabla a la vista
     obj.premisasInfraestructurasEscalmiento = function (page, datos) {
-        return $http.post(serviceBase + 'escalamientoInfraestructura', {"page": page, "datos": datos});
+        var data = {
+            method: 'escalamientoInfraestructura',
+            data: {"page": page, "datos": datos}
+        }
+        return $http.post(serviceBase1 + 'escalamientoCtrl.php', data);
     };
 
     // SERVICIO PARA LLAMAR LA INFORMACION DE GRUPO COLA
     obj.getGrupoCola = function () {
-        return $http.get(serviceBase + 'GrupoCola');
+        var data = {
+            method: 'GrupoCola'
+        }
+        return $http.post(serviceBase1 + 'escalamientoCtrl.php', data);
     };
 
     // SERVICIO PARA LLAMAR LA INFORMACION DE GESTION DE ESCALAMIENTO
     obj.getGestion = function () {
-        return $http.get(serviceBase + 'gestionEscalimiento');
+        var data = {
+            method: 'gestionEscalimiento'
+        }
+        return $http.post(serviceBase1 + 'escalamientoCtrl.php', data);
     };
 
     // SERVICIO PARA LLAMAR LA INFORMACION DE OBSERVACION DE ESCALAMIENTO
     obj.getObservacionesEscalamiento = function (gestion) {
-        return $http.get(serviceBase + 'observacionEscalimiento?gestion=' + gestion);
+        var data = {
+            method: 'observacionEscalimiento',
+            data: gestion
+        }
+        return $http.post(serviceBase1 + 'escalamientoCtrl.php', data);
     };
 
     // SERVICIO PARA LLAMAR LA INFORMACION DE NOTAS DE ESCALAMIENTO
     obj.getNotasEscalamiento = function (observacion) {
-        return $http.get(serviceBase + 'notasEscalamiento?observacion=' + observacion);
+        var data = {
+            method: 'notasEscalamiento',
+            data: observacion
+        }
+        return $http.post(serviceBase1 + 'escalamientoCtrl.php', data);
     };
 
     obj.guardarFormEscalamiento = function (escalamiento) {
-        return $http.post(serviceBase + 'infoEscalamiento', {'datosEdicion': escalamiento});
+        var data = {
+            method: 'infoEscalamiento',
+            data: escalamiento
+        }
+        return $http.post(serviceBase1 + 'escalamientoCtrl.php', data);
     };
 
     obj.expCsvEscalamiento = function (datos, datosLogin) {
-        return $http.post(serviceBase + 'csvEscalamientoExp', {"datos": datos, "datosLogin": datosLogin});
+        var data = {
+            method: 'csvEscalamientoExp',
+            data: {
+                "datos": datos, "datosLogin": datosLogin
+            }
+        }
+        return $http.post(serviceBase1 + 'escalamientoCtrl.php', data);
     };
 
     /*------>SERVICIOS PARA EL MODULO DE VISITAS EN CONJUNTO<------*/
@@ -428,7 +456,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         var data = {
             method: 'RegionesVisConjunto'
         }
-        return $http.post(serviceBase1 + 'visitasEnConjuntoCtrl.php',data);
+        return $http.post(serviceBase1 + 'visitasEnConjuntoCtrl.php', data);
     };
 
 // Servicio para llamar las ciudades en vistas en conjunto, frm registro nuevo
@@ -446,7 +474,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
             method: 'MunicipioVisConjuntoUpdate',
             data: idregistro
         }
-        return $http.post(serviceBase1 + 'visitasEnConjuntoCtrl.php',data);
+        return $http.post(serviceBase1 + 'visitasEnConjuntoCtrl.php', data);
     };
 
     /*===========================================================*/
@@ -534,7 +562,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
     obj.expCsvQuejasGo = function (datos, datosLogin) {
-        var data = {method: 'csvQuejasGo', data:{datos,datosLogin}}
+        var data = {method: 'csvQuejasGo', data: {datos, datosLogin}}
         return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
@@ -550,16 +578,16 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     obj.getCiudadesQuejasGo = function () {
         var data = {method: 'ciudadesQGo'}
-        return $http.post(serviceBase1 + 'quejasGoCtrl.php',data);
+        return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
     obj.guardarQuejaGo = function (dataquejago, duracion, login) {
-        var data = {method: 'registrarQuejaGo', data:{dataquejago,duracion,login}}
+        var data = {method: 'registrarQuejaGo', data: {dataquejago, duracion, login}}
         return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
     obj.modiObserQuejasGo = function (observacion, idqueja) {
-        var data= {method:'ActualizarObserQuejasGo',data:{observacion,idqueja}}
+        var data = {method: 'ActualizarObserQuejasGo', data: {observacion, idqueja}}
         return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
