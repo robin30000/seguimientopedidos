@@ -65,9 +65,9 @@ class novedadesTecnico
         $this->_model->DetalleNovedadesVisitas($data);
     }
 
-    public function BFobservaciones()
+    public function BFobservaciones($data)
     {
-        $this->_model->BFobservaciones();
+        $this->_model->BFobservaciones($data);
     }
 
     public function registrospwdTecnicos($data)

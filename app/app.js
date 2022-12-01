@@ -617,20 +617,24 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     /*Servicio para traer el estado y las observaciones de los pedidos en BrutalForce*/
     obj.ObsPedidosBF = function (login) {
-        var data = {method: 'BFobservaciones'}
+        var data = {method: 'BFobservaciones', data:login}
         return $http.post(serviceBase1 + 'novedadesTecnicoCtrl.php', data);
     };
 
     obj.registrosOffline = function () {
-        return $http.post(serviceBase + 'registrosOffline');
+
+        var data = {method: 'registrosOffline'}
+        return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
     obj.getgraficaDepartamento = function (mes) {
-        return $http.post(serviceBase + 'graficaDepartamento', {"mes": mes});
+        var data= {method:'graficaDepartamento',data:mes}
+        return $http.post(serviceBase1 + 'contingenciaCtrl.php',data);
     };
 
     obj.marcarengestion = function (datos, login) {
-        return $http.post(serviceBase + 'marca', {"datos": datos, "login": login});
+        var data = {method:'marca',data:{datos,login}}
+        return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
     obj.marcarengestionescalamiento = function (datos, login) {
@@ -639,7 +643,8 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     /*********NUEVO CONECTOR PARA LA APPI marcarEnGestionPorta*********/
     obj.marcarEnGestionPorta = function (datos, login) {
-        return $http.post(serviceBase + 'marcaPortafolio', {"datos": datos, "login": login});
+        var data={method:'marcaPortafolio', data:{datos,login}}
+        return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
 // obj.marcarEnGestionCEQPorta = function (datos, login) {
@@ -647,16 +652,19 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 // };
 
     obj.editarregistrocontingencia = function (datos, login) {
-        return $http.post(serviceBase + 'guardarpedidocontingencia', {"datos": datos, "login": login});
+        var data={method:'guardarpedidocontingencia',data:{datos,login}}
+        return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
     obj.editarregistroescalamiento = function (datos, login) {
-        return $http.post(serviceBase + 'guardarescalamiento', {"datos": datos, "login": login});
+        var data ={method:'guardarescalamiento',data:{datos,login}}
+        return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
     /*PARA CERRAR MASIVAMENTE LAS CONTINGENCIAS*/
     obj.cierreMasivoContingencia = function (dataCierreMasivoContin) {
-        return $http.post(serviceBase + 'cerrarMasivamenteContingencias', {"datos": dataCierreMasivoContin});
+        var data={method:'cerrarMasivamenteContingencias',data:dataCierreMasivoContin}
+        return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
     /*********NUEVO CONECTOR PARA LA APPI editarRegistroContingenciaPortafolio*********/
