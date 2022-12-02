@@ -428,7 +428,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         var data = {
             method: 'RegionesVisConjunto'
         }
-        return $http.post(serviceBase1 + 'visitasEnConjuntoCtrl.php',data);
+        return $http.post(serviceBase1 + 'visitasEnConjuntoCtrl.php', data);
     };
 
 // Servicio para llamar las ciudades en vistas en conjunto, frm registro nuevo
@@ -437,7 +437,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
             method: 'MunicipiosVisConjunto',
             data: region
         }
-        return $http.get(serviceBase1 + 'visitasEnConjuntoCtrl.php', data);
+        return $http.post(serviceBase1 + 'visitasEnConjuntoCtrl.php', data);
     };
 
 // Servicio para llamar la ciudad en vistas en conjunto, frm update
@@ -446,7 +446,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
             method: 'MunicipioVisConjuntoUpdate',
             data: idregistro
         }
-        return $http.post(serviceBase1 + 'visitasEnConjuntoCtrl.php',data);
+        return $http.post(serviceBase1 + 'visitasEnConjuntoCtrl.php', data);
     };
 
     /*===========================================================*/
