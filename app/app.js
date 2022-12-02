@@ -484,7 +484,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
             method: 'MunicipiosVisConjunto',
             data: region
         }
-        return $http.get(serviceBase1 + 'visitasEnConjuntoCtrl.php', data);
+        return $http.post(serviceBase1 + 'visitasEnConjuntoCtrl.php', data);
     };
 
 // Servicio para llamar la ciudad en vistas en conjunto, frm update
