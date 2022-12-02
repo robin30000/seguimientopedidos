@@ -349,7 +349,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
                 "datos": datos
             }
         }
-        return $http.post(serviceBase + 'generacionTtCtrl.php', data);
+        return $http.post(serviceBase1 + 'generacionTtCtrl.php', data);
     };
 
     obj.guardar = function (registrostt) {
@@ -359,7 +359,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
                 'datosEdicion': registrostt
             }
         }
-        return $http.post(serviceBase + 'guardarGeneracionTT', data);
+        return $http.post(serviceBase1 + 'generacionTtCtrl.php', data);
     };
 
     obj.expCsvGeneracionTT = function (datos) {
@@ -369,7 +369,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
                 datos
             }
         }
-        return $http.post(serviceBase + 'csvGeneracionTT', data);
+        return $http.post(serviceBase1 + 'generacionTtCtrl.php', data);
     };
 
     /*****SERVICIOS PARA EL MODULO DE ESCALAMIENTO*****/
