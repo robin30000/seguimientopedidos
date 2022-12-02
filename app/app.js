@@ -342,15 +342,34 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     //Servivio para subir la informacion de la tabla a la vista
     obj.premisasInfraestructuras = function (page, datos) {
-        return $http.post(serviceBase + 'premisasInfraestructuras', {"page": page, "datos": datos});
+        var data = {
+            method: 'premisasInfraestructuras',
+            data: {
+                "page": page,
+                "datos": datos
+            }
+        }
+        return $http.post(serviceBase + 'generacionTtCtrl.php', data);
     };
 
     obj.guardar = function (registrostt) {
-        return $http.post(serviceBase + 'guardarGeneracionTT', {'datosEdicion': registrostt});
+        var data = {
+            method: 'guardarGeneracionTT',
+            data: {
+                'datosEdicion': registrostt
+            }
+        }
+        return $http.post(serviceBase + 'guardarGeneracionTT', data);
     };
 
-    obj.expCsvGeneracionTT = function (datos, datosLogin) {
-        return $http.post(serviceBase + 'csvGeneracionTT', {"datos": datos, "datosLogin": datosLogin});
+    obj.expCsvGeneracionTT = function (datos) {
+        var data = {
+            method: 'csvGeneracionTT',
+            data: {
+                datos
+            }
+        }
+        return $http.post(serviceBase + 'csvGeneracionTT', data);
     };
 
     /*****SERVICIOS PARA EL MODULO DE ESCALAMIENTO*****/
