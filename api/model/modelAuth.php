@@ -2,7 +2,7 @@
 
 require_once '../class/conection.php';
 
-class Modelauthentication
+class modelauthentication
 {
     private $_DB;
 

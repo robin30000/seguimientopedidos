@@ -121,46 +121,117 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     var obj = {};
 
     obj.loginUser = function (datosAutenticacion) {
-        var data = {data: datosAutenticacion, method: "login"}
-        return $http.post(serviceBase1 + 'auntenticationCtrl.php', data);
+        var data = {
+            method: "login",
+            data: datosAutenticacion,
+        }
+        return $http.post(serviceBase1 + 'authenticationCtrl.php', data);
     };
 
     obj.cerrarsesion = function () {
-        var data = {method: 'logout'}
-        return $http.post(serviceBase1 + 'auntenticationCtrl.php', data);
+        var data = {
+            method: 'logout'
+        }
+        return $http.post(serviceBase1 + 'authenticationCtrl.php', data);
     };
+
+    /**
+     * Alarma
+     */
+
+    obj.creaAlarma = function (datosCrearAlarma) {
+        var data = {
+            method: 'nuevaAlarma',
+            data: datosCrearAlarma
+        }
+        return $http.post(serviceBase1 + 'alarmaCtrl.php', data);
+    };
+
+    obj.editAlarma = function (datosAlarma) {
+        var data = {
+            method: 'editAlarma',
+            data: datosAlarma
+        }
+        return $http.post(serviceBase1 + 'alarmaCtrl.php', data);
+    };
+
+    obj.listadoAlarmas = function () {
+        var data = {
+            method: 'listadoAlarmas'
+        }
+        return $http.post(serviceBase1 + 'alarmaCtrl.php', data);
+    };
+
+    obj.deleteAlarma = function (id) {
+        var data = {
+            method: 'deleteAlarma',
+            data: id
+        }
+        return $http.post(serviceBase1 + 'alarmaCtrl.php', data);
+    };
+
+    /**
+     * usuario
+     */
 
     obj.editarUsuario = function (datosEdicion) {
-        return $http.post(serviceBase + 'editarUsuario', {'datosEdicion': datosEdicion});
+        var data = {
+            method: 'editarUsuario',
+            data: datosEdicion
+        }
+        return $http.post(serviceBase1 + 'userCtrl.php', data);
     };
 
-    obj.editarRegistro = function (datosEdicion, datosLogin) {
-        return $http.post(serviceBase + 'editarRegistro', {'datosEdicion': datosEdicion, 'datosLogin': datosLogin});
+    obj.editarRegistro = function (datosEdicion) {
+        var data = {
+            method: 'editarRegistro',
+            data: {
+                'datosEdicion': datosEdicion
+            }
+        }
+        return $http.post(serviceBase1 + 'userCtrl.php', data);
     };
 
-    obj.pedidoComercial = function (datospedidoComercial, datosLogin) {
-        return $http.post(serviceBase + 'CrearpedidoComercial', {'datospedidoComercial': datospedidoComercial, 'datosLogin': datosLogin});
+    obj.pedidoComercial = function (datospedidoComercial) {
+        var data = {
+            method: 'CrearpedidoComercial',
+            data: {
+                'datospedidoComercial': datospedidoComercial
+            }
+        }
+        return $http.post(serviceBase1 + 'userCtrl.php', data);
     };
 
-    obj.getGuardarPlan = function (datosLogin, datosPlan) {
-        return $http.post(serviceBase + 'guardarPlan', {'datosLogin': datosLogin, 'datosPlan': datosPlan});
+    obj.getGuardarPlan = function (datosPlan) {
+        var data = {
+            method: 'guardarPlan',
+            'datosPlan': datosPlan
+        }
+        return $http.post(serviceBase1 + 'userCtrl.php', data);
     };
 
-    obj.pedidoOffline = function (datospedidoOffline, datosLogin) {
-        return $http.post(serviceBase + 'CrearpedidoOffline', {'datospedidoOffline': datospedidoOffline, 'datosLogin': datosLogin});
+    obj.pedidoOffline = function (datospedidoOffline) {
+        var data = {
+            method: 'CrearpedidoOffline',
+            data: datospedidoOffline
+        }
+        return $http.post(serviceBase1 + 'userCtrl.php', data);
     };
 
-    obj.ingresarPedidoAsesor = function (datospedido, pedido, empresa, duracion_llamada, datosLogin, datosClick, plantilla, idcambioequipo) {
-        return $http.post(serviceBase + 'ingresarPedidoAsesor', {
-            'datospedido': datospedido,
-            'pedido': pedido,
-            'empresa': empresa,
-            'duracion_llamada': duracion_llamada,
-            'datosLogin': datosLogin,
-            'datosClick': datosClick,
-            'plantilla': plantilla,
-            'idcambioequipo': idcambioequipo
-        });
+    obj.ingresarPedidoAsesor = function (datospedido, pedido, empresa, duracion_llamada, datosClick, plantilla, idcambioequipo) {
+        var data = {
+            method: 'ingresarPedidoAsesor',
+            data: {
+                'datospedido': datospedido,
+                'pedido': pedido,
+                'empresa': empresa,
+                'duracion_llamada': duracion_llamada,
+                'datosClick': datosClick,
+                'plantilla': plantilla,
+                'idcambioequipo': idcambioequipo
+            }
+        }
+        return $http.post(serviceBase1 + 'userCtrl.php', data);
     };
 
     /*COREECION SE QUITO idcambioequipo PORQUE NO SE USA Y HAY AFECTAR EN LA AGRECACION EN FORMA DE PEDIDO SOPORTE TECNICO -> CAMBIO EQUIPO*/
@@ -169,16 +240,64 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     // };
 
     obj.creaUsuario = function (datosCrearUsuario) {
-        return $http.post(serviceBase + 'creaUsuario', {'datosCrearUsuario': datosCrearUsuario});
-    };
-
-    obj.creaAlarma = function (datosCrearAlarma) {
-        return $http.post(serviceBase + 'nuevaAlarma', {'datosCrearAlarma': datosCrearAlarma});
+        var data = {
+            method: 'creaUsuario',
+            data: datosCrearUsuario
+        }
+        return $http.post(serviceBase1 + 'userCtrl.php', data);
     };
 
     obj.creaTecnico = function (datosCrearTecnico, id_tecnico) {
-        return $http.post(serviceBase + 'creaTecnico', {'datosCrearTecnico': datosCrearTecnico, "id_tecnico": id_tecnico});
+        var data = {
+            method: 'creaTecnico',
+            data: {
+                'datosCrearTecnico': datosCrearTecnico,
+                "id_tecnico": id_tecnico
+            }
+        }
+        return $http.post(serviceBase1 + 'userCtrl.php', data);
     };
+
+
+    obj.listadoUsuarios = function (page, concepto, usuario) {
+        var data = {
+            method: 'listadoUsuarios',
+            data: {
+                'page': page,
+                'concepto': concepto,
+                'usuario': usuario
+            }
+        }
+        return $http.post(serviceBase1 + 'userCtrl.php', data);
+    };
+
+    obj.deleteUsuario = function (id) {
+        var data = {
+            method: 'borrarUsuario',
+            data: id
+        }
+        return $http.post(serviceBase1 + 'userCtrl.php', data);
+    };
+
+    obj.deleteTecnico = function (id) {
+        var data = {
+            method: 'borrarTecnico',
+            data: id
+        }
+        return $http.post(serviceBase1 + 'userCtrl.php', data);
+    };
+
+    obj.editarTecnico = function (datosTecnico) {
+        var data = {
+            method: 'editarTecnico',
+            data: datosTecnico
+        }
+        return $http.post(serviceBase1 + 'userCtrl.php', data);
+    };
+
+    /**
+     * services por organizar
+     */
 
     obj.insertarCambioEquipo = function (tecnologia, datoscambio, pedido) {
         return $http.post(serviceBase + 'insertarCambioEquipo', {'tecnologia': tecnologia, "datoscambio": datoscambio, "pedido": pedido});
@@ -213,10 +332,6 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     obj.guardarContingencia = function (datosguardar, login) {
         return $http.post(serviceBase + 'savecontingencia', {"datosguardar": datosguardar, "login": login});
-    };
-
-    obj.guardarEscalamiento = function (datosguardar, login) {
-        return $http.post(serviceBase + 'saveescalamiento', {"datosguardar": datosguardar, "login": login});
     };
 
     obj.CancelContingencia = function (datoscancelar, login) {
@@ -293,18 +408,6 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase + 'Csvtecnico', {"datos": datos, "datosLogin": datosLogin});
     };
 
-    obj.editarTecnico = function (datosTecnico) {
-        return $http.post(serviceBase + 'editarTecnico', {'datosTecnico': datosTecnico});
-    };
-
-    obj.editAlarma = function (datosAlarma) {
-        return $http.post(serviceBase + 'editAlarma', {'datosAlarma': datosAlarma});
-    };
-
-    obj.listadoUsuarios = function (page, concepto, usuario) {
-        return $http.get(serviceBase + 'listadoUsuarios?page=' + page + '&concepto=' + concepto + '&usuario=' + usuario);
-    };
-
     obj.getDiferenciasClick = function (fecha) {
         return $http.get(serviceBase + 'diferenciasClick?fecha=' + fecha);
     };
@@ -318,18 +421,12 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.get(serviceBase + 'contadorpedientesBF?cantPendientes=' + cantPendientes);
     };
 
-
     obj.getseguimientoClick = function (fecha) {
         return $http.get(serviceBase + 'seguimientoClick?fecha=' + fecha);
     };
 
     obj.registrosComercial = function (page, concepto, dato, inicial, final) {
         return $http.get(serviceBase + 'registrosComercial?page=' + page + '&concepto=' + concepto + '&dato=' + dato + '&inicial=' + inicial + '&final=' + final);
-    };
-
-    obj.registros = function (page, datos) {
-        var data = {method: 'registros', data: {"page": page, "datos": datos}}
-        return $http.post(serviceBase1 + 'formaAsesoresCtrl.php', data);
     };
 
     /*===========================================================*/
@@ -435,13 +532,31 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'escalamientoCtrl.php', data);
     };
 
+    obj.guardarEscalamiento = function (datosguardar) {
+        var data = {
+            method: 'saveescalamiento',
+            data: datosguardar
+        }
+        return $http.post(serviceBase1 + 'escalamientoCtrl.php', data);
+    };
+
+    obj.exportEscalamientos = function () {
+        var data = {
+            method: 'exportEscalamientos'
+        }
+        return $http.post(serviceBase1 + 'escalamientoCtrl.php', data);
+    }
+
     /*------>SERVICIOS PARA EL MODULO DE VISITAS EN CONJUNTO<------*/
 
     //Servivio para subir la informacion de la tabla a la vista
     obj.premisasVisitasEnConjunto = function (page, datos) {
         var data = {
             method: 'visitasEnConjunto',
-            data: {page, datos}
+            data: {
+                'page': page,
+                'datos': datos
+            }
         }
         return $http.post(serviceBase1 + 'visitasEnConjuntoCtrl.php', data);
     };
@@ -465,7 +580,9 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     obj.expCsvVisitasEnConjunto = function (datos, datosLogin) {
         var data = {
             method: 'csvVisitasEnConjuntoExp',
-            data: {datos, datosLogin}
+            data: {
+                'datos': datos, datosLogin
+            }
         }
         return $http.post(serviceBase1 + 'visitasEnConjuntoCtrl.php', data);
     };
@@ -636,7 +753,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     /*Servicio para traer el estado y las observaciones de los pedidos en BrutalForce*/
     obj.ObsPedidosBF = function (login) {
-        var data = {method: 'BFobservaciones', data:login}
+        var data = {method: 'BFobservaciones', data: login}
         return $http.post(serviceBase1 + 'novedadesTecnicoCtrl.php', data);
     };
 
@@ -647,12 +764,12 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
     obj.getgraficaDepartamento = function (mes) {
-        var data= {method:'graficaDepartamento',data:mes}
-        return $http.post(serviceBase1 + 'contingenciaCtrl.php',data);
+        var data = {method: 'graficaDepartamento', data: mes}
+        return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
     obj.marcarengestion = function (datos, login) {
-        var data = {method:'marca',data:{datos,login}}
+        var data = {method: 'marca', data: {datos, login}}
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
@@ -662,7 +779,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     /*********NUEVO CONECTOR PARA LA APPI marcarEnGestionPorta*********/
     obj.marcarEnGestionPorta = function (datos, login) {
-        var data={method:'marcaPortafolio', data:{datos,login}}
+        var data = {method: 'marcaPortafolio', data: {datos, login}}
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
@@ -671,18 +788,18 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 // };
 
     obj.editarregistrocontingencia = function (datos, login) {
-        var data={method:'guardarpedidocontingencia',data:{datos,login}}
+        var data = {method: 'guardarpedidocontingencia', data: {datos, login}}
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
     obj.editarregistroescalamiento = function (datos, login) {
-        var data ={method:'guardarescalamiento',data:{datos,login}}
+        var data = {method: 'guardarescalamiento', data: {datos, login}}
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
     /*PARA CERRAR MASIVAMENTE LAS CONTINGENCIAS*/
     obj.cierreMasivoContingencia = function (dataCierreMasivoContin) {
-        var data={method:'cerrarMasivamenteContingencias',data:dataCierreMasivoContin}
+        var data = {method: 'cerrarMasivamenteContingencias', data: dataCierreMasivoContin}
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
@@ -740,30 +857,43 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.get(serviceBase + 'buscarPedidoContingencias?pedido=' + pedido);
     };
 
-    obj.listadoAlarmas = function () {
-        return $http.post(serviceBase + 'listadoAlarmas');
-    };
-
-    obj.deleteUsuario = function (id) {
-        return $http.post(serviceBase + 'borrarUsuario', {"id": id});
-    };
-
-
-    obj.deleteAlarma = function (id) {
-        return $http.post(serviceBase + 'borrarAlarma', {"id": id});
-    };
-
-    obj.deleteTecnico = function (id) {
-        return $http.post(serviceBase + 'borrarTecnico', {"id": id});
-    };
-
     obj.getCiudades = function () {
-        var data = {method: 'ciudades'}
+        var data = {
+            method: 'ciudades'
+        }
         return $http.post(serviceBase1 + 'formaAsesoresCtrl.php', data);
     };
 
     obj.getRegionesTip = function () {
-        var data = {method: 'regionesTip'}
+        var data = {
+            method: 'regionesTip'
+        }
+        return $http.post(serviceBase1 + 'formaAsesoresCtrl.php', data);
+    };
+
+    obj.getProcesos = function () {
+        var data = {
+            method: 'procesos'
+        }
+        return $http.post(serviceBase1 + 'formaAsesoresCtrl.php', data);
+    };
+
+    obj.registros = function (page, datos) {
+        var data = {
+            method: 'registros',
+            data: {"page": page, "datos": datos}
+        }
+        return $http.post(serviceBase1 + 'formaAsesoresCtrl.php', data);
+    };
+
+    obj.registros = function (page, datos) {
+        var data = {
+            method: 'registros',
+            data: {
+                "page": page,
+                "datos": datos
+            }
+        }
         return $http.post(serviceBase1 + 'formaAsesoresCtrl.php', data);
     };
 
@@ -773,11 +903,6 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     obj.getBuscarPedidoBrutal = function (pedido) {
         return $http.get(serviceBase + 'BuscarPedidoBrutal?pedido=' + pedido);
-    };
-    /*verofocar*/
-    obj.getProcesos = function () {
-        var data = {method: 'procesos'}
-        return $http.post(serviceBase1 + 'formaAsesoresCtrl.php', data);
     };
 
     obj.getCalcularMeses = function () {
@@ -957,10 +1082,6 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase + 'guardarRecogerEquipos', {'equipos': equiposRecoger});
     };
 
-    obj.exportEscalamientos = function () {
-        return $http.get(serviceBase + 'exportEscalamientos');
-    }
-
 // obj.cambiarPWD = function (id, datos) {
 //     return $http.post(serviceBase + 'cambiarPWD',{"id":id,"datos":datos});
 // };
@@ -1032,14 +1153,14 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'soporteGponCtrl.php', data);
     };
 
-    obj.gestionarSoporteGpon = function (id_soporte, tipificacion, observacion, login) {
+    obj.gestionarSoporteGpon = function (id_soporte, tipificacion, observacion) {
         var data = {
             method: 'gestionarSoporteGpon',
             data: {
-                id_soporte,
-                tipificacion,
-                observacion,
-                login
+                'id_soporte': id_soporte,
+                'tipificacion': tipificacion,
+                'observacion': observacion
+
             }
         }
         return $http.post(serviceBase1 + 'soporteGponCtrl.php', data);
@@ -1048,7 +1169,10 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     obj.registrossoportegpon = function (page, datos) {
         var data = {
             method: 'registrossoportegpon',
-            data: {page, datos}
+            data: {
+                'page': page,
+                'datos': datos
+            }
         }
         return $http.post(serviceBase1 + 'soporteGponCtrl.php', data);
     };
@@ -1064,7 +1188,10 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     obj.marcarEngestionGpon = function (datos, login) {
         var data = {
             method: 'marcarEngestionGpon',
-            data: {datos, login}
+            data: {
+                'datos': datos,
+                'login': login
+            }
         }
         return $http.post(serviceBase1 + 'soporteGponCtrl.php', data);
     };
@@ -1074,7 +1201,9 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     /* ------------------------------- CODIGO INCOMPLETO ---------------------------- */
 
     obj.getListaCodigoIncompleto = function () {
-        var data = {method: 'getListaCodigoIncompleto'}
+        var data = {
+            method: 'getListaCodigoIncompleto'
+        }
         return $http.post(serviceBase1 + 'codigoIncompletoCtrl.php', data);
     };
 
@@ -1094,7 +1223,10 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     obj.registroscodigoincompleto = function (page, datos) {
         var data = {
             method: 'registroscodigoincompleto',
-            data: {"page": page, "datos": datos}
+            data: {
+                "page": page,
+                "datos": datos
+            }
         }
         return $http.post(serviceBase1 + 'codigoIncompletoCtrl.php', data);
     };
@@ -1102,7 +1234,10 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     obj.expCsvRegistrosCodigoIncompleto = function (datos, datosLogin) {
         var data = {
             method: 'csvRegistrosCodigoIncompleto',
-            data: {"datos": datos, "datosLogin": datosLogin}
+            data: {
+                "datos": datos,
+                "datosLogin": datosLogin
+            }
         }
         return $http.post(serviceBase1 + 'csvRegistrosCodigoIncompleto', data);
     };

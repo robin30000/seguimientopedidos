@@ -39,10 +39,20 @@ if (isset($data->method)) {
             $user = new escalamiento();
             $user->infoEscalamiento($data->data);
             break;
-            case 'csvEscalamientoExp':
+        case 'csvEscalamientoExp':
             require_once '../class/contingencia.php';
             $user = new escalamiento();
             $user->csvEscalamientoExp($data->data);
+            break;
+        case 'saveescalamiento':
+            require_once '../class/contingencia.php';
+            $user = new escalamiento();
+            $user->saveescalamiento($data->data);
+            break;
+        case 'exportEscalamientos':
+            require_once '../class/contingencia.php';
+            $user = new escalamiento();
+            $user->exportEscalamientos();
             break;
 
     }

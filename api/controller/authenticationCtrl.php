@@ -10,13 +10,13 @@ $data = json_decode(file_get_contents("php://input"));
 if (isset($data->method)) {
     switch ($data->method) {
         case 'login':
-            require_once '../class/user.php';
-            $user = new user();
+            require_once '../class/authentication.php';
+            $user = new authentication();
             $user->login($data->data);
             break;
         case 'logout':
             require_once '../class/user.php';
-            $user = new user();
+            $user = new authentication();
             $user->logout();
             break;
 

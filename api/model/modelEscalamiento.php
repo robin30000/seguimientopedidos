@@ -381,4 +381,118 @@ class modelEscalamiento
         $this->_DB = null;
         echo json_encode($response);
     }
+
+    public function saveescalamiento($params)
+    {
+        try {
+
+            $datosguardar          = $params['datosguardar'];
+            $login                 = $_SESSION['login'];
+            $pedido                = $datosguardar['pedido'];
+            $task                  = $datosguardar['task'];
+            $tecnico               = $datosguardar['engineer'];
+            $id_tecnico            = $datosguardar['engineerID'];
+            $fecha_solicitud       = $datosguardar['dateCreated'];
+            $fecha_solicitud       = date('Y-m-d H:i:s', strtotime($fecha_solicitud));
+            $login_gestion         = $login;
+            $engestion             = 1;
+            $proceso               = $datosguardar['proceso'];
+            $producto              = $datosguardar['producto'];
+            $motivo                = $datosguardar['motivo'];
+            $area                  = $datosguardar['area'];
+            $region                = $datosguardar['region'];
+            $crm                   = $datosguardar['crm'];
+            $task_type             = $datosguardar['taskType'];
+            $tecnologia            = $datosguardar['tech'];
+            $departamento          = $datosguardar['department'];
+            $prueba_smnet          = $datosguardar['isSmnetTestSif'];
+            $foto_adjunta          = $datosguardar['isPhoto'];
+            $marcacion_tap         = $datosguardar['correa_marcacion'];
+            $direccion_tap         = $datosguardar['addressTap'];
+            $valor_tap             = $datosguardar['vTap'];
+            $mac_real_cpe          = $datosguardar['mac_real_cpe'];
+            $informacion_adicional = $datosguardar['informacion_adicional'];
+            $correa_marcacion      = $datosguardar['correa_marcacion'];
+            $observaciones         = $datosguardar['observaciones'];
+            $ans                   = $datosguardar['ans'];
+            $id_terreno            = $datosguardar['_id'];
+            $estado                = 0;
+
+            if (!$pedido || !$tecnico || !$proceso || !$producto) {
+                $response = ['Verifique los datos', 400];
+                echo json_encode($response);
+                exit();
+            }
+
+            $stmt = $this->_DB->prepare("INSERT INTO escalamiento_infraestructura
+                                            (pedido, tarea, tecnico, id_tecnico, fecha_solicitud, login_gestion, engestion, proceso,
+                                             producto, motivo, area, region, crm, tipo_tarea, tecnologia, departamento, prueba_smnet, foto_adjunta,
+                                             marcacion_tap, direccion_tap, valor_tap, mac_real_cpe, informacion_adicional, correa_marcacion, 
+                                             observaciones, estado, id_terreno, ans)
+                                            values (:pedido, :task, :tecnico, :id_tecnico, :fecha_solicitud, :login_gestion, :engestion, :proceso,
+                                                    :producto, :motivo, :area, :region, :crm, :task_type, :tecnologia, :departamento, :prueba_smnet, :foto_adjunta,
+                                                    :marcacion_tap, :direccion_tap, :valor_tap, :mac_real_cpe, :informacion_adicional, :correa_marcacion, 
+                                                    :observaciones, :estado, :id_terreno, :ans)");
+            $stmt->execute([
+                ':$pedido'                => $pedido,
+                ':$task'                  => $task,
+                ':$tecnico'               => $tecnico,
+                ':$id_tecnico'            => $id_tecnico,
+                ':$fecha_solicitud'       => $fecha_solicitud,
+                ':$login_gestion'         => $login_gestion,
+                ':$engestion'             => $engestion,
+                ':$proceso'               => $proceso,
+                ':$producto'              => $producto,
+                ':$motivo'                => $motivo,
+                ':$area'                  => $area,
+                ':$region'                => $region,
+                ':$crm'                   => $crm,
+                ':$task_type'             => $task_type,
+                ':$tecnologia'            => $tecnologia,
+                ':$departamento'          => $departamento,
+                ':$prueba_smnet'          => $prueba_smnet,
+                ':$foto_adjunta'          => $foto_adjunta,
+                ':$marcacion_tap'         => $marcacion_tap,
+                ':$direccion_tap'         => $direccion_tap,
+                ':$valor_tap'             => $valor_tap,
+                ':$mac_real_cpe'          => $mac_real_cpe,
+                ':$informacion_adicional' => $informacion_adicional,
+                ':$correa_marcacion'      => $correa_marcacion,
+                ':$observaciones'         => $observaciones,
+                ':$id_terreno'            => $id_terreno,
+                ':$ans'                   => $ans,
+
+            ]);
+
+            if ($stmt->rowCount() == 1) {
+                $response = ['Datos guardados correctamente', 201];
+            } else {
+                $response = ['Ah ocurrido un error intentalo nuevamente', 400];
+            }
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+        $this->_DB = null;
+        echo json_encode($response);
+    }
+
+    public function exportEscalamientos()
+    {
+        try {
+            $stmt = $this->_DB->query("SELECT * FROM escalamiento_infraestructura ORDER BY fecha_solicitud");
+            $stmt->execute();
+
+            if ($stmt->rowCount()) {
+                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = [$result, 201];
+            } else {
+                $response = ['No se encontraron registros', 400];
+            }
+
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+        $this->_DB = null;
+        echo json_encode($response);
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 
-require_once '../model/modelAuth.php';
+require_once '../model/modelUser.php';
 date_default_timezone_set('America/Bogota');
 
 class user
@@ -9,35 +9,67 @@ class user
 
     public function __construct()
     {
-        $this->_model = new Modelauthentication();
+        $this->_model = new modelUser();
     }
 
-    public function login($data)
+    public function editarUsuario($data)
     {
-
-        $usuarioid = strtoupper(trim($data->username));
-        $password  = trim($data->password);
-
-        $usuarioid = htmlentities($usuarioid, ENT_QUOTES);
-        $password  = htmlentities($password, ENT_QUOTES);
-
-        if (empty($usuarioid) || empty($password)) {
-            $body = 'Error';
-            http_response_code(406);
-            header("Content-type: application/json; charset=utf-8");
-            echo json_encode($body);
-            die();
-        }
-
-
-        $this->_model->loginUser($usuarioid, $password);
-
+        $this->_model->editarUsuario($data);
     }
 
-    public function logout()
+    public function editarRegistro($data)
     {
-        $this->_model->updatesalida();
+        $this->_model->editarRegistro($data);
     }
 
+    public function CrearpedidoComercial($data)
+    {
+        $this->_model->CrearpedidoComercial($data);
+    }
+
+    public function guardarPlan($data)
+    {
+        $this->_model->guardarPlan($data);
+    }
+
+    public function CrearpedidoOffline($data)
+    {
+        $this->_model->CrearpedidoOffline($data);
+    }
+
+    public function ingresarPedidoAsesor($data)
+    {
+        $this->_model->ingresarPedidoAsesor($data);
+    }
+
+    public function creaUsuario($data)
+    {
+        $this->_model->creaUsuario($data);
+    }
+
+    public function creaTecnico($data)
+    {
+        $this->_model->creaTecnico($data);
+    }
+
+    public function listadoUsuarios($data)
+    {
+        $this->_model->listadoUsuarios($data);
+    }
+
+    public function borrarUsuario($data)
+    {
+        $this->_model->borrarUsuario($data);
+    }
+
+    public function borrarTecnico($data)
+    {
+        $this->_model->borrarTecnico($data);
+    }
+
+    public function editarTecnico($data)
+    {
+        $this->_model->editarTecnico($data);
+    }
 
 }

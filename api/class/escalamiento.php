@@ -45,4 +45,14 @@ class escalamiento
     {
         $this->_model->csvEscalamientoExp($data);
     }
+
+    public function saveescalamiento($data)
+    {
+        $this->_model->saveescalamiento($data);
+    }
+
+    public function exportEscalamientos()
+    {
+        $this->_model->exportEscalamientos();
+    }
 }
