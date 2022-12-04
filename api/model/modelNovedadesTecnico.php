@@ -332,8 +332,6 @@ class modelNovedadesTecnico
 
     public function csvNovedadesTecnico($data)
     {
-
-        $usuarioid = $data->datosLogin;
         $usuarioid = $data->LOGIN;
         $datos     = $data->datos;
         $fechaini  = $data->fechaini;
@@ -409,27 +407,6 @@ class modelNovedadesTecnico
             var_dump($e->getMessage());
         }
 
-        /*$query = ("	SELECT n.fecha, n.usuario, n.municipio, n.region, n.proceso, n.horamarcaensitio, n.tiponovedad, n.pedido, n.cedulaTecnico, n.nombreTecnico, n.contracto, n.situacion, n.motivo, n.submotivo, n.observaciones, n.observacionCCO, n.idllamada
-						FROM NovedadesVisitas n
-						WHERE 1=1
-						AND n.fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59')
-				");
-
-        $queryCount = ("	SELECT COUNT(*) AS Cantidad FROM NovedadesVisitas n
-								WHERE n.fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59')
-
-						");
-
-        $rr      = $this->connseguimiento->query($queryCount);
-        $counter = 0;
-        if ($rr->num_rows > 0) {
-            $result = [];
-            if ($row = $rr->fetch_assoc()) {
-                $counter = $row['Cantidad'];
-            }
-        }
-
-        $rst = $this->connseguimiento->query($query) or die($this->connseguimiento->error . __LINE__);*/
         $this->_DB = null;
         echo json_encode($response);
     }

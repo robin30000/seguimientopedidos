@@ -665,8 +665,11 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'novedadesTecnicoCtrl.php', data);
     }
 
-    obj.expCsvNovedadesTecnico = function (datos, datosLogin) {
-        var data = {method: 'csvNovedadesTecnico', data: {datos, datosLogin}}
+    obj.expCsvNovedadesTecnico = function (datos) {
+        var data = {
+            method: 'csvNovedadesTecnico',
+            data: datos
+        }
         return $http.post(serviceBase1 + 'novedadesTecnicoCtrl.php', data);
     };
 

@@ -144,7 +144,7 @@ class modelCodigoIncompleto
     {
 
         try {
-            $usuarioid = $data->datosLogin;
+
             $usuarioid = $_SESSION['login'];
             $datos     = $data->datos;
             $fechaini  = $datos['fechaini'];
