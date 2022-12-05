@@ -131,4 +131,23 @@ class contingencia
     {
         $this->_model->cerrarMasivamenteContingencias($data);
     }
+
+    public function guardarPedidoContingenciaPortafolio($data)
+    {
+        $this->_model->guardarPedidoContingenciaPortafolio($data);
+    }
+
+    public function garantiasInstalaciones($data)
+    {
+        $this->_model->garantiasInstalaciones($data);
+    }
+
+    public function graficaAcumulados($data)
+    {
+        $this->_model->graficaAcumulados($data);
+    }
+
+    public function graficaAcumuladosrepa($data){
+        $this->_model->graficaAcumuladosrepa($data);
+    }
 }
