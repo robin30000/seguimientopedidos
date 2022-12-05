@@ -808,20 +808,24 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     /*********NUEVO CONECTOR PARA LA APPI editarRegistroContingenciaPortafolio*********/
     obj.editarRegistroContingenciaPortafolio = function (datos, login) {
-        return $http.post(serviceBase + 'guardarPedidoContingenciaPortafolio', {"datos": datos, "login": login});
+        var data={method:'guardarPedidoContingenciaPortafolio',data:{datos,login}}
+        return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
     obj.getgarantiasInstalaciones = function (mes) {
-        return $http.post(serviceBase + 'garantiasInstalaciones', {"mes": mes});
+        var data={method:'garantiasInstalaciones', data:mes}
+        return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
     obj.getgraficaAcumulados = function (pregunta, mes) {
-        return $http.post(serviceBase + 'graficaAcumulados', {"pregunta": pregunta, "mes": mes});
+        var data={method:'graficaAcumulados',data:{pregunta:pregunta,mes:mes}}
+        return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
 //------------------reparacion----
     obj.getgraficaAcumuladosrepa = function (pregunta, mes) {
-        return $http.post(serviceBase + 'graficaAcumuladosrepa', {"pregunta": pregunta, "mes": mes});
+        var data={method:'graficaAcumuladosrepa',data:{pregunta:pregunta,mes:mes}}
+        return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
 //-------------fin reparacion
@@ -857,6 +861,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
     obj.getbuscarPedidoContingencia = function (pedido) {
+
         return $http.get(serviceBase + 'buscarPedidoContingencias?pedido=' + pedido);
     };
 

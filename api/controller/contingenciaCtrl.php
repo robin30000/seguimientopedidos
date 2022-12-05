@@ -52,6 +52,28 @@ if (isset($data->method)) {
             $user = new contingencia();
             $user->cerrarMasivamenteContingencias($data->data);
             break;
+        case 'guardarPedidoContingenciaPortafolio':
+            require_once '../class/contingencia.php';
+            $user = new contingencia();
+            $user->guardarPedidoContingenciaPortafolio($data->data);
+            break;
+
+        case 'garantiasInstalaciones':
+            require_once '../class/contingencia.php';
+            $user = new contingencia();
+            $user->garantiasInstalaciones($data->data);
+            break;
+
+        case 'graficaAcumulados':
+            require_once '../class/contingencia.php';
+            $user = new contingencia();
+            $user->graficaAcumulados($data->data);
+            break;
+        case 'graficaAcumuladosrepa':
+            require_once '../class/contingencia.php';
+            $user = new contingencia();
+            $user->graficaAcumuladosrepa($data->data);
+            break;
 
         default:
             echo 'ninguna opción valida.';
