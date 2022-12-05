@@ -74,7 +74,7 @@ class modelNovedadesTecnico
     {
 
         $datos = $data->datosEdicion;
-        $login = $data->login;
+        $login = $_SESSION['login'];
         //$login  = $login['LOGIN'];
         /* $key = $datos['id'];
 		$contracto = $datos['contracto'];

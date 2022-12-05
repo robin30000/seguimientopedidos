@@ -191,7 +191,7 @@ class modelVisitasEnConjunto
 
             $usuarioid = $_SESSION['login'];
 
-            $datos    = $data->datos;
+            $datos    = $data;
             $fechaini = $datos['fechai'];
             $fechafin = $datos['fechaf'];
 
