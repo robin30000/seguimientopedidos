@@ -593,7 +593,512 @@ class ModelContingencia
         echo json_encode($response);
     }
 
+    public function guardarPedidoContingenciaPortafolio($data)
+    {
+        try{
+            $datosguardar = $data->datos;
+            $login = $data->login;
+            $login = $login['LOGIN'];
+            $pedido = $datosguardar['pedido'];
+            $producto = $datosguardar['producto'];
+            $observContingenciaPortafolio = utf8_decode($datosguardar['observContingenciaPortafolio']);
+            $ingresoClick = $datosguardar['ingresoClick'];
+            $tipificacionPortafolio = utf8_decode($datosguardar['tipificacionPortafolio']);
+            $horaContingenciaPortafolio = date("Y-m-d H:i:s");
+
+            /*ORGANIZAR LO QUE SE RECHAZA DESDE CORREGIR PORTAFOLIO*/
+            if ($tipificacionPortafolio == 'Ok') {
+                $aceptaPortafolio = 'Acepta';
+            } else {
+                $aceptaPortafolio = 'Rechaza';
+            }
+
+            $stmt = $this->_DB->prepare("SELECT id FROM contingenciasWHERE pedido = :pedido AND producto= :producto AND finalizadoPortafolio IS NULL AND accion IN('Corregir portafolio', 'mesaOffline', 'OC Telefonia')");
+
+            $stmt->execute([':pedido'=>$pedido,':producto'=>$producto]);
+
+
+            if ($stmt->rowCount()) {
+
+                $resultado =$stmt->fetchAll(PDO::FETCH_ASSOC);
+                $id= $resultado['id'];
+
+                /*ESTE QUERY ME ACTULIZA LA INFORMACION QUE ANALISTA A GESTIONADO*/
+                $sqlupdate = $this->_DB->prepare("UPDATE contingencias SET horaContingenciaPortafolio = :horaContingenciaPortafolio,observContingenciaPortafolio = :observContingenciaPortafolio, ingresoEquipos = :ingresoClick, tipificacionPortafolio=:tipificacionPortafolio, aceptaPortafolio = :aceptaPortafolio, finalizadoPortafolio = 'OK' WHERE id=:id ");
+
+                $sqlupdate->execute([':horaContingenciaPortafolio'=>$horaContingenciaPortafolio,':observContingenciaPortafolio'=>$observContingenciaPortafolio,':ingresoClick'=>$ingresoClick,':tipificacionPortafolio'=>$tipificacionPortafolio,':aceptaPortafolio'=>$aceptaPortafolio,':id'=>$id]);
+
+                $response=['Datos actualizados',201];
+            }else{
+                $response=0;
+            }
+        }catch (PDOException $e){
+            var_dump($e->getMessage());
+        }
+       echo json_encode($response) ;
+    }
+
+    public function garantiasInstalaciones($data)
+    {
+
+        try{
+            $mes = $data;
+
+            $sqlDeparGarantias = $this->_DB->prepare( "select Insta.departamento_dane, count(Insta.departamento_dane) Total, round((select count(departamento_dane)  where departamento_dane = Insta.departamento_dane and mesInsta = Insta.mesInsta)/ (select count(departamento_dane)  from garantias_insta where mesInsta = Insta.mesInsta )*100, 1) as porcentaje from garantias_insta Insta where mesInsta = :mes group by Insta.departamento_dane order by Insta.departamento_dane ASC ");
+
+            $sqlDeparGarantias->execute([':mes'=>$mes]);
+
+            $sqlTecnicos = $this->_DB->prepare("select cod_funcionario,  (case when count(cod_funcionario) >= '30' then 'Mayores a 30' when count(cod_funcionario) >= '20' and count(cod_funcionario) < '30' then 'Entre 20-29' when count(cod_funcionario) >= '15' and count(cod_funcionario) < '20' then 'Entre 15-19'when count(cod_funcionario) >= '10' and count(cod_funcionario) < '15' then 'Entre 10-14' when count(cod_funcionario) >= '0' and count(cod_funcionario) < '10' then 'Entre 0-10'end) Totalfrom garantias_insta where mesInsta = :mes group by cod_funcionario  order by count(cod_funcionario) DESC ");
+
+            $sqlTecnicos->execute([':mes'=>$mes]);
+
+            $sqlCausa = $this->_DB->prepare("select causa_falla, count(*) Total 
+            from garantias_insta 
+            where mesInsta = :mes
+            group by causa_falla 
+            order by count(*) DESC");
+
+            $sqlCausa->execute([':mes'=>$mes]);
+
+            if ($sqlDeparGarantias->rowCount()) {
+
+                $resultado      = $sqlDeparGarantias->fetchAll(PDO::FETCH_ASSOC);
+                $Rangostecnicos = [];
+                $RangosCausas   = [];
+                $May30          = 0;
+                $Entre20_29     = 0;
+                $Entre15_19     = 0;
+                $Entre10_14     = 0;
+                $Entre0_10      = 0;
+
+                if ($sqlTecnicos->rowCount()) {
+
+                    while ($sqlTecnicos->fetchAll(PDO::FETCH_ASSOC)) {
+
+                        if ($sqlTecnicos['Total'] == 'Mayores a 30') {
+                            $May30 = $May30 + 1;
+                        } elseif ($sqlTecnicos['Total'] == 'Entre 20-29') {
+                            $Entre20_29 = $Entre20_29 + 1;
+                        } elseif ($sqlTecnicos['Total'] == 'Entre 15-19') {
+                            $Entre15_19 = $Entre15_19 + 1;
+                        } elseif ($sqlTecnicos['Total'] == 'Entre 10-14') {
+                            $Entre10_14 = $Entre10_14 + 1;
+                        } else {
+                            $Entre0_10 = $Entre0_10 + 1;
+                        }
+                    }
+                    $Rangostecnicos[] = ["rango" => "Mayor 30", "total" => "$May30"];
+                    $Rangostecnicos[] = ["rango" => "Entre 20-29", "total" => "$Entre20_29"];
+                    $Rangostecnicos[] = ["rango" => "Entre 15-19", "total" => "$Entre15_19"];
+                    $Rangostecnicos[] = ["rango" => "Entre 10-14", "total" => "$Entre10_14"];
+                    $Rangostecnicos[] = ["rango" => "Entre 0-9", "total" => "$Entre0_10"];
+                }
+
+                if ($sqlCausa->rowCount()) {
+
+                    while ($sqlCausa->fetchAll([PDO::FETCH_ASSOC])) {
+
+                        if ($sqlCausa['Total'] >= '30') {
+                            $RangosCausas[]     = $sqlCausa;
+                        }
+                    }
+                }
+
+                $response=[$resultado,$Rangostecnicos,$RangosCausas,201];
+            } else {
+                $response=0;
+            }
+        }catch(PDOException $e){
+            var_dump($e->getMessage());
+        }
+
+        echo json_encode($response);
+    }
+
+    public function graficaAcumulados($data)
+    {
+        try{
+
+            $datos      = $data->pregunta;
+            $pregunta   = $datos['pregunta'];
+            $mesenviado = $data->mes;
+
+            if ($mesenviado == "" || $mesenviado == undefined) {
+
+                $query = $this->_DB->query( "select max(fecha_instalacion) fecha from nps ");
 
 
 
+                $fecha = date("Y-m-d");
+
+                if ($query->rowCount()) {
+                    $result = [];
+
+                    $query->fetchAll(PDO::FETCH_ASSOC);
+                    $fecha=$query['fecha'];
+                }
+
+                $dia  = substr($fecha, 8, 2);
+                $mes  = substr($fecha, 5, 2);
+                $anio = substr($fecha, 0, 4);
+
+                $nom_mes   = date('M', mktime(0, 0, 0, $mes, $dia, $anio));
+                $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
+                $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
+
+            } else {
+                $nom_mes   = $mesenviado;
+                $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
+                $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
+            }
+
+            $query = $this->_DB->prepare("select gen.respuesta, count(gen.respuesta) total, round((count(gen.respuesta)/(select count(num_pregunta) from nps where num_pregunta = :pregunta and mes = gen.mes limit 1 )) *100, 2) as porcentaje from nps gen  where gen.num_pregunta = :pregunta  and mes = :mes group by gen.respuesta ");
+            $query->execute([':pregunta'=>$pregunta,':mes'=>$nom_mes]);
+
+            //echo $this->mysqli->query($sqlLogin);
+            //
+            if ($query->rowCount()) {
+                $categorias = [];
+                $resultado  = [];
+                $total      = [];
+                $porcentaje = [];
+
+
+                while ($row = $query->fetchAll(PDO::FETCH_ASSOC)) {
+                    $resultado[] = $row;
+                    $label       = $row['respuesta'];
+                    $totales     = $row['total'];
+                    $porcentajes = $row['porcentaje'];
+
+                    $categorias[] = ["label" => "$label"];
+                    $total[]      = ["value" => "$totales"];
+                    $porcentaje[] = ["value" => "$porcentajes"];
+                }
+
+            }
+
+            $acumulado = [];
+            $mes       = [];
+            $meta      = [];
+
+            if ($pregunta == "4") {
+
+                $acumulado[] = ["value" => "38.7"];
+                $acumulado[] = ["value" => "37.9"];
+
+                $mes[] = ["label" => "Mar"];
+                $mes[] = ["label" => "Abr"];
+                $mes[] = ["label" => "May"];
+                $mes[] = ["label" => "Jun"];
+                $mes[] = ["label" => "Jul"];
+                $mes[] = ["label" => "Ago"];
+                $mes[] = ["label" => "Sep"];
+                $mes[] = ["label" => "Oct"];
+                $mes[] = ["label" => "Nov"];
+                $mes[] = ["label" => "Dic"];
+
+                $meta[] = ["value" => "38.70"];
+                $meta[] = ["value" => "37.90"];
+                $meta[] = ["value" => "38.50"];
+                $meta[] = ["value" => "41.00"];
+                $meta[] = ["value" => "42.00"];
+                $meta[] = ["value" => "49.00"];
+                $meta[] = ["value" => "53.00"];
+                $meta[] = ["value" => "57.00"];
+                $meta[] = ["value" => "61.00"];
+                $meta[] = ["value" => "65.00"];
+            }
+
+            $Sqlmeses = $this->_DB->query("select distinct mes from nps");
+
+
+            if ($Sqlmeses->rowCount()) {
+
+                while ($row = $Sqlmeses->fetchAll(PDO::FETCH_ASSOC)) {
+                    $nom_mes = $row['mes'];
+
+                    if ($pregunta == "2") {
+                        $SqlAcumulado = $this->_DB->prepare("select mes, round(((select count(respuesta) 
+                            from nps where num_pregunta = '2' and num_respuesta = '5' 
+                            and mes = :mes)+ 
+                            (select count(respuesta)  
+                            from nps where num_pregunta = '2' and num_respuesta = '4' 
+                            and mes = :mes)- 
+                            (select count(respuesta)  
+                            from nps where num_pregunta = '2' and num_respuesta = '1'  
+                            and mes = :mes))/ 
+                            (select count(respuesta)  
+                            from nps where num_pregunta = '2' and mes = :mes 
+                            )*100, 2) as NPS 
+                            from nps 
+                            where mes = :mes 
+                            group by  mes ");
+
+                        $SqlAcumulado->execute([':mes'=>$nom_mes]);
+                    } elseif ($pregunta == "3") {
+                        $SqlAcumulado = $this->_DB->prepare( "select mes, round(((select count(respuesta) 
+                            from nps where num_pregunta = '3' and num_respuesta = '1' 
+                            and mes = :mes)+ 
+                            (select count(respuesta)  
+                            from nps where num_pregunta = '3' and num_respuesta = '2' 
+                            and mes = :mes)- 
+                            (select count(respuesta)  
+                            from nps where num_pregunta = '3' and num_respuesta = '5'  
+                            and mes = :mes))/ 
+                            (select count(respuesta)  
+                            from nps where num_pregunta = '3' and mes = :mes 
+                            )*100, 2) as NPS 
+                            from nps 
+                            where mes = :mes
+                            group by  mes ");
+                        $SqlAcumulado->execute([':mes'=>$nom_mes]);
+                    } else {
+
+                        $SqlAcumulado = $this->_DB->prepare("select mes, round(((select count(num_respuesta) 
+                            from nps where num_pregunta = :pregunta and num_respuesta = '5' 
+                            and mes = :mes)-(select count(num_respuesta) 
+                            from nps where num_pregunta = :pregunta and num_respuesta = '3'  
+                            and mes = :mes)-(select count(num_respuesta) 
+                            from nps where num_pregunta = :pregunta and num_respuesta = '2'  
+                            and mes = :mes)-(select count(num_respuesta)  
+                           from nps where num_pregunta = :pregunta and num_respuesta = '1'  
+                            and mes = :mes))/(select count(num_respuesta)   
+                            from nps where num_pregunta = :pregunta and mes = :mes 
+                            )*100, 2)  as NPS 
+                            from nps 
+                            where mes = :mes 
+                            group by  mes ");
+
+                        $SqlAcumulado->execute([':pregunta'=>$pregunta,':mes'=>$nom_mes]);
+
+                    }
+
+
+                    //echo $this->mysqli->query($sqlLogin);
+                    //
+                    if ($SqlAcumulado->rowCount()) {
+
+                        if ($pregunta == "4") {
+                            while ($row = $SqlAcumulado->fetchAll(PDO::FETCH_ASSOC)) {
+                                $nps         = $row['NPS'];
+                                $acumulado[] = ["value" => "$nps"];
+                                //$mes[]=array("label"=>"$meses");
+                            }
+                        } else {
+                            while ($row = $SqlAcumulado->fetchAll(PDO::FETCH_ASSOC)) {
+                                $meses       = $row['mes'];
+                                $nps         = $row['NPS'];
+                                $acumulado[] = ["value" => "$nps"];
+                                $mes[]       = ["label" => "$meses"];
+                            }
+                        }
+                    }
+
+                }
+                $response=[$categorias,$total,$porcentaje,$acumulado,$mes,$meta,201];
+            } else {
+                $response=0;
+
+            }
+
+        }catch (PDOException $e){
+            var_dump($e->getMessage());
+        }
+
+        echo json_encode($response);
+    }
+
+    public function graficaAcumuladosrepa($data)
+    {
+        try{
+            $datos      = $data->pregunta;
+            $pregunta   = $datos['pregunta'];
+            $mesenviado = $data->mes;
+
+            if ($mesenviado == "" || $mesenviado == undefined) {
+
+                $query = $this->_DB->query("select max(FECHA_2) fecha from npsreparaciones ");
+
+
+                $fecha = date("Y-m-d");
+
+                if ($query->rowCount()) {
+                    if ($row = $query->fetchAll(PDO::FETCH_ASSOC)) {
+                        $fecha = $row['fecha'];
+                    }
+                }
+
+                $dia  = substr($fecha, 8, 2);
+                $mes  = substr($fecha, 5, 2);
+                $anio = substr($fecha, 0, 4);
+
+                $nom_mes   = date('M', mktime(0, 0, 0, $mes, $dia, $anio));
+                $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
+                $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
+
+            } else {
+                $nom_mes   = $mesenviado;
+                $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
+                $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
+            }
+
+            $query = $this->_DB->prepare("select gen.respuesta, count(gen.respuesta) total, 
+                round((count(gen.respuesta)/(select count(pregunta)  
+                from npsreparaciones where num_pregunta = :pregunta and mes = gen.mes limit 1 )) *100, 2) as porcentaje 
+                from npsreparaciones gen  
+                where gen.num_pregunta = :pregunta  
+                and mes = :mes 
+                group by gen.respuesta ");
+            $query->execute([':pregunta'=>$pregunta,':mes'=>$nom_mes]);
+            //
+            if ($query->rowCount()) {
+                $categorias = [];
+                $resultado  = [];
+
+                $total      = [];
+                $porcentaje = [];
+
+                while ($row = $query->fetchAll(PDO::FETCH_ASSOC)) {
+                    $resultado[] = $row;
+                    $label       = $row['respuesta'];
+                    $totales     = $row['total'];
+                    $porcentajes = $row['porcentaje'];
+
+                    $categorias[] = ["label" => "$label"];
+                    $total[]      = ["value" => "$totales"];
+                    $porcentaje[] = ["value" => "$porcentajes"];
+                }
+
+            }
+
+            $acumulado = [];
+            $mes       = [];
+            $meta      = [];
+
+            if ($pregunta == "4") {
+
+                $acumulado[] = ["value" => "12.5"];
+                $acumulado[] = ["value" => "7.00"];
+
+                $mes[] = ["label" => "Mar"];
+                $mes[] = ["label" => "Abr"];
+                $mes[] = ["label" => "May"];
+                $mes[] = ["label" => "Jun"];
+                $mes[] = ["label" => "Jul"];
+                $mes[] = ["label" => "Ago"];
+                $mes[] = ["label" => "Sep"];
+                $mes[] = ["label" => "Oct"];
+                $mes[] = ["label" => "Nov"];
+                $mes[] = ["label" => "Dic"];
+
+                $meta[] = ["value" => "12.50"];
+                $meta[] = ["value" => "7.00"];
+                $meta[] = ["value" => "13.50"];
+                $meta[] = ["value" => "19.60"];
+                $meta[] = ["value" => "20.50"];
+                $meta[] = ["value" => "21.40"];
+                $meta[] = ["value" => "22.30"];
+                $meta[] = ["value" => "23.20"];
+                $meta[] = ["value" => "24.10"];
+                $meta[] = ["value" => "25.00"];
+            }
+
+            $Sqlmeses = $this->_DB->query("select distinct mes from npsreparaciones");
+
+
+
+            if ($Sqlmeses->rowCount()) {
+
+                while ($row = $Sqlmeses->fetchAll(PDO::FETCH_ASSOC)) {
+                    $nom_mes = $row['mes'];
+
+                    if ($pregunta == "2") {
+                        $SqlAcumulado = $this->_DB->prepare("select mes, round(((select count(respuesta) 
+                            from npsreparaciones where num_pregunta = '2' and num_respuesta = '5' 
+                            and mes = :mes)+ 
+                            (select count(respuesta)  
+                            from npsreparaciones where num_pregunta = '2' and num_respuesta = '4' 
+                            and mes = :mes)- 
+                            (select count(respuesta) 
+                            from npsreparaciones where num_pregunta = '2' and num_respuesta = '1'  
+                            and mes = :mes))/ 
+                            (select count(respuesta)  
+                            from npsreparaciones where num_pregunta = '2' and mes = :mes 
+                            )*100, 2) as NPS 
+                            from npsreparaciones 
+                            where mes = :mes 
+                            group by  mes");
+                        $SqlAcumulado->execute([':mes'=>$nom_mes]);
+
+                    } elseif ($pregunta == "3") {
+                        $SqlAcumulado = $this->_DB->prepare("select mes, round(((select count(respuesta)
+                            from npsreparaciones where num_pregunta = '3' and num_respuesta = '1'
+                            and mes = :mes)+ 
+                            (select count(respuesta)
+                            from npsreparaciones where num_pregunta = '3' and num_respuesta = '2' 
+                            and mes = :mes)-
+                            (select count(respuesta)  
+                            from npsreparaciones where num_pregunta = '3' and num_respuesta = '5'
+                            and mes = :mes))/ 
+                            (select count(respuesta)
+                            from npsreparaciones where num_pregunta = '3' and mes = :mes
+                            )*100, 2) as NPS
+                            from npsreparaciones 
+                            where mes = :mes
+                            group by  mes");
+
+                        $SqlAcumulado->execute([':mes'=>$nom_mes]);
+
+                    } else {
+
+                        $SqlAcumulado = $this->_DB->prepare( "select mes, round(((select count(respuesta)
+                            from npsreparaciones where num_pregunta = :pregunta and num_respuesta = '5' 
+                            and mes = :mes)-(select count(respuesta) 
+                            from npsreparaciones where num_pregunta = :pregunta and num_respuesta = '3'  
+                            and mes = :mes)-(select count(respuesta)  
+                            from npsreparaciones where num_pregunta = :pregunta and num_respuesta = '2'  
+                            and mes = :mes)-(select count(respuesta)  
+                            from npsreparaciones where num_pregunta = :pregunta and num_respuesta = '1'  
+                            and mes = :mes))/(select count(respuesta)   
+                            from npsreparaciones where num_pregunta = :pregunta and mes = :mes
+                            )*100, 2)  as NPS 
+                            from npsreparaciones 
+                            where mes = :mes 
+                            group by  mes ");
+
+                        $SqlAcumulado->execute([':pregunta'=>$pregunta,':mes'=>$nom_mes]);
+                    }
+                    //echo $this->mysqli->query($sqlLogin);
+                    //
+                    if ($SqlAcumulado->rowCount()) {
+
+                        if ($pregunta == "4") {
+                            while ($row = $SqlAcumulado->fetchAll(PDO::FETCH_ASSOC)) {
+                                //	$meses=$row['mes'];
+                                $nps         = $row['NPS'];
+                                $acumulado[] = ["value" => "$nps"];
+                                //$mes[]=array("label"=>"$meses");
+                            }
+                        } else {
+                            while ($row = $SqlAcumulado->fetchAll(PDO::FETCH_ASSOC)) {
+                                $meses       = $row['mes'];
+                                $nps         = $row['NPS'];
+                                $acumulado[] = ["value" => "$nps"];
+                                $mes[]       = ["label" => "$meses"];
+                            }
+                        }
+                    }
+
+                }
+                $response=[$categorias,$total,$porcentaje,$acumulado,$mes,$meta,201];
+            } else {
+                $response=0;
+            }
+
+        }catch (PDOException $e){
+            var_dump($e->getMessage());
+        }
+
+        echo json_encode($response);
+    }
 }
