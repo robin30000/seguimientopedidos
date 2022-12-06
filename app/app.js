@@ -409,79 +409,177 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'otherServicesCtrl.php', data);
     };
 
+    /**
+     * otherServicesDos
+     */
+
     obj.getBorrarRegistros = function (datosBorrar) {
-        return $http.post(serviceBase + 'gestionBorrar', {"datosBorrar": datosBorrar});
+        var data = {
+            method: 'gestionBorrar',
+            data: datosBorrar
+        }
+        return $http.post(serviceBase1 + 'otherServicesDosCtrl.php', data);
     };
 
     obj.getDesbloquear = function (datos) {
-        return $http.post(serviceBase + 'desbloquear', {"datos": datos});
+        var data = {
+            method: 'desbloquear',
+            data: data
+        }
+        return $http.post(serviceBase1 + 'otherServicesDosCtrl.php', data);
     };
 
-    obj.expCsvdatos = function (valor, datos, datosLogin) {
-        return $http.post(serviceBase + 'csvPreagen', {"valor": valor, "datos": datos, "datosLogin": datosLogin});
+    obj.expCsvdatos = function (valor, datos) {
+        var data = {
+            method: 'csvPreagen',
+            data: {
+                "valor": valor,
+                "datos": datos
+            }
+        }
+        return $http.post(serviceBase1 + 'otherServicesDosCtrl.php', data);
     };
 
-    obj.getexporteContingencias = function (fechaIni, fechafin, datosLogin) {
-        return $http.post(serviceBase + 'csvContingencias', {"fechaIni": fechaIni, "fechafin": fechafin, "datosLogin": datosLogin});
+    obj.getexporteContingencias = function (fechaIni, fechafin) {
+        var data = {
+            method: 'csvContingencias',
+            data: {
+                "fechaIni": fechaIni,
+                "fechafin": fechafin
+            }
+        }
+        return $http.post(serviceBase1 + 'otherServicesDosCtrl.php', data);
     };
 
-    obj.expCsvestados = function (datos, datosLogin) {
-        return $http.post(serviceBase + 'csvEstadosClick', {"datos": datos, "datosLogin": datosLogin});
+    obj.expCsvestados = function (datos) {
+        var data = {
+            method: 'csvEstadosClick',
+            data: datos
+        }
+        return $http.post(serviceBase1 + 'otherServicesDosCtrl.php', data);
     };
 
     obj.expCsvpeniInsta = function (regional, datosLogin) {
-        return $http.post(serviceBase + 'CsvpeniInsta', {"regional": regional, "datosLogin": datosLogin});
+        var data = {
+            method: 'CsvpeniInsta',
+            data: regional
+        }
+        return $http.post(serviceBase1 + 'otherServicesDosCtrl.php', data);
     };
 
-    obj.getexpcsvRRHH = function (datosLogin) {
+    obj.getexpcsvRRHH = function () {
         return $http.get('http://10.100.66.254:7771/api/exportrrhh');
     };
+    /**
+     * todo
+     * el servicio no se encuentra en la api
+     * se deja comentado
+     *
 
-    obj.expGestionPendientes = function (datosExporte, login) {
+     obj.expGestionPendientes = function (datosExporte, login) {
+        var data = {
+            method: 'CsvGestionPendientes',
+            data: datosExporte
+        }
         return $http.post(serviceBase + 'CsvGestionPendientes', {"datosExporte": datosExporte, "login": login});
-    };
+    };*/
 
     obj.expNpsSemana = function (semana, login) {
-        return $http.post(serviceBase + 'CsvNpsSemana', {"semana": semana, "login": login});
+        var data = {
+            method: 'CsvNpsSemana',
+            data: semana
+        }
+        return $http.post(serviceBase1 + 'otherServicesDosCtrl.php', data);
     };
 
     obj.buscarPedido = function (url, pedidos) {
-        return $http.post(serviceBase + 'buscarPedido', {"url": url, "pedidos": pedidos});
+        var data = {
+            method: 'buscarPedido',
+            data: {
+                "url": url,
+                "pedidos": pedidos
+            }
+        }
+        return $http.post(serviceBase1 + 'otherServicesDosCtrl.php', data);
     };
     obj.buscarPedidoSeguimiento = function (pedido, producto, remite) {
-        return $http.post(serviceBase + 'buscarPedidoSegui', {"pedido": pedido, "producto": producto, "remite": remite});
+        var data = {
+            method: 'buscarPedidoSegui',
+            data: {
+                "pedido": pedido,
+                "producto": producto,
+                "remite": remite
+            }
+        }
+        return $http.post(serviceBase1 + 'otherServicesDosCtrl.php', data);
     };
-    obj.expCsvRegistros = function (datos, datosLogin) {
-        return $http.post(serviceBase + 'csvRegistros', {"datos": datos, "datosLogin": datosLogin});
+    obj.expCsvRegistros = function (datos) {
+        var data = {
+            method: 'csvRegistros',
+            data: datos
+        }
+        return $http.post(serviceBase1 + 'otherServicesDosCtrl.php', data);
     };
 
-    obj.expBrutalForce = function (fechas, datosLogin) {
-        return $http.post(serviceBase + 'expBrutal', {"fechas": fechas, "datosLogin": datosLogin});
+    obj.expBrutalForce = function (fechas) {
+        var data = {
+            method: 'expBrutal',
+            data: fechas
+        }
+        return $http.post(serviceBase1 + 'otherServicesDosCtrl.php', data);
     };
 
-    obj.expCsvtecnico = function (datos, datosLogin) {
-        return $http.post(serviceBase + 'Csvtecnico', {"datos": datos, "datosLogin": datosLogin});
+    obj.expCsvtecnico = function (datos) {
+        var data = {
+            method: 'Csvtecnico',
+            data: datos
+        }
+        return $http.post(serviceBase1 + 'otherServicesDosCtrl.php', data);
     };
 
     obj.getDiferenciasClick = function (fecha) {
-        return $http.get(serviceBase + 'diferenciasClick?fecha=' + fecha);
+        var data = {
+            method: 'diferenciasClick',
+            data: fecha
+        }
+        return $http.post(serviceBase1 + 'otherServicesDosCtrl.php', data);
     };
 
     obj.Verobservacionasesor = function (pedido) {
-        return $http.get(serviceBase + 'observacionAsesor?pedido=' + pedido);
+        var data = {
+            method: 'observacionAsesor',
+            data: pedido
+        }
+        return $http.post(serviceBase1 + 'otherServicesDosCtrl.php', data);
     };
 
-    obj.contadorPendientesBrutalForce = function (cantPendientes) {
-        //var data = {method:cantPendientes, data:cantPendientes}
-        return $http.get(serviceBase + 'contadorpedientesBF?cantPendientes=' + cantPendientes);
+    obj.contadorPendientesBrutalForce = function () {
+        var data = {
+            method: 'contadorpedientesBF'
+        }
+        return $http.post(serviceBase1 + 'otherServicesDosCtrl.php', data);
     };
 
     obj.getseguimientoClick = function (fecha) {
-        return $http.get(serviceBase + 'seguimientoClick?fecha=' + fecha);
+        var data = {
+            method: 'seguimientoClick',
+            data: fecha
+        }
+        return $http.post(serviceBase1 + 'otherServicesDosCtrl.php', data);
     };
 
     obj.registrosComercial = function (page, concepto, dato, inicial, final) {
-        return $http.get(serviceBase + 'registrosComercial?page=' + page + '&concepto=' + concepto + '&dato=' + dato + '&inicial=' + inicial + '&final=' + final);
+        var data = {
+            method: 'registrosComercial',
+            data: {
+                'page': page,
+                'concepto': concepto,
+                'dato': dato,
+                'inicial': inicial,
+                'final': final
+            }
+        }
+        return $http.post(serviceBase1 + 'otherServicesDosCtrl.php', data);
     };
 
     /*===========================================================*/
@@ -889,23 +987,23 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     /*********NUEVO CONECTOR PARA LA APPI editarRegistroContingenciaPortafolio*********/
     obj.editarRegistroContingenciaPortafolio = function (datos, login) {
-        var data={method:'guardarPedidoContingenciaPortafolio',data:{datos,login}}
+        var data = {method: 'guardarPedidoContingenciaPortafolio', data: {datos, login}}
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
     obj.getgarantiasInstalaciones = function (mes) {
-        var data={method:'garantiasInstalaciones', data:mes}
+        var data = {method: 'garantiasInstalaciones', data: mes}
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
     obj.getgraficaAcumulados = function (pregunta, mes) {
-        var data={method:'graficaAcumulados',data:{pregunta:pregunta,mes:mes}}
+        var data = {method: 'graficaAcumulados', data: {pregunta: pregunta, mes: mes}}
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
 //------------------reparacion----
     obj.getgraficaAcumuladosrepa = function (pregunta, mes) {
-        var data={method:'graficaAcumuladosrepa',data:{pregunta:pregunta,mes:mes}}
+        var data = {method: 'graficaAcumuladosrepa', data: {pregunta: pregunta, mes: mes}}
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
