@@ -1221,9 +1221,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     obj.getcumplmientoTurnos = function (datos) {
         var data = {
             method: 'cumpleTurnos',
-            data: {
-                'datos': datos
-            }
+            data: datos
         }
         return $http.post(serviceBase1 + 'turnosCtrl.php', data);
     };

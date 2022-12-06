@@ -231,12 +231,13 @@ class ModelContingencia
                 $resultadoOTROS      = [];
                 $resultadoPORTAFOLIO = [];
                 foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
                     if ($row['grupo'] == "TV") {
                         $resultadoTV[] = $row;
                     } elseif ($row['grupo'] == "INTER") {
                         $resultadoOTROS[] = $row;
                     } elseif ($row['grupo'] == "PORTAFOLIO") {
-                        $resultadoOTROS[] = $row;
+                        $resultadoPORTAFOLIO[] = $row;
                     }
                 }
                 /*while ($row = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
