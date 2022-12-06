@@ -831,11 +831,13 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 //-------------fin reparacion
 
     obj.getDepartamentosContratos = function (mes) {
-        return $http.post(serviceBase + 'DepartamentosContratos', {"mes": mes});
+        var data={method:'DepartamentosContratos',data:mes}
+        return $http.post(serviceBase1 + 'otrosServiciosCtrl.php', data);
     };
 
     obj.insertData = function (lista) {
-        return $http.post(serviceBase + 'insertData', {"lista": lista});
+        var data={method:'insertData',data:lista}
+        return $http.post(serviceBase1 + 'otrosServiciosCtrl.php', data);
     };
 
     obj.getRegistrosCarga = function () {
