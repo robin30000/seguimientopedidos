@@ -1019,20 +1019,26 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'otrosServiciosCtrl.php', data);
     };
 
+
     obj.getRegistrosCarga = function () {
-        return $http.post(serviceBase + 'getRegistrosCarga');
+        var data={method:'getRegistrosCarga'}
+        return $http.post(serviceBase1 + 'otrosServiciosCtrl.php',data);
     };
 
-    obj.getDemePedidoEncuesta = function () {
-        return $http.post(serviceBase + 'DemePedidoEncuesta');
+    obj.getDemePedidoEncuesta = function ()
+    {
+        var data={method:'getDemePedidoEncuesta'}
+        return $http.post(serviceBase1 + 'otrosServiciosCtrl.php',data);
     };
 
     obj.getresumenSemanas = function (pregunta, mes) {
-        return $http.post(serviceBase + 'resumenSemanas', {"pregunta": pregunta, "mes": mes});
+        var data={method:'resumenSemanas',data:{pregunta:pregunta,mes:mes}}
+        return $http.post(serviceBase1 + 'otrosServiciosCtrl.php', data);
     };
 
     obj.listadoTecnicos = function (page, concepto, tecnico) {
-        return $http.get(serviceBase + 'listadoTecnicos?page=' + page + '&concepto=' + concepto + '&tecnico=' + tecnico);
+        var data={method:'listadoTecnicos',data:{page:page,concepto:concepto,tecnico:tecnico}}
+        return $http.get(serviceBase1 + 'otrosServiciosCtrl.php' + data);
     };
 
 
@@ -1042,8 +1048,8 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
     obj.getbuscarPedidoContingencia = function (pedido) {
-
-        return $http.get(serviceBase + 'buscarPedidoContingencias?pedido=' + pedido);
+        var data={method:'buscarPedidoContingencias',data:pedido}
+        return $http.get(serviceBase1 + 'buscarPedidoContingencias',data);
     };
 
     obj.getCiudades = function () {

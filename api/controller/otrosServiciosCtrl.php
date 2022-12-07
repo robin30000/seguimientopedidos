@@ -21,6 +21,29 @@ if (isset($data->method)) {
             require_once '../class/otrosServicios.php';
             $user = new otrosServicios();
             $user->insertData($data->data);
+            break;
+
+        case 'getRegistrosCarga':
+            $user = new otrosServicios();
+            $user->getRegistrosCarga();
+            break;
+        case'getDemePedidoEncuesta':
+            $user = new otrosServicios();
+            $user->getDemePedidoEncuesta();
+            break;
+
+        case 'resumenSemanas':
+            $user = new otrosServicios();
+            $user->resumenSemanas($data->data);
+            break;
+        case 'listadoTecnicos':
+            $user = new otrosServicios();
+            $user->listadoTecnicos($data->data);
+            break;
+        case 'buscarPedidoContingencias':
+            $user = new otrosServicios();
+            $user->buscarPedidoContingencias($data->data);
+            break;
         default:
             echo 'ninguna opción valida.';
             break;
