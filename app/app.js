@@ -1188,35 +1188,84 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
     obj.getgestionComercial = function () {
-        return $http.get(serviceBase + 'gestionComercial');
+        var data = {
+            method: 'gestionComercial'
+        }
+        return $http.post(serviceBase1 + 'otherServicesFourCtrl.php', data);
+    };
+    /**
+     * TODO service no existe
+     */
+    obj.getcausaRaiz = function () {
+        var data = {
+            method: 'causaRaiz'
+        }
+        return $http.post(serviceBase1 + 'otherServicesFourCtrl.php', data);
     };
 
-    obj.getcausaRaiz = function () {
-        return $http.get(serviceBase + 'causaRaiz');
-    };
+    /**
+     * TODO service no existe
+     */
 
     obj.getResponsablePendiente = function (causaraiz) {
-        return $http.get(serviceBase + 'ResponsablePendiente?causaraiz=' + causaraiz);
+        var data = {
+            method: 'ResponsablePendiente',
+            data: causaraiz
+        }
+        return $http.post(serviceBase1 + 'otherServicesFourCtrl.php', data);
     };
+
+    /**
+     * TODO service no existe
+     */
 
     obj.getlistarPendientesCausaRaiz = function (causaRaiz, fecha) {
-        return $http.get(serviceBase + 'listaCausaRaiz?causaRaiz=' + causaRaiz + '&fecha=' + fecha);
+        var data = {
+            method: 'listaCausaRaiz',
+            data: {
+                'causaRaiz': causaRaiz,
+                'fecha': fecha
+            }
+        }
+        return $http.post(serviceBase1 + 'otherServicesFourCtrl.php', data);
     };
 
+    /**
+     * TODO service no existe
+     */
+
     obj.getCausasraizinconsitencias = function () {
-        return $http.get(serviceBase + 'Causasraizinconsitencias?causaRaiz=');
+        var data = {
+            method: 'Causasraizinconsitencias'
+        }
+        return $http.post(serviceBase1 + 'otherServicesFourCtrl.php', data);
     };
 
     obj.pendientesBrutalForce = function () {
-        return $http.post(serviceBase + 'pendiBrutal');
+        var data = {
+            method: 'pendiBrutal'
+        }
+        return $http.post(serviceBase1 + 'otherServicesFourCtrl.php', data);
     };
 
     obj.getclasificacionComercial = function (gestion) {
-        return $http.get(serviceBase + 'clasificacionComercial?gestion=' + gestion);
+        var data = {
+            method: 'clasificacionComercial',
+            data: gestion
+        }
+        return $http.post(serviceBase1 + 'otherServicesFourCtrl.php', data);
     };
 
     obj.getbuscarpedidoRegistros = function (pedido, fecha) {
-        return $http.get(serviceBase + 'buscaregistros?pedido=' + pedido + '&fecha=' + fecha);
+        var data = {
+            method: 'buscaregistros',
+            data: {
+                'pedido': pedido,
+                'fecha': fecha
+            }
+
+        }
+        return $http.post(serviceBase1 + 'otherServicesFourCtrl.php', data);
     };
 
     obj.listadoEstadosClick = function (listaClick) {
