@@ -1038,7 +1038,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     obj.listadoTecnicos = function (page, concepto, tecnico) {
         var data={method:'listadoTecnicos',data:{page:page,concepto:concepto,tecnico:tecnico}}
-        return $http.get(serviceBase1 + 'otrosServiciosCtrl.php' + data);
+        return $http.post(serviceBase1 + 'otrosServiciosCtrl.php' + data);
     };
 
 
@@ -1049,7 +1049,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     obj.getbuscarPedidoContingencia = function (pedido) {
         var data={method:'buscarPedidoContingencias',data:pedido}
-        return $http.get(serviceBase1 + 'otrosServiciosCtrl.php',data);
+        return $http.post(serviceBase1 + 'otrosServiciosCtrl.php',data);
     };
 
     obj.getCiudades = function () {
