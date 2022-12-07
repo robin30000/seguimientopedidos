@@ -1010,12 +1010,12 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 //-------------fin reparacion
 
     obj.getDepartamentosContratos = function (mes) {
-        var data={method:'DepartamentosContratos',data:mes}
+        var data = {method: 'DepartamentosContratos', data: mes}
         return $http.post(serviceBase1 + 'otrosServiciosCtrl.php', data);
     };
 
     obj.insertData = function (lista) {
-        var data={method:'insertData',data:lista}
+        var data = {method: 'insertData', data: lista}
         return $http.post(serviceBase1 + 'otrosServiciosCtrl.php', data);
     };
 
@@ -1086,47 +1086,99 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'formaAsesoresCtrl.php', data);
     };
 
-    obj.getpedidosGestionBrutal = function (login, accion) {
-        return $http.post(serviceBase + 'gestionBrutal', {"login": login, "accion": accion});
+    /**
+     * otherServicesThree
+     */
+
+    obj.getpedidosGestionBrutal = function (accion) {
+        var data = {
+            method: 'gestionBrutal',
+            data: accion
+        }
+        return $http.post(serviceBase1 + 'otherServicesThreeCtrl.php', data);
     };
 
     obj.getBuscarPedidoBrutal = function (pedido) {
-        return $http.get(serviceBase + 'BuscarPedidoBrutal?pedido=' + pedido);
+        var data = {
+            method: 'BuscarPedidoBrutal',
+            data: pedido
+        }
+        return $http.post(serviceBase1 + 'otherServicesThreeCtrl.php', data);
     };
 
     obj.getCalcularMeses = function () {
-        return $http.get(serviceBase + 'meses');
+        var data = {
+            method: 'meses'
+        }
+        return $http.post(serviceBase1 + 'otherServicesThreeCtrl.php', data);
     };
     obj.getCalcularMesesrepa = function () {
-        return $http.get(serviceBase + 'mesesrepa');
+        var data = {
+            method: 'mesesrepa'
+        }
+        return $http.post(serviceBase1 + 'otherServicesThreeCtrl.php', data);
     };
-
+    /**
+     * TODO no existe
+     * @returns {*}
+     */
     obj.getactualizarregion = function () {
-        return $http.get(serviceBase + 'actualizarregion');
+        var data = {
+            method: 'actualizarregion'
+        }
+        return $http.post(serviceBase1 + 'otherServicesThreeCtrl.php', data);
     };
 
     obj.getdepartamentos = function () {
-        return $http.get(serviceBase + 'departamentos');
+        var data = {
+            method: 'departamentos'
+        }
+        return $http.post(serviceBase1 + 'otherServicesThreeCtrl.php', data);
     };
 
     obj.getConceptosPendientes = function (interfaz) {
-        return $http.get(serviceBase + 'conceptospendientes?interfaz=' + interfaz);
+        var data = {
+            method: 'conceptospendientes',
+            data: interfaz
+        }
+        return $http.post(serviceBase1 + 'otherServicesThreeCtrl.php', data);
     };
 
     obj.getConceptosTotales = function (regional, interfaz) {
-        return $http.get(serviceBase + 'getConceptosTotales?regional=' + regional + '&interfaz=' + interfaz);
+        var data = {
+            method: 'getConceptosTotales',
+            data: {
+                'regional': regional,
+                'interfaz': interfaz
+            }
+        }
+        return $http.post(serviceBase1 + 'otherServicesThreeCtrl.php', data);
     };
 
     obj.getResumenInsta = function (departamento) {
-        return $http.get(serviceBase + 'ResumenInsta?departamento=' + departamento);
+        var data = {
+            method: 'ResumenInsta',
+            data: departamento
+        }
+        return $http.post(serviceBase1 + 'otherServicesThreeCtrl.php', data);
     };
 
     obj.gettipo_trabajoclick = function () {
-        return $http.get(serviceBase + 'tipo_trabajoclick');
+        var data = {
+            method: 'tipo_trabajoclick'
+        }
+        return $http.post(serviceBase1 + 'otherServicesThreeCtrl.php', data);
     };
 
+    /**
+     * otherServicesFour
+     */
+
     obj.getUenCargada = function () {
-        return $http.get(serviceBase + 'UenCargada');
+        var data = {
+            method: 'UenCargada'
+        }
+        return $http.post(serviceBase1 + 'otherServicesFourCtrl.php', data);
     };
 
     obj.getgestionComercial = function () {

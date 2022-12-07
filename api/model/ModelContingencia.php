@@ -240,33 +240,6 @@ class ModelContingencia
                         $resultadoPORTAFOLIO[] = $row;
                     }
                 }
-                /*while ($row = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
-
-                    $row['pedido']                      = utf8_encode($row['pedido']);
-                    $row['macEntra']                    = utf8_encode($row['macEntra']);
-                    $row['macSale']                     = utf8_encode($row['macSale']);
-                    $row['paquetes']                    = utf8_encode($row['paquetes']);
-                    $row['ciudad']                      = utf8_encode($row['ciudad']);
-                    $row['proceso']                     = utf8_encode($row['proceso']);
-                    $row['accion']                      = utf8_encode($row['accion']);
-                    $row['tipoEquipo']                  = utf8_encode($row['tipoEquipo']);
-                    $row['remite']                      = utf8_encode($row['remite']);
-                    $row['observacion']                 = utf8_encode($row['observacion']);
-                    $row['engestion']                   = utf8_encode($row['engestion']);
-                    $row['producto']                    = utf8_encode($row['producto']);
-                    $row['grupo']                       = utf8_encode($row['grupo']);
-                    $row['horagestion']                 = utf8_encode($row['horagestion']);
-                    $row['perfil']                      = utf8_encode($row['perfil']);
-                    $row['acepta']                      = utf8_encode($row['acepta']);
-                    $row['loginContingenciaPortafolio'] = utf8_encode($row['loginContingenciaPortafolio']);
-                    $row['aceptaPortafolio']            = utf8_encode($row['aceptaPortafolio']);
-                    $row['tipificacionPortafolio']      = utf8_encode($row['tipificacionPortafolio']);
-                    $row['enGestionPortafolio']         = utf8_encode($row['enGestionPortafolio']);
-                    $row['fechaClickMarcaPortafolio']   = utf8_encode($row['fechaClickMarcaPortafolio']);
-                    $row['alerta']                      = utf8_encode($row['alerta']);
-
-
-                }*/
             }
 
         } catch (PDOException $e) {
