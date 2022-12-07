@@ -616,4 +616,707 @@ class modelOtrosServicios
         }
         echo json_encode($response);
     }
+
+    public function getRegistrosCarga()
+    {
+        try{
+
+            $query = $this->_DB->query("select a.id, a.nombre_archivo, a.tipo, a.fecha_carga, a.login,(select  
+                CASE WHEN a.tipo = 'alarmados' THEN (select count(c.pedido_id) 
+                from alarmados c where a.id=c.id_archivo) 
+                else (select count(b.pedido_id) 
+                from carga_agenda b where a.id=b.archivo_id) 
+                END) TOTAL_REGISTROS 
+                FROM carga_archivos a order by fecha_carga DESC limit 10");
+            $query->execute();
+
+            if ($query->rowCount()) {
+
+                $resultado = [];
+
+                while ($row = $query->fetchAll(PDO::FETCH_ASSOC)) {
+
+                    if ($row['tipo'] == "vistaCliente") {
+                        $row['tipo'] = "Carga Preagenda";
+                    } elseif ($row['tipo'] == "alarmados") {
+                        $row['tipo'] = "Alarmados";
+                    }
+
+                    $resultado[] = $row;
+
+                }
+                $response=[$resultado,201];
+
+            } else {
+                $response = ['',400];
+            }
+        }catch (PDOException $e){
+            var_dump($e->getMessage());
+        }
+        echo json_encode($response);
+    }
+
+    public function getDemePedidoEncuesta()
+    {
+        try{
+
+            $query = $this->_DB->query("select max(fecha_instalacion) fecha from nps ");
+
+            $query->execute();
+
+            $fecha = date("Y-m-d");
+
+            if ($query->rowCount()) {
+                $result = [];
+                if ($row = $query->fetchAll(PDO::FETCH_ASSOC)) {
+                    $fecha = $row['fecha'];
+                }
+            }
+
+            $dia  = substr($fecha, 8, 2);
+            $mes  = substr($fecha, 5, 2);
+            $anio = substr($fecha, 0, 4);
+
+            $nom_mes   = date('M', mktime(0, 0, 0, $mes, $dia, $anio));
+            $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
+            $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
+
+            $query = $this->_DB->query("select idnps, telefono, cedula, detalle, fecha_instalacion, departamento, municipio, contratista, Interfaz, respuesta, semana 
+                from nps 
+                where semana = (select max(semana) from nps) 
+                and num_pregunta = '4' 
+                and num_respuesta in ('1','2','3')  
+                and gestion_dolores is null or gestion_dolores =' ' 
+                order by fecha_instalacion ASC, respuesta ASC limit 1 ");
+            $query->execute();
+
+            //echo $this->mysqli->query($sqlLogin);
+            //
+            if ($query->rowCount()) {
+
+                $resultado = [];
+
+                while ($row = $query->fetchAll(PDO::FETCH_ASSOC)) {
+
+                    $idgestion_dolores = $row['idnps'];
+
+                    $query = $this->_DB->query("UPDATE nps SET gestion_dolores ='1' WHERE idnps='$idgestion_dolores' ");
+                    $query->execute();
+
+                    $row['municipio']    = utf8_encode($row['municipio']);
+                    $row['departamento'] = utf8_encode($row['departamento']);
+                    $resultado[]         = $row;
+
+                }
+                $response=[$resultado,201];
+
+            } else {
+                $response = ['',400];
+
+            }
+        }catch (PDOException $e){
+            var_dump($e->getMessage());
+        }
+
+        echo json_encode($response);
+    }
+
+    public function resumenSemanas($data)
+    {
+        try{
+            $datos      = $data->pregunta;
+            $pregunta   = $datos['pregunta'];
+            $mesenviado = $data->mes;
+
+            if ($mesenviado == "" || $mesenviado == undefined) {
+
+                $query = $this->_DB->query( "select max(fecha_instalacion) fecha from nps ");
+
+                $query->execute();
+
+                $fecha = date("Y-m-d");
+
+                if ($query->rowCount()) {
+                    $result = [];
+                    if ($row = $query->fetchAll(PDO::FETCH_ASSOC)) {
+                        $fecha = $row['fecha'];
+                    }
+                }
+
+                $dia  = substr($fecha, 8, 2);
+                $mes  = substr($fecha, 5, 2);
+                $anio = substr($fecha, 0, 4);
+
+                $nom_mes   = date('M', mktime(0, 0, 0, $mes, $dia, $anio));
+                $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
+                $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
+
+            } else {
+                $nom_mes   = $mesenviado;
+                $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
+                $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
+            }
+
+            if ($diaSemana == 0) {
+                $diaSemana = 7;
+            }
+            $primerDia = date("d-m-Y", mktime(0, 0, 0, $mes, $dia - $diaSemana + 1, $anio));
+            $ultimoDia = date("d-m-Y", mktime(0, 0, 0, $mes, $dia + (7 - $diaSemana), $anio));
+
+            if ($pregunta == "1" || $pregunta == "6" || $pregunta == "7" || $pregunta == "8") {
+
+                $query ="round((select count(num_respuesta) 
+                    from nps 
+                    where num_respuesta = '1' and num_pregunta = '$pregunta' and mes = gen.mes and semana = gen.semana)/  
+                    (select count(num_pregunta)   
+                    from nps where semana = gen.semana and mes = gen.mes and num_pregunta = '$pregunta' limit 1 )*100, 2) as SI,   
+                    round((select count(num_respuesta)   
+                    from nps   
+                    where num_respuesta = '2' and num_pregunta = '$pregunta' and mes = gen.mes and semana = gen.semana)/  
+                    (select count(num_pregunta)   
+                    from nps where semana = gen.semana and mes = gen.mes and num_pregunta = '$pregunta' limit 1 )*100, 2) as NO ";
+
+            } else {
+
+                $query = "round((select count(num_respuesta) 
+                    		from nps 
+                            where num_respuesta = '1' and num_pregunta = '$pregunta' and mes = gen.mes and semana = gen.semana)/ 
+                            (select count(num_pregunta) 
+                    from nps where semana = gen.semana and mes = gen.mes and num_pregunta = '$pregunta' limit 1 )*100, 2) as NO,  
+                    round((select count(num_respuesta) 
+                    		from nps  
+                            where num_respuesta = '2' and num_pregunta = '$pregunta' and mes = gen.mes and semana = gen.semana)/ 
+                            (select count(num_pregunta)  
+                    from nps where semana = gen.semana and mes = gen.mes and num_pregunta = '$pregunta' limit 1 )*100, 2) as PROBNO, 
+                    round((select count(num_respuesta)  
+                    		from nps  
+                            where num_respuesta = '3' and num_pregunta = '$pregunta' and mes = gen.mes and semana = gen.semana)/ 
+                            (select count(num_pregunta)  
+                    from nps where semana = gen.semana and mes = gen.mes and num_pregunta = '$pregunta' limit 1 )*100, 2) as NOSEGURO, 
+                    round((select count(num_respuesta)  
+                    		from nps 
+                            where num_respuesta = '4' and num_pregunta = '$pregunta' and mes = gen.mes and semana = gen.semana)/ 
+                            (select count(num_pregunta)  
+                    from nps where semana = gen.semana and mes = gen.mes and num_pregunta = '$pregunta' limit 1 )*100, 2) as PROBSI, 
+                    round((select count(num_respuesta)  
+                    		from nps 
+                            where num_respuesta = '5' and num_pregunta = '$pregunta' and mes = gen.mes and semana = gen.semana)/ 
+                            (select count(num_pregunta)  
+                    from nps where semana = gen.semana and mes = gen.mes and num_pregunta = '$pregunta' limit 1 )*100, 2) as SI, 
+                    round(round((select count(num_respuesta)  
+                    from nps where num_respuesta = '5' and num_pregunta = '$pregunta' and mes = gen.mes and semana = gen.semana)-(select count(respuesta) 
+                    from nps where num_respuesta = '3' and num_pregunta = '$pregunta' and mes = gen.mes and semana = gen.semana)-(select count(respuesta) 
+                    from nps where num_respuesta = '2' and num_pregunta = '$pregunta' and mes = gen.mes and semana = gen.semana)-(select count(respuesta) 
+                    from nps where num_respuesta = '1' and num_pregunta = '$pregunta' and mes = gen.mes and semana = gen.semana))/(select count(respuesta) 
+                    from nps where num_pregunta = '$pregunta' and semana = gen.semana)*100, 2) as NPS ";
+
+            }
+
+            $sql =$this->_DB->query( "select gen.semana, 
+                 $query 
+                from nps gen 
+                where mes = '$nom_mes' 
+                group by gen.semana order by semana desc ");
+
+            $sql->execute();
+
+            //echo $this->mysqli->query($sqlLogin);
+            //
+            if ($sql->rowCount()) {
+                $categorias = [];
+                $resultado  = [];
+                if ($pregunta == "1" || $pregunta == "6" || $pregunta == "7" || $pregunta == "8") {
+                    $si = [];
+                    $no = [];
+
+                    while ($row = $sql->fetchAll(PDO::FETCH_ASSOC)) {
+                        $year       = date("Y");
+                        $week       = substr($row['semana'], 7);
+                        $diaInicial = date('Y-m-d', strtotime($year . 'W' . $week));
+                        $diaFinal   = date('Y-m-d', strtotime($diaInicial . "+ 6 days"));
+
+                        $row["fechaInic"] = $diaInicial;
+                        $row["fechaFin"]  = $diaFinal;
+
+                        $resultado[] = $row;
+                        $label       = $row['semana'];
+                        $resno       = $row['NO'];
+                        $ressi       = $row['SI'];
+
+                        $categorias[] = ["label" => "$label"];
+                        $no[]         = ["value" => "$resno"];
+                        $si[]         = ["value" => "$ressi"];
+                    }
+
+                } else {
+                    $no       = [];
+                    $probno   = [];
+                    $noseguro = [];
+                    $probsi   = [];
+                    $si       = [];
+
+                    while ($row = $sql->fetchAll(PDO::FETCH_ASSOC)) {
+
+                        $year       = date("Y");
+                        $week       = substr($row['semana'], 7);
+                        $diaInicial = date('Y-m-d', strtotime($year . 'W' . $week));
+                        $diaFinal   = date('Y-m-d', strtotime($diaInicial . "+ 6 days"));
+
+                        $row["fechaInic"] = $diaInicial;
+                        $row["fechaFin"]  = $diaFinal;
+                        $resultado[]      = $row;
+                        $label            = $row['semana'];
+                        $resno            = $row['NO'];
+                        $prono            = $row['PROBNO'];
+                        $nosegur          = $row['NOSEGURO'];
+                        $prosi            = $row['PROBSI'];
+                        $ressi            = $row['SI'];
+
+                        $categorias[] = ["label" => "$label"];
+                        $no[]         = ["value" => "$resno"];
+                        $probno[]     = ["value" => "$prono"];
+                        $noseguro[]   = ["value" => "$nosegur"];
+                        $probsi[]     = ["value" => "$prosi"];
+                        $si[]         = ["value" => "$ressi"];
+                    }
+                }
+
+                $sql1 = $this->_DB->query("select round(((select count(num_respuesta) 
+                    from nps where num_pregunta = '$pregunta' and num_respuesta = '5' and mes = '$nom_mes')-(select count(respuesta) 
+                    from nps where num_pregunta = '$pregunta' and num_respuesta = '3' and mes = '$nom_mes')-(select count(respuesta) 
+                    from nps where num_pregunta = '$pregunta' and num_respuesta = '2' and mes = '$nom_mes')-(select count(respuesta) 
+                    from nps where num_pregunta = '$pregunta' and num_respuesta = '1' and mes = '$nom_mes'))/(select count(respuesta) 
+                    from nps where num_pregunta = '$pregunta' and mes = '$nom_mes')*100, 2) as NPS ");
+                $sql1->execute();
+
+                $NPSAcumulado = 0;
+                $result       = [];
+                if ($row = $sql1->fetchAll(PDO::FETCH_ASSOC)) {
+                    $NPSAcumulado = $row['NPS'];
+                }
+
+                $Query =$this->_DB->query( "select gen.respuesta, count(gen.num_respuesta) total, 
+                    round((count(gen.num_respuesta)/(select count(num_pregunta) 
+                    from nps where num_pregunta = '$pregunta' and mes = gen.mes limit 1 )) *100, 2) as porcentaje 
+                    from nps gen 
+                    where gen.num_pregunta = '$pregunta'
+                    and mes = '$nom_mes' 
+                    group by gen.num_respuesta ");
+
+                $Query->execute();
+
+                $resultadorespuestas = [];
+
+                while ($row = $Query->fetchAll(PDO::FETCH_ASSOC)) {
+                    $resultadorespuestas[] = $row;
+                }
+
+                if ($pregunta == "1" || $pregunta == "6" || $pregunta == "7" || $pregunta == "8") {
+
+                    $querydiario = "round((select count(num_respuesta) 
+                        from nps
+                        where num_respuesta = '1' and num_pregunta = '$pregunta' and mes=gen.mes and fecha_instalacion = gen.fecha_instalacion)/ 
+                        (select count(num_pregunta)
+                        from nps where num_pregunta = '$pregunta'  and mes=gen.mes 
+                        and fecha_instalacion = gen.fecha_instalacion limit 1 )*100, 2) as SI,
+                        round((select count(num_respuesta)  
+                        from nps  
+                        where num_respuesta = '2' and num_pregunta = '$pregunta' and mes=gen.mes and fecha_instalacion = gen.fecha_instalacion)/ 
+                        (select count(num_pregunta)  
+                        from nps where num_pregunta = '$pregunta'  and mes=gen.mes 
+                        and fecha_instalacion = gen.fecha_instalacion limit 1 )*100, 2) as NO ";
+                } else {
+
+                    $querydiario = "round((select count(num_respuesta) 
+                        from nps
+                        where num_respuesta = '1' and num_pregunta = '$pregunta' and mes=gen.mes and fecha_instalacion = gen.fecha_instalacion)/ 
+                        (select count(num_pregunta)
+                        from nps where num_pregunta = '$pregunta' and mes=gen.mes 
+                        and fecha_instalacion = gen.fecha_instalacion limit 1 )*100, 2) as NO,
+                        round((select count(num_respuesta)  
+                        from nps
+                        where num_respuesta = '2' and num_pregunta = '$pregunta' and mes=gen.mes and fecha_instalacion = gen.fecha_instalacion)/ 
+                        (select count(num_pregunta)
+                        from nps where num_pregunta = '$pregunta' and mes=gen.mes 
+                        and fecha_instalacion = gen.fecha_instalacion limit 1 )*100, 2) as PROBNO,  
+                        round((select count(num_respuesta)  
+                        from nps  
+                        where num_respuesta = '3' and num_pregunta = '$pregunta' and mes=gen.mes and fecha_instalacion = gen.fecha_instalacion)/ 
+                        (select count(num_pregunta)  
+                        from nps where num_pregunta = '$pregunta' and mes=gen.mes 
+                        and fecha_instalacion = gen.fecha_instalacion limit 1 )*100, 2) as NOSEGURO, 
+                        round((select count(num_respuesta)  
+                        from nps  
+                        where num_respuesta = '4' and num_pregunta = '$pregunta' and mes=gen.mes and fecha_instalacion = gen.fecha_instalacion)/ 
+                        (select count(num_pregunta)  
+                        from nps where num_pregunta = '$pregunta' and mes=gen.mes  
+                        and fecha_instalacion = gen.fecha_instalacion limit 1 )*100, 2) as PROBSI, 
+                        round((select count(num_respuesta)  
+                        from nps  
+                        where num_respuesta = '5' and num_pregunta = '$pregunta' and mes=gen.mes and fecha_instalacion = gen.fecha_instalacion)/ 
+                        (select count(num_pregunta)  
+                        from nps where num_pregunta = '$pregunta' and mes=gen.mes  
+                        and fecha_instalacion = gen.fecha_instalacion limit 1 )*100, 2) as SI  ";
+                }
+
+                $sqlDiario =$this->_DB->query( "select gen.fecha_instalacion dia, 
+                    $querydiario 
+                    from nps gen 
+                    where gen.num_pregunta = '$pregunta' 
+                    and gen.mes = '$nom_mes' 
+                    group by gen.fecha_instalacion order by gen.fecha_instalacion ");
+
+                $sqlDiario->execute();
+                //echo $sqlDiario;
+                $resultadoDiario = [];
+
+                if ($sqlDiario->rowCount()) {
+                    $dias            = [];
+                    $resultadoDiario = [];
+                    if ($pregunta == "1" || $pregunta == "6" || $pregunta == "7" || $pregunta == "8") {
+                        $diasi = [];
+                        $diano = [];
+
+                        while ($row = $sqlDiario->fetchAll(PDO::FETCH_ASSOC)) {
+                            $resultadoDiario[] = $row;
+                            $label             = $row['dia'];
+                            $diaresno          = $row['NO'];
+                            $diaressi          = $row['SI'];
+
+                            $dias[]  = ["label" => "$label"];
+                            $diano[] = ["value" => "$diaresno"];
+                            $diasi[] = ["value" => "$diaressi"];
+                        }
+
+                    } else {
+                        $diano       = [];
+                        $diaprobno   = [];
+                        $dianoseguro = [];
+                        $diaprobsi   = [];
+                        $diasi       = [];
+
+                        while ($row = $sqlDiario->fetchAll(PDO::FETCH_ASSOC)) {
+                            $resultadoDiario[] = $row;
+                            $label             = $row['dia'];
+                            $diaresno          = $row['NO'];
+                            $diaprono          = $row['PROBNO'];
+                            $dianosegur        = $row['NOSEGURO'];
+                            $diaprosi          = $row['PROBSI'];
+                            $diaressi          = $row['SI'];
+
+                            $dias[]        = ["label" => "$label"];
+                            $diano[]       = ["value" => "$diaresno"];
+                            $diaprobno[]   = ["value" => "$diaprono"];
+                            $dianoseguro[] = ["value" => "$dianosegur"];
+                            $diaprobsi[]   = ["value" => "$diaprosi"];
+                            $diasi[]       = ["value" => "$diaressi"];
+                        }
+                    }
+                }
+
+                if ($pregunta == "1" || $pregunta == "6" || $pregunta == "7" || $pregunta == "8") {
+
+                    $querydepartamento = "round((select count(num_respuesta)  
+                        from nps
+                        where num_respuesta = '1' and num_pregunta = '$pregunta'  and mes=gen.mes and regional = gen.regional)/ 
+                        (select count(num_pregunta)
+                        from nps where regional = gen.regional and mes=gen.mes and num_pregunta = '$pregunta'  limit 1 )*100, 2) as SI, 
+                        round((select count(num_respuesta)
+                        from nps  
+                        where num_respuesta = '2' and num_pregunta = '$pregunta' and mes=gen.mes and regional = gen.regional)/
+                        (select count(num_pregunta)  
+                        from nps where regional = gen.regional and mes=gen.mes and num_pregunta = '$pregunta' limit 1 )*100, 2) as NO ";
+                } else {
+
+                    $querydepartamento = "round((select count(num_respuesta)  
+                        from nps
+                        where num_respuesta = '1' and num_pregunta = '$pregunta' and mes=gen.mes and regional = gen.regional)/ 
+                        (select count(num_pregunta)
+                        from nps where regional = gen.regional and mes=gen.mes and num_pregunta = '$pregunta'  limit 1 )*100, 2) as NO,  
+                        round((select count(num_respuesta)
+                        from nps  
+                        where num_respuesta = '2' and num_pregunta = '$pregunta' and mes=gen.mes  and regional = gen.regional)/
+                        (select count(num_pregunta)  
+                        from nps where regional = gen.regional and mes=gen.mes and num_pregunta = '$pregunta' limit 1 )*100, 2) as PROBNO,
+                        round((select count(num_respuesta)  
+                        from nps
+                        where num_respuesta = '3' and num_pregunta = '$pregunta' and mes=gen.mes and regional = gen.regional)/ 
+                        (select count(num_pregunta)
+                        from nps where regional = gen.regional and mes=gen.mes and num_pregunta = '$pregunta' limit 1 )*100, 2) as NOSEGURO,  
+                        round((select count(num_respuesta)
+                        from nps 
+                        where num_respuesta = '4' and num_pregunta = '$pregunta' and mes=gen.mes and regional = gen.regional)/
+                        (select count(num_pregunta)  
+                        from nps where regional = gen.regional and mes=gen.mes and num_pregunta = '$pregunta' limit 1 )*100, 2) as PROBSI,
+                        round((select count(num_respuesta) 
+                        from nps
+                        where num_respuesta = '5' and num_pregunta = '$pregunta' and mes=gen.mes and regional = gen.regional)/
+                        (select count(num_pregunta)
+                        from nps where regional = gen.regional and mes=gen.mes and num_pregunta = '$pregunta' limit 1 )*100, 2) as SI, 
+                        round(((select count(num_respuesta)
+                        from nps where num_respuesta = '5' and num_pregunta = '$pregunta' and mes = gen.mes and regional = gen.regional)
+                        -(select count(num_respuesta)
+                        from nps where num_respuesta = '1' and num_pregunta = '$pregunta' and mes = gen.mes and regional = gen.regional) 
+                        -(select count(num_respuesta) 
+                        from nps where num_respuesta = '2' and num_pregunta = '$pregunta' and mes = gen.mes and regional = gen.regional) 
+                        -(select count(num_respuesta) 
+                        from nps where num_respuesta = '3' and num_pregunta = '$pregunta' and mes = gen.mes and regional = gen.regional))/ 
+                        (select count(num_respuesta) 
+                        from nps where num_pregunta = '4' and mes = gen.mes and regional = gen.regional)*100,2) as NPS ";
+                }
+
+                $sqlDepartamento =$this->_DB->query( "select gen.regional regional, 
+                    $querydepartamento 
+                    from nps gen 
+                    where gen.mes = '$nom_mes' 
+                    group by gen.regional order by gen.regional ");
+
+                $sqlDepartamento->execute();
+
+                $resultadoDepartamento = [];
+
+                while ($row = $sqlDepartamento->fetchAll(PDO::FETCH_ASSOC)) {
+                    $row['regional']         = utf8_encode($row['regional']);
+                    $resultadoDepartamento[] = $row;
+                }
+
+                if ($pregunta == "1" || $pregunta == "6" || $pregunta == "7" || $pregunta == "8") {
+
+                    $valoresSemana = "(select count(num_respuesta) 
+                        from nps  
+                        where num_respuesta = '1' and num_pregunta = '$pregunta' and mes=gen.mes and semana = gen.semana ) as SI, 
+                        (select count(num_respuesta) from nps  
+                        where num_respuesta = '2' and num_pregunta = '$pregunta' and mes=gen.mes and semana = gen.semana ) as NO, 
+                        (select count(num_respuesta)  
+                        from nps where semana = gen.semana and mes=gen.mes and num_pregunta = '$pregunta' ) as TOTAL ";
+                } else {
+
+                    $valoresSemana = "(select count(num_respuesta) 
+                        from nps  
+                        where num_respuesta = '1' and num_pregunta = '$pregunta' and semana = gen.semana and mes = gen.mes) as NO,   
+                        (select count(num_respuesta)  from nps  
+                        where num_respuesta = '2' and num_pregunta = '$pregunta' and semana = gen.semana and mes = gen.mes) as PROBNO,  
+                        (select count(num_respuesta)  from nps   
+                        where num_respuesta = '3' and num_pregunta = '$pregunta' and semana = gen.semana and mes = gen.mes) as NOSEGURO,  
+                        (select count(num_respuesta)  from nps  
+                        where num_respuesta = '4' and num_pregunta = '$pregunta' and semana = gen.semana and mes = gen.mes) as PROBSI,  
+                        (select count(num_respuesta)  from nps  
+                        where num_respuesta = '5' and num_pregunta = '$pregunta' and semana = gen.semana and mes = gen.mes) as SI, 
+                        (select count(num_respuesta)  
+                        from nps where semana = gen.semana and num_pregunta = '$pregunta' and mes = gen.mes) as TOTAL ";
+                }
+
+                $sqlValoresSemana =$this->_DB->query( "select gen.semana,  
+                    $valoresSemana 
+                    from nps gen 
+                    where gen.mes = '$nom_mes' 
+                    group by gen.semana order by gen.semana desc ");
+
+                $sqlValoresSemana->execute();
+
+                $resultadoValSemana = [];
+
+                while ($row = $sqlValoresSemana->fetchAll(PDO::FETCH_ASSOC)) {
+
+                    $year       = date("Y");
+                    $week       = substr($row['semana'], 7);
+                    $diaInicial = date('Y-m-d', strtotime($year . 'W' . $week));
+                    $diaFinal   = date('Y-m-d', strtotime($diaInicial . "+ 6 days"));
+
+                    $row["fechaInic"] = $diaInicial;
+                    $row["fechaFin"]  = $diaFinal;
+
+                    $resultadoValSemana[] = $row;
+                }
+
+                if ($pregunta == "1" || $pregunta == "6" || $pregunta == "7" || $pregunta == "8") {
+
+                    $querycontrato = "round((select count(contratista) 
+                        from nps  
+                        where num_respuesta = '1' and num_pregunta = '$pregunta' and mes=gen.mes and contratista = gen.contratista)/ 
+                        (select count(contratista)  
+                        from nps where contratista = gen.contratista and mes=gen.mes and num_pregunta = '$pregunta' limit 1 )*100, 2) as SI,  
+                        round((select count(contratista)  
+                        from nps  
+                        where num_respuesta = '2' and num_pregunta = '$pregunta' and mes=gen.mes and contratista = gen.contratista)/ 
+                        (select count(contratista)  
+                        from nps where contratista = gen.contratista and mes=gen.mes and num_pregunta = '$pregunta' limit 1 )*100, 2) as NO ";
+                } else {
+
+                    $querycontrato = "round((select count(contratista) 
+                        from nps  
+                        where num_respuesta = '1' and num_pregunta = '$pregunta' and mes=gen.mes and contratista = gen.contratista)/ 
+                        (select count(contratista)  
+                        from nps where contratista = gen.contratista and mes=gen.mes and num_pregunta = '$pregunta' limit 1 )*100, 2) as NO,  
+                        round((select count(contratista)   
+                        from nps 
+                        where num_respuesta = '2' and num_pregunta = '$pregunta' and mes=gen.mes and contratista = gen.contratista)/ 
+                        (select count(contratista)  
+                        from nps where contratista = gen.contratista and mes=gen.mes and num_pregunta = '$pregunta' limit 1 )*100, 2) as PROBNO,  
+                        round((select count(contratista)  
+                        from nps  
+                        where num_respuesta = '3' and num_pregunta = '$pregunta' and mes=gen.mes and contratista = gen.contratista)/ 
+                        (select count(contratista)  
+                        from nps where contratista = gen.contratista and mes=gen.mes and num_pregunta = '$pregunta' limit 1 )*100, 2) as NOSEGURO,  
+                        round((select count(contratista)  
+                        from nps  
+                        where num_respuesta = '4' and num_pregunta = '$pregunta' and mes=gen.mes and contratista = gen.contratista)/ 
+                        (select count(contratista)  
+                        from nps where contratista = gen.contratista and mes=gen.mes and num_pregunta = '$pregunta' limit 1 )*100, 2) as PROBSI,  
+                        round((select count(contratista)  
+                        from nps  
+                        where num_respuesta = '5' and num_pregunta = '$pregunta' and mes=gen.mes and contratista = gen.contratista)/ 
+                        (select count(contratista)  
+                        from nps where contratista = gen.contratista and mes=gen.mes and num_pregunta = '$pregunta' limit 1 )*100, 2) as SI ";
+                }
+
+                $SqlContrato =$this->_DB->query( "select gen.contratista contrato, 
+                    $querycontrato 
+                    from  nps gen 
+                    where gen.mes = '$nom_mes' 
+                    group by gen.contratista ");
+
+                $SqlContrato->execute();
+
+                $resultadoContrato = [];
+
+                while ($row = $SqlContrato->fetchAll(PDO::FETCH_ASSOC)) {
+                    $resultadoContrato[] = $row;
+                }
+                $response=[$resultado,
+                    $NPSAcumulado,
+                    $resultadorespuestas,
+                    $resultadoDiario,
+                    $resultadoDepartamento,
+                    $resultadoContrato,
+                    $categorias,
+                    $no,
+                    $probno,
+                    $noseguro,
+                    $probsi,
+                    $si,
+                    $dias,
+                    $diano,
+                    $diaprobno,
+                    $dianoseguro,
+                    $diaprobsi,
+                    $diasi,
+                    $resultadoValSemana,
+                    $nom_mes,201];
+
+            } else {
+                $response = ['',400];
+
+                $this->response($this->json($error), 400);
+            }
+
+        }catch(PDOException $e){
+            var_dump($e->getMessage());
+        }
+
+        echo json_encode($response);
+    }
+
+    public function listadoTecnicos($data)
+    {
+        try{
+            $pagina   = $data->page;
+            $concepto = $data->concepto;
+            $tecnico  = $data->tecnico;
+
+            if ($pagina == "undefined") {
+                $pagina = "0";
+            } else {
+                $pagina = $pagina - 1;
+            }
+
+            $pagina = $pagina * 100;
+
+            if ($concepto == 'nombre') {
+                $parametro = "and nombre LIKE '%$tecnico%'";
+            } elseif ($concepto == 'identificacion') {
+                $parametro = " and identificacion = '$tecnico'";
+            } elseif ($concepto == 'ciudad') {
+                $parametro = " and ciudad = '$tecnico'";
+            } elseif ($concepto == 'celuar') {
+                $parametro = " and celular = '$tecnico'";
+            };
+
+            $query = $this->_DB->query("select a.ID, a.IDENTIFICACION, a.NOMBRE, a.CIUDAD, a.CELULAR,  a.empresa, 
+             (select b.nombre from empresas b where b.id=a.empresa) as NOM_EMPRESA 
+             from tecnicos a 
+             where 1=1 $parametro order by a.nombre ASC 
+             limit 100 offset $pagina ")
+
+            ;
+
+            $queryCount =$this->_DB->query( " select count(*) as Cantidad from tecnicos h 
+             where 1=1 
+            $parametro ");
+            //echo $query;
+            $queryCount->execute();
+            $counter = 0;
+            if ($queryCount->rowCount()) {
+                $result = [];
+                if ($row = $queryCount->fetchAll()) {
+                    $counter = $row['Cantidad'];
+                }
+            }
+            //echo $this->mysqli->query($sqlLogin);
+            //
+            $query->execute();
+            if ($query->rowCount()) {
+
+                $resultado = [];
+
+                while ($row = $query->fetchAll(PDO::FETCH_ASSOC)) {
+
+                    $row['NOMBRE'] = $row['NOMBRE'];
+                    $resultado[]   = $row;
+
+                }
+                $response=[$resultado, $counter,201];
+
+            } else {
+                $response = ['',400];
+            }
+        }catch(PDOException $e){
+            var_dump($e->getMessage());
+        }
+        echo json_encode($response);
+    }
+
+    public function buscarPedidoContingencias($data)
+    {
+        try{
+            $pedido = $this->_request['pedido'];
+
+            if ($pedido !== "") {
+
+                $query = $this->_DB->query("SELECT pedido, accion, ciudad, correo, macEntra, macSale, paquetes, motivo, proceso, producto, contrato, perfil,
+						horagestion, logindepacho,	logincontingencia, loginContingenciaPortafolio, horacontingencia, horaContingenciaPortafolio,
+						tipoEquipo, tecnologia, remite, tipificacion, tipificacionPortafolio, acepta, aceptaPortafolio, observacion, observContingencia,
+						observContingenciaPortafolio, ingresoEquipos
+						FROM contingencias
+						WHERE pedido = '$pedido'
+					");
+
+                $query->execute();
+
+                if ($query->rowCount()) {
+                    $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+
+                    $response=[$resultado,201];
+                } else {
+                    $response = ['',400];
+                }
+            } else {
+                $response = ['',400];
+            }
+
+        }catch (PDOException $e){
+            var_dump($e->getMessage());
+        }
+        echo json_encode($response);
+    }
 }
