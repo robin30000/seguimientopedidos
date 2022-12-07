@@ -24,23 +24,28 @@ if (isset($data->method)) {
             break;
 
         case 'getRegistrosCarga':
+            require_once '../class/otrosServicios.php';
             $user = new otrosServicios();
             $user->getRegistrosCarga();
             break;
         case'getDemePedidoEncuesta':
+            require_once '../class/otrosServicios.php';
             $user = new otrosServicios();
             $user->getDemePedidoEncuesta();
             break;
 
         case 'resumenSemanas':
+            require_once '../class/otrosServicios.php';
             $user = new otrosServicios();
             $user->resumenSemanas($data->data);
             break;
         case 'listadoTecnicos':
+            require_once '../class/otrosServicios.php';
             $user = new otrosServicios();
             $user->listadoTecnicos($data->data);
             break;
         case 'buscarPedidoContingencias':
+            require_once '../class/otrosServicios.php';
             $user = new otrosServicios();
             $user->buscarPedidoContingencias($data->data);
             break;

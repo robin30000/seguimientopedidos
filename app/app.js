@@ -1220,27 +1220,33 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
     obj.listadoEstadosClick = function (listaClick) {
-        return $http.post(serviceBase + 'listadoEstadosClick', {"listaClick": listaClick});
+        var data={method:'listadoEstadosClick',data:listaClick}
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php', data);
     };
 
-    obj.getBuscarPedidoinsta = function (info, user) {
-        return $http.post(serviceBase + 'BuscarPedidoinsta', {"info": info, "user": user});
-    };
+ /*   obj.getBuscarPedidoinsta = function (info, user) {
+        var data={method:'BuscarPedidoinsta',data:{info:info,user:user}}
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php', data);
+    };*/
 
     obj.getGuardarPedidoPendiInsta = function (pedido, datosdelpedido, info, user) {
-        return $http.post(serviceBase + 'GuardarPedidoPendiInsta', {"pedido": pedido, "datosdelpedido": datosdelpedido, "info": info, "user": user});
+        var data={method:'GuardarPedidoPendiInsta',data:{pedido:pedido,datosdelpedido:datosdelpedido,info:info,user:user}}
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php', data);
     };
 
     obj.deleteregistrosCarga = function (idCarga) {
-        return $http.get(serviceBase + 'deleteregistrosCarga?idCarga=' + idCarga);
+        var data={method:'deleteregistrosCarga',data:idCarga}
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' + data);
     };
 
     obj.getAccionesoffline = function (producto) {
-        return $http.get(serviceBase + 'Accionesoffline?producto=' + producto);
+        var data={method:'Accionesoffline',data:producto}
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' + data);
     }
 
     obj.getAcciones = function (proceso) {
-        return $http.get(serviceBase + 'acciones?proceso=' + proceso);
+        var data={method:'acciones',data:proceso}
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' + data);
     };
 
     obj.getSubAcciones = function (proceso, accion) {
@@ -1249,11 +1255,13 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
     obj.getCodigos = function (proceso, UNESourceSystem) {
-        return $http.get(serviceBase + 'Codigos?proceso=' + proceso + '&UNESourceSystem=' + UNESourceSystem);
+        var data={method:'Codigos',data:{proceso:proceso,UNESourceSystem:UNESourceSystem}}
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' +data);
     };
 
     obj.getDiagnosticos = function (producto, accion) {
-        return $http.get(serviceBase + 'Diagnosticos?producto=' + producto);
+        var data={method:'Diagnosticos',data:{producto:producto,accion:accion}}
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' + data);
     };
 
 
