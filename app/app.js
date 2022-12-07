@@ -1049,7 +1049,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     obj.getbuscarPedidoContingencia = function (pedido) {
         var data={method:'buscarPedidoContingencias',data:pedido}
-        return $http.get(serviceBase1 + 'buscarPedidoContingencias',data);
+        return $http.get(serviceBase1 + 'contingenciaCtrl.php',data);
     };
 
     obj.getCiudades = function () {
