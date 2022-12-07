@@ -3,15 +3,20 @@
 class utils
 {
 
-    public $_allow = array();
+    public $_allow = [];
+
     public $_content_type = "application/json";
-    public $_request = array();
+
+    public $_request = [];
 
     private $_method = "";
+
     private $_code = 200;
+
     private $_model;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->inputs();
     }
 
@@ -57,19 +62,23 @@ class utils
     }
 
 
-    public function get_referer() {
+    public function get_referer()
+    {
         return $_SERVER['HTTP_REFERER'];
     }
 
-    public function response($data, $status) {
+    public function response($data, $status)
+    {
         $this->_code = ($status) ? $status : 200;
         $this->set_headers();
         echo $data;
         exit;
     }
+
     // For a list of http codes checkout http://en.wikipedia.org/wiki/List_of_HTTP_status_codes
-    private function get_status_message() {
-        $status = array(
+    private function get_status_message()
+    {
+        $status = [
             200 => 'OK',
             201 => 'Created',
             204 => 'No Content',
@@ -78,16 +87,19 @@ class utils
             401 => 'There is no data',
             404 => 'Not Found',
             406 => 'Not Acceptable',
-            500 => 'Internal Server Error'
-        );
+            500 => 'Internal Server Error',
+        ];
+
         return ($status[$this->_code]) ? $status[$this->_code] : $status[500];
     }
 
-    public function get_request_method() {
+    public function get_request_method()
+    {
         return $_SERVER['REQUEST_METHOD'];
     }
 
-    private function inputs() {
+    private function inputs()
+    {
         switch ($this->get_request_method()) {
             case "POST":
                 $this->_request = $this->cleanInputs($_POST);
@@ -106,8 +118,9 @@ class utils
         }
     }
 
-    private function cleanInputs($data) {
-        $clean_input = array();
+    private function cleanInputs($data)
+    {
+        $clean_input = [];
         if (is_array($data)) {
             foreach ($data as $k => $v) {
                 $clean_input[$k] = $this->cleanInputs($v);
@@ -116,21 +129,123 @@ class utils
             if (get_magic_quotes_gpc()) {
                 $data = trim(stripslashes($data));
             }
-            $data = strip_tags($data);
+            $data        = strip_tags($data);
             $clean_input = trim($data);
         }
+
         return $clean_input;
     }
 
-    private function set_headers() {
+    private function set_headers()
+    {
         header("HTTP/1.1 " . $this->_code . " " . $this->get_status_message());
         header("Content-Type:" . $this->_content_type);
     }
 
-    public function json($data) {
+    public function json($data)
+    {
         if (is_array($data)) {
             return json_encode($data);
         }
+    }
+
+    public function quitar_tildes($cadena)
+    {
+        //echo 'recibi cadena'.$cadena;
+        $no_permitidas = [
+            "á",
+            "é",
+            "í",
+            "ó",
+            "ú",
+            "Á",
+            "É",
+            "Í",
+            "Ó",
+            "Ú",
+            "ñ",
+            "À",
+            "Ã",
+            "Ì",
+            "Ò",
+            "Ù",
+            "Ã™",
+            "Ã ",
+            "Ã¨",
+            "Ã¬",
+            "Ã²",
+            "Ã¹",
+            "ç",
+            "Ç",
+            "Ã¢",
+            "ê",
+            "Ã®",
+            "Ã´",
+            "Ã»",
+            "Ã‚",
+            "ÃŠ",
+            "ÃŽ",
+            "Ã”",
+            "Ã›",
+            "ü",
+            "Ã¶",
+            "Ã–",
+            "Ã¯",
+            "Ã¤",
+            "«",
+            "Ò",
+            "Ã",
+            "Ã„",
+            "Ã‹",
+        ];
+        $permitidas    = [
+            "a",
+            "e",
+            "i",
+            "o",
+            "u",
+            "A",
+            "E",
+            "I",
+            "O",
+            "U",
+            "n",
+            "N",
+            "A",
+            "E",
+            "I",
+            "O",
+            "U",
+            "a",
+            "e",
+            "i",
+            "o",
+            "u",
+            "c",
+            "C",
+            "a",
+            "e",
+            "i",
+            "o",
+            "u",
+            "A",
+            "E",
+            "I",
+            "O",
+            "U",
+            "u",
+            "o",
+            "O",
+            "i",
+            "a",
+            "e",
+            "U",
+            "I",
+            "A",
+            "E",
+        ];
+        $texto         = str_replace($no_permitidas, $permitidas, $cadena);
+        return $texto;
     }
 
 }

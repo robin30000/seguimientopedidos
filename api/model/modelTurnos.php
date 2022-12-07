@@ -66,7 +66,7 @@ class modelTurnos
     public function cumpleTurnos($data)
     {
         try {
-            $datos = $data->datos;
+            $datos = $data;
             $fecha = $datos['fechaIni'];
             $stmt  = $this->_DB->prepare("select fecha,
                                                    usuario,
