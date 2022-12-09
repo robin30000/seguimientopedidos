@@ -14,13 +14,10 @@ class gestionAprovisionamiento
         $this->_utils = new utils();
     }
 
-    public function updateEnGestion($data)
+    public function updateEnGestion()
     {
 
-        $login = $data;
-        $hoy = date("Y-m-d");
-
-        $response = $this->_model->updateEnGestionResponse($login, $hoy);
+        $response = $this->_model->updateEnGestionResponse();
         $this->_utils->response($this->_utils->json([$response]), 201);
 
     }

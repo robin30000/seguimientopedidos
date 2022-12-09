@@ -11,9 +11,12 @@ class modelGestionAprovisionamiento
         $this->_DB = new Conection();
     }
 
-    public function updateEnGestionResponse($login, $hoy)
+    public function updateEnGestionResponse()
     {
         try {
+            session_start();
+            $hoy = date('Y-m-d');
+
             $stmt = $this->_DB->prepare("SELECT id,
                                                    engestion,
                                                    pedido,
@@ -25,7 +28,7 @@ class modelGestionAprovisionamiento
                                             WHERE logindepacho = :login
                                               AND horagestion BETWEEN (:fechaini) AND (:fechafin)");
 
-            $stmt->execute([':login' => $login, ':fechaini' => "$hoy 00-00-00", ':fechafin' => "$hoy 23-59-59"]);
+            $stmt->execute([':login' => $_SESSION['login'], ':fechaini' => "$hoy 00-00-00", ':fechafin' => "$hoy 23-59-59"]);
 
             if ($stmt->rowCount()) {
                 $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -36,6 +39,7 @@ class modelGestionAprovisionamiento
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+
         return $response;
     }
 }

@@ -963,10 +963,9 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'gestionEscalonamientoCtrl.php', data);
     };
 
-    obj.UpdatePedidosEngestion = function (login) {
+    obj.UpdatePedidosEngestion = function () {
         var data = {
             method: 'updateEnGestion',
-            data: login
         }
         return $http.post(serviceBase1 + 'gestionAprovisionamientoCtrl.php', data);
     };
