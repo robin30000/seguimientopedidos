@@ -89,4 +89,115 @@ class modelQuejasGo
         echo json_encode($response);
 
     }
+
+    public function csvQuejasGo($data)
+    {
+        try {
+
+            $usuarioid       = $_SESSION['login'];
+            $datos           = $data;
+            $fechaini        = $datos['fechaini'];
+            $fechafin        = $datos['fechafin'];
+            $columnaBusqueda = $datos['columnaBusqueda'];
+            $valorBusqueda   = $datos ['valorBusqueda'];
+
+
+            if ($fechaini == "" && $fechafin == "") {
+                $fechaini = date("Y") . "-" . date("m") . "-" . date("d");
+                $fechafin = date("Y") . "-" . date("m") . "-" . date("d");
+            }
+
+            if ($fechaini == $fechafin) {
+                $filename = "QuejasGo" . "_" . $fechaini . "_" . $usuarioid . ".csv";
+            } else {
+                $filename = "QuejasGo" . "_" . $fechaini . "_" . $fechafin . "_" . $usuarioid . ".csv";
+            }
+
+
+            if ($columnaBusqueda == "" || $valorBusqueda == "") {
+
+                $stmt = $this->_DB->prepare("SELECT g.id,
+                                                       g.pedido,
+                                                       g.cliente,
+                                                       g.cedtecnico,
+                                                       g.tecnico,
+                                                       g.accion,
+                                                       g.asesor,
+                                                       g.fecha,
+                                                       g.duracion,
+                                                       g.region,
+                                                       g.idllamada,
+                                                       g.observacion
+                                                FROM quejasgo g
+                                                WHERE 1 = 1
+                                                  AND g.fecha BETWEEN (:fechaini) AND (:fechafin)");
+                $stmt->execute([':fechaini' => "$fechaini 00:00:00", ':fechafin' => "$fechafin 23:59:59"]);
+
+            } else {
+
+                $stmt = $this->_DB->query("SELECT g.id,
+                                                           g.pedido,
+                                                           g.cliente,
+                                                           g.cedtecnico,
+                                                           g.tecnico,
+                                                           g.accion,
+                                                           g.asesor,
+                                                           g.fecha,
+                                                           g.duracion,
+                                                           g.region,
+                                                           g.idllamada,
+                                                           g.observacion
+                                                    FROM quejasgo g
+                                                    WHERE 1 = 1
+                                                      AND g.fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59')
+                                                      AND $columnaBusqueda = '$valorBusqueda'");
+                $stmt->execute();
+
+            }
+
+
+            $queryCount = ("SELECT COUNT(pedido) AS Cantidad FROM quejasgo g
+								WHERE g.fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59')");
+
+            $rr = $this->_DB->prepare($queryCount);
+            $rr->execute([':fechaini' => "$fechaini 00:00:00", ':fechafin' => "$fechafin 23:59:59"]);
+            $counter = 0;
+            if ($rr->rowCount()) {
+                $result = [];
+                if ($row = $rr->fetchAll(PDO::FETCH_ASSOC)) {
+                    $counter = $row['Cantidad'];
+                }
+
+                $fp = fopen("../tmp/$filename", 'w');
+
+                $columnas = [
+                    'CONSECUTIVO',
+                    'PEDIDO',
+                    'CLIENTE',
+                    'CEDULA_TECNICO',
+                    'TECNICO',
+                    'ACCION',
+                    'ASESOR',
+                    'FECHA',
+                    'DURACION',
+                    'CIUDAD',
+                    'ID_LLAMADA',
+                    'OBSERVACIONES',
+                ];
+
+                fputcsv($fp, $columnas);
+                fputcsv($fp, $stmt->fetchAll(PDO::FETCH_ASSOC));
+                fclose($fp);
+
+                $response = [$filename, $counter, 201];
+            } else {
+                $response = ['No se encontraron datos', 400];
+            }
+
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+        $this->_DB = null;
+        echo json_encode($response);
+    }
 }

@@ -54,4 +54,9 @@ class otherServicesFour
     {
         $this->_model->buscaregistros($data);
     }
+
+    public function guardarRecogerEquipos($data)
+    {
+        $this->_model->guardarRecogerEquipos($data);
+    }
 }

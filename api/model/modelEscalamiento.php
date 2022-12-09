@@ -306,8 +306,7 @@ class modelEscalamiento
     {
         try {
 
-            $usuarioid = $params['datosLogin'];
-            $usuarioid = $usuarioid['LOGIN'];
+            $usuarioid = $_SESSION['login'];
             $datos     = $params['datos'];
             $fechaini  = $datos['fechain'];
             $fechafin  = $datos['fechafi'];

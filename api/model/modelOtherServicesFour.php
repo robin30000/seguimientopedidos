@@ -277,4 +277,45 @@ class modelOtherServicesFour
         $this->_DB = null;
         echo json_encode($response);
     }
+
+    public function guardarRecogerEquipos($data)
+    {
+        try {
+            $datos = $data;
+
+            $total = count($datos);
+
+            for ($i = 0; $i < $total; $i++) {
+
+                $pedido      = ($datos[$i]["pedido"]);
+                $mac         = ($datos[$i]["mac"]);
+                $serial      = ($datos[$i]["serial"]);
+                $ciudad      = ($datos[$i]["ciudad"]);
+                $CedTecnico  = ($datos[$i]["CedTecnico"]);
+                $NomTecnico  = ($datos[$i]["NomTecnico"]);
+                $contratista = ($datos[$i]["contratista"]);
+                $fechahora   = date("Y-m-d H:i:s");
+
+                $valores  = '("' . $pedido . '","Recoger Equipo","' . $fechahora . '","' . $ciudad . '","' . $CedTecnico . '","' . $NomTecnico . '","' . $contratista . '","' . $mac . '","' . $serial . '"),';
+                $valoresQ = $valoresQ . $valores;
+            }
+
+            $valoresQ[strlen($valoresQ) - 1] = ";";
+
+            $stmt = $this->_DB->prepare("INSERT INTO recogidaequipos (pedido, motivo, fecha, ciudad, CedTecnico, NomTecnico, contratista, mac, serialEq)
+		 VALUES :valoresQ");
+            $stmt->execute([':valoresQ' => $valoresQ]);
+
+
+            if ($stmt->rowCount()) {
+                $response = ['Datos guardados correctamente', 201];
+            } else {
+                $response = ['Ah ocurrido un error intentalo nuevamente', 400];
+            }
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+        $this->_DB = null;
+        echo json_encode($response);
+    }
 }

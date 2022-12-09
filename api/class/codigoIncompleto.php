@@ -25,9 +25,9 @@ class codigoIncompleto
         $this->_model->registroscodigoincompleto($data);
     }
 
-    public function expCsvRegistrosCodigoIncompleto($data)
+    public function csvRegistrosCodigoIncompleto($data)
     {
-        $this->_model->expCsvRegistrosCodigoIncompleto($data);
+        $this->_model->csvRegistrosCodigoIncompleto($data);
     }
 
 }

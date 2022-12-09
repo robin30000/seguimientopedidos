@@ -140,7 +140,7 @@ class modelCodigoIncompleto
         echo json_encode($response);
     }
 
-    public function expCsvRegistrosCodigoIncompleto($data)
+    public function csvRegistrosCodigoIncompleto($data)
     {
 
         try {
