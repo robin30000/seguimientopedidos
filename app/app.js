@@ -628,7 +628,10 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     obj.premisasInfraestructurasEscalmiento = function (page, datos) {
         var data = {
             method: 'escalamientoInfraestructura',
-            data: {"page": page, "datos": datos}
+            data: {
+                "page": page,
+                "datos": datos
+            }
         }
         return $http.post(serviceBase1 + 'escalamientoCtrl.php', data);
     };
@@ -679,7 +682,8 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         var data = {
             method: 'csvEscalamientoExp',
             data: {
-                "datos": datos, "datosLogin": datosLogin
+                "datos": datos,
+                "datosLogin": datosLogin
             }
         }
         return $http.post(serviceBase1 + 'escalamientoCtrl.php', data);
@@ -716,7 +720,9 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     // Servicio para llamar la informacion de grupo en las visitas en conjunto
     obj.getGrupoVisitasEnConjunto = function () {
-        var data = {method: 'GrupoVisitasEnConjunto'}
+        var data = {
+            method: 'GrupoVisitasEnConjunto'
+        }
         return $http.post(serviceBase1 + 'visitasEnConjuntoCtrl.php', data);
     };
 
@@ -875,17 +881,28 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     /*------------->INICIO SERVICIOS PARA QUEJASGO<------------*/
 
     obj.listaQuejasGoDia = function (page, datos) {
-        var data = {method: 'extraeQuejasGoDia', data: {page, datos}}
+        var data = {
+            method: 'extraeQuejasGoDia',
+            data: {
+                'page': page,
+                'datos': datos
+            }
+        }
         return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
-    obj.expCsvQuejasGo = function (datos, datosLogin) {
-        var data = {method: 'csvQuejasGo', data: {datos, datosLogin}}
+    obj.expCsvQuejasGo = function (datos) {
+        var data = {
+            method: 'csvQuejasGo',
+            data: datos
+        }
         return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
     obj.traerTecnico = function (cedula) {
-        var data = {method: 'traerTecnico', cedula}
+        var data = {
+            method: 'traerTecnico', cedula
+        }
         return $http.post(serviceBase1 + 'quejasGoCtrl.php' + data);
     };
 
@@ -899,8 +916,14 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
-    obj.guardarQuejaGo = function (dataquejago, duracion, login) {
-        var data = {method: 'registrarQuejaGo', data: {dataquejago, duracion, login}}
+    obj.guardarQuejaGo = function (dataquejago, duracion) {
+        var data = {
+            method: 'registrarQuejaGo',
+            data: {
+                'dataquejago': dataquejago,
+                'duracion': duracion
+            }
+        }
         return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
@@ -1021,24 +1044,23 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
 
     obj.getRegistrosCarga = function () {
-        var data={method:'getRegistrosCarga'}
-        return $http.post(serviceBase1 + 'otrosServiciosCtrl.php',data);
+        var data = {method: 'getRegistrosCarga'}
+        return $http.post(serviceBase1 + 'otrosServiciosCtrl.php', data);
     };
 
-    obj.getDemePedidoEncuesta = function ()
-    {
-        var data={method:'getDemePedidoEncuesta'}
-        return $http.post(serviceBase1 + 'otrosServiciosCtrl.php',data);
+    obj.getDemePedidoEncuesta = function () {
+        var data = {method: 'getDemePedidoEncuesta'}
+        return $http.post(serviceBase1 + 'otrosServiciosCtrl.php', data);
     };
 
     obj.getresumenSemanas = function (pregunta, mes) {
-        var data={method:'resumenSemanas',data:{pregunta:pregunta,mes:mes}}
+        var data = {method: 'resumenSemanas', data: {pregunta: pregunta, mes: mes}}
         return $http.post(serviceBase1 + 'otrosServiciosCtrl.php', data);
     };
 
     obj.listadoTecnicos = function (page, concepto, tecnico) {
-        var data={method:'listadoTecnicos',data:{page:page,concepto:concepto,tecnico:tecnico}}
-        return $http.post(serviceBase1 + 'otrosServiciosCtrl.php' + data);
+        var data = {method: 'listadoTecnicos', data: {page: page, concepto: concepto, tecnico: tecnico}}
+        return $http.post(serviceBase1 + 'otrosServiciosCtrl.php', data);
     };
 
 
@@ -1048,8 +1070,8 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
     obj.getbuscarPedidoContingencia = function (pedido) {
-        var data={method:'buscarPedidoContingencias',data:pedido}
-        return $http.post(serviceBase1 + 'otrosServiciosCtrl.php',data);
+        var data = {method: 'buscarPedidoContingencias', data: pedido}
+        return $http.post(serviceBase1 + 'otrosServiciosCtrl.php', data);
     };
 
     obj.getCiudades = function () {
@@ -1269,33 +1291,33 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
     obj.listadoEstadosClick = function (listaClick) {
-        var data={method:'listadoEstadosClick',data:listaClick}
+        var data = {method: 'listadoEstadosClick', data: listaClick}
         return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php', data);
     };
 
- /*   obj.getBuscarPedidoinsta = function (info, user) {
-        var data={method:'BuscarPedidoinsta',data:{info:info,user:user}}
-        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php', data);
-    };*/
+    /*   obj.getBuscarPedidoinsta = function (info, user) {
+           var data={method:'BuscarPedidoinsta',data:{info:info,user:user}}
+           return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php', data);
+       };*/
 
     obj.getGuardarPedidoPendiInsta = function (pedido, datosdelpedido, info, user) {
-        var data={method:'GuardarPedidoPendiInsta',data:{pedido:pedido,datosdelpedido:datosdelpedido,info:info,user:user}}
+        var data = {method: 'GuardarPedidoPendiInsta', data: {pedido: pedido, datosdelpedido: datosdelpedido, info: info, user: user}}
         return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php', data);
     };
 
     obj.deleteregistrosCarga = function (idCarga) {
-        var data={method:'deleteregistrosCarga',data:idCarga}
-        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' + data);
+        var data = {method: 'deleteregistrosCarga', data: idCarga}
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php', data);
     };
 
     obj.getAccionesoffline = function (producto) {
-        var data={method:'Accionesoffline',data:producto}
-        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' + data);
+        var data = {method: 'Accionesoffline', data: producto}
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php', data);
     }
 
     obj.getAcciones = function (proceso) {
-        var data={method:'acciones',data:proceso}
-        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' + data);
+        var data = {method: 'acciones', data: proceso}
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php', data);
     };
 
     obj.getSubAcciones = function (proceso, accion) {
@@ -1304,13 +1326,13 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
     obj.getCodigos = function (proceso, UNESourceSystem) {
-        var data={method:'Codigos',data:{proceso:proceso,UNESourceSystem:UNESourceSystem}}
-        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' +data);
+        var data = {method: 'Codigos', data: {proceso: proceso, UNESourceSystem: UNESourceSystem}}
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php', data);
     };
 
     obj.getDiagnosticos = function (producto, accion) {
-        var data={method:'Diagnosticos',data:{producto:producto,accion:accion}}
-        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' + data);
+        var data = {method: 'Diagnosticos', data: {producto: producto, accion: accion}}
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php', data);
     };
 
 
