@@ -494,21 +494,22 @@ class modelNovedadesTecnico
         echo json_encode($response);
     }
 
-    public function BFobservaciones($data)
+    public function BFobservaciones()
     {
         session_start();
+        $login = $_SESSION['login'];
         $hoy = date("Y-m-d");
         try {
             $stmt = $this->_DB->prepare("SELECT PedidoDespacho, observacionAsesor, pedidobloqueado, gestionAsesor, estado, AccionDespacho
 						FROM BrutalForce
 						WHERE loginDespacho = :login
 						AND (FechaGestionDespacho BETWEEN (:fechaini) AND (:fechafin) OR fechagestionAsesor BETWEEN (:fechaini) AND (:fechafin))");
-            $stmt->execute([':login' => $data, ':fechaini' => "$hoy 00:00:00", ':fechafin' => "$hoy 23:59:59"]);
-            echo 'Por aqui';
+            $stmt->execute([':login' => $login, ':fechaini' => "$hoy 00:00:00", ':fechafin' => "$hoy 23:59:59"]);
+
             if ($stmt->rowCount()) {
                 $response = [$stmt->fetchAll(PDO::FETCH_ASSOC), 201];
             } else {
-                $response = ['Error', 400];
+                $response = ['No se encontraron datos', 400];
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());

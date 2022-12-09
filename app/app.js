@@ -972,10 +972,9 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
     /*Servicio para traer el estado y las observaciones de los pedidos en BrutalForce*/
-    obj.ObsPedidosBF = function (login) {
+    obj.ObsPedidosBF = function () {
         var data = {
-            method: 'BFobservaciones',
-            data: login
+            method: 'BFobservaciones'
         }
         return $http.post(serviceBase1 + 'novedadesTecnicoCtrl.php', data);
     };
