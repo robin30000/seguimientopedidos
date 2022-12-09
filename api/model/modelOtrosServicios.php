@@ -1233,7 +1233,7 @@ class modelOtrosServicios
             $pagina = $pagina * 100;
 
             if ($concepto == 'nombre') {
-                $parametro = "and nombre LIKE '%$tecnico%'";
+                $parametro = " and nombre LIKE '%$tecnico%'";
             } elseif ($concepto == 'identificacion') {
                 $parametro = " and identificacion = '$tecnico'";
             } elseif ($concepto == 'ciudad') {
@@ -1246,7 +1246,7 @@ class modelOtrosServicios
              (select b.nombre from empresas b where b.id=a.empresa) as NOM_EMPRESA 
              from tecnicos a 
              where 1=1 $parametro order by a.nombre ASC 
-             limit 100 offset $pagina ")
+             limit 100 offset $pagina")
 
             ;
 
@@ -1257,9 +1257,8 @@ class modelOtrosServicios
             $queryCount->execute();
             $counter = 0;
             if ($queryCount->rowCount()) {
-                $result = [];
-                if ($row = $queryCount->fetchAll()) {
-                    $counter = $row['Cantidad'];
+                if ($row = $queryCount->fetchAll(PDO::FETCH_ASSOC)) {
+                    $counter = $row[0]['Cantidad'];
                 }
             }
             //echo $this->mysqli->query($sqlLogin);
@@ -1267,15 +1266,7 @@ class modelOtrosServicios
             $query->execute();
             if ($query->rowCount()) {
 
-                $resultado = [];
-
-                while ($row = $query->fetchAll(PDO::FETCH_ASSOC)) {
-
-                    $row['NOMBRE'] = $row['NOMBRE'];
-                    $resultado[]   = $row;
-
-                }
-                $response=[$resultado, $counter,201];
+                $response=[$query->fetchAll(PDO::FETCH_ASSOC), $counter,201];
 
             } else {
                 $response = ['',400];

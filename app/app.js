@@ -1759,12 +1759,12 @@ app.controller('loginCtrl', function ($scope, $http, $rootScope, $location, $rou
 
         services.loginUser($scope.autenticacion).then(
             function (data) {
-                console.log("data: ", data);
+                //console.log("data: ", data);
                 $errorDatos = null;
                 $scope.respuesta = data.data;
-                console.log("respuesta: ", $scope.respuesta);
+                //console.log("respuesta: ", $scope.respuesta);
                 $rootScope.nombre = $scope.respuesta.nombre;
-                console.log("nombre: ", $rootScope.nombre);
+                //console.log("nombre: ", $rootScope.nombre);
                 $location.path('/actividades/');
 
                 $cookies.put("usuarioseguimiento", JSON.stringify(data.data));
@@ -1774,7 +1774,9 @@ app.controller('loginCtrl', function ($scope, $http, $rootScope, $location, $rou
                 //galleta = ($cookies.get("usuarioInfoDespacho"));
 
                 $rootScope.galletainfo = galleta;
+                //$rootScope.galletainfo.perfil = 11;
                 $rootScope.permiso = true;
+                console.log('aca ',$rootScope.galletainfo)
                 //console.log("galletainfo: ",$rootScope.galletainfo);
                 if ($rootScope.galletainfo.perfil === '1' && $rootScope.galletainfo.perfil === '2' && $rootScope.galletainfo.perfil === '5') {
                     $location.path('/actividades/');
@@ -4069,7 +4071,7 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
 
             services.expCsvNovedadesTecnico($scope.Registros, $rootScope.galletainfo).then(
                 function (data) {
-                    // console.log(data.data[0]);
+                    console.log(data);
                     window.location.href = "tmp/" + data.data[0];
                     $scope.csvPend = true;
                     $scope.counter = data.data[1];

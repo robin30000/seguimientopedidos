@@ -315,16 +315,20 @@ class modelNovedadesTecnico
 
     public function updateNovedadesTecnico($data)
     {
-        $observacionCCO = $data->datosEditar;
-        $pedido         = $data->pedido;
+        try {
+            $observacionCCO = $data->datosEditar;
+            $pedido         = $data->pedido;
 
-        $stmt = $this->_DB->prepare("UPDATE NovedadesVisitas SET observacionCCO = :observacionCCO WHERE pedido = :pedido");
-        $stmt->execute([':$observacionCCO' => $observacionCCO, ':$pedido' => $pedido]);
+            $stmt = $this->_DB->prepare("UPDATE NovedadesVisitas SET observacionCCO = :observacionCCO WHERE pedido = :pedido");
+            $stmt->execute([':$observacionCCO' => $observacionCCO, ':$pedido' => $pedido]);
 
-        if ($stmt->rowCount() == 1) {
-            $response = ['Novedad actualizada' . 201];
-        } else {
-            $response = ['Error' . 400];
+            if ($stmt->rowCount() == 1) {
+                $response = ['Novedad actualizada' . 201];
+            } else {
+                $response = ['Error' . 400];
+            }
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
         }
         $this->_DB = null;
         echo json_encode($response);
@@ -332,10 +336,14 @@ class modelNovedadesTecnico
 
     public function csvNovedadesTecnico($data)
     {
-        $usuarioid = $data->LOGIN;
-        $datos     = $data->datos;
-        $fechaini  = $data->fechaini;
-        $fechafin  = $data->fechafin;
+
+        session_start();
+        $usuarioid = $_SESSION['login'];
+        if ($data) {
+            $fechaini = $data->fechaini;
+            $fechafin = $data->fechafin;
+        }
+
 
         if ($fechaini == "" && $fechafin == "") {
             $fechaini = date("Y") . "-" . date("m") . "-" . date("d");
@@ -394,13 +402,39 @@ class modelNovedadesTecnico
                 ];
 
                 fputcsv($fp, $columnas);
-                fputcsv($fp, $stmt->fetchAll(PDO::FETCH_ASSOC));
+
+                //foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
+
+                while ($row = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
+
+                    $row['fecha']            = utf8_encode($row['fecha']);
+                    $row['usuario']          = ($row['usuario']);
+                    $row['municipio']        = ($row['municipio']);
+                    $row['region']           = ($row['region']);
+                    $row['proceso']          = ($row['proceso']);
+                    $row['horamarcaensitio'] = utf8_encode($row['horamarcaensitio']);
+                    $row['tiponovedad']      = ($row['tiponovedad']);
+                    $row['pedido']           = utf8_encode($row['pedido']);
+                    $row['cedulaTecnico']    = ($row['cedulaTecnico']);
+                    $row['nombreTecnico']    = ($row['nombreTecnico']);
+                    $row['contracto']        = ($row['contracto']);
+                    $row['situacion']        = ($row['situacion']);
+                    $row['motivo']           = ($row['motivo']);
+                    $row['submotivo']        = ($row['submotivo']);
+                    $row['observaciones']    = ($row['observaciones']);
+                    $row['observacionCCO']   = ($row['observacionCCO']);
+                    $row['idllamada']        = utf8_encode($row['idllamada']);
+
+                    //$result[] = $row;
+                    fputcsv($fp, $row);
+
+                }
                 fclose($fp);
 
-                $response = [[$filename, $stmt->rowCount()], 200];
+                $response = [[$filename, $stmt->rowCount()], 201];
 
             } else {
-                $response = ['', 203];
+                $response = ['', 400];
             }
 
         } catch (PDOException $e) {
@@ -498,7 +532,7 @@ class modelNovedadesTecnico
     {
         session_start();
         $login = $_SESSION['login'];
-        $hoy = date("Y-m-d");
+        $hoy   = date("Y-m-d");
         try {
             $stmt = $this->_DB->prepare("SELECT PedidoDespacho, observacionAsesor, pedidobloqueado, gestionAsesor, estado, AccionDespacho
 						FROM BrutalForce

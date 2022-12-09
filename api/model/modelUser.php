@@ -514,9 +514,10 @@ class modelUser
     public function listadoUsuarios($data)
     {
         try {
+            session_start();
             $pagina    = $data->page;
             $concepto  = $data->concepto;
-            $usuario   = $data->usuario;
+            $usuario   = $_SESSION['login'];
             $parametro = "";
             //echo "selección".$buscar;
             //echo "dato".$usuario;
@@ -532,31 +533,34 @@ class modelUser
             $pagina = $pagina * 100;
 
             if ($concepto == 'nombre') {
-                $parametro = " a.nombre LIKE '%$usuario%'";
+                $parametro = " AND a.nombre LIKE '%$usuario%'";
 
             } elseif ($concepto == 'login') {
-                $parametro = "  a.login LIKE '%$usuario%'";
-            };
+                $parametro = " AND  a.login LIKE '%$usuario%'";
+            }
 
-            $stmt = $this->_DB->prepare("SELECT a.id,
-                                                       a.nombre,
-                                                       a.identificacion,
-                                                       a.login,
+
+            $stmt = $this->_DB->query("SELECT a.id AS ID,
+                                                       a.nombre AS NOMBRE,
+                                                       a.identificacion AS IDENTIFICACION,
+                                                       a.login AS LOGIN,
                                                        a.perfil,
                                                        (select b.nombre from perfiles b where b.perfil = a.perfil) as PERFIL,
-                                                       a.password
+                                                       a.password AS PASSWORD
                                                 FROM usuarios a
                                                 where 1 = 1
-                                                    AND ?
-                                                order by a.nombre ASC
-                                                limit 100 offset ?");
-            $stmt->bindParam(1, $parametro);
-            $stmt->bindParam(2, $pagina, PDO::PARAM_INT);
+                                                    $parametro
+                                                order by a.nombre
+                                                limit 100 offset $pagina");;
+
             $stmt->execute();
 
+            $counter = $this->_DB->query("select count(*) as Cantidad from usuarios h where 1 = 1 $parametro");
+            $counter->execute();
+            $resCounter = $counter->fetchAll(PDO::FETCH_ASSOC);
+
             if ($stmt->rowCount()) {
-                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $response = [$result, $stmt->rowCount(), 201];
+                $response = [$stmt->fetchAll(PDO::FETCH_ASSOC), $resCounter[0]['Cantidad'], 201];
             } else {
                 $response = ['No se encontraron registros', 400];
             }

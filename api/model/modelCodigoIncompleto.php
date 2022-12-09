@@ -98,7 +98,7 @@ class modelCodigoIncompleto
 
             $pagina = $pagina * 100;
 
-            $stmt = $this->_DB->prepare("SELECT id_codigo_incompleto,
+            $stmt = $this->_DB->query("SELECT id_codigo_incompleto,
                                                tarea,
                                                numero_contacto,
                                                nombre_contacto,
@@ -117,20 +117,25 @@ class modelCodigoIncompleto
                                                login,
                                                fecha_respuesta
                                         FROM gestion_codigo_incompleto
-                                        WHERE fecha_respuesta BETWEEN :fechaini AND :fechafin
+                                        WHERE fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59'
                                           AND status_soporte = '1'
                                         ORDER BY fecha_creado DESC
-                                        LIMIT 100 offset :pagina");
-            $stmt->execute([
-                ':fechaini' => "$fechaini 00:00:00",
-                ':fechafin' => "$fechafin 23:59:59",
-                ':pagina'   => $pagina,
-            ]);
+                                        LIMIT 100 offset $pagina");
+
+            $stmt->execute();
+
+            $queryCount = $this->_DB->query("SELECT COUNT(tarea) as Cantidad
+                                                        FROM gestion_codigo_incompleto 
+                                                        WHERE fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59'
+                                                        ORDER BY fecha_creado DESC");
+            $queryCount->execute();
+            $resqueryCount = $queryCount->fetchAll(PDO::FETCH_ASSOC);
+
 
             if ($stmt->rowCount()) {
-                $response = [$stmt->fetchAll(PDO::FETCH_ASSOC), $stmt->rowCount()];
+                $response = [$stmt->fetchAll(PDO::FETCH_ASSOC), $resqueryCount[0]['Cantidad']];
             } else {
-                $response = ['', 400];
+                $response = ['No se encontraron datos', 400];
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -191,7 +196,7 @@ class modelCodigoIncompleto
             ]);
 
             if ($stmt->rowCount()) {
-                $fp     = fopen("../tmp/$filename", 'w');
+                $fp       = fopen("../tmp/$filename", 'w');
                 $columnas = [
                     'ID_CODIGO_INCOMPLETO',
                     'TAREA',

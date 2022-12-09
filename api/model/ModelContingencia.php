@@ -255,11 +255,19 @@ class ModelContingencia
             $stmt = $this->_DB->query("SELECT LOGIN_ASESOR_OFF,LOGIN_ASESOR, PEDIDO,PROCESO, PRODUCTO, ACCION, ACTIVIDAD, ACTIVIDAD2, OBSERVACIONES, FECHA_CARGA FROM registros_offline");
             $stmt->execute();
 
-            if ($stmt->rowCount()) {
-                $counter   = $stmt->rowCount();
-                $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $queryCount = $this->_DB->query("select count(*) as Cantidad from registros_offline h where 1=1");
+            $queryCount->execute();
 
-                $response = [[$resultado, $counter], 201];
+            if ($queryCount->rowCount()) {
+                $result = [];
+                if ($row = $queryCount->fetchAll(PDO::FETCH_ASSOC)) {
+                    $counter = $row[0]['Cantidad'];
+                }
+            }
+
+            if ($stmt->rowCount()) {
+                $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = [$resultado, $counter, 201];
             } else {
                 $response = 0;
             }
