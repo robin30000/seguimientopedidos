@@ -902,22 +902,39 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
     obj.creaTecnicoQuejasGo = function (crearTecnicoquejasGoSel) {
-        var data = {method: 'creaTecnicoQuejasGo', crearTecnicoquejasGoSel: crearTecnicoquejasGoSel}
+        var data = {
+            method: 'creaTecnicoQuejasGo',
+            data: crearTecnicoquejasGoSel
+        }
         return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
     obj.getCiudadesQuejasGo = function () {
-        var data = {method: 'ciudadesQGo'}
+        var data = {
+            method: 'ciudadesQGo'
+        }
         return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
-    obj.guardarQuejaGo = function (dataquejago, duracion, login) {
-        var data = {method: 'registrarQuejaGo', data: {dataquejago, duracion, login}}
+    obj.guardarQuejaGo = function (dataquejago, duracion) {
+        var data = {
+            method: 'registrarQuejaGo',
+            data: {
+                'dataquejago': dataquejago,
+                'duracion': duracion
+            }
+        }
         return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
     obj.modiObserQuejasGo = function (observacion, idqueja) {
-        var data = {method: 'ActualizarObserQuejasGo', data: {observacion, idqueja}}
+        var data = {
+            method: 'ActualizarObserQuejasGo',
+            data: {
+                'observacion': observacion,
+                'idqueja': idqueja
+            }
+        }
         return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
@@ -926,44 +943,64 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
 // /*RETORNO DE LA INFORMACION DEL APPI DE LA FUNCION datoscontingencias*/
     obj.datosgestioncontingencias = function () {
-        var data = {method: 'datoscontingencias'}
+        var data = {
+            method: 'datoscontingencias'
+        }
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
     obj.datosgestionescalamientos = function () {
-        var data = {method: 'datosescalamientos'}
+        var data = {
+            method: 'datosescalamientos'
+        }
         return $http.post(serviceBase1 + 'gestionEscalonamientoCtrl.php', data);
     };
 
     obj.datosgestionescalamientosprioridad2 = function () {
-        var data = {method: 'datosescalamientosprioridad2'}
+        var data = {
+            method: 'datosescalamientosprioridad2'
+        }
         return $http.post(serviceBase1 + 'gestionEscalonamientoCtrl.php', data);
     };
 
     obj.UpdatePedidosEngestion = function (login) {
-        var data = {method: 'updateEnGestion', data: {login: login}}
+        var data = {
+            method: 'updateEnGestion',
+            data: login
+        }
         return $http.post(serviceBase1 + 'gestionAprovisionamientoCtrl.php', data);
     };
 
     /*Servicio para traer el estado y las observaciones de los pedidos en BrutalForce*/
     obj.ObsPedidosBF = function (login) {
-        var data = {method: 'BFobservaciones', data: login}
+        var data = {
+            method: 'BFobservaciones',
+            data: login
+        }
         return $http.post(serviceBase1 + 'novedadesTecnicoCtrl.php', data);
     };
 
     obj.registrosOffline = function () {
 
-        var data = {method: 'registrosOffline'}
+        var data = {
+            method: 'registrosOffline'
+        }
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
     obj.getgraficaDepartamento = function (mes) {
-        var data = {method: 'graficaDepartamento', data: mes}
+        var data = {
+            method: 'graficaDepartamento',
+            data: mes
+        }
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
     obj.marcarengestion = function (datos, login) {
-        var data = {method: 'marca', data: {datos, login}}
+        var data = {
+            method: 'marca',
+            data: {datos, login}
+        }
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
@@ -972,8 +1009,11 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
     /*********NUEVO CONECTOR PARA LA APPI marcarEnGestionPorta*********/
-    obj.marcarEnGestionPorta = function (datos, login) {
-        var data = {method: 'marcaPortafolio', data: {datos, login}}
+    obj.marcarEnGestionPorta = function (datos) {
+        var data = {
+            method: 'marcaPortafolio',
+            data: datos
+        }
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
@@ -981,85 +1021,143 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 //     return $http.post(serviceBase + 'marcaCEQPortafolio', { "datos": datos, "login": login });
 // };
 
-    obj.editarregistrocontingencia = function (datos, login) {
-        var data = {method: 'guardarpedidocontingencia', data: {datos, login}}
+    obj.editarregistrocontingencia = function (datos) {
+        var data = {
+            method: 'guardarpedidocontingencia',
+            data: datos
+        }
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
     obj.editarregistroescalamiento = function (datos, login) {
-        var data = {method: 'guardarescalamiento', data: {datos, login}}
+        var data = {
+            method: 'guardarescalamiento',
+            data: datos
+        }
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
     /*PARA CERRAR MASIVAMENTE LAS CONTINGENCIAS*/
     obj.cierreMasivoContingencia = function (dataCierreMasivoContin) {
-        var data = {method: 'cerrarMasivamenteContingencias', data: dataCierreMasivoContin}
+        var data = {
+            method: 'cerrarMasivamenteContingencias',
+            data: dataCierreMasivoContin
+        }
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
     /*********NUEVO CONECTOR PARA LA APPI editarRegistroContingenciaPortafolio*********/
     obj.editarRegistroContingenciaPortafolio = function (datos, login) {
-        var data = {method: 'guardarPedidoContingenciaPortafolio', data: {datos, login}}
+        var data = {
+            method: 'guardarPedidoContingenciaPortafolio',
+            data: datos
+        }
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
     obj.getgarantiasInstalaciones = function (mes) {
-        var data = {method: 'garantiasInstalaciones', data: mes}
+        var data = {
+            method: 'garantiasInstalaciones',
+            data: mes
+        }
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
     obj.getgraficaAcumulados = function (pregunta, mes) {
-        var data = {method: 'graficaAcumulados', data: {pregunta: pregunta, mes: mes}}
+        var data = {
+            method: 'graficaAcumulados',
+            data: {
+                'pregunta': pregunta,
+                'mes': mes
+            }
+        }
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
 //------------------reparacion----
     obj.getgraficaAcumuladosrepa = function (pregunta, mes) {
-        var data = {method: 'graficaAcumuladosrepa', data: {pregunta: pregunta, mes: mes}}
+        var data = {
+            method: 'graficaAcumuladosrepa',
+            data: {
+                'pregunta': pregunta,
+                'mes': mes
+            }
+        }
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
 //-------------fin reparacion
 
     obj.getDepartamentosContratos = function (mes) {
-        var data = {method: 'DepartamentosContratos', data: mes}
+        var data = {
+            method: 'DepartamentosContratos',
+            data: mes
+        }
         return $http.post(serviceBase1 + 'otrosServiciosCtrl.php', data);
     };
 
     obj.insertData = function (lista) {
-        var data = {method: 'insertData', data: lista}
+        var data = {
+            method: 'insertData',
+            data: lista
+        }
         return $http.post(serviceBase1 + 'otrosServiciosCtrl.php', data);
     };
 
 
     obj.getRegistrosCarga = function () {
-        var data = {method: 'getRegistrosCarga'}
+        var data = {
+            method: 'getRegistrosCarga'
+        }
         return $http.post(serviceBase1 + 'otrosServiciosCtrl.php', data);
     };
 
     obj.getDemePedidoEncuesta = function () {
-        var data = {method: 'getDemePedidoEncuesta'}
+        var data = {
+            method: 'getDemePedidoEncuesta'
+        }
         return $http.post(serviceBase1 + 'otrosServiciosCtrl.php', data);
     };
 
     obj.getresumenSemanas = function (pregunta, mes) {
-        var data = {method: 'resumenSemanas', data: {pregunta: pregunta, mes: mes}}
+        var data = {
+            method: 'resumenSemanas', data: {
+                'pregunta': pregunta,
+                'mes': mes
+            }
+        }
         return $http.post(serviceBase1 + 'otrosServiciosCtrl.php', data);
     };
 
     obj.listadoTecnicos = function (page, concepto, tecnico) {
-        var data = {method: 'listadoTecnicos', data: {page: page, concepto: concepto, tecnico: tecnico}}
-        return $http.post(serviceBase1 + 'otrosServiciosCtrl.php' + data);
+        var data = {
+            method: 'listadoTecnicos',
+            data: {
+                'page': page,
+                'concepto': concepto,
+                'tecnico': tecnico
+            }
+        }
+        return $http.post(serviceBase1 + 'otrosServiciosCtrl.php', data);
     };
 
 
     obj.getresumenContingencias = function (fechaini, fechafin) {
-        var data = {data: {fechaini: fechafin, fechafin: fechafin}, method: "resumenContingencias"}
+        var data = {
+            method: "resumenContingencias",
+            data: {
+                'fechaini': fechafin,
+                'fechafin': fechafin
+            },
+        }
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
     obj.getbuscarPedidoContingencia = function (pedido) {
-        var data = {method: 'buscarPedidoContingencias', data: pedido}
+        var data = {
+            method: 'buscarPedidoContingencias',
+            data: pedido
+        }
         return $http.post(serviceBase1 + 'otrosServiciosCtrl.php', data);
     };
 
@@ -1087,7 +1185,10 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     obj.registros = function (page, datos) {
         var data = {
             method: 'registros',
-            data: {"page": page, "datos": datos}
+            data: {
+                "page": page,
+                "datos": datos
+            }
         }
         return $http.post(serviceBase1 + 'formaAsesoresCtrl.php', data);
     };
@@ -1416,13 +1517,12 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'updateTurno.php', data);
     };
 
-    obj.csvAdherenciaTurnos = function (fechaIni, fechaFin, login) {
+    obj.csvAdherenciaTurnos = function (fechaIni, fechaFin) {
         var data = {
             method: 'CsvExporteAdherencia',
             data: {
                 "fechaIni": fechaIni,
                 "fechaFin": fechaFin,
-                "login": login
             }
         }
         return $http.post(serviceBase1 + 'turnosCtrl.php', data);
@@ -1590,13 +1690,10 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'codigoIncompletoCtrl.php', data);
     };
 
-    obj.expCsvRegistrosCodigoIncompleto = function (datos, datosLogin) {
+    obj.expCsvRegistrosCodigoIncompleto = function (datos) {
         var data = {
             method: 'csvRegistrosCodigoIncompleto',
-            data: {
-                "datos": datos,
-                "datosLogin": datosLogin
-            }
+            data: datos
         }
         return $http.post(serviceBase1 + 'csvRegistrosCodigoIncompleto', data);
     };

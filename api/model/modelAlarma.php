@@ -71,7 +71,7 @@ class modelAlarma
     {
         try {
 
-            $datosAlarma = $data['datosAlarma'];
+            $datosAlarma = $data;
 
             $nombre_alarma       = $datosAlarma['nombre_alarma'];
             $ciudad              = $datosAlarma['ciudad'];
