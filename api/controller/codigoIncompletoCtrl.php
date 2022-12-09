@@ -24,10 +24,10 @@ if (isset($data->method)) {
             $user = new codigoIncompleto();
             $user->registroscodigoincompleto($data->data);
             break;
-        case 'expCsvRegistrosCodigoIncompleto':
+        case 'csvRegistrosCodigoIncompleto':
             require_once '../class/codigoIncompleto.php';
             $user = new codigoIncompleto();
-            $user->expCsvRegistrosCodigoIncompleto($data->data);
+            $user->csvRegistrosCodigoIncompleto($data->data);
             break;
 
         default:

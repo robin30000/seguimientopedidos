@@ -144,7 +144,7 @@ class modelUser
         try {
             $login       = $_SESSION['login'];
             $user        = $login['LOGIN'];
-            $planNPS     = $data->datosPlan;
+            $planNPS     = $data;
             $responsable = $planNPS['responsable'];
             $regional    = $planNPS['regional'];
             $plan        = $planNPS['plan'];

@@ -66,15 +66,16 @@ class modelTurnos
     public function cumpleTurnos($data)
     {
         try {
-            $datos = $data;
-            $fecha = $datos['fechaIni'];
-            $stmt  = $this->_DB->prepare("select fecha,
+
+            $fecha = $data->fechaIni;
+
+            $stmt = $this->_DB->prepare("select fecha,
                                                    usuario,
                                                    horaInicio,
                                                    horaFin,
                                                    totaTurno,
-                                                   c.fechaing,
-                                                   c.fecha_salida,
+                                                   fechaing,
+                                                   fecha_salida,
                                                    (case
                                                         when c.status = 'logged off' then 'Deslogueado'
                                                         else 'Logueado' end) as status,
@@ -101,6 +102,7 @@ class modelTurnos
                 ':fechafin' => "$fecha 23:59:59",
                 ':fecha'    => $fecha,
             ]);
+
 
             if ($stmt->rowCount()) {
                 $ausencia = $this->_DB->prepare("SELECT usuario,
@@ -200,10 +202,10 @@ class modelTurnos
             $novedad = $datosTurnos['novedades'];
 
             $stmt = $this->_DB->prepare("UPDATE turnosSeguimiento
-                                                SET horaInicio = '$horaIni',
-                                                    horaFin    = '$horaFin',
-                                                    novedades  = '$novedad'
-                                                WHERE idturnos = '$id'");
+                                                SET horaInicio = :horaIni,
+                                                    horaFin    = :horaFin,
+                                                    novedades  = :novedad
+                                                WHERE idturnos = :id");
             $stmt->execute([
                 ':horaini' => $horaIni,
                 ':horafin' => $horaFin,

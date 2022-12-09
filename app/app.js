@@ -1038,7 +1038,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     obj.listadoTecnicos = function (page, concepto, tecnico) {
         var data={method:'listadoTecnicos',data:{page:page,concepto:concepto,tecnico:tecnico}}
-        return $http.post(serviceBase1 + 'otrosServiciosCtrl.php' , data);
+        return $http.post(serviceBase1 + 'otrosServiciosCtrl.php' + data);
     };
 
 
@@ -1285,17 +1285,17 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     obj.deleteregistrosCarga = function (idCarga) {
         var data={method:'deleteregistrosCarga',data:idCarga}
-        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' , data);
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' + data);
     };
 
     obj.getAccionesoffline = function (producto) {
         var data={method:'Accionesoffline',data:producto}
-        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' , data);
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' + data);
     }
 
     obj.getAcciones = function (proceso) {
         var data={method:'acciones',data:proceso}
-        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' , data);
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' + data);
     };
 
     obj.getSubAcciones = function (proceso, accion) {
@@ -1305,12 +1305,12 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     obj.getCodigos = function (proceso, UNESourceSystem) {
         var data={method:'Codigos',data:{proceso:proceso,UNESourceSystem:UNESourceSystem}}
-        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' ,data);
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' +data);
     };
 
     obj.getDiagnosticos = function (producto, accion) {
         var data={method:'Diagnosticos',data:{producto:producto,accion:accion}}
-        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' , data);
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' + data);
     };
 
 

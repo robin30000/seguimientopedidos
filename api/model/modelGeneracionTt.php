@@ -72,7 +72,7 @@ class modelGeneracionTt
     public function guardarGeneracionTT($data)
     {
         try {
-            $datos = $data->datosEdicion;
+            $datos = $data;
             // $key = $datos['id'];
             $tt                 = $datos['tt'];
             $quienSolicitaLaCCC = $datos['quienSolicitaLaCCC'];
@@ -138,7 +138,7 @@ class modelGeneracionTt
     {
         try {
             $usuarioid = $_SESSION['login'];
-            $datos     = $data->datos;
+            $datos     = $data;
             $fechaini  = $datos['fechaini'];
             $fechafin  = $datos['fechafin'];
 

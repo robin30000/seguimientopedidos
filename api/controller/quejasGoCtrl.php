@@ -25,7 +25,7 @@ if (isset($data->method)) {
         case 'traerTecnico':
             require_once '../class/quejasGo.php';
             $user = new quejasGo();
-            $user->buscarTecnico($data->cedula);
+            $user->buscarTecnico($data->data);
             break;
 
         case 'crearTecnicoQuejasGo':

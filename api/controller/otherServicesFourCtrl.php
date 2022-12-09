@@ -54,6 +54,11 @@ if (isset($data->method)) {
             $user = new otherServicesFour();
             $user->buscaregistros($data->data);
             break;
+            case 'guardarRecogerEquipos':
+            require_once '../class/otherServicesFour.php';
+            $user = new otherServicesFour();
+            $user->guardarRecogerEquipos($data->data);
+            break;
 
     }
 } else {

@@ -73,7 +73,7 @@ class modelNovedadesTecnico
     public function guardarNovedadesTecnico($data)
     {
 
-        $datos = $data->datosEdicion;
+        $datos = $data;
         $login = $_SESSION['login'];
         //$login  = $login['LOGIN'];
         /* $key = $datos['id'];

@@ -17,7 +17,7 @@ class gestionAprovisionamiento
     public function updateEnGestion($data)
     {
 
-        $login = $data->login->login;
+        $login = $data;
         $hoy = date("Y-m-d");
 
         $response = $this->_model->updateEnGestionResponse($login, $hoy);
