@@ -612,10 +612,10 @@ class modelUser
         echo json_encode($response);
     }
 
-    public function editarTecnico($data)
+    public function editarTecnico($login)
     {
         try {
-            $login          = $data;
+
             $identificacion = $login['IDENTIFICACION'];
             $nombre         = $login['NOMBRE'];
             $ciudad         = $login['CIUDAD'];

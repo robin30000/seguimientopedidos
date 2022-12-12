@@ -5,10 +5,10 @@ header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
 header('Access-Control-Max-Age: 1000');
 header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token , Authorization');
 
-$data = json_decode(file_get_contents("php://input"));
+$data = json_decode(file_get_contents("php://input"),true);
 
-if (isset($data->method)) {
-    switch ($data->method) {
+if (isset($data['method'])) {
+    switch ($data['method']) {
         case 'usuariosTurnos':
             require_once '../class/turnos.php';
             $user = new turnos();
@@ -17,32 +17,32 @@ if (isset($data->method)) {
         case 'listaTurnos':
             require_once '../class/turnos.php';
             $user = new turnos();
-            $user->listaTurnos($data->data);
+            $user->listaTurnos($data['data']);
             break;
         case 'cumpleTurnos':
             require_once '../class/turnos.php';
             $user = new turnos();
-            $user->cumpleTurnos($data->data);
+            $user->cumpleTurnos($data['data']);
             break;
         case 'guardarTurnos':
             require_once '../class/turnos.php';
             $user = new turnos();
-            $user->guardarTurnos($data->data);
+            $user->guardarTurnos($data['data']);
             break;
         case 'updateTurno':
             require_once '../class/turnos.php';
             $user = new turnos();
-            $user->updateTurno($data->data);
+            $user->updateTurno($data['data']);
             break;
         case 'CsvExporteAdherencia':
             require_once '../class/turnos.php';
             $user = new turnos();
-            $user->CsvExporteAdherencia($data->data);
+            $user->CsvExporteAdherencia($data['data']);
             break;
         case 'deleteTurno':
             require_once '../class/turnos.php';
             $user = new turnos();
-            $user->deleteTurno($data->data);
+            $user->deleteTurno($data['data']);
             break;
 
         default:

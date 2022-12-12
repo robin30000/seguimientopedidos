@@ -5,14 +5,14 @@ header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
 header('Access-Control-Max-Age: 1000');
 header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token , Authorization');
 
-$data = json_decode(file_get_contents("php://input"));
+$data = json_decode(file_get_contents("php://input"),true);
 
-if (isset($data->method)) {
-    switch ($data->method) {
+if (isset($data['data'])) {
+    switch ($data['data']) {
         case 'SubAcciones':
             require_once '../class/subAcciones.php';
             $user = new subAcciones();
-            $user->subacciones($data->data);
+            $user->subacciones($data['data']);
             break;
 
         default:

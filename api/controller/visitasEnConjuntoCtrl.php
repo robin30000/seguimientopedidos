@@ -5,14 +5,14 @@ header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
 header('Access-Control-Max-Age: 1000');
 header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token , Authorization');
 
-$data = json_decode(file_get_contents("php://input"));
+$data = json_decode(file_get_contents("php://input"),true);
 
-if (isset($data->method)) {
-    switch ($data->method) {
+if (isset($data['method'])) {
+    switch ($data['method']) {
         case 'visitasEnConjunto':
             require_once '../class/visitasEnConjunto.php';
             $user = new visitasEnConjunto();
-            $user->visitasEnConjunto($data->data);
+            $user->visitasEnConjunto($data['data']);
             break;
         case 'GrupoVisitasEnConjunto':
             require_once '../class/visitasEnConjunto.php';
@@ -22,12 +22,12 @@ if (isset($data->method)) {
         case 'infoVisitasEnConjunto':
             require_once '../class/visitasEnConjunto.php';
             $user = new visitasEnConjunto();
-            $user->infoVisitasEnConjunto($data->data);
+            $user->infoVisitasEnConjunto($data['data']);
             break;
         case 'expCsvVisitasEnConjunto':
             require_once '../class/visitasEnConjunto.php';
             $user = new visitasEnConjunto();
-            $user->expCsvVisitasEnConjunto($data->data);
+            $user->expCsvVisitasEnConjunto($data['data']);
             break;
         case 'RegionesVisConjunto':
             require_once '../class/visitasEnConjunto.php';
@@ -37,12 +37,12 @@ if (isset($data->method)) {
         case 'MunicipiosVisConjunto':
             require_once '../class/visitasEnConjunto.php';
             $user = new visitasEnConjunto();
-            $user->MunicipiosVisConjunto($data->data);
+            $user->MunicipiosVisConjunto($data['data']);
             break;
         case 'MunicipioVisConjuntoUpdate':
             require_once '../class/visitasEnConjunto.php';
             $user = new visitasEnConjunto();
-            $user->MunicipioVisConjuntoUpdate($data->data);
+            $user->MunicipioVisConjuntoUpdate($data['data']);
             break;
 
         default:

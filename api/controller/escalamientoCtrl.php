@@ -5,14 +5,14 @@ header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
 header('Access-Control-Max-Age: 1000');
 header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token , Authorization');
 
-$data = json_decode(file_get_contents("php://input"));
+$data = json_decode(file_get_contents("php://input"),true);
 
-if (isset($data->method)) {
-    switch ($data->method) {
+if (isset($data['method'])) {
+    switch ($data['method']) {
         case 'escalamientoInfraestructura':
             require_once '../class/escalamiento.php';
             $user = new escalamiento();
-            $user->escalamientoInfraestructura($data->data);
+            $user->escalamientoInfraestructura($data['data']);
             break;
         case 'GrupoCola':
             require_once '../class/contingencia.php';
@@ -27,27 +27,27 @@ if (isset($data->method)) {
         case 'observacionEscalimiento':
             require_once '../class/contingencia.php';
             $user = new escalamiento();
-            $user->observacionEscalimiento($data->data);
+            $user->observacionEscalimiento($data['data']);
             break;
         case 'notasEscalamiento':
             require_once '../class/contingencia.php';
             $user = new escalamiento();
-            $user->notasEscalamiento($data->data);
+            $user->notasEscalamiento($data['data']);
             break;
         case 'infoEscalamiento':
             require_once '../class/contingencia.php';
             $user = new escalamiento();
-            $user->infoEscalamiento($data->data);
+            $user->infoEscalamiento($data['data']);
             break;
         case 'csvEscalamientoExp':
             require_once '../class/contingencia.php';
             $user = new escalamiento();
-            $user->csvEscalamientoExp($data->data);
+            $user->csvEscalamientoExp($data['data']);
             break;
         case 'saveescalamiento':
             require_once '../class/contingencia.php';
             $user = new escalamiento();
-            $user->saveescalamiento($data->data);
+            $user->saveescalamiento($data['data']);
             break;
         case 'exportEscalamientos':
             require_once '../class/contingencia.php';

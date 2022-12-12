@@ -5,29 +5,29 @@ header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
 header('Access-Control-Max-Age: 1000');
 header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token , Authorization');
 
-$data = json_decode(file_get_contents("php://input"));
+$data = json_decode(file_get_contents("php://input"),true);
 
-if (isset($data->method)) {
-    switch ($data->method) {
+if (isset($data['method'])) {
+    switch ($data['method']) {
         case 'novedadesTecnico':
             require_once '../class/novedadesTecnico.php';
             $user = new novedadesTecnico();
-            $user->novedadesTecnico($data->data);
+            $user->novedadesTecnico($data['data']);
             break;
         case 'guardarNovedadesTecnico':
             require_once '../class/novedadesTecnico.php';
             $user = new novedadesTecnico();
-            $user->guardarNovedadesTecnico($data->data);
+            $user->guardarNovedadesTecnico($data['data']);
             break;
         case 'updateNovedadesTecnico':
             require_once '../class/novedadesTecnico.php';
             $user = new novedadesTecnico();
-            $user->updateNovedadesTecnico($data->data);
+            $user->updateNovedadesTecnico($data['data']);
             break;
         case 'csvNovedadesTecnico':
             require_once '../class/novedadesTecnico.php';
             $user = new novedadesTecnico();
-            $user->csvNovedadesTecnico($data->data);
+            $user->csvNovedadesTecnico($data['data']);
             break;
         case 'Regiones':
             require_once '../class/novedadesTecnico.php';
@@ -37,7 +37,7 @@ if (isset($data->method)) {
         case 'Municipios':
             require_once '../class/novedadesTecnico.php';
             $user = new novedadesTecnico();
-            $user->Municipios($data->region);
+            $user->Municipios($data['region']);
             break;
 
         case 'SituacionNovedadesVisitas':
@@ -49,23 +49,23 @@ if (isset($data->method)) {
         case 'DetalleNovedadesVisitas':
             require_once '../class/novedadesTecnico.php';
             $user = new novedadesTecnico();
-            $user->DetalleNovedadesVisitas($data->situacion);
+            $user->DetalleNovedadesVisitas($data['situacion']);
             break;
 
         case 'BFobservaciones':
             require_once '../class/novedadesTecnico.php';
             $user = new novedadesTecnico();
-            $user->BFobservaciones($data->data);
+            $user->BFobservaciones($data['data']);
             break;
         case 'registrospwdTecnicos':
             require_once '../class/novedadesTecnico.php';
             $user = new novedadesTecnico();
-            $user->registrospwdTecnicos($data->data);
+            $user->registrospwdTecnicos($data['data']);
             break;
         case 'editarPwdTecnicos':
             require_once '../class/novedadesTecnico.php';
             $user = new novedadesTecnico();
-            $user->editarPwdTecnicos($data->data);
+            $user->editarPwdTecnicos($data['data']);
             break;
         case 'csvContrasenasTecnicos':
             require_once '../class/novedadesTecnico.php';

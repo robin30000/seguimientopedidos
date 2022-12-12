@@ -12,12 +12,12 @@ if (isset($data['method'])) {
         case 'nuevaAlarma':
             require_once '../class/alarma.php';
             $user = new alarma();
-            $user->nuevaAlarma($data->data);
+            $user->nuevaAlarma($data['data']);
             break;
         case 'editAlarma':
             require_once '../class/alarma.php';
             $user = new alarma();
-            $user->editAlarma($data->data);
+            $user->editAlarma($data['data']);
             break;
         case 'listadoAlarmas':
             require_once '../class/alarma.php';
@@ -27,7 +27,7 @@ if (isset($data['method'])) {
             case 'deleteAlarma':
             require_once '../class/alarma.php';
             $user = new alarma();
-            $user->deleteAlarma($data->data);
+            $user->deleteAlarma($data['data']);
             break;
 
         default:
