@@ -1,5 +1,7 @@
 <?php
 require_once '../class/conection.php';
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
 
 class modelOtherServices
 {
@@ -14,9 +16,9 @@ class modelOtherServices
     {
         try {
 
-            $datos      = $data->datoscambio;
-            $tecnologia = $data->tecnologia;
-            $pedido     = $data->pedido;
+            $datos      = $data['datoscambio'];
+            $tecnologia = $data['tecnologia'];
+            $pedido     = $data['pedido'];
             //HFC-DTH
             $cuentaDomiciliaria = $datos['cuenta'];
             $IdCuenta           = $datos['IdCuenta'];
@@ -130,11 +132,12 @@ class modelOtherServices
     public function GuardarPedidoEncuesta($params)
     {
         try {
-            $info_encuesta = $params->infoPedidoEncuesta;
-            $info_gestion  = $params->gestionDolores;
-            $duracion      = $params->counter;
-            $fechaInicial  = $params->fechaInicial;
-            $fechaFinal    = $params->fechaFinal;
+            session_start();
+            $info_encuesta = $params['infoPedidoEncuesta'];
+            $info_gestion  = $params['gestionDolores'];
+            $duracion      = $params['counter'];
+            $fechaInicial  = $params['fechaInicial'];
+            $fechaFinal    = $params['fechaFinal'];
             $login         = $_SESSION['login'];
 
             $codigo        = utf8_decode($info_gestion['codigo']);
@@ -204,7 +207,7 @@ class modelOtherServices
     public function gestiodespachoBrutal($data)
     {
         try {
-            $infogestion   = $data->datosguardar;
+            $infogestion   = $data['datosguardar'];
             $pedido        = $infogestion['pedido'];
             $accion        = utf8_decode($infogestion['accion']);
             $correo        = $infogestion['correo'];
@@ -573,8 +576,8 @@ class modelOtherServices
 
             $fechagestionAsesor = date('Y-m-d H:i:s');
 
-            $infogestion   = $data->datosguardar;
-            $datosDespacho = $data->datosDespacho;
+            $infogestion   = $data['datosguardar'];
+            $datosDespacho = $data['datosDespacho'];
 
             $idGestion             = $datosDespacho['PedidoDespacho'];
             $PedidoDespacho        = $datosDespacho['PedidoDespacho'];
@@ -649,12 +652,10 @@ class modelOtherServices
         echo json_encode($response);
     }
 
-    public function savecontingencia($params)
+    public function savecontingencia($datosguardar)
     {
         try {
-
-            $datosguardar = $params;
-
+            session_start();
             $login        = $_SESSION['login'];
             $estadoActual = (isset($datosguardar['estado'])) ? $datosguardar['estado'] : '';
             $accion       = (isset($datosguardar['accion'])) ? $datosguardar['accion'] : '';
@@ -674,11 +675,15 @@ class modelOtherServices
             $contrato     = (isset($datosguardar['contrato'])) ? $datosguardar['contrato'] : '';
             $perfil       = (isset($datosguardar['perfil'])) ? $datosguardar['perfil'] : '';
             $paquetes     = (isset($datosguardar['paquetes'])) ? $datosguardar['paquetes'] : '';
+            $paqueteconca = (isset($datosguardar['$paqueteconca'])) ? $datosguardar['$paqueteconca'] : '';
 
-            $tam          = sizeof($paquetes);
-            $paqueteconca = "";
-            for ($i = 0; $i < $tam; $i++) {
-                $paqueteconca = $paqueteconca . $paquetes[$i] . "/";
+
+            if ($paquetes != '') {
+                $tam          = count($paquetes);
+                $paqueteconca = "";
+                for ($i = 0; $i < $tam; $i++) {
+                    $paqueteconca = $paqueteconca . $paquetes[$i] . "/";
+                }
             }
 
             /*CUANDO SE SELECCIONE SEGUN EL PRODUCTO GUARDE EN EL CAMPO DE GRUPO*/
@@ -802,11 +807,11 @@ class modelOtherServices
         echo json_encode($response);
     }
 
-    public function CancelarContingencias($data)
+    public function CancelarContingencias($datoscancelar)
     {
 
         try {
-            $datoscancelar        = $data;
+            session_start();
             $login                = $_SESSION['login'];
             $pedido               = $datoscancelar['pedido'];
             $id                   = $datoscancelar['id'];
@@ -852,10 +857,9 @@ class modelOtherServices
         echo json_encode($response);
     }
 
-    public function guardarEscalar($data)
+    public function guardarEscalar($gestionescalado)
     {
         try {
-            $gestionescalado = $data;
 
             $estadoActual   = utf8_decode($gestionescalado['estado']);
             $PedidoDespacho = utf8_decode($gestionescalado['PedidoDespacho']);
@@ -904,10 +908,9 @@ class modelOtherServices
         echo json_encode($response);
     }
 
-    public function gestionAsesorFinal($data)
+    public function gestionAsesorFinal($datosFinal)
     {
         try {
-            $datosFinal = $data;
 
             $PedidoDespacho       = $datosFinal['PedidoDespacho'];
             $PedidoNuevo          = $datosFinal['pedidoNuevo'];
@@ -991,12 +994,12 @@ class modelOtherServices
         echo json_encode($response);
     }
 
-    public function Pendientesxestado($data)
+    public function Pendientesxestado($datos)
     {
 
         try {
+            session_start();
             $login  = $_SESSION['login'];
-            $datos  = $data;
             $estado = $datos['estado'];
 
             $stmt = $this->_DB->prepare("select PedidoDespacho
