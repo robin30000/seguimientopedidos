@@ -421,10 +421,10 @@ class ModelContingencia
 
     }
 
-    public function guardarpedidocontingencia($data)
+    public function guardarpedidocontingencia($datosguardar)
     {
         try {
-            $datosguardar         = $data;
+
             $login                = $_SESSION['login'];
             $pedido               = (isset($datosguardar['pedido'])) ? $datosguardar['pedido'] : '';
             $producto             = (isset($datosguardar['producto'])) ? $datosguardar['producto'] : '';
