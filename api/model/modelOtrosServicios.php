@@ -141,10 +141,9 @@ class modelOtrosServicios
         echo json_encode($response);
     }
 
-    public function insertData($data)
+    public function insertData($datos)
     {
         try {
-            $datos = $data;
             $fecha = $datos['fecha'];
             $uen = $datos['uen'];
             $tipotrabajo = $datos['tipo_trabajo'];
@@ -724,9 +723,9 @@ class modelOtrosServicios
     public function resumenSemanas($data)
     {
         try{
-            $datos      = $data->pregunta;
+            $datos      = $data['pregunta'];
             $pregunta   = $datos['pregunta'];
-            $mesenviado = $data->mes;
+            $mesenviado = $data['mes'];
 
             if ($mesenviado == "" || $mesenviado == undefined) {
 
@@ -1220,9 +1219,9 @@ class modelOtrosServicios
     public function listadoTecnicos($data)
     {
         try{
-            $pagina   = $data->page;
-            $concepto = $data->concepto;
-            $tecnico  = $data->tecnico;
+            $pagina   = $data['page'];
+            $concepto = $data['concepto'];
+            $tecnico  = $data['tecnico'];
 
             if ($pagina == "undefined") {
                 $pagina = "0";
@@ -1280,7 +1279,7 @@ class modelOtrosServicios
     public function buscarPedidoContingencias($data)
     {
         try{
-            $pedido = $this->_request['pedido'];
+            $pedido = $data;
 
             if ($pedido !== "") {
 

@@ -144,7 +144,7 @@ class modelTurnos
     public function guardarTurnos($data)
     {
         try {
-            $datosTurnos = $data->datosTurnos;
+            $datosTurnos = $data['datosTurnos'];
             $total       = count($datosTurnos);
 
             for ($i = 0; $i < $total; $i++) {
@@ -231,8 +231,8 @@ class modelTurnos
     {
 
         try {
-            $fechaIni = $data->fechaIni;
-            $fechaFin = $data->fechaFin;
+            $fechaIni = $data['fechaIni'];
+            $fechaFin = $data['fechaFin'];
             $login    = $_SESSION['login'];
 
             $filename = "AdherenciaTurnos" . "_" . $fechaIni . "_" . $fechaFin . "_" . $login . ".csv";

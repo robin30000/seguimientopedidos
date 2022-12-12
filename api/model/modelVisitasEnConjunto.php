@@ -13,10 +13,10 @@ class modelVisitasEnConjunto
     public function visitasEnConjunto($data)
     {
         try {
-            $pagina   = $data->page;
-            $datos    = $data->datos;
-            $fechaini = $data->fechaini;
-            $fechafin = $data->fechafin;
+            $pagina   = $data['page'];
+            $datos    = $data['datos'];
+            $fechaini = $data['fechaini'];
+            $fechafin = $data['fechafin'];
 
             if ($fechaini == "" || $fechafin == "") {
                 $fechaini = date('Y-m-d');

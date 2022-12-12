@@ -179,8 +179,8 @@ class modelOtherServicesFour
     public function buscaregistros($data)
     {
         try {
-            $pedido = $data->pedido;
-            $fecha  = $data->fecha;
+            $pedido = $data['pedido'];
+            $fecha  = $data['fecha'];
 
             $query = $this->_DB->prepare("select pedido,
                                (select nombre from tecnicos where identificacion = id_tecnico limit 1) AS tecnico,

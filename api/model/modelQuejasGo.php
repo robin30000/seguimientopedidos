@@ -14,8 +14,8 @@ class modelQuejasGo
     {
 
         try {
-            $page            = $data->page;
-            $datos           = $data->datos;
+            $page            = $data['page'];
+            $datos           = $data['datos'];
             $fechaini        = $datos['fechaini'];
             $fechafin        = $datos['fechafin'];
             $columnaBusqueda = $datos['columnaBusqueda'];
@@ -93,9 +93,9 @@ class modelQuejasGo
     public function csvQuejasGo($data)
     {
         try {
-            $usuarioid = $data->datoslogin;
+            $usuarioid = $data['datoslogin'];
             $usuarioid = $usuarioid['LOGIN'];
-            $datos = $data->datos;
+            $datos = $data['datos'];
             $fechaini = $datos['fechaini'];
             $fechafin = $datos['fechafin'];
             $columnaBusqueda = $datos['columnaBusqueda'];
@@ -246,9 +246,9 @@ class modelQuejasGo
     {
 
         try{
-            $datos       = $data->dataquejago;
-            $duracion    = $data->duracion;
-            $login       = $data->login;
+            $datos       = $data['dataquejago'];
+            $duracion    = $data['duracion'];
+            $login       = $data['login'];
             $asesor      = $login['LOGIN'];
             $pedido      = $datos['pedido'];
             $cliente     = $datos['cliente'];
@@ -284,8 +284,8 @@ class modelQuejasGo
     public function ActualizarObserQuejasGo($data)
     {
         try{
-            $observaciones = $data->observacion;
-            $idqueja       = $data->idqueja;
+            $observaciones = $data['observacion'];
+            $idqueja       = $data['idqueja'];
 
             $stmt = $this->_DB->prepare("UPDATE quejasgo SET observacion = :observaciones where id = :idqueja");
 

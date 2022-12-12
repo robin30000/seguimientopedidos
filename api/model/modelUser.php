@@ -15,7 +15,7 @@ class modelUser
 
         try {
 
-            $login          = $data->datosEdicion;
+            $login          = $data['datosEdicion'];
             $id             = $login['ID'];
             $usuarioid      = $login['LOGIN'];
             $nombre         = $login['NOMBRE'];
@@ -56,7 +56,7 @@ class modelUser
         try {
 
             $user           = $_SESSION['login'];
-            $datos          = $data->datosEdicion;
+            $datos          = $data['datosEdicion'];
             $accion         = $datos['accion'];
             $tipo_pendiente = $datos['tipo_pendiente'];
             $observaciones  = $datos['observaciones'];
@@ -476,13 +476,13 @@ class modelUser
     {
         try {
 
-            $login            = $data->datosCrearTecnico;
+            $login            = $data['datosCrearTecnico'];
             $identificacion   = $login['IDENTIFICACION'];
             $nombre           = $login['NOMBRE'];
             $ciudad           = $login['CIUDAD'];
             $celular          = $login['CELULAR'];
             $empresa          = $login['empresa'];
-            $id_tecnico_forma = $data->id_tecnico;
+            $id_tecnico_forma = $data['id_tecnico'];
 
             if ($identificacion == "") {
                 $identificacion = $id_tecnico_forma;
@@ -515,8 +515,8 @@ class modelUser
     {
         try {
             session_start();
-            $pagina    = $data->page;
-            $concepto  = $data->concepto;
+            $pagina    = $data['page'];
+            $concepto  = $data['concepto'];
             $usuario   = $_SESSION['login'];
             $parametro = "";
             //echo "selección".$buscar;

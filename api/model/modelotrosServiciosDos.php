@@ -10,10 +10,10 @@ class modelotrosServiciosDos
         $this->_DB = new Conection();
     }
 
-    public function listadoEstadosClick($data)
+    public function listadoEstadosClick($datos)
     {
         try{
-            $datos        = $$data;
+
             $fecha        = $datos['fecha'];
             $uen          = $datos['uen'];
             $tipo_trabajo = $datos['tipo_trabajo'];
@@ -79,9 +79,9 @@ class modelotrosServiciosDos
     {
         try{
             $today        = date("Y") . "-" . date("m") . "-" . date("d");
-            $usuarioid    = $data->user;
-            $datospedidos = $data->datosdelpedido;
-            $infoGuardar  = $data->info;
+            $usuarioid    = $data['user'];
+            $datospedidos = $data['datosdelpedido'];
+            $infoGuardar  = $data['info'];
             $Causa_raiz   = $infoGuardar['causaraiz'];
             $responsable  = $infoGuardar['responsable'];
             $observacion  = $infoGuardar['observaciones'];
@@ -184,8 +184,8 @@ class modelotrosServiciosDos
     public function Codigos($data)
     {
         try{
-            $proceso         = $data->proceso;
-            $UNESourceSystem = $data->UNESourceSystem;
+            $proceso         = $data['proceso'];
+            $UNESourceSystem = $data['UNESourceSystem'];
 
             $query =$this->_DB->query( " 	SELECT DISTINCT codigo
 					FROM codigosPendiente
@@ -218,7 +218,7 @@ class modelotrosServiciosDos
     public function Diagnosticos($data)
     {
         try{
-            $producto = $data->producto;
+            $producto = $data['producto'];
 
             $query = $this->_DB->query(" 	SELECT DISTINCT diagnostico
 					FROM diagnosticoFalla
