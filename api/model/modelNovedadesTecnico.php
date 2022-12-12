@@ -12,8 +12,8 @@ class modelNovedadesTecnico
 
     public function novedadesTecnico($pagina, $datos)
     {
-        $fechaini = (!isset($datos->fechaini)) ? date("Y-m-d") : $datos->fechaini; //CORRECCION DE VALIDACION DE FECHA
-        $fechafin = (!isset($datos->fechafin)) ? date("Y-m-d") : $datos->fechafin; //CORRECCION DE VALIDACION DE FECHA
+        $fechaini = (!isset($datos['fechaini'])) ? date("Y-m-d") : $datos['fechaini']; //CORRECCION DE VALIDACION DE FECHA
+        $fechafin = (!isset($datos['fechafin'])) ? date("Y-m-d") : $datos['fechafin']; //CORRECCION DE VALIDACION DE FECHA
 
         if ($fechaini == "" || $fechafin == "") {
             $fechaini = date('Y-m-d');
@@ -72,8 +72,7 @@ class modelNovedadesTecnico
 
     public function guardarNovedadesTecnico($data)
     {
-
-        $datos = $data;
+        session_start();
         $login = $_SESSION['login'];
         //$login  = $login['LOGIN'];
         /* $key = $datos['id'];
@@ -88,33 +87,33 @@ class modelNovedadesTecnico
 		$tiponovedad = utf8_decode($datos['tiponovedad']);
 		$pedido = $datos['pedido'];
 		$proceso = $datos['proceso']; */
-        $key                = (isset($data->id)) ? $data->id : '';
-        $contracto          = (isset($data->contracto)) ? $data->contracto : '';
-        $cedulaTecnico      = (isset($data->cedulaTecnico)) ? $data->cedulaTecnico : '';
-        $nombreTecnico      = (isset($data->nombreTecnico)) ? utf8_decode($data->nombreTecnico) : '';
-        $region             = (isset($data->region)) ? $data->region : '';
-        $municipio          = (isset($data->municipio)) ? utf8_decode($data->municipio) : '';
-        $situacion          = (isset($data->situacion)) ? $data->situacion : '';
-        $detalle            = (isset($data->detalle)) ? $data->detalle : '';
-        $observaciones      = (isset($data->observaciones)) ? utf8_decode($data->observaciones) : '';
-        $tiponovedad        = (isset($data->tiponovedad)) ? utf8_decode($data->tiponovedad) : '';
-        $pedido             = (isset($data->pedido)) ? $data->pedido : '';
-        $proceso            = (isset($data->proceso)) ? $data->proceso : '';
-        $situaciontriangulo = (isset($data->situaciontriangulo)) ? utf8_decode($data->situaciontriangulo) : '';
-        $motivo             = (isset($data->motivotriangulo)) ? utf8_decode($data->motivotriangulo) : '';
-        if (isset($data->submotivotriangulo)) {
-            $submotivo = utf8_decode($data->submotivotriangulo);
+        $key                = (isset($data['id'])) ? $data['id'] : '';
+        $contracto          = (isset($data['contracto'])) ? $data['contracto'] : '';
+        $cedulaTecnico      = (isset($data['cedulaTecnico'])) ? $data['cedulaTecnico'] : '';
+        $nombreTecnico      = (isset($data['nombreTecnico'])) ? utf8_decode($data['nombreTecnico']) : '';
+        $region             = (isset($data['region'])) ? $data['region'] : '';
+        $municipio          = (isset($data['municipio'])) ? utf8_decode($data['municipio']) : '';
+        $situacion          = (isset($data['situacion'])) ? $data['situacion'] : '';
+        $detalle            = (isset($data['detalle'])) ? $data['detalle'] : '';
+        $observaciones      = (isset($data['observaciones'])) ? utf8_decode($data['observaciones']) : '';
+        $tiponovedad        = (isset($data['tiponovedad'])) ? utf8_decode($data['tiponovedad']) : '';
+        $pedido             = (isset($data['pedido'])) ? $data['pedido'] : '';
+        $proceso            = (isset($data['proceso'])) ? $data['proceso'] : '';
+        $situaciontriangulo = (isset($data['situaciontriangulo'])) ? utf8_decode($data['situaciontriangulo']) : '';
+        $motivo             = (isset($data['motivotriangulo'])) ? utf8_decode($data['motivotriangulo']) : '';
+        if (isset($data['submotivotriangulo'])) {
+            $submotivo = utf8_decode($data['submotivotriangulo']);
         } else {
             $submotivo = "";
         }
-        $horamarcasitio = date('h:i A', strtotime($data->horamarcaensitio));
-        $idllamada      = $data->idLlamada;
+        $horamarcasitio = date('h:i A', strtotime($data['horamarcaensitio']));
+        $idllamada      = $data['idLlamada'];
 
-        $contrato2      = $data->contrato2;
-        $cedulaTecnico2 = $data->cedulaTecnico2;
-        $nombreTecnico2 = utf8_decode($data->nombreTecnico2);
-        $proceso2       = $data->proceso2;
-        $municipio2     = utf8_decode($data->municipio2);
+        $contrato2      = $data['contrato2'];
+        $cedulaTecnico2 = $data['cedulaTecnico2'];
+        $nombreTecnico2 = utf8_decode($data['nombreTecnico2']);
+        $proceso2       = $data['proceso2'];
+        $municipio2     = utf8_decode($data['municipio2']);
 
 
         if ($tiponovedad == 'Cumplimiento de Agenda' and $cedulaTecnico == null) {
@@ -316,8 +315,8 @@ class modelNovedadesTecnico
     public function updateNovedadesTecnico($data)
     {
         try {
-            $observacionCCO = $data->datosEditar;
-            $pedido         = $data->pedido;
+            $observacionCCO = $data['datosEditar'];
+            $pedido         = $data['pedido'];
 
             $stmt = $this->_DB->prepare("UPDATE NovedadesVisitas SET observacionCCO = :observacionCCO WHERE pedido = :pedido");
             $stmt->execute([':$observacionCCO' => $observacionCCO, ':$pedido' => $pedido]);
@@ -340,8 +339,8 @@ class modelNovedadesTecnico
         session_start();
         $usuarioid = $_SESSION['login'];
         if ($data) {
-            $fechaini = $data->fechaini;
-            $fechafin = $data->fechafin;
+            $fechaini = $data['fechaini'];
+            $fechafin = $data['fechafin'];
         }
 
 
@@ -558,7 +557,7 @@ class modelNovedadesTecnico
 
         try {
 
-            $datos    = $data->datos;
+            $datos    = $data['datos'];
             $concepto = $datos['concepto'];
             $buscar   = $datos['buscar'];
 
@@ -580,7 +579,7 @@ class modelNovedadesTecnico
     public function editarPwdTecnicos($data)
     {
         try {
-            $datos  = $data->datosEdicion;
+            $datos  = $data['datosEdicion'];
             $cedula = $datos['cedula'];
             $pwd    = $datos['newpwd'];
 

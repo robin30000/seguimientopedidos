@@ -43,9 +43,9 @@ class modelCodigoIncompleto
     {
         try {
 
-            $id_codigo_incompleto = $data->id_codigo_incompleto;
-            $tipificacion         = $data->tipificacion;
-            $observacion          = $data->observacion;
+            $id_codigo_incompleto = $data['id_codigo_incompleto'];
+            $tipificacion         = $data['tipificacion'];
+            $observacion          = $data['observacion'];
             $fecha_respuesta      = date('Y-m-d H:i:s');
 
             $stmt = $this->_DB->prepare("UPDATE gestion_codigo_incompleto
@@ -78,8 +78,8 @@ class modelCodigoIncompleto
     public function registroscodigoincompleto($data)
     {
         try {
-            $pagina = $data->page;
-            $datos  = $data->datos;
+            $pagina = $data['page'];
+            $datos  = $data['datos'];
 
             $fechaini = (!isset($datos['fechaini'])) ? date("Y-m-d") : $datos['fechaini']; //CORRECCION DE VALIDACION DE FECHA
             $fechafin = (!isset($datos['fechafin'])) ? date("Y-m-d") : $datos['fechafin']; //CORRECCION DE VALIDACION DE FECHA

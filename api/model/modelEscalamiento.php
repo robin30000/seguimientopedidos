@@ -15,8 +15,8 @@ class modelEscalamiento
     {
 
         try {
-            $pagina   = $data->page;
-            $datos    = $data->datos;
+            $pagina   = $data['page'];
+            $datos    = $data['datos'];
             $fechaini = $datos['fechaini'];
             $fechafin = $datos['fechafin'];
 

@@ -10,11 +10,9 @@ class modelOtherServicesDos
         $this->_DB = new Conection();
     }
 
-    public function gestionBorrar($data)
+    public function gestionBorrar($datosFinal)
     {
         try {
-
-            $datosFinal = $data;
 
             $PedidoDespacho = $datosFinal['PedidoDespacho'];
 
@@ -45,11 +43,9 @@ class modelOtherServicesDos
         echo json_encode($response);
     }
 
-    public function desbloquear($data)
+    public function desbloquear($datosFinal)
     {
         try {
-
-            $datosFinal = $data;
 
             $PedidoDespacho = $datosFinal['PedidoDespacho'];
 
@@ -81,10 +77,11 @@ class modelOtherServicesDos
     public function csvPreagen($data)
     {
         try {
+            session_start();
             $usuarioid   = $_SESSION['login'];
-            $datos       = $data->datos;
+            $datos       = $data['datos'];
             $fecha       = $datos['fecha'];
-            $valor       = $data->valor;
+            $valor       = $data['valor'];
             $uen         = $datos['uen'];
             $tipotrabajo = $datos['tipo_trabajo'];
             $ciudad      = $datos['CIUDAD'];
@@ -469,9 +466,10 @@ class modelOtherServicesDos
     public function csvContingencias($data)
     {
         try {
+            session_start();
             $usuarioid = $_SESSION['login'];
-            $fechaIni  = $data->fechaIni;
-            $fechafin  = $data->fechafin;
+            $fechaIni  = $data['fechaIni'];
+            $fechafin  = $data['fechafin'];
 
             $filename = "Contingencias" . "_" . $fechaIni . "_" . $fechafin . "_" . $usuarioid . ".csv";
 
@@ -577,11 +575,11 @@ class modelOtherServicesDos
         echo json_encode($response);
     }
 
-    public function csvEstadosClick($data)
+    public function csvEstadosClick($datos)
     {
         try {
+            session_start();
             $usuarioid   = $_SESSION['login'];
-            $datos       = $data;
             $fecha       = $datos['fecha'];
             $uen         = $datos['uen'];
             $tipotrabajo = $datos['tipo_trabajo'];
@@ -671,10 +669,10 @@ class modelOtherServicesDos
         echo json_encode($response);
     }
 
-    public function CsvpeniInsta($data)
+    public function CsvpeniInsta($regional)
     {
         try {
-            $regional  = $data;
+            session_start();
             $usuarioid = $_SESSION['login'];
 
             $filename = "Pendiente_instalaciones" . "_" . $regional . "_" . $usuarioid . ".csv";
@@ -838,10 +836,10 @@ class modelOtherServicesDos
          */
     }
 
-    public function CsvNpsSemana($data)
+    public function CsvNpsSemana($semana)
     {
         try {
-            $semana    = $data;
+            session_start();
             $usuarioid = $_SESSION['login'];
 
             $fecha = date("Y") . "-" . date("m") . "-" . date("d");
@@ -947,9 +945,9 @@ class modelOtherServicesDos
     public function buscarPedidoSegui($data)
     {
         try {
-            $pedido   = $data->pedido;
-            $producto = $data->producto;
-            $remite   = $data->remite;
+            $pedido   = $data['pedido'];
+            $producto = $data['producto'];
+            $remite   = $data['remite'];
 
             $stmt = $this->_DB->prepare("SELECT * FROM registros WHERE pedido = :pedido");
             $stmt->execute([':pedido' => $pedido]);
@@ -991,12 +989,11 @@ class modelOtherServicesDos
         echo json_encode($response);
     }
 
-    public function csvRegistros($data)
+    public function csvRegistros($datos)
     {
         try {
-
+            session_start();
             $usuarioid = $_SESSION['login'];
-            $datos     = $data->datos;
             $fechaini  = $datos['fechaini'];
             $fechafin  = $datos['fechafin'];
             $concepto  = $datos['concepto'];
@@ -1083,14 +1080,13 @@ class modelOtherServicesDos
         echo json_encode($response);
     }
 
-    public function expBrutal($data)
+    public function expBrutal($datos)
     {
         try {
 
             $usuarioid = $_SESSION['login'];
 
-            $datos    = $data;
-            $fechas   = $data['fechas'];
+            $fechas   = $datos['fechas'];
             $fechaini = $fechas['fechaini'];
             $fechafin = $fechas['fechafin'];
             $concepto = $datos['concepto'];
@@ -1191,12 +1187,11 @@ class modelOtherServicesDos
         echo json_encode($response);
     }
 
-    public function Csvtecnico($data)
+    public function Csvtecnico($datos)
     {
         try {
-
+            session_start();
             $usuarioid = $_SESSION['login'];
-            $datos     = $data;
             $fechaini  = $datos['fechaini'];
             $fechafin  = $datos['fechafin'];
 
@@ -1395,10 +1390,9 @@ class modelOtherServicesDos
         echo json_encode($response);
     }
 
-    public function diferenciasClick($data)
+    public function diferenciasClick($fecha)
     {
         try {
-            $fecha         = $data;
             $fechaanterior = date('Y-m-d', strtotime('-1 day', strtotime($fecha)));
 
             $query = "TRUNCATE TABLE view_diferencias_Click";
@@ -1480,10 +1474,9 @@ class modelOtherServicesDos
         echo json_encode($response);
     }
 
-    public function observacionAsesor($data)
+    public function observacionAsesor($pedido)
     {
         try {
-            $pedido = $data;
 
             $query = "SELECT ObservacionAsesor FROM BrutalForce where PedidoDespacho = :pedido";
             $stmt  = $this->_DB->prepare($query);
@@ -1527,10 +1520,9 @@ class modelOtherServicesDos
         echo json_encode($response);
     }
 
-    public function seguimientoClick($data)
+    public function seguimientoClick($fecha)
     {
         try {
-            $fecha = $data;
             $mes   = date("m", strtotime($fecha));
             $anio  = date("Y", strtotime($fecha));
 
@@ -1821,11 +1813,11 @@ class modelOtherServicesDos
     public function registrosComercial($data)
     {
         try {
-            $pagina   = $data->page;
-            $concepto = $data->concepto;
-            $dato     = $data->dato;
-            $inicial  = $data->inicial;
-            $final    = $data->final;
+            $pagina   = $data['page'];
+            $concepto = $data['concepto'];
+            $dato     = $data['dato'];
+            $inicial  = $data['inicial'];
+            $final    = $data['final'];
 
             if ($pagina == "undefined") {
                 $pagina = "0";

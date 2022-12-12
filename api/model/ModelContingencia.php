@@ -267,7 +267,7 @@ class ModelContingencia
 
             if ($stmt->rowCount()) {
                 $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $response = [$resultado, $counter, 201];
+                $response  = [$resultado, $counter, 201];
             } else {
                 $response = 0;
             }
@@ -346,15 +346,14 @@ class ModelContingencia
         echo json_encode($response);
     }
 
-    public function marcaPortafolio($data)
+    public function marcaPortafolio($datosguardar)
     {
         try {
-            $today        = date("Y-m-d H:i:s");
-            $datosguardar = $data;
-            $login        = $_SESSION['login'];
-            $pedido       = $datosguardar['pedido'];
-            $gestion      = $datosguardar['bloqueo'];
-            $producto     = $datosguardar['producto'];
+            $today    = date("Y-m-d H:i:s");
+            $login    = $_SESSION['login'];
+            $pedido   = $datosguardar['pedido'];
+            $gestion  = $datosguardar['bloqueo'];
+            $producto = $datosguardar['producto'];
 
             if ($gestion == true) {
                 $gestion = 1;
@@ -483,10 +482,9 @@ class ModelContingencia
         echo json_encode($response);
     }
 
-    public function guardarescalamiento($data)
+    public function guardarescalamiento($datosguardar)
     {
         try {
-            $datosguardar              = $data;
             $login                     = $_SESSION['login'];
             $pedido                    = $datosguardar['pedido'];
             $producto                  = $datosguardar['producto'];
@@ -518,11 +516,11 @@ class ModelContingencia
                     $sqlupdate->execute([':horaescalamiento' => $horaescalamiento, ':tipificacion' => $tipificacion, ':id' => $id]);
                 } else {
                     if ($tipificacion == "Agendado" || $tipificacion == "No tecnicos disponibles" || $tipificacion == "ANS de mas de 20 horas" || $tipificacion == "No agendado") {
-                        $sqlupdate = "UPDATE escalamiento_infraestructura SET fecha_respuesta = :horaescalamiento, 
+                        $sqlupdate = $this->_DB->prepare("UPDATE escalamiento_infraestructura SET fecha_respuesta = :horaescalamiento, 
                         observacion_respuesta = :obversacionesEscalamiento, 
                         tipificacion=:tipificacion, 
                         estado = '2' 
-                         WHERE id=:id ";
+                         WHERE id=:id ");
                         $sqlupdate->execute([
                             ':horaescalamiento'          => $horaescalamiento,
                             ':obversacionesEscalamiento' => $observacionesescalamiento,
@@ -530,11 +528,11 @@ class ModelContingencia
                             ':id'                        => $id,
                         ]);
                     } else {
-                        $sqlupdate = "UPDATE escalamiento_infraestructura SET fecha_respuesta = :horaescalamiento, 
+                        $sqlupdate = $this->_DB->prepare("UPDATE escalamiento_infraestructura SET fecha_respuesta = :horaescalamiento, 
                         observacion_respuesta = :obversacionesEscalamiento, 
                         tipificacion=:tipificacion, 
                         estado = '1' 
-                        WHERE id=:id ";
+                        WHERE id=:id ");
                         $sqlupdate->execute([
                             ':horaescalamiento'          => $horaescalamiento,
                             ':obversacionesEscalamiento' => $observacionesescalamiento,
@@ -554,10 +552,9 @@ class ModelContingencia
         echo json_encode($response);
     }
 
-    public function cerrarMasivamenteContingencias($data)
+    public function cerrarMasivamenteContingencias($datosCierreMasivo)
     {
         try {
-            $datosCierreMasivo = $data;
 
             $today         = date("Y-m-d H:i:s");
             $tv            = $datosCierreMasivo['TV'];
@@ -638,10 +635,10 @@ class ModelContingencia
         echo json_encode($response);
     }
 
-    public function guardarPedidoContingenciaPortafolio($data)
+    public function guardarPedidoContingenciaPortafolio($datosguardar)
     {
         try {
-            $datosguardar                 = $data;
+            session_start();
             $login                        = $_SESSION['login'];
             $pedido                       = $datosguardar['pedido'];
             $producto                     = $datosguardar['producto'];
@@ -791,13 +788,12 @@ class ModelContingencia
         echo json_encode($response);
     }
 
-    public function graficaAcumulados($data)
+    public function graficaAcumulados($datos)
     {
         try {
 
-            $datos      = $data->pregunta;
             $pregunta   = $datos['pregunta'];
-            $mesenviado = $data->mes;
+            $mesenviado = $datos['mes'];
 
             if ($mesenviado == "" || $mesenviado == undefined) {
 
@@ -989,12 +985,11 @@ class ModelContingencia
         echo json_encode($response);
     }
 
-    public function graficaAcumuladosrepa($data)
+    public function graficaAcumuladosrepa($datos)
     {
         try {
-            $datos      = $data->pregunta;
             $pregunta   = $datos['pregunta'];
-            $mesenviado = $data->mes;
+            $mesenviado = $datos['mes'];
 
             if ($mesenviado == "" || $mesenviado == undefined) {
 

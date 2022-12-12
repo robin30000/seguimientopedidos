@@ -138,7 +138,7 @@ class ModelFormaAsesores
         exit();*/
 
         try {
-            $stmt = $this->_DB->prepare("SELECT a.id, a.pedido, " .
+            $stmt = $this->_DB->query("SELECT a.id, a.pedido, " .
                                         " (select nombre from tecnicos " .
                                         "where a.id_tecnico = identificacion limit 1) tecnico, " .
                                         "trim(a.accion) AS accion, " .

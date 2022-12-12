@@ -67,11 +67,9 @@ class modelAlarma
         echo json_encode($response);
     }
 
-    public function editAlarma($data)
+    public function editAlarma($datosAlarma)
     {
         try {
-
-            $datosAlarma = $data;
 
             $nombre_alarma       = $datosAlarma['nombre_alarma'];
             $ciudad              = $datosAlarma['ciudad'];
