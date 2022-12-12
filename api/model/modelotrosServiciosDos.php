@@ -1,5 +1,6 @@
 <?php
 require_once '../class/conection.php';
+
 class modelotrosServiciosDos
 {
 
@@ -12,7 +13,7 @@ class modelotrosServiciosDos
 
     public function listadoEstadosClick($datos)
     {
-        try{
+        try {
 
             $fecha        = $datos['fecha'];
             $uen          = $datos['uen'];
@@ -34,7 +35,7 @@ class modelotrosServiciosDos
                 $tipo_trabajo = "";
             }
 
-            $query =$this->_DB->query( "select estado_id, count(pedido_id) total_estados 
+            $query = $this->_DB->query("select estado_id, count(pedido_id) total_estados 
                 from carga_click  
                 where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')  
                 $tipo_trabajo $uen 
@@ -55,12 +56,12 @@ class modelotrosServiciosDos
 
                 }
 
-                $response=[$resultado,201];
+                $response = [$resultado, 201];
             } else {
-                $response = ['',400];
+                $response = ['', 400];
 
             }
-        }catch (PDOException $e){
+        } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
         echo json_encode($response);
@@ -68,18 +69,19 @@ class modelotrosServiciosDos
 
     public function BuscarPedidoinsta($data)
     {
-        try{
+        try {
 
-        }catch(PDOException $e){
+        } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
     }
 
     public function GuardarPedidoPendiInsta($data)
     {
-        try{
+        try {
+            session_start();
             $today        = date("Y") . "-" . date("m") . "-" . date("d");
-            $usuarioid    = $data['user'];
+            $usuarioid    = $_SESSION['login'];
             $datospedidos = $data['datosdelpedido'];
             $infoGuardar  = $data['info'];
             $Causa_raiz   = $infoGuardar['causaraiz'];
@@ -101,52 +103,52 @@ class modelotrosServiciosDos
 
             $query->execute();
 
-            $sqlupdate =$this->_DB->query( "UPDATE gestion_pendientes SET bloqueo='NO', causa_raiz='$Causa_raiz', responsable ='$responsable', 
+            $sqlupdate = $this->_DB->query("UPDATE gestion_pendientes SET bloqueo='NO', causa_raiz='$Causa_raiz', responsable ='$responsable', 
                 observacion='$observacion', Asesor_carga='null', fecha_update='$today', 
                 actualizado ='SI' WHERE id='$id' ");
 
             $sqlupdate->execute();
 
-        }catch (PDOException $e){
+        } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
     }
 
     public function deleteregistrosCarga($data)
     {
-        try{
+        try {
             $id = $data;
 
-            $sql = $this->_DB->query("delete from carga_archivos where id='$id' ");
-            $sql->execute();
+            $sql = $this->_DB->query("delete from carga_archivos where id = :id");
+            $sql->execute([':id' => $id]);
 
-        }catch (PDOException $e){
+        } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
     }
 
     public function Accionesoffline($data)
     {
-        try{
+        try {
             $producto = $data;
 
             $query = $this->_DB->query("SELECT DISTINCT ACCION
                  FROM accionesoffline 
-                 WHERE producto = '$producto' 
-                 ORDER BY ACCION ASC ");
+                 WHERE producto = :product
+                 ORDER BY ACCION");
 
-            $query->execute();
+            $query->execute([':product' => $producto]);
 
             if ($query->rowCount()) {
 
 
-                $resultado=$query->fetchAll(PDO::FETCH_ASSOC);
-                $response=[$resultado,201];
+                $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+                $response  = [$resultado, 201];
 
             } else {
-                $response = ['',400];
+                $response = ['', 400];
             } // If no records "No Content" status
-        }catch (PDOException $e){
+        } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
         echo json_encode($response);
@@ -154,15 +156,15 @@ class modelotrosServiciosDos
 
     public function acciones($data)
     {
-        try{
+        try {
             $proceso = $data;
 
-            $query =$this->_DB->query( " SELECT DISTINCT ACCION
+            $query = $this->_DB->query(" SELECT DISTINCT ACCION
                  FROM procesos 
-                 where 1=1 and proceso='$proceso' and accion <> ''
-                 ORDER BY ACCION ASC ");
+                 where 1=1 and proceso = :proceso and accion <> ''
+                 ORDER BY ACCION");
 
-            $query->execute();
+            $query->execute([':process' => $proceso]);
             if ($query->rowCount()) {
 
                 $resultado = [];
@@ -170,12 +172,12 @@ class modelotrosServiciosDos
                     $resultado[] = $row;
                 }
 
-                $response=[$resultado,201];
+                $response = [$resultado, 201];
 
             } else {
-                $response = ['',400];
+                $response = ['', 400];
             } // If no records "No Content" status
-        }catch (PDOException $e){
+        } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
         echo json_encode($response);
@@ -183,16 +185,16 @@ class modelotrosServiciosDos
 
     public function Codigos($data)
     {
-        try{
+        try {
             $proceso         = $data['proceso'];
             $UNESourceSystem = $data['UNESourceSystem'];
 
-            $query =$this->_DB->query( " 	SELECT DISTINCT codigo
+            $query = $this->_DB->query("SELECT DISTINCT codigo
 					FROM codigosPendiente
-					WHERE proceso ='$proceso' AND UNESourceSystem ='$UNESourceSystem'
-					ORDER BY codigo ASC  ");
+					WHERE proceso = :process AND UNESourceSystem = :une
+					ORDER BY codigo");
 
-            $query->execute();
+            $query->execute([':process' => $proceso, ':une' => $UNESourceSystem]);
 
             if ($query->rowCount()) {
 
@@ -203,12 +205,12 @@ class modelotrosServiciosDos
 
                     $resultado[] = $row;
                 }
-                $response=[$resultado,201];
+                $response = [$resultado, 201];
 
             } else {
-                $response=['',201];
+                $response = ['', 201];
             }
-        }catch (PDOException $e){
+        } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
 
@@ -217,15 +219,15 @@ class modelotrosServiciosDos
 
     public function Diagnosticos($data)
     {
-        try{
+        try {
             $producto = $data['producto'];
 
-            $query = $this->_DB->query(" 	SELECT DISTINCT diagnostico
+            $query = $this->_DB->query("SELECT DISTINCT diagnostico
 					FROM diagnosticoFalla
-					WHERE producto ='$producto'
-					ORDER BY diagnostico ASC  ");
+					WHERE producto = :product
+					ORDER BY diagnostico");
 
-            $query->execute();
+            $query->execute(array(':product' => $producto));
 
             if ($query->rowCount()) {
 
@@ -236,11 +238,11 @@ class modelotrosServiciosDos
 
                     $resultado[] = $row;
                 }
-                $response=[$resultado,201];
+                $response = [$resultado, 201];
             } else {
-                $response =['',200];
+                $response = ['', 200];
             }
-        }catch (PDOException $e){
+        } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
         echo json_encode($response);

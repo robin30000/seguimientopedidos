@@ -267,6 +267,7 @@ class modelSoporteGpon
     {
 
         try {
+            session_start();
             $id_soporte   = $params['id_soporte'];
             $tipificacion = $params['tipificacion'];
             $observacion  = $params['observacion'];
@@ -366,7 +367,7 @@ class modelSoporteGpon
                                         WHERE fecha_respuesta BETWEEN :fechaini AND :fechafin
                                           AND status_soporte = '1'
                                         ORDER BY fecha_creado DESC
-                                        LIMIT 100");
+                                        LIMIT 100 offset $pagina");
             $stmt->execute([
                 ':fechaini' => "$fechaini 00:00:00",
                 ':fechafin' => "$fechafin 23:59:59",

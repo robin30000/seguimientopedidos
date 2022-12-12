@@ -185,13 +185,11 @@ class modelVisitasEnConjunto
         echo json_encode($response);
     }
 
-    public function expCsvVisitasEnConjunto($data)
+    public function expCsvVisitasEnConjunto($datos)
     {
         try {
-
+            session_start();
             $usuarioid = $_SESSION['login'];
-
-            $datos    = $data;
             $fechaini = $datos['fechai'];
             $fechafin = $datos['fechaf'];
 

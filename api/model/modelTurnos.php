@@ -36,8 +36,8 @@ class modelTurnos
     public function listaTurnos($data)
     {
         try {
-            $fechaini = $data->fechaini;
-            $fechaFin = $data->fechafin;
+            $fechaini = $data['fechaini'];
+            $fechaFin = $data['fechafin'];
 
             $stmt = $this->_DB->prepare("SELECT *
                                                 from turnosSeguimiento
@@ -67,7 +67,7 @@ class modelTurnos
     {
         try {
 
-            $fecha = $data->fechaIni;
+            $fecha = $data['fechaIni'];
 
             $stmt = $this->_DB->prepare("select fecha,
                                                    usuario,
@@ -231,6 +231,7 @@ class modelTurnos
     {
 
         try {
+            session_start();
             $fechaIni = $data['fechaIni'];
             $fechaFin = $data['fechaFin'];
             $login    = $_SESSION['login'];

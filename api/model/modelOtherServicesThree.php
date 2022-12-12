@@ -17,6 +17,7 @@ class modelOtherServicesThree
     public function gestionBrutal($data)
     {
         try {
+            session_start();
             $login  = $_SESSION['login'];
             $accion = $data;
 

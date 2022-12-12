@@ -54,7 +54,7 @@ class modelUser
     public function editarRegistro($data)
     {
         try {
-
+            session_start();
             $user           = $_SESSION['login'];
             $datos          = $data['datosEdicion'];
             $accion         = $datos['accion'];
@@ -93,7 +93,7 @@ class modelUser
     {
 
         try {
-
+            session_start();
             $user          = $_SESSION['login'];
             $crearpedido   = $data['datospedidoComercial'];
             $ciudad        = $crearpedido['CIUDAD'];
@@ -142,6 +142,7 @@ class modelUser
     {
 
         try {
+            session_start();
             $login       = $_SESSION['login'];
             $user        = $login['LOGIN'];
             $planNPS     = $data;
@@ -181,7 +182,7 @@ class modelUser
     public function CrearpedidoOffline($data)
     {
         try {
-
+            session_start();
             $user          = $_SESSION['login'];
             $crearpedido   = $data['datospedidoOffline'];
             $login_asesor  = $crearpedido['LOGIN_ASESOR'];
@@ -232,7 +233,7 @@ class modelUser
     public function ingresarPedidoAsesor($params)
     {
         try {
-
+            session_start();
             $idcambioequipo   = $params['idcambioequipo'];
             $duracion_llamada = $params['duracion_llamada'];
             $crearpedido      = $params['datospedido'];

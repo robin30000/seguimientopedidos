@@ -17,7 +17,7 @@ class modelOtrosServicios
 
             if ($mesenviado == "" || $mesenviado == undefined) {
 
-                $query = $this->_DB->query("select max(fecha_instalacion) fecha from nps ");
+                $query = $this->_DB->query("select max(fecha_instalacion) AS fecha from nps ");
                 $fecha = date("Y-m-d");
 
                 if ($query->rowCount()) {
@@ -149,7 +149,7 @@ class modelOtrosServicios
             $tipotrabajo = $datos['tipo_trabajo'];
             $ciudad = $datos['CIUDAD'];
             $mes = date("m", strtotime($fecha));
-            $año = date("Y", strtotime($fecha));
+            $anio = date("Y", strtotime($fecha));
             $sep = "";
             $ciudades = "";
             $bandera = 0;
@@ -1205,8 +1205,6 @@ class modelOtrosServicios
 
             } else {
                 $response = ['',400];
-
-                $this->response($this->json($error), 400);
             }
 
         }catch(PDOException $e){
@@ -1288,10 +1286,10 @@ class modelOtrosServicios
 						tipoEquipo, tecnologia, remite, tipificacion, tipificacionPortafolio, acepta, aceptaPortafolio, observacion, observContingencia,
 						observContingenciaPortafolio, ingresoEquipos
 						FROM contingencias
-						WHERE pedido = '$pedido'
+						WHERE pedido = :pedido
 					");
 
-                $query->execute();
+                $query->execute(array(':pedido' => $pedido));
 
                 if ($query->rowCount()) {
                     $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
