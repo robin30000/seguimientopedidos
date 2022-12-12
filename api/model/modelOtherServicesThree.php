@@ -272,8 +272,8 @@ class modelOtherServicesThree
     public function getConceptosTotales($data)
     {
         try {
-            $regional = $data->regional;
-            $interfaz = $data->interfaz;
+            $regional = $data['regional'];
+            $interfaz = $data['interfaz'];
 
             $stmt = $this->_DB->prepare("select CONCEPTO_ATC, count(CONCEPTO_ATC) total_concepto
                                                 from pendi_insta

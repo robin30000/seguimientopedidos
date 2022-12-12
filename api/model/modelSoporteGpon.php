@@ -97,37 +97,37 @@ class modelSoporteGpon
     {
 
         try {
-            $task                 = $params->task;
-            $arpon                = $params->arpon;
-            $nap                  = $params->nap;
-            $hilo                 = $params->hilo;
-            $internet1            = $params->internet1;
-            $internet2            = $params->internet2;
-            $internet3            = $params->internet3;
-            $internet4            = $params->internet4;
-            $television1          = $params->television1;
-            $television2          = $params->television2;
-            $television3          = $params->television3;
-            $television4          = $params->television4;
-            $numeroContacto       = $params->numeroContacto;
-            $nombreContacto       = $params->nombreContacto;
-            $user_id              = $params->user_id;
-            $request_id           = $params->request_id;
-            $user_identification  = $params->user_identification;
-            $fecha_solicitud      = $params->fecha_solicitud;
-            $unepedido            = $params->unepedido;
-            $tasktypecategory     = $params->tasktypecategory;
-            $unemunicipio         = $params->unemunicipio;
-            $uneproductos         = $params->uneproductos;
-            $datoscola            = $params->datoscola;
-            $engineer_id          = $params->engineer_id;
-            $engineer_name        = $params->engineer_name;
-            $mobile_phone         = $params->mobile_phone;
-            $serial               = $params->serial;
-            $mac                  = $params->mac;
-            $tipo_equipo          = $params->tipo_equipo;
-            $velocidad_navegacion = $params->velocidad_navegacion;
-            $observacionTerreno   = $params->observacionTerreno;
+            $task                 = $params['task'];
+            $arpon                = $params['arpon'];
+            $nap                  = $params['nap'];
+            $hilo                 = $params['hilo'];
+            $internet1            = $params['internet1'];
+            $internet2            = $params['internet2'];
+            $internet3            = $params['internet3'];
+            $internet4            = $params['internet4'];
+            $television1          = $params['television1'];
+            $television2          = $params['television2'];
+            $television3          = $params['television3'];
+            $television4          = $params['television4'];
+            $numeroContacto       = $params['numeroContacto'];
+            $nombreContacto       = $params['nombreContacto'];
+            $user_id              = $params['user_id'];
+            $request_id           = $params['request_id'];
+            $user_identification  = $params['user_identification'];
+            $fecha_solicitud      = $params['fecha_solicitud'];
+            $unepedido            = $params['unepedido'];
+            $tasktypecategory     = $params['tasktypecategory'];
+            $unemunicipio         = $params['unemunicipio'];
+            $uneproductos         = $params['uneproductos'];
+            $datoscola            = $params['datoscola'];
+            $engineer_id          = $params['engineer_id'];
+            $engineer_name        = $params['engineer_name'];
+            $mobile_phone         = $params['mobile_phone'];
+            $serial               = $params['serial'];
+            $mac                  = $params['mac'];
+            $tipo_equipo          = $params['tipo_equipo'];
+            $velocidad_navegacion = $params['velocidad_navegacion'];
+            $observacionTerreno   = $params['observacionTerreno'];
 
             $fecha_creado = date('Y-m-d H:i:s');
             $hoy          = date('Y-m-d');
@@ -267,9 +267,9 @@ class modelSoporteGpon
     {
 
         try {
-            $id_soporte   = $params->id_soporte;
-            $tipificacion = $params->tipificacion;
-            $observacion  = $params->observacion;
+            $id_soporte   = $params['id_soporte'];
+            $tipificacion = $params['tipificacion'];
+            $observacion  = $params['observacion'];
             $login        = $_SESSION['login'];
 
             $fecha_respuesta = date('Y-m-d H:i:s');
@@ -305,8 +305,8 @@ class modelSoporteGpon
     {
 
         try {
-            $pagina = $params->page;
-            $datos  = $params->datos;
+            $pagina = $params['page'];
+            $datos  = $params['datos'];
 
             $fechaini = (!isset($datos['fechaini'])) ? date("Y-m-d") : $datos['fechaini']; //CORRECCION DE VALIDACION DE FECHA
             $fechafin = (!isset($datos['fechafin'])) ? date("Y-m-d") : $datos['fechafin']; //CORRECCION DE VALIDACION DE FECHA
@@ -389,7 +389,7 @@ class modelSoporteGpon
 
         try {
 
-            $datos     = $data->datos;
+            $datos     = $data['datos'];
             $fechaini  = $datos['fechaini'];
             $fechafin  = $datos['fechafin'];
 
