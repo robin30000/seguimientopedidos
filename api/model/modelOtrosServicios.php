@@ -1281,7 +1281,7 @@ class modelOtrosServicios
 
             if ($pedido !== "") {
 
-                $query = $this->_DB->query("SELECT pedido, accion, ciudad, correo, macEntra, macSale, paquetes, motivo, proceso, producto, contrato, perfil,
+                $query = $this->_DB->prepare("SELECT pedido, accion, ciudad, correo, macEntra, macSale, paquetes, motivo, proceso, producto, contrato, perfil,
 						horagestion, logindepacho,	logincontingencia, loginContingenciaPortafolio, horacontingencia, horaContingenciaPortafolio,
 						tipoEquipo, tecnologia, remite, tipificacion, tipificacionPortafolio, acepta, aceptaPortafolio, observacion, observContingencia,
 						observContingenciaPortafolio, ingresoEquipos
