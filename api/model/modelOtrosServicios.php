@@ -138,6 +138,7 @@ class modelOtrosServicios
         }catch (PDOException $e){
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
         echo json_encode($response);
     }
 
@@ -205,26 +206,26 @@ class modelOtrosServicios
                 (`id_jornada`) VALUES ('AM'),('PM'),('HF'),('TOTAL'),('DIFERENCIA'); ");
 
             //carga de agendados
-            $sqlcarga = $this->_DB->prepare("select count(pro.jornada_cita) total_jornada, 
+            $sqlcarga = $this->_DB->query("select count(pro.jornada_cita) total_jornada, 
                 (case 
                 when pro.jornada_cita = 'AM' then 'AM' 
                 when pro.jornada_cita = 'PM' then 'PM' 
                 else 'HF' 
                 end) jornada, (select count(pro.jornada_cita) from carga_agenda pro 
-                where pro.fecha_cita BETWEEN (:fecha1) AND (:fecha2) 
-                :uen :tipotrabajo1 :ciudades) TOTAL,
+                where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') 
+                '$uen' '$tipo_trabajo1' '$ciudades') TOTAL,
                 (select count(pro.pedido_id) 
                 from carga_agenda pro 
-                where pro.fecha_cita BETWEEN (:fecha1) AND (:fecha2) 
+                where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') 
                 and pro.pedido_id not in (select pedido_id from carga_click 
-                where fecha_cita BETWEEN (:fecha1) AND (:fecha2)) 
-                :uen :tipotrabajo1 :ciudades) DIFERENCIA
+                where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) 
+                '$uen' '$tipo_trabajo1' '$ciudades') DIFERENCIA
                 from carga_agenda pro 
-                where pro.fecha_cita BETWEEN (:fecha1) AND (:fecha2)
-                :uen :tipotrabajo1 :ciudades
+                where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')
+                '$uen' '$tipo_trabajo1' '$ciudades'
                 group by jornada");
             //echo $sqlcarga;
-            $sqlcarga->execute([':uen' => $uen, ':tipotrabajo1' => $tipo_trabajo1, ':ciudades' => $ciudades, ':fecha1' => "$fecha 00:00:00", ':fecha2' => "$fecha 23:59:59"]);
+            $sqlcarga->execute();
 
             while ($row = $sqlcarga->fetchAll(PDO::FETCH_ASSOC)) {
 
@@ -243,29 +244,29 @@ class modelOtrosServicios
             $sqlupdate1->execute([':diferencia' => $diferencia]);
 
             //carga de agendados y click
-            $sqlvistaClik = $this->_DB->prepare("select count(pro.jornada_cita) total_jornada,   
+            $sqlvistaClik = $this->_DB->query("select count(pro.jornada_cita) total_jornada,   
                 (case when pro.jornada_cita = 'AM' then 'AM' 
                 when pro.jornada_cita = 'PM' then 'PM' 
                 else 'HF' end) jornada, 
                 (select count(pro.jornada_cita) total_jornada 
                 from carga_click pro 
-                where pro.fecha_cita BETWEEN (:fecha1) AND (:fecha2) 
+                where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') 
                 and pro.pedido_id in (select pedido_id from carga_agenda 
-                where fecha_cita BETWEEN (:fecha1) AND (:fecha2)) 
-                :uen :tipotrabajo :ciudades) TOTAL, 
+                where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) 
+                '$uen' '$tipo_trabajo' '$ciudades') TOTAL, 
 
                 (select count(pro.pedido_id) 
                 from carga_click pro 
-                where pro.fecha_cita BETWEEN (:fecha1) AND (:fecha2) 
+                where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') 
                 and pro.pedido_id not in (select pedido_id from carga_agenda  
-                where fecha_cita BETWEEN (:fecha1) AND (:fecha2)) :uen :tipotrabajo :ciudades) DIFERENCIA 
+                where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) '$uen' '$tipo_trabajo' '$ciudades') DIFERENCIA 
 
                 from carga_click pro 
-                where pro.fecha_cita BETWEEN (:fecha1) AND (:fecha2) 
+                where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') 
                 and pro.pedido_id in (select pedido_id from carga_agenda 
-                where fecha_cita BETWEEN (:fecha1) AND (:fecha2)) 
-                :uen :tipotrabajo :ciudades group by jornada");
-            $sqlvistaClik->execute([':uen' => $uen, ':tipotrabajo' => $tipo_trabajo, ':ciudades' => $ciudades, ':fecha1' => "$fecha 00:00:00", ':fecha2' => "$fecha 23:59:59"]);
+                where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) 
+                '$uen' '$tipo_trabajo' '$ciudades' group by jornada");
+            $sqlvistaClik->execute();
             //echo $sqlvistaClik;
             while ($row = $sqlvistaClik->fetchAll(PDO::FETCH_ASSOC)) {
 
@@ -280,28 +281,28 @@ class modelOtrosServicios
             $sqlupdatedif = $this->_DB->query("UPDATE jornada_estados SET `vista_click`='$diferencia' WHERE `id_jornada`='DIFERENCIA'");
 
             //carga de agendados y click confirmados
-            $sqlconfirmados = $this->_DB->prepare("select sum(a.totales) as totales, a.jornada_cita,
+            $sqlconfirmados = $this->_DB->query("select sum(a.totales) as totales, a.jornada_cita,
                 (select sum(b.totales) as totales from (select count(distinct reg.pedido) totales 
                 from registros reg, carga_agenda pro   
                 where pro.pedido_id in (select pedido_id from carga_click 
-                where fecha_cita BETWEEN (:fecha1) AND (:fecha2)) 
+                where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) 
                 and pro.pedido_id = reg.pedido  
                 and accion = 'Visita confirmada' 
-                and reg.fecha BETWEEN (:fecha1) AND (:fecha2) 
-                and pro.fecha_cita BETWEEN (:fecha1) AND (:fecha2) 
-                :uen :tipotrabajo1 :ciudades)b ) 
+                and reg.fecha BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') 
+                and pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') 
+                '$uen' '$tipo_trabajo1' '$ciudades')b ) 
                 as TOTAL, 
 
                 (select count(distinct pedido_id) 
                 from carga_click pro 
-                where pro.fecha_cita BETWEEN (:fecha1) AND (:fecha2) 
+                where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') 
                 and pro.pedido_id not in (select pedido_id from carga_agenda 
-                where fecha_cita BETWEEN (:fecha1) AND (:fecha2)) 
+                where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) 
                 and pro.pedido_id in (select pedido from registros where 
                 accion = 'Visita confirmada' 
-                and fecha BETWEEN (:fecha1) AND (:fecha2)) 
-                and pro.fecha_cita BETWEEN (:fecha1) AND (:fecha2) 
-                :uen :tipotrabajo1 :ciudades) DIFERENCIA 
+                and fecha BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) 
+                and pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') 
+                '$uen' '$tipo_trabajo1' '$ciudades') DIFERENCIA 
 
                 from (select count(distinct reg.pedido) totales,
                 (case when pro.jornada_cita = 'AM' then 'AM' 
@@ -310,16 +311,16 @@ class modelOtrosServicios
                 end) jornada_cita 
                 from registros reg, carga_agenda pro  
                 where pro.pedido_id in (select pedido_id from carga_click
-                where fecha_cita BETWEEN (:fecha1) AND (:fecha2))
+                where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59'))
                 and pro.pedido_id = reg.pedido  
                 and accion = 'Visita confirmada' 
-                and reg.fecha BETWEEN (:fecha1) AND (:fecha2) 
-                and pro.fecha_cita BETWEEN (:fecha1) AND (:fecha2)
-               :uen :tipotrabajo1 :ciudades
+                and reg.fecha BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') 
+                and pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')
+               '$uen' '$tipo_trabajo1' '$ciudades'
                 group by jornada_cita) a 
                 group by a.jornada_cita");
 
-            $sqlconfirmados->execute([':uen' => $uen, ':tipotrabajo1' => $tipo_trabajo1, ':ciudades' => $ciudades, ':fecha1' => "$fecha 00:00:00", ':fecha2' => "$fecha 23:59:59"]);
+            $sqlconfirmados->execute();
 
             while ($row = $sqlconfirmados->fetchAll(PDO::FETCH_ASSOC)) {
 
@@ -334,36 +335,36 @@ class modelOtrosServicios
             $sqlupdatedif = $this->_DB->prepare("UPDATE jornada_estados SET `confirmados`=:diferencia WHERE `id_jornada`='DIFERENCIA'");
             $sqlupdatedif->execute([':diferencia']);
             //sin gestionar
-            $sqlnogestion =$this->_DB->prepare( "select count(pedido_id) pendientes, (case when jornada_cita = 'AM' then 'AM' 
+            $sqlnogestion =$this->_DB->query( "select count(pedido_id) pendientes, (case when jornada_cita = 'AM' then 'AM' 
                 when jornada_cita = 'PM' then 'PM' 
                 else 'HF' 
                 end) jornada_cita, 
                 (select count(pedido_id) pendientes 
                 from carga_agenda  pro 
-                where pedido_id not in (select pedido from registros where fecha BETWEEN (:fecha1) AND (:fecha2) ) 
-                and fecha_cita  BETWEEN (:fecha1) AND (:fecha2) 
+                where pedido_id not in (select pedido from registros where fecha BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') ) 
+                and fecha_cita  BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') 
                 and pedido_id in (select pedido_id from carga_click  
-                where fecha_cita BETWEEN (:fecha1) AND (:fecha2) )  :uen :tipotrabajo1 :ciudades) TOTAL, 
+                where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') )  '$uen' '$tipo_trabajo1' '$ciudades') TOTAL, 
 
                 (select count(pedido_id) 
                 from carga_click 
                 where pedido_id not in (select pedido from registros 
-                where fecha BETWEEN (:fecha1) AND (:fecha2) ) 
-                and fecha_cita BETWEEN (:fecha1) AND (:fecha2)  
+                where fecha BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') ) 
+                and fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')  
                 and pedido_id not in (select pedido_id from carga_agenda 
-                where fecha_cita BETWEEN (:fecha1) AND (:fecha2) )  :uen :tipotrabajo1 :ciudades) DIFERENCIA 
+                where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') )  '$uen' '$tipo_trabajo1' '$ciudades') DIFERENCIA 
 
                 from carga_agenda  pro 
                 where pedido_id not in (select pedido from registros where fecha BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) 
-                and fecha_cita BETWEEN (:fecha1) AND (:fecha2)  
+                and fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')  
                 and pedido_id in (select pedido_id from carga_click  
-                where fecha_cita  BETWEEN (:fecha1) AND (:fecha2) ) 
-                :uen :tipotrabajo1 :ciudades 
+                where fecha_cita  BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') ) 
+                '$uen' '$tipo_trabajo1' '$ciudades' 
                 group by (case when jornada_cita = 'AM' then 'AM' 
                 when jornada_cita = 'PM' then 'PM' 
                 else 'HF' end) ");
 
-            $sqlnogestion->execute([':uen' => $uen, ':tipotrabajo1' => $tipo_trabajo1, ':ciudades' => $ciudades, ':fecha1' => "$fecha 00:00:00", ':fecha2' => "$fecha 23:59:59"]);
+            $sqlnogestion->execute();
 
             while ($row = $sqlnogestion->fetchAll(PDO::FETCH_ASSOC)) {
 
@@ -381,32 +382,32 @@ class modelOtrosServicios
             $sqlupdatedif->execute([':diferencia'=>$diferencia]);
 
             //finalizados de click
-            $sqlfinalizadosclick =$this->_DB->prepare( "select count(pro.jornada_cita) total_jornada, 
+            $sqlfinalizadosclick =$this->_DB->query( "select count(pro.jornada_cita) total_jornada, 
                 (case when pro.jornada_cita = 'AM' then 'AM'  
                 when pro.jornada_cita = 'PM' then 'PM'
                 else 'HF' end) jornada,  
                 ((select count(pro.jornada_cita) 
                 from carga_click pro  
-                where pro.fecha_cita BETWEEN (:fecha1) AND (:fecha2)
+                where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')
                 and pedido_id in (select pedido_id from carga_agenda  
-                where fecha_cita BETWEEN (:fecha1) AND (:fecha2)) 
-                and estado_id = 'Finalizada') :uen :tipotrabajo :ciudades) TOTAL, 
+                where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) 
+                and estado_id = 'Finalizada') '$uen' '$tipo_trabajo' '$ciudades') TOTAL, 
 
                 (select count(pedido_id) 
                 from carga_click pro 
-                where pro.fecha_cita BETWEEN (:fecha1) AND (:fecha2) 
+                where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') 
                 and pro.pedido_id not in (select pedido_id from carga_agenda 
-                where fecha_cita BETWEEN (:fecha1) AND (:fecha2)) 
-                and pro.estado_id = 'Finalizada' :uen :tipotrabajo :ciudades) DIFERENCIA 
+                where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) 
+                and pro.estado_id = 'Finalizada' '$uen' '$tipo_trabajo' '$ciudades') DIFERENCIA 
 
                 from carga_click pro  
-                where pro.fecha_cita BETWEEN (:fecha1) AND (:fecha2) 
+                where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') 
                 and pedido_id in (select pedido_id from carga_agenda 
-                where fecha_cita BETWEEN (:fecha1) AND (:fecha2)) 
-                and estado_id = 'Finalizada' :uen :tipotrabajo :ciudades group by jornada 
+                where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) 
+                and estado_id = 'Finalizada' '$uen' '$tipo_trabajo' '$ciudades' group by jornada 
                 order by (case when pro.jornada_cita = 'AM' then 'AM' 
                 when pro.jornada_cita = 'PM' then 'PM' else 'HF' end) ");
-            $sqlfinalizadosclick->execute([':uen' => $uen, ':tipotrabajo' => $tipo_trabajo, ':ciudades' => $ciudades, ':fecha1' => "$fecha 00:00:00", ':fecha2' => "$fecha 23:59:59"]);
+            $sqlfinalizadosclick->execute();
 
             while ($row = $sqlfinalizadosclick->fetchAll(PDO::FETCH_ASSOC)) {
 
@@ -423,79 +424,79 @@ class modelOtrosServicios
             $sqlupdatedif->execute([':diferencia'=>$diferencia]);
 
             //Sin confirmar de click
-            $sqlSinConfirmar =$this->_DB->prepare( "select count(pro.jornada_cita) total_jornada,   
+            $sqlSinConfirmar =$this->_DB->query( "select count(pro.jornada_cita) total_jornada,   
                 (case when pro.jornada_cita = 'AM' then 'AM'   
                 when pro.jornada_cita = 'PM' then 'PM'  
                 else 'HF' end) jornada,  
                 (select count(pro.jornada_cita) total_jornada    
                 from carga_click pro  
-                where pro.fecha_cita BETWEEN (:fecha1) AND (:fecha2) 
+                where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') 
                 and pro.pedido_id in (select pedido_id from carga_agenda  
-                where fecha_cita BETWEEN (:fecha1) AND (:fecha2) )  
+                where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') )  
                 and pro.pedido_id not in  
                 (select reg.pedido 
                 from registros reg, carga_agenda pro  
                 where pro.pedido_id in (select pedido_id from carga_click 
-                where fecha_cita BETWEEN (:fecha1) AND (:fecha2) ) 
+                where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') ) 
                 and pro.pedido_id = reg.pedido  
                 and accion = 'Visita confirmada' 
-                and reg.fecha BETWEEN (:fecha1) AND (:fecha2)  
-                and pro.fecha_cita BETWEEN (:fecha1) AND (:fecha2) )) 
+                and reg.fecha BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')  
+                and pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') )) 
                 and pro.pedido_id not in 
                 (select pedido_id	
                 from carga_agenda 
                 where pedido_id not in 
-                (select pedido from registros where fecha BETWEEN (:fecha1) AND (:fecha2) ) 
-                and fecha_cita BETWEEN (:fecha1) AND (:fecha2) 
+                (select pedido from registros where fecha BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') ) 
+                and fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') 
                 and pedido_id in (select pedido_id from carga_click 
-                where fecha_cita BETWEEN (:fecha1) AND (:fecha2) )) :uen :tipotrabajo :ciudades) as TOTAL, 
+                where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') )) '$uen' '$tipo_trabajo' '$ciudades') as TOTAL, 
                 (select count(pro.pedido_id) 
                 from carga_click pro  
-                where pro.fecha_cita BETWEEN (:fecha1) AND (:fecha2) 
+                where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') 
                 and pro.pedido_id not in (select pedido_id from carga_agenda  
-                where fecha_cita BETWEEN (:fecha1) AND (:fecha2) )  
+                where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') )  
                 and pro.pedido_id not in 
                 (select pedido_id 
                 from carga_click pro  
-                where pro.fecha_cita BETWEEN (:fecha1) AND (:fecha2)  
+                where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')  
                 and pro.pedido_id not in (select pedido_id from carga_agenda 
-                where fecha_cita BETWEEN (:fecha1) AND (:fecha2) ) 
+                where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') ) 
                 and pro.pedido_id in (select pedido from registros where 
                 accion = 'Visita confirmada' 
-                and fecha BETWEEN (:fecha1) AND (:fecha2) ) 
-                and pro.fecha_cita BETWEEN (:fecha1) AND (:fecha2) ) 
+                and fecha BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') ) 
+                and pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') ) 
                 and pro.pedido_id not in 
                 (select pedido_id 
                 from carga_click  
                 where pedido_id not in (select pedido from registros  
-                where fecha BETWEEN (:fecha1) AND (:fecha2) ) 
-                and fecha_cita BETWEEN (:fecha1) AND (:fecha2)  
+                where fecha BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') ) 
+                and fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')  
                 and pedido_id not in (select pedido_id from carga_agenda 
-                where fecha_cita BETWEEN (:fecha1) AND (:fecha2) )):uen :tipotrabajo :ciudades) as DIFERENCIA 
+                where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') ))'$uen' '$tipo_trabajo' '$ciudades') as DIFERENCIA 
                 from carga_click pro 
-                where pro.fecha_cita BETWEEN (:fecha1) AND (:fecha2) 
+                where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') 
                 and pro.pedido_id in (select pedido_id from carga_agenda 
-                where fecha_cita BETWEEN (:fecha1) AND (:fecha2) ) 
+                where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') ) 
                 and pro.pedido_id not in 
                 (select reg.pedido 
                 from registros reg, carga_agenda pro  
                 where pro.pedido_id in (select pedido_id from carga_click 
-                where fecha_cita BETWEEN (:fecha1) AND (:fecha2) ) 
+                where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') ) 
                 and pro.pedido_id = reg.pedido  
                 and accion = 'Visita confirmada' 
-                and reg.fecha BETWEEN (:fecha1) AND (:fecha2)  
-                and pro.fecha_cita BETWEEN (:fecha1) AND (:fecha2) ) 
+                and reg.fecha BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')  
+                and pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') ) 
                 and pro.pedido_id not in 
                 (select pedido_id 
                 from carga_agenda 
                 where pedido_id not in 
                 (select pedido from registros where fecha 
-                BETWEEN (:fecha1) AND (:fecha2) ) 
-                and fecha_cita BETWEEN (:fecha1) AND (:fecha2) 
+                BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') ) 
+                and fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') 
                 and pedido_id in (select pedido_id from carga_click 
-                where fecha_cita BETWEEN (:fecha1) AND (:fecha2))) 
-                :uen :tipotrabajo :ciudades group by jornada ");
-            $sqlSinConfirmar->execute([':uen' => $uen, ':tipotrabajo' => $tipo_trabajo, ':ciudades' => $ciudades, ':fecha1' => "$fecha 00:00:00", ':fecha2' => "$fecha 23:59:59"]);
+                where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59'))) 
+                '$uen' '$tipo_trabajo' '$ciudades' group by jornada ");
+            $sqlSinConfirmar->execute();
 
 
 
@@ -534,8 +535,8 @@ class modelOtrosServicios
                 $resultado3[] = $row;
             }
 
-            $queryalarmados =$this->_DB->prepare( "SELECT count(pedido_id) total FROM alarmados where fecha_cita BETWEEN (:fecha1) AND (:fecha2) ");
-            $queryalarmados->execute([':fecha1'=>"$fecha 00:00:00",':fecha2'=>"$fecha 23:59:59"]);
+            $queryalarmados =$this->_DB->query( "SELECT count(pedido_id) total FROM alarmados where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') ");
+            $queryalarmados->execute();
 
             $counter = 0;
             if ($queryalarmados->rowCount()) {
@@ -546,30 +547,30 @@ class modelOtrosServicios
             }
             //para las graficas
 
-            $query4 = $this->_DB->prepare( "select a.final final_click, b.agenda agendados, a.fecha_cita fecha, c.click click from   
+            $query4 = $this->_DB->query( "select a.final final_click, b.agenda agendados, a.fecha_cita fecha, c.click click from   
 
                 (select count(pro.pedido_id) agenda, pro.fecha_cita  
                 from carga_agenda pro 
-                where pro.fecha_cita  BETWEEN (:fecha1) AND (:fecha2) 
-                :tipotrabajo1 :uen :ciudades
+                where pro.fecha_cita  BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') 
+                '$tipo_trabajo1' '$uen' '$ciudades'
                 group by pro.fecha_cita) b, 
 
                 (select count(jornada_cita) final, 
                 fecha_cita from carga_click click 
-                where fecha_cita BETWEEN (:fecha1) AND (:fecha2) 
+                where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') 
                and pedido_id in (select pedido_id from carga_agenda   
                where fecha_cita = click.fecha_cita)  
-                and estado_id='Finalizada' :tipotrabajo :uen :ciudades group by fecha_cita) a, 
+                and estado_id='Finalizada' '$tipo_trabajo' '$uen' '$ciudades' group by fecha_cita) a, 
 
                 (select count(jornada_cita) click, pro.fecha_cita  
                 from carga_click pro 
-                where pro.fecha_cita BETWEEN (:fecha1) AND (:fecha2) 
+                where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') 
                 and pedido_id in (select pedido_id from carga_agenda  
-                where fecha_cita = pro.fecha_cita) :tipotrabajo :uen :ciudades group by pro.fecha_cita) c  
+                where fecha_cita = pro.fecha_cita) '$tipo_trabajo' '$uen' '$ciudades' group by pro.fecha_cita) c  
                 where a.fecha_cita = c.fecha_cita 
                 and a.fecha_cita = b.fecha_cita 
                 group by a.fecha_cita ");
-            $query4->execute([':fecha1'=>"$año-$mes-01 00:00:00",':fecha2'=>"$año-$mes-31 23:59:59",':tipotrabajo'=>$tipo_trabajo,':uen'=>$uen,':ciudades'=>$ciudades,':tipotrabajo1'=>$tipo_trabajo1]);
+            $query4->execute();
 
 
             if ($query4->rowCount()) {
@@ -613,6 +614,7 @@ class modelOtrosServicios
         }catch (PDOException $e){
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
         echo json_encode($response);
     }
 
@@ -652,6 +654,7 @@ class modelOtrosServicios
         }catch (PDOException $e){
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
         echo json_encode($response);
     }
 
@@ -716,7 +719,7 @@ class modelOtrosServicios
         }catch (PDOException $e){
             var_dump($e->getMessage());
         }
-
+        $this->_DB = null;
         echo json_encode($response);
     }
 
@@ -1210,7 +1213,7 @@ class modelOtrosServicios
         }catch(PDOException $e){
             var_dump($e->getMessage());
         }
-
+        $this->_DB = null;
         echo json_encode($response);
     }
 
@@ -1271,6 +1274,7 @@ class modelOtrosServicios
         }catch(PDOException $e){
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
         echo json_encode($response);
     }
 
@@ -1305,6 +1309,7 @@ class modelOtrosServicios
         }catch (PDOException $e){
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
         echo json_encode($response);
     }
 }

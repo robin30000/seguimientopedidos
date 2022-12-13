@@ -49,7 +49,7 @@ class ModelFormaAsesores
         } catch (PDOException $e) {
 
         }
-
+        $this->_DB = null;
         return $response;
     }
 
@@ -68,7 +68,7 @@ class ModelFormaAsesores
         } catch (PDOException $e) {
 
         }
-
+        $this->_DB = null;
         return $response;
     }
 
@@ -87,7 +87,7 @@ class ModelFormaAsesores
         } catch (PDOException $e) {
 
         }
-
+        $this->_DB = null;
         return $response;
 
     }
@@ -164,7 +164,7 @@ class ModelFormaAsesores
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
-
+        $this->_DB = null;
         return $response;
 
 

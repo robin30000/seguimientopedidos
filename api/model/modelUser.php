@@ -47,7 +47,7 @@ class modelUser
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
-
+        $this->_BD = null;
         echo json_encode($response);
     }
 

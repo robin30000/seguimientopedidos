@@ -481,6 +481,7 @@ class modelNovedadesTecnico
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
         echo json_encode($response);
     }
 
@@ -501,7 +502,7 @@ class modelNovedadesTecnico
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
-
+        $this->_DB = null;
         echo json_encode($response);
     }
 
@@ -524,6 +525,7 @@ class modelNovedadesTecnico
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
         echo json_encode($response);
     }
 
@@ -572,7 +574,7 @@ class modelNovedadesTecnico
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
-
+        $this->_DB = null;
         echo json_encode($response);
     }
 
@@ -594,6 +596,8 @@ class modelNovedadesTecnico
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+
+        $this->_DB = null;
         echo json_encode($response);
     }
 
@@ -629,6 +633,7 @@ class modelNovedadesTecnico
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
         echo json_encode($response);
     }
 

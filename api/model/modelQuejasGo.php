@@ -277,7 +277,7 @@ class modelQuejasGo
         }catch (PDOException $e){
             var_dump($e->getMessage());
         }
-
+        $this->_BD = null;
         echo json_encode($response);
     }
 
@@ -300,6 +300,7 @@ class modelQuejasGo
         }catch (PDOException $e){
             var_dump($e->getMessage());
         }
+        $this->_BD = null;
         echo json_encode($response);
     }
 }

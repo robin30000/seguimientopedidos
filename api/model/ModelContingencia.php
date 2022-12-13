@@ -35,6 +35,7 @@ class ModelContingencia
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
 
         return $response;
 
@@ -65,6 +66,7 @@ class ModelContingencia
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
 
         return $response;
 
@@ -95,6 +97,7 @@ class ModelContingencia
             var_dump($e->getMessage());
         }
 
+        $this->_DB = null;
         return $response;
 
     }
@@ -124,7 +127,7 @@ class ModelContingencia
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
-
+        $this->_DB = null;
         return $response;
     }
 
@@ -150,6 +153,7 @@ class ModelContingencia
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
 
         return $response;
     }
@@ -175,6 +179,7 @@ class ModelContingencia
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
 
         return $response;
     }
@@ -209,6 +214,7 @@ class ModelContingencia
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
 
         return $response;
     }
@@ -245,6 +251,7 @@ class ModelContingencia
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
 
         return [$resultadoTV, $resultadoOTROS, $resultadoPORTAFOLIO];
     }
@@ -271,7 +278,7 @@ class ModelContingencia
             } else {
                 $response = 0;
             }
-
+            $this->_DB = null;
 
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -415,6 +422,7 @@ class ModelContingencia
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
 
         echo json_encode($response);
 
@@ -631,7 +639,7 @@ class ModelContingencia
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
-
+        $this->_DB = null;
         echo json_encode($response);
     }
 
@@ -692,6 +700,7 @@ class ModelContingencia
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
         echo json_encode($response);
     }
 
@@ -784,7 +793,7 @@ class ModelContingencia
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
-
+        $this->_DB = null;
         echo json_encode($response);
     }
 
@@ -981,7 +990,7 @@ class ModelContingencia
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
-
+        $this->_DB = null;
         echo json_encode($response);
     }
 
@@ -1173,7 +1182,7 @@ class ModelContingencia
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
-
+        $this->_DB = null;
         echo json_encode($response);
     }
 }

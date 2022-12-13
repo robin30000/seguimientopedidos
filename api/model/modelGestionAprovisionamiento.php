@@ -39,7 +39,7 @@ class modelGestionAprovisionamiento
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
-
+        $this->_DB = null;
         return $response;
     }
 }
