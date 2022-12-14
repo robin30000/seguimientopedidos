@@ -45,4 +45,15 @@ class nivelacion
     {
         $this->_model->guardaNivelacion($data);
     }
+
+    public function gestionarRegistrosNivelacion()
+    {
+        $this->_model->gestionarRegistrosNivelacion();
+    }
+
+    public function marcarEnGestionNivelacion($data)
+    {
+        $this->_model->marcarEnGestionNivelacion($data);
+    }
+
 }

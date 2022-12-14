@@ -1,7 +1,7 @@
 <?php
 require_once '../class/conection.php';
-ini_set('error_reporting', E_ALL);
-ini_set('display_errors', 1);
+//ini_set('error_reporting', E_ALL);
+//ini_set('display_errors', 1);
 
 class modelNivelacion
 {
@@ -80,9 +80,9 @@ class modelNivelacion
 
         try {
             $stmt = $this->_DB->prepare("INSERT INTO nivelacion (ticket_id, nombre_tecnico, cc_tecnico, pedido, proceso, zona, zubzona, cc_nuevo_tecnico,
-                                                                        nombre_nuevo_tecnico, solicitud, motivo, submotivo, fecha_ingreso, creado_por, estado)
+                                                                        nombre_nuevo_tecnico, solicitud, motivo, submotivo, fecha_ingreso, creado_por, estado, en_gestion)
                                                 VALUES (:ticket_id, :nombre_tecnico, :cc_tecnico, :pedido, :proceso, :zona, :zubzona, :cc_nuevo_tecnico,
-                                                                        :nombre_nuevo_tecnico, :solicitud, :motivo, :submotivo, :fecha_ingreso, :creado_por, '0')");
+                                                                        :nombre_nuevo_tecnico, :solicitud, :motivo, :submotivo, :fecha_ingreso, :creado_por, '0', '0')");
             $stmt->execute([
                 ':ticket_id'            => $data->ticket,
                 ':nombre_tecnico'       => $data->nombreTecnico,
@@ -173,7 +173,8 @@ class modelNivelacion
                                                        n.nombre_nuevo_tecnico,
                                                        n.observaciones,
                                                        n.fecha_ingreso,
-                                                       n.id
+                                                       n.id,n.en_gestion
+       
                                                 from nivelacion n where n.estado = '0'");
             $stmt->execute();
             if ($stmt->rowCount()) {
@@ -194,16 +195,82 @@ class modelNivelacion
         session_start();
         try {
             $stmt = $this->_DB->prepare("update nivelacion set se_realiza_nivelacion = :nivelacion, observaciones = :observaciones, fecha_respuesta = :fecha, gestiona_por = :user, estado = '1' where id = :id");
-            $stmt->execute([':nivelacion'    => $data->nivelacion,
-                            ':observaciones' => $data->observaciones,
-                            ':id'            => $data->id,
-                            ':fecha'         => date('Y-m-d H:i:s'),
-                            ':user'          => $_SESSION['login'],
+            $stmt->execute([
+                ':nivelacion'    => $data->nivelacion,
+                ':observaciones' => $data->observaciones,
+                ':id'            => $data->id,
+                ':fecha'         => date('Y-m-d H:i:s'),
+                ':user'          => $_SESSION['login'],
             ]);
             if ($stmt->rowCount() == 1) {
                 $response = ['state' => 1, 'msj' => "Se a realizado el cambio en el ticket $data->ticket_id correctamente"];
             } else {
                 $response = ['state' => 0, 'msj' => "Ah ocurrido un error intentalo nuevamente"];
+            }
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+        $this->_DB = null;
+        echo json_encode($response);
+    }
+
+    public function gestionarRegistrosNivelacion()
+    {
+        try {
+            $stmt = $this->_DB->query("select n.creado_por,
+                                                       n.pedido,
+                                                       n.ticket_id,
+                                                       n.proceso,
+                                                       n.zona,
+                                                       n.zubzona,
+                                                       n.nombre_tecnico,
+                                                       n.cc_tecnico,
+                                                       n.solicitud,
+                                                       n.motivo,
+                                                       n.submotivo,
+                                                       n.cc_nuevo_tecnico,
+                                                       n.nombre_nuevo_tecnico,
+                                                       n.observaciones,
+                                                       n.fecha_ingreso,
+                                                       n.id,
+                                                       n.se_realiza_nivelacion
+                                                from nivelacion n");
+            $stmt->execute();
+            if ($stmt->rowCount()) {
+                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = ['state' => 1, 'data' => $result];
+            } else {
+                $response = ['state' => 0];
+            }
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+        $this->_DB = null;
+        echo json_encode($response);
+    }
+
+    public function marcarEnGestionNivelacion($data)
+    {
+        try {
+            session_start();
+
+            $stmt = $this->_DB->prepare("select en_gestion from nivelacion where id = :id");
+            $stmt->execute([':id' => $data]);
+            if ($stmt->rowCount()) {
+                $resul = $stmt->fetch(PDO::FETCH_OBJ);
+                if ($resul->en_gestion == $_SESSION['login']) {
+                    $stmt = $this->_DB->prepare("update nivelacion set en_gestion = '' where id = :id");
+                    $stmt->execute([':id' => $data]);
+
+                    $response = ['state' => 1, 'msj' => 'La tarea se encuentra desbloqueada'];
+
+                } elseif (isset($resul->en_gestion)) {
+                    $response = ['state' => 1, 'msj' => 'La tarea se encuentra en gestión'];
+                } else {
+                    $stmt = $this->_DB->prepare("update nivelacion set en_gestion = :gestion where id = :id");
+                    $stmt->execute([':gestion' => $_SESSION['login'], ':id' => $data]);
+                    $response = ['state' => 1, 'msj' => 'La tarea se encuentra Bloqueada'];
+                }
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());

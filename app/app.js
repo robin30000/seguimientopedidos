@@ -1749,9 +1749,24 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'nivelacionCtrl.php', data);
     };
 
+    obj.gestionarRegistrosNivelacion = function () {
+        var data = {
+            method: 'gestionarRegistrosNivelacion',
+        }
+        return $http.post(serviceBase1 + 'nivelacionCtrl.php', data);
+    };
+
     obj.guardaNivelacion = function (datos) {
         var data = {
             method: 'guardaNivelacion',
+            data: datos
+        }
+        return $http.post(serviceBase1 + 'nivelacionCtrl.php', data);
+    };
+
+    obj.marcarEnGestionNivelacion = function (datos) {
+        var data = {
+            method: 'marcarEnGestionNivelacion',
             data: datos
         }
         return $http.post(serviceBase1 + 'nivelacionCtrl.php', data);
@@ -5102,7 +5117,7 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
                             $scope.nivelacion.subZona = data.data[0].district
                             $scope.nivelacion.nombreTecnico = data.data[0].EngineerName
                             $scope.nivelacion.idTecnico = data.data[0].EngineerID
-                            $scope.nivelacion.proceso = data.data[0].TaskTypeCategory
+                            $scope.nivelacion.proceso = data.data[0].tasktypecategory
                             $scope.nivelacion.zona = data.data[0].region
                             $scope.visible = true;
 
@@ -5163,7 +5178,22 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
 
 app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location, $route, $routeParams, $cookies, $cookieStore, $timeout, services) {
     $scope.GestionNivelacion = {};
-    console.log('Robin nivelaaca', $rootScope.galletainfo)
+    $scope.registroTecnicos = function () {
+        services.gestionarRegistrosNivelacion().then(complete).catch(failed)
+
+        function complete(data) {
+
+            if (data.data.state == 0) {
+                $scope.GestionNivelacion.respuestaNivelacion = '';
+            } else {
+                $scope.GestionNivelacion.respuestaNivelacion = data.data.data;
+            }
+        }
+
+        function failed(error) {
+            console.log(error);
+        }
+    }
 
     gestionarNivelacion();
 
@@ -5176,12 +5206,35 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
             if (data.data.state == 0) {
                 $scope.GestionNivelacion.respuestaDatos = '';
             } else {
+                console.log(data.data.data, ' datos');
                 $scope.GestionNivelacion.respuestaDatos = data.data.data;
             }
         }
 
         function failed(error) {
             console.log(error);
+        }
+    }
+
+    $scope.buscarhistoricoNivelacion = function () {
+        services.buscarhistoricoNivelacion($scope.nivelacion.tarea).then(complete).catch(failed)
+
+        function complete(data) {
+            console.log(data);
+            if (data.data.state === 0) {
+                Swal({
+                    type: 'error',
+                    title: data.data.msj
+                })
+            } else {
+                $scope.nivelacion.databsucarPedido = data.data.data;
+                $('#modalHistoricoNivelacion').modal('show');
+                return data.data;
+            }
+        }
+
+        function failed(data) {
+            console.log(data)
         }
     }
 
@@ -5201,7 +5254,7 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
     }
 
     $scope.guardarGestionObsNivelacion = function (data) {
-        if (!data.nivelacion){
+        if (!data.nivelacion) {
             Swal('Selecciona el estado de nivelacion');
             return;
         }
@@ -5210,18 +5263,18 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
         $('#editarModal').modal('show');
     }
 
-    $scope.guardaNivelacion = function (data) {
-        $scope.datos.observaciones = data.observacionesNivelacion;
+    $scope.guardaNivelacion = function () {
+        $scope.datos.observaciones = $scope.GestionNivelacion.observacionesNivelacion;
         services.guardaNivelacion($scope.datos).then(complete).catch(failed)
 
         function complete(data) {
-            if (data.data.state != 1){
+            if (data.data.state != 1) {
                 Swal({
                     type: 'error',
                     text: data.data.msj,
-                    timer: 4000
+                    timer: 2000
                 });
-            }else{
+            } else {
                 Swal({
                     type: 'success',
                     title: data.data.msj,
@@ -5230,6 +5283,7 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
                 $route.reload();
             }
 
+
         }
 
         function failed(errs) {
@@ -5237,8 +5291,22 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
         }
     }
 
-    $scope.marcarEnGestionNivelacion = function () {
-        console.log('conect2')
+    $scope.marcarEnGestionNivelacion = function (data) {
+
+        services.marcarEnGestionNivelacion(data).then(complete).catch(failed)
+
+        function complete(data){
+            Swal({
+                type: 'success',
+                title: data.data.msj,
+                timer: 4000
+            });
+            $route.reload();
+        }
+
+        function failed(error){
+            console.log(error)
+        }
     }
 
     $scope.reloadNivelacion = function () {

@@ -94,157 +94,360 @@
     <div class="row">
 
         <div class="col-md-12">
-            <div class="row">
-                <div class="panel panel-default">
-                    <div class="panel-heading nav navbar-default">
-                        <ul class="nav navbar-nav navbar-left">
-                            <b>
-                                <i class="fa fa-phone-square" aria-hidden="true"></i> Gestion Nivelación Técnico</b>
-                        </ul>
-                        <ul class="nav navbar-nav navbar-right">
-                            <b>
-                                <button type="button" class="btn btn-default btn-xs" ng-click="reloadNivelacion()" title="Actualizar" data-toggle="tooltip"
-                                        data-placement="top" ng-disabled="loading">
-                                    <i class="fa fa-refresh" aria-hidden="true"></i>
-                                </button>
-                            </b>&nbsp;
-                        </ul>
-                    </div>
-                    <div class="panel-body">
-                        <div class="container-fluid" ng-show="!haypedidoOtros && contingenciesDataInternetToIP.length == 0">
-                            <div class="jumbotron">
-                                <h3 class="text-center">Gestión Contingencias</h3>
-                                <h5 class="text-center">{{mensajeotros}}</h5>
+            <div class="panel panel-default">
+                <div class="panel-heading nav navbar-default">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a data-toggle="tab" href="/#gestion"> Gestion Nivelación Técnico</a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="/#registros" ng-click="registroTecnicos()">Registros Nivelación Técnicos</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tab-content">
+                <div id="gestion" class="tab-pane fade in active">
+                    <div class="row">
+                        <div class="panel panel-default">
+                            <div class="panel-heading nav navbar-default">
+                                <ul class="nav navbar-nav navbar-left">
+                                    <b>
+                                        <i class="fa fa-phone-square" aria-hidden="true"></i>Gestión Nivelación Técnico</b>
+                                </ul>
+                                <ul class="nav navbar-nav navbar-right">
+                                    <b>
+                                        <button type="button" class="btn btn-default btn-xs" ng-click="reloadNivelacion()" title="Actualizar" data-toggle="tooltip"
+                                                data-placement="top" ng-disabled="loading">
+                                            <i class="fa fa-refresh" aria-hidden="true"></i>
+                                        </button>
+                                    </b>&nbsp;
+                                </ul>
                             </div>
-                        </div>
-                        <div class="container-fluid" ng-show="GestionNivelacion.respuestaDatos">
-                            <table class="table table-striped table-hover table-condensed">
-                                <thead>
-                                <tr>
-                                    <th class="text-center">Marcar</th>
-                                    <th class="text-center">Login</th>
-                                    <th class="text-center">Tickect</th>
-                                    <th class="text-center">Proceso</th>
-                                    <th class="text-center">Zona</th>
-                                    <th class="text-center">Sub zona</th>
-                                    <th class="text-center">Nombre Tecnico</th>
-                                    <th class="text-center">CC Tecnico</th>
-                                    <th class="text-center">Tipo Solicitud</th>
-                                    <th class="text-center">Motivo</th>
-                                    <th class="text-center">Sub motivo</th>
-                                    <th class="text-center">CC Nuevo Tecnico</th>
-                                    <th class="text-center">Nombre Nuevo Tecnico</th>
-                                    <th class="text-center">Se Realiza Nivelacion?</th>
-                                    <th class="text-center">Observacion</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr ng-repeat="data in GestionNivelacion.respuestaDatos track by $index" ng-class="{'resaltado15min': data.horagestion <= quinceminutos[indice]}">
-                                    <td class="text-center">
-                                        <center ng-show="data.ticket_id">
-                                            <input type="checkbox" ng-model="data.bloqueo" name="bloqueo" id="bloqueo" ng-change="marcarEnGestionNivelacion(data)"
-                                                   ng-show="data.bloqueo != 1">
-                                            <div class="loadingio-spinner-ellipsis-3nun7cb96ao" ng-show="data.bloqueo == 1">
-                                                <div class="ldio-pettsxrv7wj">
-                                                    <div></div>
-                                                    <div></div>
-                                                    <div></div>
-                                                    <div></div>
-                                                    <div></div>
-                                                </div>
-                                            </div>
-                                        </center>
-                                        <center ng-show="!data.ticket_id">
-                                            <input type="checkbox" ng-model="data.bloqueo" name="bloqueo" id="bloqueo" ng-change="marcarEnGestionNivelacion(data)">
-                                        </center>
-                                    </td>
-                                    <!-- En estas lineas se oculta el login gestión -->
-
-                                    <td class="text-center" ng-show="data.creado_por == galletainfo.login">
-                                        <span ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.creado_por == galletainfo.login}">{{data.creado_por}}</span>
-                                    </td>
-
-                                    <!--<td ng-show="data.creado_por != galletainfo.login && data.engestion == 1">
-                                        <span ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.creado_por != galletainfo.login}">En gestión</span>
-                                    </td>
-
-                                    <td ng-show="data.creado_por != galletainfo.login && data.engestion != 1">
-                                        <span ng-class="{'label label-primary label-xsmall': data.engestion != 1}"></span>
-                                    </td>-->
-
-                                    <!-- Fin ocultar el login gestión -->
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-default btn-xs" ng-click="CopyPortaPapeles(data.pedido)" tooltip title="Copiar pedido" id=i{{$index}}>
-                                            {{data.ticket_id}}
-                                        </button>
-                                    </td>
-
-                                    <td class="text-center">{{data.proceso}}</td>
-                                    <td class="text-center">{{data.zona}}</td>
-                                    <td class="text-center">{{data.zubzona}}</td>
-                                    <td class="text-center">{{data.nombre_tecnico}}</td>
-                                    <td class="text-center">{{data.cc_tecnico}}</td>
-                                    <td class="text-center">{{data.solicitud}}</td>
-                                    <td class="text-center">{{data.motivo}}</td>
-                                    <td class="text-center">{{data.submotivo}}</td>
-                                    <td class="text-center">{{data.cc_nuevo_tecnico}}</td>
-                                    <td class="text-center">{{data.nombre_nuevo_tecnico}}</td>
-                                    <td class="text-center">
-                                        <select ng-model="data.nivelacion" class="btn btn-default btn-xs grupo-select" name="nivelacion" style="width:100px">
-                                            <option value="">Escoja Opcion</option>
-                                            <option value="SI">SI</option>
-                                            <option value="NO">NO</option>
-                                        </select>
-                                    </td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
-                                                data-placement="left" data-html="true" title="Observaciones" data-selector="" data-content="{{data.observaciones}}">
-                                            <i class="fa fa-commenting" aria-hidden="true"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-default btn-xs" data-toggle="modal"
-                                                ng-click="guardarGestionObsNivelacion(data)"
-                                                data-backdrop="static"
-                                                tooltip title="Observaciones y guardar gestión" data-placement="top" data-html="true" data-selector="">
-                                            <i class="fa fa-floppy-o" aria-hidden="true"> </i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- Loading Circle -->
-                        <div class="loading-circle" ng-show="contingenciasOTROS.length == 0 && loadingData">
-                            <div class="loadingio-spinner-ripple">
-                                <div class="ldio">
-                                    <div></div>
-                                    <div></div>
+                            <div class="panel-body">
+                                <div class="container-fluid" ng-show="!haypedidoOtros && contingenciesDataInternetToIP.length == 0">
+                                    <div class="jumbotron">
+                                        <h3 class="text-center">Gestión Contingencias</h3>
+                                        <h5 class="text-center">{{mensajeotros}}</h5>
+                                    </div>
                                 </div>
+                                <div class="container-fluid" ng-show="GestionNivelacion.respuestaDatos">
+                                    <table class="table table-striped table-hover table-condensed">
+                                        <thead>
+                                        <tr>
+                                            <th class="text-center">Marcar</th>
+                                            <th class="text-center">Login</th>
+                                            <th class="text-center">Tarea</th>
+                                            <th class="text-center">Proceso</th>
+                                            <th class="text-center">Zona</th>
+                                            <th class="text-center">Sub zona</th>
+                                            <th class="text-center">Nombre Técnico</th>
+                                            <th class="text-center">CC Técnico</th>
+                                            <th class="text-center">Tipo Solicitud</th>
+                                            <th class="text-center">Motivo</th>
+                                            <th class="text-center">Sub Motivo</th>
+                                            <th class="text-center">CC Nuevo Técnico</th>
+                                            <th class="text-center">Nombre Nuevo Técnico</th>
+                                            <th class="text-center">Se Realiza Nivelación?</th>
+                                            <th class="text-center">Observación</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-repeat="data in GestionNivelacion.respuestaDatos track by $index"
+                                            ng-class="{'resaltado15min': data.fecha_ingreso <= quinceminutos[indice]}">
+                                            <td class="text-center">
+                                                <input type="checkbox" ng-model="data.bloqueo" name="bloqueo" ng-change="marcarEnGestionNivelacion(data.id)">
+                                                <!--<div class="loadingio-spinner-ellipsis-3nun7cb96ao" ng-show="data.bloqueo == 1">
+                                                    <div class="ldio-pettsxrv7wj">
+                                                        <div></div>
+                                                        <div></div>
+                                                        <div></div>
+                                                        <div></div>
+                                                        <div></div>
+                                                    </div>
+                                                </div>-->
+                                            </td>
+                                            <!-- En estas lineas se oculta el login gestión -->
+
+                                            <td class="text-center" ng-if="data.en_gestion"> <!--ng-show="data.gestiona_por == galletainfo.login"-->
+                                                <span class="label label-primary label-xsmall"
+                                                      ng-if="(galletainfo.login == data.en_gestion)">{{data.en_gestion}}</span>
+                                                <span class="label label-primary label-xsmall"
+                                                      ng-if="(galletainfo.login != data.en_gestion)">En Gestion</span>
+                                            </td>
+
+                                            <td class="text-center" ng-if="!data.en_gestion"> <!--ng-show="data.gestiona_por == galletainfo.login"-->
+                                                <span class="label label-primary label-xsmall"></span>
+
+                                            </td>
+
+                                            <!--<td ng-show="data.creado_por != galletainfo.login && data.engestion == 1">
+                                                <span ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.creado_por != galletainfo.login}">En gestión</span>
+                                            </td>
+
+                                            <td ng-show="data.creado_por != galletainfo.login && data.engestion != 1">
+                                                <span ng-class="{'label label-primary label-xsmall': data.engestion != 1}"></span>
+                                            </td>-->
+
+                                            <!-- Fin ocultar el login gestión -->
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-default btn-xs" ng-click="CopyPortaPapeles(data.ticket_id)" tooltip title="Copiar pedido"
+                                                        id=i{{$index}}>
+                                                    {{data.ticket_id}}
+                                                </button>
+                                            </td>
+
+                                            <td class="text-center">{{data.proceso}}</td>
+                                            <td class="text-center">{{data.zona}}</td>
+                                            <td class="text-center">{{data.zubzona}}</td>
+                                            <td class="text-center">{{data.nombre_tecnico}}</td>
+                                            <td class="text-center">{{data.cc_tecnico}}</td>
+                                            <td class="text-center">{{data.solicitud}}</td>
+                                            <td class="text-center">{{data.motivo}}</td>
+                                            <td class="text-center">{{data.submotivo}}</td>
+                                            <td class="text-center">{{data.cc_nuevo_tecnico}}</td>
+                                            <td class="text-center">{{data.nombre_nuevo_tecnico}}</td>
+                                            <td class="text-center">
+                                                <select ng-model="data.nivelacion" class="btn btn-default btn-xs grupo-select" name="nivelacion" style="width:100px">
+                                                    <option value="">Escoja Opcion</option>
+                                                    <option value="SI">SI</option>
+                                                    <option value="NO">NO</option>
+                                                </select>
+                                            </td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
+                                                        data-placement="left" data-html="true" title="Observaciones" data-selector="" data-content="{{data.observaciones}}">
+                                                    <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-default btn-xs" data-toggle="modal"
+                                                        ng-click="guardarGestionObsNivelacion(data)"
+                                                        data-backdrop="static"
+                                                        tooltip title="Observaciones y guardar gestión" data-placement="top" data-html="true" data-selector="">
+                                                    <i class="fa fa-floppy-o" aria-hidden="true"> </i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- Loading Circle -->
+                                <div class="loading-circle" ng-show="contingenciasOTROS.length == 0 && loadingData">
+                                    <div class="loadingio-spinner-ripple">
+                                        <div class="ldio">
+                                            <div></div>
+                                            <div></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- / Loading Circle -->
                             </div>
                         </div>
-                        <!-- / Loading Circle -->
+                    </div>
+                </div>
+
+                <div id="registros" class="tab-pane fade">
+                    <div class="row">
+                        <div class="panel panel-default">
+                            <div class="panel-heading nav navbar-default">
+                                <ul class="nav navbar-nav navbar-left">
+                                    <b>
+                                        <i class="fa fa-phone-square" aria-hidden="true"></i>Registros Nivelación Técnico</b>
+                                </ul>
+                                <ul class="nav navbar-nav navbar-right">
+                                    <b>
+                                        <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs" ng-model="nivelacion.tarea" placeholder="Buscar Pedido">&nbsp;
+
+                                        <button type="button" class="btn btn-default btn-xs" ng-click="buscarhistoricoNivelacion()" title="Buscar"
+                                                data-toggle="tooltip" data-placement="left" ng-disabled="loading">
+                                            <i class="fa fa-search" aria-hidden="true"></i>
+                                        </button>
+                                    </b>&nbsp;
+                                </ul>
+                            </div>
+                            <div class="panel-body">
+                                <div class="container-fluid" ng-show="!haypedidoOtros && contingenciesDataInternetToIP.length == 0">
+                                    <div class="jumbotron">
+                                        <h3 class="text-center">Gestión Contingencias</h3>
+                                        <h5 class="text-center">{{mensajeotros}}</h5>
+                                    </div>
+                                </div>
+                                <div class="container-fluid" ng-show="GestionNivelacion.respuestaNivelacion">
+                                    <table class="table table-striped table-hover table-condensed">
+                                        <thead>
+                                        <tr>
+
+                                            <th class="text-center">Tarea</th>
+                                            <th class="text-center">Proceso</th>
+                                            <th class="text-center">Zona</th>
+                                            <th class="text-center">Sub Zona</th>
+                                            <th class="text-center">Nombre Técnico</th>
+                                            <th class="text-center">CC Técnico</th>
+                                            <th class="text-center">Tipo Solicitud</th>
+                                            <th class="text-center">Motivo</th>
+                                            <th class="text-center">Sub Motivo</th>
+                                            <th class="text-center">CC Nuevo Técnico</th>
+                                            <th class="text-center">Nombre Nuevo Técnico</th>
+                                            <th class="text-center">Se Realiza Nivelación?</th>
+                                            <th class="text-center">Observación</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-repeat="data in GestionNivelacion.respuestaNivelacion track by $index"
+                                            ng-class="{'resaltado15min': data.horagestion <= quinceminutos[indice]}">
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-default btn-xs" ng-click="CopyPortaPapeles(data.ticket_id)" tooltip title="Copiar pedido"
+                                                        id=i{{$index}}>
+                                                    {{data.ticket_id}}
+                                                </button>
+                                            </td>
+
+                                            <td class="text-center">{{data.proceso}}</td>
+                                            <td class="text-center">{{data.zona}}</td>
+                                            <td class="text-center">{{data.zubzona}}</td>
+                                            <td class="text-center">{{data.nombre_tecnico}}</td>
+                                            <td class="text-center">{{data.cc_tecnico}}</td>
+                                            <td class="text-center">{{data.solicitud}}</td>
+                                            <td class="text-center">{{data.motivo}}</td>
+                                            <td class="text-center">{{data.submotivo}}</td>
+                                            <td class="text-center">{{data.cc_nuevo_tecnico}}</td>
+                                            <td class="text-center">{{data.nombre_nuevo_tecnico}}</td>
+                                            <td class="text-center">{{data.se_realiza_nivelacion}}</td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
+                                                        data-placement="left" data-html="true" title="Observaciones" data-selector="" data-content="{{data.observaciones}}">
+                                                    <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- Loading Circle -->
+                                <div class="loading-circle" ng-show="contingenciasOTROS.length == 0 && loadingData">
+                                    <div class="loadingio-spinner-ripple">
+                                        <div class="ldio">
+                                            <div></div>
+                                            <div></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- / Loading Circle -->
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
-<br>
+
 <div id="editarModal" class="modal fade " role="dialog">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Observaciones contingencia para la tarea {{datos.ticket_id}}</h4>
+                <h4 class="modal-title">Observaciones Nivelación para la tarea {{datos.ticket_id}}</h4>
             </div>
             <div class="modal-body">
                 <textarea name="observaciones" id="observaciones" cols="78" rows="6" ng-model="GestionNivelacion.observacionesNivelacion"
                           placeholder="observaciones contingencia"></textarea>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="guardaNivelacion(GestionNivelacion)" data-dismiss="modal">Guardar</button>
+                <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="guardaNivelacion()" data-dismiss="modal">Guardar</button>
                 <button type="button" ng-disabled="contact_form.$invalid" class="btn btn-default" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
+
+<div id="modalHistoricoNivelacion" class="modal fullscreen-modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Histórico Nivelación:</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel panel-default">
+                    <div class="panel-heading nav navbar-default">
+                        <table class="table table-striped table-hover table-condensed">
+                            <thead>
+                            <tr>
+                                <th class="text-center">Ticket</th>
+                                <th class="text-center">Nombre Tecnico</th>
+                                <th class="text-center">CC Técnico</th>
+                                <th class="text-center">Pedido</th>
+                                <th class="text-center">Zona</th>
+                                <th class="text-center">Sub Zona</th>
+                                <th class="text-center">Nombre Nuevo Técnico</th>
+                                <th class="text-center">CC Nuevo Técnico</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="data in nivelacion.databsucarPedido">
+                                <td class="text-center">{{data.ticket_id}}</td>
+                                <td class="text-center">{{data.nombre_tecnico}}</td>
+                                <td class="text-center">{{data.cc_tecnico}}</td>
+                                <td class="text-center">{{data.pedido}}</td>
+                                <td class="text-center">{{data.zona}}</td>
+                                <td class="text-center">{{data.zubzona}}</td>
+                                <td class="text-center">{{data.nombre_nuevo_tecnico}}</td>
+                                <td class="text-center">{{data.cc_nuevo_tecnico}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <br>
+                        <table class="table table-striped table-hover table-condensed">
+                            <thead>
+                            <tr>
+                                <th class="text-center">Solicitud</th>
+                                <th class="text-center">Proceso</th>
+                                <th class="text-center">Motivo</th>
+                                <th class="text-center">Submotivo</th>
+                                <th class="text-center">Fecha Ingreso</th>
+                                <th class="text-center">Fecha Gestion</th>
+                                <th class="text-center">Fecha Respuesta</th>
+                                <th class="text-center">Observaciones</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="data in nivelacion.databsucarPedido">
+                                <td class="text-center">{{data.solicitud}}</td>
+                                <td class="text-center">{{data.proceso}}</td>
+                                <td class="text-center">{{data.motivo}}</td>
+                                <td class="text-center">{{data.submotivo}}</td>
+                                <td class="text-center">{{data.fecha_ingreso}}</td>
+                                <td class="text-center">{{data.fecha_gestion}}</td>
+                                <td class="text-center">{{data.fecha_respuesta}}</td>
+                                <td class="text-center">{{data.observaciones}}</td>
+                                <td class="text-center">
+                                    <!-- data-trigger="hover" para que el popover aparezca y desaparezca -->
+                                    <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
+                                            data-placement="left" data-html="true" data-selector="" title="Observacion ingreso" data-content="{{data.observacion}}">
+                                        <i class="fa fa-commenting" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
+                                            title="Observacion gestión" data-placement="left" data-html="true" data-selector="" data-content="{{data.observContingencia}}">
+                                        <i class="fa fa-commenting" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
+                                            title="Observacion gestión Corregir Porta" data-placement="left" data-html="true" data-selector=""
+                                            data-content="{{data.observContingenciaPortafolio}}">
+                                        <i class="fa fa-commenting" aria-hidden="true"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" ng-disabled="contact_form.$invalid" class="btn btn-info" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -75,8 +75,8 @@
                             <form action=" " method="post" name="contact_form1" id="contact_form1">
                                 <ul class="list-group">
                                     <div class="form-group" ng-class="{'has-error' : contact_form1.ticket.$touched && contact_form1.ticket.$invalid}">
-                                        <li class="list-group-item small"><b>Ticket: </b><br>
-                                            <input class="btn btn-default btn-xs" placeholder="Ticket" type="text" ng-model="nivelacion.ticket" name="ticket" required>
+                                        <li class="list-group-item small"><b>Tarea: </b><br>
+                                            <input class="btn btn-default btn-xs" placeholder="Tarea" type="text" ng-model="nivelacion.ticket" name="ticket" required>
                                         </li>
                                     </div>
                                 </ul>
@@ -85,7 +85,7 @@
                                     <div class="form-group">
                                         <li>
                                             <button type="button" ng-disabled="contact_form1.$invalid" class="btn btn-primary btn-xs" ng-click="searchTicket()">
-                                                Buscar pedido
+                                                Buscar Tarea
                                             </button>&nbsp;&nbsp;
                                         </li>
                                     </div>
@@ -99,7 +99,7 @@
                                     <div class="col-md-6">
                                         <ul class="list-group">
                                             <div class="form-group" ng-class="{'has-error' : contact_form3.newIdTecnic.$touched && contact_form3.newIdTecnic.$invalid}">
-                                                <li class="list-group-item small"><b>Cédula nuevo técnico: </b><br>
+                                                <li class="list-group-item small"><b>CC Nuevo Técnico: </b><br>
                                                     <input class="btn btn-default btn-xs" placeholder="Doc Nuevo Técnico" type="text" ng-model="nivelacion.newIdTecnic"
                                                            name="newIdTecnic" required>
                                                 </li>
@@ -121,7 +121,7 @@
                                     <div class="col-md-6" ng-show="newTec">
                                         <ul class="list-group">
                                             <div class="form-group">
-                                                <li class="list-group-item small"><b>Nombre técnico: </b><br>
+                                                <li class="list-group-item small"><b>Nombre Nuevo Técnico: </b><br>
                                                     <input class="btn btn-default btn-xs" placeholder="Nombre Nuevo Técnico" type="text" ng-model="nivelacion.newTecName"
                                                            name="ticket" readonly>
                                                 </li>
@@ -155,7 +155,7 @@
                                     <ul class="list-group">
                                         <ul class="list-group">
                                             <div class="form-group" ng-class="{'has-error' : contact_form2.nombreTecnico.$touched && contact_form2.nombreTecnico.$invalid}">
-                                                <li class="list-group-item small"><b>Nombre Tecnico: </b><br>
+                                                <li class="list-group-item small"><b>Nombre Técnico: </b><br>
                                                     <input class="btn btn-default btn-xs" type="text" ng-model="nivelacion.nombreTecnico" name="pedido" required>
                                                 </li>
                                             </div>
@@ -167,7 +167,7 @@
                                     <ul class="list-group">
                                         <ul class="list-group">
                                             <div class="form-group" ng-class="{'has-error' : contact_form2.idTecnico.$touched && contact_form2.idTecnico.$invalid}">
-                                                <li class="list-group-item small"><b>Identificación Tecnico: </b><br>
+                                                <li class="list-group-item small"><b>CC Técnico: </b><br>
                                                     <input class="btn btn-default btn-xs" type="text" ng-model="nivelacion.idTecnico" name="idTecnico" required>
                                                 </li>
                                             </div>
@@ -309,13 +309,13 @@
                 <div class="col-md-12 col-xs-12">
                     <div class="panel panel-default">
                         <div class="panel-heading nav navbar-default">
-                            <b> Buscar histórico nivelación:</b>
+                            <b> Buscar Histórico Nivelación:</b>
                         </div>
                         <div class="panel-heading nav navbar-default">
                             <ul class="list-group small">
                                 <ul class="nav navbar-nav navbar-left" ng-hide="formulario">
                                     <li>
-                                        <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs" ng-model="nivelacion.historico" placeholder="Buscar Pedido">&nbsp;
+                                        <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs" ng-model="nivelacion.historico" placeholder="Buscar Tarea">&nbsp;
                                     </li>
                                     <li>
                                         <b>
@@ -338,7 +338,7 @@
                 <div class="col-md-12 col-xs-12">
                     <div class="panel panel-default">
                         <div class="panel-heading nav navbar-default">
-                            <b> En gestión</b>
+                            <b>En gestión</b>
                         </div>
 
                         <div class="panel-heading nav navbar-default">
@@ -391,7 +391,7 @@
                                     <tr>
                                         <th class="text-center">Ticket</th>
                                         <th class="text-center">Nombre Tecnico</th>
-                                        <th class="text-center">CC Tecnico</th>
+                                        <th class="text-center">CC Técnico</th>
                                         <th class="text-center">Pedido</th>
                                         <th class="text-center">Zona</th>
                                         <th class="text-center">Sub Zona</th>
@@ -464,10 +464,5 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
-
-
-<br>
-<br>

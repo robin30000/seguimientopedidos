@@ -44,6 +44,16 @@ if (isset($data->method)) {
             $user = new nivelacion();
             $user->guardaNivelacion($data->data);
             break;
+        case 'gestionarRegistrosNivelacion':
+            require_once '../class/nivelacion.php';
+            $user = new nivelacion();
+            $user->gestionarRegistrosNivelacion();
+            break;
+        case 'marcarEnGestionNivelacion':
+            require_once '../class/nivelacion.php';
+            $user = new nivelacion();
+            $user->marcarEnGestionNivelacion($data->data);
+            break;
 
         default:
             echo 'ninguna opción valida.';
