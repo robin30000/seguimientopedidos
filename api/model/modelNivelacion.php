@@ -176,7 +176,7 @@ class modelNivelacion
                                                        n.fecha_ingreso,
                                                        n.id,n.en_gestion
        
-                                                from nivelacion n where n.estado = '0' order by n.id desc ");
+                                                from nivelacion n where n.estado != 2 order by n.id desc ");
             $stmt->execute();
             if ($stmt->rowCount()) {
                 $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -196,20 +196,19 @@ class modelNivelacion
         session_start();
         try {
 
-            $stmt = $this->_DB->prepare("select en_gestion from nivelacion where id = :id");
+            $stmt = $this->_DB->prepare("select en_gestion, gestiona_por from nivelacion where id = :id");
             $stmt->execute([':id' => $data->id]);
             $result = $stmt->fetch(PDO::FETCH_OBJ);
-            if ($result->en_gestion != $_SESSION['login']) {
+            if ($result->gestiona_por != $_SESSION['login']) {
                 $response = ['state' => 0, 'msj' => "La tarea no se encuentra en gentión al usuario: " . $_SESSION['login']];
 
             } else {
-                $stmt = $this->_DB->prepare("update nivelacion set se_realiza_nivelacion = :nivelacion, observaciones = :observaciones, fecha_respuesta = :fecha, gestiona_por = :user, estado = '1' where id = :id");
+                $stmt = $this->_DB->prepare("update nivelacion set se_realiza_nivelacion = :nivelacion, observaciones = :observaciones, fecha_respuesta = :fecha, estado = '2' where id = :id");
                 $stmt->execute([
                     ':nivelacion'    => $data->nivelacion,
                     ':observaciones' => $data->observaciones,
                     ':id'            => $data->id,
                     ':fecha'         => date('Y-m-d H:i:s'),
-                    ':user'          => $_SESSION['login'],
                 ]);
                 if ($stmt->rowCount() == 1) {
                     $response = ['state' => 1, 'msj' => "Se a realizado el cambio en el ticket $data->ticket_id correctamente"];
@@ -246,7 +245,7 @@ class modelNivelacion
                                                        n.fecha_ingreso,
                                                        n.id,
                                                        n.se_realiza_nivelacion
-                                                from nivelacion n");
+                                                from nivelacion n where estado = 2");
             $stmt->execute();
             if ($stmt->rowCount()) {
                 $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -266,12 +265,12 @@ class modelNivelacion
         try {
             session_start();
 
-            $stmt = $this->_DB->prepare("select en_gestion from nivelacion where id = :id");
+            $stmt = $this->_DB->prepare("select en_gestion, gestiona_por from nivelacion where id = :id");
             $stmt->execute([':id' => $data]);
             if ($stmt->rowCount()) {
                 $resul = $stmt->fetch(PDO::FETCH_OBJ);
-                if ($resul->en_gestion == $_SESSION['login']) {
-                    $stmt = $this->_DB->prepare("update nivelacion set en_gestion = '' where id = :id");
+                if ($resul->gestiona_por == $_SESSION['login']) {
+                    $stmt = $this->_DB->prepare("update nivelacion set en_gestion = '', fecha_gestion = '' where id = :id");
                     $stmt->execute([':id' => $data]);
 
                     $response = ['state' => 1, 'msj' => 'La tarea se encuentra desbloqueada'];
@@ -279,8 +278,8 @@ class modelNivelacion
                 } elseif (isset($resul->en_gestion)) {
                     $response = ['state' => 1, 'msj' => 'La tarea se encuentra en gestión'];
                 } else {
-                    $stmt = $this->_DB->prepare("update nivelacion set en_gestion = :gestion where id = :id");
-                    $stmt->execute([':gestion' => $_SESSION['login'], ':id' => $data]);
+                    $stmt = $this->_DB->prepare("update nivelacion set gestiona_por = :gestion, estado = 1, fecha_gestion = :fecha, en_gestion = 1 where id = :id");
+                    $stmt->execute([':gestion' => $_SESSION['login'], ':id' => $data, ':fecha' => date("Y-m-d h:i:s")]);
                     $response = ['state' => 1, 'msj' => 'La tarea se encuentra Bloqueada'];
                 }
             }

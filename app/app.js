@@ -5283,7 +5283,7 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
 
                     $scope.diferencia = new Date(js_yyyy_mm_dd_hh_mm_ss()) - new Date(cnivela[indice]);
                     console.log($scope.diferencia, 'diff')
-                    if ($scope.diferencia > 900000) {
+                    if ($scope.diferencia > 9000) {
                         $scope.indice = (indice);
                         $scope.quinceminutos = [];
                         $scope.quinceminutos[$scope.indice] = cnivela[$scope.indice];
@@ -5354,17 +5354,21 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
                 Swal({
                     type: 'error',
                     text: data.data.msj,
-                    timer: 2000
-                });
+                    timer: 4000
+                })
             } else {
                 Swal({
-                        type: 'success',
-                        title: data.data.msj,
-                        timer: 2000
-                    },
-                    function () {
-                        $route.reload();
-                    });
+                    type: 'success',
+                    title: data.data.msj,
+                    timer: 4000
+                }).then(function () {
+                    $route.reload();
+                    console.log("Despues de dar click en el boton, aqui llamarias al submit");
+                })
+                /*setTimeout(function(){
+                    location.reload();
+                }, 3000);*/
+
 
             }
 
