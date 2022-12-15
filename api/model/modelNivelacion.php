@@ -79,10 +79,11 @@ class modelNivelacion
         };
 
         try {
+
             $stmt = $this->_DB->prepare("INSERT INTO nivelacion (ticket_id, nombre_tecnico, cc_tecnico, pedido, proceso, zona, zubzona, cc_nuevo_tecnico,
-                                                                        nombre_nuevo_tecnico, solicitud, motivo, submotivo, fecha_ingreso, creado_por, estado, en_gestion)
+                                                                        nombre_nuevo_tecnico, solicitud, motivo, submotivo, fecha_ingreso, creado_por, estado)
                                                 VALUES (:ticket_id, :nombre_tecnico, :cc_tecnico, :pedido, :proceso, :zona, :zubzona, :cc_nuevo_tecnico,
-                                                                        :nombre_nuevo_tecnico, :solicitud, :motivo, :submotivo, :fecha_ingreso, :creado_por, '0', '0')");
+                                                                        :nombre_nuevo_tecnico, :solicitud, :motivo, :submotivo, :fecha_ingreso, :creado_por, '0')");
             $stmt->execute([
                 ':ticket_id'            => $data->ticket,
                 ':nombre_tecnico'       => $data->nombreTecnico,
@@ -175,7 +176,7 @@ class modelNivelacion
                                                        n.fecha_ingreso,
                                                        n.id,n.en_gestion
        
-                                                from nivelacion n where n.estado = '0'");
+                                                from nivelacion n where n.estado = '0' order by n.id desc ");
             $stmt->execute();
             if ($stmt->rowCount()) {
                 $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -194,19 +195,30 @@ class modelNivelacion
     {
         session_start();
         try {
-            $stmt = $this->_DB->prepare("update nivelacion set se_realiza_nivelacion = :nivelacion, observaciones = :observaciones, fecha_respuesta = :fecha, gestiona_por = :user, estado = '1' where id = :id");
-            $stmt->execute([
-                ':nivelacion'    => $data->nivelacion,
-                ':observaciones' => $data->observaciones,
-                ':id'            => $data->id,
-                ':fecha'         => date('Y-m-d H:i:s'),
-                ':user'          => $_SESSION['login'],
-            ]);
-            if ($stmt->rowCount() == 1) {
-                $response = ['state' => 1, 'msj' => "Se a realizado el cambio en el ticket $data->ticket_id correctamente"];
+
+            $stmt = $this->_DB->prepare("select en_gestion from nivelacion where id = :id");
+            $stmt->execute([':id' => $data->id]);
+            $result = $stmt->fetch(PDO::FETCH_OBJ);
+            if ($result->en_gestion != $_SESSION['login']) {
+                $response = ['state' => 0, 'msj' => "La tarea no se encuentra en gentión al usuario: " . $_SESSION['login']];
+
             } else {
-                $response = ['state' => 0, 'msj' => "Ah ocurrido un error intentalo nuevamente"];
+                $stmt = $this->_DB->prepare("update nivelacion set se_realiza_nivelacion = :nivelacion, observaciones = :observaciones, fecha_respuesta = :fecha, gestiona_por = :user, estado = '1' where id = :id");
+                $stmt->execute([
+                    ':nivelacion'    => $data->nivelacion,
+                    ':observaciones' => $data->observaciones,
+                    ':id'            => $data->id,
+                    ':fecha'         => date('Y-m-d H:i:s'),
+                    ':user'          => $_SESSION['login'],
+                ]);
+                if ($stmt->rowCount() == 1) {
+                    $response = ['state' => 1, 'msj' => "Se a realizado el cambio en el ticket $data->ticket_id correctamente"];
+                } else {
+                    $response = ['state' => 0, 'msj' => "Ah ocurrido un error intentalo nuevamente"];
+                }
             }
+
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }

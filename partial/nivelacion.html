@@ -244,16 +244,16 @@
                                                     <select class="form-control" name="motivo" id="motivo"
                                                             ng-model="nivelacion.motivo" required>
                                                         <option value="">Escoja opcion</option>
-                                                        <option value="1" ng-if="nivelacion.solicitud == 1">Cubrir Novedad</option>
-                                                        <option value="2" ng-if="nivelacion.solicitud == 2">Ruta Atrazada</option>
-                                                        <option value="3" ng-if="nivelacion.solicitud == 2">Desplazamiento Largo</option>
-                                                        <option value="4" ng-if="nivelacion.solicitud == 2">Microzona errada</option>
-                                                        <option value="5" ng-if="nivelacion.solicitud == 2">Trabajo Futuro</option>
-                                                        <option value="6" ng-if="nivelacion.solicitud == 3">Retrazo en la mesa de soporte</option>
-                                                        <option value="7" ng-if="nivelacion.solicitud == 3">Pedido amarillo</option>
-                                                        <option value="8" ng-if="nivelacion.solicitud == 3">Reabrir pedido</option>
-                                                        <option value="9" ng-if="nivelacion.solicitud == 3">Pedido cancelado</option>
-                                                        <option value="10" ng-if="nivelacion.solicitud == 3">Inicio despues de las 9:00am</option>
+                                                        <option value="1" ng-show="nivelacion.solicitud == 1">Cubrir Novedad</option>
+                                                        <option value="2" ng-show="nivelacion.solicitud == 2">Ruta Atrazada</option>
+                                                        <option value="3" ng-show="nivelacion.solicitud == 2">Desplazamiento Largo</option>
+                                                        <option value="4" ng-show="nivelacion.solicitud == 2">Microzona errada</option>
+                                                        <option value="5" ng-show="nivelacion.solicitud == 2">Trabajo Futuro</option>
+                                                        <option value="6" ng-show="nivelacion.solicitud == 3">Retrazo en la mesa de soporte</option>
+                                                        <option value="7" ng-show="nivelacion.solicitud == 3">Pedido amarillo</option>
+                                                        <option value="8" ng-show="nivelacion.solicitud == 3">Reabrir pedido</option>
+                                                        <option value="9" ng-show="nivelacion.solicitud == 3">Pedido cancelado</option>
+                                                        <option value="10" ng-show="nivelacion.solicitud == 3">Inicio despues de las 9:00am</option>
                                                     </select>
                                                 </li>
                                             </div>
@@ -270,13 +270,13 @@
                                                     <select class="form-control" name="submotivo" id="submotivo"
                                                             ng-model="nivelacion.submotivo">
                                                         <option value="">Escoja opción</option>
-                                                        <option value="1" ng-if="nivelacion.motivo == 6">Contingencia</option>
-                                                        <option value="2" ng-if="nivelacion.motivo == 6">Auditoria NAP</option>
-                                                        <option value="3" ng-if="nivelacion.motivo == 6">Auditoria TAP</option>
-                                                        <option value="4" ng-if="nivelacion.motivo == 6">Soporte Gpon</option>
-                                                        <option value="5" ng-if="nivelacion.motivo == 6">Escalamiento infraestructura</option>
-                                                        <option value="6" ng-if="nivelacion.motivo == 8">Unidad residencial</option>
-                                                        <option value="7" ng-if="nivelacion.motivo == 8">Ejecución/Reinstalación</option>
+                                                        <option value="1" ng-show="nivelacion.motivo == 6">Contingencia</option>
+                                                        <option value="2" ng-show="nivelacion.motivo == 6">Auditoria NAP</option>
+                                                        <option value="3" ng-show="nivelacion.motivo == 6">Auditoria TAP</option>
+                                                        <option value="4" ng-show="nivelacion.motivo == 6">Soporte Gpon</option>
+                                                        <option value="5" ng-show="nivelacion.motivo == 6">Escalamiento infraestructura</option>
+                                                        <option value="6" ng-show="nivelacion.motivo == 8">Unidad residencial</option>
+                                                        <option value="7" ng-show="nivelacion.motivo == 8">Ejecución/Reinstalación</option>
                                                     </select>
                                                 </li>
                                             </div>

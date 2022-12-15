@@ -5099,9 +5099,9 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
         if ($scope.nivelacion.ticket === "" || $scope.nivelacion.ticket === undefined) {
             Swal({
                 type: 'error',
-                title: 'Ingrese un ticket'
+                title: 'Ingrese una tarea'
             })
-            return;
+
         } else {
             $scope.url = "http://10.100.66.254:8080/HCHV_DEV/BuscarC/" + $scope.nivelacion.ticket;
             $http.get($scope.url, {timeout: 2000})
@@ -5120,6 +5120,9 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
                             $scope.nivelacion.proceso = data.data[0].tasktypecategory
                             $scope.nivelacion.zona = data.data[0].region
                             $scope.visible = true;
+
+                            $scope.status = data.data[0].status;
+                            $scope.fecha_res = data.data[0].unefechacita;
 
 
                             $scope.searchIdTecnic = function () {
@@ -5143,6 +5146,44 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
                             }
 
                             $scope.saveNivelation = function () {
+                                var today = new Date();
+                                var day = today.getDate();
+                                var month = today.getMonth() + 1;
+                                var year = today.getFullYear();
+                                var hoy = `${year}-${month}-${day}`
+                                console.log($scope.nivelacion.submotivo, ' ', $scope.status, ' ', $scope.fecha_res, ' ', hoy);
+                                if (($scope.nivelacion.motivo == 1) && ($scope.status == 'Abierto' || $scope.status == 'Asignado')) {
+                                    Swal({
+                                        type: 'error',
+                                        title: 'La tarea esta en estado de asignación automatica'
+                                    })
+                                    return;
+                                }
+
+                                if (($scope.nivelacion.motivo == 1) && ($scope.status == 'Finalizado' || $scope.status == 'Suspendido' || $scope.status == 'Suspendido - Abierto' || $scope.status == 'Incompleto' || $scope.status == 'Pendiente')) {
+                                    Swal({
+                                        type: 'error',
+                                        title: 'La tarea esta en estado no valido'
+                                    })
+                                    return;
+                                }
+
+                                if (($scope.nivelacion.submotivo == 6) && ($scope.status == 'Incompleto' || $scope.status == 'Pendiente') && ($scope.fecha_res == hoy)) {
+                                    Swal({
+                                        type: 'error',
+                                        title: 'La tarea no cumple con las validaciones para ser procesada'
+                                    })
+                                    return;
+                                }
+
+                                if (($scope.nivelacion.submotivo == 7) && ($scope.status == 'Incompleto' || $scope.status == 'Pendiente') && ($scope.fecha_res == -1)) {
+                                    Swal({
+                                        type: 'error',
+                                        title: 'La tarea no cumple con las validaciones para ser procesada'
+                                    })
+                                    return;
+                                }
+
                                 services.saveNivelation($scope.nivelacion).then(complete).catch(failed);
 
                                 function complete(data) {
@@ -5195,6 +5236,34 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
         }
     }
 
+    function js_yyyy_mm_dd_hh_mm_ss() {
+        now = new Date();
+        year = "" + now.getFullYear();
+        month = "" + (now.getMonth() + 1);
+        if (month.length == 1) {
+            month = "0" + month;
+        }
+        day = "" + now.getDate();
+        if (day.length == 1) {
+            day = "0" + day;
+        }
+        hour = "" + now.getHours();
+        if (hour.length == 1) {
+            hour = "0" + hour;
+        }
+        minute = "" + now.getMinutes();
+        if (minute.length == 1) {
+            minute = "0" + minute;
+        }
+        second = "" + now.getSeconds();
+        if (second.length == 1) {
+            second = "0" + second;
+        }
+        return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
+    }
+
+    $scope.hora_sistema = js_yyyy_mm_dd_hh_mm_ss();
+
     gestionarNivelacion();
 
     function gestionarNivelacion() {
@@ -5206,8 +5275,21 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
             if (data.data.state == 0) {
                 $scope.GestionNivelacion.respuestaDatos = '';
             } else {
-                console.log(data.data.data, ' datos');
                 $scope.GestionNivelacion.respuestaDatos = data.data.data;
+
+                var cnivela = $scope.GestionNivelacion.respuestaDatos.map((doc) => doc.fecha_ingreso);
+
+                cnivela.forEach(function (valor, indice) {
+
+                    $scope.diferencia = new Date(js_yyyy_mm_dd_hh_mm_ss()) - new Date(cnivela[indice]);
+                    console.log($scope.diferencia, 'diff')
+                    if ($scope.diferencia > 900000) {
+                        $scope.indice = (indice);
+                        $scope.quinceminutos = [];
+                        $scope.quinceminutos[$scope.indice] = cnivela[$scope.indice];
+
+                    }
+                });
             }
         }
 
@@ -5276,11 +5358,14 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
                 });
             } else {
                 Swal({
-                    type: 'success',
-                    title: data.data.msj,
-                    timer: 4000
-                });
-                $route.reload();
+                        type: 'success',
+                        title: data.data.msj,
+                        timer: 2000
+                    },
+                    function () {
+                        $route.reload();
+                    });
+
             }
 
 
@@ -5295,7 +5380,7 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
 
         services.marcarEnGestionNivelacion(data).then(complete).catch(failed)
 
-        function complete(data){
+        function complete(data) {
             Swal({
                 type: 'success',
                 title: data.data.msj,
@@ -5304,7 +5389,7 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
             $route.reload();
         }
 
-        function failed(error){
+        function failed(error) {
             console.log(error)
         }
     }
