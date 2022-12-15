@@ -394,7 +394,7 @@
 																<button type="button" class="btn btn-default btn-xs" ng-click="CopyPortaPapeles(data.pedido)" tooltip title="Copiar pedido" id=i{{$index}}>{{data.pedido}}
 																</button>
 															</td>
-															<td ng-show="!data._id">{{data.macEntra}}</td>
+															<td ng-show="!data._id">{{data.horagestion}} - {{quinceminutos[indice]}} </td>
 															<td ng-show="!data._id">{{data.macSale}}</td>
 															<td ng-show="data._id"><span ng-repeat="mac in data.macIn">{{mac.name}}-</span></td>
 															<td ng-show="data._id"><span ng-repeat="mac in data.macOut">{{mac.name}}-</span></td>
@@ -576,7 +576,7 @@
 																<button type="button" class="btn btn-default btn-xs" ng-click="CopyPortaPapeles(data.pedido)" tooltip title="Copiar pedido" id=p{{$index}}>{{data.pedido}}
 																</button>
 															</td>
-															<td><center>{{data.macEntra}}</center></td>
+															<td> {{data.horagestion}} - {{quinceminutos[indice]}} </td>
 															<td><center>{{data.macSale}}</center></td>
 															<td><center>{{data.ciudad}}</center></td>
 															<td><center>{{data.proceso}}</center></td>
