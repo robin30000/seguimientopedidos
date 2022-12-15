@@ -14,12 +14,14 @@ class ModelFormaAsesores
     public function rst()
     {
         try {
-            $stmt = $this->_DB->query("SELECT DISTINCT DEPARTAMENTO, CIUDAD " .
-                                      " FROM ciudades " .
-                                      " ORDER BY CIUDAD ASC");
+
+
+            $stmt = $this->_DB->query("SELECT DISTINCT DEPARTAMENTO, CIUDAD 
+                                       FROM ciudades 
+                                      ORDER BY CIUDAD ASC");
             $stmt->execute();
             if ($stmt->rowCount()) {
-                $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = [$stmt->fetchAll(PDO::FETCH_ASSOC),201];
             } else {
                 $response = '';
             }
@@ -28,19 +30,23 @@ class ModelFormaAsesores
         } catch (PDOException $e) {
 
         }
-
-        return $response;
+        $this->_DB=null;
+        echo json_encode($response);
     }
 
     public function rstdep()
     {
         try {
-            $stmt = $this->_DB->query("SELECT DISTINCT DEPARTAMENTO " .
-                                      " FROM ciudades " .
-                                      " ORDER BY DEPARTAMENTO ASC");
+
+
+            $stmt = $this->_DB->query("SELECT DISTINCT DEPARTAMENTO 
+                                       FROM ciudades 
+                                       ORDER BY DEPARTAMENTO ASC");
+
             $stmt->execute();
+
             if ($stmt->rowCount()) {
-                $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = [$stmt->fetchAll(PDO::FETCH_ASSOC),201];
             } else {
                 $response = '';
             }
@@ -50,15 +56,15 @@ class ModelFormaAsesores
 
         }
         $this->_DB = null;
-        return $response;
+        echo json_encode( $response);
     }
 
     public function regionesTip()
     {
         try {
-            $stmt = $this->_DB->query("SELECT DISTINCT region" .
-                                      " FROM regiones " .
-                                      " ORDER BY region ASC");
+            $stmt = $this->_DB->query("SELECT DISTINCT region
+                                      FROM regiones 
+                                      ORDER BY region ASC");
             $stmt->execute();
             if ($stmt->rowCount()) {
                 $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
