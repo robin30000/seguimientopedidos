@@ -118,6 +118,7 @@ app.directive('fileModel', ['$parse', function ($parse) {
 app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     var serviceBase = 'services/';
     var serviceBase1 = 'http://netvm-ptctrl01a/seguimientopedidos/api/controller/';
+    //var serviceBase1 = 'http://localhost/seguimientopedidos/api/controller/';
     var obj = {};
 
     /**
@@ -1698,6 +1699,79 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     /* ------------------------------- CODIGO INCOMPLETO ---------------------------- */
 
+    /**
+     * services nivelacion
+     */
+
+    obj.searchTicket = function (datos) {
+        var data = {
+            method: 'saveTicket',
+            data: datos
+        }
+        return $http.post(serviceBase1 + 'nivelacionCtrl.php', data);
+    };
+
+    obj.searchIdTecnic = function (datos) {
+        var data = {
+            method: 'searchIdTecnic',
+            data: datos
+        }
+        return $http.post(serviceBase1 + 'nivelacionCtrl.php', data);
+    };
+
+    obj.saveNivelation = function (datos) {
+        var data = {
+            method: 'saveNivelation',
+            data: datos
+        }
+        return $http.post(serviceBase1 + 'nivelacionCtrl.php', data);
+    };
+
+    obj.en_genstion_nivelacion = function () {
+        var data = {
+            method: 'en_genstion_nivelacion'
+        }
+        return $http.post(serviceBase1 + 'nivelacionCtrl.php', data);
+    };
+
+    obj.buscarhistoricoNivelacion = function (datos) {
+        var data = {
+            method: 'buscarhistoricoNivelacion',
+            data: datos
+        }
+        return $http.post(serviceBase1 + 'nivelacionCtrl.php', data);
+    };
+
+    obj.gestionarNivelacion = function () {
+        var data = {
+            method: 'gestionarNivelacion',
+        }
+        return $http.post(serviceBase1 + 'nivelacionCtrl.php', data);
+    };
+
+    obj.gestionarRegistrosNivelacion = function () {
+        var data = {
+            method: 'gestionarRegistrosNivelacion',
+        }
+        return $http.post(serviceBase1 + 'nivelacionCtrl.php', data);
+    };
+
+    obj.guardaNivelacion = function (datos) {
+        var data = {
+            method: 'guardaNivelacion',
+            data: datos
+        }
+        return $http.post(serviceBase1 + 'nivelacionCtrl.php', data);
+    };
+
+    obj.marcarEnGestionNivelacion = function (datos) {
+        var data = {
+            method: 'marcarEnGestionNivelacion',
+            data: datos
+        }
+        return $http.post(serviceBase1 + 'nivelacionCtrl.php', data);
+    };
+
 
     return obj;
 }]);
@@ -1776,7 +1850,7 @@ app.controller('loginCtrl', function ($scope, $http, $rootScope, $location, $rou
                 $rootScope.galletainfo = galleta;
                 //$rootScope.galletainfo.perfil = 11;
                 $rootScope.permiso = true;
-                console.log('aca ',$rootScope.galletainfo)
+                console.log('aca ', $rootScope.galletainfo)
                 //console.log("galletainfo: ",$rootScope.galletainfo);
                 if ($rootScope.galletainfo.perfil === '1' && $rootScope.galletainfo.perfil === '2' && $rootScope.galletainfo.perfil === '5') {
                     $location.path('/actividades/');
@@ -4072,7 +4146,7 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
             services.expCsvNovedadesTecnico($scope.Registros, $rootScope.galletainfo).then(
                 function (data) {
                     console.log(data);
-                    window.location.href = "tmp/" + data.data[0];
+                    //window.location.href = "tmp/" + data.data[0];
                     $scope.csvPend = true;
                     $scope.counter = data.data[1];
                     //console.log(data.data);
@@ -4980,6 +5054,355 @@ function fn_popup5() {
     }
 }
 
+app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $cookieStore, $timeout, services) {
+    $scope.nivelacion = {};
+    $scope.nivelacion.ticket = '';
+    $scope.nivelacion.newIdTecnic = '';
+    $scope.visible = false;
+    $scope.newTec = false;
+    $scope.tec = false
+
+    en_genstion_nivelacion();
+
+
+    function en_genstion_nivelacion() {
+        services.en_genstion_nivelacion().then(complete).catch(failed)
+
+        function complete(data) {
+
+            $scope.nivelacion.contingenciaOK = data.data.realizado;
+            $scope.nivelacion.contingenciaPend = data.data.pendiente;
+        }
+
+        function failed(data) {
+            console.log(data)
+        }
+    }
+
+    $scope.buscarhistoricoNivelacion = function () {
+        services.buscarhistoricoNivelacion($scope.nivelacion.historico).then(complete).catch(failed)
+
+        function complete(data) {
+            console.log(data.data.data)
+            $scope.nivelacion.databsucarPedido = data.data.data;
+            $('#modalHistoricoNivelacion').modal('show');
+            return data.data;
+
+        }
+
+        function failed(data) {
+            console.log(data)
+        }
+    }
+
+    $scope.searchTicket = function () {
+        if ($scope.nivelacion.ticket === "" || $scope.nivelacion.ticket === undefined) {
+            Swal({
+                type: 'error',
+                title: 'Ingrese una tarea'
+            })
+
+        } else {
+            $scope.url = "http://10.100.66.254:8080/HCHV_DEV/BuscarC/" + $scope.nivelacion.ticket;
+            $http.get($scope.url, {timeout: 2000})
+                .then(function (data) {
+                        console.log(data);
+                        if (data.data.state === 0) {
+                            Swal({
+                                type: 'error',
+                                title: 'No se encontraron datos'
+                            })
+                        } else {
+                            $scope.nivelacion.pedido = data.data[0].UNEpedido
+                            $scope.nivelacion.subZona = data.data[0].district
+                            $scope.nivelacion.nombreTecnico = data.data[0].EngineerName
+                            $scope.nivelacion.idTecnico = data.data[0].EngineerID
+                            $scope.nivelacion.proceso = data.data[0].tasktypecategory
+                            $scope.nivelacion.zona = data.data[0].region
+                            $scope.visible = true;
+
+                            $scope.status = data.data[0].status;
+                            $scope.fecha_res = data.data[0].unefechacita;
+
+
+                            $scope.searchIdTecnic = function () {
+                                services.searchIdTecnic($scope.nivelacion.newIdTecnic).then(complete).catch(failed);
+
+                                function complete(data) {
+                                    if (data.data.state === 0) {
+                                        Swal({
+                                            type: 'error',
+                                            title: 'No se encontraron datos'
+                                        })
+                                    } else {
+                                        $scope.nivelacion.newTecName = data.data.data.nombre;
+                                        $scope.newTec = true;
+                                    }
+                                }
+
+                                function failed(data) {
+                                    console.log(data)
+                                }
+                            }
+
+                            $scope.saveNivelation = function () {
+                                var today = new Date();
+                                var day = today.getDate();
+                                var month = today.getMonth() + 1;
+                                var year = today.getFullYear();
+                                var hoy = `${year}-${month}-${day}`
+                                console.log($scope.nivelacion.submotivo, ' ', $scope.status, ' ', $scope.fecha_res, ' ', hoy);
+                                if (($scope.nivelacion.motivo == 1) && ($scope.status == 'Abierto' || $scope.status == 'Asignado')) {
+                                    Swal({
+                                        type: 'error',
+                                        title: 'La tarea esta en estado de asignación automatica'
+                                    })
+                                    return;
+                                }
+
+                                if (($scope.nivelacion.motivo == 1) && ($scope.status == 'Finalizado' || $scope.status == 'Suspendido' || $scope.status == 'Suspendido - Abierto' || $scope.status == 'Incompleto' || $scope.status == 'Pendiente')) {
+                                    Swal({
+                                        type: 'error',
+                                        title: 'La tarea esta en estado no valido'
+                                    })
+                                    return;
+                                }
+
+                                if (($scope.nivelacion.submotivo == 6) && ($scope.status == 'Incompleto' || $scope.status == 'Pendiente') && ($scope.fecha_res == hoy)) {
+                                    Swal({
+                                        type: 'error',
+                                        title: 'La tarea no cumple con las validaciones para ser procesada'
+                                    })
+                                    return;
+                                }
+
+                                if (($scope.nivelacion.submotivo == 7) && ($scope.status == 'Incompleto' || $scope.status == 'Pendiente') && ($scope.fecha_res == -1)) {
+                                    Swal({
+                                        type: 'error',
+                                        title: 'La tarea no cumple con las validaciones para ser procesada'
+                                    })
+                                    return;
+                                }
+
+                                services.saveNivelation($scope.nivelacion).then(complete).catch(failed);
+
+                                function complete(data) {
+                                    if (data.data.state === 0) {
+                                        Swal({
+                                            type: 'error',
+                                            title: data.data.data.msj
+                                        })
+                                    } else {
+                                        Swal({
+                                            type: 'success',
+                                            title: data.data.msj,
+                                            timer: 4000
+                                        });
+                                        $route.reload();
+                                    }
+                                }
+
+                                function failed(data) {
+                                    console.log(data)
+                                }
+                            }
+                        }
+                    },
+
+                    function (failed) {
+                        console.log(2, failed)
+                    },
+                );
+        }
+    }
+});
+
+app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location, $route, $routeParams, $cookies, $cookieStore, $timeout, services) {
+    $scope.GestionNivelacion = {};
+    $scope.registroTecnicos = function () {
+        services.gestionarRegistrosNivelacion().then(complete).catch(failed)
+
+        function complete(data) {
+
+            if (data.data.state == 0) {
+                $scope.GestionNivelacion.respuestaNivelacion = '';
+            } else {
+                $scope.GestionNivelacion.respuestaNivelacion = data.data.data;
+            }
+        }
+
+        function failed(error) {
+            console.log(error);
+        }
+    }
+
+    function js_yyyy_mm_dd_hh_mm_ss() {
+        now = new Date();
+        year = "" + now.getFullYear();
+        month = "" + (now.getMonth() + 1);
+        if (month.length == 1) {
+            month = "0" + month;
+        }
+        day = "" + now.getDate();
+        if (day.length == 1) {
+            day = "0" + day;
+        }
+        hour = "" + now.getHours();
+        if (hour.length == 1) {
+            hour = "0" + hour;
+        }
+        minute = "" + now.getMinutes();
+        if (minute.length == 1) {
+            minute = "0" + minute;
+        }
+        second = "" + now.getSeconds();
+        if (second.length == 1) {
+            second = "0" + second;
+        }
+        return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
+    }
+
+    $scope.hora_sistema = js_yyyy_mm_dd_hh_mm_ss();
+
+    gestionarNivelacion();
+
+    function gestionarNivelacion() {
+
+        services.gestionarNivelacion().then(complete).catch(failed)
+
+        function complete(data) {
+
+            if (data.data.state == 0) {
+                $scope.GestionNivelacion.respuestaDatos = '';
+            } else {
+                $scope.GestionNivelacion.respuestaDatos = data.data.data;
+
+                var cnivela = $scope.GestionNivelacion.respuestaDatos.map((doc) => doc.fecha_ingreso);
+
+                cnivela.forEach(function (valor, indice) {
+
+                    $scope.diferencia = new Date(js_yyyy_mm_dd_hh_mm_ss()) - new Date(cnivela[indice]);
+                    console.log($scope.diferencia, 'diff')
+                    if ($scope.diferencia > 9000) {
+                        $scope.indice = (indice);
+                        $scope.quinceminutos = [];
+                        $scope.quinceminutos[$scope.indice] = cnivela[$scope.indice];
+
+                    }
+                });
+            }
+        }
+
+        function failed(error) {
+            console.log(error);
+        }
+    }
+
+    $scope.buscarhistoricoNivelacion = function () {
+        services.buscarhistoricoNivelacion($scope.nivelacion.tarea).then(complete).catch(failed)
+
+        function complete(data) {
+            console.log(data);
+            if (data.data.state === 0) {
+                Swal({
+                    type: 'error',
+                    title: data.data.msj
+                })
+            } else {
+                $scope.nivelacion.databsucarPedido = data.data.data;
+                $('#modalHistoricoNivelacion').modal('show');
+                return data.data;
+            }
+        }
+
+        function failed(data) {
+            console.log(data)
+        }
+    }
+
+    $scope.CopyPortaPapeles = function (data) {
+        var copyTextTV = document.createElement("input");
+        copyTextTV.value = data;
+        document.body.appendChild(copyTextTV);
+        copyTextTV.select();
+        document.execCommand("copy");
+        document.body.removeChild(copyTextTV);
+        Swal({
+            type: 'info',
+            title: 'Aviso',
+            text: "El texto seleccionado fue copiado",
+            timer: 2000
+        });
+    }
+
+    $scope.guardarGestionObsNivelacion = function (data) {
+        if (!data.nivelacion) {
+            Swal('Selecciona el estado de nivelacion');
+            return;
+        }
+        $scope.GestionNivelacion.observacionesNivelacion = '';
+        $scope.datos = data;
+        $('#editarModal').modal('show');
+    }
+
+    $scope.guardaNivelacion = function () {
+        $scope.datos.observaciones = $scope.GestionNivelacion.observacionesNivelacion;
+        services.guardaNivelacion($scope.datos).then(complete).catch(failed)
+
+        function complete(data) {
+            if (data.data.state != 1) {
+                Swal({
+                    type: 'error',
+                    text: data.data.msj,
+                    timer: 4000
+                })
+            } else {
+                Swal({
+                    type: 'success',
+                    title: data.data.msj,
+                    timer: 4000
+                }).then(function () {
+                    $route.reload();
+                    console.log("Despues de dar click en el boton, aqui llamarias al submit");
+                })
+                /*setTimeout(function(){
+                    location.reload();
+                }, 3000);*/
+
+
+            }
+
+
+        }
+
+        function failed(errs) {
+            console.log(errs)
+        }
+    }
+
+    $scope.marcarEnGestionNivelacion = function (data) {
+
+        services.marcarEnGestionNivelacion(data).then(complete).catch(failed)
+
+        function complete(data) {
+            Swal({
+                type: 'success',
+                title: data.data.msj,
+                timer: 4000
+            });
+            $route.reload();
+        }
+
+        function failed(error) {
+            console.log(error)
+        }
+    }
+
+    $scope.reloadNivelacion = function () {
+        gestionarNivelacion();
+    }
+
+});
 
 app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $route, $routeParams, $cookies, $cookieStore, $timeout, services, fileUpload) {
     $scope.contingencias = {};
@@ -5227,7 +5650,6 @@ app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $ro
     $scope.updateEnGestion();
 
 });
-
 
 app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $location, $route, $routeParams, $cookies, $cookieStore, $timeout, services, fileUpload) {
     $scope.rutaCierreMasivoContin = "partial/modals/cierreMasivoContingencias.html";
@@ -6184,7 +6606,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
         services.getexporteContingencias(fechaInicial, fechafinal, $rootScope.galletainfo).then(
             function (data) {
                 // console.log(data.data[0]);
-                window.location.href = "tmp/" + data.data[0];
+                //window.location.href = "tmp/" + data.data[0];
                 return data.data;
             },
             function errorCallback(response) {
@@ -7873,7 +8295,6 @@ app.controller('turnosCtrl', function ($scope, $http, $rootScope, $location, $ro
     $scope.obtenercumplmientoTurnos();
 });
 
-
 app.controller('AlarmasCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services) {
     $scope.crearAlarma = {};
     $scope.listaAlarmas = {};
@@ -8006,7 +8427,6 @@ app.controller('AlarmasCtrl', function ($scope, $http, $rootScope, $location, $r
     $scope.procesos();
     $scope.listadoAlarmas();
 });
-
 
 app.directive('cookie', function ($rootScope, $cookies) {
 
@@ -8144,6 +8564,19 @@ app.config(['$routeProvider',
                 controller: 'contingenciasCtrl',
                 authorize: true
             })
+            .when('/nivelacion', {
+                title: 'gestion nivelacion',
+                templateUrl: 'partial/nivelacion.html',
+                controller: 'nivelacionCtrl',
+                authorize: true
+            })
+
+            .when('/GestionNivelacion', {
+                title: 'Gestión Contingencias',
+                templateUrl: 'partial/GestionNivelacion.html',
+                controller: 'GestionNivelacionCtrl',
+                authorize: true
+            })
 
             .when('/Gestioncontingencias', {
                 title: 'Gestión Contingencias',
@@ -8238,11 +8671,9 @@ app.run(['$location', '$rootScope', '$route', '$cookies', 'services', function (
             $location
                 .path("/")
         }
-        ;
     });
 
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
-
         $rootScope.title = current.$$route.title;
         $rootScope.tituloPagina = 'Seguimiento a pedidos - ' + current.$$route.title;
 
