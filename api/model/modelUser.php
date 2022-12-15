@@ -15,14 +15,6 @@ class modelUser
 
         try {
 
-            $login          = $data['datosEdicion'];
-            $id             = $login['ID'];
-            $usuarioid      = $login['LOGIN'];
-            $nombre         = $login['NOMBRE'];
-            $identificacion = $login['IDENTIFICACION'];
-            $perfil         = $login['perfil'];
-            $password       = $login['PASSWORD'];
-
             $stmt = $this->_DB->prepare("update usuarios
                                                 set nombre         = :nombre,
                                                     identificacion = :dentificacion,
@@ -476,35 +468,64 @@ class modelUser
     public function creaTecnico($data)
     {
         try {
-
-            $login            = $data['datosCrearTecnico'];
-            $identificacion   = $login['IDENTIFICACION'];
-            $nombre           = $login['NOMBRE'];
-            $ciudad           = $login['CIUDAD'];
-            $celular          = $login['CELULAR'];
-            $empresa          = $login['empresa'];
-            $id_tecnico_forma = $data['id_tecnico'];
-
-            if ($identificacion == "") {
-                $identificacion = $id_tecnico_forma;
+            $datos = $data['datosCrearTecnico'];
+            if(!preg_match("/^[a-zA-Z áéíóúAÉÍÓÚÑñ]+$/",$datos['NOMBRE'])){
+                $response = ['state' => 0, 'msj' => 'El nombre no es valido'];
+            } elseif (!is_numeric($datos['CELULAR'])) {
+                $response = ['state' => 0, 'msj' => 'El número movil no es valido'];
+            }elseif ($datos['CELULAR'][0]!=3){
+                $response = ['state' => 0, 'msj' => 'El número movil debe iniciar por 3'];
+            }elseif (strlen($datos['CELULAR'])!=10) {
+                $response = ['state' => 0, 'msj' => 'El número movil debe tener 10 digitos'];
+            }elseif ($datos['IDENTIFICACION'][0]=='0'||$datos['IDENTIFICACION'][0]==0){
+                $response = ['state' => 0, 'msj' => 'El número de identificación no puede empezar por 0'];
             }
-
-            $stmt = $this->_DB->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa)");
-
-            $stmt->execute([
-                ':identificacion' => $identificacion,
-                ':nombre'         => $nombre,
-                ':ciudad'         => $ciudad,
-                ':celular'        => $celular,
-                ':empresa'        => $empresa,
-            ]);
-
-            if ($stmt->rowCount() == 1) {
-                $response = ['Usuario creado', 201];
+            elseif (strlen($datos['IDENTIFICACION'])<5){
+                $response = ['state' => 0, 'msj' => 'El número de identificación es muy corto'];
+            }elseif (strlen($datos['IDENTIFICACION'])>15){
+                $response = ['state' => 0, 'msj' => 'El número de identificación es muy largo'];
             } else {
-                $response = ['Ah ocurrido un error intentalo nuevamente', 400];
+
+                $UDC   = substr($datos['IDENTIFICACION'], -4);
+                $pass     = 'Colombia' . $UDC . '--++';
+                $pass     = md5($pass);
+                $contrato = match ($datos['empresa']) {
+                    "1" => 'UNE',
+                    "0" => 'SIN EMPRESA',
+                    "3" => 'REDES Y EDIFICACIONES',
+                    "4" => 'ENERGIA INTEGRAL ANDINA',
+                    "6" => 'EAGLE',
+                    "7" => 'SERVTEK',
+                    "8" => 'FURTELCOM',
+                    "9" => 'EMTELCO',
+                    "10" => 'CONAVANCES',
+                    "11" => 'TECHCOM'
+                };
+
+
+                $stmt = $this->_DB->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato)
+                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato)");
+
+
+                $stmt->execute([
+                    ':identificacion' => $datos['IDENTIFICACION'],
+                    ':nombre'         => $datos['NOMBRE'],
+                    ':ciudad'         => $datos['CIUDAD'],
+                    ':celular'        => $datos['CELULAR'],
+                    ':empresa'        => $datos['empresa'],
+                    ':login_click'    => $datos['LOGIN_CLICK'],
+                    ':pass'           => $pass,
+                    ':region'         => $datos['regiones'],
+                    ':contrato'       => $contrato,
+                ]);
+
+                if ($stmt->rowCount() == 1) {
+                    $response = ['state' => 1, 'msj' => 'Técnico creado'];
+                } else {
+                    $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo nuevamente'];
+                }
             }
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }

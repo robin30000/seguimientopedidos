@@ -16,37 +16,8 @@ class formaAsesores
 
     public function ciudades()
     {
-
-
-        $rst    = $this->_model->rst();
-        $rstdep = $this->_model->rstdep();
-
-        $this->_utils->response($this->_utils->json([$rst, $rstdep]), 201);
-
-        /*if ($rst->num_rows > 0) {
-
-            $resultado = array();
-            $resultadodepa = array();
-            while ($row = $rst->fetch_assoc()) {
-                $ciudades = $this->quitar_tildes(utf8_encode($row['CIUDAD']));
-                $row['CIUDAD'] = $ciudades;
-                $departamentos = $this->quitar_tildes(utf8_encode($row['DEPARTAMENTO']));
-                $resultado[] = $row;
-            }
-
-            while ($row = $rstdep->fetch_assoc()) {
-                $departamentos = $this->quitar_tildes(utf8_encode($row['DEPARTAMENTO']));
-                $resultadodepa[] = $row;
-            }
-
-            $this->response($this->json(array($resultado, $resultadodepa)), 201);
-
-        } else {
-            $error = array();
-
-            $this->response($this->json($error), 400);
-        } // If no records "No Content" status
-    }*/
+        $this->_model->rst();
+        $this->_model->rstdep();
     }
 
     public function regionesTip()
