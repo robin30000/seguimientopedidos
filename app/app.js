@@ -5277,17 +5277,20 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
             } else {
                 $scope.GestionNivelacion.respuestaDatos = data.data.data;
 
+                //var cnivela = $scope.GestionNivelacion.respuestaDatos.map((doc) => doc.fecha_ingreso);
                 var cnivela = $scope.GestionNivelacion.respuestaDatos.map((doc) => doc.fecha_ingreso);
 
-                cnivela.forEach(function (valor, indice) {
 
+                cnivela.forEach(function (valor, indice) {
                     $scope.diferencia = new Date(js_yyyy_mm_dd_hh_mm_ss()) - new Date(cnivela[indice]);
                     console.log($scope.diferencia, 'diff')
-                    if ($scope.diferencia > 9000) {
+                    console.log(cnivela[indice] + ' reloj ' + new Date(cnivela[indice]))
+                    9299000
+                    if ($scope.diferencia > 900000) {
                         $scope.indice = (indice);
                         $scope.quinceminutos = [];
                         $scope.quinceminutos[$scope.indice] = cnivela[$scope.indice];
-
+                        console.log('ss ', $scope.quinceminutos[$scope.indice])
                     }
                 });
             }
@@ -5337,7 +5340,7 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
 
     $scope.guardarGestionObsNivelacion = function (data) {
         if (!data.nivelacion) {
-            Swal('Selecciona el estado de nivelacion');
+            Swal('Selecciona el estado de nivelación');
             return;
         }
         $scope.GestionNivelacion.observacionesNivelacion = '';
@@ -5363,16 +5366,8 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
                     timer: 4000
                 }).then(function () {
                     $route.reload();
-                    console.log("Despues de dar click en el boton, aqui llamarias al submit");
                 })
-                /*setTimeout(function(){
-                    location.reload();
-                }, 3000);*/
-
-
             }
-
-
         }
 
         function failed(errs) {
@@ -8110,17 +8105,25 @@ app.controller('tecnicosCtrl', function ($scope, $http, $rootScope, $location, $
         //console.log($scope.crearTecnico);
         services.creaTecnico($scope.crearTecnico, id_tecnico).then(
             function (data) {
-                // console.log("la lista "+$scope.listaUsuarios);
-                $scope.respuestaupdate = "Técnico creado.";
-                ;
-                return data.data;
+                console.log(data);
+                if (data.data.state != 0) {
+                    Swal({
+                        type: 'success',
+                        title: data.data.msj,
+                        timer: 4000
+                    }).then(function () {
+                        $route.reload();
+                    })
+                } else {
+                    Swal({
+                        title: 'Error',
+                        text: data.data.msj,
+                        type: 'error'
+                    });
+                }
             },
             function errorCallback(response) {
-
                 $scope.errorDatos = "Técnico no fue creado.";
-
-                // console.log($scope.errorDatos);
-
             });
     };
 
@@ -8565,14 +8568,14 @@ app.config(['$routeProvider',
                 authorize: true
             })
             .when('/nivelacion', {
-                title: 'gestion nivelacion',
+                title: 'Gestión Nivelación',
                 templateUrl: 'partial/nivelacion.html',
                 controller: 'nivelacionCtrl',
                 authorize: true
             })
 
             .when('/GestionNivelacion', {
-                title: 'Gestión Contingencias',
+                title: 'Gestión Nivelación',
                 templateUrl: 'partial/GestionNivelacion.html',
                 controller: 'GestionNivelacionCtrl',
                 authorize: true
