@@ -140,7 +140,7 @@ class modelNivelacion
     public function buscarhistoricoNivelacion($data)
     {
         try {
-            $stmt = $this->_DB->prepare("select * from nivelacion where ticket_id = :ticket");
+            $stmt = $this->_DB->prepare("select * from nivelacion where ticket_id = :ticket and estado = 2");
             $stmt->execute([':ticket' => $data]);
             $stmt->execute();
             if ($stmt->rowCount()) {
@@ -174,7 +174,9 @@ class modelNivelacion
                                                        n.nombre_nuevo_tecnico,
                                                        n.observaciones,
                                                        n.fecha_ingreso,
-                                                       n.id,n.en_gestion
+                                                       n.id,
+                                                       n.gestiona_por,
+                                                       n.creado_por
        
                                                 from nivelacion n where n.estado != 2 order by n.id desc ");
             $stmt->execute();

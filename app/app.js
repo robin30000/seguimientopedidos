@@ -5276,21 +5276,15 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
                 $scope.GestionNivelacion.respuestaDatos = '';
             } else {
                 $scope.GestionNivelacion.respuestaDatos = data.data.data;
-
-                //var cnivela = $scope.GestionNivelacion.respuestaDatos.map((doc) => doc.fecha_ingreso);
                 var cnivela = $scope.GestionNivelacion.respuestaDatos.map((doc) => doc.fecha_ingreso);
-
-
+                $scope.quinceminutos = [];
                 cnivela.forEach(function (valor, indice) {
                     $scope.diferencia = new Date(js_yyyy_mm_dd_hh_mm_ss()) - new Date(cnivela[indice]);
-                    console.log($scope.diferencia, 'diff')
-                    console.log(cnivela[indice] + ' reloj ' + new Date(cnivela[indice]))
-                    9299000
+                    $scope.indice = (indice);
                     if ($scope.diferencia > 900000) {
-                        $scope.indice = (indice);
-                        $scope.quinceminutos = [];
-                        $scope.quinceminutos[$scope.indice] = cnivela[$scope.indice];
-                        console.log('ss ', $scope.quinceminutos[$scope.indice])
+                        $scope.quinceminutos[$scope.indice] = 'si';
+                    }else{
+                        $scope.quinceminutos[$scope.indice] = 'no'
                     }
                 });
             }
