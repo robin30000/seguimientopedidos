@@ -169,14 +169,14 @@
                                             </td>
                                             <!-- En estas lineas se oculta el login gestión -->
 
-                                            <td class="text-center" ng-if="data.en_gestion"> <!--ng-show="data.gestiona_por == galletainfo.login"-->
+                                            <td class="text-center" ng-if="data.gestiona_por"> <!--ng-show="data.gestiona_por == galletainfo.login"-->
                                                 <span class="label label-primary label-xsmall"
                                                       ng-if="(galletainfo.login == data.en_gestion)">{{data.en_gestion}}</span>
                                                 <span class="label label-primary label-xsmall"
                                                       ng-if="(galletainfo.login != data.en_gestion)">En Gestion</span>
                                             </td>
 
-                                            <td class="text-center" ng-if="!data.en_gestion"> <!--ng-show="data.gestiona_por == galletainfo.login"-->
+                                            <td class="text-center" ng-if="!data.gestiona_por"> <!--ng-show="data.gestiona_por == galletainfo.login"-->
                                                 <span class="label label-primary label-xsmall"></span>
 
                                             </td>

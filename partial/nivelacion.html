@@ -93,7 +93,7 @@
                             </form>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-6" ng-hide="nivelacion.solicitud == 3">
                             <form action=" " method="post" name="contact_form3" ng-show="visible" id="contact_form3">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -144,7 +144,7 @@
                                         <ul class="list-group">
                                             <div class="form-group" ng-class="{'has-error' : contact_form2.pedido.$touched && contact_form2.pedido.$invalid}">
                                                 <li class="list-group-item small"><b>Pedido: </b><br>
-                                                    <input class="btn btn-default btn-xs" type="text" ng-model="nivelacion.pedido" name="pedido" required>
+                                                    <input class="btn btn-default btn-xs" type="text" ng-model="nivelacion.pedido" name="pedido" required readonly>
                                                 </li>
                                             </div>
                                         </ul>
@@ -156,7 +156,7 @@
                                         <ul class="list-group">
                                             <div class="form-group" ng-class="{'has-error' : contact_form2.nombreTecnico.$touched && contact_form2.nombreTecnico.$invalid}">
                                                 <li class="list-group-item small"><b>Nombre Técnico: </b><br>
-                                                    <input class="btn btn-default btn-xs" type="text" ng-model="nivelacion.nombreTecnico" name="pedido" required>
+                                                    <input class="btn btn-default btn-xs" type="text" ng-model="nivelacion.nombreTecnico" name="pedido" required readonly>
                                                 </li>
                                             </div>
                                         </ul>
@@ -168,7 +168,7 @@
                                         <ul class="list-group">
                                             <div class="form-group" ng-class="{'has-error' : contact_form2.idTecnico.$touched && contact_form2.idTecnico.$invalid}">
                                                 <li class="list-group-item small"><b>CC Técnico: </b><br>
-                                                    <input class="btn btn-default btn-xs" type="text" ng-model="nivelacion.idTecnico" name="idTecnico" required>
+                                                    <input class="btn btn-default btn-xs" type="text" ng-model="nivelacion.idTecnico" name="idTecnico" required readonly>
                                                 </li>
                                             </div>
                                         </ul>
@@ -184,7 +184,7 @@
                                         <ul class="list-group">
                                             <div class="form-group" ng-class="{'has-error' : contact_form2.proceso.$touched && contact_form2.proceso.$invalid}">
                                                 <li class="list-group-item small"><b>Proceso: </b><br>
-                                                    <input class="btn btn-default btn-xs" type="text" ng-model="nivelacion.proceso" name="proceso" required>
+                                                    <input class="btn btn-default btn-xs" type="text" ng-model="nivelacion.proceso" name="proceso" required readonly>
                                                 </li>
                                             </div>
                                         </ul>
@@ -196,7 +196,7 @@
                                         <ul class="list-group">
                                             <div class="form-group" ng-class="{'has-error' : contact_form2.zona.$touched && contact_form2.zona.$invalid}">
                                                 <li class="list-group-item small"><b>Zona: </b><br>
-                                                    <input class="btn btn-default btn-xs" type="text" ng-model="nivelacion.zona" name="zona" required>
+                                                    <input class="btn btn-default btn-xs" type="text" ng-model="nivelacion.zona" name="zona" required readonly>
                                                 </li>
                                             </div>
                                         </ul>
@@ -209,7 +209,7 @@
                                         <ul class="list-group">
                                             <div class="form-group" ng-class="{'has-error' : contact_form2.subZona.$touched && contact_form2.subZona.$invalid}">
                                                 <li class="list-group-item small"><b>Sub Zona: </b><br>
-                                                    <input class="btn btn-default btn-xs" type="text" ng-model="nivelacion.subZona" name="subZona" required id="subZona">
+                                                    <input class="btn btn-default btn-xs" type="text" ng-model="nivelacion.subZona" name="subZona" required id="subZona" readonly>
                                                 </li>
                                             </div>
                                         </ul>
@@ -245,15 +245,15 @@
                                                             ng-model="nivelacion.motivo" required>
                                                         <option value="">Escoja opcion</option>
                                                         <option value="1" ng-show="nivelacion.solicitud == 1">Cubrir Novedad</option>
-                                                        <option value="2" ng-show="nivelacion.solicitud == 2">Ruta Atrazada</option>
+                                                        <option value="2" ng-show="nivelacion.solicitud == 2">Ruta Atrasada</option>
                                                         <option value="3" ng-show="nivelacion.solicitud == 2">Desplazamiento Largo</option>
                                                         <option value="4" ng-show="nivelacion.solicitud == 2">Microzona errada</option>
                                                         <option value="5" ng-show="nivelacion.solicitud == 2">Trabajo Futuro</option>
-                                                        <option value="6" ng-show="nivelacion.solicitud == 3">Retrazo en la mesa de soporte</option>
+                                                        <option value="6" ng-show="nivelacion.solicitud == 3">Retraso en la mesa de soporte</option>
                                                         <option value="7" ng-show="nivelacion.solicitud == 3">Pedido amarillo</option>
                                                         <option value="8" ng-show="nivelacion.solicitud == 3">Reabrir pedido</option>
                                                         <option value="9" ng-show="nivelacion.solicitud == 3">Pedido cancelado</option>
-                                                        <option value="10" ng-show="nivelacion.solicitud == 3">Inicio despues de las 9:00am</option>
+                                                        <option value="10" ng-show="nivelacion.solicitud == 3">Inicio después de las 9:00am</option>
                                                     </select>
                                                 </li>
                                             </div>
@@ -288,7 +288,7 @@
                                     <ul class="list-group nav navbar-nav navbar-left">
                                         <div class="form-group">
                                             <li>
-                                                <button type="button" ng-disabled="contact_form2.$invalid || contact_form3.$invalid || !newTec" class="btn btn-primary btn-xs" ng-click="saveNivelation()">
+                                                <button type="button" ng-disabled="contact_form2.$invalid" class="btn btn-primary btn-xs" ng-click="saveNivelation()">
                                                     Guardar Nivelación
                                                 </button>&nbsp;&nbsp;
                                             </li>
@@ -375,7 +375,7 @@
         </div>
 
         <div id="modalHistoricoNivelacion" class="modal fullscreen-modal fade" role="dialog">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-lg" style="width: 90%">
 
                 <!-- Modal content-->
                 <div class="modal-content">
