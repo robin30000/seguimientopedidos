@@ -477,6 +477,7 @@ class modelEscalamiento
 
     public function exportEscalamientos()
     {
+
         try {
             $stmt = $this->_DB->query("SELECT * FROM escalamiento_infraestructura ORDER BY fecha_solicitud");
             $stmt->execute();

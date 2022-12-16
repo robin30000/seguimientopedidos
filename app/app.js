@@ -3571,10 +3571,23 @@ app.controller('premisasInfraestructurasCtrl', function ($scope, $rootScope, $lo
         });
     }
 
-    $scope.exportarRegistros = () => {
+    $scope.exportarRegistros = function () {
+        services.exportEscalamientos().then(completed).catch(failed)
+
+        function completed(data) {
+            console.log(data)
+        }
+
+        function failed(error) {
+            console.log(error)
+        }
+
+    }
+
+
+    /*$scope.exportarRegistros = () => {
         services.exportEscalamientos().then((res) => {
             var data = res.data[0];
-            console.log(data);
             var array = typeof data != 'object' ? JSON.parse(data) : data;
             var str = '';
             var column = `ID, Pedido, Tarea, Tecnico, ID Tecnico, Fecha Solicitud, Fecha Gestion, Fecha Respuesta, Login Gestion, En Gestion, Proceso, Producto, Motivo, Area, Region, Tipo Tarea, Tecnologia, CRM, Departamento, Prueba SMNET, Foto?, Marcacion TAP, Direccion TAP, Valor TAP, Informacion Adicional, MAC Real CPE, Correa Marcacion, Observacion, Respuesta, ID Terreno, Tipificacion, Estado, ANS \r\n`;
@@ -3602,7 +3615,7 @@ app.controller('premisasInfraestructurasCtrl', function ($scope, $rootScope, $lo
             elementToClick.click();
             console.log(str);
         });
-    }
+    }*/
 
 
     $scope.mostrarModalConcatenacion = (data) => {
