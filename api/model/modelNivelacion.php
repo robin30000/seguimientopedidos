@@ -140,7 +140,7 @@ class modelNivelacion
     public function buscarhistoricoNivelacion($data)
     {
         try {
-            $stmt = $this->_DB->prepare("select * from nivelacion where ticket_id = :ticket and estado = 2");
+            $stmt = $this->_DB->prepare("select * from nivelacion where ticket_id = :ticket");
             $stmt->execute([':ticket' => $data]);
             $stmt->execute();
             if ($stmt->rowCount()) {
@@ -177,8 +177,7 @@ class modelNivelacion
                                                        n.id,
                                                        n.gestiona_por,
                                                        n.creado_por
-       
-                                                from nivelacion n where n.estado != 2 order by n.id desc ");
+                                                from nivelacion n where n.estado != 2 order by n.fecha_ingreso");
             $stmt->execute();
             if ($stmt->rowCount()) {
                 $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -247,7 +246,7 @@ class modelNivelacion
                                                        n.fecha_ingreso,
                                                        n.id,
                                                        n.se_realiza_nivelacion
-                                                from nivelacion n where estado = 2");
+                                                from nivelacion n");
             $stmt->execute();
             if ($stmt->rowCount()) {
                 $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -266,23 +265,24 @@ class modelNivelacion
     {
         try {
             session_start();
-
             $stmt = $this->_DB->prepare("select en_gestion, gestiona_por from nivelacion where id = :id");
             $stmt->execute([':id' => $data]);
             if ($stmt->rowCount()) {
                 $resul = $stmt->fetch(PDO::FETCH_OBJ);
                 if ($resul->gestiona_por == $_SESSION['login']) {
-                    $stmt = $this->_DB->prepare("update nivelacion set en_gestion = '', fecha_gestion = '' where id = :id");
-                    $stmt->execute([':id' => $data]);
+                    $stmt = $this->_DB->prepare("update nivelacion set en_gestion = '', gestiona_por = '' where id = :id");
+                    if ($stmt->execute([':id' => $data])) {
+                        $response = ['state' => 1, 'msj' => 'La tarea se encuentra desbloqueada'];
+                    } else {
+                        $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo nuevamente'];
+                    }
 
-                    $response = ['state' => 1, 'msj' => 'La tarea se encuentra desbloqueada'];
-
-                } elseif (isset($resul->en_gestion)) {
-                    $response = ['state' => 1, 'msj' => 'La tarea se encuentra en gestión'];
-                } else {
+                } elseif ($resul->en_gestion == '') {
                     $stmt = $this->_DB->prepare("update nivelacion set gestiona_por = :gestion, estado = 1, fecha_gestion = :fecha, en_gestion = 1 where id = :id");
                     $stmt->execute([':gestion' => $_SESSION['login'], ':id' => $data, ':fecha' => date("Y-m-d h:i:s")]);
                     $response = ['state' => 1, 'msj' => 'La tarea se encuentra Bloqueada'];
+                } elseif ($resul->en_gestion != $_SESSION['login']) {
+                    $response = ['state' => 1, 'msj' => 'La tarea se encuentra en gestión'];
                 }
             }
         } catch (PDOException $e) {
