@@ -137,6 +137,7 @@ class modelNivelacion
         echo json_encode($response);
     }
 
+
     public function buscarhistoricoNivelacion($data)
     {
         try {
