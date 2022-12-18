@@ -4956,7 +4956,7 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
                     var data = data.data[0];
                     var array = typeof data != 'object' ? JSON.parse(data) : data;
                     var str = '';
-                    var column = `PEDIDO,ID_TECNICO,EMPRESA,LOGIN_ASESOR,DESPACHO,OBSERVACIONES,ACCION,SUB_ACCION,FECHA,PROCESO,PRODUCTO,DURACION_LLAMADA,IDLLAMADA,PRUEBA_INTEGRADA,PRUEBASMNET,UNESOURCESYSTEM,PENDIENTE,DIAGNOSTICO \r\n`;
+                    var column = `PEDIDO, ID_TECNICO, EMPRESA, LOGIN_ASESOR, DESPACHO, OBSERVACIONES, ACCION, SUB_ACCION, FECHA, PROCESO, PRODUCTO, DURACION_LLAMADA, IDLLAMADA, PRUEBA_INTEGRADA, PRUEBASMNET, UNESOURCESYSTEM, PENDIENTE, DIAGNOSTICO \r\n`;
                     str += column;
                     for (var i = 0; i < array.length; i++) {
                         var line = '';
@@ -4995,7 +4995,7 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
                 var data = datos.data[0];
                 var array = typeof data != 'object' ? JSON.parse(data) : data;
                 var str = '';
-                var column = `PEDIDO, TECNICO,NOMBRE_TECNICO,CIUDAD,EMPRESA,TIPO_PENDIENTE,DIA,MES,MOTIVO,MAC_SALE,MAC_ENTRA,PROCESO \r\n`;
+                var column = `PEDIDO, TECNICO, NOMBRE_TECNICO, CIUDAD, EMPRESA, TIPO_PENDIENTE, DIA, MES, MOTIVO, MAC_SALE, MAC_ENTRA, PROCESO \r\n`;
                 str += column;
                 for (var i = 0; i < array.length; i++) {
                     var line = '';
@@ -7649,7 +7649,7 @@ app.controller('registrossoportegponCtrl', function ($scope, $http, $rootScope, 
                     var array = typeof data != 'object' ? JSON.parse(data) : data;
                     var str = '';
                     //var column = `ID, Pedido, Tarea, Tecnico, ID Tecnico, Fecha Solicitud, Fecha Gestion, Fecha Respuesta, Login Gestion, En Gestion, Proceso, Producto, Motivo, Area, Region, Tipo Tarea, Tecnologia, CRM, Departamento, Prueba SMNET, Foto?, Marcacion TAP, Direccion TAP, Valor TAP, Informacion Adicional, MAC Real CPE, Correa Marcacion, Observacion, Respuesta, ID Terreno, Tipificacion, Estado, ANS \r\n`;
-                    var column = `TAREA,ARPON,NAP,HILO,PORT_INTERNET_1,PORT_INTERNET_2,PORT_INTERNET_3,PORT_INTERNET_4,PORT_TELEVISION_1,PORT_TELEVISION_2,PORT_TELEVISION_3,PORT_TELEVISION_4,NUMERO_CONTACTO',NOMBRE_CONTACTO,UNEPEDIDOTASKTYPECATEGORY,UNEMUNICIPIO,UNEPRODUCTOS,DATOSCOLA,ENGINEER_ID,ENGINEER_NAME, MOBILE_PHONE,SERIAL,MAC,TIPO_EQUIPO,VELOCIDAD_NAVEGACION,USER_ID_FIREBASE,REQUEST_ID_FIREBASE,USER_IDENTIFICATION_FIREBASE,STATUS_SOPORTE,FECHA_SOLICITUD_FIREBASE,FECHA_CREADO,RESPUESTA_SOPORTE,OBSERVACION,OBSERVACION TERRENO,LOGIN,FECHA_RESPUESTA\r\n`;
+                    var column = `TAREA, ARPON, NAP, HILO, PORT_INTERNET_1, PORT_INTERNET_2, PORT_INTERNET_3, PORT_INTERNET_4, PORT_TELEVISION_1, PORT_TELEVISION_2, PORT_TELEVISION_3, PORT_TELEVISION_4, NUMERO_CONTACTO', NOMBRE_CONTACTO, UNEPEDIDOTASKTYPECATEGORY, UNEMUNICIPIO,UNEPRODUCTOS, DATOSCOLA, ENGINEER_ID, ENGINEER_NAME, MOBILE_PHONE, SERIAL, MAC, TIPO_EQUIPO, VELOCIDAD_NAVEGACION, USER_ID_FIREBASE, REQUEST_ID_FIREBASE, USER_IDENTIFICATION_FIREBASE, STATUS_SOPORTE, FECHA_SOLICITUD_FIREBASE, FECHA_CREADO, RESPUESTA_SOPORTE, OBSERVACION, OBSERVACION TERRENO,LOGIN, FECHA_RESPUESTA \r\n`;
                     str += column;
                     for (var i = 0; i < array.length; i++) {
                         var line = '';
