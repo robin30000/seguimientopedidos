@@ -1,5 +1,6 @@
 <?php
 require_once '../class/conection.php';
+
 class modelOtrosServicios
 {
     private $_DB;
@@ -12,7 +13,7 @@ class modelOtrosServicios
 
     public function DepartamentosContratos($data)
     {
-        try{
+        try {
             $mesenviado = $data;
 
             if ($mesenviado == "" || $mesenviado == undefined) {
@@ -74,7 +75,7 @@ class modelOtrosServicios
                 from nps gen where  contratista = gen.contratista 
                 and mes = :mes
                 group by gen.regional order by regional desc ");
-            $sql->execute([':mes'=>$nom_mes]);
+            $sql->execute([':mes' => $nom_mes]);
 
             $resultadodptoContrato = [];
 
@@ -119,7 +120,7 @@ class modelOtrosServicios
                     from nps gen  
                     where mes= :mes 
                     group by gen.contratista  order by  contratista");
-                $query->execute([':mes'=>$nom_mes]);
+                $query->execute([':mes' => $nom_mes]);
 
                 $contratos = [];
 
@@ -130,12 +131,12 @@ class modelOtrosServicios
                     $contratos[] = ["label" => "$label", "value" => "$rescontrato"];
                 }
 
-                $response=[$resultadodptoContrato, $dptos, $eia, $conavances, $eagle, $emt, $rye, $servtek, $contratos,201];
+                $response = [$resultadodptoContrato, $dptos, $eia, $conavances, $eagle, $emt, $rye, $servtek, $contratos, 201];
 
             } else {
-                $response = [0,400];
+                $response = [0, 400];
             }
-        }catch (PDOException $e){
+        } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
         $this->_DB = null;
@@ -145,16 +146,16 @@ class modelOtrosServicios
     public function insertData($datos)
     {
         try {
-            $fecha = $datos['fecha'];
-            $uen = $datos['uen'];
+            $fecha       = $datos['fecha'];
+            $uen         = $datos['uen'];
             $tipotrabajo = $datos['tipo_trabajo'];
-            $ciudad = $datos['CIUDAD'];
-            $mes = date("m", strtotime($fecha));
-            $anio = date("Y", strtotime($fecha));
-            $sep = "";
-            $ciudades = "";
-            $bandera = 0;
-            $bandera1 = 0;
+            $ciudad      = $datos['CIUDAD'];
+            $mes         = date("m", strtotime($fecha));
+            $anio        = date("Y", strtotime($fecha));
+            $sep         = "";
+            $ciudades    = "";
+            $bandera     = 0;
+            $bandera1    = 0;
 
             if ($ciudad == null) {
                 $ciudad = "";
@@ -163,7 +164,7 @@ class modelOtrosServicios
                 for ($i = 0; $i < $total; $i++) {
 
                     if ($valida = strpos($ciudad[$i], '_DEPA') !== false) {
-                        $bandera = $bandera + 1;
+                        $bandera  = $bandera + 1;
                         $ciudades = $ciudades . $sep . "'" . str_replace("_DEPA", "", $ciudad[$i]) . "'";
                     } else {
                         $bandera1 = $bandera1 + 1;
@@ -191,10 +192,10 @@ class modelOtrosServicios
                 $uen = "";
             }
             if ($tipotrabajo != "") {
-                $tipo_trabajo = "and tipo_trabajo = '$tipotrabajo'";
+                $tipo_trabajo  = "and tipo_trabajo = '$tipotrabajo'";
                 $tipo_trabajo1 = "and (select tipo_trabajo from carga_click where pro.pedido_id = pedido_id limit 1) = '$tipotrabajo'";
             } else {
-                $tipo_trabajo = "";
+                $tipo_trabajo  = "";
                 $tipo_trabajo1 = "";
             }
 
@@ -230,10 +231,10 @@ class modelOtrosServicios
             while ($row = $sqlcarga->fetchAll(PDO::FETCH_ASSOC)) {
 
                 $total_jornada = $row['total_jornada'];
-                $jornada = $row['jornada'];
-                $diferencia = $row['DIFERENCIA'];
-                $total_carga = $total_carga + $total_jornada;
-                $sqlupdate = $this->_DB->prepare("UPDATE jornada_estados SET `agendados`=:total_jornada WHERE `id_jornada`=:jornada ");
+                $jornada       = $row['jornada'];
+                $diferencia    = $row['DIFERENCIA'];
+                $total_carga   = $total_carga + $total_jornada;
+                $sqlupdate     = $this->_DB->prepare("UPDATE jornada_estados SET `agendados`=:total_jornada WHERE `id_jornada`=:jornada ");
 
                 $sqlupdate->execute([':total_jornada' => $total_jornada, ':jornada' => $jornada]);
             }
@@ -270,15 +271,15 @@ class modelOtrosServicios
             //echo $sqlvistaClik;
             while ($row = $sqlvistaClik->fetchAll(PDO::FETCH_ASSOC)) {
 
-                $total_jornada = $row['total_jornada'];
-                $jornada = $row['jornada'];
-                $diferencia = $row['DIFERENCIA'];
+                $total_jornada    = $row['total_jornada'];
+                $jornada          = $row['jornada'];
+                $diferencia       = $row['DIFERENCIA'];
                 $total_cargaclick = $total_cargaclick + $total_jornada;
-                $sqlupdateclick = $this->_DB->prepare("UPDATE jornada_estados SET `vista_click`='$total_jornada' WHERE `id_jornada`=:jornada");
+                $sqlupdateclick   = $this->_DB->prepare("UPDATE jornada_estados SET `vista_click`='$total_jornada' WHERE `id_jornada`=:jornada");
                 $sqlupdateclick->execute([':jornada' => $jornada]);
             }
             $sqlupdateclicktotal = $this->_DB->query("UPDATE jornada_estados SET `vista_click`='$total_cargaclick' WHERE `id_jornada`='TOTAL'");
-            $sqlupdatedif = $this->_DB->query("UPDATE jornada_estados SET `vista_click`='$diferencia' WHERE `id_jornada`='DIFERENCIA'");
+            $sqlupdatedif        = $this->_DB->query("UPDATE jornada_estados SET `vista_click`='$diferencia' WHERE `id_jornada`='DIFERENCIA'");
 
             //carga de agendados y click confirmados
             $sqlconfirmados = $this->_DB->query("select sum(a.totales) as totales, a.jornada_cita,
@@ -324,18 +325,18 @@ class modelOtrosServicios
 
             while ($row = $sqlconfirmados->fetchAll(PDO::FETCH_ASSOC)) {
 
-                $total_jornada = $row['totales'];
-                $jornada = $row['jornada_cita'];
-                $diferencia = $row['DIFERENCIA'];
+                $total_jornada          = $row['totales'];
+                $jornada                = $row['jornada_cita'];
+                $diferencia             = $row['DIFERENCIA'];
                 $total_cargaconfirmados = $total_cargaconfirmados + $total_jornada;
-                $sqlupdatecoonfirma = $this->_DB->prepare("UPDATE jornada_estados SET `confirmados`='$total_jornada' WHERE `id_jornada`=:jornada ");
+                $sqlupdatecoonfirma     = $this->_DB->prepare("UPDATE jornada_estados SET `confirmados`='$total_jornada' WHERE `id_jornada`=:jornada ");
                 $sqlupdatecoonfirma->execute([':jornada']);
             }
             $sqlupdateconfirmatotal = $this->_DB->prepare("UPDATE jornada_estados SET `confirmados`='$total_cargaconfirmados' WHERE `id_jornada`='TOTAL' ");
-            $sqlupdatedif = $this->_DB->prepare("UPDATE jornada_estados SET `confirmados`=:diferencia WHERE `id_jornada`='DIFERENCIA'");
+            $sqlupdatedif           = $this->_DB->prepare("UPDATE jornada_estados SET `confirmados`=:diferencia WHERE `id_jornada`='DIFERENCIA'");
             $sqlupdatedif->execute([':diferencia']);
             //sin gestionar
-            $sqlnogestion =$this->_DB->query( "select count(pedido_id) pendientes, (case when jornada_cita = 'AM' then 'AM' 
+            $sqlnogestion = $this->_DB->query("select count(pedido_id) pendientes, (case when jornada_cita = 'AM' then 'AM' 
                 when jornada_cita = 'PM' then 'PM' 
                 else 'HF' 
                 end) jornada_cita, 
@@ -372,17 +373,17 @@ class modelOtrosServicios
                 $jornada              = $row['jornada_cita'];
                 $diferencia           = $row['DIFERENCIA'];
                 $total_carganogestion = $total_carganogestion + $total_jornada;
-                $sqlupdatenogestion   =$this->_DB->prepare( "UPDATE jornada_estados SET `no_gestionados`=:total_jornada WHERE `id_jornada`=:jornada ");
-                $sqlupdatenogestion->execute([':total_jornada'=>$total_jornada,':jornada'=>$jornada]);
+                $sqlupdatenogestion   = $this->_DB->prepare("UPDATE jornada_estados SET `no_gestionados`=:total_jornada WHERE `id_jornada`=:jornada ");
+                $sqlupdatenogestion->execute([':total_jornada' => $total_jornada, ':jornada' => $jornada]);
             }
-            $sqlupdatenogestiontotal =$this->_DB->prepare( "UPDATE jornada_estados SET `no_gestionados`=:total_carganogestion WHERE `id_jornada`='TOTAL' ");
-            $sqlupdatenogestiontotal->execute([':total_carganogestion'=>$total_carganogestion]);
-            $sqlupdatedif            = $this->_DB->prepare("UPDATE jornada_estados 
+            $sqlupdatenogestiontotal = $this->_DB->prepare("UPDATE jornada_estados SET `no_gestionados`=:total_carganogestion WHERE `id_jornada`='TOTAL' ");
+            $sqlupdatenogestiontotal->execute([':total_carganogestion' => $total_carganogestion]);
+            $sqlupdatedif = $this->_DB->prepare("UPDATE jornada_estados 
                 SET `no_gestionados`=:diferencia WHERE `id_jornada`='DIFERENCIA' ");
-            $sqlupdatedif->execute([':diferencia'=>$diferencia]);
+            $sqlupdatedif->execute([':diferencia' => $diferencia]);
 
             //finalizados de click
-            $sqlfinalizadosclick =$this->_DB->query( "select count(pro.jornada_cita) total_jornada, 
+            $sqlfinalizadosclick = $this->_DB->query("select count(pro.jornada_cita) total_jornada, 
                 (case when pro.jornada_cita = 'AM' then 'AM'  
                 when pro.jornada_cita = 'PM' then 'PM'
                 else 'HF' end) jornada,  
@@ -416,15 +417,15 @@ class modelOtrosServicios
                 $diferencia          = $row['DIFERENCIA'];
                 $total_cargafinclick = $total_cargafinclick + $total_jornada;
                 $sqlupdatefinalclick = $this->_DB->prepare("UPDATE jornada_estados SET `finalizados_click`=:total_jornada WHERE `id_jornada`=:jornada");
-                $sqlupdatefinalclick->execute([':total_jornada'=>$total_jornada,':jornada'=>$jornada]);
+                $sqlupdatefinalclick->execute([':total_jornada' => $total_jornada, ':jornada' => $jornada]);
             }
-            $sqlupdatefinalclicktotal =$this->_DB->prepare( "UPDATE jornada_estados SET `finalizados_click`=:total_cargafinclick WHERE `id_jornada`='TOTAL'");
-            $sqlupdatefinalclicktotal->execute([':total_cargafinclick'=>$total_cargafinclick]);
-            $sqlupdatedif             =$this->_DB->prepare( "UPDATE jornada_estados SET `finalizados_click`=:diferencia WHERE `id_jornada`='DIFERENCIA'");
-            $sqlupdatedif->execute([':diferencia'=>$diferencia]);
+            $sqlupdatefinalclicktotal = $this->_DB->prepare("UPDATE jornada_estados SET `finalizados_click`=:total_cargafinclick WHERE `id_jornada`='TOTAL'");
+            $sqlupdatefinalclicktotal->execute([':total_cargafinclick' => $total_cargafinclick]);
+            $sqlupdatedif = $this->_DB->prepare("UPDATE jornada_estados SET `finalizados_click`=:diferencia WHERE `id_jornada`='DIFERENCIA'");
+            $sqlupdatedif->execute([':diferencia' => $diferencia]);
 
             //Sin confirmar de click
-            $sqlSinConfirmar =$this->_DB->query( "select count(pro.jornada_cita) total_jornada,   
+            $sqlSinConfirmar = $this->_DB->query("select count(pro.jornada_cita) total_jornada,   
                 (case when pro.jornada_cita = 'AM' then 'AM'   
                 when pro.jornada_cita = 'PM' then 'PM'  
                 else 'HF' end) jornada,  
@@ -499,25 +500,24 @@ class modelOtrosServicios
             $sqlSinConfirmar->execute();
 
 
-
             while ($row = $sqlSinConfirmar->fetchAll(PDO::FETCH_ASSOC)) {
 
                 $total_jornada         = $row['total_jornada'];
                 $jornada               = $row['jornada'];
                 $diferencia            = $row['DIFERENCIA'];
                 $total_sinconfirmar    = $total_sinconfirmar + $total_jornada;
-                $sqlupdatesinconfirmar =$this->_DB->prepare( "UPDATE jornada_estados SET `sin_confirmar`=:totaljornada WHERE `id_jornada`=:jornada ");
-                $sqlupdatesinconfirmar->execute([':totaljornada'=>$total_jornada,':jornada'=>$jornada]);
+                $sqlupdatesinconfirmar = $this->_DB->prepare("UPDATE jornada_estados SET `sin_confirmar`=:totaljornada WHERE `id_jornada`=:jornada ");
+                $sqlupdatesinconfirmar->execute([':totaljornada' => $total_jornada, ':jornada' => $jornada]);
 
             }
             $sqlupdatesinconfirmartotal = $this->_DB->prepare("UPDATE jornada_estados SET `sin_confirmar`=:total_sinconfirma  WHERE `id_jornada`='TOTAL' ");
-            $sqlupdatesinconfirmartotal->execute([':total_sinconfirma'=>$total_sinconfirmar]);
-            $sqlupdatedif               =$this->_DB->prepare( "UPDATE jornada_estados SET `sin_confirmar`=:diferencia WHERE `id_jornada`='DIFERENCIA' ");
-            $sqlupdatedif->execute([':diferencia'=>$diferencia]);
+            $sqlupdatesinconfirmartotal->execute([':total_sinconfirma' => $total_sinconfirmar]);
+            $sqlupdatedif = $this->_DB->prepare("UPDATE jornada_estados SET `sin_confirmar`=:diferencia WHERE `id_jornada`='DIFERENCIA' ");
+            $sqlupdatedif->execute([':diferencia' => $diferencia]);
 
             $query = $this->_DB->query("SELECT * FROM jornada_estados where id_jornada not in('TOTAL','DIFERENCIA')");
 
-            $query2 =$this->_DB->query( "SELECT *, ROUND((confirmados/vista_click)*100,2) eficacia, 
+            $query2 = $this->_DB->query("SELECT *, ROUND((confirmados/vista_click)*100,2) eficacia, 
                 ROUND((finalizados_click/agendados)*100,2) efectividad 
                 FROM jornada_estados where id_jornada in ('TOTAL') ");
 
@@ -527,7 +527,7 @@ class modelOtrosServicios
                 $resultado2[] = $row;
             }
 
-            $query3 =$this->_DB->query( "SELECT * FROM jornada_estados where id_jornada in ('DIFERENCIA') ");
+            $query3 = $this->_DB->query("SELECT * FROM jornada_estados where id_jornada in ('DIFERENCIA') ");
 
             $resultado3 = [];
 
@@ -535,7 +535,7 @@ class modelOtrosServicios
                 $resultado3[] = $row;
             }
 
-            $queryalarmados =$this->_DB->query( "SELECT count(pedido_id) total FROM alarmados where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') ");
+            $queryalarmados = $this->_DB->query("SELECT count(pedido_id) total FROM alarmados where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') ");
             $queryalarmados->execute();
 
             $counter = 0;
@@ -547,7 +547,7 @@ class modelOtrosServicios
             }
             //para las graficas
 
-            $query4 = $this->_DB->query( "select a.final final_click, b.agenda agendados, a.fecha_cita fecha, c.click click from   
+            $query4 = $this->_DB->query("select a.final final_click, b.agenda agendados, a.fecha_cita fecha, c.click click from   
 
                 (select count(pro.pedido_id) agenda, pro.fecha_cita  
                 from carga_agenda pro 
@@ -605,13 +605,13 @@ class modelOtrosServicios
 
                 }
 
-                $response=[$resultado, $resultado2, $resultado3, $fecha, $click, $agendados, $final_click, $counter,201];
+                $response = [$resultado, $resultado2, $resultado3, $fecha, $click, $agendados, $final_click, $counter, 201];
 
             } else {
-                $response = ['',400];
+                $response = ['', 400];
 
             }
-        }catch (PDOException $e){
+        } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
         $this->_DB = null;
@@ -620,7 +620,7 @@ class modelOtrosServicios
 
     public function getRegistrosCarga()
     {
-        try{
+        try {
 
             $query = $this->_DB->query("select a.id, a.nombre_archivo, a.tipo, a.fecha_carga, a.login,(select  
                 CASE WHEN a.tipo = 'alarmados' THEN (select count(c.pedido_id) 
@@ -646,12 +646,12 @@ class modelOtrosServicios
                     $resultado[] = $row;
 
                 }
-                $response=[$resultado,201];
+                $response = [$resultado, 201];
 
             } else {
-                $response = ['',400];
+                $response = ['', 400];
             }
-        }catch (PDOException $e){
+        } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
         $this->_DB = null;
@@ -660,7 +660,7 @@ class modelOtrosServicios
 
     public function getDemePedidoEncuesta()
     {
-        try{
+        try {
 
             $query = $this->_DB->query("select max(fecha_instalacion) fecha from nps ");
 
@@ -710,13 +710,13 @@ class modelOtrosServicios
                     $resultado[]         = $row;
 
                 }
-                $response=[$resultado,201];
+                $response = [$resultado, 201];
 
             } else {
-                $response = ['',400];
+                $response = ['', 400];
 
             }
-        }catch (PDOException $e){
+        } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
         $this->_DB = null;
@@ -725,14 +725,14 @@ class modelOtrosServicios
 
     public function resumenSemanas($data)
     {
-        try{
+        try {
             $datos      = $data['pregunta'];
             $pregunta   = $datos['pregunta'];
             $mesenviado = $data['mes'];
 
             if ($mesenviado == "" || $mesenviado == undefined) {
 
-                $query = $this->_DB->query( "select max(fecha_instalacion) fecha from nps ");
+                $query = $this->_DB->query("select max(fecha_instalacion) fecha from nps ");
 
                 $query->execute();
 
@@ -767,7 +767,7 @@ class modelOtrosServicios
 
             if ($pregunta == "1" || $pregunta == "6" || $pregunta == "7" || $pregunta == "8") {
 
-                $query ="round((select count(num_respuesta) 
+                $query = "round((select count(num_respuesta) 
                     from nps 
                     where num_respuesta = '1' and num_pregunta = '$pregunta' and mes = gen.mes and semana = gen.semana)/  
                     (select count(num_pregunta)   
@@ -814,7 +814,7 @@ class modelOtrosServicios
 
             }
 
-            $sql =$this->_DB->query( "select gen.semana, 
+            $sql = $this->_DB->query("select gen.semana, 
                  $query 
                 from nps gen 
                 where mes = '$nom_mes' 
@@ -897,7 +897,7 @@ class modelOtrosServicios
                     $NPSAcumulado = $row['NPS'];
                 }
 
-                $Query =$this->_DB->query( "select gen.respuesta, count(gen.num_respuesta) total, 
+                $Query = $this->_DB->query("select gen.respuesta, count(gen.num_respuesta) total, 
                     round((count(gen.num_respuesta)/(select count(num_pregunta) 
                     from nps where num_pregunta = '$pregunta' and mes = gen.mes limit 1 )) *100, 2) as porcentaje 
                     from nps gen 
@@ -961,7 +961,7 @@ class modelOtrosServicios
                         and fecha_instalacion = gen.fecha_instalacion limit 1 )*100, 2) as SI  ";
                 }
 
-                $sqlDiario =$this->_DB->query( "select gen.fecha_instalacion dia, 
+                $sqlDiario = $this->_DB->query("select gen.fecha_instalacion dia, 
                     $querydiario 
                     from nps gen 
                     where gen.num_pregunta = '$pregunta' 
@@ -1067,7 +1067,7 @@ class modelOtrosServicios
                         from nps where num_pregunta = '4' and mes = gen.mes and regional = gen.regional)*100,2) as NPS ";
                 }
 
-                $sqlDepartamento =$this->_DB->query( "select gen.regional regional, 
+                $sqlDepartamento = $this->_DB->query("select gen.regional regional, 
                     $querydepartamento 
                     from nps gen 
                     where gen.mes = '$nom_mes' 
@@ -1108,7 +1108,7 @@ class modelOtrosServicios
                         from nps where semana = gen.semana and num_pregunta = '$pregunta' and mes = gen.mes) as TOTAL ";
                 }
 
-                $sqlValoresSemana =$this->_DB->query( "select gen.semana,  
+                $sqlValoresSemana = $this->_DB->query("select gen.semana,  
                     $valoresSemana 
                     from nps gen 
                     where gen.mes = '$nom_mes' 
@@ -1172,7 +1172,7 @@ class modelOtrosServicios
                         from nps where contratista = gen.contratista and mes=gen.mes and num_pregunta = '$pregunta' limit 1 )*100, 2) as SI ";
                 }
 
-                $SqlContrato =$this->_DB->query( "select gen.contratista contrato, 
+                $SqlContrato = $this->_DB->query("select gen.contratista contrato, 
                     $querycontrato 
                     from  nps gen 
                     where gen.mes = '$nom_mes' 
@@ -1185,7 +1185,8 @@ class modelOtrosServicios
                 while ($row = $SqlContrato->fetchAll(PDO::FETCH_ASSOC)) {
                     $resultadoContrato[] = $row;
                 }
-                $response=[$resultado,
+                $response = [
+                    $resultado,
                     $NPSAcumulado,
                     $resultadorespuestas,
                     $resultadoDiario,
@@ -1204,13 +1205,15 @@ class modelOtrosServicios
                     $diaprobsi,
                     $diasi,
                     $resultadoValSemana,
-                    $nom_mes,201];
+                    $nom_mes,
+                    201,
+                ];
 
             } else {
-                $response = ['',400];
+                $response = ['', 400];
             }
 
-        }catch(PDOException $e){
+        } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
         $this->_DB = null;
@@ -1219,16 +1222,15 @@ class modelOtrosServicios
 
     public function listadoTecnicos($data)
     {
-        try{
-            $pagina   = $data['page'];
+        try {
+            $pagina   = $data['page'] ?? 1;
             $concepto = $data['concepto'];
             $tecnico  = $data['tecnico'];
-
-            if ($pagina == "undefined") {
+            /*if ($pagina == "undefined") {
                 $pagina = "0";
             } else {
                 $pagina = $pagina - 1;
-            }
+            }*/
 
             $pagina = $pagina * 100;
 
@@ -1245,33 +1247,28 @@ class modelOtrosServicios
             $query = $this->_DB->query("select a.ID, a.IDENTIFICACION, a.NOMBRE, a.CIUDAD, a.CELULAR,  a.empresa, 
              (select b.nombre from empresas b where b.id=a.empresa) as NOM_EMPRESA 
              from tecnicos a 
-             where 1=1 $parametro order by a.nombre ASC 
-             limit 100 offset $pagina")
+             where 1 = 1 $parametro");
 
-            ;
-
-            $queryCount =$this->_DB->query( " select count(*) as Cantidad from tecnicos h 
-             where 1=1 
-            $parametro ");
+            $queryCount = $this->_DB->query("select count(*) as Cantidad from tecnicos h where 1 = 1 $parametro");
             //echo $query;
             $queryCount->execute();
+
             $counter = 0;
             if ($queryCount->rowCount()) {
-                if ($row = $queryCount->fetchAll(PDO::FETCH_ASSOC)) {
-                    $counter = $row[0]['Cantidad'];
-                }
+                $row     = $queryCount->fetchAll(PDO::FETCH_ASSOC);
+                $counter = $row[0]['Cantidad'];
             }
             //echo $this->mysqli->query($sqlLogin);
             //
             $query->execute();
-            if ($query->rowCount()) {
 
-                $response=[$query->fetchAll(PDO::FETCH_ASSOC), $counter,201];
+            if ($query->rowCount()) {
+                $response = [$query->fetchAll(PDO::FETCH_ASSOC), $counter, 201];
 
             } else {
-                $response = ['',400];
+                $response = ['', 400];
             }
-        }catch(PDOException $e){
+        } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
         $this->_DB = null;
@@ -1280,7 +1277,7 @@ class modelOtrosServicios
 
     public function buscarPedidoContingencias($data)
     {
-        try{
+        try {
             $pedido = $data;
 
             if ($pedido !== "") {
@@ -1293,20 +1290,20 @@ class modelOtrosServicios
 						WHERE pedido = :pedido
 					");
 
-                $query->execute(array(':pedido' => $pedido));
+                $query->execute([':pedido' => $pedido]);
 
                 if ($query->rowCount()) {
                     $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
 
-                    $response=[$resultado,201];
+                    $response = [$resultado, 201];
                 } else {
-                    $response = ['',400];
+                    $response = ['', 400];
                 }
             } else {
-                $response = ['',400];
+                $response = ['', 400];
             }
 
-        }catch (PDOException $e){
+        } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
         $this->_DB = null;

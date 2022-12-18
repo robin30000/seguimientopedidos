@@ -11,19 +11,21 @@ class modelSubAccion
         $this->_BD = new Conection();
     }
 
-    public function subAccion($proceso, $accion)
+    public function subacciones($data)
     {
         try {
-            $query = "SELECT DISTINCT SUBACCION
-                 FROM procesos 
-                 where 1=1 and proceso=? and accion=? and subaccion <> ''
-                 ORDER BY SUBACCION";
-            $stmt  = $this->_BD->query($query);
 
-            $stmt->bindParam(1, $proceso, PDO::PARAM_STR);
-            $stmt->bindParam(2, $accion, PDO::PARAM_STR);
+            $proceso = $data['proceso'];
+            $accion  = $data['accion'];
 
-            $stmt->execute();
+            $stmt = $this->_BD->prepare("SELECT DISTINCT SUBACCION
+                                                FROM procesos
+                                                where proceso = :proceso
+                                                  and accion = :accion
+                                                  and subaccion <> ''
+                                                ORDER BY SUBACCION");
+
+            $stmt->execute([':accion' => $accion, ':proceso' => $proceso]);
 
             if ($stmt->rowCount()) {
                 $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -39,8 +41,6 @@ class modelSubAccion
             var_dump($e->getMessage());
         }
         $this->_BD = null;
-
         echo json_encode($response);
-
     }
 }

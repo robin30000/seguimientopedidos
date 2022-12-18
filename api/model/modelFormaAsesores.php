@@ -16,9 +16,9 @@ class ModelFormaAsesores
         try {
 
 
-            $stmt = $this->_DB->query("SELECT DISTINCT DEPARTAMENTO, CIUDAD 
+            $stmt = $this->_DB->query("SELECT DISTINCT lower(`DEPARTAMENTO`), lower(`CIUDAD`) 
                                        FROM ciudades 
-                                      ORDER BY CIUDAD ASC");
+                                      ORDER BY CIUDAD");
             $stmt->execute();
             if ($stmt->rowCount()) {
                 $response = [$stmt->fetchAll(PDO::FETCH_ASSOC), 201];

@@ -1418,7 +1418,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
             method: 'deleteregistrosCarga',
             data: idCarga
         }
-        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' + data);
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php', data);
     };
 
     obj.getAccionesoffline = function (producto) {
@@ -1426,7 +1426,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
             method: 'Accionesoffline',
             data: producto
         }
-        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' + data);
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php', data);
     }
 
     obj.getAcciones = function (proceso) {
@@ -1434,7 +1434,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
             method: 'acciones',
             data: proceso
         }
-        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' + data);
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php', data);
     };
 
     obj.getSubAcciones = function (proceso, accion) {
@@ -1456,7 +1456,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
                 'UNESourceSystem': UNESourceSystem
             }
         }
-        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' + data);
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php', data);
     };
 
     obj.getDiagnosticos = function (producto, accion) {
@@ -1467,7 +1467,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
                 'accion': accion
             }
         }
-        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' + data);
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php', data);
     };
 
 
@@ -2002,7 +2002,8 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         $scope.listadoAcciones = {};
 
         services.getAcciones($scope.gestionmanual.proceso).then(function (data) {
-            $scope.listadoAcciones = data.data[0];
+            console.log(' pppp', data.data[0][0]);
+            $scope.listadoAcciones = data.data[0][0];
             $scope.validaraccion = true;
             $scope.validarsubaccion = false;
         });
@@ -5297,46 +5298,81 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
                                 $scope.case7 = 0;
                                 //$scope.fecha_res = '2022-12-16';
                                 console.log('motivo :', $scope.nivelacion.motivo, 'Submotivo :', $scope.nivelacion.submotivo, ' estatus: ', $scope.status, ' unefechacita: ', $scope.fecha_res, ' Hoy : ', hoy);
+                                if($scope.nivelacion.motivo == 1 || $scope.nivelacion.motivo == 6 || $scope.nivelacion.motivo == 7){
+                                    if (($scope.nivelacion.motivo == 1) && ($scope.status == 'Abierto' || $scope.status == 'Asignado' || $scope.status == 'Despachado')) {
+                                        Swal({
+                                            type: 'error',
+                                            title: 'La tarea esta en estado de asignación automatica'
+                                        })
+                                        return;
+                                    }
 
-                                if (($scope.nivelacion.motivo == 1) && ($scope.status == 'Abierto' || $scope.status == 'Asignado' || $scope.status == 'Despachado')) {
-                                    Swal({
-                                        type: 'error',
-                                        title: 'La tarea esta en estado de asignación automatica'
-                                    })
-                                    return;
-                                }
+                                    if (($scope.nivelacion.motivo == 1) && ($scope.status == 'Finalizada' || $scope.status == 'Suspendido' || $scope.status == 'Suspendido-Abierto' || $scope.status == 'Incompleto' || $scope.status == 'Pendiente')) {
+                                        Swal({
+                                            type: 'error',
+                                            title: 'La tarea esta en estado no valido'
+                                        })
+                                        return;
+                                    }
 
-                                if (($scope.nivelacion.motivo == 1) && ($scope.status == 'Finalizada' || $scope.status == 'Suspendido' || $scope.status == 'Suspendido-Abierto' || $scope.status == 'Incompleto' || $scope.status == 'Pendiente')) {
-                                    Swal({
-                                        type: 'error',
-                                        title: 'La tarea esta en estado no valido'
-                                    })
-                                    return;
-                                }
-
-                                if (($scope.nivelacion.submotivo == 6)) {
-                                    $scope.url = "http://10.100.66.254:8080/HCHV_DEV/BuscarF/" + $scope.nivelacion.ticket;
-                                    $http.get($scope.url, {timeout: 2000})
-                                        .then(function (data) {
-                                            if (data.data.state == 1) {
-                                                Swal({
-                                                    type: 'error',
-                                                    title: data.data.data
-                                                })
-                                            } else if (data.data.state == 0) {
-                                                if (($scope.nivelacion.submotivo == 6) && ($scope.status != 'Incompleto') ) {
-                                                    if(($scope.nivelacion.submotivo == 6 && ($scope.status != 'Pendiente'))){
+                                    if (($scope.nivelacion.submotivo == 6)) {
+                                        $scope.url = "http://10.100.66.254:8080/HCHV_DEV/BuscarF/" + $scope.nivelacion.ticket;
+                                        $http.get($scope.url, {timeout: 2000})
+                                            .then(function (data) {
+                                                if (data.data.state == 1) {
+                                                    Swal({
+                                                        type: 'error',
+                                                        title: data.data.data
+                                                    })
+                                                } else if (data.data.state == 0) {
+                                                    if (($scope.nivelacion.submotivo == 6) && ($scope.status != 'Incompleto') ) {
+                                                        if(($scope.nivelacion.submotivo == 6 && ($scope.status != 'Pendiente'))){
                                                             Swal({
                                                                 type: 'error',
                                                                 title: 'La tarea esta en estado no valido'
                                                             })
-                                                    }else {
-                                                        if (($scope.nivelacion.submotivo == 6) && ($scope.fecha_res != hoy)) {
+                                                        }else {
+                                                            if (($scope.nivelacion.submotivo == 6) && ($scope.fecha_res != hoy)) {
+                                                                Swal({
+                                                                    type: 'error',
+                                                                    title: 'La tarea tiene una fecha diferente a hoy'
+                                                                })
+                                                            }else{
+                                                                services.saveNivelation($scope.nivelacion).then(complete).catch(failed);
+
+                                                                function complete(data) {
+                                                                    if (data.data.state === 0) {
+                                                                        Swal({
+                                                                            type: 'error',
+                                                                            title: data.data.data.msj,
+                                                                            timer: 4000
+                                                                        }).then(function () {
+                                                                            $route.reload();
+                                                                        })
+                                                                    } else {
+                                                                        Swal({
+                                                                            type: 'success',
+                                                                            title: data.data.msj,
+                                                                            timer: 4000
+                                                                        }).then(function () {
+                                                                            $route.reload();
+                                                                        })
+
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        console.log('Hola')
+
+                                                    } else {
+                                                        if(($scope.nivelacion.submotivo == 6) && ($scope.fecha_res != hoy )){
+                                                            console.log(7)
                                                             Swal({
                                                                 type: 'error',
                                                                 title: 'La tarea tiene una fecha diferente a hoy'
                                                             })
                                                         }else{
+                                                            console.log(4)
                                                             services.saveNivelation($scope.nivelacion).then(complete).catch(failed);
 
                                                             function complete(data) {
@@ -5360,71 +5396,68 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
                                                                 }
                                                             }
                                                         }
-                                                    }
-                                                    console.log('Hola')
 
-                                                } else {
-                                                    if(($scope.nivelacion.submotivo == 6) && ($scope.fecha_res != hoy )){
-                                                        console.log(7)
-                                                        Swal({
-                                                            type: 'error',
-                                                            title: 'La tarea tiene una fecha diferente a hoy'
-                                                        })
-                                                    }else{
-                                                        console.log(4)
-                                                        services.saveNivelation($scope.nivelacion).then(complete).catch(failed);
 
-                                                        function complete(data) {
-                                                            if (data.data.state === 0) {
-                                                                Swal({
-                                                                    type: 'error',
-                                                                    title: data.data.data.msj,
-                                                                    timer: 4000
-                                                                }).then(function () {
-                                                                    $route.reload();
-                                                                })
-                                                            } else {
-                                                                Swal({
-                                                                    type: 'success',
-                                                                    title: data.data.msj,
-                                                                    timer: 4000
-                                                                }).then(function () {
-                                                                    $route.reload();
-                                                                })
-
-                                                            }
+                                                        function failed(data) {
+                                                            console.log(data)
                                                         }
                                                     }
-
-
-                                                    function failed(data) {
-                                                        console.log(data)
-                                                    }
                                                 }
-                                            }
 
-                                        });
-                                }
+                                            });
+                                    }
 
-                                if (($scope.nivelacion.submotivo == 7)) {
-                                    $scope.url = "http://10.100.66.254:8080/HCHV_DEV/BuscarF/" + $scope.nivelacion.ticket;
-                                    $http.get($scope.url, {timeout: 2000})
-                                        .then(function (data) {
-                                            if (data.data.state == 1) {
-                                                Swal({
-                                                    type: 'error',
-                                                    title: data.data.data
-                                                })
-                                            } else if (data.data.state == 0) {
-                                                console.log(($scope.nivelacion.submotivo == 7) && ($scope.status != 'Incompleto' || $scope.status != 'Pendiente') && ($scope.fecha_res >= hoy))
-                                                if (($scope.nivelacion.submotivo == 7) && ($scope.status != 'Incompleto')) {
-                                                    if(($scope.nivelacion.submotivo == 7) && ($scope.status != 'Pendiente')){
-                                                        Swal({
-                                                            type: 'error',
-                                                            title: 'La tarea esta en estado no valido'
-                                                        })
-                                                    }else{
-                                                        if (($scope.nivelacion.submotivo == 7) && ($scope.fecha_res >= hoy)) {
+                                    if (($scope.nivelacion.submotivo == 7)) {
+                                        $scope.url = "http://10.100.66.254:8080/HCHV_DEV/BuscarF/" + $scope.nivelacion.ticket;
+                                        $http.get($scope.url, {timeout: 2000})
+                                            .then(function (data) {
+                                                if (data.data.state == 1) {
+                                                    Swal({
+                                                        type: 'error',
+                                                        title: data.data.data
+                                                    })
+                                                } else if (data.data.state == 0) {
+                                                    console.log(($scope.nivelacion.submotivo == 7) && ($scope.status != 'Incompleto' || $scope.status != 'Pendiente') && ($scope.fecha_res >= hoy))
+                                                    if (($scope.nivelacion.submotivo == 7) && ($scope.status != 'Incompleto')) {
+                                                        if(($scope.nivelacion.submotivo == 7) && ($scope.status != 'Pendiente')){
+                                                            Swal({
+                                                                type: 'error',
+                                                                title: 'La tarea esta en estado no valido'
+                                                            })
+                                                        }else{
+                                                            if (($scope.nivelacion.submotivo == 7) && ($scope.fecha_res >= hoy)) {
+                                                                Swal({
+                                                                    type: 'error',
+                                                                    title: 'La tarea tiene una fecha mayor'
+                                                                })
+                                                            }else{
+                                                                services.saveNivelation($scope.nivelacion).then(complete).catch(failed);
+
+                                                                function complete(data) {
+                                                                    if (data.data.state === 0) {
+                                                                        Swal({
+                                                                            type: 'error',
+                                                                            title: data.data.data.msj,
+                                                                            timer: 4000
+                                                                        }).then(function () {
+                                                                            $route.reload();
+                                                                        })
+                                                                    } else {
+                                                                        Swal({
+                                                                            type: 'success',
+                                                                            title: data.data.msj,
+                                                                            timer: 4000
+                                                                        }).then(function () {
+                                                                            $route.reload();
+                                                                        })
+
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    } else {
+                                                        if(($scope.nivelacion.submotivo == 7) && ($scope.fecha_res >= hoy )) {
+                                                            console.log(7)
                                                             Swal({
                                                                 type: 'error',
                                                                 title: 'La tarea tiene una fecha mayor'
@@ -5453,75 +5486,45 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
                                                                 }
                                                             }
                                                         }
-                                                    }
-                                                } else {
-                                                    if(($scope.nivelacion.submotivo == 7) && ($scope.fecha_res >= hoy )) {
-                                                        console.log(7)
-                                                        Swal({
-                                                            type: 'error',
-                                                            title: 'La tarea tiene una fecha mayor'
-                                                        })
-                                                    }else{
-                                                        services.saveNivelation($scope.nivelacion).then(complete).catch(failed);
 
-                                                        function complete(data) {
-                                                            if (data.data.state === 0) {
-                                                                Swal({
-                                                                    type: 'error',
-                                                                    title: data.data.data.msj,
-                                                                    timer: 4000
-                                                                }).then(function () {
-                                                                    $route.reload();
-                                                                })
-                                                            } else {
-                                                                Swal({
-                                                                    type: 'success',
-                                                                    title: data.data.msj,
-                                                                    timer: 4000
-                                                                }).then(function () {
-                                                                    $route.reload();
-                                                                })
 
-                                                            }
+                                                        function failed(data) {
+                                                            console.log(data)
                                                         }
                                                     }
-
-
-                                                    function failed(data) {
-                                                        console.log(data)
-                                                    }
                                                 }
-                                            }
-                                        })
-                                }
-                        return;
+                                            })
+                                    }
 
-                                services.saveNivelation($scope.nivelacion).then(complete).catch(failed);
+                                }else{
+                                    services.saveNivelation($scope.nivelacion).then(complete).catch(failed);
 
-                                function complete(data) {
-                                    if (data.data.state === 0) {
-                                        Swal({
-                                            type: 'error',
-                                            title: data.data.data.msj,
-                                            timer: 4000
-                                        }).then(function () {
-                                            $route.reload();
-                                        })
-                                    } else {
-                                        Swal({
-                                            type: 'success',
-                                            title: data.data.msj,
-                                            timer: 4000
-                                        }).then(function () {
-                                            $route.reload();
-                                        })
+                                    function complete(data) {
+                                        if (data.data.state === 0) {
+                                            Swal({
+                                                type: 'error',
+                                                title: data.data.data.msj,
+                                                timer: 4000
+                                            }).then(function () {
+                                                $route.reload();
+                                            })
+                                        } else {
+                                            Swal({
+                                                type: 'success',
+                                                title: data.data.msj,
+                                                timer: 4000
+                                            }).then(function () {
+                                                $route.reload();
+                                            })
 
+                                        }
+                                    }
+
+                                    function failed(data) {
+                                        console.log(data)
                                     }
                                 }
 
-                                function failed(data) {
-                                    console.log(data)
-                                }
                             }
                         }
                     }
@@ -8779,7 +8782,6 @@ app.controller('AlarmasCtrl', function ($scope, $http, $rootScope, $location, $r
     };
 
     $scope.calcularAcciones = function (proceso) {
-        console.log("entro calcularAcciones");
         $scope.listadoAcciones = {};
         $scope.validarsubaccion = false;
         if (proceso == "") {
