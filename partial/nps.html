@@ -35,7 +35,7 @@ table, th, td {
 					<div class ="col-md-1" ng-hide="num_pregunta == '1' || num_pregunta == '6' || num_pregunta == '7' || num_pregunta == '8'">
 					</div>
 					<div ng-class="{'col-md-6' : num_pregunta == '1' || num_pregunta == '6' || num_pregunta == '7' || num_pregunta == '8', 'col-md-2' : num_pregunta == '2' || num_pregunta == '3' || num_pregunta == '4' || num_pregunta == '5'}">
-						<div class = "panel panel-primary">	
+						<div class = "panel panel-primary">
 			                <div class="panel-heading">
 			                    <div class="row">
 									<div class="col-xs-3 text-right">
@@ -55,7 +55,7 @@ table, th, td {
 			            </div>
 					</div>
 					<div ng-class="{'col-md-6' : num_pregunta == '1' || num_pregunta == '6' || num_pregunta == '7' || num_pregunta == '8', 'col-md-2' : num_pregunta == '2' || num_pregunta == '3' || num_pregunta == '4' || num_pregunta == '5'}">
-						<div class = "panel panel-primary">	
+						<div class = "panel panel-primary">
 			                <div class="panel-heading">
 			                    <div class="row" ng-show="num_pregunta == '2' || num_pregunta == '3' || num_pregunta == '4' || num_pregunta == '5'" aria-hidden="true"> </i>
 			                        <div class="col-xs-12 text-right">
@@ -79,7 +79,7 @@ table, th, td {
 			            </div>
 					</div>
 					<div class ="col-md-2" ng-hide="num_pregunta == '1' || num_pregunta == '6' || num_pregunta == '7' || num_pregunta == '8'">
-						<div class = "panel panel-primary">	
+						<div class = "panel panel-primary">
 			                <div class="panel-heading">
 			                    <div class="row">
 			                    	<div class="col-xs-3 text-right">
@@ -98,7 +98,7 @@ table, th, td {
 			            </div>
 					</div>
 					<div class ="col-md-2" ng-hide="num_pregunta == '1' || num_pregunta == '6' || num_pregunta == '7' || num_pregunta == '8'">
-						<div class = "panel panel-primary">	
+						<div class = "panel panel-primary">
 			                <div class="panel-heading">
 			                    <div class="row">
 			                        <div class="col-xs-12 text-right">
@@ -114,7 +114,7 @@ table, th, td {
 			            </div>
 					</div>
 					<div class ="col-md-2" ng-hide="num_pregunta == '1' || num_pregunta == '6' || num_pregunta == '7' || num_pregunta == '8'">
-						<div class = "panel panel-primary">	
+						<div class = "panel panel-primary">
 			                <div class="panel-heading">
 			                    <div class="row">
 			                    	<div class="col-xs-3 text-right">
@@ -134,7 +134,7 @@ table, th, td {
 					</div>
 					<div class ="col-md-1" ng-hide="num_pregunta == '1' || num_pregunta == '6' || num_pregunta == '7' || num_pregunta == '8'">
 					</div>
-		</div>-->	
+		</div>-->
 		<div class="col-md-12" ng-show="num_pregunta == '2' || num_pregunta == '3' || num_pregunta == '4'">
 					<div class="col-md-1">
 					</div>
@@ -156,7 +156,7 @@ table, th, td {
                                         datasource="{{NPSacumuladoMes}}">
                             </div>
 			         	</div>
-                  
+
 		</div>
 		<div class="col-md-12" ng-show="num_pregunta == '1' || num_pregunta == '5' || num_pregunta == '6' || num_pregunta == '7' || num_pregunta == '8'">
 					<center>
@@ -166,21 +166,21 @@ table, th, td {
                                         type="stackedcolumn3dlinedy"
                                         datasource="{{GraficaNPSacumulado}}">
                             </div>
-                    </center>                  
+                    </center>
 		</div>
 	</div>
-        	
+
         	<div class="row">
         	<div class="col-md-12">
         		<div class = "panel panel-default">	<!--panel default -->
 				<div class="panel-heading nav navbar-default">
 					<ul class="nav navbar-nav navbar-left">
-					<li><b><i class="fa fa-question-circle" aria-hidden="true"></i> Pregunta</b>	
+					<li><b><i class="fa fa-question-circle" aria-hidden="true"></i> Pregunta</b>
 					<select  class= "btn btn-default btn-xs grupo-select"
 													name="preguntas"
 													ng-model="num_pregunta"
 													ng-change="resumenSemanas(); graficaAcumulados()"
-													title="Seleccione la pregunta" 
+													title="Seleccione la pregunta"
 													tooltip
 													data-placement="bottom">
 									<option ng-repeat="d in Listapreguntas"
@@ -190,12 +190,12 @@ table, th, td {
 					</select>
 					<li>&nbsp;&nbsp;&nbsp;</li>
 					</li>
-					<li><b><i class="fa fa-calendar-check-o" aria-hidden="true"></i> Mes</b>	
+					<li><b><i class="fa fa-calendar-check-o" aria-hidden="true"></i> Mes</b>
 					<select  class= "btn btn-default btn-xs grupo-select"
 													name="meses"
 													ng-model="mes"
 													ng-change="resumenSemanas(); graficaAcumulados()"
-													title="Seleccione un mes" 
+													title="Seleccione un mes"
 													tooltip
 													data-placement="top">
 									<option ng-repeat="d in meses"
@@ -204,14 +204,14 @@ table, th, td {
 									</option>
 					</select>
 					</li>
-					</ul>	
-					<div class="fileUpload btn btn-primary btn-xs" ng-show = "galletainfo.PERFIL == '1'">
+					</ul>
+					<div class="fileUpload btn btn-primary btn-xs" ng-show = "galletainfo.perfil == '1'">
 						<span class="glyphicon glyphicon-upload"></span> Seleccionar Archivo
 						<input type="file" class="upload" file-model = "myFile" />
 					</div>
-           			 <button class="btn btn-success btn-xs" ng-show = "galletainfo.PERFIL == '1'" value="cargar" id="cargar" ng-click="uploadFile();"><span class="glyphicon glyphicon-cloud-upload"></span> Cargar</button>
+           			 <button class="btn btn-success btn-xs" ng-show = "galletainfo.perfil == '1'" value="cargar" id="cargar" ng-click="uploadFile();"><span class="glyphicon glyphicon-cloud-upload"></span> Cargar</button>
 				<ul class="nav navbar-nav navbar-right">
-					<!--<select id="tipo_carga" ng-model="tipoCarga" class="btn btn-default btn-xs" title="Tipo de carga" data-toggle="tooltip" data-placement="top"> 
+					<!--<select id="tipo_carga" ng-model="tipoCarga" class="btn btn-default btn-xs" title="Tipo de carga" data-toggle="tooltip" data-placement="top">
 								<option value="previsa">Carga Prevista(Jonatan Arbelaez)</option>
 								<option value="real">Carga Real(Supervisores)</option>
 								<option value="nps">NPS</option>
@@ -219,11 +219,11 @@ table, th, td {
 					<li>
 						<button type="button" class="btn btn-success btn-xs" ng-click="ingresarPlan()" data-toggle="modal" data-target="#ingresarPlan" data-backdrop="static" tooltip title="Ingresar Plan" data-placement="top" data-html="true" data-selector=""><span class="glyphicon glyphicon-cloud-upload"></span> Ingresar plan de trabajo</button>
 					</li>	&nbsp;&nbsp;
-					<div class="col-md-1 col-xs-1 ">  
+					<div class="col-md-1 col-xs-1 ">
 						<div data-ng-if="loading">
 							<img title="Esperando respuesta" data-toggle="tooltip" data-placement="top" src="img/loader.gif" />
 						</div>
-					</div>			
+					</div>
 				</ul>
 				</div>
         		<div class="panel-body fixed-panel1" >
@@ -259,7 +259,7 @@ table, th, td {
 						</thead>
 						<tbody>
 							<tr ng-repeat="data in listaSemanas" ng-show="num_pregunta == '2' || num_pregunta == '3' || num_pregunta == '4' || num_pregunta == '5'" aria-hidden="true">
-								<td><button type="button" class="btn btn-link btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover data-trigger="hover" data-placement="right" ng-click="descargarNPSSemana(data.semana)" data-html="true" data-selector="" data-content="{{data.fechaInic}} - {{data.fechaFin}}"> 
+								<td><button type="button" class="btn btn-link btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover data-trigger="hover" data-placement="right" ng-click="descargarNPSSemana(data.semana)" data-html="true" data-selector="" data-content="{{data.fechaInic}} - {{data.fechaFin}}">
 								{{data.semana}}</button></td>
 								<td>{{data.NO}} %</td>
 								<td>{{data.PROBNO}} %</td>
@@ -269,13 +269,13 @@ table, th, td {
 								<td>{{data.NPS}} %</td>
 							</tr>
 							<tr ng-repeat="data in listaSemanas" ng-show="num_pregunta == '1' || num_pregunta == '6' || num_pregunta == '7' || num_pregunta == '8'" aria-hidden="true">
-								<td><button type="button" class="btn btn-link btn-xs" data-toggle="modal" ng-click="descargarNPSSemana(data.semana)"  data-backdrop="static" ng-disabled="loading" popover data-trigger="hover" data-placement="right" data-html="true" data-selector="" data-content="{{data.fechaInic}} - {{data.fechaFin}}"> 
+								<td><button type="button" class="btn btn-link btn-xs" data-toggle="modal" ng-click="descargarNPSSemana(data.semana)"  data-backdrop="static" ng-disabled="loading" popover data-trigger="hover" data-placement="right" data-html="true" data-selector="" data-content="{{data.fechaInic}} - {{data.fechaFin}}">
 								{{data.semana}}</button></td>
 								<td>{{data.SI}} %</td>
 								<td>{{data.NO}} %</td>
 							</tr>
 						</tbody>
-						</table> 
+						</table>
 						<div class="row">
 							<div class="col-md-12">
 						<table class = "table small table-striped table-condensed">
@@ -302,7 +302,7 @@ table, th, td {
 						</thead>
 						<tbody>
 							<tr ng-repeat="data in valoresSeamana" ng-show="num_pregunta == '2' || num_pregunta == '3' || num_pregunta == '4' || num_pregunta == '5'" aria-hidden="true">
-								<td><button type="button" class="btn btn-link btn-xs" data-toggle="modal" ng-click="descargarNPSSemana(data.semana)"  data-backdrop="static" ng-disabled="loading" popover data-trigger="hover" data-placement="right" data-html="true" data-selector="" data-content="{{data.fechaInic}} - {{data.fechaFin}}"> 
+								<td><button type="button" class="btn btn-link btn-xs" data-toggle="modal" ng-click="descargarNPSSemana(data.semana)"  data-backdrop="static" ng-disabled="loading" popover data-trigger="hover" data-placement="right" data-html="true" data-selector="" data-content="{{data.fechaInic}} - {{data.fechaFin}}">
 								{{data.semana}}</button></td>
 								<td>{{data.NO}}</td>
 								<td>{{data.PROBNO}}</td>
@@ -312,7 +312,7 @@ table, th, td {
 								<td>{{data.TOTAL}}</td>
 							</tr>
 							<tr ng-repeat="data in valoresSeamana" ng-show="num_pregunta == '1' || num_pregunta == '6' || num_pregunta == '7' || num_pregunta == '8'" aria-hidden="true">
-							<td><button type="button" class="btn btn-link btn-xs" data-toggle="modal" ng-click="descargarNPSSemana(data.semana)"  data-backdrop="static" ng-disabled="loading" popover data-trigger="hover" data-placement="right" data-html="true" data-selector="" data-content="{{data.fechaInic}} - {{data.fechaFin}}"> 
+							<td><button type="button" class="btn btn-link btn-xs" data-toggle="modal" ng-click="descargarNPSSemana(data.semana)"  data-backdrop="static" ng-disabled="loading" popover data-trigger="hover" data-placement="right" data-html="true" data-selector="" data-content="{{data.fechaInic}} - {{data.fechaFin}}">
 								{{data.semana}}</button></td>
 								<td>{{data.SI}}</td>
 								<td>{{data.NO}}</td>
@@ -361,13 +361,13 @@ table, th, td {
 									</tr>
 									<tr ng-repeat="data in resumenDiario" ng-show="num_pregunta == '1' || num_pregunta == '6' || num_pregunta == '7' || num_pregunta == '8'" aria-hidden="true">
 										<td>{{data.dia}}</td>
-										<td>{{data.SI}} %</td>								
+										<td>{{data.SI}} %</td>
 										<td>{{data.NO}} %</td>
-										
+
 									</tr>
 								</tbody>
-								</table> 
-							</div>	 
+								</table>
+							</div>
 						</div>
 
 					</div>
@@ -390,7 +390,7 @@ table, th, td {
                             </div>
                         	</div>
                   		</div>
-				</div>	 
+				</div>
 
 			<div class="row">
 				<div class="col-md-6">
@@ -570,7 +570,7 @@ table, th, td {
 						<tbody>
 					      <tr ng-repeat="data in funcionariosInsta">
 								<td>{{data.rango}}</td>
-								<td><button type="button" class="btn btn-link btn-xs" 
+								<td><button type="button" class="btn btn-link btn-xs"
 												ng-click="exportarDatos(data.rango)"
 												ng-disabled="loading">{{data.total}}
 												</button></td>
@@ -619,7 +619,7 @@ table, th, td {
   <div class="modal-content" >
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Ingresar plan de trabajo </h4>       
+        <h4 class="modal-title">Ingresar plan de trabajo </h4>
     </div>
     <div class="modal-body">
         <div class="container-fluid">
@@ -632,8 +632,8 @@ table, th, td {
 				                        	<input style="width:200px" class="btn btn-default btn-xs" placeholder="Responsable" type="text" ng-model="formularioPlanTrabajo.responsable" name="responsable">
 				                        </li>
 				                    </div>
-				                    </div>  
-				                    <div class="col-md-6">  
+				                    </div>
+				                    <div class="col-md-6">
 			                        <li class="list-group-item small" ><b>Regional:</b><br>
 			                            <select  class= "btn btn-default btn-xs grupo-select"
 																name="regional"
@@ -647,12 +647,12 @@ table, th, td {
 														<option value="SUR">SUR</option>
 										</select>
 			                        </li>
-				                    </div> 
-			                	</div>   
+				                    </div>
+			                	</div>
 			                	<div class="row">
 			                		<center>
 			                		<div class="list-group-item small" ><b>Plan de trabajo: </b><br>
-										<textarea  name="plan" 
+										<textarea  name="plan"
 												   id="plan"
 												   cols="85"
 												   rows="5"
@@ -660,17 +660,17 @@ table, th, td {
 												   placeholder="Plan de trabajo"></textarea>
 									</div>
 									</center>
-			                	</div>     
+			                	</div>
 							</ul>
 			</div>
-	    </div>    
+	    </div>
 	</div>
     <div class="modal-footer">
         <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="ingresaPlan()" data-dismiss="modal">Guardar</button>
         <button type="button" ng-disabled="contact_form.$invalid" class="btn btn-default" data-dismiss="modal">Cerrar</button>
     </div>
- </div>        
-</div>	
+ </div>
+</div>
 </div>
 <br>
 <br>

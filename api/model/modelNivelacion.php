@@ -53,6 +53,8 @@ class modelNivelacion
             default => '',
         };
 
+        $submot = $data->submotivo ?? '';
+
         $motivo = match ($data->motivo) {
             '1' => 'Cubrir Novedad',
             '2' => 'Ruta Atrazada',
@@ -67,7 +69,7 @@ class modelNivelacion
             default => '',
         };
 
-        $submotivo = match ($data->submotivo) {
+        $submotivo = match ($submot) {
             '1' => 'Contingencia',
             '2' => 'Auditoria NAP',
             '3' => 'Auditoria TAP',

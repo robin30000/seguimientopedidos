@@ -55,8 +55,8 @@ class formaAsesores
     public function registros($data)
     {
 
-        $pagina   = $data->page;
-        $datos    = $data->datos;
+        $pagina   = $data['page'];
+        $datos    = $data['datos'];
         $response = $this->_model->registros($pagina, $datos);
 
         /* $fechaini = $datos['fechaini'];

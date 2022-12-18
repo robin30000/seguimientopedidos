@@ -75,11 +75,11 @@ class modelCodigoIncompleto
         echo json_encode($response);
     }
 
-    public function registroscodigoincompleto($data)
+    public function registroscodigoincompleto($params)
     {
         try {
-            $pagina = $data['page'];
-            $datos  = $data['datos'];
+            $pagina = $params['page'];
+            $datos  = $params['datos'];
 
             $fechaini = (!isset($datos['fechaini'])) ? date("Y-m-d") : $datos['fechaini']; //CORRECCION DE VALIDACION DE FECHA
             $fechafin = (!isset($datos['fechafin'])) ? date("Y-m-d") : $datos['fechafin']; //CORRECCION DE VALIDACION DE FECHA
@@ -98,44 +98,55 @@ class modelCodigoIncompleto
 
             $pagina = $pagina * 100;
 
-            $stmt = $this->_DB->query("SELECT id_codigo_incompleto,
-                                               tarea,
-                                               numero_contacto,
-                                               nombre_contacto,
-                                               unepedido,
-                                               tasktypecategory,
-                                               unemunicipio,
-                                               uneproductos,
-                                               engineer_id,
-                                               engineer_name,
-                                               mobile_phone,
-                                               status_soporte,
-                                               fecha_solicitud_firebase,
-                                               fecha_creado,
-                                               respuesta_gestion,
-                                               observacion,
-                                               login,
-                                               fecha_respuesta
-                                        FROM gestion_codigo_incompleto
-                                        WHERE fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59'
-                                          AND status_soporte = '1'
-                                        ORDER BY fecha_creado DESC
-                                        LIMIT 100 offset $pagina");
+            $query = "SELECT id_codigo_incompleto,
+                           tarea,
+                           numero_contacto,
+                           nombre_contacto,
+                           unepedido,
+                           tasktypecategory,
+                           unemunicipio,
+                           uneproductos,
+                           engineer_id,
+                           engineer_name,
+                           mobile_phone,
+                           status_soporte,
+                           fecha_solicitud_firebase,
+                           fecha_creado,
+                           respuesta_gestion,
+                           observacion,
+                           login,
+                           fecha_respuesta
+                    FROM gestion_codigo_incompleto
+                    WHERE fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59'
+                      AND status_soporte = '1'
+                    ORDER BY fecha_creado DESC
+                    LIMIT 100 offset $pagina";
 
-            $stmt->execute();
+            $queryCount = "SELECT COUNT(tarea) as Cantidad
+            FROM gestion_codigo_incompleto 
+            WHERE fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59'
+            ORDER BY fecha_creado DESC";
 
-            $queryCount = $this->_DB->query("SELECT COUNT(tarea) as Cantidad
-                                                        FROM gestion_codigo_incompleto 
-                                                        WHERE fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59'
-                                                        ORDER BY fecha_creado DESC");
-            $queryCount->execute();
-            $resqueryCount = $queryCount->fetchAll(PDO::FETCH_ASSOC);
+            $rr = $this->_DB->query($queryCount);
+            $rr->execute();
 
+            $counter = 0;
+            if ($rr->rowCount()) {
+                $result = [];
+                if ($row = $rr->fetchAll(PDO::FETCH_ASSOC)) {
+                    $counter = $row[0]['Cantidad'];
+                }
+            }
 
-            if ($stmt->rowCount()) {
-                $response = [$stmt->fetchAll(PDO::FETCH_ASSOC), $resqueryCount[0]['Cantidad']];
+            $rst = $this->_DB->query($query);
+            $rst->execute();
+            //echo $this->mysqli->query($sqlLogin);
+            //
+            if ($rst->rowCount()) {
+                $result   = $rst->fetchAll(PDO::FETCH_ASSOC);
+                $response = [$result, $counter];
             } else {
-                $response = ['No se encontraron datos', 400];
+                $response = ['No se encontraron datos'];
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -145,90 +156,40 @@ class modelCodigoIncompleto
         echo json_encode($response);
     }
 
-    public function csvRegistrosCodigoIncompleto($data)
+    public function csvRegistrosCodigoIncompleto($params)
     {
 
         try {
 
+            session_start();
             $usuarioid = $_SESSION['login'];
-            $datos     = $data;
-            $fechaini  = $datos['fechaini'];
-            $fechafin  = $datos['fechafin'];
+
+            $fechaini  = $params['fechaini'];
+            $fechafin  = $params['fechafin'];
 
             if ($fechaini == "" && $fechafin == "") {
                 $fechaini = date("Y") . "-" . date("m") . "-" . date("d");
                 $fechafin = date("Y") . "-" . date("m") . "-" . date("d");
             }
 
-            //echo "estos son los datos, usuario: ".$usuarioid." fechaini: ".$fechaini." y fechafin: ".$fechafin;
-            //echo "estos son los otros concepto, buscar: ".$concepto." buscar: ".$buscar;
-            if ($fechaini == $fechafin) {
-                $filename = "Registros" . "_" . $fechaini . "_" . $concepto . "_" . $buscar . ".csv";
-            } else {
-                $filename = "Registros" . "_" . $fechaini . "_" . $fechafin . "_" . $concepto . "_" . $buscar . ".csv";
-            }
 
-            $stmt = $this->_DB->prepare("SELECT id_codigo_incompleto,
-                                                   tarea,
-                                                   numero_contacto,
-                                                   nombre_contacto,
-                                                   unepedido,
-                                                   tasktypecategory,
-                                                   unemunicipio,
-                                                   uneproductos,
-                                                   engineer_id,
-                                                   engineer_name,
-                                                   mobile_phone,
-                                                   status_soporte,
-                                                   fecha_solicitud_firebase,
-                                                   fecha_creado,
-                                                   respuesta_gestion,
-                                                   observacion,
-                                                   login,
-                                                   fecha_respuesta
-                                            FROM gestion_codigo_incompleto
-                                            WHERE fecha_respuesta BETWEEN :fechaini AND :fechafin
-                                              AND status_soporte = '1'
-                                            ORDER BY fecha_creado DESC");
-            $stmt->execute([
-                ':fechaini' => "$fechaini 00:00:00",
-                ':fechafin' => "$fechafin 23:59:59",
-            ]);
+            $query = "SELECT id_codigo_incompleto, tarea, numero_contacto, nombre_contacto, unepedido, tasktypecategory, unemunicipio, uneproductos, engineer_id, engineer_name, mobile_phone, status_soporte, fecha_solicitud_firebase, fecha_creado, respuesta_gestion, observacion, login, fecha_respuesta 
+            FROM gestion_codigo_incompleto
+            WHERE fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' AND status_soporte = '1'
+            ORDER BY fecha_creado DESC;";
 
-            if ($stmt->rowCount()) {
-                $fp       = fopen("../tmp/$filename", 'w');
-                $columnas = [
-                    'ID_CODIGO_INCOMPLETO',
-                    'TAREA',
-                    'NUMERO_CONTACTO',
-                    'NOMBRE_CONTACTO',
-                    'UNEPEDIDO',
-                    'TASKTYPECATEGORY',
-                    'UNEMUNICIPIO',
-                    'UNEPRODUCTOS',
-                    'ENGINEER_ID',
-                    'ENGINEER_NAME',
-                    'MOBILE_PHONE',
-                    'STATUS_SOPORTE',
-                    'FECHA_SOLICITUD_FIREBASE',
-                    'FECHA_CREADO',
-                    'RESPUESTA_GESTION',
-                    'OBSERVACION',
-                    'LOGIN',
-                    'FECHA_RESPUESTA',
-                ];
+            $resQuery = $this->_DB->query($query);
+            if ($resQuery->rowCount()) {
+                $result   = $resQuery->fetchAll(PDO::FETCH_ASSOC);
+                $response = [$result, 201];
 
-                fputcsv($fp, $columnas);
-                fputcsv($fp, $stmt->fetchAll(PDO::FETCH_ASSOC));
-                fclose($fp);
-
-                $response = [$filename, $stmt->rowCount()];
             } else {
                 $response = ['', 203];
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
         echo json_encode($response);
     }
 }

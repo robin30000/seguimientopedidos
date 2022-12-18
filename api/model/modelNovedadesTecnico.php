@@ -10,64 +10,96 @@ class modelNovedadesTecnico
         $this->_DB = new Conection();
     }
 
-    public function novedadesTecnico($pagina, $datos)
+    public function novedadesTecnico($params)
     {
-        $fechaini = (!isset($datos['fechaini'])) ? date("Y-m-d") : $datos['fechaini']; //CORRECCION DE VALIDACION DE FECHA
-        $fechafin = (!isset($datos['fechafin'])) ? date("Y-m-d") : $datos['fechafin']; //CORRECCION DE VALIDACION DE FECHA
-
-        if ($fechaini == "" || $fechafin == "") {
-            $fechaini = date('Y-m-d');
-            $fechafin = date('Y-m-d');
-        }
-
-        if ($pagina == "undefined") {
-            $pagina = "0";
-        } else {
-            $pagina = $pagina - 1;
-        }
-
-        $pagina = $pagina * 100;
-
         try {
-            $stmt = $this->_DB->prepare("SELECT id,
-                                               cedulaTecnico,
-                                               nombreTecnico,
-                                               contracto,
-                                               proceso,
-                                               pedido,
-                                               tiponovedad, /*region,*/
-                                               municipio,
-                                               situacion,
-                                               horamarcaensitio,/*detalle, */observaciones,
-                                               idllamada,
-                                               observacionCCO
-                                        FROM NovedadesVisitas
-                                        WHERE 1 = 1
-                                          AND fecha BETWEEN (?) AND (?)
-                                        ORDER BY fecha DESC
-                                        limit 100 offset ?");
-            $stmt->bindValue(1, "$fechaini 00:00:00", PDO::PARAM_STR);
-            $stmt->bindValue(2, "$fechafin 23:59:59", PDO::PARAM_STR);
-            $stmt->bindParam(3, $pagina, PDO::PARAM_INT);
-            $stmt->execute();
 
-            if ($stmt->rowCount()) {
-                $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $count     = $stmt->rowCount();
+            $pagina = $params['page'];
+            $datos  = $params['datos'];
+            /* $fechaini = $datos['fechaini'];
+            $fechafin = $datos['fechafin']; */
+            $fechaini = (!isset($datos['fechaini'])) ? date("Y-m-d") : $datos['fechaini']; //CORRECCION DE VALIDACION DE FECHA
+            $fechafin = (!isset($datos['fechafin'])) ? date("Y-m-d") : $datos['fechafin']; //CORRECCION DE VALIDACION DE FECHA
 
-                $totalPaginas = $count / 100;
-                $totalPaginas = ceil($totalPaginas); //redondear al siguiente
+            if ($fechaini == "" || $fechafin == "") {
+                $fechaini = date('Y-m-d');
+                $fechafin = date('Y-m-d');
+            }
 
-                $response = [$resultado, $count, $totalPaginas];
+            if (!$pagina) {
+                $pagina = "0";
             } else {
-                $response = 0;
+                $pagina = $pagina - 1;
+            }
+
+            $pagina = $pagina * 100;
+
+            $query = "SELECT id, cedulaTecnico, nombreTecnico, contracto, proceso, pedido, tiponovedad, municipio, situacion, 
+                                horamarcaensitio, observaciones, idllamada, observacionCCO
+						FROM NovedadesVisitas
+							WHERE 1=1
+							AND fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59')
+							ORDER BY fecha DESC
+							limit 100 offset $pagina";
+
+            $queryCount = "SELECT COUNT(*) AS Cantidad FROM NovedadesVisitas
+								WHERE 1=1
+								AND fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59')";
+
+            $rr = $this->_DB->query($queryCount);
+            $rr->execute();
+
+            //Dado el total, contra el numumero de paginas
+            $totalPaginas = 0;
+            $counter      = 0;
+            if ($rr->rowCount() > 0) {
+                $result = [];
+                if ($row = $rr->fetchAll(PDO::FETCH_ASSOC)) {
+                    $counter = $row[0]['Cantidad'];
+
+                    $totalPaginas = $counter / 100;
+                    $totalPaginas = ceil($totalPaginas); //redondear al siguiente
+                }
+            }
+
+            $rst = $this->_DB->query($query);
+            $rst->execute();
+
+            if ($rst->rowCount() > 0) {
+                $result    = $rst->fetchAll(PDO::FETCH_ASSOC);
+                $resultado = [];
+
+                while ($row = $rst->fetchAll(PDO::FETCH_ASSOC)) {
+
+                    $row['cedulaTecnico']    = utf8_encode($row['cedulaTecnico']);
+                    $row['nombreTecnico']    = utf8_encode($row['nombreTecnico']);
+                    $row['contracto']        = utf8_encode($row['contracto']);
+                    $row['proceso']          = utf8_encode($row['proceso']);
+                    $row['pedido']           = utf8_encode($row['pedido']);
+                    $row['tiponovedad']      = utf8_encode($row['tiponovedad']);
+                    $row['municipio']        = utf8_encode($row['municipio']);
+                    $row['situacion']        = utf8_encode($row['situacion']);
+                    $row['horamarcaensitio'] = utf8_encode($row['horamarcaensitio']);
+                    $row['idllamada']        = utf8_encode($row['idllamada']);
+                    $row['observaciones']    = utf8_encode($row['observaciones']);
+                    $row['observacionCCO']   = utf8_encode($row['observacionCCO']);
+
+                    $resultado[] = $row;
+
+                }
+                $response = [
+                    'data'         => $result,
+                    'contador'     => $counter,
+                    'totalPaginas' => $totalPaginas,
+                ];
+            } else {
+                $response = ['state' => 0, 'msj' => 'No se encontraron datos'];
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
         $this->_DB = null;
-
-        return $response;
+        echo json_encode($response);
     }
 
     public function guardarNovedadesTecnico($data)
@@ -349,12 +381,6 @@ class modelNovedadesTecnico
             $fechafin = date("Y") . "-" . date("m") . "-" . date("d");
         }
 
-        if ($fechaini == $fechafin) {
-            $filename = "NovedadesTecnicos" . "_" . $fechaini . "_" . $usuarioid . ".csv";
-        } else {
-            $filename = "NovedadesTecnicos" . "_" . $fechaini . "_" . $fechafin . "_" . $usuarioid . ".csv";
-        }
-
         try {
             $stmt = $this->_DB->prepare("SELECT n.fecha,
                                                    n.usuario,
@@ -379,58 +405,8 @@ class modelNovedadesTecnico
             $stmt->execute([':fechaini' => "$fechaini 00:00:00", ':fechafin' => "$fechaini 23-59-59"]);
 
             if ($stmt->rowCount()) {
-                $fp       = fopen("../tmp/$filename", 'w');
-                $columnas = [
-                    'Fecha',
-                    'Despachador',
-                    'Municipio',
-                    'Region',
-                    'Proceso',
-                    'Hora marca en sitio',
-                    'Tipo de Novedad',
-                    'Pedido',
-                    'Cedula del Tecnico',
-                    'Nombre del Tecnico',
-                    'Contrato',
-                    'Situacion',
-                    'Motivo',
-                    'Submotivo',
-                    'Observaciones',
-                    'Observacion CCO',
-                    'ID Llamada',
-                ];
-
-                fputcsv($fp, $columnas);
-
-                //foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
-
-                while ($row = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
-
-                    $row['fecha']            = utf8_encode($row['fecha']);
-                    $row['usuario']          = ($row['usuario']);
-                    $row['municipio']        = ($row['municipio']);
-                    $row['region']           = ($row['region']);
-                    $row['proceso']          = ($row['proceso']);
-                    $row['horamarcaensitio'] = utf8_encode($row['horamarcaensitio']);
-                    $row['tiponovedad']      = ($row['tiponovedad']);
-                    $row['pedido']           = utf8_encode($row['pedido']);
-                    $row['cedulaTecnico']    = ($row['cedulaTecnico']);
-                    $row['nombreTecnico']    = ($row['nombreTecnico']);
-                    $row['contracto']        = ($row['contracto']);
-                    $row['situacion']        = ($row['situacion']);
-                    $row['motivo']           = ($row['motivo']);
-                    $row['submotivo']        = ($row['submotivo']);
-                    $row['observaciones']    = ($row['observaciones']);
-                    $row['observacionCCO']   = ($row['observacionCCO']);
-                    $row['idllamada']        = utf8_encode($row['idllamada']);
-
-                    //$result[] = $row;
-                    fputcsv($fp, $row);
-
-                }
-                fclose($fp);
-
-                $response = [[$filename, $stmt->rowCount()], 201];
+                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = [$result, $stmt->rowCount(), 201];
 
             } else {
                 $response = ['', 400];
@@ -612,21 +588,9 @@ class modelNovedadesTecnico
             $stmt->execute();
 
             if ($stmt->rowCount()) {
-                $fp = fopen("../tmp/$filename", 'w');
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = array($result, 201);
 
-                $columnas = [
-                    'Fecha',
-                    'Login',
-                    'Nombre',
-                    'Password',
-                    'Expira Cuenta',
-                    'Expira PSW',
-                ];
-
-                fputcsv($fp, $columnas);
-                fputcsv($fp, $stmt->fetchAll(PDO::FETCH_ASSOC));
-                fclose($fp);
-                $response = [$filename, 201];
             } else {
                 $response = ['', 400];
             }

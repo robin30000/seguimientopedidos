@@ -13,7 +13,7 @@
 						<div class="col-md-1 col-xs-1 ">
 							<div data-ng-if="loading">
 								<img title="Esperando respuesta" data-toggle="tooltip" data-placement="top" src="img/loader.gif" />
-							</div>				
+							</div>
 						</div>
 						</li>
 					</ul>
@@ -24,52 +24,52 @@
                 <ul class="list-group" >
           			<div class="col-md-4">
                        	<li class="list-group-item small" ><b>LOGIN ASESOR OFFLINE:</b>
-                       	<span class="label label-info">{{galletainfo.LOGIN}}</span>
+                       	<span class="label label-info">{{galletainfo.login}}</span>
 						</li>
                         <li class="list-group-item small" ><b>LOGIN ASESOR:</b><br>
                         	<input ng-model="offline.LOGIN_ASESOR" type="text" name="login_asesor" class="btn btn-default btn-xs" style="width:200px" ></li>
                        	<li class="list-group-item small" ><b>PEDIDO:</b><br>
-                       	<div class="btn-group">	
+                       	<div class="btn-group">
                        		<input type="text" ng-model="offline.PEDIDO" class="btn btn-default btn-xs"  type="text" style="width:200px">
 						</div>
 						</li>
 						<li class="list-group-item small" ><b>PROCESO:</b>   <br>
 							<select class= "btn btn-default btn-xs grupo-select"
-									name="proceso" 
+									name="proceso"
 									ng-model="offline.PROCESO" style="width:200px">
 	                            <option ng-repeat="d in procesosoffline"
 										value="{{d.PROCESO}}">
 										{{d.PROCESO}}
-								</option>	
+								</option>
 							</select>
-						</li>   
+						</li>
            			</div>
                     <div class="col-md-4">
-                       	<li class="list-group-item small" ><b>PRODUCTO:</b><br>  
-							<select class= "btn btn-default btn-xs grupo-select" 
+                       	<li class="list-group-item small" ><b>PRODUCTO:</b><br>
+							<select class= "btn btn-default btn-xs grupo-select"
 									name="Gestion" placeholder="Seleccione el proceso.."
 									ng-model="offline.PRODUCTO"
 									ng-change="calcularAccionOffline()" style="width:200px">
 								<option ng-repeat="d in productos"
 										value="{{d.PRODUCTO}}">
 										{{d.PRODUCTO}}
-								</option>	
+								</option>
 							</select>
 						</li>
 						<li class="list-group-item small" ng-show="validarproducto"><b>ACCIÓN:</b><br>
-							<select 
+							<select
 								class= "btn btn-default btn-xs grupo-select"
 								placeholder="Seleccione la acción.."
 								ng-model="offline.ACCION" style="width:200px">
-								<option 
-								ng-repeat="d in listadoAcciones" 
+								<option
+								ng-repeat="d in listadoAcciones"
 								value="{{d.ACCION}}">
 								{{d.ACCION}}
 								</option>
 							</select>
 						</li>
 						<li class="list-group-item small"><b>ACTIVIDAD:</b>       <br>
-							<select 
+							<select
 									class= "btn btn-default btn-xs grupo-select"
 									placeholder="Seleccione una actividad.."
 									ng-model="offline.ACTIVIDAD"
@@ -83,7 +83,7 @@
 			                        <option value="Patinaje">Patinaje</option>
 							</select></li>
 							<li class="list-group-item small" ng-show="validaractividad">
-								<select 
+								<select
 									style="width:200px"
 									class= class="form-control btn-xs"
 									ng-model="offline.ACTIVIDAD2" style="width:200px">
@@ -98,14 +98,14 @@
 						<div class="col-md-4">
                      			<li class="list-group-item small">
 												<label for="observaciones">Observación:</label>
-												<textarea  rows="8" 
+												<textarea  rows="8"
 												class="form-control"
-												ng-model="offline.OBSERVACIONES" 
+												ng-model="offline.OBSERVACIONES"
 												name="observaciones">
 												</textarea>
 								</li>
 								<br>
-							
+
 								<ul class="nav navbar-nav navbar-right">
 										<li>
 										<div class="btn-group">
@@ -116,12 +116,12 @@
 											<span class="fa fa-list" aria-hidden="true"></span> Ver Registros</a>
 										</div>
 										</li>
-									</ul>	
+									</ul>
 						</div>
 					</ul>
               	</div>
          	</div>
-         </div>			
+         </div>
 		</div>
 	</div>
 	</div>

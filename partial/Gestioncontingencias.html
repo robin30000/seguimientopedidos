@@ -188,13 +188,13 @@
 													</center>
 												</td>
 												<!-- En estas lineas se oculta el login gestión -->
-												<td ng-show="data.logincontingencia == galletainfo.LOGIN && !data._id"><span ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.logincontingencia == galletainfo.LOGIN}" >{{data.logincontingencia}}</span>
+												<td ng-show="data.logincontingencia == galletainfo.login && !data._id"><span ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.logincontingencia == galletainfo.login}" >{{data.logincontingencia}}</span>
 												</td>
 
-												<td ng-show="data.logincontingencia != galletainfo.LOGIN && data.engestion == 1 && !data._id"><span ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.logincontingencia != galletainfo.LOGIN}" >En gestión</span>
+												<td ng-show="data.logincontingencia != galletainfo.login && data.engestion == 1 && !data._id"><span ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.logincontingencia != galletainfo.login}" >En gestión</span>
 												</td>
 
-												<td ng-show="data.logincontingencia != galletainfo.LOGIN && data.engestion != 1 && !data._id"><span ng-class="{'label label-primary label-xsmall': data.engestion != 1}" ></span>
+												<td ng-show="data.logincontingencia != galletainfo.login && data.engestion != 1 && !data._id"><span ng-class="{'label label-primary label-xsmall': data.engestion != 1}" ></span>
 												</td>
 												<td ng-show="data._id">
 												</td>
@@ -380,13 +380,13 @@
 														</td>
 														<!-- En estas lineas se oculta el login gestión -->
 
-														<td ng-show="data.logincontingencia == galletainfo.LOGIN"><span ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.logincontingencia == galletainfo.LOGIN}" >{{data.logincontingencia}}</span>
+														<td ng-show="data.logincontingencia == galletainfo.login"><span ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.logincontingencia == galletainfo.login}" >{{data.logincontingencia}}</span>
 														</td>
 
-														<td ng-show="data.logincontingencia != galletainfo.LOGIN && data.engestion == 1"><span ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.logincontingencia != galletainfo.LOGIN}" >En gestión</span>
+														<td ng-show="data.logincontingencia != galletainfo.login && data.engestion == 1"><span ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.logincontingencia != galletainfo.login}" >En gestión</span>
 														</td>
 
-														<td ng-show="data.logincontingencia != galletainfo.LOGIN && data.engestion != 1"><span ng-class="{'label label-primary label-xsmall': data.engestion != 1}" ></span>
+														<td ng-show="data.logincontingencia != galletainfo.login && data.engestion != 1"><span ng-class="{'label label-primary label-xsmall': data.engestion != 1}" ></span>
 														</td>
 
 														<!-- Fin ocultar el login gestión -->
@@ -563,13 +563,13 @@
 															</center>
 														</td>
 														<!-- En estas lineas se oculta el login gestión -->
-														<td ng-show="data.loginContingenciaPortafolio == galletainfo.LOGIN"><span ng-class="{'label label-primary label-xsmall': data.enGestionPortafolio == 1, 'label label-primary label-xsmall': data.loginContingenciaPortafolio == galletainfo.LOGIN}" >{{data.loginContingenciaPortafolio}}</span>
+														<td ng-show="data.loginContingenciaPortafolio == galletainfo.login"><span ng-class="{'label label-primary label-xsmall': data.enGestionPortafolio == 1, 'label label-primary label-xsmall': data.loginContingenciaPortafolio == galletainfo.login}" >{{data.loginContingenciaPortafolio}}</span>
 														</td>
 
-														<td ng-show="data.loginContingenciaPortafolio != galletainfo.LOGIN && data.enGestionPortafolio == 1"><span ng-class="{'label label-primary label-xsmall': data.enGestionPortafolio == 1, 'label label-primary label-xsmall': data.loginContingenciaPortafolio != galletainfo.LOGIN}" >En gestión</span>
+														<td ng-show="data.loginContingenciaPortafolio != galletainfo.login && data.enGestionPortafolio == 1"><span ng-class="{'label label-primary label-xsmall': data.enGestionPortafolio == 1, 'label label-primary label-xsmall': data.loginContingenciaPortafolio != galletainfo.login}" >En gestión</span>
 														</td>
 
-														<td ng-show="data.loginContingenciaPortafolio != galletainfo.LOGIN && data.enGestionPortafolio != 1"><span ng-class="{'label label-primary label-xsmall': data.enGestionPortafolio != 1}" ></span>
+														<td ng-show="data.loginContingenciaPortafolio != galletainfo.login && data.enGestionPortafolio != 1"><span ng-class="{'label label-primary label-xsmall': data.enGestionPortafolio != 1}" ></span>
 														</td>
 														<!-- Fin de ocultar el login gestión -->
 														<td>
@@ -935,7 +935,7 @@
 
 
 							<!-- INICIO RECURSOS QUE ESTAN GESTIONANDO CONTIGENCIAS -->
-							<div class="panel panel-default" ng-show="(galletainfo.PERFIL == 1 || galletainfo.PERFIL == 11 )">
+							<div class="panel panel-default" ng-show="(galletainfo.perfil == 1 || galletainfo.perfil == 11 )">
 								<div class="panel-footer clearfix">
 									<ul class="nav navbar-nav navbar-left">
 										<b><i class="fa fa-users" aria-hidden="true"></i> Recursos Gestionando Contingencias:</b>
@@ -952,7 +952,7 @@
 											<span class="label label-primary"> Corrección Portafolio: {{Total_Personas_GestionandoCP}}</span>&nbsp;&nbsp;&nbsp;
 										</li>
 										<li>
-											<button type="button" class="btn btn-default btn-xs" ng-show="galletainfo.PERFIL == 11" ng-click="callModalCierreMasivoConti({})">Cierre Masivo</button>
+											<button type="button" class="btn btn-default btn-xs" ng-show="galletainfo.perfil == 11" ng-click="callModalCierreMasivoConti({})">Cierre Masivo</button>
 
 										</li>
 									</ul>

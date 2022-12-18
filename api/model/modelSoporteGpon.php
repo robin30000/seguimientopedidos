@@ -1,5 +1,7 @@
 <?php
 require_once '../class/conection.php';
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
 
 class modelSoporteGpon
 {
@@ -247,9 +249,9 @@ class modelSoporteGpon
 
     public function getListaPendientesSoporteGpon()
     {
-        $hoy = date("Y - m - d");
+        $hoy = date("Y-m-d");
 
-        $stmt = $this->_DB->prepare("SELECT * FROM soporte_gpon WHERE fecha_creado BETWEEN :fechaini and :fechafin and status_soporte = '0'");
+        $stmt = $this->_DB->prepare("SELECT * FROM soporte_gpon WHERE fecha_creado BETWEEN :fechaini and :fechafin and status_soporte != '1'");
         $stmt->execute([
             ':fechaini' => "$hoy 00:00:00",
             ':fechafin' => "$hoy 23:59:59",
@@ -387,12 +389,13 @@ class modelSoporteGpon
         echo json_encode($response);
     }
 
-    public function csvRegistrosSoporteGpon($data)
+    public function csvRegistrosSoporteGpon($params)
     {
 
         try {
-
-            $datos     = $data['datos'];
+            session_start();
+            $usuarioid = $_SESSION['login'];
+            $datos     = $params['datos'];
             $fechaini  = $datos['fechaini'];
             $fechafin  = $datos['fechafin'];
 
@@ -401,102 +404,80 @@ class modelSoporteGpon
                 $fechafin = date("Y") . "-" . date("m") . "-" . date("d");
             }
 
-            if ($fechaini == $fechafin) {
-                $filename = "Registros" . "_" . $fechaini . "_" . $concepto . "_" . $buscar . ".csv";
-            } else {
-                $filename = "Registros" . "_" . $fechaini . "_" . $fechafin . "_" . $concepto . "_" . $buscar . ".csv";
+            //echo "estos son los datos, usuario: ".$usuarioid." fechaini: ".$fechaini." y fechafin: ".$fechafin;
+            //echo "estos son los otros concepto, buscar: ".$concepto." buscar: ".$buscar;
+            /*            if ($fechaini == $fechafin) {
+                            $filename = "Registros" . "_" . $fechaini . "_" . $concepto . "_" . $buscar . ".csv";
+                        } else {
+                            $filename = "Registros" . "_" . $fechaini . "_" . $fechafin . "_" . $concepto . "_" . $buscar . ".csv";
+                        }*/
+
+            $query = "SELECT tarea,
+                               arpon,
+                               nap,
+                               hilo,
+                               port_internet_1,
+                               port_internet_2,
+                               port_internet_3,
+                               port_internet_4,
+                               port_television_1,
+                               port_television_2,
+                               port_television_3,
+                               port_television_4,
+                               numero_contacto,
+                               nombre_contacto,
+                               unepedido,
+                               tasktypecategory,
+                               unemunicipio,
+                               uneproductos,
+                               datoscola,
+                               engineer_id,
+                               engineer_name,
+                               mobile_phone,
+                               serial,
+                               mac,
+                               tipo_equipo,
+                               velocidad_navegacion,
+                               user_id_firebase,
+                               request_id_firebase,
+                               user_identification_firebase,
+                               status_soporte,
+                               fecha_solicitud_firebase,
+                               fecha_creado,
+                               respuesta_soporte,
+                               observacion,
+                               observacion_terreno,
+                               login,
+                               fecha_respuesta
+                        FROM soporte_gpon
+                        WHERE fecha_creado BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59'
+                          AND status_soporte = '1'
+                        ORDER BY fecha_creado DESC";
+
+            $queryCount = "SELECT COUNT(tarea) as Cantidad
+            FROM soporte_gpon 
+            WHERE fecha_creado BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59'
+            ORDER BY fecha_creado DESC;";
+
+            //s    echo $queryCount;
+            //
+
+            $rr = $this->_DB->query($queryCount);
+            $rr->execute();
+            if ($rr->rowCount()) {
+                $result = [];
+                if ($row = $rr->fetchAll(PDO::FETCH_ASSOC)) {
+                    $counter = $row[0]['Cantidad'];
+                }
             }
+            //echo $counter;
 
-            $stmt = $this->_DB->prepare("SELECT tarea,
-                                                   arpon,
-                                                   nap,
-                                                   hilo,
-                                                   port_internet_1,
-                                                   port_internet_2,
-                                                   port_internet_3,
-                                                   port_internet_4,
-                                                   port_television_1,
-                                                   port_television_2,
-                                                   port_television_3,
-                                                   port_television_4,
-                                                   numero_contacto,
-                                                   nombre_contacto,
-                                                   unepedido,
-                                                   tasktypecategory,
-                                                   unemunicipio,
-                                                   uneproductos,
-                                                   datoscola,
-                                                   engineer_id,
-                                                   engineer_name,
-                                                   mobile_phone,
-                                                   serial,
-                                                   mac,
-                                                   tipo_equipo,
-                                                   velocidad_navegacion,
-                                                   user_id_firebase,
-                                                   request_id_firebase,
-                                                   user_identification_firebase,
-                                                   status_soporte,
-                                                   fecha_solicitud_firebase,
-                                                   fecha_creado,
-                                                   respuesta_soporte,
-                                                   observacion,
-                                                   observacion_terreno,
-                                                   login,
-                                                   fecha_respuesta
-                                            FROM soporte_gpon
-                                            WHERE fecha_creado BETWEEN :fechaini AND :fechafin
-                                              AND status_soporte = '1'
-                                            ORDER BY fecha_creado DESC");
-            $stmt->execute([':fechaini' => "$fechaini 00:00:00", ':fechafin' => "$fechafin 23:59:59"]);
+            $rst = $this->_DB->query($query);
+            $rst->execute();
 
-            if ($stmt->rowCount()) {
-                $fp = fopen("../tmp/$filename", 'w');
-
-                $columnas = [
-                    'TAREA',
-                    'ARPON',
-                    'NAP',
-                    'HILO',
-                    'PORT_INTERNET_1',
-                    'PORT_INTERNET_2',
-                    'PORT_INTERNET_3',
-                    'PORT_INTERNET_4',
-                    'PORT_TELEVISION_1',
-                    'PORT_TELEVISION_2',
-                    'PORT_TELEVISION_3',
-                    'PORT_TELEVISION_4',
-                    'NUMERO_CONTACTO',
-                    'NOMBRE_CONTACTO',
-                    'UNEPEDIDO',
-                    'TASKTYPECATEGORY',
-                    'UNEMUNICIPIO',
-                    'UNEPRODUCTOS',
-                    'DATOSCOLA',
-                    'ENGINEER_ID',
-                    'ENGINEER_NAME',
-                    'MOBILE_PHONE',
-                    'SERIAL',
-                    'MAC',
-                    'TIPO_EQUIPO',
-                    'VELOCIDAD_NAVEGACION',
-                    'USER_ID_FIREBASE',
-                    'REQUEST_ID_FIREBASE',
-                    'USER_IDENTIFICATION_FIREBASE',
-                    'STATUS_SOPORTE',
-                    'FECHA_SOLICITUD_FIREBASE',
-                    'FECHA_CREADO',
-                    'RESPUESTA_SOPORTE',
-                    'OBSERVACION',
-                    'OBSERVACION TERRENO',
-                    'LOGIN',
-                    'FECHA_RESPUESTA',
-                ];
-
-                fputcsv($fp, $columnas);
-                fputcsv($fp, $stmt->fetchAll(PDO::FETCH_ASSOC));
-                fclose($fp);
-                $response = [$filename, $stmt->rowCount()];
+            if ($rst->rowCount()) {
+                $result   = $rst->fetchAll(PDO::FETCH_ASSOC);
+                $response = [$result, $counter];
             } else {
                 $response = ['', 203];
             }
@@ -508,8 +489,59 @@ class modelSoporteGpon
         echo json_encode($response);
     }
 
-    public function marcarEngestionGpon($data)
+    public function marcarEngestionGpon($params)
     {
-        var_dump($data);
+        try {
+            session_start();
+            $login = $_SESSION['login'];
+            $today = date("Y-m-d H:i:s");
+
+            $datosguardar   = $params['datos'];
+            $id_soporte     = $datosguardar['id_soporte'];
+            $status_soporte = $datosguardar['status_soporte'];
+
+            if ($status_soporte == '2') {
+                $gestion = 1;
+            } else {
+                $gestion = 0;
+            }
+
+            $rst = $this->_DB->query("SELECT id_soporte, login FROM soporte_gpon WHERE id_soporte = '$id_soporte' AND status_soporte = '2' AND login IS NOT NULL");
+            $rst->rowCount();
+            if ($rst->rowCount() > 0) {
+                $row              = $rst->fetchAll(PDO::FETCH_ASSOC);
+                $loginsoportegpon = $row[0]['login'];
+                $id               = $row[0]['id_soporte'];
+
+                if ($login == $loginsoportegpon) {
+                    $this->_DB->query("UPDATE soporte_gpon SET status_soporte = '0', login = NULL, fecha_marca = '$today' WHERE id_soporte ='$id'");
+                    $response = ['state' => 1, 'msj' => 'El pedido se encuentra desbloqueado'];
+                } else {
+                    $response = ['state' => 0, 'msj' => 'El pedido se encuentra en gestion'];
+                }
+
+            } else {
+
+                $rst = $this->_DB->query("SELECT id_soporte, login FROM soporte_gpon WHERE id_soporte = '$id_soporte' AND status_soporte = '0' AND login IS NULL");
+                $rst->execute();
+                if ($rst->rowCount() > 0) {
+                    $row       = $rst->fetchAll(PDO::FETCH_ASSOC);
+                    $id        = $row[0]['id_soporte'];
+                    $sqlupdate = $this->_DB->query("UPDATE soporte_gpon SET status_soporte = 2, login = '$login', fecha_marca = '$today' WHERE id_soporte = '$id'");
+                    $sqlupdate->execute();
+
+                    if ($sqlupdate->rowCount() == 1) {
+                        $response = ['state' => 1, 'msj' => 'El pedido se encuentra bloqueado'];
+                    } else {
+                        $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo nuevamente.'];
+                    }
+                }
+            }
+
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+        $this->_DB = null;
+        echo json_encode($response);
     }
 }

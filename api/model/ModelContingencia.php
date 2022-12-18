@@ -11,6 +11,227 @@ class ModelContingencia
         $this->_DB = new Conection();
     }
 
+    public function resumencontingencias($data)
+    {
+        try {
+            $fechaIni = $data['fechaini'];
+            $fechaFin = $data['fechafin'];
+
+            $month = date('m', strtotime($fechaIni));
+            $year  = date('Y', strtotime($fechaIni));
+            $day   = date("d", mktime(0, 0, 0, $month + 1, 0, $year));
+
+            $diaFinal   = date('Y-m-d', mktime(0, 0, 0, $month, $day, $year));
+            $diaInicial = date('Y-m-d', mktime(0, 0, 0, $month, 1, $year));
+
+            /* $query = "select logindepacho, pedido, horagestion, logincontingencia, horacontingencia, " .
+                "(case when acepta is null then 'Pendiente'  " .
+                "else acepta end) estado " .
+                "from contingencias  " .
+                "where horagestion between ('$fechaIni 00:00:00') and ('$fechaFin 23:59:59') " .
+                "AND accion IN ('Cambio de equipo', 'Contingencia', 'Refresh', 'Registros ToIP', 'Reenvio de registros') " .
+                "and pedido <> '' " .
+                "order by horagestion DESC "; */
+
+            $query = "SELECT logindepacho, pedido, horagestion, logincontingencia, horacontingencia,
+		(CASE 
+			WHEN acepta IS NULL THEN 'Pendiente' 
+			ELSE acepta 
+		END) estado
+		FROM contingencias
+		WHERE horagestion BETWEEN ('$fechaIni 00:00:00') AND ('$fechaFin 23:59:59')
+		AND accion IN ('Cambio de equipo', 'Contingencia', 'Refresh', 'Registros ToIP', 'Reenvio de registros')
+		AND pedido <> ''
+		ORDER BY horagestion DESC;";
+
+            $rst = $this->_DB->query($query);
+            $rst->execute();
+
+            if ($rst->rowCount() > 0) {
+                $resultado = $rst->fetchAll(PDO::FETCH_ASSOC);
+            }
+
+            $queryTV = ("SELECT logindepacho, pedido, horagestion, logincontingencia, horacontingencia,
+				(CASE
+					WHEN acepta IS NULL THEN 'Pendiente'
+				ELSE acepta END) estado
+			FROM contingencias
+			WHERE horagestion BETWEEN ('$fechaIni 00:00:00') AND ('$fechaFin 23:59:59')
+			AND producto = 'TV'
+			AND accion IN ('Cambio de equipo', 'Contingencia', 'Refresh', 'Registros ToIP', 'Reenvio de registros')
+			AND pedido <> ''
+			ORDER BY horagestion DESC;
+		");
+
+            $rstTV = $this->_DB->query($queryTV);
+            $rstTV->execute();
+
+            if ($rstTV->rowCount() > 0) {
+                $resultadoTV = $rstTV->fetchAll(PDO::FETCH_ASSOC);
+            }
+
+            $queryInTo = ("SELECT logindepacho, pedido, horagestion, logincontingencia, horacontingencia,
+							(CASE
+								WHEN acepta IS NULL THEN 'Pendiente'
+							ELSE acepta END) estado
+						FROM contingencias
+						WHERE horagestion BETWEEN ('$fechaIni 00:00:00') AND ('$fechaFin 23:59:59')
+						AND producto IN('ToIP', 'Internet+ToIP', 'Internet')
+						AND accion IN ('Cambio de equipo', 'Contingencia', 'Refresh', 'Registros ToIP', 'Reenvio de registros')
+						AND pedido <> ''
+						ORDER BY horagestion DESC
+					");
+
+            $rstInTo = $this->_DB->query($queryInTo);
+            $rstInTo->execute();
+            if ($rstInTo->rowCount() > 0) {
+                $resultadoInTo = $rstInTo->fetchAll(PDO::FETCH_ASSOC);
+            }
+
+            $queryCP = ("SELECT logindepacho, pedido, horagestion, loginContingenciaPortafolio, horaContingenciaPortafolio,
+							(CASE
+								WHEN aceptaPortafolio = 'Acepta' THEN 'Acepta'
+								WHEN aceptaPortafolio = 'Rechaza' THEN 'Rechaza'
+								WHEN aceptaPortafolio IS NULL THEN 'Pendiente'
+							ELSE aceptaPortafolio = 'Acepta' END) estado
+						FROM contingencias
+						WHERE horagestion BETWEEN ('$fechaIni 00:00:00') AND ('$fechaFin 23:59:59')
+						AND accion IN ('Corregir portafolio', 'mesaOffline')
+						AND pedido <> ''
+						ORDER BY horagestion DESC
+					");
+
+            $rstCP = $this->_DB->query($queryCP);
+            $rstCP->execute();
+            if ($rstCP->rowCount() > 0) {
+                $resultadoCP = $rstCP->fetchAll(PDO::FETCH_ASSOC);
+            }
+
+            /* $querydiario = "select date_format(horagestion,'%Y-%m-%d') fecha, count(*) total " .
+                "from contingencias " .
+                "where horagestion between ('$diaInicial 00:00:00')   " .
+                "and ('$diaFinal 23:59:59') " .
+                "AND accion IN ('Cambio de equipo', 'Contingencia', 'Refresh', 'Registros ToIP', 'Reenvio de registros') " .
+                "and pedido <> '' " .
+                "group by fecha order by fecha DESC "; */
+
+            $querydiario = "SELECT DATE_FORMAT(horagestion,'%Y-%m-%d') fecha, COUNT(*) total
+		FROM contingencias
+		WHERE horagestion BETWEEN ('$diaInicial 00:00:00') AND ('$diaFinal 23:59:59')
+		AND accion IN ('Cambio de equipo', 'Contingencia', 'Refresh', 'Registros ToIP', 'Reenvio de registros')
+		AND pedido <> ''
+		GROUP BY fecha
+		ORDER BY fecha DESC;";
+
+            $rstdiario = $this->_DB->query($querydiario);
+            $rstdiario->execute();
+            if ($rstdiario->rowCount()) {
+                $resultadodiario = $rstdiario->fetchAll(PDO::FETCH_ASSOC);
+            }
+
+
+            /* $querydiarioCP = "select date_format(horagestion,'%Y-%m-%d') fecha, count(*) total " .
+                "from contingencias " .
+                "where horagestion between ('$diaInicial 00:00:00')   " .
+                "and ('$diaFinal 23:59:59') " .
+                "AND accion IN ('Corregir portafolio', 'mesaOffline') " .
+                "and pedido <> '' " .
+                "group by fecha order by fecha DESC "; */
+
+            $querydiarioCP = "SELECT date_format(horagestion,'%Y-%m-%d') fecha, COUNT(*) total
+            FROM contingencias
+            WHERE horagestion BETWEEN ('$diaInicial 00:00:00') AND ('$diaFinal 23:59:59')
+            AND accion IN ('Corregir portafolio', 'mesaOffline')
+            AND pedido <> ''
+            GROUP BY fecha
+            ORDER BY fecha DESC;";
+
+            $rstdiarioCP = $this->_DB->query($querydiarioCP);
+            $rstdiarioCP->execute();
+            if ($rstdiarioCP->rowCount()) {
+                $resultadodiarioCP = $rstdiarioCP->fetchAll(PDO::FETCH_ASSOC);
+            }
+
+            /*QUERY PARA EL CONTADOR DE TV Y INTERET*/
+            $queryestadosMes = ("SELECT (CASE 
+            WHEN acepta IS NULL THEN 'Pendiente' 
+            ELSE acepta 
+            END) estado, 
+            COUNT(*) total,
+            (SELECT COUNT(*)
+                FROM contingencias C2
+                WHERE horagestion BETWEEN ('$diaInicial 00:00:00') AND ('$diaFinal 23:59:59')
+                AND C2.accion IN ('Cambio de equipo', 'Contingencia', 'Refresh', 'Registros ToIP', 'Reenvio de registros')
+            ) totalestados
+            FROM contingencias AS C1
+            WHERE horagestion BETWEEN ('$diaInicial 00:00:00') AND ('$diaFinal 23:59:59')
+            AND pedido <> ''
+            AND C1.accion IN ('Cambio de equipo', 'Contingencia', 'Refresh', 'Registros ToIP', 'Reenvio de registros')
+            GROUP BY estado
+            ORDER BY total DESC;");
+
+            $rstestadosMes = $this->_DB->query($queryestadosMes);
+            $rstestadosMes->execute();
+            if ($rstestadosMes->rowCount() > 0) {
+                $resultadoestadosMes = $rstestadosMes->fetchAll(PDO::FETCH_ASSOC);
+            }
+
+            /*QUERY PARA EL CONTADOR DE CORREGOR PORTAFOLIO*/
+            $queryestadosMesCP = ("SELECT (CASE
+										WHEN C1.aceptaPortafolio = 'Acepta' THEN 'Acepta'
+										WHEN C1.aceptaPortafolio = 'Rechaza' THEN 'Rechaza'
+										WHEN C1.aceptaPortafolio IS NULL THEN 'Pendiente'
+										ELSE C1.aceptaPortafolio = 'Acepta'
+									END) estado, COUNT(*) total,
+									(SELECT COUNT(*)
+										FROM contingencias C2
+										WHERE C2.horagestion BETWEEN ('$diaInicial 00:00:00') AND ('$diaFinal 23:59:59')
+										AND C2.accion IN ('Corregir portafolio', 'mesaOffline')
+										OR C2.horaContingenciaPortafolio BETWEEN ('$diaInicial 00:00:00') AND ('$diaFinal 23:59:59')
+										AND C2.accion IN ('Corregir portafolio', 'mesaOffline')
+									)totalestados
+								FROM contingencias AS C1
+								WHERE C1.horagestion BETWEEN ('$diaInicial 00:00:00') AND ('$diaFinal 23:59:59')
+								AND C1.accion IN ('Corregir portafolio', 'mesaOffline')
+								OR C1.horaContingenciaPortafolio BETWEEN ('$diaInicial 00:00:00') AND ('$diaFinal 23:59:59')
+								AND C1.accion IN ('Corregir portafolio', 'mesaOffline')
+								AND pedido <> ''
+								GROUP BY estado
+								ORDER BY total DESC
+							");
+
+            if (1 > 0) {
+
+                $resultadoestadosMesCP = [
+                    [
+                        "estado"       => "Acepta",
+                        "total"        => "0",
+                        "totalestados" => "0",
+                    ],
+                    [
+                        "estado"       => "Rechaza",
+                        "total"        => "0",
+                        "totalestados" => "0",
+                    ],
+                    [
+                        "estado"       => "Pendiente",
+                        "total"        => "0",
+                        "totalestados" => "0",
+                    ],
+                ];
+
+                $response = [$resultado, $resultadoestadosMes, $resultadodiario, $resultadoestadosMesCP, $resultadodiarioCP, $resultadoCP, $resultadoTV, $resultadoInTo];
+
+            } else {
+                $response = ['No se encontraron datos'];
+            }
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+        $this->_DB = null;
+        echo json_encode($response);
+    }
+
     public function resultado($fechaIni, $fechaFin)
     {
         try {
@@ -41,19 +262,20 @@ class ModelContingencia
 
     }
 
-    public function queryTv($fechaIni, $fechaFin)
+    public function queryTv($fechaIni, $fechafin)
     {
         try {
-            $stmt = $this->_DB->prepare("SELECT logindepacho, pedido, horagestion, logincontingencia, horacontingencia,
+            $stmt = $this->_DB->query("SELECT logindepacho, pedido, horagestion, logincontingencia, horacontingencia,
 				(CASE
 					WHEN acepta IS NULL THEN 'Pendiente'
 				ELSE acepta END) estado
 			FROM contingencias
-			WHERE horagestion BETWEEN ('$fechaIni 00:00:00') AND ('$fechaFin 23:59:59')
+			WHERE horagestion BETWEEN ('$fechaIni 00:00:00') AND ('$fechafin 23:59:59')
 			AND producto = 'TV'
 			AND accion IN ('Cambio de equipo', 'Contingencia', 'Refresh', 'Registros ToIP', 'Reenvio de registros')
 			AND pedido <> ''
 			ORDER BY horagestion DESC");
+
 
             $stmt->execute();
 
@@ -75,7 +297,7 @@ class ModelContingencia
     public function resultadoInTo($fechaIni, $fechaFin)
     {
         try {
-            $stmt = $this->_DB->prepare("SELECT logindepacho, pedido, horagestion, logincontingencia, horacontingencia,
+            $stmt = $this->_DB->query("SELECT logindepacho, pedido, horagestion, logincontingencia, horacontingencia,
 							(CASE
 								WHEN acepta IS NULL THEN 'Pendiente'
 							ELSE acepta END) estado
@@ -98,6 +320,7 @@ class ModelContingencia
         }
 
         $this->_DB = null;
+
         return $response;
 
     }
@@ -105,7 +328,7 @@ class ModelContingencia
     public function resultadoCP($fechaIni, $fechaFin)
     {
         try {
-            $stmt = $this->_DB->prepare("SELECT logindepacho, pedido, horagestion, loginContingenciaPortafolio, horaContingenciaPortafolio,
+            $stmt = $this->_DB->query("SELECT logindepacho, pedido, horagestion, loginContingenciaPortafolio, horaContingenciaPortafolio,
 							(CASE
 								WHEN aceptaPortafolio = 'Acepta' THEN 'Acepta'
 								WHEN aceptaPortafolio = 'Rechaza' THEN 'Rechaza'
@@ -128,6 +351,7 @@ class ModelContingencia
             var_dump($e->getMessage());
         }
         $this->_DB = null;
+
         return $response;
     }
 

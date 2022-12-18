@@ -1694,7 +1694,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
             method: 'csvRegistrosCodigoIncompleto',
             data: datos
         }
-        return $http.post(serviceBase1 + 'csvRegistrosCodigoIncompleto', data);
+        return $http.post(serviceBase1 + 'codigoIncompletoCtrl.php', data);
     };
 
     /* ------------------------------- CODIGO INCOMPLETO ---------------------------- */
@@ -1833,7 +1833,7 @@ app.controller('loginCtrl', function ($scope, $http, $rootScope, $location, $rou
 
         services.loginUser($scope.autenticacion).then(
             function (data) {
-                //console.log("data: ", data);
+                console.log("data: ", data);
                 $errorDatos = null;
                 $scope.respuesta = data.data;
                 //console.log("respuesta: ", $scope.respuesta);
@@ -1848,21 +1848,21 @@ app.controller('loginCtrl', function ($scope, $http, $rootScope, $location, $rou
                 //galleta = ($cookies.get("usuarioInfoDespacho"));
 
                 $rootScope.galletainfo = galleta;
-                //$rootScope.galletainfo.perfil = 11;
+                //$rootScope.galleta.perfil = 11;
                 $rootScope.permiso = true;
                 console.log('aca ', $rootScope.galletainfo)
                 //console.log("galletainfo: ",$rootScope.galletainfo);
-                if ($rootScope.galletainfo.perfil === '1' && $rootScope.galletainfo.perfil === '2' && $rootScope.galletainfo.perfil === '5') {
+                if ($rootScope.galleta.perfil === '1' && $rootScope.galleta.perfil === '2' && $rootScope.galleta.perfil === '5') {
                     $location.path('/actividades/');
-                } else if ($rootScope.galletainfo.perfil === '3' || $rootScope.galletainfo.perfil === '8') {
+                } else if ($rootScope.galleta.perfil === '3' || $rootScope.galleta.perfil === '8') {
                     $location.path('/registros/');
-                } else if ($rootScope.galletainfo.perfil === '4') {
+                } else if ($rootScope.galleta.perfil === '4') {
                     $location.path('/mesaoffline/mesaoffline/');
-                } else if ($rootScope.galletainfo.perfil === '6') {
+                } else if ($rootScope.galleta.perfil === '6') {
                     $location.path('/premisasInfraestructuras/');
-                } else if ($rootScope.galletainfo.perfil === '12') {
+                } else if ($rootScope.galleta.perfil === '12') {
                     $location.path('/novedadesVisita/');
-                } else if ($rootScope.galletainfo.perfil === '13') {
+                } else if ($rootScope.galleta.perfil === '13') {
                     $location.path('/quejasGo/');
                 }
 
@@ -3571,7 +3571,7 @@ app.controller('premisasInfraestructurasCtrl', function ($scope, $rootScope, $lo
         });
     }
 
-    $scope.exportarRegistros = function () {
+    /*$scope.exportarRegistros = function () {
         services.exportEscalamientos().then(completed).catch(failed)
 
         function completed(data) {
@@ -3582,10 +3582,10 @@ app.controller('premisasInfraestructurasCtrl', function ($scope, $rootScope, $lo
             console.log(error)
         }
 
-    }
+    }*/
 
 
-    /*$scope.exportarRegistros = () => {
+    $scope.exportarRegistros = () => {
         services.exportEscalamientos().then((res) => {
             var data = res.data[0];
             var array = typeof data != 'object' ? JSON.parse(data) : data;
@@ -3615,7 +3615,7 @@ app.controller('premisasInfraestructurasCtrl', function ($scope, $rootScope, $lo
             elementToClick.click();
             console.log(str);
         });
-    }*/
+    }
 
 
     $scope.mostrarModalConcatenacion = (data) => {
@@ -4152,18 +4152,39 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
     $scope.csvNovedadesTecnicos = function () {
         $scope.csvPend = false;
         if ($scope.Registros.fechaini > $scope.Registros.fechafin) {
-            alert("La fecha inicial debe ser menor que la inicial");
-            return;
+            Swal("La fecha inicial debe ser menor que la inicial");
         } else {
 
             services.expCsvNovedadesTecnico($scope.Registros, $rootScope.galletainfo).then(
-                function (data) {
-                    console.log(data);
-                    //window.location.href = "tmp/" + data.data[0];
-                    $scope.csvPend = true;
-                    $scope.counter = data.data[1];
-                    //console.log(data.data);
-                    return data.data;
+                function (datos) {
+                    console.log(datos);
+                    var data = datos.data[0];
+                    var array = typeof data != 'object' ? JSON.parse(data) : data;
+                    var str = '';
+                    var column = `Fecha, Despachador, Municipio, Region, Proceso, Hora marca en sitio, Tipo de Novedad, Pedido, Cedula del Tecnico, Nombre del Tecnico, Contrato, Situacion, Motivo, Submotivo, Observaciones, Observacion CCO, ID Llamada \r\n`;
+                    str += column;
+                    for (var i = 0; i < array.length; i++) {
+                        var line = '';
+                        for (var index in array[i]) {
+                            if (line != '') line += ','
+                            line += array[i][index];
+                        }
+
+                        str += line + '\r\n';
+                    }
+                    var dateCsv = new Date();
+                    var yearCsv = dateCsv.getFullYear();
+                    var monthCsv = (dateCsv.getMonth() + 1 <= 9) ? '0' + (dateCsv.getMonth() + 1) : (dateCsv.getMonth() + 1);
+                    var dayCsv = (dateCsv.getDate() <= 9) ? '0' + dateCsv.getDate() : dateCsv.getDate();
+                    var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
+
+
+                    var blob = new Blob([str]);
+                    var elementToClick = window.document.createElement("a");
+                    elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
+                    elementToClick.download = "NovedadesTecnicos-" + fullDateCsv + ".csv";
+                    elementToClick.click();
+                    console.log(str);
                 },
                 function errorCallback(response) {
                     $scope.errorDatos = "No hay datos.";
@@ -4270,10 +4291,35 @@ app.controller('contrasenasClickCtrl', function ($scope, $http, $rootScope, $loc
     $scope.csvcontrasenasTecnicos = function () {
         //console.log(datoExportar+$scope.indicadores.fecha);
         services.expCsvContrasenasTecnicos($rootScope.galletainfo).then(
-            function (data) {
+            function (datos) {
                 // console.log(data.data[0]);
-                window.location.href = "tmp/" + data.data[0];
-                return data.data;
+                var data = datos.data[0];
+                var array = typeof data != 'object' ? JSON.parse(data) : data;
+                var str = '';
+                var column = `Fecha, Login, Nombre, Password, Expira Cuenta, Expira PSW \r\n`;
+                str += column;
+                for (var i = 0; i < array.length; i++) {
+                    var line = '';
+                    for (var index in array[i]) {
+                        if (line != '') line += ','
+                        line += array[i][index];
+                    }
+
+                    str += line + '\r\n';
+                }
+                var dateCsv = new Date();
+                var yearCsv = dateCsv.getFullYear();
+                var monthCsv = (dateCsv.getMonth() + 1 <= 9) ? '0' + (dateCsv.getMonth() + 1) : (dateCsv.getMonth() + 1);
+                var dayCsv = (dateCsv.getDate() <= 9) ? '0' + dateCsv.getDate() : dateCsv.getDate();
+                var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
+
+
+                var blob = new Blob([str]);
+                var elementToClick = window.document.createElement("a");
+                elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
+                elementToClick.download = "ContrasenasTecnicos-" + fullDateCsv + ".csv";
+                elementToClick.click();
+                console.log(str);
             },
             function errorCallback(response) {
             }
@@ -4863,6 +4909,41 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
         $scope.BuscarRegistros(datos);
     };
 
+
+    /**
+     * cambio robincambio
+     *
+     services.exportEscalamientos().then((res) => {
+        var data = res.data[0];
+        var array = typeof data != 'object' ? JSON.parse(data) : data;
+        var str = '';
+        var column = `ID, Pedido, Tarea, Tecnico, ID Tecnico, Fecha Solicitud, Fecha Gestion, Fecha Respuesta, Login Gestion, En Gestion, Proceso, Producto, Motivo, Area, Region, Tipo Tarea, Tecnologia, CRM, Departamento, Prueba SMNET, Foto?, Marcacion TAP, Direccion TAP, Valor TAP, Informacion Adicional, MAC Real CPE, Correa Marcacion, Observacion, Respuesta, ID Terreno, Tipificacion, Estado, ANS \r\n`;
+        str += column;
+        for (var i = 0; i < array.length; i++) {
+            var line = '';
+            for (var index in array[i]) {
+                if (line != '') line += ','
+                line += array[i][index];
+            }
+
+            str += line + '\r\n';
+        }
+        var dateCsv = new Date();
+        var yearCsv = dateCsv.getFullYear();
+        var monthCsv = (dateCsv.getMonth() + 1 <= 9) ? '0' + (dateCsv.getMonth() + 1) : (dateCsv.getMonth() + 1);
+        var dayCsv = (dateCsv.getDate() <= 9) ? '0' + dateCsv.getDate() : dateCsv.getDate();
+        var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
+
+
+        var blob = new Blob([str]);
+        var elementToClick = window.document.createElement("a");
+        elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
+        elementToClick.download = "Escalamientos-" + fullDateCsv + ".csv";
+        elementToClick.click();
+        console.log(str);
+     */
+
+
     $scope.csvRegistros = function () {
         $scope.csvPend = false;
         if ($scope.Registros.fechaini > $scope.Registros.fechafin) {
@@ -4872,12 +4953,33 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
 
             services.expCsvRegistros($scope.Registros, $rootScope.galletainfo).then(
                 function (data) {
-                    // console.log(data.data[0]);
-                    window.location.href = "tmp/" + data.data[0];
-                    $scope.csvPend = true;
-                    $scope.counter = data.data[1];
-                    //console.log(data.data);
-                    return data.data;
+                    var data = data.data[0];
+                    var array = typeof data != 'object' ? JSON.parse(data) : data;
+                    var str = '';
+                    var column = `PEDIDO,ID_TECNICO,EMPRESA,LOGIN_ASESOR,DESPACHO,OBSERVACIONES,ACCION,SUB_ACCION,FECHA,PROCESO,PRODUCTO,DURACION_LLAMADA,IDLLAMADA,PRUEBA_INTEGRADA,PRUEBASMNET,UNESOURCESYSTEM,PENDIENTE,DIAGNOSTICO \r\n`;
+                    str += column;
+                    for (var i = 0; i < array.length; i++) {
+                        var line = '';
+                        for (var index in array[i]) {
+                            if (line != '') line += ','
+                            line += array[i][index];
+                        }
+
+                        str += line + '\r\n';
+                    }
+                    var dateCsv = new Date();
+                    var yearCsv = dateCsv.getFullYear();
+                    var monthCsv = (dateCsv.getMonth() + 1 <= 9) ? '0' + (dateCsv.getMonth() + 1) : (dateCsv.getMonth() + 1);
+                    var dayCsv = (dateCsv.getDate() <= 9) ? '0' + dateCsv.getDate() : dateCsv.getDate();
+                    var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
+
+
+                    var blob = new Blob([str]);
+                    var elementToClick = window.document.createElement("a");
+                    elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
+                    elementToClick.download = "Registros-" + fullDateCsv + ".csv";
+                    elementToClick.click();
+                    console.log(str);
                 },
                 function errorCallback(response) {
                     $scope.errorDatos = "No hay datos.";
@@ -4888,16 +4990,36 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
     };
 
     $scope.csvtecnico = function () {
-        // console.log(datoExportar+$scope.indicadores.fecha);
-
         services.expCsvtecnico($scope.Registros, $rootScope.galletainfo).then(
-            function (data) {
-                // console.log(data.data[0]);
-                window.location.href = "tmp/" + data.data[0];
-                $scope.csvPend = true;
-                $scope.counter = data.data[1];
-                //console.log(data.data);
-                return data.data;
+            function (datos) {
+                var data = datos.data[0];
+                var array = typeof data != 'object' ? JSON.parse(data) : data;
+                var str = '';
+                var column = `PEDIDO, TECNICO,NOMBRE_TECNICO,CIUDAD,EMPRESA,TIPO_PENDIENTE,DIA,MES,MOTIVO,MAC_SALE,MAC_ENTRA,PROCESO \r\n`;
+                str += column;
+                for (var i = 0; i < array.length; i++) {
+                    var line = '';
+                    for (var index in array[i]) {
+                        if (line != '') line += ','
+                        line += array[i][index];
+                    }
+
+                    str += line + '\r\n';
+                }
+                var dateCsv = new Date();
+                var yearCsv = dateCsv.getFullYear();
+                var monthCsv = (dateCsv.getMonth() + 1 <= 9) ? '0' + (dateCsv.getMonth() + 1) : (dateCsv.getMonth() + 1);
+                var dayCsv = (dateCsv.getDate() <= 9) ? '0' + dateCsv.getDate() : dateCsv.getDate();
+                var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
+
+
+                var blob = new Blob([str]);
+                var elementToClick = window.document.createElement("a");
+                elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
+                elementToClick.download = "Cambio_Equipos-" + fullDateCsv + ".csv";
+                elementToClick.click();
+                console.log(str);
+
             },
             function errorCallback(response) {
                 $scope.errorDatos = "No hay datos.";
@@ -5136,7 +5258,14 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
 
                             $scope.status = data.data[0].status;
                             $scope.fecha_res = data.data[0].unefechacita;
-
+                            $scope.fecha_res = $scope.fecha_res.split(" ");
+                            if ($scope.fecha_res[2]) {
+                                $scope.fecha_res = $scope.fecha_res[0];
+                                $scope.fecha_res = $scope.fecha_res.split("/");
+                                $scope.fecha_res = $scope.fecha_res[2] + '-' + $scope.fecha_res[1] + '-' + $scope.fecha_res[0]
+                            } else {
+                                $scope.fecha_res = data.data[0].unefechacita;
+                            }
 
                             $scope.searchIdTecnic = function () {
                                 services.searchIdTecnic($scope.nivelacion.newIdTecnic).then(complete).catch(failed);
@@ -5167,9 +5296,9 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
                                 $scope.case6 = 0;
                                 $scope.case7 = 0;
                                 //$scope.fecha_res = '2022-12-16';
-                                console.log('Submotivo :', $scope.nivelacion.submotivo, ' estatus: ', $scope.status, ' unefechacita: ', $scope.fecha_res, ' Hoy : ', hoy);
+                                console.log('motivo :', $scope.nivelacion.motivo, 'Submotivo :', $scope.nivelacion.submotivo, ' estatus: ', $scope.status, ' unefechacita: ', $scope.fecha_res, ' Hoy : ', hoy);
 
-                                if (($scope.nivelacion.motivo == 1) && ($scope.status == 'Abierto' || $scope.status == 'Asignado')) {
+                                if (($scope.nivelacion.motivo == 1) && ($scope.status == 'Abierto' || $scope.status == 'Asignado' || $scope.status == 'Despachado')) {
                                     Swal({
                                         type: 'error',
                                         title: 'La tarea esta en estado de asignación automatica'
@@ -5195,34 +5324,78 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
                                                     title: data.data.data
                                                 })
                                             } else if (data.data.state == 0) {
-                                                if (($scope.nivelacion.submotivo == 6) && ($scope.status != 'Incompleto' || $scope.status != 'Pendiente') && ($scope.fecha_res != hoy)) {
-                                                    Swal({
-                                                        type: 'error',
-                                                        title: 'La tarea esta en estado no valido77'
-                                                    })
-                                                } else {
-                                                    services.saveNivelation($scope.nivelacion).then(complete).catch(failed);
-
-                                                    function complete(data) {
-                                                        if (data.data.state === 0) {
+                                                if (($scope.nivelacion.submotivo == 6) && ($scope.status != 'Incompleto') ) {
+                                                    if(($scope.nivelacion.submotivo == 6 && ($scope.status != 'Pendiente'))){
                                                             Swal({
                                                                 type: 'error',
-                                                                title: data.data.data.msj,
-                                                                timer: 4000
-                                                            }).then(function () {
-                                                                $route.reload();
+                                                                title: 'La tarea esta en estado no valido'
                                                             })
-                                                        } else {
+                                                    }else {
+                                                        if (($scope.nivelacion.submotivo == 6) && ($scope.fecha_res != hoy)) {
                                                             Swal({
-                                                                type: 'success',
-                                                                title: data.data.msj,
-                                                                timer: 4000
-                                                            }).then(function () {
-                                                                $route.reload();
+                                                                type: 'error',
+                                                                title: 'La tarea tiene una fecha diferente a hoy'
                                                             })
+                                                        }else{
+                                                            services.saveNivelation($scope.nivelacion).then(complete).catch(failed);
 
+                                                            function complete(data) {
+                                                                if (data.data.state === 0) {
+                                                                    Swal({
+                                                                        type: 'error',
+                                                                        title: data.data.data.msj,
+                                                                        timer: 4000
+                                                                    }).then(function () {
+                                                                        $route.reload();
+                                                                    })
+                                                                } else {
+                                                                    Swal({
+                                                                        type: 'success',
+                                                                        title: data.data.msj,
+                                                                        timer: 4000
+                                                                    }).then(function () {
+                                                                        $route.reload();
+                                                                    })
+
+                                                                }
+                                                            }
                                                         }
                                                     }
+                                                    console.log('Hola')
+
+                                                } else {
+                                                    if(($scope.nivelacion.submotivo == 6) && ($scope.fecha_res != hoy )){
+                                                        console.log(7)
+                                                        Swal({
+                                                            type: 'error',
+                                                            title: 'La tarea tiene una fecha diferente a hoy'
+                                                        })
+                                                    }else{
+                                                        console.log(4)
+                                                        services.saveNivelation($scope.nivelacion).then(complete).catch(failed);
+
+                                                        function complete(data) {
+                                                            if (data.data.state === 0) {
+                                                                Swal({
+                                                                    type: 'error',
+                                                                    title: data.data.data.msj,
+                                                                    timer: 4000
+                                                                }).then(function () {
+                                                                    $route.reload();
+                                                                })
+                                                            } else {
+                                                                Swal({
+                                                                    type: 'success',
+                                                                    title: data.data.msj,
+                                                                    timer: 4000
+                                                                }).then(function () {
+                                                                    $route.reload();
+                                                                })
+
+                                                            }
+                                                        }
+                                                    }
+
 
                                                     function failed(data) {
                                                         console.log(data)
@@ -5243,34 +5416,76 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
                                                     title: data.data.data
                                                 })
                                             } else if (data.data.state == 0) {
-                                                if (($scope.nivelacion.submotivo == 7) && ($scope.status != 'Incompleto' || $scope.status != 'Pendiente') && ($scope.fecha_res >= hoy)) {
-                                                    Swal({
-                                                        type: 'error',
-                                                        title: 'La tarea esta en estado no valido77'
-                                                    })
-                                                } else {
-                                                    services.saveNivelation($scope.nivelacion).then(complete).catch(failed);
-
-                                                    function complete(data) {
-                                                        if (data.data.state === 0) {
+                                                console.log(($scope.nivelacion.submotivo == 7) && ($scope.status != 'Incompleto' || $scope.status != 'Pendiente') && ($scope.fecha_res >= hoy))
+                                                if (($scope.nivelacion.submotivo == 7) && ($scope.status != 'Incompleto')) {
+                                                    if(($scope.nivelacion.submotivo == 7) && ($scope.status != 'Pendiente')){
+                                                        Swal({
+                                                            type: 'error',
+                                                            title: 'La tarea esta en estado no valido'
+                                                        })
+                                                    }else{
+                                                        if (($scope.nivelacion.submotivo == 7) && ($scope.fecha_res >= hoy)) {
                                                             Swal({
                                                                 type: 'error',
-                                                                title: data.data.data.msj,
-                                                                timer: 4000
-                                                            }).then(function () {
-                                                                $route.reload();
+                                                                title: 'La tarea tiene una fecha mayor'
                                                             })
-                                                        } else {
-                                                            Swal({
-                                                                type: 'success',
-                                                                title: data.data.msj,
-                                                                timer: 4000
-                                                            }).then(function () {
-                                                                $route.reload();
-                                                            })
+                                                        }else{
+                                                            services.saveNivelation($scope.nivelacion).then(complete).catch(failed);
 
+                                                            function complete(data) {
+                                                                if (data.data.state === 0) {
+                                                                    Swal({
+                                                                        type: 'error',
+                                                                        title: data.data.data.msj,
+                                                                        timer: 4000
+                                                                    }).then(function () {
+                                                                        $route.reload();
+                                                                    })
+                                                                } else {
+                                                                    Swal({
+                                                                        type: 'success',
+                                                                        title: data.data.msj,
+                                                                        timer: 4000
+                                                                    }).then(function () {
+                                                                        $route.reload();
+                                                                    })
+
+                                                                }
+                                                            }
                                                         }
                                                     }
+                                                } else {
+                                                    if(($scope.nivelacion.submotivo == 7) && ($scope.fecha_res >= hoy )) {
+                                                        console.log(7)
+                                                        Swal({
+                                                            type: 'error',
+                                                            title: 'La tarea tiene una fecha mayor'
+                                                        })
+                                                    }else{
+                                                        services.saveNivelation($scope.nivelacion).then(complete).catch(failed);
+
+                                                        function complete(data) {
+                                                            if (data.data.state === 0) {
+                                                                Swal({
+                                                                    type: 'error',
+                                                                    title: data.data.data.msj,
+                                                                    timer: 4000
+                                                                }).then(function () {
+                                                                    $route.reload();
+                                                                })
+                                                            } else {
+                                                                Swal({
+                                                                    type: 'success',
+                                                                    title: data.data.msj,
+                                                                    timer: 4000
+                                                                }).then(function () {
+                                                                    $route.reload();
+                                                                })
+
+                                                            }
+                                                        }
+                                                    }
+
 
                                                     function failed(data) {
                                                         console.log(data)
@@ -5279,6 +5494,7 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
                                             }
                                         })
                                 }
+                        return;
 
                                 services.saveNivelation($scope.nivelacion).then(complete).catch(failed);
 
@@ -6523,7 +6739,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
     $scope.resumenContingencias = function (fechaInicial, fechafinal) {
         services.getresumenContingencias(fechaInicial, fechafinal).then(function (data) {
 
-            //console.log("resumenContingencias: ",data.data[0]);
+            console.log("resumenContingenciasasdasd: ",data.data[0]);
 
             $scope.dataresumenContingencias = data.data[0];
             console.log("dataresumenContingencias: ", $scope.dataresumenContingencias);
@@ -6699,10 +6915,37 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
     $scope.descargarContingencias = function (fechaInicial, fechafinal) {
         //console.log(datoExportar+$scope.indicadores.fecha);
         services.getexporteContingencias(fechaInicial, fechafinal, $rootScope.galletainfo).then(
-            function (data) {
+            function (datos) {
                 // console.log(data.data[0]);
                 //window.location.href = "tmp/" + data.data[0];
-                return data.data;
+                //return data.data;
+                var data = datos.data[0];
+                var array = typeof data != 'object' ? JSON.parse(data) : data;
+                var str = '';
+                var column = `ACCION, CIUDAD, CORREO, MAC_ENTRA, MAC_SALE, MOTIVO, OBSERVACIONES, PAQUETES, PEDIDO, PROCESO, PRODUCTO, REMITENTE, TECNOLOGIA, TIPO_EQUIPO, UEN, CONTRATO, PERFIL, LOGIN, LOGIN_GESTION, HORA_INGRESO, HORA_GESTION, OBSERVACIONES_GESTION, ESTADO, TIPIFICACION, FECHACLICKMARCA, LOGIN_PORTAFILO, HORA_GESTION_PORTAFOLIO, TIPIFICACION_PORTAFOLIO, OBSERVACIONES_GESTION_PORTAFOLIO, GENERAR_CR \r\n`;
+                str += column;
+                for (var i = 0; i < array.length; i++) {
+                    var line = '';
+                    for (var index in array[i]) {
+                        if (line != '') line += ','
+                        line += array[i][index];
+                    }
+
+                    str += line + '\r\n';
+                }
+                var dateCsv = new Date();
+                var yearCsv = dateCsv.getFullYear();
+                var monthCsv = (dateCsv.getMonth() + 1 <= 9) ? '0' + (dateCsv.getMonth() + 1) : (dateCsv.getMonth() + 1);
+                var dayCsv = (dateCsv.getDate() <= 9) ? '0' + dateCsv.getDate() : dateCsv.getDate();
+                var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
+
+
+                var blob = new Blob([str]);
+                var elementToClick = window.document.createElement("a");
+                elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
+                elementToClick.download = "Contingencias-" + fullDateCsv + ".csv";
+                elementToClick.click();
+                console.log(str);
             },
             function errorCallback(response) {
             }
@@ -7198,27 +7441,12 @@ app.controller('GestionsoportegponCtrl', function ($scope, $rootScope, $location
 
         services.marcarEngestionGpon(data, $rootScope.galletainfo).then(function (data) {
 
-            //console.log("marcarengestion: ",data);
-
-            if (data.data !== "") {
-                if (data.data[0] == "desbloqueado") {
-                    $scope.respuestaMarca = data.data[0][0];
+            console.log("marcarengestion: ",data);
+                if (data.data.state == 0) {
+                    //$scope.respuestaMarca = data.data[0][0];
                     //console.log("respuestaMarcaDesbloqueado: ",$scope.respuestaMarca);
                     swal({
-                        title: "Pedido Desbloqueado",
-                        type: "success",
-                        position: 'center',
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
-                    $scope.listarsoportegpon();
-                    //$scope.gestioncontingenciasPrueba();
-                    return;
-                } else {
-                    $scope.respuestaMarca = data.data[0][0];
-                    //console.log("respuestaMarcaOcupado: ",$scope.respuestaMarca);
-                    swal({
-                        title: "El pedido se encuentra bloqueado",
+                        title: data.data.msj,
                         type: "warning",
                         position: 'center',
                         showConfirmButton: false,
@@ -7226,21 +7454,20 @@ app.controller('GestionsoportegponCtrl', function ($scope, $rootScope, $location
                     });
                     $scope.listarsoportegpon();
                     //$scope.gestioncontingenciasPrueba();
-                    return;
+                } else {
+                    //$scope.respuestaMarca = data.data[0][0];
+                    //console.log("respuestaMarcaOcupado: ",$scope.respuestaMarca);
+                    swal({
+                        title: data.data.msj,
+                        type: "success",
+                        position: 'center',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                    $scope.listarsoportegpon();
+                    //$scope.gestioncontingenciasPrueba();
                 }
-            } else if (data.data == "") {
-                $scope.respuestaMarca = "";
-                swal({
-                    title: "Pedido Bloqueado",
-                    type: "success",
-                    position: 'center',
-                    showConfirmButton: false,
-                    timer: 3000
-                });
-                $scope.listarsoportegpon();
-                //$scope.gestioncontingenciasPrueba();
-                return;
-            }
+
         })
             .catch(err => console.log(err));
     }
@@ -7415,13 +7642,45 @@ app.controller('registrossoportegponCtrl', function ($scope, $http, $rootScope, 
         } else {
 
             services.expCsvRegistrosSoporteGpon($scope.RegistrosSoporteGpon, $rootScope.galletainfo).then(
-                function (data) {
+
+                function (datos) {
+
+                    var data = datos.data[0];
+                    var array = typeof data != 'object' ? JSON.parse(data) : data;
+                    var str = '';
+                    //var column = `ID, Pedido, Tarea, Tecnico, ID Tecnico, Fecha Solicitud, Fecha Gestion, Fecha Respuesta, Login Gestion, En Gestion, Proceso, Producto, Motivo, Area, Region, Tipo Tarea, Tecnologia, CRM, Departamento, Prueba SMNET, Foto?, Marcacion TAP, Direccion TAP, Valor TAP, Informacion Adicional, MAC Real CPE, Correa Marcacion, Observacion, Respuesta, ID Terreno, Tipificacion, Estado, ANS \r\n`;
+                    var column = `TAREA,ARPON,NAP,HILO,PORT_INTERNET_1,PORT_INTERNET_2,PORT_INTERNET_3,PORT_INTERNET_4,PORT_TELEVISION_1,PORT_TELEVISION_2,PORT_TELEVISION_3,PORT_TELEVISION_4,NUMERO_CONTACTO',NOMBRE_CONTACTO,UNEPEDIDOTASKTYPECATEGORY,UNEMUNICIPIO,UNEPRODUCTOS,DATOSCOLA,ENGINEER_ID,ENGINEER_NAME, MOBILE_PHONE,SERIAL,MAC,TIPO_EQUIPO,VELOCIDAD_NAVEGACION,USER_ID_FIREBASE,REQUEST_ID_FIREBASE,USER_IDENTIFICATION_FIREBASE,STATUS_SOPORTE,FECHA_SOLICITUD_FIREBASE,FECHA_CREADO,RESPUESTA_SOPORTE,OBSERVACION,OBSERVACION TERRENO,LOGIN,FECHA_RESPUESTA\r\n`;
+                    str += column;
+                    for (var i = 0; i < array.length; i++) {
+                        var line = '';
+                        for (var index in array[i]) {
+                            if (line != '') line += ','
+                            line += array[i][index];
+                        }
+
+                        str += line + '\r\n';
+                    }
+                    var dateCsv = new Date();
+                    var yearCsv = dateCsv.getFullYear();
+                    var monthCsv = (dateCsv.getMonth() + 1 <= 9) ? '0' + (dateCsv.getMonth() + 1) : (dateCsv.getMonth() + 1);
+                    var dayCsv = (dateCsv.getDate() <= 9) ? '0' + dateCsv.getDate() : dateCsv.getDate();
+                    var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
+
+
+                    var blob = new Blob([str]);
+                    var elementToClick = window.document.createElement("a");
+                    elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
+                    elementToClick.download = "RegistroGpon-" + fullDateCsv + ".csv";
+                    elementToClick.click();
+                    console.log(str);
                     // console.log(data.data[0]);
-                    window.location.href = "tmp/" + data.data[0];
-                    $scope.csvPend = true;
-                    $scope.counter = data.data[1];
+
+
+                    //window.location.href = "tmp/" + data.data[0];
+                    //$scope.csvPend = true;
+                    //$scope.counter = data.data[1];
                     //console.log(data.data);
-                    return data.data;
+                    //return data.data;
                 },
                 function errorCallback(response) {
                     $scope.errorDatos = "No hay datos.";
@@ -7626,18 +7885,39 @@ app.controller('registroscodigoincompletoCtrl', function ($scope, $http, $rootSc
     $scope.csvRegistros = function () {
         $scope.csvPend = false;
         if ($scope.RegistrosCodigoIncompleto.fechaini > $scope.RegistrosCodigoIncompleto.fechafin) {
-            alert("La fecha inicial debe ser menor que la inicial");
-            return;
+            Swal("La fecha inicial debe ser menor que la inicial")
         } else {
 
             services.expCsvRegistrosCodigoIncompleto($scope.RegistrosCodigoIncompleto, $rootScope.galletainfo).then(
-                function (data) {
-                    // console.log(data.data[0]);
-                    window.location.href = "tmp/" + data.data[0];
-                    $scope.csvPend = true;
-                    $scope.counter = data.data[1];
-                    //console.log(data.data);
-                    return data.data;
+                function (datos) {
+                    console.log(datos);
+                    var data = datos.data[0];
+                    var array = typeof data != 'object' ? JSON.parse(data) : data;
+                    var str = '';
+                    var column = `ID_CODIGO_INCOMPLETO, TAREA, NUMERO_CONTACTO, NOMBRE_CONTACTO, UNEPEDIDO, TASKTYPECATEGORY, UNEMUNICIPIO, UNEPRODUCTOS, ENGINEER_ID, ENGINEER_NAME, MOBILE_PHONE, STATUS_SOPORTE, FECHA_SOLICITUD_FIREBASE, FECHA_CREADO, RESPUESTA_GESTION, OBSERVACION, LOGIN, FECHA_RESPUESTA \r\n`;
+                    str += column;
+                    for (var i = 0; i < array.length; i++) {
+                        var line = '';
+                        for (var index in array[i]) {
+                            if (line != '') line += ','
+                            line += array[i][index];
+                        }
+
+                        str += line + '\r\n';
+                    }
+                    var dateCsv = new Date();
+                    var yearCsv = dateCsv.getFullYear();
+                    var monthCsv = (dateCsv.getMonth() + 1 <= 9) ? '0' + (dateCsv.getMonth() + 1) : (dateCsv.getMonth() + 1);
+                    var dayCsv = (dateCsv.getDate() <= 9) ? '0' + dateCsv.getDate() : dateCsv.getDate();
+                    var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
+
+
+                    var blob = new Blob([str]);
+                    var elementToClick = window.document.createElement("a");
+                    elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
+                    elementToClick.download = "RegistrosCodigoIncompleto-" + fullDateCsv + ".csv";
+                    elementToClick.click();
+                    console.log(str);
                 },
                 function errorCallback(response) {
                     $scope.errorDatos = "No hay datos.";
@@ -7706,7 +7986,7 @@ app.controller('brutalForceCtrl', function ($scope, $rootScope, $location, $rout
         var dia = tiempo.getDay();
 
         if (hora >= 7 && hora < 19 && dia != 7) {
-            if($rootScope.galletainfo.PERFIL == 7){
+            if($rootScope.galleta.perfil == 7){
                 return;
             }
             services.contadorPendientesBrutalForce().then(function(data) {
@@ -7836,7 +8116,7 @@ app.controller('brutalForceCtrl', function ($scope, $rootScope, $location, $rout
         console.log(dia);
         //if (hora >= 7 && hora < 19 && dia != 7) {
         if (hora >= 7 && hora < 19) {
-            if ($rootScope.galletainfo.PERFIL == 7) {
+            if ($rootScope.galleta.perfil == 7) {
                 return;
             }
             services.contadorPendientesBrutalForce().then(function (data) {
@@ -7939,7 +8219,7 @@ app.controller('brutalForceCtrl', function ($scope, $rootScope, $location, $rout
         }
     }
 
-    $scope.validarHorarioBF();
+    //$scope.validarHorarioBF();
 
     $scope.GuardarGestion = async function () {
 

@@ -309,7 +309,7 @@
                 </li>
 
                 <!--
-                <li class="dropdown" ng-show="galletainfo.PERFIL==2">
+                <li class="dropdown" ng-show="galletainfo.perfil==2">
                     <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Administracion <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="#!/tecnicos"><i class="fa fa-male" aria-hidden="true"></i>&nbsp; Técnicos</a></li>
@@ -394,7 +394,7 @@
                     </ul>
                 </li>
 
-                <!-- <li class="dropdown" ng-show="galletainfo.PERFIL==4">
+                <!-- <li class="dropdown" ng-show="galletainfo.perfil==4">
                     <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Administracion <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="#!/tecnicos"><i class="fa fa-male" aria-hidden="true"></i>&nbsp; Técnicos</a></li>
@@ -463,7 +463,7 @@
                             </a>
                         </li>
 
-                        <li ng-show="galletainfo.LOGIN == 'jflorezf' || galletainfo.LOGIN == 'jlvilla' || galletainfo.LOGIN == 'lfonnegr' || galletainfo.LOGIN == 'nfmartinez' || galletainfo.LOGIN == 'cvasquor' || galletainfo.LOGIN == 'jromang' || galletainfo.LOGIN == 'garcila' || galletainfo.LOGIN == 'jbaenaa' || galletainfo.LOGIN == 'jechavs'">
+                        <li ng-show="galletainfo.login == 'jflorezf' || galletainfo.login == 'jlvilla' || galletainfo.login == 'lfonnegr' || galletainfo.login == 'nfmartinez' || galletainfo.login == 'cvasquor' || galletainfo.login == 'jromang' || galletainfo.login == 'garcila' || galletainfo.login == 'jbaenaa' || galletainfo.login == 'jechavs'">
                             <a href="#!/contrasenaClick">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Contraseñas ClickSoftware
                             </a>
@@ -637,7 +637,7 @@
                                     <div class="col-md-12">
                                         <ul class="list-group">
                                             <div class="form-group">
-                                                <li class="list-group-item small" ><b>Login:</b><input type="text" ng-model="galletainfo.LOGIN" value="{{galletainfo.LOGIN}}" class="btn btn-default btn-xs" name="login" disabled></li>
+                                                <li class="list-group-item small" ><b>Login:</b><input type="text" ng-model="galletainfo.login" value="{{galletainfo.login}}" class="btn btn-default btn-xs" name="login" disabled></li>
                                             </div>
                                             <div class="form-group" ng-class="{ 'has-error' : contact_formpwd.pwdActual.$touched && contact_formpwd.pwdActual.$invalid}">
                                                 <li class="list-group-item small" ><b>Contraseña actual:</b><input type="password" ng-model="datos.pwdActual" class="btn btn-default btn-xs" name="pwdActual" capitalize required></li>

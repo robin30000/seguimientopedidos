@@ -17,17 +17,8 @@ class novedadesTecnico
     public function novedadesTecnico($data)
     {
 
-        $pagina = $data->page;
-        $datos  = $data->datos;
+        $this->_model->novedadesTecnico($data);
 
-        $response = $this->_model->novedadesTecnico($pagina, $datos);
-
-        $this->_utils->response($this->_utils->json([
-            'data'         => $response[0],
-            'contador'     => $response[1],
-            'totalPaginas' => $response[2],
-
-        ]), 201);
     }
 
     public function guardarNovedadesTecnico($data)

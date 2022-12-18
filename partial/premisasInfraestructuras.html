@@ -1,5 +1,5 @@
 <div class="panel panel-default">
-    <div class="panel-heading nav navbar-default">	
+    <div class="panel-heading nav navbar-default">
         <ul class="nav nav-tabs navbar-nav navbar-left">
             <li class="active">
                 <a data-toggle="tab" href="/#escalamientoinfraestructura">Escalamiento Infraestructura</a>
@@ -24,7 +24,7 @@
                             <i class="fa fa-cloud-download" aria-hidden="true"> </i>
                         </button>
                         &nbsp;
-                    </li>                   
+                    </li>
                     <li>
                         <button type="button" class="btn btn-default btn-xs" ng-click="gestionescalamientos()" title="Actualizar" data-toggle="tooltip"
                             data-placement="top" ng-disabled="loading">
@@ -86,13 +86,13 @@
                                                             </div>
                                                         </center>
                                                     </td>
-                                                    <td ng-show="data.login_gestion == galletainfo.LOGIN"><span ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.login_gestion == galletainfo.LOGIN}" >{{data.login_gestion}}</span>
+                                                    <td ng-show="data.login_gestion == galletainfo.login"><span ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.login_gestion == galletainfo.login}" >{{data.login_gestion}}</span>
                                                     </td>
-                        
-                                                    <td ng-show="data.login_gestion != galletainfo.LOGIN && data.engestion == 1"><span ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.login_gestion != galletainfo.LOGIN}" >En gestión</span>
+
+                                                    <td ng-show="data.login_gestion != galletainfo.login && data.engestion == 1"><span ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.login_gestion != galletainfo.login}" >En gestión</span>
                                                     </td>
-                        
-                                                    <td ng-show="data.login_gestion != galletainfo.LOGIN && data.engestion != 1"><span ng-class="{'label label-primary label-xsmall': data.engestion != 1}" ></span>
+
+                                                    <td ng-show="data.login_gestion != galletainfo.login && data.engestion != 1"><span ng-class="{'label label-primary label-xsmall': data.engestion != 1}" ></span>
                                                     </td>
                                                     <td>
                                                         <button type="button" class="btn btn-default btn-xs" ng-click="CopyPortaPapelesEscalamientoInfraestructura(data.pedido)" tooltip title="Copiar pedido">
@@ -112,7 +112,7 @@
                                                             <option value="Escalamiento ok nivel 2">Escalamiento ok nivel 2</option>
                                                             <option value="Escalamiento ok nivel 2 Prioridad">Escalamiento ok nivel 2 Prioridad</option>
                                                             <option value="Rechazado">Rechazado</option>
-                                                        </select>												
+                                                        </select>
                                                     </td>
                                                     <td>
                                                         <center>
@@ -128,13 +128,13 @@
                                                             </button>
                                                             <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-hide = "data.alerta == 'FALSE' || data._id != null" tooltip title="El pedido ya pasó por escalamiento anteriormente, por favor validar!" data-placement="top" data-html="true" data-selector="">
                                                                 <i class="fa fa-exclamation" style="color:red" aria-hidden="true"> </i>
-                                                            </button>													
+                                                            </button>
                                                         </center>
                                                     </td>
                                             </tr>
                                             </tbody>
                                         </table>
-                                    </div>	
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -156,7 +156,7 @@
                             <i class="fa fa-cloud-download" aria-hidden="true"> </i>
                         </button>
                         &nbsp;
-                    </li>                   
+                    </li>
                     <li>
                         <button type="button" class="btn btn-default btn-xs" ng-click="gestionescalamientos()" title="Actualizar" data-toggle="tooltip"
                             data-placement="top" ng-disabled="loading">
@@ -167,7 +167,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="panel-body">                
+            <div class="panel-body">
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-xs-12">
@@ -218,13 +218,13 @@
                                                             </div>
                                                         </center>
                                                     </td>
-                                                    <td ng-show="data.login_gestion == galletainfo.LOGIN"><span ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.login_gestion == galletainfo.LOGIN}" >{{data.login_gestion}}</span>
+                                                    <td ng-show="data.login_gestion == galletainfo.login"><span ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.login_gestion == galletainfo.login}" >{{data.login_gestion}}</span>
                                                     </td>
-                        
-                                                    <td ng-show="data.login_gestion != galletainfo.LOGIN && data.engestion == 1"><span ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.login_gestion != galletainfo.LOGIN}" >En gestión</span>
+
+                                                    <td ng-show="data.login_gestion != galletainfo.login && data.engestion == 1"><span ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.login_gestion != galletainfo.login}" >En gestión</span>
                                                     </td>
-                        
-                                                    <td ng-show="data.login_gestion != galletainfo.LOGIN && data.engestion != 1"><span ng-class="{'label label-primary label-xsmall': data.engestion != 1}" ></span>
+
+                                                    <td ng-show="data.login_gestion != galletainfo.login && data.engestion != 1"><span ng-class="{'label label-primary label-xsmall': data.engestion != 1}" ></span>
                                                     </td>
                                                     <td>
                                                         <button type="button" class="btn btn-default btn-xs" ng-click="CopyPortaPapelesEscalamientoInfraestructura(data.pedido)" tooltip title="Copiar pedido">
@@ -244,7 +244,7 @@
                                                             <option value="No tecnicos disponibles">No tecnicos disponibles</option>
                                                             <option value="ANS de mas de 20 horas">ANS de mas de 20 horas</option>
                                                             <option value="No agendado">No agendado</option>
-                                                        </select>												
+                                                        </select>
                                                     </td>
                                                     <td>
                                                         <center>
@@ -257,7 +257,7 @@
                                                             <button type="button" class="btn btn-default btn-xs" data-toggle="modal" ng-click="mostrarModalEscalamiento(data)" data-backdrop="static"
                                                                 tooltip title="Observaciones y guardar gestión" data-placement="top" data-html="true" data-selector="">
                                                                 <i class="fa fa-floppy-o" aria-hidden="true"> </i>
-                                                            </button>												
+                                                            </button>
                                                         </center>
                                                     </td>
                                             </tr>
@@ -272,7 +272,7 @@
             </div>
         </div>
     </div>
-</div>  
+</div>
 <br>
 <br>
 
@@ -286,7 +286,7 @@
 				<h4 class="modal-title">Observaciones del escalamiento</h4>
 			</div>
 			<div class="modal-body">
-				<textarea name="observaciones" id="observaciones" cols="78" rows="6" ng-model="gestionescala.observacionesescalamiento" placeholder="observaciones del escalamiento"></textarea>				
+				<textarea name="observaciones" id="observaciones" cols="78" rows="6" ng-model="gestionescala.observacionesescalamiento" placeholder="observaciones del escalamiento"></textarea>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-success" data-dismiss="modal" ng-click="guardarescalamiento(gestionescala)" data-dismiss="modal">Guardar</button>

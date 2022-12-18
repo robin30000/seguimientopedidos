@@ -2,7 +2,7 @@
 <div class="panel-heading nav navbar-default">
     <ul class="nav navbar-nav navbar-left">
         <b><i class="fa fa-key" aria-hidden="true"></i> Contraseñas ClickSoftware</b>
-    </ul>   
+    </ul>
 </div>
 <!-- Cuerpo de la página -->
 <div class="row">
@@ -17,18 +17,18 @@
                             <option value="cedula">Cédula</option>
                             <option value="login">Lógin</option>
                         </select>
-                                  
+
                         <input style="width:140px"  class="btn btn-default btn-xs " type="text" ng-model="contrasenasClick.buscar" placeholder="Buscar..." title="Ingrese dato" tooltip data-placement="bottom" ng-disabled="loading" select-on-click capitalize/>
                         <button type="button" class="btn btn-success btn-xs" ng-click="BuscarcontrasenasTecnicos(contrasenasClick)"   ng-disabled="loading" >
                         <i class="fa fa-search-plus" aria-hidden="true"> </i>
                         </button>
 
-                        <button type="button" ng-show="galletainfo.PERFIL !== '8'" class="btn btn-primary btn-xs" title="Exportar Registros" ng-click="csvcontrasenasTecnicos()"  ng-disabled="loading" title="Exportar" tooltip data-placement="top">
+                        <button type="button" ng-show="galletainfo.perfil !== '8'" class="btn btn-primary btn-xs" title="Exportar Registros" ng-click="csvcontrasenasTecnicos()"  ng-disabled="loading" title="Exportar" tooltip data-placement="top">
                         <i class="fa fa-cloud-download"  aria-hidden="true"> </i>
                         </button>
                     </div>
-                </div> 
-                <br>                      
+                </div>
+                <br>
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -42,7 +42,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="data in listaContrasenasClick">                            
+                        <tr ng-repeat="data in listaContrasenasClick">
                             <td>{{data.cedula}}</td>
                             <td>{{data.login}}</td>
                             <td>{{data.nombre}}</td>
@@ -50,7 +50,7 @@
                             <td>{{data.expiraCuenta}}</td>
                             <td>{{data.expirapsw}}</td>
                             <td>
-                                <button type="button" class="btn btn-default btn-xs" ng-click="updateModalContrasenasClick(data)" data-toggle="modal" data-target="#updateModalContrasenasClick" data-backdrop="static" ng-disabled="loading" popover data-trigger="hover" data-placement="left" data-html="true" data-selector="" data-content="Editar"> 
+                                <button type="button" class="btn btn-default btn-xs" ng-click="updateModalContrasenasClick(data)" data-toggle="modal" data-target="#updateModalContrasenasClick" data-backdrop="static" ng-disabled="loading" popover data-trigger="hover" data-placement="left" data-html="true" data-selector="" data-content="Editar">
                                 <i class="fa fa-pencil-square-o fa-2x aria-hidden=true"></i>
                                 </button>
                             </td>
@@ -70,7 +70,7 @@
   <div class="modal-content" >
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Editar Contraseña del Técnico <span class="label label-info">{{datos.nombre}}</span></h4>       
+        <h4 class="modal-title">Editar Contraseña del Técnico <span class="label label-info">{{datos.nombre}}</span></h4>
     </div>
     <div class="modal-body">
         <div class="container-fluid">
@@ -93,7 +93,7 @@
                             <div class="form-group">
                                 <li class="list-group-item small" ><b>Pwd Actual: </b><input type="text" class="btn btn-default btn-xs" ng-model="datos.password" value="{{datos.password}}" name="password" style="width:120px" disabled=""> </li>
                             </div>
-                        </div>                
+                        </div>
                     </ul>
                     <ul class="list-group" >
                         <div class="col-md-6">
@@ -107,18 +107,18 @@
                                 <li class="list-group-item small" ><b>Confirmar Contraseña: </b><input type="text" ng-model="datos.confnewpwd" class="btn btn-default btn-xs" name="confnewpwd" style="width:120px" ></li>
                             </div>
                         </div>
-             
+
                     </ul>
 
                 </div>
             </form>
-        </div>    
+        </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-success" ng-disabled="contact_form.$invalid" ng-click="editPwdTecnicos(datos)">Editar</button>
         <button type="button" ng-disabled="contact_form.$invalid" class="btn btn-default" data-dismiss="modal">Cerrar</button>
     </div>
   </div>
- </div>        
+ </div>
 </div>
 

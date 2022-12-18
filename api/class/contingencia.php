@@ -1,7 +1,10 @@
 <?php
-error_reporting(E_ALL);
+
 require_once 'utils.php';
 require_once '../model/ModelContingencia.php';
+
+//ini_set('error_reporting', E_ALL);
+//ini_set('display_errors', 1);
 
 class contingencia
 {
@@ -17,17 +20,17 @@ class contingencia
 
     public function resumencontingencias($data)
     {
-
+        $this->_model->resumencontingencias($data);
         //$fechaIni = $data->fechaini;
         //$fechaFin = $data->fechafin;
 
-        $fechaIni = "2021-11-27";
-        $fechaFin = "2021-11-27";
+        $fechaIni = $data['fechaini'];
+        $fechaFin = $data['fechafin'];
 
 
         $month = date('m', strtotime($fechaIni));
         $year  = date('Y', strtotime($fechaIni));
-        $day   = date("d", mktime(0, 0, 0, $month + 1, 0, $year));
+        //$day   = date("d", mktime(0, 0, 0, $month + 1, 0, $year));
 
         $diaFinal   = date('Y-m-d', mktime(0, 0, 0, $month, $day, $year));
         $diaInicial = date('Y-m-d', mktime(0, 0, 0, $month, 1, $year));
@@ -147,7 +150,8 @@ class contingencia
         $this->_model->graficaAcumulados($data);
     }
 
-    public function graficaAcumuladosrepa($data){
+    public function graficaAcumuladosrepa($data)
+    {
         $this->_model->graficaAcumuladosrepa($data);
     }
 }

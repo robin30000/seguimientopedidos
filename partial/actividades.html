@@ -201,12 +201,12 @@
 
                         <li
                           class="list-group-item small"
-                          ng-show="gestionmanual.accion == 'Finalizado' || 
-																	gestionmanual.accion == 'Enrutar' && gestionmanual.proceso != 'Mesa Infraestructura' || 
-																	gestionmanual.accion == 'Soporte tecnico' || 
-																	gestionmanual.accion == 'Enrutar/Pendiente Edatel' || 
-																	gestionmanual.accion == 'Cumplir' || 
-																	gestionmanual.accion == 'Incumplimiento' || 
+                          ng-show="gestionmanual.accion == 'Finalizado' ||
+																	gestionmanual.accion == 'Enrutar' && gestionmanual.proceso != 'Mesa Infraestructura' ||
+																	gestionmanual.accion == 'Soporte tecnico' ||
+																	gestionmanual.accion == 'Enrutar/Pendiente Edatel' ||
+																	gestionmanual.accion == 'Cumplir' ||
+																	gestionmanual.accion == 'Incumplimiento' ||
 																	gestionmanual.accion == 'Visita reprogramada' ||
 																	gestionmanual.accion == 'Contactar' ||
 																	gestionmanual.accion == 'Ingresar' ||
@@ -665,12 +665,12 @@
                             <div class="form-group">
                               <li
                                 class="list-group-item small"
-                                ng-show="gestionmanual.accion == 'Finalizado' || 
-																				gestionmanual.accion == 'Enrutar' && gestionmanual.proceso != 'Mesa Infraestructura' || 
-																				gestionmanual.accion == 'Soporte tecnico' || 
-																				gestionmanual.accion == 'Enrutar/Pendiente Edatel' || 
-																				gestionmanual.accion == 'Cumplir' || 
-																				gestionmanual.accion == 'Incumplimiento' || 
+                                ng-show="gestionmanual.accion == 'Finalizado' ||
+																				gestionmanual.accion == 'Enrutar' && gestionmanual.proceso != 'Mesa Infraestructura' ||
+																				gestionmanual.accion == 'Soporte tecnico' ||
+																				gestionmanual.accion == 'Enrutar/Pendiente Edatel' ||
+																				gestionmanual.accion == 'Cumplir' ||
+																				gestionmanual.accion == 'Incumplimiento' ||
 																				gestionmanual.accion == 'Visita reprogramada' ||
 																				gestionmanual.accion == 'Contactar' ||
 																				gestionmanual.accion == 'Ingresar' ||
@@ -938,7 +938,7 @@
                   <div class="form-group" ng-class="{ 'has-error' : contact_form.nombre.$touched && contact_form.nombre.$invalid}">
                     <li class="list-group-item small"><b>NOMBRE:</b><input type="text" ng-model="galletainfo.NOMBRE" class="btn btn-default btn-xs" capitalize required name="nombre" /></li>
                   </div>
-                  <li class="list-group-item small"><b>USUARIO:</b><input type="text" ng-model="galletainfo.LOGIN" class="btn btn-default btn-xs" readonly /></li>
+                  <li class="list-group-item small"><b>USUARIO:</b><input type="text" ng-model="galletainfo.login" class="btn btn-default btn-xs" readonly /></li>
                 </div>
                 <div class="col-md-4">
                   <div class="form-group" ng-class="{ 'has-error' : contact_form.id.$touched && contact_form.id.$invalid}">
@@ -948,7 +948,7 @@
                   </div>
                   <li class="list-group-item small">
                     <b>PERFIL:</b><br />
-                    <select ng-model="galletainfo.PERFIL" class="btn btn-default btn-xs grupo-select">
+                    <select ng-model="galletainfo.perfil" class="btn btn-default btn-xs grupo-select">
                       <option ng-repeat="f in perfiles" value="{{f.ID}}">
                         {{f.PERFIL}}
                       </option>

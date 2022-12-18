@@ -1,6 +1,9 @@
 <?php
 require_once '../class/conection.php';
 
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+
 class modelOtherServicesDos
 {
     private $_DB;
@@ -471,8 +474,6 @@ class modelOtherServicesDos
             $fechaIni  = $data['fechaIni'];
             $fechafin  = $data['fechafin'];
 
-            $filename = "Contingencias" . "_" . $fechaIni . "_" . $fechafin . "_" . $usuarioid . ".csv";
-
             $stmt = $this->_DB->prepare("SELECT C.accion,
                                                        C.ciudad,
                                                        C.correo,
@@ -509,60 +510,9 @@ class modelOtherServicesDos
             $stmt->execute([':fechaIni' => "$fechaIni 00:00:00", ':fechafin' => "$fechafin 23:59:59"]);
 
             if ($stmt->rowCount()) {
-                $fp       = fopen("../tmp/$filename", 'w');
-                $columnas = [
-                    'ACCION',
-                    'CIUDAD',
-                    'CORREO',
-                    'MAC_ENTRA',
-                    'MAC_SALE',
-                    'MOTIVO',
-                    'OBSERVACIONES',
-                    'PAQUETES',
-                    'PEDIDO',
-                    'PROCESO',
-                    'PRODUCTO',
-                    'REMITENTE',
-                    'TECNOLOGIA',
-                    'TIPO_EQUIPO',
-                    'UEN',
-                    'CONTRATO',
-                    'PERFIL',
-                    'LOGIN',
-                    'LOGIN_GESTION',
-                    'HORA_INGRESO',
-                    'HORA_GESTION',
-                    'OBSERVACIONES_GESTION',
-                    'ESTADO',
-                    'TIPIFICACION',
-                    'FECHACLICKMARCA',
-                    'LOGIN_PORTAFILO',
-                    'HORA_GESTION_PORTAFOLIO',
-                    'TIPIFICACION_PORTAFOLIO',
-                    'OBSERVACIONES_GESTION_PORTAFOLIO',
-                    'GENERAR_CR',
-                ];
 
-                fputcsv($fp, $columnas);
-
-                while ($row = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
-
-                    $row['observacion']                  = str_replace(",", ".", $row['observacion']);
-                    $row['observacion']                  = str_replace(";", ".", $row['observacion']);
-                    $row['observacion']                  = str_replace("\n", " ", $row['observacion']);
-                    $row['observContingencia']           = str_replace(",", ".", $row['observContingencia']);
-                    $row['observContingencia']           = str_replace(";", ".", $row['observContingencia']);
-                    $row['observContingencia']           = str_replace("\n", " ", $row['observContingencia']);
-                    $row['observContingenciaPortafolio'] = str_replace(",", ".", $row['observContingenciaPortafolio']);
-                    $row['observContingenciaPortafolio'] = str_replace(";", ".", $row['observContingenciaPortafolio']);
-                    $row['observContingenciaPortafolio'] = str_replace("\n", " ", $row['observContingenciaPortafolio']);
-
-                    fputcsv($fp, $row);
-                }
-
-                fclose($fp);
-
-                $response = [$filename, $stmt->rowCount(), 201];
+                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = [$result, 201];
 
             } else {
                 $response = ['No se encontraron datos', 400];
@@ -992,12 +942,12 @@ class modelOtherServicesDos
     public function csvRegistros($datos)
     {
         try {
-            session_start();
-            $usuarioid = $_SESSION['login'];
-            $fechaini  = $datos['fechaini'];
-            $fechafin  = $datos['fechafin'];
-            $concepto  = $datos['concepto'];
-            $buscar    = $datos['buscar'];
+            //session_start();
+            //$usuarioid = $_SESSION['login'];
+            $fechaini = $datos['fechaini'] ?? '';
+            $fechafin = $datos['fechafin'] ?? '';
+            $concepto = $datos['concepto'] ?? '';
+            $buscar   = $datos['buscar'] ?? '';
 
             if ($fechaini == "" && $fechafin == "") {
                 $fechaini = date("Y") . "-" . date("m") . "-" . date("d");
@@ -1040,35 +990,8 @@ class modelOtherServicesDos
             $stmt->execute();
 
             if ($stmt->rowCount()) {
-                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $fp     = fopen("../tmp/$filename", 'w');
-
-                $columnas = [
-                    'PEDIDO',
-                    'ID_TECNICO',
-                    'EMPRESA',
-                    'LOGIN_ASESOR',
-                    'DESPACHO',
-                    'OBSERVACIONES',
-                    'ACCION',
-                    'SUB_ACCION',
-                    'FECHA',
-                    'PROCESO',
-                    'PRODUCTO',
-                    'DURACION_LLAMADA',
-                    'IDLLAMADA',
-                    'PRUEBA_INTEGRADA',
-                    'PRUEBASMNET',
-                    'UNESOURCESYSTEM',
-                    'PENDIENTE',
-                    'DIAGNOSTICO',
-                ];
-
-                fputcsv($fp, $columnas);
-                fputcsv($fp, $result['observaciones']);
-                fclose($fp);
-
-                $response = [$filename, $stmt->rowCount(), 201];
+                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = [$result, 201];
             } else {
                 $response = ['No se encontraron datos', 400];
             }
@@ -1187,78 +1110,82 @@ class modelOtherServicesDos
         echo json_encode($response);
     }
 
-    public function Csvtecnico($datos)
+    public function Csvtecnico($params)
     {
         try {
             session_start();
+
             $usuarioid = $_SESSION['login'];
-            $fechaini  = $datos['fechaini'];
-            $fechafin  = $datos['fechafin'];
+            $datos     = $params['datos'] ?? '';
+            $fechaini  = $datos['fechaini'] ?? '';
+            $fechafin  = $datos['fechafin'] ?? '';
 
             if ($fechaini == "" && $fechafin == "") {
                 $fechaini = date("Y") . "-" . date("m") . "-" . date("d");
                 $fechafin = date("Y") . "-" . date("m") . "-" . date("d");
             }
 
-            // Crea Nombre del Archivo con Fecha de Inicio, Fin y Loguin
             if ($fechaini == $fechafin) {
                 $filename = "Cambio_Equipos" . "_" . $fechaini . ".csv";
             } else {
                 $filename = "Cambio_Equipos" . "_" . $fechaini . "_" . $fechafin . "_" . $usuarioid . ".csv";
             }
 
-            $stmt = $this->_DB->prepare("SELECT a.pedido            AS PEDIDO,
-                                                       a.id_tecnico        AS TECNICO,
-                                                       t.nombre            AS 'NOMBRE TECNICO',
-                                                       t.ciudad            AS 'CIUDAD',
-                                                       a.empresa           AS EMPRESA,
-                                                       a.tipo_pendiente    AS 'TIPO PENDIENTE',
-                                                       a.accion            AS 'ACCION',
-                                                       DAY(a.fecha)        AS DIA,
-                                                       MONTH(a.fecha)      AS MES,
-                                                       YEAR(a.fecha)       AS ANO,
-                                                       a.producto          AS PRODUCTO,
-                                                       a.plantilla         AS PLANTILLA,
-                                                       ce.hfc_equipo_sale  AS MACSALE,
-                                                       ce.hfc_equipo_entra AS MACENTRA,
-                                                       a.proceso           AS PROCESO
-                                                FROM registros a
-                                                         LEFT JOIN cambio_equipos ce ON ce.pedido = a.pedido
-                                                         LEFT JOIN tecnicos t ON t.identificacion = a.id_tecnico
-                                                WHERE a.fecha BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59'
-                                                  AND (a.tipo_pendiente = 'Cambio de Equipo' OR a.accion = 'Cambio Equipo' OR a.tipo_pendiente = '')
-                                                  AND a.proceso IN ('Reparaciones', 'Instalaciones')
-                                                  AND (ce.hfc_equipo_sale IS NOT NULL OR ce.hfc_equipo_entra IS NOT NULL)
-                                                GROUP BY a.pedido, a.id_tecnico, t.nombre, t.ciudad, a.empresa, a.tipo_pendiente, a.accion, DIA, MES, ANO, a.producto, a.plantilla, ce.hfc_equipo_sale, ce.hfc_equipo_entra,
-                                                         a.proceso;");
-            $stmt->execute([':fechaini' => "$fechaini 00:00:00", ':fechafin' => "$fechaini 23:59:59"]);
+            $query = "SELECT a.pedido AS PEDIDO, a.id_tecnico AS TECNICO, 
+            t.nombre AS 'NOMBRE TECNICO',
+            t.ciudad AS 'CIUDAD',
+            a.empresa AS EMPRESA, 
+            a.tipo_pendiente AS 'TIPO PENDIENTE', 
+            a.accion AS 'ACCION', 
+            DAY(a.fecha) AS DIA, 
+            MONTH(a.fecha) AS MES, 
+            YEAR(a.fecha) AS ANO, 
+            a.producto AS PRODUCTO, 
+            a.plantilla AS PLANTILLA,
+            ce.hfc_equipo_sale AS MACSALE,
+            ce.hfc_equipo_entra AS MACENTRA,
+            a.proceso AS PROCESO
+            FROM registros a 
+            LEFT JOIN cambio_equipos ce ON ce.pedido = a.pedido
+            LEFT JOIN tecnicos t ON t.identificacion = a.id_tecnico
+            WHERE a.fecha BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' AND (a.tipo_pendiente='Cambio de Equipo' OR a.accion='Cambio Equipo' OR a.tipo_pendiente='') AND a.proceso IN( 'Reparaciones', 'Instalaciones') AND (ce.hfc_equipo_sale IS NOT NULL OR ce.hfc_equipo_entra IS NOT NULL)
+            GROUP BY a.pedido , a.id_tecnico , t.nombre , t.ciudad , a.empresa , a.tipo_pendiente , a.accion , DIA, MES, ANO, a.producto , a.plantilla , ce.hfc_equipo_sale , ce.hfc_equipo_entra , a.proceso;";
 
-            if ($stmt->rowCount()) {
+            // echo "$query\n";
 
-                $fp = fopen("../tmp/$filename", 'w');
+            $stmt = $this->_DB->query($query);
+            $stmt->execute();
 
-                $columnas = [
-                    'PEDIDO',
-                    'TECNICO',
-                    'NOMBRE_TECNICO',
-                    'CIUDAD',
-                    'EMPRESA',
-                    'TIPO_PENDIENTE',
-                    'DIA',
-                    'MES',
-                    'ANO',
-                    'PRODUCTO',
-                    //'PLANTILLA',
-                    'MOTIVO',
-                    'MAC_SALE',
-                    'MAC_ENTRA',
-                    'PROCESO',
-                ];
+            /*$columnas = [
+                'PEDIDO',
+                'TECNICO',
+                'NOMBRE_TECNICO',
+                'CIUDAD',
+                'EMPRESA',
+                'TIPO_PENDIENTE',
+                'DIA',
+                'MES',
+                'ANO',
+                'PRODUCTO',
+                //'PLANTILLA',
+                'MOTIVO',
+                'MAC_SALE',
+                'MAC_ENTRA',
+                'PROCESO',
+            ];*/
 
-                fputcsv($fp, $columnas);
 
-                while ($obj = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
-                    $pedido         = $obj['PEDIDO'];
+            if ($stmt->rowCount() > 0) {
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                //////////////////Si existen datos que cumplen las condiciones
+                /*foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $obj) {
+                    //while ($obj = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
+                    //////////////////Ciclo para cada pedido encontrado
+                    //var_dump($obj);exit();
+
+
+                    $pedido = $obj['PEDIDO'];
+
                     $tecnico        = $obj['TECNICO'];
                     $nombre_tecnico = $obj['NOMBRE TECNICO'];
                     $ciudad         = $obj['CIUDAD'];
@@ -1271,11 +1198,18 @@ class modelOtherServicesDos
                     $producto  = $obj['PRODUCTO'];
                     $plantilla = $obj['PLANTILLA'];
 
-                    $sep        = ",";
+                    $sep = ",";
+
                     $plantilla2 = str_replace("*", ",", $plantilla);
-                    $pieces     = explode($sep, $plantilla2);
-                    $size       = count($pieces);
-                    $MOTIVO     = "";
+
+                    $pieces = explode($sep, $plantilla2);
+
+                    $size = count($pieces);
+
+                    $MOTIVO = "";
+                    /* $MAC_SALE = "";
+                    $MARCA_SALE = "";
+                    $REFERENCIA_SALE = "";
 
                     $MAC_SALE  = $obj['MACSALE'];
                     $MAC_ENTRA = $obj['MACENTRA'];
@@ -1372,26 +1306,36 @@ class modelOtherServicesDos
                                 continue;
                             }
                         }
-                    }
+                        //echo " $pedido,$tecnico,$nombre_tecnico,$ciudad,$empresa,$tipo_pendiente,$dia,$mes,$ano,$producto,$MOTIVO, $MAC_SALE,$MARCA_SALE,$REFERENCIA_SALE \n";
 
-                    fputcsv($fp, [$pedido, $tecnico, $nombre_tecnico, $ciudad, $empresa, $tipo_pendiente, $dia, $mes, $ano, $producto, $MOTIVO, $MAC_SALE, $MAC_ENTRA, $PROCESO]);
+                    } //END FOR
+                    //echo " $pedido,$tecnico,$nombre_tecnico,$ciudad,$empresa,$tipo_pendiente,$dia,$mes,$ano,$producto,$MOTIVO, $MAC_SALE,$MARCA_SALE,$REFERENCIA_SALE \n";
 
-                    $response = [$filename, $stmt->rowCount(), 201];
-                }
-
+                    /* fputcsv($fp, array($pedido, $tecnico, $nombre_tecnico, $ciudad, $empresa, $tipo_pendiente, $dia, $mes, $ano, $producto, $MOTIVO, $MAC_SALE, $MARCA_SALE, $REFERENCIA_SALE)); */
+                //fputcsv($fp, [$pedido, $tecnico, $nombre_tecnico, $ciudad, $empresa, $tipo_pendiente, $dia, $mes, $ano, $producto, $MOTIVO, $MAC_SALE, $MAC_ENTRA, $PROCESO]);
+                //$response = [$pedido, $tecnico, $nombre_tecnico, $ciudad, $empresa, $tipo_pendiente, $dia, $mes, $ano, $producto, $MOTIVO, $MAC_SALE, $MAC_ENTRA, $PROCESO];
+                /*
+                                } //ciclo grande*/
+                $response = [$result];
             } else {
-                $response = ['No se encontraron datos', 400];
+                $response = [];
             }
+
+
+            //fclose($fp);
 
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+
         $this->_DB = null;
         echo json_encode($response);
     }
 
-    public function diferenciasClick($fecha)
-    {
+    public
+    function diferenciasClick(
+        $fecha
+    ) {
         try {
             $fechaanterior = date('Y-m-d', strtotime('-1 day', strtotime($fecha)));
 
@@ -1474,8 +1418,10 @@ class modelOtherServicesDos
         echo json_encode($response);
     }
 
-    public function observacionAsesor($pedido)
-    {
+    public
+    function observacionAsesor(
+        $pedido
+    ) {
         try {
 
             $query = "SELECT ObservacionAsesor FROM BrutalForce where PedidoDespacho = :pedido";
@@ -1495,7 +1441,8 @@ class modelOtherServicesDos
         echo json_encode($response);
     }
 
-    public function contadorpedientesBF()
+    public
+    function contadorpedientesBF()
     {
         try {
             $stmt = $this->_DB->query("SELECT (SELECT COUNT(PedidoDespacho)
@@ -1520,11 +1467,13 @@ class modelOtherServicesDos
         echo json_encode($response);
     }
 
-    public function seguimientoClick($fecha)
-    {
+    public
+    function seguimientoClick(
+        $fecha
+    ) {
         try {
-            $mes   = date("m", strtotime($fecha));
-            $anio  = date("Y", strtotime($fecha));
+            $mes  = date("m", strtotime($fecha));
+            $anio = date("Y", strtotime($fecha));
 
             $query = "TRUNCATE TABLE seguimiento_Click_resumen";
             $stmt  = $this->_DB->query($query);
@@ -1810,8 +1759,10 @@ class modelOtherServicesDos
         echo json_encode($response);
     }
 
-    public function registrosComercial($data)
-    {
+    public
+    function registrosComercial(
+        $data
+    ) {
         try {
             $pagina   = $data['page'];
             $concepto = $data['concepto'];

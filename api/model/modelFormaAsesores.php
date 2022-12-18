@@ -21,7 +21,7 @@ class ModelFormaAsesores
                                       ORDER BY CIUDAD ASC");
             $stmt->execute();
             if ($stmt->rowCount()) {
-                $response = [$stmt->fetchAll(PDO::FETCH_ASSOC),201];
+                $response = [$stmt->fetchAll(PDO::FETCH_ASSOC), 201];
             } else {
                 $response = '';
             }
@@ -30,7 +30,7 @@ class ModelFormaAsesores
         } catch (PDOException $e) {
 
         }
-        $this->_DB=null;
+        $this->_DB = null;
         echo json_encode($response);
     }
 
@@ -46,7 +46,7 @@ class ModelFormaAsesores
             $stmt->execute();
 
             if ($stmt->rowCount()) {
-                $response = [$stmt->fetchAll(PDO::FETCH_ASSOC),201];
+                $response = [$stmt->fetchAll(PDO::FETCH_ASSOC), 201];
             } else {
                 $response = '';
             }
@@ -56,7 +56,7 @@ class ModelFormaAsesores
 
         }
         $this->_DB = null;
-        echo json_encode( $response);
+        echo json_encode($response);
     }
 
     public function regionesTip()
@@ -75,6 +75,7 @@ class ModelFormaAsesores
 
         }
         $this->_DB = null;
+
         return $response;
     }
 
@@ -94,6 +95,7 @@ class ModelFormaAsesores
 
         }
         $this->_DB = null;
+
         return $response;
 
     }
@@ -125,45 +127,45 @@ class ModelFormaAsesores
             $parametro = " and $concepto = '$buscar'";
         }
 
-        /*echo "SELECT a.id, a.pedido, " .
-             " (select nombre from tecnicos " .
-             "where a.id_tecnico = identificacion limit 1) tecnico, " .
-             "trim(a.accion) AS accion, " .
-             "a.asesor, " .
-             "a.fecha, a.duracion, a.proceso, " .
-             "a.observaciones, a.llamada_id, a.id_tecnico, a.empresa, a.despacho, a.producto, " .
-             "a.accion, trim(a.tipo_pendiente) tipo_pendiente, (select ciudad from tecnicos " .
-             "where a.id_tecnico = identificacion limit 1) ciudad, a.plantilla " .
-             "FROM registros a " .
-             "where 1=1 " .
-             " $parametro " .
-             " and a.fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59') " .
-             "and asesor <> 'IVR'" .
-             " order by a.fecha DESC " .
-             " limit 100 offset $pagina ";
-        exit();*/
-
         try {
             $stmt = $this->_DB->query("SELECT a.id, a.pedido, " .
-                                        " (select nombre from tecnicos " .
-                                        "where a.id_tecnico = identificacion limit 1) tecnico, " .
-                                        "trim(a.accion) AS accion, " .
-                                        "a.asesor, " .
-                                        "a.fecha, a.duracion, a.proceso, " .
-                                        "a.observaciones, a.llamada_id, a.id_tecnico, a.empresa, a.despacho, a.producto, " .
-                                        "a.accion, trim(a.tipo_pendiente) tipo_pendiente, (select ciudad from tecnicos " .
-                                        "where a.id_tecnico = identificacion limit 1) ciudad, a.plantilla " .
-                                        "FROM registros a " .
-                                        "where 1=1 $parametro " .
-                                        " and a.fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59') " .
-                                        "and asesor <> 'IVR'" .
-                                        " order by a.fecha DESC " .
-                                        " limit 100 offset $pagina");
+                                      " (select nombre from tecnicos " .
+                                      "where a.id_tecnico = identificacion limit 1) tecnico, " .
+                                      "trim(a.accion) AS accion, " .
+                                      "a.asesor, " .
+                                      "a.fecha, a.duracion, a.proceso, " .
+                                      "a.observaciones, a.llamada_id, a.id_tecnico, a.empresa, a.despacho, a.producto, " .
+                                      "a.accion, trim(a.tipo_pendiente) tipo_pendiente, (select ciudad from tecnicos " .
+                                      "where a.id_tecnico = identificacion limit 1) ciudad, a.plantilla " .
+                                      "FROM registros a " .
+                                      "where 1=1 $parametro " .
+                                      " and a.fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59') " .
+                                      "and asesor <> 'IVR'" .
+                                      " order by a.fecha DESC " .
+                                      " limit 100 offset $pagina");
 
             $stmt->execute();
 
+            $queryCount = " select count(*) as Cantidad from registros a " .
+                          " where 1=1 " .
+                          " and a.fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59') " .
+                          " $parametro ";
+
+            //echo $queryCount;
+
+            $rr = $this->_DB->query($queryCount);
+
+            $counter = 0;
+            if ($rr->rowCount() > 0) {
+                if ($row = $rr->fetchAll(PDO::FETCH_ASSOC)) {
+                    $counter = $row['Cantidad'];
+                }
+            }
+
+
             if ($stmt->rowCount()) {
-                $response = [$stmt->fetchAll(PDO::FETCH_ASSOC), $stmt->rowCount()];
+                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = [$result, $counter];
             } else {
                 $response = 0;
             }
@@ -171,6 +173,7 @@ class ModelFormaAsesores
             var_dump($e->getMessage());
         }
         $this->_DB = null;
+
         return $response;
 
 
