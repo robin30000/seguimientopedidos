@@ -24,7 +24,7 @@ class contingencia
         //$fechaIni = $data->fechaini;
         //$fechaFin = $data->fechafin;
 
-        $fechaIni = $data['fechaini'];
+        /*$fechaIni = $data['fechaini'];
         $fechaFin = $data['fechafin'];
 
 
@@ -73,7 +73,7 @@ class contingencia
                 $resultadoCP,
                 $resultadoTV,
                 $resultadoInTo
-            );*/
+            );
 
             $this->_utils->response($this->_utils->json([
                 $resultado,
@@ -87,8 +87,7 @@ class contingencia
             ]), 201);
         } else {
             $this->_utils->response($this->_utils->json('$error'), 400);
-        }
-
+        }*/
 
         /*$this->_utils->json_response($data, 201);
 
