@@ -67,6 +67,7 @@ class modelNivelacion
             '9' => 'Pedido cancelado',
             '10' => 'Inicio despues de las 9:00am',
             '11' => 'Abrir Pedido',
+            '12' => 'Técnico no es del proceso',
             default => '',
         };
 
