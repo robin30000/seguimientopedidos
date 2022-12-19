@@ -5206,8 +5206,12 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
 
         function complete(data) {
 
-            $scope.nivelacion.contingenciaOK = data.data.realizado;
-            $scope.nivelacion.contingenciaPend = data.data.pendiente;
+            //$scope.nivelacion.contingenciaOK = data.data.realizado;
+            //$scope.nivelacion.contingenciaPend = data.data.pendiente;
+
+
+            $scope.nivelacion.contingenciaOK = data.data.pendiente;
+            $scope.nivelacion.contingenciaPend =  data.data.realizado;
         }
 
         function failed(data) {

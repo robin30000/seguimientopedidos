@@ -66,6 +66,7 @@ class modelNivelacion
             '8' => 'Reabrir pedido',
             '9' => 'Pedido cancelado',
             '10' => 'Inicio despues de las 9:00am',
+            '11' => 'Abrir Pedido',
             default => '',
         };
 
