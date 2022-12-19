@@ -1418,7 +1418,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
             method: 'deleteregistrosCarga',
             data: idCarga
         }
-        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' + data);
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php', data);
     };
 
     obj.getAccionesoffline = function (producto) {
@@ -1426,7 +1426,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
             method: 'Accionesoffline',
             data: producto
         }
-        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' + data);
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php', data);
     }
 
     obj.getAcciones = function (proceso) {
@@ -1434,7 +1434,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
             method: 'acciones',
             data: proceso
         }
-        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' + data);
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php', data);
     };
 
     obj.getSubAcciones = function (proceso, accion) {
@@ -1456,7 +1456,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
                 'UNESourceSystem': UNESourceSystem
             }
         }
-        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' + data);
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php', data);
     };
 
     obj.getDiagnosticos = function (producto, accion) {
@@ -1467,7 +1467,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
                 'accion': accion
             }
         }
-        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php' + data);
+        return $http.post(serviceBase1 + 'otrosServiciosDosCtrl.php', data);
     };
 
 
@@ -2002,7 +2002,8 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         $scope.listadoAcciones = {};
 
         services.getAcciones($scope.gestionmanual.proceso).then(function (data) {
-            $scope.listadoAcciones = data.data[0];
+            console.log(' pppp', data.data[0][0]);
+            $scope.listadoAcciones = data.data[0][0];
             $scope.validaraccion = true;
             $scope.validarsubaccion = false;
         });
@@ -8781,7 +8782,6 @@ app.controller('AlarmasCtrl', function ($scope, $http, $rootScope, $location, $r
     };
 
     $scope.calcularAcciones = function (proceso) {
-        console.log("entro calcularAcciones");
         $scope.listadoAcciones = {};
         $scope.validarsubaccion = false;
         if (proceso == "") {

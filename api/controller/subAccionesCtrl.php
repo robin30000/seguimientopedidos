@@ -7,8 +7,8 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token , Autho
 
 $data = json_decode(file_get_contents("php://input"),true);
 
-if (isset($data['data'])) {
-    switch ($data['data']) {
+if (isset($data['method'])) {
+    switch ($data['method']) {
         case 'SubAcciones':
             require_once '../class/subAcciones.php';
             $user = new subAcciones();
