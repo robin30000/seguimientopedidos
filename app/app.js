@@ -1943,7 +1943,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
             services.editarUsuario(editarUser).then(
                 function (data) {
                     // $errorDatos=null;
-                    $scope.respuesta = "Usuario " + editarUser.LOGIN + " actualizado exitosamente";
+                    $scope.respuesta = "Usuario " + editarUser.login + " actualizado exitosamente";
                     //console.log($scope.respuesta);
                     //$rootScope.nombre=$scope.respuesta[0].NOMBRE;
                     $scope.update = true;
@@ -5036,7 +5036,7 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
     $scope.uploadFile = function () {
         $scope.carga_ok = true;
         var file = $scope.myFile;
-        $scope.user = $rootScope.galletainfo.LOGIN;
+        $scope.user = $rootScope.galletainfo.login;
         $scope.name = '';
         //   console.log('file is ');
         // console.dir(file);
@@ -6611,7 +6611,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
         services.marcarEnGestionPorta(data, $rootScope.galletainfo).then(function (data) {
 
             //console.log("marcarEnGestionPorta: ",data.data[0]);
-            //console.log("marcarEnGestionPorta: ",data.config.data.login.LOGIN);
+            //console.log("marcarEnGestionPorta: ",data.config.data.login.login);
 
             if (data.data !== "") {
                 if (data.data[0] == "desbloqueado") {
@@ -6682,7 +6682,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
     //      services.marcarEnGestionCEQPorta(data, $rootScope.galletainfo).then(function (data) {
 
     //          //console.log("marcarEnGestionPorta: ",data.data[0]);
-    //          console.log("marcarEnGestionCEQPorta: ",data.config.data.login.LOGIN);
+    //          console.log("marcarEnGestionCEQPorta: ",data.config.data.login.login);
 
     //          if (data.data !== "") {
     //              if (data.data[0] == "desbloqueado") {
@@ -6827,7 +6827,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             /*SE CUENTAN LOS USUARIOS ÚNICOS, PARA SABER LA CANTIDAD REAL DE PERSONAS QUE ESTAN GESTIONANDO CONTINGENCIAS*/
             $scope.Total_Personas_GestionandoTV = $scope.LoginsGestionandoTV.filter((v, i, a) => a.indexOf(v) === i).length;
 
-            /*SE HACE EL CONTEO POR LOGIN YA QUE HAY PERSONAS QUE MARCAN PARA GESTIONAR MAS DE UNA CONTINGENCIA*/
+            /*SE HACE EL CONTEO POR login YA QUE HAY PERSONAS QUE MARCAN PARA GESTIONAR MAS DE UNA CONTINGENCIA*/
             const cantAnalistasTV = $scope.LoginsGestionandoTV.reduce((contadorAnalistasTV, indiceTV) => {
                 contadorAnalistasTV[indiceTV] = (contadorAnalistasTV[indiceTV] || 0) + 1;
                 return contadorAnalistasTV;
@@ -6870,7 +6870,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             /*SE CUENTAN LOS USUARIOS ÚNICOS, PARA SABER LA CANTIDAD REAL DE PERSONAS QUE ESTAN GESTIONANDO CONTINGENCIAS*/
             $scope.Total_Personas_GestionandoInternet = $scope.LoginsGestionandoInternet.filter((v, i, a) => a.indexOf(v) === i).length;
 
-            /*SE HACE EL CONTEO POR LOGIN YA QUE HAY PERSONAS QUE MARCAN PARA GESTIONAR MAS DE UNA CONTINGENCIA*/
+            /*SE HACE EL CONTEO POR login YA QUE HAY PERSONAS QUE MARCAN PARA GESTIONAR MAS DE UNA CONTINGENCIA*/
             const cantAnalistasInt = $scope.LoginsGestionandoInternet.reduce((contadorAnalistasInternet, indiceInternet) => {
                 contadorAnalistasInternet[indiceInternet] = (contadorAnalistasInternet[indiceInternet] || 0) + 1;
                 return contadorAnalistasInternet;
@@ -8396,7 +8396,7 @@ app.controller('usuariosCtrl', function ($scope, $http, $rootScope, $location, $
             services.editarUsuario(datos).then(
                 function (data) {
                     // $errorDatos=null;
-                    $scope.respuestaupdate = "Usuario " + datos.LOGIN + " actualizado exitosamente";
+                    $scope.respuestaupdate = "Usuario " + datos.login + " actualizado exitosamente";
                     //  console.log(datos);
                     //$rootScope.nombre=$scope.respuesta[0].NOMBRE;
                     //$location.path('/home/');
@@ -8426,7 +8426,7 @@ app.controller('usuariosCtrl', function ($scope, $http, $rootScope, $location, $
         // Temporalmente deshabilitado
         // services.deleteUsuario($scope.idBorrar).then(
         //     function(data) {
-        //         $scope.respuestadelete = "Usuario " + $rootScope.datos.LOGIN + " eliminado exitosamente";
+        //         $scope.respuestadelete = "Usuario " + $rootScope.datos.login + " eliminado exitosamente";
         //     },
         //     function errorCallback(response) {
         //         $scope.errorDatos = "No se borro";
@@ -8516,7 +8516,7 @@ app.controller('tecnicosCtrl', function ($scope, $http, $rootScope, $location, $
         $rootScope.datos = datos;
         $scope.idTecnico = datos.ID;
         $scope.TecnicoNom = datos.NOMBRE;
-        $scope.UsuarioLog = datos.LOGIN;
+        $scope.UsuarioLog = datos.login;
         $rootScope.TituloModal = "Editar Técnico con el ID:";
         //console.log($scope.editaInfo);
     };
@@ -8570,7 +8570,7 @@ app.controller('tecnicosCtrl', function ($scope, $http, $rootScope, $location, $
 
 app.controller('turnosCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $cookieStore, $timeout, services, fileUpload) {
     $scope.errorDatos = null;
-    $scope.turnos = [{id: '1', fecha: '', horaInicio: '', horaFin: '', usuariocrea: $rootScope.galletainfo.LOGIN}];
+    $scope.turnos = [{id: '1', fecha: '', horaInicio: '', horaFin: '', usuariocrea: $rootScope.galletainfo.login}];
     $scope.cumple = {};
     $scope.editar = false;
     var tiempo = new Date().getTime();
@@ -8585,7 +8585,7 @@ app.controller('turnosCtrl', function ($scope, $http, $rootScope, $location, $ro
 
     $scope.ingresoTurnos = function () {
         services.getguardarTurnos($scope.turnos).then(function (data) {
-            $scope.turnos = [{id: '1', fecha: '', horaInicio: '', horaFin: '', usuariocrea: $rootScope.galletainfo.LOGIN}];
+            $scope.turnos = [{id: '1', fecha: '', horaInicio: '', horaFin: '', usuariocrea: $rootScope.galletainfo.login}];
             $scope.obtenerlistaTurnos();
         });
     }
@@ -8648,7 +8648,7 @@ app.controller('turnosCtrl', function ($scope, $http, $rootScope, $location, $ro
     $scope.addNuevaNovedad = function (usuario) {
         var newItemNo = $scope.turnos.length + 1;
 
-        $scope.turnos.push({'id': +newItemNo, fecha: '', horaIni: '', horaFin: '', usuariocrea: $rootScope.galletainfo.LOGIN});
+        $scope.turnos.push({'id': +newItemNo, fecha: '', horaIni: '', horaFin: '', usuariocrea: $rootScope.galletainfo.login});
         console.log($scope.turnos);
         //console.log(usuario);
         //$scope.crearnovedad();
