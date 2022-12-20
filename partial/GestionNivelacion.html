@@ -138,6 +138,7 @@
                                             <th class="text-center">Marcar</th>
                                             <th class="text-center">Login</th>
                                             <th class="text-center">Tarea</th>
+                                            <th class="text-center">Hora ingreso</th>
                                             <th class="text-center">Proceso</th>
                                             <th class="text-center">Zona</th>
                                             <th class="text-center">Sub zona</th>
@@ -154,7 +155,7 @@
                                         </thead>
                                         <tbody>
                                         <tr ng-repeat="data in GestionNivelacion.respuestaDatos track by $index"
-                                            ng-class="{'resaltado15min': quinceminutos[$index] === 'si' }">
+                                            ng-class="{'resaltado15min': quinceminutos[$index] != 'no' }">
                                             <td class="text-center">
                                                 <input type="checkbox" ng-model="data.bloqueo" name="bloqueo" ng-change="marcarEnGestionNivelacion(data.id)">
                                                 <!--<div class="loadingio-spinner-ellipsis-3nun7cb96ao" ng-show="data.bloqueo == 1">
@@ -197,6 +198,7 @@
                                                 </button>
                                             </td>
 
+                                            <td class="text-center">{{data.fecha_ingreso}}</td>
                                             <td class="text-center">{{data.proceso}}</td>
                                             <td class="text-center">{{data.zona}}</td>
                                             <td class="text-center">{{data.zubzona}}</td>
@@ -426,22 +428,6 @@
                                 <td class="text-center">{{data.fecha_gestion}}</td>
                                 <td class="text-center">{{data.fecha_respuesta}}</td>
                                 <td class="text-center">{{data.observaciones}}</td>
-                                <td class="text-center">
-                                    <!-- data-trigger="hover" para que el popover aparezca y desaparezca -->
-                                    <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
-                                            data-placement="left" data-html="true" data-selector="" title="Observacion ingreso" data-content="{{data.observacion}}">
-                                        <i class="fa fa-commenting" aria-hidden="true"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
-                                            title="Observacion gestión" data-placement="left" data-html="true" data-selector="" data-content="{{data.observContingencia}}">
-                                        <i class="fa fa-commenting" aria-hidden="true"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
-                                            title="Observacion gestión Corregir Porta" data-placement="left" data-html="true" data-selector=""
-                                            data-content="{{data.observContingenciaPortafolio}}">
-                                        <i class="fa fa-commenting" aria-hidden="true"></i>
-                                    </button>
-                                </td>
                             </tr>
                             </tbody>
                         </table>

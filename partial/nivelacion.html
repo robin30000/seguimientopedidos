@@ -93,7 +93,7 @@
                             </form>
                         </div>
 
-                        <div class="col-md-6" ng-hide="nivelacion.solicitud == 3">
+                        <div class="col-md-6" ng-hide="nivelacion.solicitud == 1 || nivelacion.motivo == 6 ||  nivelacion.motivo == 7 || nivelacion.motivo == 8 || nivelacion.motivo == 9 || nivelacion.motivo == 10">
                             <form action=" " method="post" name="contact_form3" ng-show="visible" id="contact_form3">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -156,7 +156,7 @@
                                         <ul class="list-group">
                                             <div class="form-group" ng-class="{'has-error' : contact_form2.nombreTecnico.$touched && contact_form2.nombreTecnico.$invalid}">
                                                 <li class="list-group-item small"><b>Nombre Técnico: </b><br>
-                                                    <input class="btn btn-default btn-xs" type="text" ng-model="nivelacion.nombreTecnico" name="pedido" required readonly>
+                                                    <input class="btn btn-default btn-xs" type="text" ng-model="nivelacion.nombreTecnico" name="pedido" readonly>
                                                 </li>
                                             </div>
                                         </ul>
@@ -168,7 +168,7 @@
                                         <ul class="list-group">
                                             <div class="form-group" ng-class="{'has-error' : contact_form2.idTecnico.$touched && contact_form2.idTecnico.$invalid}">
                                                 <li class="list-group-item small"><b>CC Técnico: </b><br>
-                                                    <input class="btn btn-default btn-xs" type="text" ng-model="nivelacion.idTecnico" name="idTecnico" required readonly>
+                                                    <input class="btn btn-default btn-xs" type="text" ng-model="nivelacion.idTecnico" name="idTecnico" readonly>
                                                 </li>
                                             </div>
                                         </ul>
@@ -254,7 +254,7 @@
                                                         <option value="8" ng-show="nivelacion.solicitud == 3">Reabrir pedido</option>
                                                         <option value="9" ng-show="nivelacion.solicitud == 3">Pedido cancelado</option>
                                                         <option value="10" ng-show="nivelacion.solicitud == 3">Inicio después de las 9:00am</option>
-                                                        <option value="11" ng-show="nivelacion.solicitud == 3">Abrir Pedido</option>
+                                                        <option value="11" ng-show="nivelacion.solicitud == 3">Pedido Abierto</option>
                                                         <option value="12" ng-show="nivelacion.solicitud == 2">Técnico no es del proceso</option>
                                                     </select>
                                                 </li>
@@ -363,13 +363,16 @@
                                                 data-content="{{data.observContingenciaPortafolio}}"><i class="fa fa-commenting" aria-hidden="true"></i></button>
 
                                     </a></h5>
+
+
                                 </ul>
+                                <span class="label label-info">En gestion: {{nivelacion.gestionTotal}}</span>&nbsp;&nbsp;
                             </div>
                         </div>
                         <div class="panel-heading">
                             <h5>
-                                <span class="label label-success">OK: {{nivelacion.contingenciaOK}}</span>&nbsp;&nbsp;
-                                <span class="label label-warning">Pendiente: {{nivelacion.contingenciaPend}}</span>&nbsp;&nbsp;
+                                <span class="label label-success">Realizado: {{nivelacion.realizadoTotal}}</span>&nbsp;&nbsp;
+                                <span class="label label-warning">Pendiente: {{nivelacion.pendienteTotal}}</span>&nbsp;&nbsp;
                             </h5>
                         </div>
                     </div>

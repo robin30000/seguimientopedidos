@@ -1,7 +1,7 @@
 <?php
 require_once '../class/conection.php';
-//ini_set('error_reporting', E_ALL);
-//ini_set('display_errors', 1);
+//ini_set('error_reporting', 0);
+//ini_set('display_errors', 0);
 
 class modelNivelacion
 {
@@ -121,18 +121,16 @@ class modelNivelacion
     public function en_genstion_nivelacion()
     {
         try {
-            $stmt = $this->_DB->query("select count(*) as estado
-                                                from nivelacion
-                                                group by estado");
+            $stmt = $this->_DB->query("SELECT COUNT(*) AS total, CASE estado WHEN 1 THEN 'gestion' WHEN 2 THEN 'realizado' WHEN 0 THEN 'pendiente' END as estado
+                                            FROM nivelacion
+                                            GROUP BY estado");
             $stmt->execute();
 
             if ($stmt->rowCount()) {
                 $result    = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $pendiente = $result[1]['estado'] ?? '';
-                $realizado = $result[0]['estado'] ?? '';
-                $response  = ['pendiente' => $pendiente, 'realizado' => $realizado];
+                $response  = array($result);
             } else {
-                $response = ['pendiente' => 0, 'realizado' => 0];
+                $response = array('pendiente' => 0, 'realizado' => 0);
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -206,7 +204,7 @@ class modelNivelacion
             $stmt->execute([':id' => $data->id]);
             $result = $stmt->fetch(PDO::FETCH_OBJ);
             if ($result->gestiona_por != $_SESSION['login']) {
-                $response = ['state' => 0, 'msj' => "La tarea no se encuentra en gentión al usuario: " . $_SESSION['login']];
+                $response = ['state' => 0, 'msj' => "La tarea no se encuentra en gentión por el usuario actual"];
 
             } else {
                 $stmt = $this->_DB->prepare("update nivelacion set se_realiza_nivelacion = :nivelacion, observaciones = :observaciones, fecha_respuesta = :fecha, estado = '2' where id = :id");
@@ -217,7 +215,7 @@ class modelNivelacion
                     ':fecha'         => date('Y-m-d H:i:s'),
                 ]);
                 if ($stmt->rowCount() == 1) {
-                    $response = ['state' => 1, 'msj' => "Se a realizado el cambio en el ticket $data->ticket_id correctamente"];
+                    $response = ['state' => 1, 'msj' => "Se a realizado el cambio de la tarea correctamente"];
                 } else {
                     $response = ['state' => 0, 'msj' => "Ah ocurrido un error intentalo nuevamente"];
                 }
@@ -295,6 +293,44 @@ class modelNivelacion
         }
         $this->_DB = null;
         echo json_encode($response);
+    }
+
+    public function csvNivelacion($data)
+    {
+        $fechaini = $data->fechaini;
+        $fechafin = $data->fechafin;
+
+
+        $stmt = $this->_DB->query("select ticket_id,
+                                           fecha_ingreso,
+                                           fecha_gestion,
+                                           nombre_tecnico,
+                                           cc_tecnico,
+                                           pedido,
+                                           proceso,
+                                           motivo,
+                                           submotivo,
+                                           zona,
+                                           zubzona,
+                                           nombre_nuevo_tecnico,
+                                           cc_nuevo_tecnico,
+                                           creado_por,
+                                           gestiona_por,
+                                           observaciones,
+                                           se_realiza_nivelacion
+                                    from nivelacion where 1=1 and fecha_ingreso BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59')");
+
+        $stmt->execute();
+
+        if ($stmt->rowCount()) {
+            $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $response = [$result];
+        } else {
+            $response = ['state' => 0, 'msj' => 'No se encontraron datos'];
+        }
+        $this->_DB = null;
+        echo json_encode($response);
+
     }
 
 }

@@ -56,4 +56,8 @@ class nivelacion
         $this->_model->marcarEnGestionNivelacion($data);
     }
 
+    public function csvNivelacion($data){
+        $this->_model->csvNivelacion($data);
+    }
+
 }

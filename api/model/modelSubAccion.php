@@ -18,12 +18,7 @@ class modelSubAccion
             $proceso = $data['proceso'];
             $accion  = $data['accion'];
 
-            $stmt = $this->_BD->prepare("SELECT DISTINCT SUBACCION
-                                                FROM procesos
-                                                where proceso = :proceso
-                                                  and accion = :accion
-                                                  and subaccion <> ''
-                                                ORDER BY SUBACCION");
+            $stmt = $this->_BD->prepare("select DISTINCT SUBACCION FROM procesos WHERE accion = '$accion' AND proceso = '$proceso' and subaccion <> ''");
 
             $stmt->execute([':accion' => $accion, ':proceso' => $proceso]);
 

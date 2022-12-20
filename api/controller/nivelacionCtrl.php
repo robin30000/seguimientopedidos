@@ -54,6 +54,11 @@ if (isset($data->method)) {
             $user = new nivelacion();
             $user->marcarEnGestionNivelacion($data->data);
             break;
+        case 'csvNivelacion':
+            require_once '../class/nivelacion.php';
+            $user = new nivelacion();
+            $user->csvNivelacion($data->data);
+            break;
 
         default:
             echo 'ninguna opción valida.';
