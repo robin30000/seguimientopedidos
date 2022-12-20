@@ -5784,13 +5784,13 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
             // $scope.nivelacion.gestion = data.data[0][1].estado;
             // $scope.nivelacion.realizado = data.data[0][2].estado;
             if (data.data[0][0].total !== 'undefined') {
-                $scope.nivelacion.pendienteTotal = data.data[0][0].total;
+                $scope.nivelacion.pendienteTotal = data.data[0][1].total;
             } else {
                 $scope.nivelacion.pendienteTotal = 0;
             }
 
             if (data.data[0][1].total !== 'undefined') {
-                $scope.nivelacion.gestionTotal = data.data[0][1].total;
+                $scope.nivelacion.gestionTotal = data.data[0][0].total;
             } else {
                 $scope.nivelacion.gestionTotal = 0;
             }
