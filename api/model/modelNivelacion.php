@@ -57,16 +57,16 @@ class modelNivelacion
 
         $motivo = match ($data->motivo) {
             '1' => 'Cubrir Novedad',
-            '2' => 'Ruta Atrazada',
+            '2' => 'Ruta Atrasada',
             '3' => 'Desplazamiento Largo',
             '4' => 'Microzona errada',
             '5' => 'Trabajo Futuro',
-            '6' => 'Retrazo en la mesa de soporte',
+            '6' => 'Retraso en la mesa de soporte',
             '7' => 'Pedido amarillo',
             '8' => 'Reabrir pedido',
             '9' => 'Pedido cancelado',
             '10' => 'Inicio despues de las 9:00am',
-            '11' => 'Abrir Pedido',
+            '11' => 'Pedido Abierto',
             '12' => 'Técnico no es del proceso',
             default => '',
         };
