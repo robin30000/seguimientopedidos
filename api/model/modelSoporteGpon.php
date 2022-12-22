@@ -138,12 +138,9 @@ class modelSoporteGpon
             $stmt = $this->_DB->prepare("SELECT *
                                             FROM soporte_gpon
                                             WHERE tarea = :task
-                                              AND fecha_creado BETWEEN :fechaini AND :fechafin
                                               AND status_soporte = '0'");
             $stmt->execute([
-                ':task'     => $task,
-                ':fechaini' => "$hoy 00:00:00",
-                ':fechafin' => "$hoy 23:59:59",
+                ':task'     => $task
             ]);
 
             if ($stmt->rowCount()) {
