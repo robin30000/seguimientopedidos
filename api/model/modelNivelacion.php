@@ -121,17 +121,28 @@ class modelNivelacion
     public function en_genstion_nivelacion()
     {
         try {
-            $stmt = $this->_DB->query("SELECT COUNT(*) AS total, CASE estado WHEN 1 THEN 'gestion' WHEN 2 THEN 'realizado' WHEN 0 THEN 'pendiente' END as estado
+            session_start();
+            $login = $_SESSION['login'];
+
+            $stmt = $this->_DB->prepare("SELECT COUNT(*) AS total, CASE estado WHEN 1 THEN 'gestion' WHEN 2 THEN 'realizado' WHEN 0 THEN 'pendiente' END as estado
+                                            FROM nivelacion 
+                                            GROUP BY estado and creado_por = :login");
+            $stmt->execute([':login' => $login]);
+
+            $tarea = $this->_DB->prepare("SELECT ticket_id, observaciones
                                             FROM nivelacion
-                                            GROUP BY estado");
-            $stmt->execute();
+                                            where creado_por = :login and  estado = 2");
+
+            $tarea->execute([':login' => $login]);
 
             if ($stmt->rowCount()) {
                 $result    = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $response  = array($result);
+                $res_tarea = $tarea->fetchAll(PDO::FETCH_ASSOC);
+                $response  = ['gestion' => $result, 'tarea' => $res_tarea];
             } else {
-                $response = array('pendiente' => 0, 'realizado' => 0);
+                $response = ['pendiente' => 0, 'realizado' => 0];
             }
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }

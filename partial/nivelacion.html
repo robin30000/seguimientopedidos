@@ -349,29 +349,22 @@
                             <div class="col-md-13 col-md-offset-1">
                                 <ul class="list-group small">
                                     <!-- SE AGREGA EL NUEVO VALOR DE LA LLAVE aceptaPortafolio, observContingenciaPortafolio -->
-                                    <h5><a href="" ng-repeat="data in pedidosEngestion" class="list-group-item "><span
-                                            ng-class="{'label label-success': data.acepta == 'Acepta', 'labelPortafolio label-labelPortafolioOK': data.aceptaPortafolio == 'Acepta', 'label label-danger': data.acepta == 'Rechaza', 'labelPortafolio label-labelPortafolioRCH': data.aceptaPortafolio == 'Rechaza', 'label label-warning': data.acepta == 'Pendiente' && data.aceptaPortafolio == 'Pendiente'}">
-                                                        {{data.pedido}}</span>
-                                        <button type="button" ng-hide="data.acepta == 'Pendiente' && data.aceptaPortafolio == 'Pendiente' && data.aceptaPortafolio == 'Acepta'"
+                                    <h5><a href="" ng-repeat="data in nivelacion.proceso_terminado" class="list-group-item ">
+                                        <span class="label label-success">{{data.ticket_id}}</span>
+                                        <button type="button"
                                                 class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover data-trigger="hover"
-                                                data-placement="top" data-html="true" title="Observaciones (TV/Int-ToIp)" data-selector=""
-                                                data-content="{{data.observContingencia}}"><i class="fa fa-commenting" aria-hidden="true"></i></button>
-
-                                        <button type="button" ng-hide="data.acepta == 'Pendiente' && data.aceptaPortafolio == 'Pendiente' && data.aceptaPortafolio == 'Acepta'"
-                                                class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover data-trigger="hover"
-                                                data-placement="top" data-html="true" title="Observaciones (C.P)" data-selector=""
-                                                data-content="{{data.observContingenciaPortafolio}}"><i class="fa fa-commenting" aria-hidden="true"></i></button>
+                                                data-placement="top" data-html="true" title="Observaciones" data-selector=""
+                                                data-content="{{data.observaciones}}"><i class="fa fa-commenting" aria-hidden="true"></i></button>
 
                                     </a></h5>
 
 
                                 </ul>
-                                <span class="label label-info">En gestion: {{nivelacion.gestionTotal}}</span>&nbsp;&nbsp;
                             </div>
                         </div>
                         <div class="panel-heading">
                             <h5>
-                                <span class="label label-success">Realizado: {{nivelacion.realizadoTotal}}</span>&nbsp;&nbsp;
+                                <span class="label label-info">Realizado: {{nivelacion.realizadoTotal}}</span>&nbsp;&nbsp;
                                 <span class="label label-warning">Pendiente: {{nivelacion.pendienteTotal}}</span>&nbsp;&nbsp;
                             </h5>
                         </div>
@@ -448,15 +441,7 @@
                                                     data-placement="left" data-html="true" data-selector="" title="Observacion ingreso" data-content="{{data.observacion}}">
                                                 <i class="fa fa-commenting" aria-hidden="true"></i>
                                             </button>
-                                            <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
-                                                    title="Observacion gestión" data-placement="left" data-html="true" data-selector="" data-content="{{data.observContingencia}}">
-                                                <i class="fa fa-commenting" aria-hidden="true"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
-                                                    title="Observacion gestión Corregir Porta" data-placement="left" data-html="true" data-selector=""
-                                                    data-content="{{data.observContingenciaPortafolio}}">
-                                                <i class="fa fa-commenting" aria-hidden="true"></i>
-                                            </button>
+
                                         </td>
                                     </tr>
                                     </tbody>
