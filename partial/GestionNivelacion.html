@@ -127,7 +127,7 @@
                             <div class="panel-body">
                                 <div class="container-fluid" ng-show="!haypedidoOtros && contingenciesDataInternetToIP.length == 0">
                                     <div class="jumbotron">
-                                        <h3 class="text-center">Gestión Contingencias</h3>
+                                        <h3 class="text-center">Gestión Nivelacion</h3>
                                         <h5 class="text-center">{{mensajeotros}}</h5>
                                     </div>
                                 </div>
@@ -150,6 +150,7 @@
                                             <th class="text-center">CC Nuevo Técnico</th>
                                             <th class="text-center">Nombre Nuevo Técnico</th>
                                             <th class="text-center">Se Realiza Nivelación?</th>
+                                            <th class="text-center">Observación Veedor</th>
                                             <th class="text-center"></th>
                                         </tr>
                                         </thead>
@@ -172,9 +173,9 @@
 
                                             <td class="text-center" ng-if="data.gestiona_por"> <!--ng-show="data.gestiona_por == galletainfo.login"-->
                                                 <span class="label label-primary label-xsmall"
-                                                      ng-if="(galletainfo.login == data.gestiona_por)">{{data.gestiona_por}}</span>
+                                                      ng-if="(galletainfo.LOGIN == data.gestiona_por)">{{data.gestiona_por}}</span>
                                                 <span class="label label-primary label-xsmall"
-                                                      ng-if="(galletainfo.login != data.gestiona_por)">En Gestion</span>
+                                                      ng-if="(galletainfo.LOGIN != data.gestiona_por)">En Gestion</span>
                                             </td>
 
                                             <td class="text-center" ng-if="!data.gestiona_por"> <!--ng-show="data.gestiona_por == galletainfo.login"-->
@@ -217,6 +218,12 @@
                                                 </select>
                                             </td>
                                             <td class="text-center">
+                                                <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
+                                                        data-placement="left" data-html="true" title="Observaciones" data-selector="" data-content="{{data.observaciones}}">
+                                                    <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                </button>
+                                            </td>
+                                            <td class="text-center">
                                                 <!--<button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
                                                         data-placement="left" data-html="true" title="Observaciones" data-selector="" data-content="{{data.observaciones}}">
                                                     <i class="fa fa-commenting" aria-hidden="true"></i>
@@ -256,6 +263,18 @@
                                         <i class="fa fa-phone-square" aria-hidden="true"></i>Registros Nivelación Técnico</b>
                                 </ul>
                                 <ul class="nav navbar-nav navbar-right">
+                                    <input style="width:130px" type="text" name="fechaini" id="fechaini" class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="fechaini" placeholder="Fecha Inicial" datetime-picker="" date-format="yyyy-MM-dd"> <i class="fa fa-calendar fa-fw"></i>
+                                    <input style="width:130px" type="text" name="fechafin" id="fechafin" class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="fechafin" placeholder="Fecha Final" datetime-picker="" date-format="yyyy-MM-dd"> <i class="fa fa-calendar fa-fw"></i>
+                                    <button type="button"
+                                            ng-show="galletainfo.PERFIL == '11' || galletainfo.PERFIL == '1' || galletainfo.PERFIL == '3'"
+                                            class="btn btn-primary btn-xs"
+                                            title="Exportar Registros"
+                                            ng-click="csvNivelacion()"
+                                            ng-disabled="loading"
+                                            title="Exportar"
+                                            tooltip data-placement="top">
+                                        <i class="fa fa-cloud-download"  aria-hidden="true"> </i>
+                                    </button>
                                     <b>
                                         <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs" ng-model="nivelacion.tarea" placeholder="Buscar Pedido">&nbsp;
 
@@ -265,6 +284,11 @@
                                         </button>
                                     </b>&nbsp;
                                 </ul>
+
+                                <ul class="nav navbar-nav navbar-left">
+
+                                </ul>
+
                             </div>
                             <div class="panel-body">
                                 <div class="container-fluid" ng-show="!haypedidoOtros && contingenciesDataInternetToIP.length == 0">
@@ -291,6 +315,7 @@
                                             <th class="text-center">Nombre Nuevo Técnico</th>
                                             <th class="text-center">Se Realiza Nivelación?</th>
                                             <th class="text-center">Observación</th>
+                                            <th class="text-center">Observación Veedor</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -317,6 +342,12 @@
                                             <td class="text-center">
                                                 <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
                                                         data-placement="left" data-html="true" title="Observaciones" data-selector="" data-content="{{data.observaciones}}">
+                                                    <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                </button>
+                                            </td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
+                                                        data-placement="left" data-html="true" title="Observaciones" data-selector="" data-content="{{data.observacionVeedor}}">
                                                     <i class="fa fa-commenting" aria-hidden="true"></i>
                                                 </button>
                                             </td>

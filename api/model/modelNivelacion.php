@@ -190,7 +190,8 @@ class modelNivelacion
                                                        n.fecha_ingreso,
                                                        n.id,
                                                        n.gestiona_por,
-                                                       n.creado_por
+                                                       n.creado_por,
+                                                       n.observacionVeedor
                                                 from nivelacion n where n.estado != 2 order by n.fecha_ingreso");
             $stmt->execute();
             if ($stmt->rowCount()) {
