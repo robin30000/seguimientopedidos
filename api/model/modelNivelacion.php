@@ -85,6 +85,11 @@ class modelNivelacion
             default => '',
         };
 
+
+        $mifecha = new DateTime();
+        $mifecha->modify('+43 minute');
+        $fecha = $mifecha->format('Y-m-d H:i:s');
+
         try {
 
             $stmt = $this->_DB->prepare("INSERT INTO nivelacion (ticket_id, nombre_tecnico, cc_tecnico, pedido, proceso, zona, zubzona, cc_nuevo_tecnico,
@@ -104,7 +109,7 @@ class modelNivelacion
                 ':solicitud'            => $solicitud,
                 ':motivo'               => $motivo,
                 ':submotivo'            => $submotivo,
-                ':fecha_ingreso'        => date('Y-m-d h:i:s'),
+                ':fecha_ingreso'        => $fecha,
                 ':creado_por'           => $_SESSION['login'],
             ]);
 
@@ -177,7 +182,9 @@ class modelNivelacion
     {
         try {
 
-            $fecha = date('Y-m-d');
+            $mifecha = new DateTime();
+            $mifecha->modify('+43 minute');
+            $fecha = $mifecha->format('Y-m-d H:i:s');
 
             $stmt = $this->_DB->query("select n.creado_por,
                                                        n.pedido,
@@ -216,6 +223,10 @@ class modelNivelacion
     public function guardaNivelacion($data)
     {
         session_start();
+
+        $mifecha = new DateTime();
+        $mifecha->modify('+43 minute');
+        $fecha = $mifecha->format('Y-m-d H:i:s');
         try {
 
             $stmt = $this->_DB->prepare("select en_gestion, gestiona_por from nivelacion where id = :id");
@@ -230,7 +241,7 @@ class modelNivelacion
                     ':nivelacion'      => $data->nivelacion,
                     ':observaciones'   => $data->observaciones,
                     ':id'              => $data->id,
-                    ':fecha_respuesta' => date('Y-m-d H:i:s'),
+                    ':fecha_respuesta' => $fecha,
                 ]);
                 if ($stmt->rowCount() == 1) {
                     $response = ['state' => 1, 'msj' => "Se a realizado el cambio de la tarea correctamente"];
@@ -286,6 +297,10 @@ class modelNivelacion
     {
         try {
             session_start();
+
+            $mifecha = new DateTime();
+            $mifecha->modify('+43 minute');
+            $fecha = $mifecha->format('Y-m-d H:i:s');
             $stmt = $this->_DB->prepare("select en_gestion, gestiona_por from nivelacion where id = :id");
             $stmt->execute([':id' => $data]);
             if ($stmt->rowCount()) {
@@ -300,7 +315,7 @@ class modelNivelacion
 
                 } elseif ($resul->en_gestion == '') {
                     $stmt = $this->_DB->prepare("update nivelacion set gestiona_por = :gestion, estado = 1, fecha_gestion = :fecha_gestion, en_gestion = 1 where id = :id");
-                    $stmt->execute([':gestion' => $_SESSION['login'], ':id' => $data, ':fecha_gestion' => date("Y-m-d h:i:s")]);
+                    $stmt->execute([':gestion' => $_SESSION['login'], ':id' => $data, ':fecha_gestion' => $fecha]);
                     $response = ['state' => 1, 'msj' => 'La tarea se encuentra Bloqueada'];
                 } elseif ($resul->en_gestion != $_SESSION['login']) {
                     $response = ['state' => 1, 'msj' => 'La tarea se encuentra en gestión'];
