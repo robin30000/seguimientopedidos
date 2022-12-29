@@ -3,6 +3,8 @@ require_once '../class/conection.php';
 //ini_set('error_reporting', 0);
 //ini_set('display_errors', 0);
 
+date_default_timezone_set('America/Bogota');
+
 class modelNivelacion
 {
     private $_DB;
@@ -68,7 +70,7 @@ class modelNivelacion
             '10' => 'Inicio despues de las 9:00am',
             '11' => 'Pedido Abierto',
             '12' => 'Técnico no es del proceso',
-            '13' => 'Click no despachado',
+            '13' => 'Click no despacho',
             default => '',
         };
 
@@ -174,6 +176,9 @@ class modelNivelacion
     public function gestionarNivelacion()
     {
         try {
+
+            $fecha = date('Y-m-d');
+
             $stmt = $this->_DB->query("select n.creado_por,
                                                        n.pedido,
                                                        n.ticket_id,
@@ -193,7 +198,7 @@ class modelNivelacion
                                                        n.gestiona_por,
                                                        n.creado_por,
                                                        n.observacionVeedor
-                                                from nivelacion n where n.estado != 2 order by n.fecha_ingreso");
+                                                from nivelacion n where n.estado != 2 order by n.fecha_ingreso and n.fecha_ingreso BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')");
             $stmt->execute();
             if ($stmt->rowCount()) {
                 $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -220,12 +225,12 @@ class modelNivelacion
                 $response = ['state' => 0, 'msj' => "La tarea no se encuentra en gentión por el usuario actual"];
 
             } else {
-                $stmt = $this->_DB->prepare("update nivelacion set se_realiza_nivelacion = :nivelacion, observaciones = :observaciones, fecha_respuesta = :fecha, estado = '2' where id = :id");
+                $stmt = $this->_DB->prepare("update nivelacion set se_realiza_nivelacion = :nivelacion, observaciones = :observaciones, fecha_respuesta = :fecha_respuesta, estado = '2' where id = :id");
                 $stmt->execute([
-                    ':nivelacion'    => $data->nivelacion,
-                    ':observaciones' => $data->observaciones,
-                    ':id'            => $data->id,
-                    ':fecha'         => date('Y-m-d H:i:s'),
+                    ':nivelacion'      => $data->nivelacion,
+                    ':observaciones'   => $data->observaciones,
+                    ':id'              => $data->id,
+                    ':fecha_respuesta' => date('Y-m-d H:i:s'),
                 ]);
                 if ($stmt->rowCount() == 1) {
                     $response = ['state' => 1, 'msj' => "Se a realizado el cambio de la tarea correctamente"];
@@ -286,7 +291,7 @@ class modelNivelacion
             if ($stmt->rowCount()) {
                 $resul = $stmt->fetch(PDO::FETCH_OBJ);
                 if ($resul->gestiona_por == $_SESSION['login']) {
-                    $stmt = $this->_DB->prepare("update nivelacion set en_gestion = '', gestiona_por = '' where id = :id");
+                    $stmt = $this->_DB->prepare("update nivelacion set en_gestion = '', gestiona_por = '', fecha_gestion = '' where id = :id");
                     if ($stmt->execute([':id' => $data])) {
                         $response = ['state' => 1, 'msj' => 'La tarea se encuentra desbloqueada'];
                     } else {
@@ -294,8 +299,8 @@ class modelNivelacion
                     }
 
                 } elseif ($resul->en_gestion == '') {
-                    $stmt = $this->_DB->prepare("update nivelacion set gestiona_por = :gestion, estado = 1, fecha_gestion = :fecha, en_gestion = 1 where id = :id");
-                    $stmt->execute([':gestion' => $_SESSION['login'], ':id' => $data, ':fecha' => date("Y-m-d h:i:s")]);
+                    $stmt = $this->_DB->prepare("update nivelacion set gestiona_por = :gestion, estado = 1, fecha_gestion = :fecha_gestion, en_gestion = 1 where id = :id");
+                    $stmt->execute([':gestion' => $_SESSION['login'], ':id' => $data, ':fecha_gestion' => date("Y-m-d h:i:s")]);
                     $response = ['state' => 1, 'msj' => 'La tarea se encuentra Bloqueada'];
                 } elseif ($resul->en_gestion != $_SESSION['login']) {
                     $response = ['state' => 1, 'msj' => 'La tarea se encuentra en gestión'];
