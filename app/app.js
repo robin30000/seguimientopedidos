@@ -5918,7 +5918,7 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
                     var data = datos.data[0];
                     var array = typeof data != 'object' ? JSON.parse(data) : data;
                     var str = '';
-                    var column = `ticket_id, fecha_ingreso, fecha_gestion, nombre_tecnico, cc_tecnico, pedido, proceso, motivo, submotivo, zona, zubzona, nombre_nuevo_tecnico, cc_nuevo_tecnico, creado_por, gestiona_por,observaciones, se_realiza_nivelacion \r\n`;
+                    var column = `ticket_id, fecha_ingreso, fecha_gestion, fecha_respuesta, nombre_tecnico, cc_tecnico, pedido, proceso, motivo, submotivo, zona, zubzona, nombre_nuevo_tecnico, cc_nuevo_tecnico, creado_por, gestiona_por,observaciones, se_realiza_nivelacion \r\n`;
                     str += column;
                     for (var i = 0; i < array.length; i++) {
                         var line = '';

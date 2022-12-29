@@ -68,6 +68,7 @@ class modelNivelacion
             '10' => 'Inicio despues de las 9:00am',
             '11' => 'Pedido Abierto',
             '12' => 'Técnico no es del proceso',
+            '13' => 'Click no despachado',
             default => '',
         };
 
