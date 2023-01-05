@@ -271,13 +271,13 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
 
-    obj.listadoUsuarios = function (page, concepto, usuario) {
+    obj.listadoUsuarios = function (curPage, pageSize, sort) {
         var data = {
             method: 'listadoUsuarios',
             data: {
-                'page': page,
-                'concepto': concepto,
-                'usuario': usuario
+                'curPage': curPage,
+                'pageSize': pageSize,
+                'sort': sort
             }
         }
         return $http.post(serviceBase1 + 'userCtrl.php', data);
@@ -9610,6 +9610,131 @@ app.controller('usuariosCtrl', function ($scope, $http, $rootScope, $location, $
     $scope.listaUsuarios = {};
     $scope.Usuarios = {};
     $scope.crearuser = {};
+    getGrid();
+    function getGrid() {
+
+        var columnDefs = [
+            {
+                name: "ID",
+                field: "ID",
+                minWidth: 70,
+                width: "15%",
+                enableCellEdit: false,
+                enableFiltering: true,
+                enableRowHeaderSelection: true
+            },
+            {
+                name: "Login",
+                field: "LOGIN",
+                minWidth: 80,
+                width: "15%",
+                enableCellEdit: false,
+                enableFiltering: true,
+            }, {
+                name: "Nombre",
+                field: "NOMBRE",
+                minWidth: 80,
+                width: "25%",
+                enableCellEdit: false,
+                enableFiltering: true,
+            }, {
+                name: "Cedula",
+                field: "IDENTIFICACION",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "15%",
+                enableCellEdit: false,
+                enableFiltering: true,
+            }, {
+                name: "Perfil",
+                field: "PERFIL",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "15%",
+                enableCellEdit: false,
+                enableFiltering: true,
+
+            },  {
+                name: "Acciones",
+                cellTemplate: "<div style='text-align: center'>" +
+                    '<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.editUser(row)">' +
+                    '<i class="fa fa-pencil-square-o" aria-hidden="true"> </i>' +
+                    '</button>&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.borrarUsuario(row)">' +
+                    '<i class="fa fa-trash" aria-hidden="true"> </i>' +
+                    '</button></div>',
+                minWidth: 50,
+                width: "15%",
+                enableFiltering: false
+            }];
+
+        var paginationOptions = {
+            sort: null
+        };
+
+        $scope.gridOptions = {
+            enableFiltering: true,
+            enablePagination: true,
+            pageSize: 200,
+            enableHorizontalScrollbar: false,
+            enablePaginationControls: true,
+            columnDefs: columnDefs,
+            paginationPageSizes: [200, 500, 1000],
+            paginationPageSize: 200,
+            enableRowHeaderSelection: true,
+
+            exporterMenuPdf: false,
+            enableGridMenu: true,
+
+            useExternalPagination: true,
+            useExternalSorting: true,
+            enableRowSelection: true,
+
+            exporterCsvFilename: 'Registros.csv',
+
+            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+            exporterExcelFilename: 'Registros.xlsx',
+            exporterExcelSheetName: 'Sheet1',
+
+            onRegisterApi: function (gridApi) {
+                $scope.gridApi = gridApi;
+                $scope.gridApi.core.on.sortChanged($scope, function (grid, sortColumns) {
+                    if (getPage) {
+                        if (sortColumns.length > 0) {
+                            paginationOptions.sort = sortColumns[0].sort.direction;
+                        } else {
+                            paginationOptions.sort = null;
+                        }
+                        getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, paginationOptions.sort)
+                    }
+                });
+                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                    if (getPage) {
+                        getPage(newPage, pageSize, paginationOptions.sort);
+                    }
+                });
+            }
+        };
+
+        var getPage = function (curPage, pageSize, sort) {
+            services.listadoUsuarios(curPage, pageSize, sort).then(complete).catch(failed)
+
+            function complete(data) {
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptions.totalItems = counter;
+                var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+
+        };
+
+        getPage(1, $scope.gridOptions.paginationPageSize, paginationOptions.sort);
+    }
 
     $scope.setPage = function (pageNo) {
         $scope.datapendientes.currentPage = pageNo;
@@ -9620,37 +9745,32 @@ app.controller('usuariosCtrl', function ($scope, $http, $rootScope, $location, $
     };
 
     $scope.buscarUsuario = function (concepto, usuario) {
-        $scope.errorDatos = null;
-        $scope.respuestaupdate = null;
-        $scope.respuestadelete = null;
-        $scope.listaUsuarios = {};
-        //console.log($scope.Usuarios);
-        services.listadoUsuarios($scope.datapendientes.currentPage, concepto, usuario).then(
-            function (data) {
-                $scope.listaUsuarios = data.data[0];
-                // console.log("la lista "+$scope.listaUsuarios);
-                $scope.cantidad = data.data[0].length;
-                $scope.counter = data.data[1];
+        if (concepto == '' || concepto == undefined){
+            swal({
+                type: 'error',
+                title: 'Selecciona un concepto de busquedad',
+            })
+        }else if(usuario == '' || usuario == undefined){
+            swal({
+                type: 'error',
+                title: 'ingresa el usuario o login a buscar',
+            })
+        }else{
+            var sort = [concepto,usuario]
+            services.listadoUsuarios('', '', sort).then(completed).catch(failed)
+            function completed(data){
+                console.log(data.data.data[0]);
+                $scope.gridOptions.data = {};
+                $scope.gridOptions.data = data.data.data[0];
+            }
 
-                return data.data;
-            },
-            function errorCallback(response) {
+            function failed(error){
+                console.log(error);
+            }
+        }
+    }
 
-                $scope.errorDatos = concepto + " " + usuario + " no existe.";
 
-                // console.log($scope.errorDatos);
-
-            });
-    };
-
-    $scope.editarModal = function (datos) {
-        // console.log(datos);
-        $rootScope.datos = datos;
-        $scope.idUsuario = datos.ID;
-        $scope.UsuarioNom = datos.NOMBRE;
-        $rootScope.TituloModal = "Editar Usuario con el ID:";
-        //console.log($scope.editaInfo);
-    };
 
     $scope.createUser = function (concepto, tecnico) {
         $scope.errorDatos = null;
@@ -9670,36 +9790,37 @@ app.controller('usuariosCtrl', function ($scope, $http, $rootScope, $location, $
 
                 // console.log($scope.errorDatos);
             });
-        $scope.buscarUsuario();
     };
 
 
-    $scope.editUser = function (datos) {
-        $scope.errorDatos = null;
-        $scope.respuestaupdate = null;
-        $scope.respuestadelete = null;
-        if (datos.PASSWORD == "") {
-            alert("Por favor ingrese la contraseña");
-            return;
-        } else {
-            services.editarUsuario(datos).then(
-                function (data) {
-                    // $errorDatos=null;
-                    $scope.respuestaupdate = "Usuario " + datos.login + " actualizado exitosamente";
-                    //  console.log(datos);
-                    //$rootScope.nombre=$scope.respuesta[0].NOMBRE;
-                    //$location.path('/home/');
-                    return data.data;
-                },
-                function errorCallback(response) {
-                });
+    $scope.editUser = function (row) {
+        console.log(row.entity.perfil);
+        $scope.datos = row.entity;
+        $scope.datos.PERFIL = parseInt(row.entity.perfil);
+        $("#editarModal").modal('show');
+
+    };
+
+    $scope.guardaUsuario = function (datos){
+        services.editarUsuario(datos).then(completed).catch(failed)
+        function completed(data){
+
+            Swal({
+                type: data.type,
+                title: data.msj,
+                timer: 4000
+            }).then(function () {
+                $route.reload();
+            })
+
         }
+        function failed(error){
+            console.log(error)
+        }
+    }
 
-        $scope.buscarUsuario();
-    };
-
-    $scope.borrarUsuario = function (id) {
-        $scope.idBorrar = id;
+    $scope.borrarUsuario = function (row) {
+        $scope.idBorrar = row.entity.ID;
         $scope.Usuarios = {};
         $scope.errorDatos = null;
         $scope.respuestaupdate = null;
@@ -9712,22 +9833,7 @@ app.controller('usuariosCtrl', function ($scope, $http, $rootScope, $location, $
             confirmButtonText: "Aceptar",
             closeOnConfirm: false
         });
-        // Temporalmente deshabilitado
-        // services.deleteUsuario($scope.idBorrar).then(
-        //     function(data) {
-        //         $scope.respuestadelete = "Usuario " + $rootScope.datos.login + " eliminado exitosamente";
-        //     },
-        //     function errorCallback(response) {
-        //         $scope.errorDatos = "No se borro";
-        //     }
-        // );
-        $scope.buscarUsuario($scope.datapendientes.currentPage);
     };
-
-    $scope.maxSize = 5;
-    $scope.datapendientes = {maxSize: 5, currentPage: 1, numPerPage: 100, totalItems: 0};
-    $scope.buscarUsuario($scope.datapendientes.currentPage);
-
 });
 
 app.controller('tecnicosCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services) {
@@ -10476,11 +10582,18 @@ app.run(['$rootScope', 'services', function ($rootScope, services) {
     ];
 
     $rootScope.perfiles = [
-        {ID: 1, PERFIL: 'Supervisor'}, {ID: 2, PERFIL: 'Creador de Experiencia'}, {ID: 3, PERFIL: 'Perfil Regional'},
-        {ID: 4, PERFIL: 'Mesa Offline'}, {ID: 5, PERFIL: 'Creador de Experiencia Plus'}, {ID: 6, PERFIL: 'Premisas Infraestructuras'}, {ID: 7, PERFIL: 'Asesor VIP'}, {
-            ID: 8,
-            PERFIL: 'Registros'
-        }, {ID: 9, PERFIL: 'Brutal Force'}, {ID: 10, PERFIL: 'Gestión Brutal'}, {ID: 12, PERFIL: 'Regionales'}, {ID: 13, PERFIL: 'Quejas GO'}
+        {ID: 1, PERFIL: 'Supervisor'},
+        {ID: 2, PERFIL: 'Creador de Experiencia'},
+        {ID: 3, PERFIL: 'Perfil Regional'},
+        {ID: 4, PERFIL: 'Mesa Offline'},
+        {ID: 5, PERFIL: 'Creador de Experiencia Plus'},
+        {ID: 6, PERFIL: 'Premisas Infraestructuras'},
+        {ID: 7, PERFIL: 'Asesor VIP'},
+        {ID: 8, PERFIL: 'Registros'},
+        {ID: 9, PERFIL: 'Brutal Force'},
+        {ID: 10, PERFIL: 'Gestión Brutal'},
+        {ID: 12, PERFIL: 'Regionales'},
+        {ID: 13, PERFIL: 'Quejas GO'}
     ];
 
     $rootScope.conceptosBuscartecnico = [

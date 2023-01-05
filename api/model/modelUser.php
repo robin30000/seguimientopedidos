@@ -23,17 +23,17 @@ class modelUser
                                                     perfil         = :perfil
                                                 where id = :id");
             $stmt->execute([
-                ':nombre'         => $nombre,
-                ':identificacion' => $identificacion,
-                ':login'          => $usuarioid,
-                ':password'       => $password,
-                ':perfil'         => $perfil,
+                ':nombre'         => $data['nombre'],
+                ':identificacion' => $data['identificacion'],
+                ':login'          => $data['usuarioid'],
+                ':password'       => $data['password'],
+                ':perfil'         => $data['perfil'],
             ]);
 
             if ($stmt->rowCount() == 1) {
-                $response = ['Usuario actualizado', 201];
+                $response = ['type' => 'success', 'msj' => 'Usuario actualizado'];
             } else {
-                $response = ['Ah ocurrido un error intentalo de nuevo', 400];
+                $response = ['type' => 'error', 'msj' => 'Ah ocurrido un error intentalo de nuevo'];
             }
 
         } catch (PDOException $e) {
@@ -469,24 +469,23 @@ class modelUser
     {
         try {
             $datos = $data['datosCrearTecnico'];
-            if(!preg_match("/^[a-zA-Z áéíóúAÉÍÓÚÑñ]+$/",$datos['NOMBRE'])){
+            if (!preg_match("/^[a-zA-Z áéíóúAÉÍÓÚÑñ]+$/", $datos['NOMBRE'])) {
                 $response = ['state' => 0, 'msj' => 'El nombre no es valido'];
             } elseif (!is_numeric($datos['CELULAR'])) {
                 $response = ['state' => 0, 'msj' => 'El número movil no es valido'];
-            }elseif ($datos['CELULAR'][0]!=3){
+            } elseif ($datos['CELULAR'][0] != 3) {
                 $response = ['state' => 0, 'msj' => 'El número movil debe iniciar por 3'];
-            }elseif (strlen($datos['CELULAR'])!=10) {
+            } elseif (strlen($datos['CELULAR']) != 10) {
                 $response = ['state' => 0, 'msj' => 'El número movil debe tener 10 digitos'];
-            }elseif ($datos['IDENTIFICACION'][0]=='0'||$datos['IDENTIFICACION'][0]==0){
+            } elseif ($datos['IDENTIFICACION'][0] == '0' || $datos['IDENTIFICACION'][0] == 0) {
                 $response = ['state' => 0, 'msj' => 'El número de identificación no puede empezar por 0'];
-            }
-            elseif (strlen($datos['IDENTIFICACION'])<5){
+            } elseif (strlen($datos['IDENTIFICACION']) < 5) {
                 $response = ['state' => 0, 'msj' => 'El número de identificación es muy corto'];
-            }elseif (strlen($datos['IDENTIFICACION'])>15){
+            } elseif (strlen($datos['IDENTIFICACION']) > 15) {
                 $response = ['state' => 0, 'msj' => 'El número de identificación es muy largo'];
             } else {
 
-                $UDC   = substr($datos['IDENTIFICACION'], -4);
+                $UDC      = substr($datos['IDENTIFICACION'], -4);
                 $pass     = 'Colombia' . $UDC . '--++';
                 $pass     = md5($pass);
                 $contrato = match ($datos['empresa']) {
@@ -536,33 +535,60 @@ class modelUser
     public function listadoUsuarios($data)
     {
         try {
-            session_start();
-            $pagina    = $data['page'];
-            $concepto  = $data['concepto'];
-            $usuario   = $_SESSION['login'];
-            $parametro = "";
-            //echo "selección".$buscar;
-            //echo "dato".$usuario;
 
-            //$today = date("Y-m-d");
 
-            if ($pagina == "undefined") {
-                $pagina = "0";
+            if ($data['sort'][0] != '') {
+                $usuario = $data['sort'][1];
+                if ($data['sort'][0] == 'nombre') {
+                    $parametro = " AND a.nombre LIKE '%$usuario'";
+
+                } elseif ($data['sort'][0] == 'login') {
+                    $parametro = " AND  a.login LIKE '%$usuario%'";
+                }
+
+                $stmt = $this->_DB->query("SELECT a.id AS ID,
+                                                       a.nombre AS NOMBRE,
+                                                       a.identificacion AS IDENTIFICACION,
+                                                       a.login AS LOGIN,
+                                                       a.perfil,
+                                                       (select b.nombre from perfiles b where b.perfil = a.perfil) as PERFIL,
+                                                       a.password AS PASSWORD
+                                                FROM usuarios a
+                                                where 1 = 1
+                                                    $parametro");;
+
+                if ($stmt->rowCount()) {
+                    $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $response = ['state' => 1, 'data' => $result, 'total' => 0, 'counter' => intval(0)];
+                } else {
+                    $response = ['state' => 0];
+                }
+
             } else {
-                $pagina = $pagina - 1;
-            }
+                $stmt = $this->_DB->query("select count(*) as total from usuarios");
+                $stmt->execute();
 
-            $pagina = $pagina * 100;
+                $resCount   = $stmt->fetch(PDO::FETCH_OBJ);
+                $totalCount = $resCount->total;
 
-            if ($concepto == 'nombre') {
-                $parametro = " AND a.nombre LIKE '%$usuario%'";
+                if (isset($data['curPage'])) {
+                    $page_number = $data['curPage'];
+                } else {
+                    $page_number = 1;
+                }
 
-            } elseif ($concepto == 'login') {
-                $parametro = " AND  a.login LIKE '%$usuario%'";
-            }
+                $initial_page = ($page_number - 1) * $data['pageSize'];
+
+                $total_pages = ceil($totalCount / $data['pageSize']);
+
+                $limit_page = $data['pageSize'];
+
+                session_start();
+
+                $parametro = '';
 
 
-            $stmt = $this->_DB->query("SELECT a.id AS ID,
+                $stmt = $this->_DB->query("SELECT a.id AS ID,
                                                        a.nombre AS NOMBRE,
                                                        a.identificacion AS IDENTIFICACION,
                                                        a.login AS LOGIN,
@@ -573,18 +599,16 @@ class modelUser
                                                 where 1 = 1
                                                     $parametro
                                                 order by a.nombre
-                                                limit 100 offset $pagina");;
+                                                limit $initial_page, $limit_page");;
 
-            $stmt->execute();
+                $stmt->execute();
 
-            $counter = $this->_DB->query("select count(*) as Cantidad from usuarios h where 1 = 1 $parametro");
-            $counter->execute();
-            $resCounter = $counter->fetchAll(PDO::FETCH_ASSOC);
-
-            if ($stmt->rowCount()) {
-                $response = [$stmt->fetchAll(PDO::FETCH_ASSOC), $resCounter[0]['Cantidad'], 201];
-            } else {
-                $response = ['No se encontraron registros', 400];
+                if ($stmt->rowCount()) {
+                    $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $response = ['state' => 1, 'data' => $result, 'total' => $total_pages, 'counter' => intval($totalCount)];
+                } else {
+                    $response = ['state' => 0];
+                }
             }
 
         } catch (PDOException $e) {

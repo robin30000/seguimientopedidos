@@ -9,7 +9,7 @@ $data = json_decode(file_get_contents("php://input"),true);
 
 if (isset($data['method'])) {
     switch ($data['method']) {
-        case 'login':
+        case 'editarUsuario':
             require_once '../class/user.php';
             $user = new user();
             $user->editarUsuario($data['data']);
