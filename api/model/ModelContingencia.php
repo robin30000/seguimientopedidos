@@ -480,34 +480,45 @@ class ModelContingencia
         return [$resultadoTV, $resultadoOTROS, $resultadoPORTAFOLIO];
     }
 
-    public function registrosOffline()
+    public function registrosOffline($data)
     {
         try {
-            $stmt = $this->_DB->query("SELECT LOGIN_ASESOR_OFF,LOGIN_ASESOR, PEDIDO,PROCESO, PRODUCTO, ACCION, ACTIVIDAD, ACTIVIDAD2, OBSERVACIONES, FECHA_CARGA FROM registros_offline");
+
+            $stmt = $this->_DB->query("select count(*) as total from registros_offline");
             $stmt->execute();
 
-            $queryCount = $this->_DB->query("select count(*) as Cantidad from registros_offline h where 1=1");
-            $queryCount->execute();
+            $resCount   = $stmt->fetch(PDO::FETCH_OBJ);
+            $totalCount = $resCount->total;
 
-            if ($queryCount->rowCount()) {
-                $result = [];
-                if ($row = $queryCount->fetchAll(PDO::FETCH_ASSOC)) {
-                    $counter = $row[0]['Cantidad'];
-                }
+            if (isset($data['curPage'])) {
+                $page_number = $data['curPage'];
+            } else {
+                $page_number = 1;
             }
 
+            $initial_page = ($page_number - 1) * $data['pageSize'];
+
+            $total_pages = ceil($totalCount / $data['pageSize']);
+
+            $pageSize = $data['pageSize'];
+
+            $stmt = $this->_DB->query("SELECT LOGIN_ASESOR_OFF,LOGIN_ASESOR, PEDIDO,PROCESO, PRODUCTO, ACCION, ACTIVIDAD, ACTIVIDAD2, OBSERVACIONES, FECHA_CARGA FROM registros_offline limit $initial_page, $pageSize");
+            $stmt->execute();
+
             if ($stmt->rowCount()) {
-                $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $response  = [$resultado, $counter, 201];
+
+                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = ['state' => 1, 'data' => $result, 'total' => $total_pages, 'counter' => intval($totalCount)];
+
             } else {
                 $response = 0;
             }
-            $this->_DB = null;
+
 
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
-
+        $this->_DB = null;
         echo json_encode($response);
     }
 

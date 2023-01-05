@@ -37,12 +37,16 @@
                             </button>
                         </ul>
                     </div>
-                    <div class="col-xs-3 marg"><i>Buscar:</i>
+                    <!--<div class="col-xs-3 marg"><i>Buscar:</i>
                         <input type="text" class="form-control busq" ng-model="busqueda" name="" value="" placeholder="Ingresa lo que desas buscar.">
                         <br>
-                    </div>
+                    </div>-->
                 </div>
-                <table class="table table-bordered">
+
+                <div id="tntGridServices" ui-grid="gridOptions" ui-grid-exporter ui-grid-edit ui-grid-pagination
+                     style="font-size: 12px;text-transform: lowercase; color: #0f0f0f;height: 500px" external-scopes="gridApi" ></div>
+
+                <!--<table class="table table-bordered">
                     <thead>
                         <tr>
                             <th>Cédula Técnico</th>
@@ -81,7 +85,7 @@
                             </td>
                         </tr>
                     </tbody>
-                </table>
+                </table>-->
             </div>
         </div>
         <div class="panel-footer clearfix" >

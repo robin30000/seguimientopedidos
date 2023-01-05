@@ -23,7 +23,7 @@ if (isset($data['method'])) {
         case 'registrosOffline':
             require_once '../class/contingencia.php';
             $user = new contingencia();
-            $user->registrosOffline();
+            $user->registrosOffline($data['data']);
             break;
 
         case 'graficaDepartamento':

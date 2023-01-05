@@ -36,9 +36,9 @@ class nivelacion
         $this->_model->buscarhistoricoNivelacion($data);
     }
 
-    public function gestionarNivelacion()
+    public function gestionarNivelacion($data)
     {
-        $this->_model->gestionarNivelacion();
+        $this->_model->gestionarNivelacion($data);
     }
 
     public function guardaNivelacion($data)
@@ -46,9 +46,9 @@ class nivelacion
         $this->_model->guardaNivelacion($data);
     }
 
-    public function gestionarRegistrosNivelacion()
+    public function gestionarRegistrosNivelacion($data)
     {
-        $this->_model->gestionarRegistrosNivelacion();
+        $this->_model->gestionarRegistrosNivelacion($data);
     }
 
     public function marcarEnGestionNivelacion($data)

@@ -10,87 +10,54 @@ class modelQuejasGo
         $this->_DB = new Conection();
     }
 
-    public function listaQuejasGoDia($params)
+    public function listaQuejasGoDia($data)
     {
 
         try {
-            $pagina          = $params['page'];
-            $datos           = $params['datos'];
-            $fechaini        = $datos['fechaini'];
-            $fechafin        = $datos['fechafin'];
-            $columnaBusqueda = $datos['columnaBusqueda'];
-            $valorBusqueda   = $datos ['valorBusqueda'];
 
+            $fechaini = (!isset($data['curPage']['fechaini'])) ? date("Y-m-d") : $data['curPage']['fechaini']; //CORRECCION DE VALIDACION DE FECHA
+            $fechafin = (!isset($data['curPage']['fechafin'])) ? date("Y-m-d") : $data['curPage']['fechafin']; //CORRECCION DE VALIDACION DE FECHA
 
             if ($fechaini == "" || $fechafin == "") {
                 $fechaini = date('Y-m-d');
                 $fechafin = date('Y-m-d');
             }
 
-            if ($pagina == "undefined") {
-                $pagina = "0";
-            } else {
-                $pagina = $pagina - 1;
-            }
-
-            $pagina = $pagina * 100;
-
-
-            if ($columnaBusqueda == "" || $valorBusqueda == "") {
-
-                $query = ("	SELECT id, pedido, cliente, cedtecnico, tecnico, accion, asesor, fecha, duracion, region, idllamada, observacion
-							FROM quejasgo
-							WHERE 1=1
-							AND fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59') 
-							ORDER BY fecha DESC
-							limit 100 offset $pagina
-						");
-
-            } else {
-
-                $query = ("	SELECT id, pedido, cliente, cedtecnico, tecnico, accion, asesor, fecha, duracion, region, idllamada, observacion
-								FROM quejasgo
-									WHERE 1=1
-									AND fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59') AND $columnaBusqueda = '$valorBusqueda'
-									ORDER BY fecha DESC
-									limit 100 offset $pagina
-						");
-
-            }
-
-            $queryCount = ("	SELECT COUNT(*) AS Cantidad FROM quejasgo
+            $stmt = $this->_DB->query("select count(*) as total from quejasgo
 								WHERE 1=1
-								AND fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59') 
+								AND fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59')");
+            $stmt->execute();
 
-					");
+            $resCount   = $stmt->fetch(PDO::FETCH_OBJ);
+            $totalCount = $resCount->total;
 
-            $rr = $this->_DB->query($queryCount);
-            $rr->execute();
-            //Dado el total, contra el numumero de paginas
-            $totalPaginas = 0;
-            $counter      = 0;
-            if ($rr->rowCount() > 0) {
-                $result = [];
-                if ($row = $rr->fetchAll(PDO::FETCH_ASSOC)) {
-                    $counter = $row['Cantidad'];
 
-                    $totalPaginas = $counter / 100;
-                    $totalPaginas = ceil($totalPaginas); //redondear al siguiente
-                }
+            if (is_numeric($data['curPage'])) {
+                $page_number = $data['curPage'];
+            } else {
+                $page_number = 1;
+                $data['pageSize'] = 50;
             }
 
-            $rst = $this->_DB->query($query);
-            $rst->execute();
-            if ($rst->rowCount() > 0) {
-                $resultado = $rst->fetchAll(PDO::FETCH_ASSOC);
-                $response  = [
-                    'data'         => $resultado,
-                    'contador'     => $counter,
-                    'totalPaginas' => $totalPaginas,
-                ];
+            $initial_page = ($page_number - 1) * $data['pageSize'];
 
+            $total_pages = ceil($totalCount / $data['pageSize']);
+
+            $pageSize = $data['pageSize'];
+
+
+            $stmt = $this->_DB->query("SELECT id, pedido, cliente, cedtecnico, tecnico, accion, asesor, fecha, duracion, region, idllamada, observacion
+                                                FROM quejasgo
+                                                    WHERE 1=1
+                                                    AND fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59') 
+                                                    ORDER BY fecha DESC limit $initial_page, $pageSize");
+            $stmt->execute();
+
+            if ($stmt->rowCount()){
+                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = ['state' => 1, 'data' => $result, 'total' => $total_pages, 'counter' => intval($totalCount)];
             } else {
-                $response = 0;
+                $response = ['state' => 0];
             }
 
         } catch (PDOException $e) {

@@ -12,6 +12,10 @@ var app = angular.module('seguimientopedidos', [
     'ui.grid',
     'ui.grid.pagination',
     'ui.grid.selection',
+    'ui.grid.edit',
+    'ui.grid.cellNav',
+    'ui.grid.exporter',
+    'ui.grid.autoResize'
 ]);
 
 app.service('fileUpload', ['$http', '$cookieStore', function ($http, $cookieStore) {
@@ -120,7 +124,7 @@ app.directive('fileModel', ['$parse', function ($parse) {
 
 app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     var serviceBase = 'services/';
-    var serviceBase1 = 'http://netvm-ptctrl01a/seguimientopedidos/api/controller/';
+    var serviceBase1 = 'http://netvm-ptctrl01a/seguimientopedidos-dev/api/controller/';
     //var serviceBase1 = 'http://localhost/seguimientopedidos/api/controller/';
     var obj = {};
 
@@ -808,12 +812,13 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     /*===========================================================*/
 
-    obj.novedadesTecnicoService = function (page, datos) {
+    obj.novedadesTecnicoService = function (curPage, pageSize, sort) {
         var data = {
             method: 'novedadesTecnico',
             data: {
-                'page': page,
-                'datos': datos
+                'curPage': curPage,
+                'pageSize': pageSize,
+                'sort':sort
             }
         }
         return $http.post(serviceBase1 + 'novedadesTecnicoCtrl.php', data);
@@ -878,12 +883,13 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     /*------------->INICIO SERVICIOS PARA QUEJASGO<------------*/
 
-    obj.listaQuejasGoDia = function (page, datos) {
+    obj.listaQuejasGoDia = function (curPage, pageSize, sort) {
         var data = {
             method: 'extraeQuejasGoDia',
             data: {
-                'page': page,
-                'datos': datos
+                'curPage': curPage,
+                'pageSize': pageSize,
+                'sort': sort
             }
         }
         return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
@@ -982,10 +988,15 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'novedadesTecnicoCtrl.php', data);
     };
 
-    obj.registrosOffline = function () {
+    obj.registrosOffline = function (curPage, pageSize, sort) {
 
         var data = {
-            method: 'registrosOffline'
+            method: 'registrosOffline',
+            data: {
+                'curPage': curPage,
+                'pageSize': pageSize,
+                'sort': sort
+            }
         }
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
@@ -1745,16 +1756,26 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'nivelacionCtrl.php', data);
     };
 
-    obj.gestionarNivelacion = function () {
+    obj.gestionarNivelacion = function (curPage, pageSize, sort) {
         var data = {
             method: 'gestionarNivelacion',
+            data: {
+                'curPage': curPage,
+                'pageSize': pageSize,
+                'sort': sort
+            }
         }
         return $http.post(serviceBase1 + 'nivelacionCtrl.php', data);
     };
 
-    obj.gestionarRegistrosNivelacion = function () {
+    obj.gestionarRegistrosNivelacion = function (curPage, pageSize, sort) {
         var data = {
             method: 'gestionarRegistrosNivelacion',
+            data: {
+                'curPage': curPage,
+                'pageSize': pageSize,
+                'sort': sort
+            }
         }
         return $http.post(serviceBase1 + 'nivelacionCtrl.php', data);
     };
@@ -1866,17 +1887,17 @@ app.controller('loginCtrl', function ($scope, $http, $rootScope, $location, $rou
                 $rootScope.permiso = true;
                 console.log('aca ', $rootScope.galletainfo)
                 //console.log("galletainfo: ",$rootScope.galletainfo);
-                if ($rootScope.galleta.perfil === '1' && $rootScope.galleta.perfil === '2' && $rootScope.galleta.perfil === '5') {
+                if ($rootScope.galletainfo.perfil === '1' && $rootScope.galletainfo.perfil === '2' && $rootScope.galletainfo.perfil === '5') {
                     $location.path('/actividades/');
-                } else if ($rootScope.galleta.perfil === '3' || $rootScope.galleta.perfil === '8') {
+                } else if ($rootScope.galletainfo.perfil === '3' || $rootScope.galletainfo.perfil === '8') {
                     $location.path('/registros/');
-                } else if ($rootScope.galleta.perfil === '4') {
+                } else if ($rootScope.galletainfo.perfil === '4') {
                     $location.path('/mesaoffline/mesaoffline/');
-                } else if ($rootScope.galleta.perfil === '6') {
+                } else if ($rootScope.galletainfo.perfil === '6') {
                     $location.path('/premisasInfraestructuras/');
-                } else if ($rootScope.galleta.perfil === '12') {
+                } else if ($rootScope.galletainfo.perfil === '12') {
                     $location.path('/novedadesVisita/');
-                } else if ($rootScope.galleta.perfil === '13') {
+                } else if ($rootScope.galletainfo.perfil === '13') {
                     $location.path('/quejasGo/');
                 }
 
@@ -3855,7 +3876,7 @@ app.controller('premisasInfraestructurasCtrl', function ($scope, $rootScope, $lo
 app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services, cargaRegistros) {
 
     /*INCLUDE DE LOS MODULOS*/
-    $scope.novedadesTecnico = "partial/novedadesVisita/novedadesTecnico.html";
+    //$scope.novedadesTecnico = "partial/novedadesVisita/novedadesTecnico.html";
 
     /*INCLUDE DE LOS MODALES*/
     $scope.mostarModalNovedadesVisitas = "partial/novedadesVisita/modal/modalNovedadVisitas.html";
@@ -3866,8 +3887,178 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
     $scope.observacionCCO = '';
     $scope.pedidoElegido = '';
 
-    $scope.pageChanged = function () {
-        $scope.RegistrosTecnicos($scope.datapendientes.currentPage);
+    getGrid();
+
+    function getGrid() {
+        var columnDefs = [
+            {
+                name: "Cedula tecnico",
+                field: "cedulaTecnico",
+                minWidth: 70,
+                width: "7%",
+                enableCellEdit: false,
+                enableFiltering: true
+            },
+            {
+                name: "Nombre tecnico",
+                field: "nombreTecnico",
+                minWidth: 80,
+                width: "15%",
+                enableCellEdit: false,
+                enableFiltering: true,
+
+            }, {
+                name: "Contrato",
+                field: "contracto",
+                minWidth: 80,
+                width: "5%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Proceso",
+                field: "proceso",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "5%",
+                enableCellEdit: false,
+            }, {
+                name: "Proceso",
+                field: "proceso",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Pedido",
+                field: "pedido",
+                cellStyle: {"text-align": "center"},
+                minWidth: 80,
+                width: "8%",
+                enableCellEdit: false,
+            }, {
+                name: "Tipo de novedad",
+                field: "tiponovedad",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "Municipio",
+                field: "municipio",
+                cellStyle: {"text-align": "center"},
+                width: "5%",
+                enableCellEdit: false,
+            }, {
+                name: "Situacion",
+                field: "situacion",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "5%",
+                cellFilter: 'currency:"":0',
+                enableCellEdit: false,
+            }, {
+                name: "Hora marca sitio",
+                field: "horamarcaensitio",
+                cellStyle: {"text-align": "center"},
+                width: "5%",
+                enableCellEdit: false,
+            },
+            {
+                name: "Id llamada",
+                field: "idllamada",
+                cellStyle: {"text-align": "center"},
+                width: "15%",
+                enableCellEdit: false,
+            }, {
+                name: "Observacion 11",
+                cellTemplate: 'partial/modals/templateTecnico.html',
+                width: "5%",
+                enableFiltering: false,
+                enableCellEdit: false,
+                cellStyle: {"text-align": "center"},
+
+            }, {
+                name: "Observaciones CCO",
+                field: "observacionCCO",
+                cellStyle: {"text-align": "center"},
+                width: "5%",
+                enableCellEdit: false,
+                enableFiltering: false,
+            }, {
+                name: "Accion",
+                cellTemplate: "<div style='text-align: center'><button  ng-click='grid.appScope.abrirAgregarObservacion(row)'>Accion</button></div>",
+                minWidth: 70,
+                width: "5%",
+            }];
+
+        var paginationOptions = {
+            sort: null
+        };
+
+        $scope.gridOptions = {
+            enableFiltering: true,
+            enablePagination: true,
+            pageSize: 50,
+            enableHorizontalScrollbar: false,
+            enablePaginationControls: true,
+            columnDefs: columnDefs,
+            paginationPageSizes: [50, 200, 500],
+            paginationPageSize: 50,
+
+            exporterMenuPdf: false,
+            enableGridMenu: true,
+
+            useExternalPagination: true,
+            useExternalSorting: true,
+            enableRowSelection: true,
+
+            exporterCsvFilename: 'Registros.csv',
+
+            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+            exporterExcelFilename: 'Registros.xlsx',
+            exporterExcelSheetName: 'Sheet1',
+
+            onRegisterApi: function (gridApi) {
+                $scope.gridApi = gridApi;
+                $scope.gridApi.core.on.sortChanged($scope, function (grid, sortColumns) {
+                    if (getPage) {
+                        if (sortColumns.length > 0) {
+                            paginationOptions.sort = sortColumns[0].sort.direction;
+                        } else {
+                            paginationOptions.sort = null;
+                        }
+                        getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, paginationOptions.sort)
+                    }
+                });
+                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                    if (getPage) {
+                        getPage(newPage, pageSize, paginationOptions.sort);
+                    }
+                });
+            }
+        };
+
+        var getPage = function (curPage, pageSize, sort) {
+            services.novedadesTecnicoService(curPage, pageSize, sort).then(complete).catch(failed)
+
+            function complete(data) {
+                console.log(data.data.counter)
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptions.totalItems = counter;
+                var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+
+        };
+
+        getPage(1, $scope.gridOptions.paginationPageSize, paginationOptions.sort);
     }
 
     //=====================================================================
@@ -3877,25 +4068,19 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
     $scope.RegistrosTecnicos = function (datos) {
         $scope.novedadesVisitasTecnicos = {};
 
-        services.novedadesTecnicoService($scope.datapendientes.currentPage, datos).then(
+        services.novedadesTecnicoService(datos).then(
             function (data) {
 
-                //console.log('novedadesTecnicoService: ',data);
+                var datos = data.data.data;
+                var counter = data.data.counter;
 
-                $scope.novedadesVisitasTecnicos = data.data.data;
-                $scope.cantidad = data.data.data.length;
-                $scope.counter = data.data.contador;
-
-                return data.data;
+                $scope.gridOptions.totalItems = counter;
+                $scope.gridOptions.data = datos
             },
             function errorCallback(response) {
                 $scope.errorDatos = "No hay datos";
             });
     }
-
-    $scope.maxSize = 4;
-    $scope.datapendientes = {maxSize: 4, currentPage: 1, numPerPage: 100, totalItems: 0};
-    $scope.RegistrosTecnicos($scope.datapendientes.currentPage);
 
     // =================================================
     //                 MOSTRAR MODAL
@@ -3908,9 +4093,9 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
         $("#modalNovedadVisita").modal();
     }
 
-    $scope.abrirAgregarObservacion = (pedido) => {
+    $scope.abrirAgregarObservacion = (row) => {
         $("#novedadesVisitaObservacion").modal();
-        $scope.pedidoElegido = pedido;
+        $scope.pedidoElegido = row.entity.pedido;
     };
 
     $scope.agregarObservacion = (observacionCCO) => {
@@ -4226,6 +4411,60 @@ app.controller('contrasenasClickCtrl', function ($scope, $http, $rootScope, $loc
     // =========================================================
     //      FUNCIÓN PARA BUSCAR EL TÉCNICO POR LÓGIN O CÉDULA
     // =========================================================
+    gridTecnico();
+
+    function gridTecnico() {
+        var columnDefs = [
+            {
+                name: "Cedula",
+                field: "cedula",
+                minWidth: 70,
+                width: "20%",
+                enableCellEdit: false,
+                enableFiltering: false
+            },
+            {
+                name: "Login",
+                field: "login",
+                minWidth: 80,
+                width: "20%",
+                enableCellEdit: false,
+                enableFiltering: false,
+
+            }, {
+                name: "Nombre tecnico",
+                field: "nombre",
+                minWidth: 80,
+                width: "25%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Password",
+                field: "password",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "20%",
+                enableCellEdit: false,
+            }, {
+                name: "Acciones",
+                cellTemplate: "<div style='text-align: center'><button  ng-click='grid.appScope.cambioPassword(row)'>Cambiar Password</button></div>",
+                minWidth: 70,
+                width: "15%",
+            }];
+        $scope.gridOptions = {
+            enableFiltering: false,
+            enablePagination: false,
+            columnDefs: columnDefs
+        }
+        $scope.gridOptions.data = ''
+
+    }
+
+    $scope.cambioPassword = function (row) {
+
+        $scope.datosTecnico = row.entity;
+        $('#updateModalContrasenasClick').modal('show');
+    }
 
     $scope.BuscarcontrasenasTecnicos = function (datos) {
 
@@ -4260,40 +4499,16 @@ app.controller('contrasenasClickCtrl', function ($scope, $http, $rootScope, $loc
             });
             return;
         } else {
-            services.registrosContrasenasTecnicos(datos).then(
-                function (data) {
+            services.registrosContrasenasTecnicos(datos).then(completed).catch(failed)
 
-                    $scope.listaContrasenasClick = data.data[0];
+            function completed(data) {
+                $scope.gridOptions.data = data.data.data
+            }
 
+            function failed(error) {
+                console.log(error)
+            }
 
-                    if ($scope.listaContrasenasClick == "<") {
-
-                        swal({
-                            title: "El técnico " + datos.buscar + " no existe en la Base de Datos.",
-                            type: "warning",
-                            confirmButtonClass: "btn-danger",
-                        });
-
-                    }
-
-                    return data.data;
-
-                },
-
-                function errorCallback(response) {
-
-                    if (response.status == '400') {
-
-                        swal({
-                            title: "El técnico " + datos.buscar + " no existe en la Base de Datos.",
-                            type: "warning",
-                            confirmButtonClass: "btn-danger",
-                        });
-                    }
-                    ;
-
-
-                });
         }
     }
 
@@ -4343,28 +4558,20 @@ app.controller('contrasenasClickCtrl', function ($scope, $http, $rootScope, $loc
     };
 
 
-    // =================================================
-    //            MODAL PARA CAMBIO CONTRASEÑA
-    // =================================================
-
-    $scope.updateModalContrasenasClick = function (data) {
-        $rootScope.datos = data;
-    };
-
     // =====================================================
     //            FUNCION PARA CAMBIAR LA CONTRASEÑA
     // =====================================================
 
-    $scope.editPwdTecnicos = function (datos) {
+    $scope.editPwdTecnicos = function (datosTecnico) {
 
-        if (datos.newpwd == undefined || datos.confnewpwd == undefined) {
+        if (datosTecnico.newpwd == undefined || datosTecnico.confnewpwd == '') {
             swal({
                 title: "Por favor ingrese la contraseña",
                 type: "warning",
                 confirmButtonClass: "btn-danger",
             });
             return;
-        } else if (datos.newpwd != datos.confnewpwd) {
+        } else if (datosTecnico.newpwd != datosTecnico.confnewpwd) {
 
             swal({
                 title: "Las contraseñas no coinciden, por favor digitar de nuevo",
@@ -4374,18 +4581,23 @@ app.controller('contrasenasClickCtrl', function ($scope, $http, $rootScope, $loc
             return;
         } else {
 
-            services.editarPasswordTecnicos(datos).then(
+            services.editarPasswordTecnicos(datosTecnico).then(
                 function (data) {
-
-                    Swal(
-                        'Se actualizó la contraseña!',
-                        'Bien Hecho'
-                    )
-                    /*PARA QUE EL MODAL SE OCULTE SOLO*/
-                    $("#updateModalContrasenasClick").modal('hide');
-                    return data.data;
+                    if (data.data.state == 0) {
+                        Swal({
+                            type: 'error',
+                            title: data.data.data,
+                            timer: 4000
+                        })
+                    } else if (data.data.state == 1) {
+                        Swal(
+                            data.data.data,
+                            'Bien Hecho'
+                        ).then(function () {
+                            $route.reload();
+                        })
+                    }
                 },
-
                 function errorCallback(response) {
                 });
         }
@@ -4405,6 +4617,173 @@ app.controller('quejasGoCtrl', function ($scope, $http, $rootScope, $location, $
     $scope.quejasGoSel = {};
     var timer;
     var idqueja;
+
+    getGrid();
+
+    function getGrid() {
+        var columnDefs = [
+            {
+                name: "Concecutivo",
+                field: "id",
+                minWidth: 70,
+                width: "7%",
+                enableCellEdit: false,
+                enableFiltering: true
+            },
+            {
+                name: "Pedido",
+                field: "pedido",
+                minWidth: 80,
+                width: "15%",
+                enableCellEdit: false,
+                enableFiltering: true,
+
+            }, {
+                name: "Nombre cliente",
+                field: "cliente",
+                minWidth: 80,
+                width: "5%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Cedula tecnico",
+                field: "cedtecnico",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "5%",
+                enableCellEdit: false,
+            }, {
+                name: "Nombre tecnico",
+                field: "tecnico",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Accion",
+                field: "accion",
+                cellStyle: {"text-align": "center"},
+                minWidth: 80,
+                width: "8%",
+                enableCellEdit: false,
+            }, {
+                name: "Asesor",
+                field: "asesor",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "Fecha",
+                field: "fecha",
+                cellStyle: {"text-align": "center"},
+                width: "5%",
+                enableCellEdit: false,
+            }, {
+                name: "Duracion",
+                field: "duracion",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "5%",
+                enableCellEdit: false,
+            }, {
+                name: "Ciudad",
+                field: "region",
+                cellStyle: {"text-align": "center"},
+                width: "5%",
+                enableCellEdit: false,
+            },
+            {
+                name: "Id llamada",
+                field: "idllamada",
+                cellStyle: {"text-align": "center"},
+                width: "15%",
+                enableCellEdit: false,
+            }, {
+                name: "Observaciones",
+                cellTemplate: 'partial/modals/templateQueja.html',
+                width: "5%",
+                enableFiltering: false,
+                enableCellEdit: false,
+                cellStyle: {"text-align": "center"},
+
+            }, {
+                name: "Editar",
+                cellTemplate: "<div style='text-align: center'><button  ng-click='grid.appScope.abrirModalModificarObs(row)'>Editar</button></div>",
+                minWidth: 70,
+                width: "5%",
+                enableFiltering: false,
+            }];
+
+        var paginationOptions = {
+            sort: null
+        };
+
+        $scope.gridOptions = {
+            enableFiltering: true,
+            enablePagination: true,
+            pageSize: 200,
+            enableHorizontalScrollbar: false,
+            enablePaginationControls: true,
+            columnDefs: columnDefs,
+            paginationPageSizes: [200, 500, 1000],
+            paginationPageSize: 200,
+
+            exporterMenuPdf: false,
+            enableGridMenu: true,
+
+            useExternalPagination: true,
+            useExternalSorting: true,
+            enableRowSelection: true,
+
+            exporterCsvFilename: 'Registros.csv',
+
+            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+            exporterExcelFilename: 'Registros.xlsx',
+            exporterExcelSheetName: 'Sheet1',
+
+            onRegisterApi: function (gridApi) {
+                $scope.gridApi = gridApi;
+                $scope.gridApi.core.on.sortChanged($scope, function (grid, sortColumns) {
+                    if (getPage) {
+                        if (sortColumns.length > 0) {
+                            paginationOptions.sort = sortColumns[0].sort.direction;
+                        } else {
+                            paginationOptions.sort = null;
+                        }
+                        getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, paginationOptions.sort)
+                    }
+                });
+                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                    if (getPage) {
+                        getPage(newPage, pageSize, paginationOptions.sort);
+                    }
+                });
+            }
+        };
+
+        var getPage = function (curPage, pageSize, sort) {
+            services.listaQuejasGoDia(curPage, pageSize, sort).then(complete).catch(failed)
+
+            function complete(data) {
+                console.log(data.data.counter)
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptions.totalItems = counter;
+                var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+
+        };
+
+        getPage(1, $scope.gridOptions.paginationPageSize, paginationOptions.sort);
+    }
 
     $scope.pageChanged = function () {
 
@@ -4432,7 +4811,7 @@ app.controller('quejasGoCtrl', function ($scope, $http, $rootScope, $location, $
     };
 
     /* FUNCION PARA CARGAR LA DATA DEL DIA EN LA VISTA PRINCIPAL */
-    $scope.LoadQuejasGo = function (datos) {
+    /*$scope.LoadQuejasGo = function (datos) {
 
         $scope.listaQuejasGo = {};
 
@@ -4453,7 +4832,7 @@ app.controller('quejasGoCtrl', function ($scope, $http, $rootScope, $location, $
 
     $scope.maxSize = 4;
     $scope.datapendientes = {maxSize: 4, currentPage: 1, numPerPage: 100, totalItems: 0};
-    $scope.LoadQuejasGo($scope.datapendientes.currentPage);
+    $scope.LoadQuejasGo($scope.datapendientes.currentPage);*/
 
     /* FUNCION PARA LLAMAR EL MODAL */
     $scope.mostraModal = function () {
@@ -4654,10 +5033,10 @@ app.controller('quejasGoCtrl', function ($scope, $http, $rootScope, $location, $
     };
 
     /* FUNCION PARA LLAMAR EL MODAL PARA MODIFICAR LAS OBSERVACIONES DE LA QUEJAGO */
-    $scope.abrirModalModificarObs = function (id, observacion) {
+    $scope.abrirModalModificarObs = function (row) {
 
-        $scope.quejasGoSel.observacion = observacion;
-        idqueja = id;
+        $scope.quejasGoSel.observacion = row.entity.observacion;
+        idqueja = row.entity.id;
 
         angular.copy();
         $("#modObserQuejasGo").modal();
@@ -5074,24 +5453,185 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
 app.controller('registrosOfflineCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services) {
     $scope.listaRegistrosOffline = {};
 
+    getGrid();
 
-    $scope.RegistrosOffline = function () {
+    function getGrid() {
 
-        services.registrosOffline().then(
-            function (data) {
-                $scope.listaRegistrosOffline = data.data[0];
-                //console.log(data.data);
-                $scope.cantidad = data.data[0].length;
-                $scope.counter = data.data[1];
+        Date.prototype.addMins = function (m) {
+            this.setTime(this.getTime() + (m * 60 * 1000));  // minutos * seg * milisegundos
+            return this;
+        }
 
-                return data.data;
+        var fechaI2 = new Date();
+        fechaI2.addMins(15);
+
+        var columnDefs = [
+            {
+                name: "Login óffline",
+                field: "LOGIN_ASESOR_OFF",
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+                enableFiltering: false
             },
-            function errorCallback(response) {
-                $scope.errorDatos = "No hay datos";
+            {
+                name: "Asesor",
+                field: "LOGIN_ASESOR",
+                minWidth: 80,
+                width: "10%",
+                enableCellEdit: false,
+                enableFiltering: false,
 
-            });
+            }, {
+                name: "Pedido",
+                field: "PEDIDO",
+                minWidth: 80,
+                width: "10%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Proceso",
+                field: "PROCESO",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    if (new Date(row.entity.fecha_ingreso) <= fechaI2) {
+                        return 'blue';
+                    }
+                }
+            }, {
+                name: "Producto",
+                field: "PRODUCTO",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Accion",
+                field: "ACCION",
+                cellStyle: {"text-align": "center"},
+                minWidth: 80,
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "Actividad",
+                field: "ACTIVIDAD",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "Sub-Actividad",
+                field: "ACTIVIDAD2",
+                cellStyle: {"text-align": "center"},
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "Fecha carga",
+                field: "FECHA_CARGA",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                cellFilter: 'currency:"":0',
+                enableCellEdit: false,
+            }, {
+                name: "Observaciones",
+                field: "OBSERVACIONES",
+                cellStyle: {"text-align": "center"},
+                width: "10%",
+                enableCellEdit: false,
+            }];
+
+        var paginationOptions = {
+            sort: null
+        };
+
+        $scope.gridOptions = {
+            enableFiltering: true,
+            enablePagination: true,
+            pageSize: 50,
+            enableHorizontalScrollbar: false,
+            enablePaginationControls: true,
+            columnDefs: columnDefs,
+            paginationPageSizes: [50, 200, 500],
+            paginationPageSize: 50,
+
+            exporterMenuPdf: false,
+            enableGridMenu: true,
+
+            useExternalPagination: true,
+            useExternalSorting: true,
+            enableRowSelection: true,
+
+            exporterCsvFilename: 'Registros.csv',
+
+            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+            exporterExcelFilename: 'Registros.xlsx',
+            exporterExcelSheetName: 'Sheet1',
+
+            onRegisterApi: function (gridApi) {
+                $scope.gridApi = gridApi;
+                $scope.gridApi.core.on.sortChanged($scope, function (grid, sortColumns) {
+                    if (getPage) {
+                        if (sortColumns.length > 0) {
+                            paginationOptions.sort = sortColumns[0].sort.direction;
+                        } else {
+                            paginationOptions.sort = null;
+                        }
+                        getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, paginationOptions.sort)
+                    }
+                });
+                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                    if (getPage) {
+                        getPage(newPage, pageSize, paginationOptions.sort);
+                    }
+                });
+            }
+        };
+
+        var getPage = function (curPage, pageSize, sort) {
+
+            services.registrosOffline(curPage, pageSize, sort).then(complete).catch(failed)
+
+            function complete(data) {
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptions.totalItems = counter;
+                var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+
+        };
+
+        getPage(1, $scope.gridOptions.paginationPageSize, paginationOptions.sort);
     }
-    $scope.RegistrosOffline();
+
+
+    /*    $scope.RegistrosOffline = function () {
+
+            services.registrosOffline().then(
+                function (data) {
+                    $scope.listaRegistrosOffline = data.data[0];
+                    //console.log(data.data);
+                    $scope.cantidad = data.data[0].length;
+                    $scope.counter = data.data[1];
+
+                    return data.data;
+                },
+                function errorCallback(response) {
+                    $scope.errorDatos = "No hay datos";
+
+                });
+        }
+        $scope.RegistrosOffline();*/
 });
 
 app.controller('mesaofflineCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services) {
@@ -5616,27 +6156,441 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
             ;
         }
     }
-})
-;
+});
 
-app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location, $route, $routeParams, $cookies, $cookieStore, $timeout, services) {
+app.filter('mapNivelacion', function () {
+    var genderHash = {
+        'SI': 'SI',
+        'NO': 'NO'
+    };
+
+    return function (input) {
+        if (!input) {
+            return '';
+        } else {
+            return genderHash[input];
+        }
+    };
+});
+
+app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location, $route, $routeParams, $cookies, $cookieStore, $timeout, services, i18nService) {
     $scope.GestionNivelacion = {};
     $scope.fechaini = '';
     $scope.fechafin = '';
-    $scope.registroTecnicos = function () {
-        services.gestionarRegistrosNivelacion().then(complete).catch(failed)
+    $scope.nivelacion = {};
+    i18nService.setCurrentLang('es')
+    init();
+
+    function init() {
+        getGrid();
+        registrosTecnicos();
+    }
+
+    function getGrid() {
+
+        Date.prototype.addMins = function (m) {
+            this.setTime(this.getTime() + (m * 60 * 1000));  // minutos * seg * milisegundos
+            return this;
+        }
+
+        var fechaI2 = new Date();
+        fechaI2.addMins(15);
+
+        var columnDefs = [
+            {
+                name: "Marcar",
+                cellTemplate: "<div style='text-align: center'><input type='checkbox' ng-click='grid.appScope.engestion(row)'></div>",
+                minWidth: 70,
+                width: "3%",
+                enableCellEdit: false,
+                enableFiltering: false
+            },
+            {
+                name: "Login",
+                field: "gestiona_por",
+                minWidth: 80,
+                width: "5%",
+                enableCellEdit: false,
+                enableFiltering: false,
+                /*                cellClass: function(grid, row, col, rowRenderIndex, colRenderIndex) {
+                                    if (row.entity.gestiona_por) {
+                                        if (row.entity.gestiona_por == $rootScope.galletainfo.login){
+                                            return "<div class='center-block'>row.entity.gestiona_por</div>";
+                                        }else{
+                                            return "<div class='center-block'>En gestion</div>";
+                                        }
+                                    }else {
+                                        return "<div class='center-block'></div>";
+                                    }
+                                }*/
+
+            }, {
+                name: "Tarea",
+                field: "ticket_id",
+                minWidth: 80,
+                width: "5%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Fecha ingreso",
+                field: "fecha_ingreso",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "7%",
+                enableCellEdit: false,
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    if (new Date(row.entity.fecha_ingreso) <= fechaI2) {
+                        return 'blue';
+                    }
+                }
+            }, {
+                name: "Proceso",
+                field: "proceso",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "7%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Zona",
+                field: "zona",
+                cellStyle: {"text-align": "center"},
+                minWidth: 80,
+                width: "8%",
+                enableCellEdit: false,
+            }, {
+                name: "Sub zona",
+                field: "zubzona",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "7%",
+                enableCellEdit: false,
+            }, {
+                name: "Nombre técnico",
+                field: "nombre_tecnico",
+                cellStyle: {"text-align": "center"},
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "cc técnico",
+                field: "cc_tecnico",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "5%",
+                cellFilter: 'currency:"":0',
+                enableCellEdit: false,
+            }, {
+                name: "Tipo solicitud",
+                field: "solicitud",
+                cellStyle: {"text-align": "center"},
+                width: "6%",
+                enableCellEdit: false,
+            },
+            {
+                name: "Motivo",
+                field: "motivo",
+                cellStyle: {"text-align": "center"},
+                width: "8%",
+                enableCellEdit: false,
+            }, {
+                name: "Submotivo",
+                field: "submotivo",
+                cellStyle: {"text-align": "center"},
+                width: "5%",
+                enableCellEdit: false,
+            }, {
+                name: "N. nuevo técnico",
+                field: "nombre_nuevo_tecnico",
+                cellStyle: {"text-align": "center"},
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "c. n. técnico",
+                field: "cc_nuevo_tecnico",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "5%",
+                suppressSizeToFit: true,
+                enableColumnResizing: true,
+                cellFilter: 'currency:"":0',
+            }, {
+                name: "nivelacion",
+                editType: 'dropdown',
+                cellFilter: 'mapNivelacion',
+                enableCellEdit: true,
+                editableCellTemplate: 'ui-grid/dropdownEditor',
+                editDropdownOptionsArray: [{
+                    ID: 'SI',
+                    type: 'SI'
+                }, {
+                    ID: 'NO',
+                    type: 'NO'
+                }],
+                editDropdownIdLabel: 'ID',
+                editDropdownValueLabel: 'type',
+                minWidth: 50,
+                width: "3%",
+                enableColumnResizing: true,
+
+            }, {
+                name: "Obs.",
+                cellTemplate: 'partial/modals/template.html',
+                width: "3%",
+                enableFiltering: false,
+                enableCellEdit: false,
+                cellStyle: {"text-align": "center"},
+            }, {
+                name: "Acc.",
+                cellTemplate: "<div style='text-align: center'>" +
+                    '<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.guardagestion(row)">' +
+                    '<i class="fa fa-floppy-o" aria-hidden="true"> </i>' +
+                    '</button>',
+                minWidth: 50,
+                width: "3%",
+                enableFiltering: false
+            }];
+
+        var paginationOptions = {
+            sort: null
+        };
+
+        $scope.gridOptions = {
+            enableFiltering: true,
+            enablePagination: true,
+            pageSize: 50,
+            enableHorizontalScrollbar: false,
+            enablePaginationControls: true,
+            columnDefs: columnDefs,
+            paginationPageSizes: [50, 200, 500],
+            paginationPageSize: 50,
+
+            exporterMenuPdf: false,
+            enableGridMenu: true,
+
+            useExternalPagination: true,
+            useExternalSorting: true,
+            enableRowSelection: true,
+
+            exporterCsvFilename: 'Registros.csv',
+            /*            exporterPdfDefaultStyle: {fontSize: 9},
+                        exporterPdfTableStyle: {margin: [30, 30, 30, 30]},
+                        exporterPdfTableHeaderStyle: {fontSize: 10, bold: true, italics: true, color: 'red'},
+                        exporterPdfHeader: {text: "Registros", style: 'headerStyle'},
+                        exporterPdfFooter: function (currentPage, pageCount) {
+                            return {text: currentPage.toString() + ' of ' + pageCount.toString(), style: 'footerStyle'};
+                        },
+                        exporterPdfCustomFormatter: function (docDefinition) {
+                            docDefinition.styles.headerStyle = {fontSize: 22, bold: true};
+                            docDefinition.styles.footerStyle = {fontSize: 10, bold: true};
+                            return docDefinition;
+                        },
+                        exporterPdfOrientation: 'portrait',
+                        exporterPdfPageSize: 'LETTER',
+                        exporterPdfMaxGridWidth: 500,*/
+            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+            exporterExcelFilename: 'Registros.xlsx',
+            exporterExcelSheetName: 'Sheet1',
+
+            onRegisterApi: function (gridApi) {
+                $scope.gridApi = gridApi;
+                $scope.gridApi.core.on.sortChanged($scope, function (grid, sortColumns) {
+                    if (getPage) {
+                        if (sortColumns.length > 0) {
+                            paginationOptions.sort = sortColumns[0].sort.direction;
+                        } else {
+                            paginationOptions.sort = null;
+                        }
+                        getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, paginationOptions.sort)
+                    }
+                });
+                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                    if (getPage) {
+                        getPage(newPage, pageSize, paginationOptions.sort);
+                    }
+                });
+            }
+        };
+
+        var getPage = function (curPage, pageSize, sort) {
+            services.gestionarNivelacion(curPage, pageSize, sort).then(complete).catch(failed)
+
+            function complete(data) {
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptions.totalItems = counter;
+                var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+
+        };
+
+        getPage(1, $scope.gridOptions.paginationPageSize, paginationOptions.sort);
+    }
+
+    function registrosTecnicos() {
+
+        var columnDefs = [
+            {
+                name: "Tarea",
+                field: "ticket_id",
+                minWidth: 80,
+                width: "5%",
+            },
+            {
+                name: "Proceso",
+                field: "proceso",
+                minWidth: 80,
+                width: "10%",
+            }, {
+                name: "Nombre Teçnico",
+                field: "nombre_tecnico",
+                minWidth: 70,
+                width: "15%",
+            }, {
+                name: "CC Técnico",
+                field: "cc_tecnico",
+                minWidth: 80,
+                width: "7%",
+            }, {
+                name: "Tipo Solicitud",
+                field: "solicitud",
+                minWidth: 70,
+                width: "8%",
+            }, {
+                name: "Motivo",
+                field: "motivo",
+                width: "10%",
+            }, {
+                name: "Sub Motivo",
+                field: "submotivo",
+                minWidth: 70,
+                width: "7%",
+            }, {
+                name: "CC Nuevo Téc.",
+                field: "cc_nuevo_tecnico",
+                minWidth: 70,
+                width: "8%",
+            },
+            {
+                name: "Nombre Nuevo Tec.",
+                field: "nombre_nuevo_tecnico",
+                minWidth: 70,
+                width: "10%",
+            }, {
+                name: "Nivelacion",
+                field: "se_realiza_nivelacion",
+                minWidth: 70,
+                width: "10%",
+            },
+            {
+                name: "Detalles",
+                cellTemplate: "<div style='text-align: center'><button  ng-click='grid.appScope.DetalleTotal(row)'>Detalles</button></div>",
+                minWidth: 70,
+                width: "10%",
+            }];
+
+        var paginationOptions = {
+            sort: null
+        };
+
+        $scope.gridOptionsRegistros = {
+            enableFiltering: true,
+            enablePagination: true,
+            pageSize: 50,
+            enableHorizontalScrollbar: false,
+            enablePaginationControls: true,
+            columnDefs: columnDefs,
+            paginationPageSizes: [50, 200, 500],
+            paginationPageSize: 50,
+
+            useExternalPagination: true,
+            useExternalSorting: true,
+            enableRowSelection: true,
+
+            enableGridMenu: true,
+            enableSelectAll: true,
+            exporterCsvFilename: 'Registros-nivelacion.csv',
+            exporterMenuPdf: false,
+            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+            exporterExcelFilename: 'Registros-nivelacion.xlsx',
+            exporterExcelSheetName: 'Sheet1',
+            onRegisterApi: function (gridApi) {
+                $scope.gridApi = gridApi;
+                $scope.gridApi.core.on.sortChanged($scope, function (grid, sortColumns) {
+                    if (getPage) {
+                        if (sortColumns.length > 0) {
+                            paginationOptions.sort = sortColumns[0].sort.direction;
+                        } else {
+                            paginationOptions.sort = null;
+                        }
+                        console.log(2);
+                        getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, paginationOptions.sort)
+                    }
+                });
+                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                    if (getPage) {
+                        console.log(1);
+                        getPage(newPage, pageSize, paginationOptions.sort);
+                    }
+                });
+            }
+        };
+
+        var getPage = function (curPage, pageSize, sort) {
+            services.gestionarRegistrosNivelacion(curPage, pageSize, sort).then(complete).catch(failed)
+
+            function complete(data) {
+
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptionsRegistros.totalItems = counter;
+                var firstRow = (curPage - 1) * datos
+                //$scope.gridOptionsRegistros.data = datos.slice(firstRow, firstRow + paginationOptions.pageSize);
+                $scope.gridOptionsRegistros.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+
+        };
+
+        getPage(1, $scope.gridOptionsRegistros.paginationPageSize, paginationOptions.sort);
+    }
+
+    $scope.gestion_nivelacion = function () {
+        getGrid();
+    }
+
+    $scope.registros_nivelacion = function () {
+        registrosTecnicos();
+    }
+
+    $scope.DetalleTotal = function (row) {
+        services.buscarhistoricoNivelacion(row.entity.ticket_id).then(complete).catch(failed)
 
         function complete(data) {
-
-            if (data.data.state == 0) {
-                $scope.GestionNivelacion.respuestaNivelacion = '';
+            console.log(data);
+            if (data.data.state === 0) {
+                Swal({
+                    type: 'error',
+                    title: data.data.msj
+                })
             } else {
-                $scope.GestionNivelacion.respuestaNivelacion = data.data.data;
+                $scope.nivelacion.databsucarPedido = data.data.data;
+                $('#modalHistoricoNivelacion').modal('show');
+                return data.data;
             }
         }
 
-        function failed(error) {
-            console.log(error);
+        function failed(data) {
+            console.log(data)
         }
     }
 
@@ -5667,152 +6621,43 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
     }
 
     $scope.hora_sistema = js_yyyy_mm_dd_hh_mm_ss();
-    getGrid();
 
-    function getGrid() {
-        var columnDefs = [
-            {
-                name: "Login",
-                field: "gestiona_por",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "Tarea",
-                field: "ticket_id",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "Fecha ingreso",
-                field: "fecha_ingreso",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "Proceso",
-                field: "proceso",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "Zona",
-                field: "zona",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "Sub zona",
-                field: "zubzona",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "Nombre técnico",
-                field: "nombre_tecnico",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "cc técnico",
-                field: "cc_tecnico",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "Tipo solicitud",
-                field: "solicitud",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "Motivo",
-                field: "motivo",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "Submotivo",
-                field: "submotivo",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "Nombre nombre técnico",
-                field: "nombre_nuevo_tecnico",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "CC nuevo técnico",
-                field: "cc_nuevo_tecnico",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "Se realiza nivelación",
-                field: "estado",
-                cellStyle: {"text-align": "center"},
-                editableCellTemplate: 'uiSelect',
-                editDropdownOptionsArray: [
-                    'male',
-                    'female',
-                    'other'
-                ]
-            }];
-        $scope.gridOptions = {
-            enablePagination: true,
-            pageSize: 10,
-            enableHorizontalScrollbar: false,
-            enablePaginationControls: true,
-            columnDefs: columnDefs,
-            paginationPageSizes: [10, 25, 50, 75],
-            paginationPageSize: 10
-        };
-        services.gestionarNivelacion().then(complete).catch(failed)
-
-        function complete(data) {
-            $scope.gridOptions.data = data.data.data
-        }
-
-        function failed(data) {
-        }
+    $scope.reloaddata = function () {
+        getGrid();
     }
 
-    gestionarNivelacion();
+    $scope.delete = function (row) {
+        console.log(row.entity)
+    };
 
-    function gestionarNivelacion() {
-
-        services.gestionarNivelacion().then(complete).catch(failed)
+    $scope.engestion = function (row) {
+        services.marcarEnGestionNivelacion(row.entity.id).then(complete).catch(failed)
 
         function complete(data) {
-
-            if (data.data.state == 0) {
-                $scope.GestionNivelacion.respuestaDatos = '';
-            } else {
-                $scope.GestionNivelacion.respuestaDatos = data.data.data;
-                var cnivela = $scope.GestionNivelacion.respuestaDatos.map((doc) => doc.fecha_ingreso);
-                //cnivela.forEach(function (valor, indice) {
-
-                /*$scope.diferencia = new Date(js_yyyy_mm_dd_hh_mm_ss()) - new Date(cnivela[indice]);
-
-                if ($scope.diferencia > 900000) {
-                    $scope.indice = (indice);
-                    $scope.quinceminutos = new Array();
-                    $scope.quinceminutos[$scope.indice] = cnivela[$scope.indice];
-
-                }
-            });*/
-
-                $scope.quinceminutos = [];
-                cnivela.forEach(function (valor, indice) {
-
-                    $scope.diferencia = new Date(js_yyyy_mm_dd_hh_mm_ss()) - new Date(cnivela[indice]);
-
-                    //var today = new Date();
-                    //var diffMs = (today - $scope.diferencia);
-                    $scope.indice = (indice);
-                    $scope.quinceminutos = new Array();
-                    $scope.quinceminutos[$scope.indice] = cnivela[$scope.indice];
-                    var diffMins = Math.round((($scope.diferencia % 86400000) % 3600000) / 60000); // minutes
-                    if (diffMins > 15) {
-                        $scope.quinceminutos[$scope.indice] = 'si';
-                    } else {
-                        $scope.quinceminutos[$scope.indice] = 'no'
-                    }
-
-                    /*$scope.indice = (indice);
-                    $scope.quinceminutos = new Array();
-                    console.log($scope.diferencia);
-                    $scope.quinceminutos[$scope.indice] = cnivela[$scope.indice];
-                    //43489000
-                    if ($scope.diferencia > 3600000) {
-                        $scope.quinceminutos[$scope.indice] = 'si';
-                    } else {
-                        $scope.quinceminutos[$scope.indice] = 'no'
-                    }
-                    console.log($scope.quinceminutos[$scope.indice])*/
-                });
-            }
+            Swal({
+                type: 'success',
+                title: data.data.msj,
+                timer: 4000
+            });
+            $route.reload();
         }
 
         function failed(error) {
-            console.log(error);
+            console.log(error)
         }
+    }
+
+    $scope.guardagestion = function (row) {
+
+        console.log(row.entity)
+
+        if (!row.entity.nivelacion) {
+            Swal('Selecciona el estado de nivelación');
+            return;
+        }
+        $scope.GestionNivelacion.observacionesNivelacion = '';
+        $scope.datos = row.entity;
+        $('#editarModal').modal('show');
     }
 
     $scope.buscarhistoricoNivelacion = function () {
@@ -5952,29 +6797,11 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
         }
     }
 
-    $scope.marcarEnGestionNivelacion = function (data) {
-
-        services.marcarEnGestionNivelacion(data, $rootScope.galletainfo).then(complete).catch(failed)
-
-        function complete(data) {
-            Swal({
-                type: 'success',
-                title: data.data.msj,
-                timer: 4000
-            });
-            $route.reload();
-        }
-
-        function failed(error) {
-            console.log(error)
-        }
-    }
-
     $scope.reloadNivelacion = function () {
-        gestionarNivelacion();
+        getGrid();
     }
 
-});
+})
 
 app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $route, $routeParams, $cookies, $cookieStore, $timeout, services, fileUpload) {
     $scope.contingencias = {};
@@ -6996,14 +7823,80 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
         }
     }
 
+    resumenContingencia();
+
+    function resumenContingencia() {
+
+        var columnDefs = [
+            {
+                name: "Pedido",
+                field: "pedido",
+                minWidth: 80,
+                width: "16%",
+            },
+            {
+                name: "Login ingreso",
+                field: "logincontingencia",
+                minWidth: 80,
+                width: "17%",
+            }, {
+                name: "Fecha ingreso",
+                field: "horagestion",
+                minWidth: 70,
+                width: "17%",
+            }, {
+                name: "Login gestion",
+                field: "logincontingencia",
+                minWidth: 80,
+                width: "16%",
+            }, {
+                name: "Fecha gestion",
+                field: "horacontingencia",
+                minWidth: 70,
+                width: "17%",
+            }, {
+                name: "Estado",
+                field: "estado",
+                width: "17%",
+                minWidth: 70,
+            }];
+
+
+        $scope.gridOptions = {
+            enableFiltering: true,
+            enablePagination: true,
+            pageSize: 50,
+            enableHorizontalScrollbar: false,
+            enablePaginationControls: true,
+            columnDefs: columnDefs,
+            paginationPageSizes: [50, 200, 500],
+            paginationPageSize: 50,
+
+            /*            useExternalPagination: true,
+                        useExternalSorting: true,
+                        enableRowSelection: true,*/
+
+            enableGridMenu: true,
+            enableSelectAll: true,
+            exporterCsvFilename: 'Registros-nivelacion.csv',
+            exporterMenuPdf: false,
+            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+            exporterExcelFilename: 'Registros-nivelacion.xlsx',
+            exporterExcelSheetName: 'Sheet1',
+        }
+
+        $scope.gridOptions.data = '';
+
+    }
+
 
     $scope.resumenContingencias = function (fechaInicial, fechafinal) {
         services.getresumenContingencias(fechaInicial, fechafinal).then(function (data) {
 
-            console.log("resumenContingenciasasdasd: ", data.data[0]);
+            console.log(data.data[0], '  ddddd')
 
-            $scope.dataresumenContingencias = data.data[0];
-            console.log("dataresumenContingencias: ", $scope.dataresumenContingencias);
+            $scope.gridOptions.data = data.data[0]
+            $scope.dataresumenContingencias = data.data[0]
 
             $scope.dataresumenContingenciasCP = data.data[5];
             //console.log("dataresumenContingenciasCP: ",$scope.dataresumenContingenciasCP);
@@ -9287,8 +10180,8 @@ app.config(['$routeProvider',
     }
 ]);
 
-app.run(function ($rootScope, services) {
-
+app.run(function ($rootScope, services, i18nService) {
+    i18nService.setCurrentLang('es')
     $rootScope.fechaProceso = function () {
         var tiempo = new Date().getTime();
         var date1 = new Date();

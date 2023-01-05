@@ -104,9 +104,9 @@ class contingencia
 
     }
 
-    public function registrosOffline()
+    public function registrosOffline($data)
     {
-        $this->_model->registrosOffline();
+        $this->_model->registrosOffline($data);
     }
 
     public function graficaDepartamento($data)

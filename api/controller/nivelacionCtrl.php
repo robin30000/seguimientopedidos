@@ -37,7 +37,7 @@ if (isset($data->method)) {
         case 'gestionarNivelacion':
             require_once '../class/nivelacion.php';
             $user = new nivelacion();
-            $user->gestionarNivelacion();
+            $user->gestionarNivelacion($data->data);
             break;
         case 'guardaNivelacion':
             require_once '../class/nivelacion.php';
@@ -47,7 +47,7 @@ if (isset($data->method)) {
         case 'gestionarRegistrosNivelacion':
             require_once '../class/nivelacion.php';
             $user = new nivelacion();
-            $user->gestionarRegistrosNivelacion();
+            $user->gestionarRegistrosNivelacion($data->data);
             break;
         case 'marcarEnGestionNivelacion':
             require_once '../class/nivelacion.php';

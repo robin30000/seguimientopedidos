@@ -252,9 +252,38 @@ input:checked + .slider:before {
   font-size: 17px;
   padding-top: 5px;
   text-align: left;
-  line-height: 2em;  
+  line-height: 2em;
 }
 .generar-cr p{
 	font-size: 13px;
 	color: rgb(241, 2, 2);
+}
+
+/**
+grid
+ */
+.ui-grid-cell-contents {
+    text-align: center;
+}
+
+#tntGridServices .ui-grid-header-cell {
+    text-align: center;
+}
+
+.ui-grid-header-cell-wrapper {
+    background: #00377d;
+    color: #ffffff;
+    text-transform: capitalize;
+}
+
+.ui-grid-filter-input {
+    color: #0f0f0f;
+}
+
+.grid {
+    width: 500px;
+    height: 200px;
+}
+.green-importance {
+    position: relative;
 }

@@ -10,91 +10,58 @@ class modelNovedadesTecnico
         $this->_DB = new Conection();
     }
 
-    public function novedadesTecnico($params)
+    public function novedadesTecnico($data)
     {
         try {
 
-            $pagina = $params['page'];
-            $datos  = $params['datos'];
-            /* $fechaini = $datos['fechaini'];
-            $fechafin = $datos['fechafin']; */
-            $fechaini = (!isset($datos['fechaini'])) ? date("Y-m-d") : $datos['fechaini']; //CORRECCION DE VALIDACION DE FECHA
-            $fechafin = (!isset($datos['fechafin'])) ? date("Y-m-d") : $datos['fechafin']; //CORRECCION DE VALIDACION DE FECHA
+
+
+            $fechaini = (!isset($data['curPage']['fechaini'])) ? date("Y-m-d") : $data['curPage']['fechaini']; //CORRECCION DE VALIDACION DE FECHA
+            $fechafin = (!isset($data['curPage']['fechafin'])) ? date("Y-m-d") : $data['curPage']['fechafin']; //CORRECCION DE VALIDACION DE FECHA
 
             if ($fechaini == "" || $fechafin == "") {
                 $fechaini = date('Y-m-d');
                 $fechafin = date('Y-m-d');
             }
 
-            if (!$pagina) {
-                $pagina = "0";
+
+            $stmt = $this->_DB->query("select count(*) as total from NovedadesVisitas
+								WHERE 1=1
+								AND fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59')");
+            $stmt->execute();
+
+            $resCount   = $stmt->fetch(PDO::FETCH_OBJ);
+            $totalCount = $resCount->total;
+
+
+            if (is_numeric($data['curPage'])) {
+                $page_number = $data['curPage'];
             } else {
-                $pagina = $pagina - 1;
+                $page_number = 1;
+                $data['pageSize'] = 50;
             }
 
-            $pagina = $pagina * 100;
+            $initial_page = ($page_number - 1) * $data['pageSize'];
 
-            $query = "SELECT id, cedulaTecnico, nombreTecnico, contracto, proceso, pedido, tiponovedad, municipio, situacion, 
+            $total_pages = ceil($totalCount / $data['pageSize']);
+
+            $pageSize = $data['pageSize'];
+
+            $stmt = $this->_DB->query("SELECT id, cedulaTecnico, nombreTecnico, contracto, proceso, pedido, tiponovedad, municipio, situacion, 
                                 horamarcaensitio, observaciones, idllamada, observacionCCO
 						FROM NovedadesVisitas
 							WHERE 1=1
 							AND fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59')
 							ORDER BY fecha DESC
-							limit 100 offset $pagina";
-
-            $queryCount = "SELECT COUNT(*) AS Cantidad FROM NovedadesVisitas
-								WHERE 1=1
-								AND fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59')";
-
-            $rr = $this->_DB->query($queryCount);
-            $rr->execute();
-
-            //Dado el total, contra el numumero de paginas
-            $totalPaginas = 0;
-            $counter      = 0;
-            if ($rr->rowCount() > 0) {
-                $result = [];
-                if ($row = $rr->fetchAll(PDO::FETCH_ASSOC)) {
-                    $counter = $row[0]['Cantidad'];
-
-                    $totalPaginas = $counter / 100;
-                    $totalPaginas = ceil($totalPaginas); //redondear al siguiente
-                }
-            }
-
-            $rst = $this->_DB->query($query);
-            $rst->execute();
-
-            if ($rst->rowCount() > 0) {
-                $result    = $rst->fetchAll(PDO::FETCH_ASSOC);
-                $resultado = [];
-
-                while ($row = $rst->fetchAll(PDO::FETCH_ASSOC)) {
-
-                    $row['cedulaTecnico']    = utf8_encode($row['cedulaTecnico']);
-                    $row['nombreTecnico']    = utf8_encode($row['nombreTecnico']);
-                    $row['contracto']        = utf8_encode($row['contracto']);
-                    $row['proceso']          = utf8_encode($row['proceso']);
-                    $row['pedido']           = utf8_encode($row['pedido']);
-                    $row['tiponovedad']      = utf8_encode($row['tiponovedad']);
-                    $row['municipio']        = utf8_encode($row['municipio']);
-                    $row['situacion']        = utf8_encode($row['situacion']);
-                    $row['horamarcaensitio'] = utf8_encode($row['horamarcaensitio']);
-                    $row['idllamada']        = utf8_encode($row['idllamada']);
-                    $row['observaciones']    = utf8_encode($row['observaciones']);
-                    $row['observacionCCO']   = utf8_encode($row['observacionCCO']);
-
-                    $resultado[] = $row;
-
-                }
-                $response = [
-                    'data'         => $result,
-                    'contador'     => $counter,
-                    'totalPaginas' => $totalPaginas,
-                ];
+							limit $initial_page, $pageSize");
+            $stmt->execute();
+            if ($stmt->rowCount()) {
+                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = ['state' => 1, 'data' => $result, 'total' => $total_pages, 'counter' => intval($totalCount)];
             } else {
-                $response = ['state' => 0, 'msj' => 'No se encontraron datos'];
+                $response = ['state' => 0];
             }
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
@@ -535,16 +502,17 @@ class modelNovedadesTecnico
 
         try {
 
-            $datos    = $data['datos'];
-            $concepto = $datos['concepto'];
-            $buscar   = $datos['buscar'];
+            $concepto  = $data['concepto'];
+            $buscar    = $data['buscar'];
+            $parametro = " and $concepto = '$buscar'";
 
-            $stmt = $this->_DB->query("SELECT c.cedula, c.login, c.nombre, c.password, c.expiraCuenta, c.expirapsw FROM cuentasTecnicos c where 1=1 And :parametro");
-            $stmt->execute([':parametro' => " $concepto = '$buscar'"]);
+            $stmt = $this->_DB->query("SELECT c.cedula, c.login, c.nombre, c.password, c.expiraCuenta, c.expirapsw FROM cuentasTecnicos c where 1=1 $parametro");
+
+            $stmt->execute();
             if ($stmt->rowCount()) {
-                $response = [$stmt->fetchAll(PDO::FETCH_ASSOC), 201];
+                $response = ['state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = ['', 400];
+                $response = ['state' => 0];
             }
 
         } catch (PDOException $e) {
@@ -564,9 +532,9 @@ class modelNovedadesTecnico
             $stmt = $this->_DB->prepare("update cuentasTecnicos set password = :password where cedula = :cedula");
             $stmt->execute([':password' => $pwd, ':cedula' => $cedula]);
             if ($stmt->rowCount()) {
-                $response = ['Usuario actualizado', 201];
+                $response = ['state' => 1, 'data' => 'Contraseña actualizada correctamente'];
             } else {
-                $response = ['Ah ocurrido un error intentalo de nuevo', 400];
+                $response = ['state' => 0, 'data' => 'Ah ocurrido un error intentalo de nuevo'];
             }
 
         } catch (PDOException $e) {
@@ -588,8 +556,8 @@ class modelNovedadesTecnico
             $stmt->execute();
 
             if ($stmt->rowCount()) {
-                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $response = array($result, 201);
+                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = [$result, 201];
 
             } else {
                 $response = ['', 400];

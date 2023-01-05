@@ -724,7 +724,7 @@
 					</div>
 
 					<!-- CONTADOR POR ESTADO PENDIENTE-ACEPTA-RECHAZA PARA TV-INTERNET -->
-					<div class="col-md-20">
+					<div class="col-md-2">
 						<div class="">
 							<div class="panel panel-default">
 								<div class="panel-heading nav navbar-default">
@@ -821,7 +821,11 @@
 								</div>
 								<div class="panel panel-default panel-body">
 									<h6 class="subtitulo text-center"><strong>Datos de TV, Internet-ToIp</strong></h6>
-									<table class="table table-fixed">
+
+									<div id="tntGridServices" ui-grid="gridOptions" ui-grid-exporter ui-grid-edit ui-grid-pagination
+										 style="font-size: 12px;text-transform: lowercase; color: #0f0f0f;height: 300px" external-scopes="gridApi" ></div>
+
+									<!--<table class="table table-fixed">
 										<thead>
 										<tr>
 											<th>Pedido</th>
@@ -842,12 +846,12 @@
 											<td class="filterable-cell">{{data.estado}}</td>
 										</tr>
 										</tbody>
-									</table>
+									</table>-->
 								</div>
 								<!-- CONTADOR DE TV-iNTERNET -->
 								<div class="panel-footer clearfix">
 									<div class="">
-										<div class="col-md-21">
+										<div class="col-md-12">
 											<h6 class="subtitulo2">Contador para TV</h6>
 											<ul class="nav navbar-nav navbar-left">
 												<li>
@@ -861,7 +865,7 @@
 												</li>
 											</ul>
 										</div>
-										<div class="col-md-21">
+										<div class="col-md-12">
 											<h6 class="subtitulo2">Contador para Internet-ToIp</h6>
 											<ul class="nav navbar-nav navbar-left">
 												<li>
@@ -876,7 +880,7 @@
 											</ul>
 										</div>
 									</div>
-									<div class="col-md-22">
+									<div class="col-md-12">
 										<h6 class="subtitulo">Contador para General</h6>
 										<ul class="nav navbar-nav navbar-left">
 											<li>

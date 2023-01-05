@@ -16,8 +16,10 @@ class formaAsesores
 
     public function ciudades()
     {
-        $this->_model->rst();
-        $this->_model->rstdep();
+        //$this->_model->rst();
+        //$this->_model->rstdep();
+        $res = array('response' => 0);
+        echo json_encode($res);
     }
 
     public function regionesTip()
