@@ -818,7 +818,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
             data: {
                 'curPage': curPage,
                 'pageSize': pageSize,
-                'sort':sort
+                'sort': sort
             }
         }
         return $http.post(serviceBase1 + 'novedadesTecnicoCtrl.php', data);
@@ -1673,14 +1673,19 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     /* ------------------------------- CODIGO INCOMPLETO ---------------------------- */
 
-    obj.getListaCodigoIncompleto = function () {
+    obj.getListaCodigoIncompleto = function (curPage, pageSize, sort) {
         var data = {
-            method: 'getListaCodigoIncompleto'
+            method: 'getListaCodigoIncompleto',
+            data: {
+                'curPage': curPage,
+                'pageSize': pageSize,
+                'sort': sort
+            }
         }
         return $http.post(serviceBase1 + 'codigoIncompletoCtrl.php', data);
     };
 
-    obj.gestionarCodigoIncompleto = function (id_codigo_incompleto, tipificacion, observacion, login) {
+    obj.gestionarCodigoIncompleto = function (id_codigo_incompleto, tipificacion, observacion) {
         var data = {
             method: 'gestionarCodigoIncompleto',
             data: {
@@ -6203,7 +6208,8 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
                 minWidth: 70,
                 width: "3%",
                 enableCellEdit: false,
-                enableFiltering: false
+                enableFiltering: false,
+                enableRowHeaderSelection: true
             },
             {
                 name: "Login",
@@ -6363,6 +6369,7 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
             columnDefs: columnDefs,
             paginationPageSizes: [50, 200, 500],
             paginationPageSize: 50,
+            enableRowHeaderSelection: true,
 
             exporterMenuPdf: false,
             enableGridMenu: true,
@@ -6551,7 +6558,6 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
 
                 $scope.gridOptionsRegistros.totalItems = counter;
                 var firstRow = (curPage - 1) * datos
-                //$scope.gridOptionsRegistros.data = datos.slice(firstRow, firstRow + paginationOptions.pageSize);
                 $scope.gridOptionsRegistros.data = datos
             }
 
@@ -6569,7 +6575,10 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
     }
 
     $scope.registros_nivelacion = function () {
-        registrosTecnicos();
+
+        setTimeout(function () {
+            registrosTecnicos();
+        }, 1000);
     }
 
     $scope.DetalleTotal = function (row) {
@@ -7067,7 +7076,6 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
     var database = firebase.firestore();
     $scope.cantidadContingenciasTV = 0;
     $scope.cantidadContingenciasINT = 0;
-
 
     $scope.listarcontingenciasterreno = () => {
 
@@ -7823,9 +7831,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
         }
     }
 
-    resumenContingencia();
-
-    function resumenContingencia() {
+    $scope.resumenContingencias = function (fechaInicial, fechafinal) {
 
         var columnDefs = [
             {
@@ -7860,8 +7866,6 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                 width: "17%",
                 minWidth: 70,
             }];
-
-
         $scope.gridOptions = {
             enableFiltering: true,
             enablePagination: true,
@@ -7872,10 +7876,6 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             paginationPageSizes: [50, 200, 500],
             paginationPageSize: 50,
 
-            /*            useExternalPagination: true,
-                        useExternalSorting: true,
-                        enableRowSelection: true,*/
-
             enableGridMenu: true,
             enableSelectAll: true,
             exporterCsvFilename: 'Registros-nivelacion.csv',
@@ -7884,18 +7884,15 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             exporterExcelFilename: 'Registros-nivelacion.xlsx',
             exporterExcelSheetName: 'Sheet1',
         }
+        //$scope.gridOptions.data = '';
 
-        $scope.gridOptions.data = '';
-
-    }
-
-
-    $scope.resumenContingencias = function (fechaInicial, fechafinal) {
         services.getresumenContingencias(fechaInicial, fechafinal).then(function (data) {
 
-            console.log(data.data[0], '  ddddd')
+            //$route.reload();
+            setTimeout(function () {
+                $scope.gridOptions.data = data.data[0]
+            }, 500);
 
-            $scope.gridOptions.data = data.data[0]
             $scope.dataresumenContingencias = data.data[0]
 
             $scope.dataresumenContingenciasCP = data.data[5];
@@ -8866,89 +8863,231 @@ app.controller('GestioncodigoincompletoCtrl', function ($scope, $rootScope, $loc
     $scope.isLoadingData = true;
     $scope.dataCodigoIncompleto = [];
 
+    getGrid();
+
     var database = firebase.firestore();
 
-    $scope.listarcodigoincompleto = () => {
+    function getGrid() {
 
-        services.getListaCodigoIncompleto().then(function (data) {
+        var columnDefs = [
+            {
+                name: "Tarea",
+                field: "tarea",
+                minWidth: 70,
+                width: "5%",
+                enableCellEdit: false,
+                enableFiltering: true,
+                enableRowHeaderSelection: true,
+                cellFilter: 'currency:"":0',
+            },
+            {
+                name: "Número de contacto",
+                field: "numero_contacto",
+                minWidth: 80,
+                width: "10%",
+                enableCellEdit: false,
+                enableFiltering: true,
 
-            if (data.data.length > 0) {
+            }, {
+                name: "Nombre contrato",
+                field: "nombre_contacto",
+                minWidth: 80,
+                width: "15%",
+                enableCellEdit: false,
 
-                console.log('data', data.data[0]);
+            }, {
+                name: "Pedido",
+                field: "unepedido",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "5%",
+                enableCellEdit: false,
+            }, {
+                name: "Categoria",
+                field: "tasktypecategory",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "5%",
+                enableCellEdit: false,
 
-                $scope.dataCodigoIncompleto = data.data[0];
-                $scope.isLoadingData = false;
-            } else {
-                $scope.isLoadingData = true;
+            }, {
+                name: "Municipio",
+                field: "unemunicipio",
+                cellStyle: {"text-align": "center"},
+                minWidth: 80,
+                width: "5%",
+                enableCellEdit: false,
+            }, {
+                name: "Productos",
+                field: "uneproductos",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "cc Tecnico",
+                field: "engineer_id",
+                cellStyle: {"text-align": "center"},
+                width: "10%",
+                enableCellEdit: false,
+                cellFilter: 'currency:"":0',
+            }, {
+                name: "nombre técnico",
+                field: "engineer_name",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "Celular",
+                field: "mobile_phone",
+                cellStyle: {"text-align": "center"},
+                width: "5%",
+                enableCellEdit: false,
+            },
+            {
+                name: "Fecha solicitud",
+                field: "fecha_creado",
+                cellStyle: {"text-align": "center"},
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "Tipificacion",
+                editType: 'dropdown',
+                cellFilter: 'mapNivelacion',
+                enableCellEdit: true,
+                editableCellTemplate: 'ui-grid/dropdownEditor',
+                editDropdownOptionsArray: [{
+                    ID: 'SI',
+                    type: 'SI'
+                }, {
+                    ID: 'NO',
+                    type: 'NO'
+                }],
+                editDropdownIdLabel: 'ID',
+                editDropdownValueLabel: 'type',
+                minWidth: 50,
+                width: "5%",
+                enableColumnResizing: true,
+                enableFiltering: false,
+
+            }, {
+                name: "Acc.",
+                cellTemplate: "<div style='text-align: center'>" +
+                    '<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.gestionarCodigoIncompleto(row)">' +
+                    '<i class="fa fa-floppy-o" aria-hidden="true"> </i>' +
+                    '</button>',
+                minWidth: 50,
+                width: "5%",
+                enableFiltering: false
+            }];
+
+        var paginationOptions = {
+            sort: null
+        };
+
+        $scope.gridOptions = {
+            enableFiltering: true,
+            enablePagination: true,
+            pageSize: 200,
+            enableHorizontalScrollbar: false,
+            enablePaginationControls: true,
+            columnDefs: columnDefs,
+            paginationPageSizes: [200, 500, 1000],
+            paginationPageSize: 200,
+            enableRowHeaderSelection: true,
+
+            exporterMenuPdf: false,
+            enableGridMenu: true,
+
+            useExternalPagination: true,
+            useExternalSorting: true,
+            enableRowSelection: true,
+
+            exporterCsvFilename: 'Registros.csv',
+
+            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+            exporterExcelFilename: 'Registros.xlsx',
+            exporterExcelSheetName: 'Sheet1',
+
+            onRegisterApi: function (gridApi) {
+                $scope.gridApi = gridApi;
+                $scope.gridApi.core.on.sortChanged($scope, function (grid, sortColumns) {
+                    if (getPage) {
+                        if (sortColumns.length > 0) {
+                            paginationOptions.sort = sortColumns[0].sort.direction;
+                        } else {
+                            paginationOptions.sort = null;
+                        }
+                        getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, paginationOptions.sort)
+                    }
+                });
+                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                    if (getPage) {
+                        getPage(newPage, pageSize, paginationOptions.sort);
+                    }
+                });
+            }
+        };
+
+        var getPage = function (curPage, pageSize, sort) {
+            services.getListaCodigoIncompleto(curPage, pageSize, sort).then(complete).catch(failed)
+
+            function complete(data) {
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptions.totalItems = counter;
+                var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
             }
 
-            return data;
-        }).catch((err) => {
-            $scope.isLoadingData = true;
-            console.log(err)
-        });
+            function failed(error) {
+                console.log(error);
+            }
 
-        $scope.isLoadingData = false;
+        };
 
+        getPage(1, $scope.gridOptions.paginationPageSize, paginationOptions.sort);
     }
 
-    $scope.gestionarCodigoIncompleto = async (id_codigo_incompleto) => {
+    $scope.gestionarCodigoIncompleto = function (row) {
 
-        let tipificacion = $('#tipificacion' + id_codigo_incompleto).val();
+        console.log(row);
 
-        const {value: observacion} = await Swal({
-            title: 'Gestión Código Incompleto',
-            input: 'textarea',
-            inputPlaceholder: 'Gestion...',
-            inputAttributes: {
-                'aria-label': 'Gestion'
-            },
-            showCancelButton: true,
-
-        });
-
-        if (observacion) {
-
-            Swal('Cargando...')
-
-            if (tipificacion == "") {
-                Swal({
-                    title: 'Error',
-                    text: 'Debes de seleccionar una tipificación.',
-                    type: 'error'
-                });
-                return false;
-            }
-
-            services.gestionarCodigoIncompleto(id_codigo_incompleto, tipificacion, observacion, $rootScope.galletainfo).then(function (data) {
-                console.log('successPUT', data);
-
-                $scope.listarcodigoincompleto();
-
-                Swal({
-                    title: 'Excelente',
-                    text: data.data.msg,
-                    type: 'success'
-                });
-
-            }).catch((err) => {
-                //$scope.listarcodigoincompleto();
-                console.log('err', err);
-            });
-
+        if (row.entity.Tipificacion == undefined) {
+            Swal(
+                'Error',
+                'Debes de seleccionar una tipificación.'
+            )
         } else {
-            Swal({
-                title: 'Error',
-                text: 'Debes ingresar una observacion.',
-                type: 'error'
-            });
-            return false;
+            $scope.codigo = row.entity;
+            $scope.codigo.observacion = '';
+
+            $('#editarModal').modal('show');
+
         }
 
     }
 
-    //$scope.gestionsoportegpon();
-    $scope.listarcodigoincompleto();
+    $scope.guardaObsCodigo = function (data) {
+
+        services.gestionarCodigoIncompleto(data.tarea, data.Tipificacion, data.observacion).then(completed).catch(failed)
+
+        function completed(data) {
+            Swal({
+                type: data.type,
+                title: data.msg,
+                timer: 4000
+            }).then(function () {
+                $route.reload();
+            })
+        }
+
+        function failed(error) {
+            console.log(error)
+        }
+    }
 
 });
 

@@ -11,22 +11,41 @@ class modelCodigoIncompleto
 
     }
 
-    public function getListaCodigoIncompleto()
+    public function getListaCodigoIncompleto($data)
     {
 
         try {
-            $now  = date('Y-m-d');
-            $stmt = $this->_DB->prepare("SELECT *
+
+            $stmt = $this->_DB->query("select count(*) as total from gestion_codigo_incompleto 
+                                    WHERE status_soporte = '0'");
+            $stmt->execute();
+
+            $resCount   = $stmt->fetch(PDO::FETCH_OBJ);
+            $totalCount = $resCount->total;
+
+
+            if (isset($data['curPage'])) {
+                $page_number = $data['curPage'];
+            } else {
+                $page_number = 1;
+            }
+
+
+            $initial_page = ($page_number - 1) * $data['pageSize'];
+
+            $total_pages = ceil($totalCount / $data['pageSize']);
+
+            $limit_page = $data['pageSize'];
+
+
+            $stmt = $this->_DB->query("SELECT *
                                                 FROM gestion_codigo_incompleto
-                                                WHERE fecha_creado BETWEEN :fechaini AND :fechafin
-                                                  AND status_soporte = '0'");
-            $stmt->execute([
-                ':fechaini' => "$now 00:00:00",
-                ':fechafin' => "$now 23:59:59",
-            ]);
+                                                WHERE status_soporte = '0' order by fecha_creado desc limit $initial_page, $limit_page");
+            $stmt->execute();
 
             if ($stmt->rowCount()) {
-                $response = [$stmt->fetchAll(PDO::FETCH_ASSOC), 201];
+                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = ['state' => 1, 'data' => $result, 'total' => $total_pages, 'counter' => intval($totalCount)];
             } else {
                 $response = ['Error', 400];
             }
@@ -35,13 +54,13 @@ class modelCodigoIncompleto
             var_dump($e->getMessage());
         }
         $this->_DB = null;
-
         echo json_encode($response);
     }
 
     public function gestionarCodigoIncompleto($data)
     {
         try {
+            session_start();
 
             $id_codigo_incompleto = $data['id_codigo_incompleto'];
             $tipificacion         = $data['tipificacion'];
@@ -64,9 +83,9 @@ class modelCodigoIncompleto
             ]);
 
             if ($stmt->rowCount()) {
-                $response = [['type' => 'success', 'msg' => 'OK'], 201];
+                $response = ['type' => 'success', 'msg' => 'OK'];
             } else {
-                $response = [['type' => 'Error', 'msg' => 'Ah ocurrido un error intentalo nuevamente'], 400];
+                $response = ['type' => 'Error', 'msg' => 'Ah ocurrido un error intentalo nuevamente'];
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -164,8 +183,8 @@ class modelCodigoIncompleto
             session_start();
             $usuarioid = $_SESSION['login'];
 
-            $fechaini  = $params['fechaini'];
-            $fechafin  = $params['fechafin'];
+            $fechaini = $params['fechaini'];
+            $fechafin = $params['fechafin'];
 
             if ($fechaini == "" && $fechafin == "") {
                 $fechaini = date("Y") . "-" . date("m") . "-" . date("d");

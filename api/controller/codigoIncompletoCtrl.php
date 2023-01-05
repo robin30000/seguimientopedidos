@@ -12,7 +12,7 @@ if (isset($data['method'])) {
         case 'getListaCodigoIncompleto':
             require_once '../class/codigoIncompleto.php';
             $user = new codigoIncompleto();
-            $user->getListaCodigoIncompleto();
+            $user->getListaCodigoIncompleto($data['data']);
             break;
         case 'gestionarCodigoIncompleto':
             require_once '../class/codigoIncompleto.php';

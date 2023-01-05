@@ -10,9 +10,9 @@ class codigoIncompleto
         $this->_model = new modelCodigoIncompleto();
     }
 
-    public function getListaCodigoIncompleto()
+    public function getListaCodigoIncompleto($data)
     {
-        $this->_model->getListaCodigoIncompleto();
+        $this->_model->getListaCodigoIncompleto($data);
     }
 
     public function gestionarCodigoIncompleto($data)
