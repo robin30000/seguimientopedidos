@@ -277,15 +277,17 @@ class modelQuejasGo
             $observaciones = $data['observacion'];
             $idqueja       = $data['idqueja'];
 
+            $observacion = $observaciones['observacion'];
+
             $stmt = $this->_DB->prepare("UPDATE quejasgo SET observacion = :observaciones where id = :idqueja");
 
-            $stmt->execute([':observaciones' => $observaciones, ':idqueja' => $idqueja]);
+            $stmt->execute([':observaciones' => $observacion, ':idqueja' => $idqueja]);
 
             if ($stmt->rowCount()) {
-                $response = ['Observacion actualizada', 201];
+                $response = ['type' => 'success', 'msj' => 'Observacion actualizada'];
 
             } else {
-                $response = 0;
+                $response = ['type' => 'error', 'msj' => 'Ah ocurrido un error intentalo nuevamente'];
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());

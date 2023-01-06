@@ -5050,36 +5050,23 @@ app.controller('quejasGoCtrl', function ($scope, $http, $rootScope, $location, $
     /* FUNCION PARA MODIFICAR LAS OBSERVACIONES DE LA QUEJAGO */
     $scope.modificarObservacionQuejasGo = function (quejasGoSel, frmModObserQuejasGo, id) {
 
-        services.modiObserQuejasGo(quejasGoSel, idqueja).then(function (respuesta) {
-
-            if (respuesta.status == '201') {
-                Swal(
-                    'Las observaciones fueron modificadas!',
-                    'Bien Hecho'
-                )
-            }
-            /*PARA ACTUALIZAR LA VISTA PRINCIPAL*/
-            $scope.LoadQuejasGo($scope.datapendientes.currentPage);
-
-            /*PARA QUE EL MODAL SE OCULTE SOLO UNA VEZ GUARDE*/
+        services.modiObserQuejasGo(quejasGoSel, idqueja).then(completed).catch(failed)
+        function completed(data){
+            //console.log(data.data)
             $("#modObserQuejasGo").modal('hide');
-            $scope.quejasGoSel = {};
+            swal({
+                type: data.data.type,
+                //tittle: data.data.msj,
+                text: data.data.msj,
+                timer: 4000
+            }).then(function () {
+                $route.reload();
+            })
+        }
 
-            /*LIMPIAR EL MODAL*/
-            frmModObserQuejasGo.autoValidateFormOptions.resetForm();
-
-        }, function errorCallback(response) {
-
-            if (response.status == '400') {
-
-                Swal({
-                    type: 'error',
-                    title: 'Oops...',
-                    text: 'No fue posible actualizar las observaciones!',
-                    footer: '¡Reporta con el administrador!'
-                })
-            }
-        });
+        function failed(error){
+            console.log(error)
+        }
     };
 });
 
@@ -10078,7 +10065,8 @@ app.controller('tecnicosCtrl', function ($scope, $http, $rootScope, $location, $
             closeOnConfirm: true
         }).then(function () {
             $scope.idBorrar = row.entity.ID;
-            services.deleteTecnico($scope.idBorrar).then(completed).catch(failed)
+console.log('diiii');
+            //services.deleteTecnico($scope.idBorrar).then(completed).catch(failed)
             function completed (data) {
                 swal({
                     type: data.type,
