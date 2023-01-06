@@ -96,7 +96,7 @@ class modelotrosServiciosDos
             $fecha_agenda           = $datospedidos['fecha_agenda'];
 
             $query = $this->_DB->query("INSERT INTO historicoGestionPendientes 
-                (id_gestion, pedido, causa_raiz, responsable, observacion, novedad_malo, finalizado_click, 
+                (id, pedido, causa_raiz, responsable, observacion, novedad_malo, finalizado_click, 
                 update_concepto_oracle, fecha_agenda) 
                 VALUES ('$id', '$pedido', '$Causa_raiz', '$responsable', '$observacion', '$Novedad_malo', '$Finalizado_click', 
                 '$update_concepto_oracle', '$fecha_agenda') ");
@@ -119,8 +119,8 @@ class modelotrosServiciosDos
         try {
             $id = $data;
 
-            $sql = $this->_DB->query("delete from carga_archivos where id = :id");
-            $sql->execute([':id' => $id]);
+            //$sql = $this->_DB->prepare("delete from carga_archivos where id = :id");
+            //$sql->execute([':id' => $id]);
 
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -132,7 +132,7 @@ class modelotrosServiciosDos
         try {
             $producto = $data;
 
-            $query = $this->_DB->query("SELECT DISTINCT ACCION
+            $query = $this->_DB->prepare("SELECT DISTINCT ACCION
                  FROM accionesoffline 
                  WHERE producto = :product
                  ORDER BY ACCION");
@@ -157,22 +157,16 @@ class modelotrosServiciosDos
     public function acciones($data)
     {
         try {
-            $proceso = $data;
 
-            $query = $this->_DB->query(" SELECT DISTINCT ACCION
-                 FROM procesos 
-                 where 1=1 and proceso = :proceso and accion <> ''
-                 ORDER BY ACCION");
+            $query = $this->_DB->prepare("SELECT DISTINCT ACCION
+                                                FROM procesos
+                                                WHERE 1=1 AND proceso = :process AND accion <> ''
+                                                ORDER BY ACCION");
 
-            $query->execute([':process' => $proceso]);
+            $query->execute([':process' => $data]);
             if ($query->rowCount()) {
-
-                $resultado = [];
-                while ($row = $query->fetchAll(PDO::FETCH_ASSOC)) {
-                    $resultado[] = $row;
-                }
-
-                $response = [$resultado, 201];
+                $result   = $query->fetchAll(PDO::FETCH_ASSOC);
+                $response = [$result, 201];
 
             } else {
                 $response = ['', 400];
@@ -189,7 +183,7 @@ class modelotrosServiciosDos
             $proceso         = $data['proceso'];
             $UNESourceSystem = $data['UNESourceSystem'];
 
-            $query = $this->_DB->query("SELECT DISTINCT codigo
+            $query = $this->_DB->prepare("SELECT DISTINCT codigo
 					FROM codigosPendiente
 					WHERE proceso = :process AND UNESourceSystem = :une
 					ORDER BY codigo");
@@ -222,12 +216,12 @@ class modelotrosServiciosDos
         try {
             $producto = $data['producto'];
 
-            $query = $this->_DB->query("SELECT DISTINCT diagnostico
+            $query = $this->_DB->prepare("SELECT DISTINCT diagnostico
 					FROM diagnosticoFalla
 					WHERE producto = :product
 					ORDER BY diagnostico");
 
-            $query->execute(array(':product' => $producto));
+            $query->execute([':product' => $producto]);
 
             if ($query->rowCount()) {
 

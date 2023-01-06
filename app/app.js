@@ -1195,23 +1195,13 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'formaAsesoresCtrl.php', data);
     };
 
-    obj.registros = function (page, datos) {
+    obj.registros = function (curPage, pageSize, sort) {
         var data = {
             method: 'registros',
             data: {
-                "page": page,
-                "datos": datos
-            }
-        }
-        return $http.post(serviceBase1 + 'formaAsesoresCtrl.php', data);
-    };
-
-    obj.registros = function (page, datos) {
-        var data = {
-            method: 'registros',
-            data: {
-                "page": page,
-                "datos": datos
+                "curPage": curPage,
+                "pageSize": pageSize,
+                "sort":sort
             }
         }
         return $http.post(serviceBase1 + 'formaAsesoresCtrl.php', data);
@@ -5163,6 +5153,144 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
     $scope.datosRegistros = {};
     $scope.verplantilla = false;
 
+    getGrid();
+
+    function getGrid() {
+        var columnDefs = [
+            {
+                name: "Pedido",
+                field: "pedido",
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+                enableFiltering: true
+            },
+            {
+                name: "Técnico",
+                field: "tecnico",
+                minWidth: 80,
+                width: "10%",
+                enableCellEdit: false,
+                enableFiltering: true,
+
+            }, {
+                name: "Accion",
+                field: "accion",
+                minWidth: 80,
+                width: "15%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Asesor",
+                field: "asesor",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "Fecha",
+                field: "fecha",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "15%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Duracion (HH:MM:SS)",
+                field: "duracion",
+                cellStyle: {"text-align": "center"},
+                minWidth: 80,
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "Proceso",
+                field: "proceso",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "15%",
+                enableCellEdit: false,
+            },  {
+                name: "Acciones",
+                cellTemplate: "<div style='text-align: center'>" +
+                    '<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.muestraNotas(row)">' +
+                    '<i class="fa fa-pencil-square-o" aria-hidden="true"> </i>' +
+                    '</button>&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.editarRegistros(row)">' +
+                    '<i class="fa fa-pencil" aria-hidden="true"> </i>' +
+                    '</button></div>',
+                minWidth: 50,
+                width: "15%",
+                enableFiltering: false
+            }];
+
+        var paginationOptions = {
+            sort: null
+        };
+
+        $scope.gridOptions = {
+            enableFiltering: true,
+            enablePagination: true,
+            pageSize: 200,
+            enableHorizontalScrollbar: false,
+            enablePaginationControls: true,
+            columnDefs: columnDefs,
+            paginationPageSizes: [200, 500, 1000],
+            paginationPageSize: 200,
+
+            exporterMenuPdf: false,
+            enableGridMenu: true,
+
+            useExternalPagination: true,
+            useExternalSorting: true,
+            enableRowSelection: true,
+
+            exporterCsvFilename: 'Registros.csv',
+
+            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+            exporterExcelFilename: 'Registros.xlsx',
+            exporterExcelSheetName: 'Sheet1',
+
+            onRegisterApi: function (gridApi) {
+                $scope.gridApi = gridApi;
+                $scope.gridApi.core.on.sortChanged($scope, function (grid, sortColumns) {
+                    if (getPage) {
+                        if (sortColumns.length > 0) {
+                            paginationOptions.sort = sortColumns[0].sort.direction;
+                        } else {
+                            paginationOptions.sort = null;
+                        }
+                        getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, paginationOptions.sort)
+                    }
+                });
+                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                    if (getPage) {
+                        getPage(newPage, pageSize, paginationOptions.sort);
+                    }
+                });
+            }
+        };
+
+        var getPage = function (curPage, pageSize, sort) {
+            services.registros(curPage, pageSize, sort).then(complete).catch(failed)
+
+            function complete(data) {
+                console.log(data.data.counter, ' ldskjfhlaskdjal')
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptions.totalItems = counter;
+                var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+
+        };
+
+        getPage(1, $scope.gridOptions.paginationPageSize, paginationOptions.sort);
+    }
+
     if ($scope.Registros.fechaini == undefined || $scope.Registros.fechafin == undefined) {
         var tiempo = new Date().getTime();
         var date1 = new Date();
@@ -5178,14 +5306,6 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
         //console.log("fechaini: ",$scope.fechaini);
         //console.log("fechafin: ",$scope.fechafin);
     }
-
-    $scope.setPage = function (pageNo) {
-        $scope.datapendientes.currentPage = pageNo;
-    };
-
-    $scope.pageChanged = function () {
-        $scope.BuscarRegistros($scope.datapendientes.currentPage);
-    };
 
     $scope.BuscarRegistros = function (datos) {
         console.log("BuscarRegistros: ", datos);
@@ -5221,14 +5341,13 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
         }
     }
 
-    $scope.muestraNotas = function (datos) {
+    $scope.muestraNotas = function (row) {
 
-        $scope.pedido = datos.pedido;
+        $scope.pedido = row.entity.pedido;
         $scope.TituloModal = "Observaciones para el pedido:";
-        $scope.observaciones = datos.observaciones;
-        // console.log( $scope.observaciones);
+        $scope.observaciones = row.entity.observaciones;
+        $("#NotasModal").modal('show');
     }
-
 
     $scope.calcularSubAcciones = function (proceso, accion) {
         //    console.log(proceso);
@@ -5259,8 +5378,8 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
         }
     };
 
-    $scope.editarRegistros = function (datos) {
-        $scope.datosRegistros = datos;
+    $scope.editarRegistros = function (row) {
+        $scope.datosRegistros = row.entity;
         if ($scope.datosRegistros.plantilla != "") {
             $scope.verplantilla = true;
         } else {
@@ -5268,9 +5387,10 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
         }
         console.log("datosRegistros: ", $scope.datosRegistros);
         $scope.TituloModal = "Editar pedido:";
-        $scope.pedido = datos.pedido;
+        $scope.pedido = row.entity.pedido;
         $scope.calcularAcciones($scope.datosRegistros.proceso);
         $scope.calcularSubAcciones($scope.datosRegistros.proceso, $scope.datosRegistros.accion);
+        $("#Editardato").modal('show');
     }
 
     $scope.editRegistro = function (datos) {
@@ -5293,42 +5413,7 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
             });
 
         $scope.BuscarRegistros(datos);
-    };
-
-
-    /**
-     * cambio robincambio
-     *
-     services.exportEscalamientos().then((res) => {
-        var data = res.data[0];
-        var array = typeof data != 'object' ? JSON.parse(data) : data;
-        var str = '';
-        var column = `ID, Pedido, Tarea, Tecnico, ID Tecnico, Fecha Solicitud, Fecha Gestion, Fecha Respuesta, Login Gestion, En Gestion, Proceso, Producto, Motivo, Area, Region, Tipo Tarea, Tecnologia, CRM, Departamento, Prueba SMNET, Foto?, Marcacion TAP, Direccion TAP, Valor TAP, Informacion Adicional, MAC Real CPE, Correa Marcacion, Observacion, Respuesta, ID Terreno, Tipificacion, Estado, ANS \r\n`;
-        str += column;
-        for (var i = 0; i < array.length; i++) {
-            var line = '';
-            for (var index in array[i]) {
-                if (line != '') line += ','
-                line += array[i][index];
-            }
-
-            str += line + '\r\n';
-        }
-        var dateCsv = new Date();
-        var yearCsv = dateCsv.getFullYear();
-        var monthCsv = (dateCsv.getMonth() + 1 <= 9) ? '0' + (dateCsv.getMonth() + 1) : (dateCsv.getMonth() + 1);
-        var dayCsv = (dateCsv.getDate() <= 9) ? '0' + dateCsv.getDate() : dateCsv.getDate();
-        var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
-
-
-        var blob = new Blob([str]);
-        var elementToClick = window.document.createElement("a");
-        elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
-        elementToClick.download = "Escalamientos-" + fullDateCsv + ".csv";
-        elementToClick.click();
-        console.log(str);
-     */
-
+    }
 
     $scope.csvRegistros = function () {
         $scope.csvPend = false;
@@ -5416,7 +5501,7 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
 
     $scope.maxSize = 5;
     $scope.datapendientes = {maxSize: 5, currentPage: 1, numPerPage: 100, totalItems: 0};
-    $scope.BuscarRegistros($scope.datapendientes.currentPage);
+    //$scope.BuscarRegistros($scope.datapendientes.currentPage);
 
     $scope.uploadFile = function () {
         $scope.carga_ok = true;

@@ -53,16 +53,7 @@ class formaAsesores
 
     public function registros($data)
     {
-
-        $pagina   = $data['page'];
-        $datos    = $data['datos'];
-        $response = $this->_model->registros($pagina, $datos);
-
-        /* $fechaini = $datos['fechaini'];
-        $fechafin = $datos['fechafin']; */
-
-        $this->_utils->response($this->_utils->json([$response[0], $response[1]]), 201);
-
+        $this->_model->registros($data);
     }
 
 }
