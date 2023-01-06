@@ -1223,16 +1223,25 @@ class modelOtrosServicios
     public function listadoTecnicos($data)
     {
         try {
-            $pagina   = $data['page'] ?? 1;
-            $concepto = $data['concepto'];
-            $tecnico  = $data['tecnico'];
-            /*if ($pagina == "undefined") {
-                $pagina = "0";
-            } else {
-                $pagina = $pagina - 1;
-            }*/
+            session_start();
 
-            $pagina = $pagina * 100;
+            $stmt = $this->_DB->query("select count(*) as total from tecnicos");
+            $stmt->execute();
+
+            $resCount   = $stmt->fetch(PDO::FETCH_OBJ);
+            $totalCount = $resCount->total;
+
+            if (isset($data['curPage'])) {
+                $page_number = $data['curPage'];
+            } else {
+                $page_number = 1;
+            }
+
+            $initial_page = ($page_number - 1) * $data['pageSize'];
+            $total_pages = ceil($totalCount / $data['pageSize']);
+            $limit_page = $data['pageSize'];
+
+            /*$pagina = $pagina * 100;
 
             if ($concepto == 'nombre') {
                 $parametro = " and nombre LIKE '%$tecnico%'";
@@ -1242,31 +1251,20 @@ class modelOtrosServicios
                 $parametro = " and ciudad = '$tecnico'";
             } elseif ($concepto == 'celuar') {
                 $parametro = " and celular = '$tecnico'";
-            };
+            };*/
 
             $query = $this->_DB->query("select a.ID, a.IDENTIFICACION, a.NOMBRE, a.CIUDAD, a.CELULAR,  a.empresa, 
              (select b.nombre from empresas b where b.id=a.empresa) as NOM_EMPRESA 
              from tecnicos a 
-             where 1 = 1 $parametro");
+             where 1 = 1 limit $initial_page, $limit_page");
 
-            $queryCount = $this->_DB->query("select count(*) as Cantidad from tecnicos h where 1 = 1 $parametro");
-            //echo $query;
-            $queryCount->execute();
-
-            $counter = 0;
-            if ($queryCount->rowCount()) {
-                $row     = $queryCount->fetchAll(PDO::FETCH_ASSOC);
-                $counter = $row[0]['Cantidad'];
-            }
-            //echo $this->mysqli->query($sqlLogin);
-            //
             $query->execute();
 
             if ($query->rowCount()) {
-                $response = [$query->fetchAll(PDO::FETCH_ASSOC), $counter, 201];
-
+                $result   = $query->fetchAll(PDO::FETCH_ASSOC);
+                $response = ['state' => 1, 'data' => $result, 'total' => $total_pages, 'counter' => intval($totalCount)];
             } else {
-                $response = ['', 400];
+                $response = ['state' => 0];
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());

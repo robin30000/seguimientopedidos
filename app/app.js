@@ -1142,13 +1142,13 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'otrosServiciosCtrl.php', data);
     };
 
-    obj.listadoTecnicos = function (page, concepto, tecnico) {
+    obj.listadoTecnicos = function (curPage, pageSize, sort) {
         var data = {
             method: 'listadoTecnicos',
             data: {
-                'page': page,
-                'concepto': concepto,
-                'tecnico': tecnico
+                'curPage': curPage,
+                'pageSize': pageSize,
+                'sort': sort
             }
         }
         return $http.post(serviceBase1 + 'otrosServiciosCtrl.php', data);
@@ -9842,16 +9842,143 @@ app.controller('tecnicosCtrl', function ($scope, $http, $rootScope, $location, $
     $scope.concepto = null;
     $scope.crearTecnico = {};
 
+    getGrid();
+    ciudades();
+    function getGrid() {
 
-    $scope.setPage = function (pageNo) {
-        $scope.datapendientes.currentPage = pageNo;
-    };
+        var columnDefs = [
+            {
+                name: "ID",
+                field: "ID",
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+                enableFiltering: true,
+                enableRowHeaderSelection: true
+            },
+            {
+                name: "Identificacion",
+                field: "IDENTIFICACION",
+                minWidth: 80,
+                width: "10%",
+                enableCellEdit: false,
+                enableFiltering: true,
+            }, {
+                name: "Nombre",
+                field: "NOMBRE",
+                minWidth: 80,
+                width: "25%",
+                enableCellEdit: false,
+                enableFiltering: true,
+            }, {
+                name: "Ciudad",
+                field: "CIUDAD",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "15%",
+                enableCellEdit: false,
+                enableFiltering: true,
+            }, {
+                name: "Celular",
+                field: "CELULAR",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "15%",
+                enableCellEdit: false,
+                enableFiltering: true,
 
-    $scope.pageChanged = function () {
-        $scope.buscarTecnico($scope.datapendientes.currentPage);
-    };
+            },{
+                name: "Empresa",
+                field: "NOM_EMPRESA",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+                enableFiltering: true,
 
-    $scope.buscarTecnico = function (concepto, tecnico) {
+            },  {
+                name: "Acciones",
+                cellTemplate: "<div style='text-align: center'>" +
+                    '<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.editarModal(row)">' +
+                    '<i class="fa fa-pencil-square-o" aria-hidden="true"> </i>' +
+                    '</button>&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.borrarTecnico(row)">' +
+                    '<i class="fa fa-trash" aria-hidden="true"> </i>' +
+                    '</button></div>',
+                minWidth: 50,
+                width: "15%",
+                enableFiltering: false
+            }];
+
+        var paginationOptions = {
+            sort: null
+        };
+
+        $scope.gridOptions = {
+            enableFiltering: true,
+            enablePagination: true,
+            pageSize: 200,
+            enableHorizontalScrollbar: false,
+            enablePaginationControls: true,
+            columnDefs: columnDefs,
+            paginationPageSizes: [200, 500, 1000],
+            paginationPageSize: 200,
+            enableRowHeaderSelection: true,
+
+            exporterMenuPdf: false,
+            enableGridMenu: true,
+
+            useExternalPagination: true,
+            useExternalSorting: true,
+            enableRowSelection: true,
+
+            exporterCsvFilename: 'Registros.csv',
+
+            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+            exporterExcelFilename: 'Registros.xlsx',
+            exporterExcelSheetName: 'Sheet1',
+
+            onRegisterApi: function (gridApi) {
+                $scope.gridApi = gridApi;
+                $scope.gridApi.core.on.sortChanged($scope, function (grid, sortColumns) {
+                    if (getPage) {
+                        if (sortColumns.length > 0) {
+                            paginationOptions.sort = sortColumns[0].sort.direction;
+                        } else {
+                            paginationOptions.sort = null;
+                        }
+                        getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, paginationOptions.sort)
+                    }
+                });
+                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                    if (getPage) {
+                        getPage(newPage, pageSize, paginationOptions.sort);
+                    }
+                });
+            }
+        };
+
+        var getPage = function (curPage, pageSize, sort) {
+            services.listadoTecnicos(curPage, pageSize, sort).then(complete).catch(failed)
+
+            function complete(data) {
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptions.totalItems = counter;
+                var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+
+        };
+
+        getPage(1, $scope.gridOptions.paginationPageSize, paginationOptions.sort);
+    }
+
+    /*$scope.buscarTecnico = function (concepto, tecnico) {
         $scope.listaTecnicos = [];
         $scope.errorDatos = null;
         $scope.respuestaupdate = null;
@@ -9873,7 +10000,7 @@ app.controller('tecnicosCtrl', function ($scope, $http, $rootScope, $location, $
                 // console.log($scope.errorDatos);
 
             });
-    };
+    };*/
 
     $scope.createTecnico = function () {
         var id_tecnico = "";
@@ -9905,30 +10032,34 @@ app.controller('tecnicosCtrl', function ($scope, $http, $rootScope, $location, $
             });
     };
 
+    function ciudades(){
+        services.getCiudades().then(function (data) {
+            $scope.listadoCiudades = data.data[1];
+        });
+    }
 
-    $scope.editarModal = function (datos) {
-        console.log(datos);
-        $rootScope.datos = datos;
-        $scope.idTecnico = datos.ID;
-        $scope.TecnicoNom = datos.NOMBRE;
-        $scope.UsuarioLog = datos.login;
-        $rootScope.TituloModal = "Editar Técnico con el ID:";
-        //console.log($scope.editaInfo);
+
+    $scope.editarModal = function (row) {
+        $scope.datos = row.entity;
+        $scope.idTecnico = row.entity.ID;
+        $scope.TecnicoNom = row.entity.NOMBRE;
+        $scope.UsuarioLog = row.entity.login;
+        //$scope.datos.CIUDAD = row.entity.ciudad;
+        $scope.TituloModal = "Editar Técnico con el ID:";
+        $("#editarModal").modal('show')
     };
 
     $scope.edittecnico = function (datos) {
-        $scope.errorDatos = null;
-        $scope.respuestaupdate = null;
-        $scope.respuestadelete = null;
-        console.log(datos);
+
         services.editarTecnico(datos).then(
             function (data) {
-                // $errorDatos=null;
-                $scope.respuestaupdate = "Técnico " + datos.NOMBRE + " actualizado exitosamente";
-                //console.log(datos);
-                //$rootScope.nombre=$scope.respuesta[0].NOMBRE;
-                //$location.path('/home/');
-                return data.data;
+                swal({
+                    type: data.type,
+                    title: data.msg,
+                    timer: 4000
+                }).then(function () {
+                    $route.reload();
+                })
             },
             function errorCallback(response) {
             });
@@ -9936,31 +10067,32 @@ app.controller('tecnicosCtrl', function ($scope, $http, $rootScope, $location, $
     };
 
 
-    $scope.borrarTecnico = function (id) {
-        $scope.idBorrar = id;
-        $scope.Tecnico = {};
-        $scope.errorDatos = null;
-        $scope.respuestaupdate = null;
-        $scope.respuestadelete = null;
-        services.deleteTecnico($scope.idBorrar).then(
-            function (data) {
+    $scope.borrarTecnico = function (row) {
 
-                $scope.respuestadelete = "Técnico " + $rootScope.datos.NOMBRE + " eliminado exitosamente";
-            },
-            function errorCallback(response) {
-
-                $scope.errorDatos = "No se borro";
-
-                //console.log($scope.errorDatos);
-
+        swal({
+            title: "Aviso",
+            text: "Esta seguro que desea eliminar al Tecnico: " + row.entity.NOMBRE + " con Identificacion: " + row.entity.IDENTIFICACION,
+            type: "error",
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Aceptar",
+            closeOnConfirm: true
+        }).then(function () {
+            $scope.idBorrar = row.entity.ID;
+            services.deleteTecnico($scope.idBorrar).then(completed).catch(failed)
+            function completed (data) {
+                swal({
+                    type: data.type,
+                    title: data.msg,
+                    timer: 4000
+                }).then(function () {
+                    $route.reload();
+                })
             }
-        );
-        $scope.buscarTecnico($scope.datapendientes.currentPage);
+            function failed(response) {
+                console.log(response)
+            }
+        })
     };
-    $scope.maxSize = 5;
-    $scope.datapendientes = {maxSize: 5, currentPage: 1, numPerPage: 100, totalItems: 0};
-
-    $scope.buscarTecnico($scope.datapendientes.currentPage);
 });
 
 app.controller('turnosCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $cookieStore, $timeout, services, fileUpload) {

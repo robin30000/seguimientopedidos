@@ -646,9 +646,9 @@ class modelUser
             $stmt->execute([':id' => $data]);
 
             if ($stmt->rowCount()) {
-                $response = ['Usuario eliminado', 201];
+                $response = ['type' => 'success', 'msg' => 'Técnico eliminado'];
             } else {
-                $response = ['Ah ocurrido un error intentalo nuevamente', 400];
+                $response = ['type' => 'error', 'msg' => 'Ah ocurrido un error intentalo nuevamente'];
             }
 
         } catch (PDOException $e) {
@@ -685,9 +685,9 @@ class modelUser
             ]);
 
             if ($stmt->rowCount() == 1) {
-                $response = ['Usuario actualizado', 201];
+                $response = ['type' => 'success', 'msg' => 'Usuario actualizado'];
             } else {
-                $response = ['Ah ocurrido un error intentalo nuevamente', 400];
+                $response = ['type' => 'error', 'msg' => 'Ah ocurrido un error intentalo nuevamente'];
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());

@@ -11,6 +11,28 @@ class ModelFormaAsesores
         $this->_DB = new Conection();
     }
 
+    public function ciudades()
+    {
+        try {
+
+            $ciudades = $this->_DB->query("SELECT DISTINCT ciudad  FROM ciudades ");
+            $ciudades->execute();
+
+            $stmt = $this->_DB->query("SELECT DISTINCT DEPARTAMENTO  FROM ciudades ORDER BY DEPARTAMENTO");
+            $stmt->execute();
+
+            $resCiudades = $ciudades->fetchAll(PDO::FETCH_ASSOC);
+            $resStmt     = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $response = [$resStmt, $resCiudades];
+
+        } catch (PDOException $e) {
+            var_dump($e);
+        }
+        $this->_DB = null;
+        echo json_encode($response);
+    }
+
     public function rst()
     {
         try {
