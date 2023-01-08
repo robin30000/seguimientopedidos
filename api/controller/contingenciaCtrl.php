@@ -75,6 +75,12 @@ if (isset($data['method'])) {
             $user->graficaAcumuladosrepa($data['data']);
             break;
 
+            case 'marca':
+            require_once '../class/contingencia.php';
+            $user = new contingencia();
+            $user->marcarengestion($data['data']);
+            break;
+
         default:
             echo 'ninguna opción valida.';
             break;

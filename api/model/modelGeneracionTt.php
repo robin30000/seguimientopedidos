@@ -16,8 +16,8 @@ class modelGeneracionTt
     {
         try {
 
-            $pagina   = $params['page'];
-            $datos    = $params['datos'];
+            $pagina   = $params->page;
+            $datos    = $params->datos;
             $fechaini = $datos['fechaini'];
             $fechafin = $datos['fechafin'];
 
@@ -69,9 +69,10 @@ class modelGeneracionTt
         echo json_encode($response);
     }
 
-    public function guardarGeneracionTT($datos)
+    public function guardarGeneracionTT($data)
     {
         try {
+            $datos = $data;
             // $key = $datos['id'];
             $tt                 = $datos['tt'];
             $quienSolicitaLaCCC = $datos['quienSolicitaLaCCC'];
@@ -133,11 +134,11 @@ class modelGeneracionTt
         echo json_encode($response);
     }
 
-    public function csvGeneracionTT($datos)
+    public function csvGeneracionTT($data)
     {
         try {
-            session_start();
             $usuarioid = $_SESSION['login'];
+            $datos     = $data;
             $fechaini  = $datos['fechaini'];
             $fechafin  = $datos['fechafin'];
 

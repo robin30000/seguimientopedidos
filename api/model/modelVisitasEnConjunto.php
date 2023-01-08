@@ -13,10 +13,10 @@ class modelVisitasEnConjunto
     public function visitasEnConjunto($data)
     {
         try {
-            $pagina   = $data['page'];
-            $datos    = $data['datos'];
-            $fechaini = $data['fechaini'];
-            $fechafin = $data['fechafin'];
+            $pagina   = $data->page;
+            $datos    = $data->datos;
+            $fechaini = $data->fechaini;
+            $fechafin = $data->fechafin;
 
             if ($fechaini == "" || $fechafin == "") {
                 $fechaini = date('Y-m-d');
@@ -185,11 +185,13 @@ class modelVisitasEnConjunto
         echo json_encode($response);
     }
 
-    public function expCsvVisitasEnConjunto($datos)
+    public function expCsvVisitasEnConjunto($data)
     {
         try {
-            session_start();
+
             $usuarioid = $_SESSION['login'];
+
+            $datos    = $data;
             $fechaini = $datos['fechai'];
             $fechafin = $datos['fechaf'];
 

@@ -1,7 +1,7 @@
 <?php
 require_once '../class/conection.php';
-ini_set('error_reporting', E_ALL);
-ini_set('display_errors', 1);
+//ini_set('error_reporting', E_ALL);
+//ini_set('display_errors', 1);
 
 class modelSoporteGpon
 {
@@ -303,11 +303,30 @@ class modelSoporteGpon
         echo json_encode($response);
     }
 
-    public function registrossoportegpon($params)
+    public function registrossoportegpon($data)
     {
 
         try {
-            $pagina = $params['page'];
+
+            $stmt = $this->_DB->query("select count(*) as total from soporte_gpon");
+            $stmt->execute();
+
+            $resCount   = $stmt->fetch(PDO::FETCH_OBJ);
+            $totalCount = $resCount->total;
+
+            if (isset($data['curPage'])) {
+                $page_number = $data['curPage'];
+            } else {
+                $page_number = 1;
+            }
+
+            $initial_page = ($page_number - 1) * $data['pageSize'];
+
+            $total_pages = ceil($totalCount / $data['pageSize']);
+
+            $limit_page = $data['pageSize'];
+
+            /*$pagina = $params['page'];
             $datos  = $params['datos'];
 
             $fechaini = (!isset($datos['fechaini'])) ? date("Y-m-d") : $datos['fechaini']; //CORRECCION DE VALIDACION DE FECHA
@@ -324,7 +343,7 @@ class modelSoporteGpon
                 $pagina = $pagina - 1;
             }
 
-            $pagina = $pagina * 100;
+            $pagina = $pagina * 100;*/
 
             $stmt = $this->_DB->prepare("SELECT id_soporte,
                                                tarea,
@@ -365,19 +384,16 @@ class modelSoporteGpon
                                                login,
                                                fecha_respuesta
                                         FROM soporte_gpon
-                                        WHERE fecha_respuesta BETWEEN :fechaini AND :fechafin
+                                        WHERE 1=1
                                           AND status_soporte = '1'
                                         ORDER BY fecha_creado DESC
-                                        LIMIT 100 offset $pagina");
-            $stmt->execute([
-                ':fechaini' => "$fechaini 00:00:00",
-                ':fechafin' => "$fechafin 23:59:59",
-            ]);
-
+                                        limit $initial_page, $limit_page");
+            $stmt->execute();
             if ($stmt->rowCount()) {
-                $response = [$stmt->fetchAll(PDO::FETCH_ASSOC), $stmt->rowCount(), 201];
+                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = ['state' => 1, 'data' => $result, 'total' => $total_pages, 'counter' => intval($totalCount)];
             } else {
-                $response = ['', $stmt->rowCount(), 400];
+                $response = ['state' => 0];
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());

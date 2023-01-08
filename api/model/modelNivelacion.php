@@ -1,7 +1,7 @@
 <?php
 require_once '../class/conection.php';
 //ini_set('error_reporting', 0);
-//ini_set('display_errors', 0);
+ini_set('display_errors', 1);
 
 date_default_timezone_set('America/Bogota');
 
@@ -48,6 +48,7 @@ class modelNivelacion
     public function saveNivelation($data)
     {
         session_start();
+        $fecha = date('Y-m-d H:i:s');
         $solicitud = match ($data->solicitud) {
             '1' => 'Abrir',
             '2' => 'Asignar',
@@ -74,6 +75,16 @@ class modelNivelacion
             default => '',
         };
 
+        if(isset($data->newTecName)  == '' || empty($data->newTecName) || !isset($data->newTecName)){
+            $data->newTecName = 'No Aplica';
+        }
+
+        if (isset($data->newIdTecnic)  == '' || empty($data->newIdTecnic) || !isset($data->newTecName)){
+            $data->newIdTecnic = 'No Aplica';
+        }
+
+        //$submotivo = isset($data->datos->submotivo) ? $data->datos->submotivo : '';
+
         $submotivo = match ($submot) {
             '1' => 'Contingencia',
             '2' => 'Auditoria NAP',
@@ -84,11 +95,6 @@ class modelNivelacion
             '7' => 'Ejecución/Reinstalación',
             default => '',
         };
-
-
-        $mifecha = new DateTime();
-        $mifecha->modify('+43 minute');
-        $fecha = $mifecha->format('Y-m-d H:i:s');
 
         try {
 
@@ -191,10 +197,7 @@ class modelNivelacion
     {
         try {
 
-
-            $mifecha = new DateTime();
-            $mifecha->modify('+43 minute');
-            $fecha = $mifecha->format('Y-m-d H:i:s');
+            $fecha = date('Y-m-d H:i:s');
 
             $stmt = $this->_DB->query("select count(*) as total from nivelacion where 
                                                estado != 2 order by fecha_ingreso and fecha_ingreso BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')");
@@ -202,6 +205,7 @@ class modelNivelacion
 
             $resCount   = $stmt->fetch(PDO::FETCH_OBJ);
             $totalCount = $resCount->total;
+            
 
             if (isset($data->curPage)) {
                 $page_number = $data->curPage;
@@ -233,7 +237,8 @@ class modelNivelacion
                                                        n.id,
                                                        n.gestiona_por,
                                                        n.creado_por,
-                                                       n.observacionVeedor
+                                                       n.observacionVeedor,
+                                                       n.en_gestion
                                                 from nivelacion n where n.estado != 2 order by n.fecha_ingreso and n.fecha_ingreso 
                                                     BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') limit $initial_page, $data->pageSize");
             $stmt->execute();
@@ -350,9 +355,8 @@ class modelNivelacion
         try {
             session_start();
 
-            $mifecha = new DateTime();
-            $mifecha->modify('+43 minute');
-            $fecha = $mifecha->format('Y-m-d H:i:s');
+            $fecha = date('Y-m-d H:i:s');
+
             $stmt  = $this->_DB->prepare("select en_gestion, gestiona_por from nivelacion where id = :id");
             $stmt->execute([':id' => $data]);
 

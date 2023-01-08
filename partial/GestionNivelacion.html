@@ -201,7 +201,6 @@
                                     <input style="width:130px" type="text" name="fechafin" id="fechafin" class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
                                            ng-model="fechafin" placeholder="Fecha Final" datetime-picker="" date-format="yyyy-MM-dd"> <i class="fa fa-calendar fa-fw"></i>
                                     <button type="button"
-                                            ng-show="galletainfo.perfil == '11' || galletainfo.perfil == '1' || galletainfo.perfil == '3'"
                                             class="btn btn-primary btn-xs"
                                             title="Exportar Registros"
                                             ng-click="csvNivelacion()"
@@ -210,6 +209,7 @@
                                             tooltip data-placement="top">
                                         <i class="fa fa-cloud-download" aria-hidden="true"> </i>
                                     </button>
+
                                     <b>
                                         <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs" ng-model="nivelacion.tarea" placeholder="Buscar Pedido">&nbsp;
 

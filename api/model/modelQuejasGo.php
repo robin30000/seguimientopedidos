@@ -274,14 +274,15 @@ class modelQuejasGo
     public function ActualizarObserQuejasGo($data)
     {
         try {
+
             $observaciones = $data['observacion'];
+            $observaciones = $observaciones['observacion'];
             $idqueja       = $data['idqueja'];
 
-            $observacion = $observaciones['observacion'];
 
             $stmt = $this->_DB->prepare("UPDATE quejasgo SET observacion = :observaciones where id = :idqueja");
 
-            $stmt->execute([':observaciones' => $observacion, ':idqueja' => $idqueja]);
+            $stmt->execute([':observaciones' => $observaciones, ':idqueja' => $idqueja]);
 
             if ($stmt->rowCount()) {
                 $response = ['type' => 'success', 'msj' => 'Observacion actualizada'];

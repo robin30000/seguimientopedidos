@@ -1420,4 +1420,92 @@ class ModelContingencia
         $this->_DB = null;
         echo json_encode($response);
     }
+
+    public function marcarengestion($params)
+    {
+        try {
+            session_start();
+
+            $today = date("Y-m-d H:i:s");
+
+            $datosguardar = $params['datos'];
+            $login        = $_SESSION['login'];
+            $pedido       = $datosguardar['pedido'];
+            $gestion      = $datosguardar['bloqueo'];
+            $producto     = $datosguardar['producto'];
+
+            if ($gestion == true) {
+                $gestion = 1;
+            } else {
+                $gestion = 0;
+            }
+
+            $query = "SELECT id, logincontingencia FROM contingencias where engestion = '1' and finalizado is null and pedido = '$pedido' and producto = '$producto' ";
+
+            $rst = $this->_DB->query($query);
+            $rst->execute();
+            $row               = $rst->fetch(PDO::FETCH_OBJ);
+            $logincontingencia = $row->logincontingencia;
+            $id                = $row->id;
+
+            if ($rst->rowCount() == 1) {
+
+                if ($login == $logincontingencia) {
+                    $sqlupdate = "UPDATE contingencias SET engestion = '0', logincontingencia = '', fechaClickMarca='$today' WHERE id = '$id'";
+
+                    $this->_DB->query($sqlupdate);
+                    $response = ['desbloqueado'];
+                } else {
+                    $response = ['bloqueado'];
+                }
+            } else {
+
+                $stmt = $this->_DB->query("SELECT id FROM contingencias where pedido = '$pedido' and producto = '$producto'");
+                $stmt->execute();
+                $result = $stmt->fetch(PDO::FETCH_OBJ);
+                $id     = $result->id;
+
+                $stmt = $this->_DB->query("UPDATE contingencias SET engestion = '$gestion', logincontingencia = '$login', fechaClickMarca='$today' WHERE id='$id'");
+                $stmt->execute();
+                $response = ['bloqueado'];
+            }
+
+        } catch (PDOException $e) {
+            var_dump($e);
+        }
+        $this->_DB = null;
+        echo json_encode($response);
+    }
+
+    public function csvContingencias($params)
+    {
+        try {
+            $fechaIni = $params['fechaIni'];
+            $fechafin = $params['fechafin'];
+
+            $query = ("SELECT C.accion, C.ciudad, C.correo, C.macEntra, C.macSale, C.motivo, C.observacion,
+					C.paquetes, C.pedido, C.proceso, C.producto, C.remite, C.tecnologia, C.tipoEquipo, C.uen,
+					C.contrato, C.perfil, C.logindepacho, C.logincontingencia, C.horagestion, C.horacontingencia,
+					C.observContingencia, C.acepta, C.tipificacion, C.fechaClickMarca, C.loginContingenciaPortafolio,
+					C.horaContingenciaPortafolio, C.tipificacionPortafolio, C.observContingenciaPortafolio, C.generarcr 
+					FROM contingencias AS C
+				WHERE C.horagestion BETWEEN ('$fechaIni 00:00:00') AND ('$fechafin 23:59:59')
+				AND C.accion IN ('Cambio de equipo', 'Contingencia', 'Refresh', 'Registros ToIP', 'Reenvio de registros')");
+
+            $rst = $this->_DB->query($query);
+
+            if ($rst->rowCount()) {
+                $result = $rst->fetchAll(PDO::FETCH_ASSOC);
+                $response = [$result, 200];
+            } else {
+                $response = ['state' => 0];
+            }
+        }catch (PDOException $e){
+            var_dump($e);
+        }
+
+        echo json_encode($response);
+    }
+
+
 }

@@ -16,9 +16,9 @@ class modelOtherServices
     {
         try {
 
-            $datos      = $data['datoscambio'];
-            $tecnologia = $data['tecnologia'];
-            $pedido     = $data['pedido'];
+            $datos      = $data->datoscambio;
+            $tecnologia = $data->tecnologia;
+            $pedido     = $data->pedido;
             //HFC-DTH
             $cuentaDomiciliaria = $datos['cuenta'];
             $IdCuenta           = $datos['IdCuenta'];
@@ -132,12 +132,11 @@ class modelOtherServices
     public function GuardarPedidoEncuesta($params)
     {
         try {
-            session_start();
-            $info_encuesta = $params['infoPedidoEncuesta'];
-            $info_gestion  = $params['gestionDolores'];
-            $duracion      = $params['counter'];
-            $fechaInicial  = $params['fechaInicial'];
-            $fechaFinal    = $params['fechaFinal'];
+            $info_encuesta = $params->infoPedidoEncuesta;
+            $info_gestion  = $params->gestionDolores;
+            $duracion      = $params->counter;
+            $fechaInicial  = $params->fechaInicial;
+            $fechaFinal    = $params->fechaFinal;
             $login         = $_SESSION['login'];
 
             $codigo        = utf8_decode($info_gestion['codigo']);
@@ -207,7 +206,7 @@ class modelOtherServices
     public function gestiodespachoBrutal($data)
     {
         try {
-            $infogestion   = $data['datosguardar'];
+            $infogestion   = $data->datosguardar;
             $pedido        = $infogestion['pedido'];
             $accion        = utf8_decode($infogestion['accion']);
             $correo        = $infogestion['correo'];
@@ -576,8 +575,8 @@ class modelOtherServices
 
             $fechagestionAsesor = date('Y-m-d H:i:s');
 
-            $infogestion   = $data['datosguardar'];
-            $datosDespacho = $data['datosDespacho'];
+            $infogestion   = $data->datosguardar;
+            $datosDespacho = $data->datosDespacho;
 
             $idGestion             = $datosDespacho['PedidoDespacho'];
             $PedidoDespacho        = $datosDespacho['PedidoDespacho'];
@@ -807,11 +806,11 @@ class modelOtherServices
         echo json_encode($response);
     }
 
-    public function CancelarContingencias($datoscancelar)
+    public function CancelarContingencias($data)
     {
 
         try {
-            session_start();
+            $datoscancelar        = $data;
             $login                = $_SESSION['login'];
             $pedido               = $datoscancelar['pedido'];
             $id                   = $datoscancelar['id'];
@@ -857,9 +856,10 @@ class modelOtherServices
         echo json_encode($response);
     }
 
-    public function guardarEscalar($gestionescalado)
+    public function guardarEscalar($data)
     {
         try {
+            $gestionescalado = $data;
 
             $estadoActual   = utf8_decode($gestionescalado['estado']);
             $PedidoDespacho = utf8_decode($gestionescalado['PedidoDespacho']);
@@ -908,9 +908,10 @@ class modelOtherServices
         echo json_encode($response);
     }
 
-    public function gestionAsesorFinal($datosFinal)
+    public function gestionAsesorFinal($data)
     {
         try {
+            $datosFinal = $data;
 
             $PedidoDespacho       = $datosFinal['PedidoDespacho'];
             $PedidoNuevo          = $datosFinal['pedidoNuevo'];
@@ -994,12 +995,12 @@ class modelOtherServices
         echo json_encode($response);
     }
 
-    public function Pendientesxestado($datos)
+    public function Pendientesxestado($data)
     {
 
         try {
-            session_start();
             $login  = $_SESSION['login'];
+            $datos  = $data;
             $estado = $datos['estado'];
 
             $stmt = $this->_DB->prepare("select PedidoDespacho

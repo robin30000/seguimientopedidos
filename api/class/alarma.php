@@ -1,4 +1,5 @@
 <?php
+
 require_once '../model/modelAlarma.php';
 
 class alarma

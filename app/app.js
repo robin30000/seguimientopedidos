@@ -28,7 +28,6 @@ app.service('fileUpload', ['$http', '$cookieStore', function ($http, $cookieStor
         fd.append('user', user);
         fd.append('tipocarga', tipocarga);
 
-        //console.log (file['size']);
         fd.append('fileUpload', file);
 
         if (tipocarga == "vistaCliente" || tipocarga == "alarmados" || tipocarga == "SeguiClick") {
@@ -62,9 +61,6 @@ app.service('fileUploadrepa', ['$http', '$cookieStore', function ($http, $cookie
         file['user'] = user + '6666666';
 
         fd.append('user', user);
-        //fd.append('tipocarga',tipocarga);
-
-        //console.log (file['size']);
         fd.append('fileUpload', file);
 
         $http.post('services/cargar_datosNPSreparacion', fd, {
@@ -86,9 +82,6 @@ app.service('cargaRegistros', ['$http', '$cookieStore', function ($http, $cookie
         file['user'] = user + '6666666';
 
         fd.append('user', user);
-        //fd.append('tipocarga',tipocarga);
-
-        //console.log (file['size']);
         fd.append('fileUpload', file);
 
         $http.post('services/cargaRegistros', fd, {
@@ -1011,7 +1004,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     obj.marcarengestion = function (datos, login) {
         var data = {
-            method: 'marca',
+            method: 'marcarengestion',
             data: {datos, login}
         }
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
@@ -1201,7 +1194,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
             data: {
                 "curPage": curPage,
                 "pageSize": pageSize,
-                "sort":sort
+                "sort": sort
             }
         }
         return $http.post(serviceBase1 + 'formaAsesoresCtrl.php', data);
@@ -1623,12 +1616,13 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'soporteGponCtrl.php', data);
     };
 
-    obj.registrossoportegpon = function (page, datos) {
+    obj.registrossoportegpon = function (curPage, pageSize, sort) {
         var data = {
             method: 'registrossoportegpon',
             data: {
-                'page': page,
-                'datos': datos
+                'curPage': curPage,
+                'pageSize': pageSize,
+                'sort': sort
             }
         }
         return $http.post(serviceBase1 + 'soporteGponCtrl.php', data);
@@ -1850,38 +1844,25 @@ app.service('LoadingInterceptor', ['$q', '$rootScope', '$log',
 ]);
 
 
-app.controller('loginCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services) {
-    $rootScope.permiso = false;
-    $rootScope.error = "";
-    $rootScope.msg_error = "";
-    $scope.autenticacion = {};
-    var today = new Date();
-    $rootScope.year = today.getFullYear();
-    //console.log($rootScope.permiso);
+app.controller('loginCtrl',['$scope', '$http', '$rootScope', '$location', '$route', '$routeParams', '$cookies', '$timeout', 'services', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services) {
     $scope.login = function () {
-        console.log("autenticacion: ", $scope.autenticacion);
-
         services.loginUser($scope.autenticacion).then(
             function (data) {
-                console.log("data: ", data);
-                $errorDatos = null;
-                $scope.respuesta = data.data;
-                //console.log("respuesta: ", $scope.respuesta);
-                $rootScope.nombre = $scope.respuesta.nombre;
-                //console.log("nombre: ", $rootScope.nombre);
-                $location.path('/actividades/');
+                var today = new Date();
+                $rootScope.year = today.getFullYear();
+                $rootScope.nombre = data.data.nombre;
+                $rootScope.login = data.data.login;
+                $rootScope.perfil = data.data.perfil;
+                $rootScope.identificacion = data.data.identificacion;
+                $rootScope.authenticated = true;
 
+                $location.path('/actividades/');
                 $cookies.put("usuarioseguimiento", JSON.stringify(data.data));
 
                 var galleta = JSON.parse($cookies.get("usuarioseguimiento"));
-                //
-                //galleta = ($cookies.get("usuarioInfoDespacho"));
 
                 $rootScope.galletainfo = galleta;
-                //$rootScope.galleta.perfil = 11;
                 $rootScope.permiso = true;
-                console.log('aca ', $rootScope.galletainfo)
-                //console.log("galletainfo: ",$rootScope.galletainfo);
                 if ($rootScope.galletainfo.perfil === '1' && $rootScope.galletainfo.perfil === '2' && $rootScope.galletainfo.perfil === '5') {
                     $location.path('/actividades/');
                 } else if ($rootScope.galletainfo.perfil === '3' || $rootScope.galletainfo.perfil === '8') {
@@ -1897,7 +1878,6 @@ app.controller('loginCtrl', function ($scope, $http, $rootScope, $location, $rou
                 }
 
                 $scope.autenticacion = {};
-                //console.log(galleta);
                 return data.data;
             },
             function errorCallback(response) {
@@ -1906,42 +1886,7 @@ app.controller('loginCtrl', function ($scope, $http, $rootScope, $location, $rou
             });
     };
 
-    // $rootScope.changepwd = function(datos) {
-
-    //     if (datos.pwdNueva == datos.pwdNuevaConfirm) {
-    //         services.cambiarPWD($rootScope.galletainfo.ID, datos).then(
-    //             function(data){
-
-    //                 if (data.status == '201') {
-    //                     $("#editarPassword").modal('hide');
-    //                     swal("La contraseña se cambió exitosamente!", "La sesión se terminó para que inicies con la nueva contraseña.", "success")
-    //                     $rootScope.logout();
-    //                 } else{
-    //                     swal({
-    //                         title: "La contraseña actual no coincide!",
-    //                         text: "Por favor valida, ya que la contraseña que has escrito no coincide con la contraseña actual.",
-    //                         type: "error",
-    //                         confirmButtonClass: "btn-danger",
-    //                         confirmButtonText: "Aceptar",
-    //                         closeOnConfirm: false
-    //                     });
-    //                 }
-    //             }
-    //         );
-
-    //     }else{
-    //             swal({
-    //                 title: "El campo Nueva contraseña y Confirmar nueva contraseña no coinciden!",
-    //                 type: "warning",
-    //                 confirmButtonClass: "btn-danger",
-    //                 confirmButtonText: "Aceptar",
-    //                 closeOnConfirm: false
-    //             });
-    //     }
-    // };
-
-
-});
+}]);
 
 app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services) {
     $scope.iniciaGestion = true;
@@ -1972,16 +1917,12 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         } else {
             services.editarUsuario(editarUser).then(
                 function (data) {
-                    // $errorDatos=null;
                     $scope.respuesta = "Usuario " + editarUser.login + " actualizado exitosamente";
-                    //console.log($scope.respuesta);
-                    //$rootScope.nombre=$scope.respuesta[0].NOMBRE;
+
                     $scope.update = true;
-                    //$location.path('/home/');
                     return data.data;
                 },
                 function errorCallback(response) {
-                    //$scope.error="Usuario no editado";
                 }
             );
         }
@@ -1993,7 +1934,6 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         $scope.idUsuario = $rootScope.galletainfo.ID;
         $scope.UsuarioNom = $rootScope.galletainfo.NOMBRE;
         $scope.TituloModal = "Editar Usuario con el ID:";
-        //console.log($scope.editaInfo);
     };
 
     $scope.procesos = function () {
@@ -2032,7 +1972,6 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         $scope.listadoAcciones = {};
 
         services.getAcciones($scope.gestionmanual.proceso).then(function (data) {
-            console.log(' pppp', data.data[0][0]);
             $scope.listadoAcciones = data.data[0][0];
             $scope.validaraccion = true;
             $scope.validarsubaccion = false;
@@ -2310,15 +2249,12 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         }
     };
 
-    //este bloque añade al modal de materiales los inputs deseados
     $scope.addNuevoMaterial = function () {
         var newItemNo = $scope.materiales.length + 1;
         $scope.materiales.push({'id': +newItemNo, tipoCable: 'No uso'});
-        //console.log(usuario);
-        //$scope.crearnovedad();
+
     };
 
-    //este bloque añade al modal de recogida de equipos los inputs deseados
     $scope.addEquipoRecoger = function () {
         var newEquiporecoger = $scope.equiposRecoger.length + 1;
         $scope.equiposRecoger.push({
@@ -2332,16 +2268,13 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         });
     };
 
-    //este bloque elimina al modal de materiales los inputs deseados
     $scope.removeNuevoMaterial = function () {
         var lastItem = $scope.materiales.length - 1;
         if (lastItem != 0) {
             $scope.materiales.splice(lastItem);
-            //console.log($scope.novedades);
         }
     }
 
-    //este bloque elimina al modal de recogida de equipos los inputs deseados
     $scope.removeEquipoRecoger = function () {
         var lastEquipoRecoger = $scope.equiposRecoger.length - 1;
         if (lastEquipoRecoger != 0) {
@@ -2365,7 +2298,6 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
             services.insertarCambioEquipo('DTH', $scope.equipoDTH, $scope.pedido).then(
                 function (data) {
                     $scope.datoscambioEquipo = data.data[0];
-                    console.log("id cambio equipo DTH: " + $scope.datoscambioEquipo);
                 }
             );
 
@@ -2376,9 +2308,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
 
             services.insertarCambioEquipo('HFC', $scope.equipoHFC, $scope.pedido).then(
                 function (data) {
-                    //console.log("data: ", data);
                     $scope.datoscambioEquipo = data.data[0];
-                    //console.log("id cambio equipo HFC: " + $scope.datoscambioEquipo);
                 }
             );
         }
@@ -2389,7 +2319,6 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
             services.insertarCambioEquipo('ADSL', $scope.equipoOtros, $scope.pedido).then(x |
                 function (data) {
                     $scope.datoscambioEquipo = data.data[0];
-                    //console.log("id cambio equipo ADSL: " + $scope.datoscambioEquipo);
                 }
             );
         }
@@ -2803,8 +2732,6 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
             var diagnostico = "";
             var sep = "";
 
-            //console.log($scope.cumplir);
-
             if ($scope.cumplir.sinalarmas != undefined && $scope.cumplir.sinalarmas) {
                 diagnostico = "0";
             } else {
@@ -2883,7 +2810,6 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
             ;
 
             $scope.observacion = "Productos: " + producto + ", CR o Autoriza: " + $scope.contingenciaCambio.autoriza + ", MAC de datos entra: " + $scope.contingenciaCambio.MacdatosEntra + ", MAC de datos sale: " + $scope.contingenciaCambio.MacdatosSale + ", Línea: " + $scope.contingenciaCambio.linea + ", MAC de voz entra: " + $scope.contingenciaCambio.MacvozEntra + ", MAC de voz sale: " + $scope.contingenciaCambio.MacvozSale + ", Deco(s) entra: " + $scope.contingenciaCambio.decoEntra + ", Deco(s) Sale: " + $scope.contingenciaCambio.decoSale + ", Puertos: " + puertos
-            console.log($scope.observacion);
         }
 
         if ($scope.OpenModal == "ContingenciaNuevo") {
@@ -2897,10 +2823,8 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
             if ($scope.contingenciaNuevo.TV == true) {
                 producto = producto + "-TV-";
             }
-            ;
 
             $scope.observacion = "Productos: " + producto + ", CR o Autoriza: " + $scope.contingenciaNuevo.autoriza + ", Decos: " + $scope.contingenciaNuevo.Decos + ", línea: " + $scope.contingenciaNuevo.linea + ", MAC de datos: " + $scope.contingenciaNuevo.MacDatos + ", MAC de voz: " + $scope.contingenciaNuevo.MacVoz
-            console.log($scope.observacion);
         }
 
         if ($scope.OpenModal == "ContingenciaReuso") {
@@ -3295,19 +3219,11 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
                                 ;
                                 return data.data;
                             }, function (err) {
-                                console.log("ERROR DE CONEXION: NO PUEDO ALCANZAR EL SERVIDOR!!!");
                                 $scope.infopedido = false;
                                 $scope.errorconexion1 = true;
                                 $scope.myWelcome = {};
                                 $scope.errorconexion = "No hay conexión con Web Service, ingrese datos manualmente";
                             });
-                        /**
-                         console.log("ERROR DE CONEXION: NO PUEDO ALCANZAR EL SERVIDOR!!!");
-                         $scope.infopedido=false;
-                         $scope.errorconexion1=true;
-                         $scope.myWelcome={};
-                         $scope.errorconexion="No hay conexión con Web Service, ingrese datos manualmente";
-                         **/
                     },
                     function errorCallback(response) {
                         console.log("ERRORRRR");
@@ -3342,12 +3258,10 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
                 } else {
                     $scope.celular = $scope.Tecnico[0].CELULAR;
                 }
-                //   console.log($scope.Tecnico[0]);
                 $scope.creaTecnico = true;
                 return;
             },
             function errorCallback(response) {
-                //$scope.errorDatos=concepto+" "+$scope.gestionmanual.tecnico+" no existe.";
                 $('#NuevoTecnico').modal('show');
                 $scope.creaTecnico = false;
             }
@@ -3355,24 +3269,18 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
     };
 
     $scope.createTecnico = function () {
-        // console.log($scope.gestionmanual.tecnico);
         services.creaTecnico($scope.crearTecnico, $scope.gestionmanual.tecnico).then(
             function (data) {
-                // console.log("la lista "+$scope.listaUsuarios);
                 $scope.BuscarTecnico();
                 return data.data;
-                // $scope.creaTecnico=true;
             },
             function errorCallback(response) {
-                // console.log($scope.errorDatos);
             }
         );
     };
 
 
     $scope.guardarPedido = function () {
-
-        console.log($scope.gestionmanual.accion, $scope.gestionmanual.subAccion);
 
         if ($scope.gestionmanual.interaccion == "" || $scope.gestionmanual.interaccion == undefined) {
             alert("Debe seleccionar el tipo de interacción.");
@@ -3454,8 +3362,6 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
 
         $scope.counter = hours + ":" + minutes + ":" + seconds;
 
-        // console.log("id cambio equipo1: ",$scope.datoscambioEquipo);
-
         /*SE QUITA datoscambioEquipo POR LA OBSERVAION QUE SE HIZO EN LA LINEA 148*/
         services.ingresarPedidoAsesor(
             $scope.gestionmanual,
@@ -3468,33 +3374,12 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
             $scope.datoscambioEquipo = 0
         ).then(
             function (data) {
-                //console.log('data: ', data);
-                //if ($scope.creaTecnico==true) {
-                //
                 $route.reload();
-                //location.reload();
-                //};
             },
             function errorCallback(response) {
                 $scope.errorDatos = "Registros no fue ingresado.";
-                //alert($scope.errorDatos);
-                //console.log('errorDatos: ', $scope.errorDatos);
             }
         );
-
-        //console.log("ingresarPedidoAsesor: ", services.ingresarPedidoAsesor);
-        //console.log("datospedido: ",$scope.gestionmanual);
-        //console.log("pedido: ",$scope.pedido);
-        //console.log("datosLogin: ",$scope.galletainfo);
-        //console.log("datosClick: ",$scope.myWelcome);
-        //console.log("plantilla: ",$scope.observacion);
-        // console.log("id cambio equipo2: ",$scope.datoscambioEquipo);
-
-
-        /* }else{
-            $scope.BuscarTecnico();
-        }*/
-
     };
 
     $scope.limpiar = function () {
@@ -3596,25 +3481,10 @@ app.controller('premisasInfraestructurasCtrl', function ($scope, $rootScope, $lo
 
         services.datosgestionescalamientosprioridad2().then(function (data) {
             $scope.dataEscalamientoInfraestructuraPrioridad2 = data.data[0];
-            console.log($scope.dataEscalamientoInfraestructuraPrioridad2);
         }).catch((err) => {
             console.log(err)
         });
     }
-
-    /*$scope.exportarRegistros = function () {
-        services.exportEscalamientos().then(completed).catch(failed)
-
-        function completed(data) {
-            console.log(data)
-        }
-
-        function failed(error) {
-            console.log(error)
-        }
-
-    }*/
-
 
     $scope.exportarRegistros = () => {
         services.exportEscalamientos().then((res) => {
@@ -3644,7 +3514,6 @@ app.controller('premisasInfraestructurasCtrl', function ($scope, $rootScope, $lo
             elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
             elementToClick.download = "Escalamientos-" + fullDateCsv + ".csv";
             elementToClick.click();
-            console.log(str);
         });
     }
 
@@ -3660,7 +3529,6 @@ app.controller('premisasInfraestructurasCtrl', function ($scope, $rootScope, $lo
     }
 
     $scope.mostrarModalEscalamiento = function (data) {
-        //console.log("guardarcontingencia: ",data);
         if (data.engestion == null || data.engestion == '0') {
             alert("Debes bloquear el pedido");
             return;
@@ -3669,7 +3537,6 @@ app.controller('premisasInfraestructurasCtrl', function ($scope, $rootScope, $lo
             return;
         } else {
             $scope.gestionescala = data;
-            //console.log("gestioncontin: ",$scope.gestioncontin);
             $('#editarModal').modal('show');
             return data.data;
         }
@@ -3734,7 +3601,6 @@ app.controller('premisasInfraestructurasCtrl', function ($scope, $rootScope, $lo
                 var ansData = await ansQuery.json();
                 data.ans = ansData.horas;
             }
-            console.log(data);
 
             if (data.status == "" || data.status == undefined || data.status == null) {
                 swal({
@@ -3768,8 +3634,6 @@ app.controller('premisasInfraestructurasCtrl', function ($scope, $rootScope, $lo
                     type: "warning"
                 });
             } else {
-                console.log(querySnapshotAT.data());
-                // var queryUpdateStatus = await database.collection("infraestructure").doc(data._id).update({status: 1});
                 await fetch('https://autogestionterreno.com.co/api/state-infraestructure/', {
                     method: 'PUT',
                     mode: 'cors',
@@ -3803,7 +3667,6 @@ app.controller('premisasInfraestructurasCtrl', function ($scope, $rootScope, $lo
             } else {
                 try {
                     alert("Pedido guardado, recuerda actualizar!!");
-                    console.log(data);
                     var currentTimeDate = new Date().toLocaleString();
                     var statusInfraestructure = (data.tipificacion == "Escalamiento realizado ok" || data.tipificacion == "Escalamiento ok nivel 2" || data.tipificacion == "Escalamiento ok nivel 2 Prioridad") ? "Aprobado" : "Rechazado";
 
@@ -3814,19 +3677,12 @@ app.controller('premisasInfraestructurasCtrl', function ($scope, $rootScope, $lo
                         headers: {"Content-type": "application/json;charset=UTF-8"}
                     });
 
-                    //   database.collection("infraestructure").doc(data.id_terreno).update({
-                    //     answer: data.observacionesescalamiento,
-                    //     dateAswered: currentTimeDate,
-                    //     infraestructure_Status: statusInfraestructure
-                    //   });
-
                     services.editarregistroescalamiento(data, $rootScope.galletainfo)
                         .then(function (data) {
 
                         })
                         .catch(err => alert(err));
                     $scope.gestionescalamiento();
-                    //$scope.gestioncontingenciasPrueba();
                 } catch (error) {
                     swal({
                         title: "Hay problemas al almacenar la gestión ",
@@ -4038,7 +3894,6 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
             services.novedadesTecnicoService(curPage, pageSize, sort).then(complete).catch(failed)
 
             function complete(data) {
-                console.log(data.data.counter)
                 var datos = data.data.data;
                 var counter = data.data.counter;
 
@@ -4082,7 +3937,6 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
     // =================================================
 
     $scope.mostraModal = function (registrosTenicos) {
-        //console.log("registrosTenicos: ",registrosTenicos);
         angular.copy(registrosTenicos, $scope.novedadesVisitasSel);
 
         $("#modalNovedadVisita").modal();
@@ -4097,7 +3951,6 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
 
         services.updateNovedadesTecnico(observacionCCO, $scope.pedidoElegido)
             .then(res => {
-                console.log(res);
                 Swal(
                     'Tu Novedad fue Actualizada!',
                     'Bien Hecho'
@@ -4170,10 +4023,8 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
     $scope.regiones = function () {
         $scope.validaraccion = false;
         services.getRegiones().then(function (res) {
-            //console.log("respuestaRegiones: ",res);
             $scope.listadoRegiones = res.data[0];
             $scope.listadoMunicipios = {};
-            //return data.data;
 
         });
     };
@@ -4181,7 +4032,6 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
     $scope.calcularAcciones = function () {
         $scope.listadoMunicipios = {};
         services.getMunicipios($scope.novedadesVisitasSel.region).then(function (data) {
-            //console.log('peticionMunicipios: ', data);
             $scope.listadoMunicipios = data.data[0];
             $scope.validaraccion = true;
         });
@@ -4194,7 +4044,6 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
     $scope.situacion = function () {
         $scope.validaraccion = false;
         services.getSituacion().then(function (res) {
-            console.log("respuestaRegiones: ", res);
             $scope.listadoSituacion = res.data[0];
             $scope.listadoDetalle = {};
             //return data.data;
@@ -4205,7 +4054,6 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
     $scope.calcularDetalle = function () {
         $scope.listadoDetalle = {};
         services.getDetalle($scope.novedadesVisitasSel.situacion).then(function (data) {
-            console.log('peticionMunicipios: ', data);
             $scope.listadoDetalle = data.data[0];
             $scope.validaraccion = true;
         });
@@ -4290,7 +4138,6 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
 
                 }, function errorCallback(response) {
 
-                    // console.log("ERRORRRR");
                 });
 
         }
@@ -4309,7 +4156,6 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
 
         services.guardarNovedadesTecnico(registrosTenicos, $rootScope.galletainfo).then(
             function (respuesta) {
-                //console.log("guardar: ",respuesta);
                 if (respuesta.status == '201') {
                     Swal(
                         'Tu Novedad fue Guardada!',
@@ -4352,7 +4198,6 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
 
             services.expCsvNovedadesTecnico($scope.Registros, $rootScope.galletainfo).then(
                 function (datos) {
-                    console.log(datos);
                     var data = datos.data[0];
                     var array = typeof data != 'object' ? JSON.parse(data) : data;
                     var str = '';
@@ -4379,7 +4224,6 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
                     elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
                     elementToClick.download = "NovedadesTecnicos-" + fullDateCsv + ".csv";
                     elementToClick.click();
-                    console.log(str);
                 },
                 function errorCallback(response) {
                     $scope.errorDatos = "No hay datos.";
@@ -4514,10 +4358,8 @@ app.controller('contrasenasClickCtrl', function ($scope, $http, $rootScope, $loc
 
 
     $scope.csvcontrasenasTecnicos = function () {
-        //console.log(datoExportar+$scope.indicadores.fecha);
         services.expCsvContrasenasTecnicos($rootScope.galletainfo).then(
             function (datos) {
-                // console.log(data.data[0]);
                 var data = datos.data[0];
                 var array = typeof data != 'object' ? JSON.parse(data) : data;
                 var str = '';
@@ -4544,7 +4386,6 @@ app.controller('contrasenasClickCtrl', function ($scope, $http, $rootScope, $loc
                 elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
                 elementToClick.download = "ContrasenasTecnicos-" + fullDateCsv + ".csv";
                 elementToClick.click();
-                console.log(str);
             },
             function errorCallback(response) {
             }
@@ -4762,7 +4603,6 @@ app.controller('quejasGoCtrl', function ($scope, $http, $rootScope, $location, $
             services.listaQuejasGoDia(curPage, pageSize, sort).then(complete).catch(failed)
 
             function complete(data) {
-                console.log(data.data.counter)
                 var datos = data.data.data;
                 var counter = data.data.counter;
 
@@ -5041,8 +4881,8 @@ app.controller('quejasGoCtrl', function ($scope, $http, $rootScope, $location, $
     $scope.modificarObservacionQuejasGo = function (quejasGoSel, frmModObserQuejasGo, id) {
 
         services.modiObserQuejasGo(quejasGoSel, idqueja).then(completed).catch(failed)
-        function completed(data){
-            //console.log(data.data)
+
+        function completed(data) {
             $("#modObserQuejasGo").modal('hide');
             swal({
                 type: data.data.type,
@@ -5054,7 +4894,7 @@ app.controller('quejasGoCtrl', function ($scope, $http, $rootScope, $location, $
             })
         }
 
-        function failed(error){
+        function failed(error) {
             console.log(error)
         }
     };
@@ -5137,7 +4977,6 @@ app.controller('saraCtrl', function ($scope, $http, $rootScope, $location, $rout
             elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
             elementToClick.download = "Disponibilidad-" + fullDateCsv + ".csv";
             elementToClick.click();
-            console.log(str);
 
         }).catch(error => console.log(error));
     }
@@ -5209,7 +5048,7 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
                 minWidth: 70,
                 width: "15%",
                 enableCellEdit: false,
-            },  {
+            }, {
                 name: "Acciones",
                 cellTemplate: "<div style='text-align: center'>" +
                     '<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.muestraNotas(row)">' +
@@ -5273,7 +5112,6 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
             services.registros(curPage, pageSize, sort).then(complete).catch(failed)
 
             function complete(data) {
-                console.log(data.data.counter, ' ldskjfhlaskdjal')
                 var datos = data.data.data;
                 var counter = data.data.counter;
 
@@ -5302,13 +5140,9 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
 
         $scope.fechaini = tiempo;
         $scope.fechafin = tiempo;
-
-        //console.log("fechaini: ",$scope.fechaini);
-        //console.log("fechafin: ",$scope.fechafin);
     }
 
     $scope.BuscarRegistros = function (datos) {
-        console.log("BuscarRegistros: ", datos);
         $scope.errorDatos = null;
         $scope.csvPend = false;
         $scope.listaRegistros = {};
@@ -5320,9 +5154,7 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
 
             services.registros($scope.datapendientes.currentPage, datos).then(
                 function (data) {
-                    console.log("registros: ", data);
                     $scope.listaRegistros = data.data[0];
-                    //console.log("listaRegistros: ", $scope.listaRegistros);
                     $scope.cantidad = data.data[0].length;
                     $scope.counter = data.data[1];
 
@@ -5350,8 +5182,6 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
     }
 
     $scope.calcularSubAcciones = function (proceso, accion) {
-        //    console.log(proceso);
-        //  console.log(accion);
         $scope.listadoSubAcciones = {};
         $scope.validarsubaccion = true;
 
@@ -5364,7 +5194,6 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
     };
 
     $scope.calcularAcciones = function (proceso) {
-        //console.log(proceso);
         if (proceso == "") {
             $scope.validaraccion = false;
             $scope.validarsubaccion = false;
@@ -5385,7 +5214,6 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
         } else {
             $scope.verplantilla = false;
         }
-        console.log("datosRegistros: ", $scope.datosRegistros);
         $scope.TituloModal = "Editar pedido:";
         $scope.pedido = row.entity.pedido;
         $scope.calcularAcciones($scope.datosRegistros.proceso);
@@ -5397,16 +5225,10 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
         $scope.errorDatos = null;
         $scope.respuestaupdate = null;
         $scope.respuestadelete = null;
-        //  console.log(datos);
 
         services.editarRegistro(datos, $rootScope.galletainfo).then(
             function (data) {
-
-                console.log("editarRegistro: ", data);
-                // $errorDatos=null;
                 $scope.respuestaupdate = "Pedido " + datos.pedido + " actualizado exitosamente";
-                //$rootScope.nombre=$scope.respuesta[0].NOMBRE;
-                //$location.path('/home/');
                 return data.data;
             },
             function errorCallback(response) {
@@ -5450,7 +5272,6 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
                     elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
                     elementToClick.download = "Registros-" + fullDateCsv + ".csv";
                     elementToClick.click();
-                    console.log(str);
                 },
                 function errorCallback(response) {
                     $scope.errorDatos = "No hay datos.";
@@ -5489,7 +5310,6 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
                 elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
                 elementToClick.download = "Cambio_Equipos-" + fullDateCsv + ".csv";
                 elementToClick.click();
-                console.log(str);
 
             },
             function errorCallback(response) {
@@ -5508,9 +5328,6 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
         var file = $scope.myFile;
         $scope.user = $rootScope.galletainfo.login;
         $scope.name = '';
-        //   console.log('file is ');
-        // console.dir(file);
-        // console.dir($scope.tipoCarga);
         $scope.delete_ok = false;
 
         var uploadUrl = 'services/cargaRegistros';
@@ -5691,24 +5508,6 @@ app.controller('registrosOfflineCtrl', function ($scope, $http, $rootScope, $loc
         getPage(1, $scope.gridOptions.paginationPageSize, paginationOptions.sort);
     }
 
-
-    /*    $scope.RegistrosOffline = function () {
-
-            services.registrosOffline().then(
-                function (data) {
-                    $scope.listaRegistrosOffline = data.data[0];
-                    //console.log(data.data);
-                    $scope.cantidad = data.data[0].length;
-                    $scope.counter = data.data[1];
-
-                    return data.data;
-                },
-                function errorCallback(response) {
-                    $scope.errorDatos = "No hay datos";
-
-                });
-        }
-        $scope.RegistrosOffline();*/
 });
 
 app.controller('mesaofflineCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services) {
@@ -5741,16 +5540,12 @@ app.controller('mesaofflineCtrl', function ($scope, $http, $rootScope, $location
     $scope.guardarPedidoOffline = function () {
         services.pedidoOffline($scope.offline, $rootScope.galletainfo).then(
             function (data) {
-                // console.log("la lista "+$scope.listaUsuarios);
                 $scope.respuestaupdate = "Pedido creado.";
                 ;
                 return data.data;
             },
             function errorCallback(response) {
-
                 $scope.errorDatos = "Pedido no fue creado.";
-
-                // console.log($scope.errorDatos);
             });
     };
 
@@ -6250,7 +6045,7 @@ app.filter('mapNivelacion', function () {
     };
 });
 
-app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location, $route, $routeParams, $cookies, $cookieStore, $timeout, services, i18nService) {
+app.controller('GestionNivelacionCtrl',['$scope', '$rootScope', '$location', '$route', '$routeParams', '$cookies', '$cookieStore', '$timeout', 'services', 'i18nService', function ($scope, $rootScope, $location, $route, $routeParams, $cookies, $cookieStore, $timeout, services, i18nService) {
     $scope.GestionNivelacion = {};
     $scope.fechaini = '';
     $scope.fechafin = '';
@@ -6271,12 +6066,12 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
         }
 
         var fechaI2 = new Date();
-        fechaI2.addMins(15);
+        //fechaI2.addMins(15);
 
         var columnDefs = [
             {
                 name: "Marcar",
-                cellTemplate: "<div style='text-align: center'><input type='checkbox' ng-click='grid.appScope.engestion(row)'></div>",
+                cellTemplate: "<div style='text-align: center'><input ng-checked={{row.entity.en_gestion}} value='{{row.entity.en_gestion}}' ng-model='row.entity.en_gestion' type='checkbox' ng-click='grid.appScope.engestion(row)'></div>",
                 minWidth: 70,
                 width: "3%",
                 enableCellEdit: false,
@@ -6286,22 +6081,10 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
             {
                 name: "Login",
                 field: "gestiona_por",
+                //cellTemplate: 'partial/modals/templateNivelacion.html',
                 minWidth: 80,
                 width: "5%",
                 enableCellEdit: false,
-                enableFiltering: false,
-                /*                cellClass: function(grid, row, col, rowRenderIndex, colRenderIndex) {
-                                    if (row.entity.gestiona_por) {
-                                        if (row.entity.gestiona_por == $rootScope.galletainfo.login){
-                                            return "<div class='center-block'>row.entity.gestiona_por</div>";
-                                        }else{
-                                            return "<div class='center-block'>En gestion</div>";
-                                        }
-                                    }else {
-                                        return "<div class='center-block'></div>";
-                                    }
-                                }*/
-
             }, {
                 name: "Tarea",
                 field: "ticket_id",
@@ -6317,7 +6100,13 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
                 width: "7%",
                 enableCellEdit: false,
                 cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
-                    if (new Date(row.entity.fecha_ingreso) <= fechaI2) {
+                    var date = new Date(row.entity.fecha_ingreso);
+                    //Add two hours var dd = date.setHours(date.getHours() + 2);
+                    // Go back 3 days var dd = date.setDate(date.getDate() - 3);
+                    // One minute ago... var dd = date.setMinutes(date.getMinutes() - 1);
+                    date.addMins(15);
+                    //var dd = date.setMinutes(15);
+                    if (date <= fechaI2) {
                         return 'blue';
                     }
                 }
@@ -6334,7 +6123,7 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
                 field: "zona",
                 cellStyle: {"text-align": "center"},
                 minWidth: 80,
-                width: "8%",
+                width: "7%",
                 enableCellEdit: false,
             }, {
                 name: "Sub zona",
@@ -6396,7 +6185,14 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
                 editType: 'dropdown',
                 cellFilter: 'mapNivelacion',
                 enableCellEdit: true,
-                editableCellTemplate: 'ui-grid/dropdownEditor',
+                cellTemplate: "<div style='text-align: center'><select ng-model='row.entity.nivelacion' class='btn btn-default btn-xs grupo-select'>" +
+                    "<option value=''>Selec</option>" +
+                    "<option value='SI'>SI</option>" +
+                    "<option value='NO'>NO</option>" +
+                    "</select>" +
+                    "</div>",
+
+                /*editableCellTemplate: 'ui-grid/dropdownEditor',
                 editDropdownOptionsArray: [{
                     ID: 'SI',
                     type: 'SI'
@@ -6405,9 +6201,9 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
                     type: 'NO'
                 }],
                 editDropdownIdLabel: 'ID',
-                editDropdownValueLabel: 'type',
+                editDropdownValueLabel: 'type',*/
                 minWidth: 50,
-                width: "3%",
+                width: "4%",
                 enableColumnResizing: true,
 
             }, {
@@ -6607,13 +6403,11 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
                         } else {
                             paginationOptions.sort = null;
                         }
-                        console.log(2);
                         getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, paginationOptions.sort)
                     }
                 });
                 gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
                     if (getPage) {
-                        console.log(1);
                         getPage(newPage, pageSize, paginationOptions.sort);
                     }
                 });
@@ -6657,7 +6451,6 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
         services.buscarhistoricoNivelacion(row.entity.ticket_id).then(complete).catch(failed)
 
         function complete(data) {
-            console.log(data);
             if (data.data.state === 0) {
                 Swal({
                     type: 'error',
@@ -6730,8 +6523,6 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
 
     $scope.guardagestion = function (row) {
 
-        console.log(row.entity)
-
         if (!row.entity.nivelacion) {
             Swal('Selecciona el estado de nivelación');
             return;
@@ -6745,7 +6536,6 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
         services.buscarhistoricoNivelacion($scope.nivelacion.tarea).then(complete).catch(failed)
 
         function complete(data) {
-            console.log(data);
             if (data.data.state === 0) {
                 Swal({
                     type: 'error',
@@ -6817,12 +6607,6 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
 
     $scope.csvNivelacion = function () {
 
-
-        //var diffDays = Math.round(diffMs / 86400000); // days
-        //var diffHrs = Math.round((diffMs % 86400000) / 3600000); // hours
-        //var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
-        //alert(diffDays + " days, " + diffHrs + " hours, " + diffMins + " minutes until Christmas 2009 =)");
-
         var fechaini = new Date($scope.fechaini);
         var fechafin = new Date($scope.fechafin);
         var diffMs = (fechafin - fechaini);
@@ -6840,7 +6624,6 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
         } else {
             services.csvNivelacion($scope.fechaini, $scope.fechafin).then(
                 function (datos) {
-                    console.log(datos)
                     var data = datos.data[0];
                     var array = typeof data != 'object' ? JSON.parse(data) : data;
                     var str = '';
@@ -6867,7 +6650,6 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
                     elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
                     elementToClick.download = "csvNivelacion-" + fullDateCsv + ".csv";
                     elementToClick.click();
-                    console.log(str);
                 },
 
                 function errorCallback(response) {
@@ -6882,7 +6664,7 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
         getGrid();
     }
 
-})
+}])
 
 app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $route, $routeParams, $cookies, $cookieStore, $timeout, services, fileUpload) {
     $scope.contingencias = {};
@@ -6890,22 +6672,14 @@ app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $ro
     $scope.pedidoguardado = false;
     $scope.haypedido = false;
     $scope.equiposEntran = [];
-    $scope.equiposEntran.push({}); //incializo con un input...
+    $scope.equiposEntran.push({});
     $scope.equiposSalen = [];
     $scope.equiposSalen.push({});
 
-
     $scope.BuscarPedidoContingencia = function () {
-        //console.log("contingencias: ",$scope.contingencias);
-        //emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
-
-        //if (emailRegex.test($scope.contingencias.correo)) {
 
         services.buscarPedidoSeguimiento($scope.contingencias.pedido, $scope.contingencias.producto, $scope.contingencias.remite).then(function (data) {
 
-            /*AQUI PUNTO DE CONTROL QUE SE ESTA GUARDANDO*/
-            console.log("buscarPedidoSeguimiento: ", data);
-            console.log($scope.contingencias);
             $scope.GuardarContingencia($scope.contingencias);
             $scope.contingencias = {};
 
@@ -6913,7 +6687,6 @@ app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $ro
             $scope.pedidoexiste = true;
             $scope.pedidoguardado = false;
 
-            console.log("status: ", response.status);
 
             if (response.status == '401') {
                 $scope.mensaje = "El pedido con el producto: " + $scope.contingencias.producto + ", se encuentra pendiente, no es posible gestionar nuevamente."
@@ -6922,10 +6695,6 @@ app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $ro
             }
             return;
         });
-        //} else {
-        //    alert("El correo debe tener el formato de E-mail: correo@dominio.com");
-        //    return;
-        //}
     }
 
     $scope.buscarhistoricoPedidoContingencia = function (pedido) {
@@ -6936,20 +6705,15 @@ app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $ro
         } else {
             services.getbuscarPedidoContingencia(pedido).then(function (data) {
                     $scope.databsucarPedido = data.data[0];
-                    //$scope.hayDatosPedido = true;
-                    //console.log("paso->1");
-                    //console.log($scope.databsucarPedido);
                     if ($scope.databsucarPedido == "<") {
                         swal("No hay contingencias para el pedido: " + pedido);
                     } else {
 
                         $('#modalHistoricoContingencias').modal('show');
-                        //console.log("paso-->2");
+
                     }
 
                     return data.data;
-
-                    //console.log("paso-->3");
 
                 },
                 function errorCallback(response) {
@@ -6975,9 +6739,6 @@ app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $ro
         services.UpdatePedidosEngestion($rootScope.galletainfo).then(function (data) {
             $scope.haypedido = true;
             $scope.pedidosEngestion = data.data[0];
-
-            /*AQUI PARA REVISAR COMO ESTA LLEGANDO LA INFORMACION AL DESPACHADOR*/
-            //console.log("pedidosEngestion: ",$scope.pedidosEngestion);
 
             var tam = $scope.pedidosEngestion.length;
             $scope.contingenciaOK = 0;
@@ -7023,7 +6784,6 @@ app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $ro
 
         var equiposIn = "";
 
-        //console.log("equiposEntran: ", $scope.equiposEntran);
         var sep = "";
 
         for (var equipo of $scope.equiposEntran) {
@@ -7036,8 +6796,6 @@ app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $ro
         contingencias.macEntra = equiposIn;
         $scope.equiposEntran = [];
         $scope.equiposEntran.push({});
-        //console.log("Listado final de equipos entran: " + equiposIn);
-
 
         var equiposOut = "";
 
@@ -7052,7 +6810,6 @@ app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $ro
         contingencias.macSale = equiposOut;
         $scope.equiposSalen = [];
         $scope.equiposSalen.push({});
-        //console.log("equiposSalen: ", $scope.equiposSalen);
 
         services.guardarContingencia(contingencias, $rootScope.galletainfo).then(function (data) {
             console.log("guardarContingencia: ", services.guardarContingencia);
@@ -7060,9 +6817,6 @@ app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $ro
 
         $scope.updateEnGestion();
     }
-    //console.log("GuardarContingencia: ",$scope.GuardarContingencia);
-
-    //INICIO CANCELAR CONTINGENCIA POR EL DESPACHADOR
 
     $scope.CancelarContingencia = function (data) {
 
@@ -7113,10 +6867,7 @@ app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $ro
         })
     }
 
-    //FIN CANCELAR CONTINGENCIA POR EL DESPACHADOR
-
     $scope.updateContingencias = setInterval(function () {
-        //console.log($scope.indicadores);
         $scope.updateEnGestion();
     }, 300000);
 
@@ -7149,81 +6900,8 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
     $scope.cantidadContingenciasTV = 0;
     $scope.cantidadContingenciasINT = 0;
 
+
     $scope.listarcontingenciasterreno = () => {
-
-        /* database.collection("contingencies").where("status","==", 0).orderBy("contingencies_Date","asc").get().then((querySnapshot) => {
-            $scope.isContingenciesFromField = false;
-            $scope.contingenciesDataTV = [];
-            $scope.contingenciesDataInternetToIP = [];
-            $scope.cantidadContingenciasTV = 0;
-            $scope.cantidadContingenciasINT = 0;
-            querySnapshot.forEach((doc) => {
-                let dataQuerySnapshot = {};
-                dataQuerySnapshot = {
-                    _id: doc.id,
-                    references: doc.data().references,
-                    macIn: doc.data().macIn,
-                    macOut: doc.data().macOut,
-                    details: doc.data().details,
-                    contingencies_Type: doc.data().contingencies_Type,
-                    contingencies_Date: doc.data().contingencies_Date,
-                    contingencies_State: doc.data().contingencies_State,
-                    product: doc.data().product,
-                    user_email: doc.data().user_email,
-                    user_identification: doc.data().user_identification
-                }
-                special_access = [98644514,15335939,16268236,70191900
-                    ,71638399,10137123,71789293,98621522,70254182
-                    ,98567429,71733363,71669597,98593889,71653347
-                    ,70753885,70954170,70384636,1094947317,71625390];
-
-                dataQuerySnapshot.correo = dataQuerySnapshot.user_email;
-                var date = dataQuerySnapshot.contingencies_Date.toDate();
-                var year = date.getFullYear();
-                var month = "0" + (date.getMonth() + 1);
-                var day = "0" + date.getDate();
-                var hours = "0" + date.getHours();
-                var minutes = "0" + date.getMinutes();
-                var seconds = "0" + date.getSeconds();
-                var formattedTime = year + '-' + month.substr(-2) + '-' + day.substr(-2) + ' ' + hours.substr(-2) + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-                dataQuerySnapshot.horagestion = formattedTime;
-                dataQuerySnapshot.fecha = date;
-                dataQuerySnapshot.macEntra = dataQuerySnapshot.macIn;
-                dataQuerySnapshot.macSale = dataQuerySnapshot.macOut;
-                dataQuerySnapshot.observacion = dataQuerySnapshot.details;
-                dataQuerySnapshot.pedido = dataQuerySnapshot.references;
-                dataQuerySnapshot.producto = dataQuerySnapshot.product;
-                dataQuerySnapshot.accion = dataQuerySnapshot.contingencies_Type;
-
-                if(special_access.indexOf(dataQuerySnapshot.user_identification) != -1){
-                    dataQuerySnapshot.remite = "Teléfonos Públicos";
-                } else {
-                    dataQuerySnapshot.remite = "Terreno";
-                }
-
-                if(dataQuerySnapshot.product == "TV"){
-                    $scope.contingenciasTV.push(dataQuerySnapshot);
-                    $scope.contingenciesDataTV.push(dataQuerySnapshot);
-                    $scope.cantidadContingenciasTV++;
-                }
-                else if(dataQuerySnapshot.product == "Internet" || dataQuerySnapshot.product == "ToIP" || dataQuerySnapshot.product == "Internet+ToIP"){
-                    $scope.contingenciasOTROS.push(dataQuerySnapshot);
-                    $scope.contingenciesDataInternetToIP.push(dataQuerySnapshot);
-                    $scope.cantidadContingenciasINT++;
-                }
-            });
-            $scope.isContingenciesFromField = true;
-
-            if($scope.contingenciasTV.length == 0 ){
-                $scope.contingenciasTV = $scope.contingenciasTV.concat($scope.contingenciesDataTV);
-            }
-            if($scope.contingenciasOTROS.length == 0){
-                $scope.contingenciasOTROS = $scope.contingenciasOTROS.concat($scope.contingenciesDataInternetToIP);
-            }
-        }).catch( (err) => {
-            console.log(err);
-        }); */
-
 
     }
 
@@ -7240,76 +6918,16 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
 
 
     $scope.changeStatus = function (data) {
-        //console.log("Aceptado/Rechazado: ",data);
     }
 
-    /*$scope.palancatv = function(data,idxtv)
-    {
-        var TIPITV = $scope.contingenciasTV.map((doc)=>doc.tipificacion);
-        var PALANCATV= $scope.contingenciasTV.map((doc)=>doc.acepta);
-
-        if(TIPITV[idxtv]=="Ok") //Si la tipificación es "Ok" pone el acepta en "Si"
-        {
-            acepta[idxtv].click();
-        }
-        else if(PALANCATV[idxtv]==true) //cuando se dio ok y luego se rechaza por cualquier motivo pone el acepta en no
-        {
-            acepta[idxtv].click();
-        }
-        else //Cuando se rechaza directamente por cualquier motivo pone el acepta en no
-        {
-            acepta[idxtv].checked=false;
-        }
-    }
-
-    $scope.palancaotro = function(data,idxotros)
-    {
-        var TIPIOTROS = $scope.contingenciasOTROS.map((doc)=>doc.tipificacion);
-        var PALANCAOTROS= $scope.contingenciasOTROS.map((doc)=>doc.acepta);
-
-        if(TIPIOTROS[idxotros]=="Ok") //Si la tipificación es "Ok" pone el acepta en "Si"
-        {
-            aceptaotro[idxotros].click();
-        }
-        else if(PALANCAOTROS[idxotros]==true) //cuando se dio ok y luego se rechaza por cualquier motivo pone el acepta en no
-        {
-            aceptaotro[idxotros].click();
-        }
-        else //Cuando se rechaza directamente por cualquier motivo pone el acepta en no
-        {
-            aceptaotro[idxotros].checked=false;
-        }
-    }
-
-    $scope.palancacp = function(data,idxcp)
-    {
-        var TIPICP = $scope.contingenciasPortafolio.map((doc)=>doc.tipificacionPortafolio);
-        var PALANCACP= $scope.contingenciasPortafolio.map((doc)=>doc.aceptaPortafolio);
-
-        if(TIPICP[idxcp]=="Ok") //Si la tipificación es "Ok" pone el acepta en "Si"
-        {
-            aceptacp[idxcp].click();
-        }
-        else if(PALANCACP[idxcp]==true) //cuando se dio ok y luego se rechaza por cualquier motivo pone el acepta en no
-        {
-            aceptacp[idxcp].click();
-        }
-        else //Cuando se rechaza directamente por cualquier motivo pone el acepta en no
-        {
-            aceptacp[idxcp].checked=false;
-        }
-    }*/
 
     $scope.gestioncontingencias = function () {
         $scope.loadingData = true;
 
-        // $scope.contingenciasTV = [];
-        // $scope.contingenciasOTROS = [];
         $scope.listarcontingenciasterreno();
 
         services.datosgestioncontingencias().then(function (data) {
 
-            //console.log("datosgestioncontingencias: ", data);
             $scope.loadingData = false;
 
             $scope.contingenciasTV = $scope.contingenciesDataTV.concat(data.data[0]);
@@ -7388,7 +7006,6 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             });
 
             if ($scope.contingenciasTV.length !== 0) {
-                //console.log("contingenciasTV: ",$scope.contingenciasTV[0]);
                 $scope.haypedidoTV = true;
             } else {
                 $scope.haypedidoTV = false;
@@ -7396,7 +7013,6 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             }
 
             if ($scope.contingenciasOTROS.length !== 0) {
-                //console.log("contingenciasOTROS: ",$scope.contingenciasOTROS[0]);
                 $scope.haypedidoOtros = true;
             } else {
                 $scope.haypedidoOtros = false;
@@ -7405,7 +7021,6 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
 
             /*CONDICIONAL PARA RECORRER TODA LA DATA*/
             if ($scope.contingenciasPortafolio.length !== 0) {
-                //console.log("contingenciasPortafolio: ",$scope.contingenciasPortafolio[0]);
                 $scope.haypedidoPortafolio = true;
             } else {
                 $scope.haypedidoPortafolio = false;
@@ -7625,7 +7240,6 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
     }
 
     $scope.guardarcontingencia = function (data) {
-        //console.log("guardarcontingencia: ",data);
         if (data.engestion == null) {
             alert("Debes bloquear el pedido");
             return;
@@ -7634,15 +7248,12 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             return;
         } else {
             $scope.gestioncontin = data;
-            //console.log("gestioncontin: ",$scope.gestioncontin);
             $('#editarModal').modal('show');
             return data.data;
         }
     }
 
     $scope.guardarpedido = function (data) {
-        //console.log("guardarpedido: ",data);
-        console.log(data);
         if (data.logincontingencia == null) {
             alert("Debes de marcar la contingencia, antes de guardar!");
         } else {
@@ -7651,7 +7262,6 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                 return;
             } else {
                 alert("Pedido guardado, recuerda actualizar!!");
-                //console.log("Antes de pasar a appi: ",data);
                 if (data.id_terreno != null && data.id_terreno != undefined && data.id_terreno != "") {
                     var currentTimeDate = new Date().toLocaleString();
                     var statusContingencieField = (data.tipificacion == "Ok") ? "Aprobado" : "Rechazado";
@@ -7691,12 +7301,9 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
 
         services.marcarengestion(data, $rootScope.galletainfo).then(function (data) {
 
-            //console.log("marcarengestion: ",data);
-
             if (data.data !== "") {
                 if (data.data[0] == "desbloqueado") {
                     $scope.respuestaMarca = data.data[0][0];
-                    //console.log("respuestaMarcaDesbloqueado: ",$scope.respuestaMarca);
                     swal({
                         title: "Pedido Desbloqueado",
                         type: "success",
@@ -7705,11 +7312,9 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                         timer: 3000
                     });
                     $scope.gestioncontingencias();
-                    //$scope.gestioncontingenciasPrueba();
                     return;
                 } else {
                     $scope.respuestaMarca = data.data[0][0];
-                    //console.log("respuestaMarcaOcupado: ",$scope.respuestaMarca);
                     swal({
                         title: "El pedido se encuentra bloqueado",
                         type: "warning",
@@ -7731,17 +7336,14 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                     timer: 3000
                 });
                 $scope.gestioncontingencias();
-                //$scope.gestioncontingenciasPrueba();
                 return;
             }
         })
             .catch(err => console.log(err));
     }
 
-    /*INICIO DEL BLOQUE QUE GUARDAR LA GESTION DE CONTINGENCIA CORREGIR PORTAFOLIO*/
 
     $scope.guardarContingenciaPortafolio = function (data) {
-        //console.log("guardarContingenciaPortafolio: ",data);
         if (data.enGestionPortafolio == 0) {
             alert("Debes bloquear el pedido");
             return;
@@ -7750,45 +7352,34 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             return;
         } else {
             $scope.gestioncontinPortafilio = data;
-            //console.log("gestioncontinPortafilio: ",$scope.gestioncontinPortafilio);
             $('#editarModalPortafolio').modal('show');
             return data.data;
         }
     }
 
     $scope.guardarpedidoPortafolio = function (data) {
-        //console.log("guardarpedidoPortafolio: ",data);
         if (!data.observContingenciaPortafolio) {
             alert("Debes ingresar las observaciones.");
             return;
         } else {
             alert("Pedido guardado, recuerda actualizar!!");
-            //console.log("Antes de pasar a appi: ",data);
             services.editarRegistroContingenciaPortafolio(data, $rootScope.galletainfo).then(function (data) {
             });
             $scope.gestioncontingencias();
-            //$scope.gestioncontingenciasPrueba();
         }
     }
 
     $scope.marcarEnGestionPortafolio = function (data) {
-        //console.log("marcarEnGestionPortafolio: ",data);
         services.marcarEnGestionPorta(data, $rootScope.galletainfo).then(function (data) {
-
-            //console.log("marcarEnGestionPorta: ",data.data[0]);
-            //console.log("marcarEnGestionPorta: ",data.config.data.login.login);
 
             if (data.data !== "") {
                 if (data.data[0] == "desbloqueado") {
                     $scope.respuestaMarca = data.data[0][0];
-                    //console.log("respuestaMarcaDesbloqueado: ",$scope.respuestaMarca);
                     alert("Pedido desbloqueado!!");
                     $scope.gestioncontingencias();
                     return;
                 } else {
                     $scope.respuestaMarca = data.data[0][0];
-                    //console.log("respuestaMarcaOcupado: ",$scope.respuestaMarca);
-
                     if ($scope.respuestaMarca.logincontingencia) {
                         alert("El pedido se encuentra bloqueado.");
                     } else {
@@ -7803,96 +7394,19 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                 $scope.respuestaMarca = "";
                 alert("Pedido bloqueado!!!");
                 $scope.gestioncontingencias();
-                //$scope.gestioncontingenciasPrueba();
                 return;
             }
         });
     }
 
-    /*POR SI SE ME DAÑA EL BUENO*/
-    // $scope.marcarEnGestionPortafolio = function (data) {
-    //     console.log("marcarEnGestionPortafolio: ",data);
-    //     services.marcarEnGestionPorta(data, $rootScope.galletainfo).then(function (data) {
-
-    //         console.log("marcarEnGestionPorta: ",data.data[0]);
-
-    //         if (data.data !== "") {
-    //             if (data.data[0] == "desbloqueado") {
-    //                 $scope.respuestaMarca = data.data[0][0];
-    //                 console.log("respuestaMarcaDesbloqueado: ",$scope.respuestaMarca);
-    //                 alert("Pedido desbloqueado!!");
-    //                 $scope.gestioncontingencias();
-    //                 //$scope.gestioncontingenciasPrueba();
-    //                 return;
-    //             } else {
-    //                 $scope.respuestaMarca = data.data[0][0];
-    //                 console.log("respuestaMarcaOcupado: ",$scope.respuestaMarca);
-    //                 alert("El pedido se encuentra bloqueado por: " + $scope.respuestaMarca.logincontingencia);
-    //                 $scope.gestioncontingencias();
-    //                 //$scope.gestioncontingenciasPrueba();
-    //                 return;
-    //             }
-    //         } else if (data.data == "") {
-    //             $scope.respuestaMarca = "";
-    //             alert("Pedido bloqueado!!!");
-    //             $scope.gestioncontingencias();
-    //             //$scope.gestioncontingenciasPrueba();
-    //             return;
-    //         }
-    //     });
-    // }
-
-    // $scope.marcarEnGestionCEQPortafolio = function (data) {
-    //      console.log("marcarEnGestionCEQPortafolio: ",data);
-    //      services.marcarEnGestionCEQPorta(data, $rootScope.galletainfo).then(function (data) {
-
-    //          //console.log("marcarEnGestionPorta: ",data.data[0]);
-    //          console.log("marcarEnGestionCEQPorta: ",data.config.data.login.login);
-
-    //          if (data.data !== "") {
-    //              if (data.data[0] == "desbloqueado") {
-    //                  $scope.respuestaMarca = data.data[0][0];
-    //                  console.log("respuestaMarcaCEQDesbloqueado: ",$scope.respuestaMarca);
-    //                  alert("Pedido desbloqueado!!");
-    //                  $scope.gestioncontingencias();
-    //                  return;
-    //              } else {
-    //                  $scope.respuestaMarca = data.data[0][0];
-    //                  console.log("respuestaMarcaOcupadoCEQ: ",$scope.respuestaMarca);
-
-    //                  if ($scope.respuestaMarca.logincontingencia ){
-    //                    alert("El pedido se encuentra bloqueado por: " + $scope.respuestaMarca.logincontingencia);
-    //                  } else {
-    //                    alert("El pedido se encuentra bloqueado por: " + $scope.respuestaMarca.loginContingenciaPortafolio);
-    //                  }
-
-    //                  $scope.gestioncontingencias();
-    //                  //$scope.gestioncontingenciasPrueba();
-    //                  return;
-    //              }
-    //          } else if (data.data == "") {
-    //              $scope.respuestaMarca = "";
-    //              alert("Pedido bloqueado!!!");
-    //              $scope.gestioncontingencias();
-    //              //$scope.gestioncontingenciasPrueba();
-    //              return;
-    //          }
-    //      });
-    //  }
-
-    /*FIN DEL BLOQUE QUE GUARDAR LA GESTION DE CONTINGENCIA CORREGIR PORTAFOLIO*/
-
     $scope.buscarPedidoContingencia = function (pedido) {
-        console.log("pedido: ", pedido);
 
         if (pedido == undefined || pedido == "") {
             alert("Debe ingresar un pedido");
             return;
         } else {
             services.getbuscarPedidoContingencia(pedido).then(function (data) {
-                console.log("getbuscarPedidoContingencia: ", data);
                 $scope.databsucarPedido = data.data[0];
-                console.log("databsucarPedido: ", $scope.databsucarPedido);
                 $scope.sinPedido = true;
                 return data.data;
             }, function errorCallback(response) {
@@ -7903,93 +7417,18 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
         }
     }
 
+
     $scope.resumenContingencias = function (fechaInicial, fechafinal) {
-
-        var columnDefs = [
-            {
-                name: "Pedido",
-                field: "pedido",
-                minWidth: 80,
-                width: "16%",
-            },
-            {
-                name: "Login ingreso",
-                field: "logincontingencia",
-                minWidth: 80,
-                width: "17%",
-            }, {
-                name: "Fecha ingreso",
-                field: "horagestion",
-                minWidth: 70,
-                width: "17%",
-            }, {
-                name: "Login gestion",
-                field: "logincontingencia",
-                minWidth: 80,
-                width: "16%",
-            }, {
-                name: "Fecha gestion",
-                field: "horacontingencia",
-                minWidth: 70,
-                width: "17%",
-            }, {
-                name: "Estado",
-                field: "estado",
-                width: "17%",
-                minWidth: 70,
-            }];
-        $scope.gridOptions = {
-            enableFiltering: true,
-            enablePagination: true,
-            pageSize: 50,
-            enableHorizontalScrollbar: false,
-            enablePaginationControls: true,
-            columnDefs: columnDefs,
-            paginationPageSizes: [50, 200, 500],
-            paginationPageSize: 50,
-
-            enableGridMenu: true,
-            enableSelectAll: true,
-            exporterCsvFilename: 'Registros-nivelacion.csv',
-            exporterMenuPdf: false,
-            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
-            exporterExcelFilename: 'Registros-nivelacion.xlsx',
-            exporterExcelSheetName: 'Sheet1',
-        }
-        //$scope.gridOptions.data = '';
-
         services.getresumenContingencias(fechaInicial, fechafinal).then(function (data) {
 
-            //$route.reload();
-            setTimeout(function () {
-                $scope.gridOptions.data = data.data[0]
-            }, 500);
-
-            $scope.dataresumenContingencias = data.data[0]
-
+            $scope.dataresumenContingencias = data.data[0];
             $scope.dataresumenContingenciasCP = data.data[5];
-            //console.log("dataresumenContingenciasCP: ",$scope.dataresumenContingenciasCP);
-
             $scope.dataresumenContingenciasTV = data.data[6];
-            //console.log("dataresumenContingenciasTV: ", $scope.dataresumenContingenciasTV);
-
             $scope.dataresumenContingenciasInTo = data.data[7];
-            //console.log("dataresumenContingenciasInTo: ",$scope.dataresumenContingenciasInTo);
-
-            /*TRAE LA ARRAY CON EL ESTADO Y LA CANTIDAD $resultadoestadosMes*/
             $scope.estados = data.data[1];
-            //console.log("estados: ",$scope.estados);
-
-            /*TRAE LA ARRAY CON EL ESTADO Y LA CANTIDAD $queryestadosMesCP*/
             $scope.estadosCP = data.data[3];
-            //console.log("estadosCP: ",$scope.estados);
-
             $scope.dia = data.data[2];
-            //console.log("dia: ",$scope.dia);
             $scope.diaCP = data.data[4];
-            //console.log("diaCP: ",$scope.diaCP);
-
-            /*CONTADOR DIARIO PARA GENERAL*/
             var tam = $scope.dataresumenContingencias.length;
             $scope.Totaltotal_pedidos_aceptados = 0;
             $scope.Totaltotal_pedidos_pendientes = 0;
@@ -8047,7 +7486,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             /*SE CUENTAN LOS USUARIOS ÚNICOS, PARA SABER LA CANTIDAD REAL DE PERSONAS QUE ESTAN GESTIONANDO CONTINGENCIAS*/
             $scope.Total_Personas_GestionandoTV = $scope.LoginsGestionandoTV.filter((v, i, a) => a.indexOf(v) === i).length;
 
-            /*SE HACE EL CONTEO POR login YA QUE HAY PERSONAS QUE MARCAN PARA GESTIONAR MAS DE UNA CONTINGENCIA*/
+            /*SE HACE EL CONTEO POR LOGIN YA QUE HAY PERSONAS QUE MARCAN PARA GESTIONAR MAS DE UNA CONTINGENCIA*/
             const cantAnalistasTV = $scope.LoginsGestionandoTV.reduce((contadorAnalistasTV, indiceTV) => {
                 contadorAnalistasTV[indiceTV] = (contadorAnalistasTV[indiceTV] || 0) + 1;
                 return contadorAnalistasTV;
@@ -8090,7 +7529,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             /*SE CUENTAN LOS USUARIOS ÚNICOS, PARA SABER LA CANTIDAD REAL DE PERSONAS QUE ESTAN GESTIONANDO CONTINGENCIAS*/
             $scope.Total_Personas_GestionandoInternet = $scope.LoginsGestionandoInternet.filter((v, i, a) => a.indexOf(v) === i).length;
 
-            /*SE HACE EL CONTEO POR login YA QUE HAY PERSONAS QUE MARCAN PARA GESTIONAR MAS DE UNA CONTINGENCIA*/
+            /*SE HACE EL CONTEO POR LOGIN YA QUE HAY PERSONAS QUE MARCAN PARA GESTIONAR MAS DE UNA CONTINGENCIA*/
             const cantAnalistasInt = $scope.LoginsGestionandoInternet.reduce((contadorAnalistasInternet, indiceInternet) => {
                 contadorAnalistasInternet[indiceInternet] = (contadorAnalistasInternet[indiceInternet] || 0) + 1;
                 return contadorAnalistasInternet;
@@ -8136,12 +7575,9 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
     }
 
     $scope.descargarContingencias = function (fechaInicial, fechafinal) {
-        //console.log(datoExportar+$scope.indicadores.fecha);
         services.getexporteContingencias(fechaInicial, fechafinal, $rootScope.galletainfo).then(
             function (datos) {
-                // console.log(data.data[0]);
-                //window.location.href = "tmp/" + data.data[0];
-                //return data.data;
+
                 var data = datos.data[0];
                 var array = typeof data != 'object' ? JSON.parse(data) : data;
                 var str = '';
@@ -8166,11 +7602,12 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                 var blob = new Blob([str]);
                 var elementToClick = window.document.createElement("a");
                 elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
-                elementToClick.download = "Contingencias-" + fullDateCsv + ".csv";
+                elementToClick.download = "RegistroGpon-" + fullDateCsv + ".csv";
                 elementToClick.click();
-                console.log(str);
             },
             function errorCallback(response) {
+                $scope.errorDatos = "No hay datos.";
+                $scope.csvPend = false;
             }
         );
 
@@ -8194,7 +7631,6 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
 
 
         if (dataCierreMasivoContin.Instalaciones != true && dataCierreMasivoContin.Reparaciones != true) {
-            console.log("Punto " + dataCierreMasivoContin.Instalaciones);
             swal("Debe seleccionar mínimo un proceso.");
             return;
         }
@@ -8218,10 +7654,8 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
 
                 if (frmCierreMasivoContin.TV.$modelValue == undefined || frmCierreMasivoContin.TV.$modelValue == false) {
                     dataCierreMasivoContin.TV = 'Sin Informacion';
-                    console.log("SIN SELECCIONAR: " + dataCierreMasivoContin.TV);
                 } else {
                     dataCierreMasivoContin.TV = $("#TV:checked").val();
-                    console.log("SELECCIONADO: " + dataCierreMasivoContin.TV);
                 }
 
                 if (frmCierreMasivoContin.Internet.$modelValue == undefined || frmCierreMasivoContin.Internet.$modelValue == false) {
@@ -8280,13 +7714,9 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
 
                 if (frmCierreMasivoContin.RegistrosToIP.$modelValue == undefined || frmCierreMasivoContin.RegistrosToIP.$modelValue == false) {
                     dataCierreMasivoContin.RegistrosToIP = 'Sin Informacion';
-                    console.log("SIN SELECCIONART: " + dataCierreMasivoContin.RegistrosToIP);
                 } else {
                     dataCierreMasivoContin.RegistrosToIP = $("#RegistrosToIP:checked").val();
-                    console.log("SELECCIONADOT: " + dataCierreMasivoContin.RegistrosToIP);
                 }
-
-                console.log(dataCierreMasivoContin);
 
                 services.cierreMasivoContingencia(dataCierreMasivoContin).then(
                     function (respuesta) {
@@ -8341,6 +7771,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
     $scope.resumenContingencias($scope.fechaupdateInical, $scope.fechaupdateFinal);
 });
 
+
 app.controller('pendientesBrutalCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, $uibModal, services) {
 
     $scope.abrirModalPendientes = function () {
@@ -8383,258 +7814,6 @@ app.controller('GestionsoportegponCtrl', function ($scope, $rootScope, $location
 
     var database = firebase.firestore();
 
-    // $scope.listarsoportegpon = () => {
-
-    //     $scope.isLoadingData = false;
-
-    //     database.collection("support-gpon")
-    //         .where("status", "==", 0)
-    //         .orderBy("date_created", "asc")
-    //         .get()
-    //         .then((querySnapshot) => {
-
-    //             $scope.listaSoporteGpon = [];
-
-    //             querySnapshot.forEach(async (doc) => {
-    //                 let dataQuerySnapshot = {};
-    //                 dataQuerySnapshot = {
-    //                     _id: doc.id,
-    //                     task: doc.data().task,
-    //                     arpon: doc.data().arpon,
-    //                     nap: doc.data().nap,
-    //                     hilo: doc.data().hilo,
-    //                     internet1: doc.data().internet1,
-    //                     internet2: doc.data().internet2,
-    //                     internet3: doc.data().internet3,
-    //                     internet4: doc.data().internet4,
-    //                     television1: doc.data().television1,
-    //                     television2: doc.data().television2,
-    //                     television3: doc.data().television3,
-    //                     television4: doc.data().television4,
-    //                     numeroContacto: doc.data().numeroContacto,
-    //                     nombreContacto: doc.data().nombreContacto,
-    //                     observacion: doc.data().observacion,
-    //                     userId: doc.data().userId,
-    //                     emailUsr: doc.data().emailUsr,
-    //                     userIdentification: doc.data().userIdentification,
-    //                     status: doc.data().status,
-    //                     date_created: doc.data().date_created,
-    //                 }
-
-    //                 var date = dataQuerySnapshot.date_created.toDate();
-    //                 var year = date.getFullYear();
-    //                 var month = ((date.getMonth() + 1) < 10) ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1);
-    //                 var day = (date.getDate() < 10) ? "0" + date.getDate() : date.getDate();
-    //                 var hours = (date.getHours() < 10) ? "0" + date.getHours() : date.getHours();
-    //                 var minutes = (date.getMinutes() < 10) ? "0" + date.getMinutes() : date.getMinutes();
-    //                 var seconds = (date.getSeconds() < 10) ? "0" + date.getSeconds() : date.getSeconds();
-
-    //                 var formattedTime = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
-
-    //                 dataQuerySnapshot.fecha_solicitud = formattedTime;
-    //                 $scope.listaSoporteGpon.push(dataQuerySnapshot);
-    //             });
-
-    //             console.log('$scope.listaSoporteGpon', $scope.listaSoporteGpon);
-
-    //             $scope.listaSoporteGpon.forEach(async (val) => {
-
-    //                 let task = val.task;
-    //                 let arpon = val.arpon;
-    //                 let nap = val.nap;
-    //                 let hilo = val.hilo;
-    //                 let internet1 = val.internet1;
-    //                 let internet2 = val.internet2;
-    //                 let internet3 = val.internet3;
-    //                 let internet4 = val.internet4;
-    //                 let television1 = val.television1;
-    //                 let television2 = val.television2;
-    //                 let television3 = val.television3;
-    //                 let television4 = val.television4;
-    //                 let numeroContacto = val.numeroContacto;
-    //                 let nombreContacto = val.nombreContacto;
-    //                 let observacionTerreno = val.observacion;
-    //                 let user_id = val.userId;
-    //                 let request_id = val._id;
-    //                 let user_identification = val.userIdentification;
-    //                 let fecha_solicitud = val.fecha_solicitud;
-    //                 let unepedido = '';
-    //                 let tasktypecategory = '';
-    //                 let unemunicipio = '';
-    //                 let uneproductos = '';
-    //                 let datoscola = '';
-    //                 let engineer_id = '';
-    //                 let engineer_name = '';
-    //                 let mobile_phone = '';
-    //                 let serial = '';
-    //                 let mac = '';
-    //                 let tipo_equipo = '';
-    //                 let velocidad_navegacion = '';
-
-    //                 var autocompleteQuery = await fetch('http://10.100.66.254:8080/HCHV_DEV/BuscarTaskGpon/' + task);
-    //                 var autocompleteData = await autocompleteQuery.json();
-
-    //                 if (autocompleteData.length != 0) {
-
-    //                     unepedido = autocompleteData[0].UNEPedido
-    //                     tasktypecategory = autocompleteData[0].categoria
-    //                     unemunicipio = autocompleteData[0].UNEMunicipio
-    //                     uneproductos = autocompleteData[0].UNEProductos
-    //                     engineer_id = autocompleteData[0].EngineerID
-    //                     engineer_name = autocompleteData[0].EngineerName
-    //                     mobile_phone = autocompleteData[0].MobilePhone
-    //                     velocidad_navegacion = autocompleteData[0].VelocidadNavegacion
-
-    //                     var serialsArray = [];
-    //                     autocompleteData.forEach((item) => { if (serialsArray.indexOf(item.SerialNo) < 0) { serialsArray.push(item.SerialNo) } });
-
-    //                     var macsArray = [];
-    //                     autocompleteData.forEach((item) => { if (macsArray.indexOf(item.MAC) < 0) { macsArray.push(item.MAC) } });
-
-    //                     var tipoEqArray = [];
-    //                     autocompleteData.forEach((item) => { if (tipoEqArray.indexOf(item.TipoEquipo) < 0) { tipoEqArray.push(item.TipoEquipo) } });
-
-    //                     var planProdArray = [];
-    //                     autocompleteData.forEach((item) => { if (planProdArray.indexOf(item.UNEPlanProducto) < 0) { planProdArray.push(item.UNEPlanProducto) } });
-
-
-    //                     autocompleteData.forEach((item) => {
-    //                         if (item.UNEPlanProducto.indexOf('TO') >= 0) {
-    //                             let splitdatoscolas = item.DatosCola1.split('*');
-    //                             let datanumero = splitdatoscolas.find((element) => {
-    //                                 if (element.indexOf('Numero') >= 0) {
-    //                                     return element;
-    //                                 }
-    //                             });
-
-    //                             if (planProdArray.indexOf(datanumero) < 0) { planProdArray.push(datanumero) }
-    //                         }
-    //                     });
-
-    //                     serial = serialsArray.join(', ');
-    //                     mac = macsArray.join(', ');
-    //                     tipo_equipo = tipoEqArray.join(', ');
-    //                     datoscola = planProdArray.join(', ');
-
-    //                 }
-
-    //                 /* await services.validarLlenadoSoporteGpon(task)
-    //                 .then(async function(data) {
-
-    //                     if (data.data.length > 0) {
-    //                         let validarllenado = data.data[0][0]['unepedido'];
-
-    //                         if (validarllenado == '' || validarllenado == null) {
-    //                             console.log('INGRESO AL LLENADO');
-    //                             await services.postPendientesSoporteGpon(task, arpon, nap, hilo, internet1, internet2, internet3, internet4, television1, television2, television3, television4, numeroContacto, nombreContacto, user_id, request_id, user_identification, fecha_solicitud, unepedido, tasktypecategory, unemunicipio, uneproductos, datoscola, engineer_id, engineer_name, mobile_phone, serial, mac, tipo_equipo, velocidad_navegacion).then(function(data) {
-    //                                 console.log('successPOST', data);
-    //                             }).catch( (err) => {
-    //                                 //$scope.listarsoportegpon();
-    //                                 console.log('err', err);
-    //                             });
-    //                         } else {
-    //                             console.log('NO LLENO NADA');
-    //                         }
-    //                     } else {
-    //                         await services.postPendientesSoporteGpon(task, arpon, nap, hilo, internet1, internet2, internet3, internet4, television1, television2, television3, television4, numeroContacto, nombreContacto, user_id, request_id, user_identification, fecha_solicitud, unepedido, tasktypecategory, unemunicipio, uneproductos, datoscola, engineer_id, engineer_name, mobile_phone, serial, mac, tipo_equipo, velocidad_navegacion).then(function(data) {
-    //                             console.log('successPOST', data);
-    //                         }).catch( (err) => {
-    //                             //$scope.listarsoportegpon();
-    //                             console.log('err', err);
-    //                         });
-    //                     }
-
-    //                 }).catch( (err) => {
-    //                     //$scope.listarsoportegpon();
-    //                     console.log('errValLlenado', err);
-    //                 }); */
-
-    //                 await services.postPendientesSoporteGpon(task, arpon, nap, hilo, internet1, internet2, internet3, internet4, television1, television2, television3, television4, numeroContacto, nombreContacto, user_id, request_id, user_identification, fecha_solicitud, unepedido, tasktypecategory, unemunicipio, uneproductos, datoscola, engineer_id, engineer_name, mobile_phone, serial, mac, tipo_equipo, velocidad_navegacion, observacionTerreno).then(function (data) {
-    //                     console.log('successPOST', data);
-    //                 }).catch((err) => {
-    //                     //$scope.listarsoportegpon();
-    //                     console.log('err', err);
-    //                 });
-
-
-    //                 /* services.getPendientesSoporteGpon(val.task).then(function(data) {
-
-    //                     if (data.data.length != 0) {
-
-    //                         unepedido = data.data[0].UNEPedido
-    //                         tasktypecategory = data.data[0].categoria
-    //                         unemunicipio = data.data[0].UNEMunicipio
-    //                         uneproductos = data.data[0].UNEProductos
-    //                         engineer_id = data.data[0].EngineerID
-    //                         engineer_name = data.data[0].EngineerName
-    //                         mobile_phone = data.data[0].MobilePhone
-    //                         velocidad_navegacion = data.data[0].VelocidadNavegacion
-
-    //                         var serialsArray = [];
-    //                         data.data.forEach((item) => { if (serialsArray.indexOf(item.SerialNo) < 0) {serialsArray.push(item.SerialNo)} });
-
-    //                         var macsArray = [];
-    //                         data.data.forEach((item) => { if (macsArray.indexOf(item.MAC) < 0) {macsArray.push(item.MAC)} });
-
-    //                         var tipoEqArray = [];
-    //                         data.data.forEach((item) => { if (tipoEqArray.indexOf(item.TipoEquipo) < 0) {tipoEqArray.push(item.TipoEquipo)} });
-
-    //                         var planProdArray = [];
-    //                         data.data.forEach((item) => { if (planProdArray.indexOf(item.UNEPlanProducto) < 0) {planProdArray.push(item.UNEPlanProducto)} });
-
-    //                         serial = serialsArray.join(', ');
-    //                         mac = macsArray.join(', ');
-    //                         tipo_equipo = tipoEqArray.join(', ');
-    //                         datoscola = planProdArray.join(', ');
-
-    //                     }
-
-    //                     services.postPendientesSoporteGpon(task, arpon, nap, hilo, internet1, internet2, internet3, internet4, television1, television2, television3, television4, numeroContacto, nombreContacto, user_id, request_id, user_identification, fecha_solicitud, unepedido, tasktypecategory, unemunicipio, uneproductos, datoscola, engineer_id, engineer_name, mobile_phone, serial, mac, tipo_equipo, velocidad_navegacion).then(function(data) {
-    //                         console.log('successPOST', data);
-    //                     }).catch( (err) => {
-    //                         //$scope.listarsoportegpon();
-    //                         console.log('err', err);
-    //                     });
-
-    //                     //return data;
-    //                 }).catch( (err) => {
-    //                     //$scope.listarsoportegpon();
-    //                     console.log('err', err);
-    //                 }); */
-
-    //             });
-
-    //             services.getListaPendientesSoporteGpon().then(function (data) {
-
-    //                 if (data.data.length > 0) {
-
-    //                     console.log('data', data.data[0]);
-
-    //                     $scope.dataSoporteGpon = data.data[0];
-    //                     $scope.isLoadingData = false;
-    //                 }
-    //                 else {
-    //                     $scope.flagOnlyPSData = true;
-    //                 }
-
-    //                 return data;
-    //             }).catch((err) => {
-    //                 console.log(err)
-    //             });
-
-    //             $scope.isLoadingData = false;
-
-    //             //$scope.gestionsoportegpon();
-
-    //             /* if($scope.flagOnlyPSData){
-    //                 $scope.dataSoporteGpon = $scope.listaSoporteGpon.concat($scope.dataGestionEscalamiento);
-    //                 $scope.isLoadingData = false;
-    //             } */
-    //         }).catch((err) => {
-    //             console.log(err);
-    //         });
-    // }
-
     $scope.listarsoportegpon = () => {
 
         $scope.isLoadingData = true;
@@ -8643,9 +7822,6 @@ app.controller('GestionsoportegponCtrl', function ($scope, $rootScope, $location
             .then(function (data) {
 
                 if (data.data.length > 0) {
-
-                    console.log('data', data.data[0]);
-
                     $scope.dataSoporteGpon = data.data[0];
                     $scope.isLoadingData = false;
                 } else {
@@ -8664,10 +7840,7 @@ app.controller('GestionsoportegponCtrl', function ($scope, $rootScope, $location
 
         services.marcarEngestionGpon(data, $rootScope.galletainfo).then(function (data) {
 
-            console.log("marcarengestion: ", data);
             if (data.data.state == 0) {
-                //$scope.respuestaMarca = data.data[0][0];
-                //console.log("respuestaMarcaDesbloqueado: ",$scope.respuestaMarca);
                 swal({
                     title: data.data.msj,
                     type: "warning",
@@ -8676,10 +7849,7 @@ app.controller('GestionsoportegponCtrl', function ($scope, $rootScope, $location
                     timer: 3000
                 });
                 $scope.listarsoportegpon();
-                //$scope.gestioncontingenciasPrueba();
             } else {
-                //$scope.respuestaMarca = data.data[0][0];
-                //console.log("respuestaMarcaOcupado: ",$scope.respuestaMarca);
                 swal({
                     title: data.data.msj,
                     type: "success",
@@ -8724,8 +7894,6 @@ app.controller('GestionsoportegponCtrl', function ($scope, $rootScope, $location
             }
 
             services.gestionarSoporteGpon(id_soporte, tipificacion, observacion, $rootScope.galletainfo).then(function (data) {
-                console.log('successPUT', data);
-                //database.collection("support-gpon").doc(id_firebase).update({status: 1});
 
                 $scope.listarsoportegpon();
 
@@ -8736,7 +7904,6 @@ app.controller('GestionsoportegponCtrl', function ($scope, $rootScope, $location
                 });
 
             }).catch((err) => {
-                //$scope.listarsoportegpon();
                 console.log('err', err);
             });
 
@@ -8764,6 +7931,204 @@ app.controller('registrossoportegponCtrl', function ($scope, $http, $rootScope, 
     $scope.datosRegistros = {};
     $scope.verplantilla = false;
 
+    getGrid();
+
+    var database = firebase.firestore();
+
+    function getGrid() {
+
+        var columnDefs = [
+            {
+                name: "Tarea",
+                field: "tarea",
+                minWidth: 70,
+                width: "5%",
+                enableCellEdit: false,
+                enableFiltering: true,
+                enableRowHeaderSelection: true,
+                cellFilter: 'currency:"":0',
+            },
+            {
+                name: "Pedido",
+                field: "unepedido",
+                minWidth: 80,
+                width: "7%",
+                enableCellEdit: false,
+                enableFiltering: true,
+
+            }, {
+                name: "Numero contacto",
+                field: "numero_contacto",
+                minWidth: 80,
+                width: "5%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Nombre contacto",
+                field: "nombre_contacto",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "Tasktypecategory",
+                field: "tasktypecategory",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "7%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Municipio",
+                field: "unemunicipio",
+                cellStyle: {"text-align": "center"},
+                minWidth: 80,
+                width: "4%",
+                enableCellEdit: false,
+            }, {
+                name: "Productos",
+                field: "uneproductos",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "7%",
+                enableCellEdit: false,
+            }, {
+                name: "Datoscola",
+                field: "datoscola",
+                cellStyle: {"text-align": "center"},
+                width: "5%",
+                enableCellEdit: false,
+                cellFilter: 'currency:"":0',
+            }, {
+                name: "CC técnico",
+                field: "engineer_id",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "6%",
+                enableCellEdit: false,
+            }, {
+                name: "Nom técnico",
+                field: "engineer_name",
+                cellStyle: {"text-align": "center"},
+                width: "10%",
+                enableCellEdit: false,
+            },
+            {
+                name: "Celular",
+                field: "mobile_phone",
+                cellStyle: {"text-align": "center"},
+                width: "6%",
+                enableCellEdit: false,
+            }, {
+                name: "Tipo equipo",
+                field: "tipo_equipo",
+                cellStyle: {"text-align": "center"},
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "Respuesta soporte",
+                field: "respuesta_soporte",
+                cellStyle: {"text-align": "center"},
+                width: "8%",
+                enableCellEdit: false,
+            }, {
+                name: "Login",
+                field: "login",
+                cellStyle: {"text-align": "center"},
+                width: "5%",
+                enableCellEdit: false,
+            }, {
+                name: "Fecha creado",
+                field: "fecha_creado",
+                cellStyle: {"text-align": "center"},
+                width: "8%",
+                enableCellEdit: false,
+            }, {
+                name: "Fecha respuesta",
+                field: "fecha_respuesta",
+                cellStyle: {"text-align": "center"},
+                width: "8%",
+                enableCellEdit: false,
+            }, {
+                name: "Acc.",
+                cellTemplate: "<div style='text-align: center'>" +
+                    '<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.muestraNotas(row)">' +
+                    '<i class="fa fa-pencil-square" aria-hidden="true"> </i>' +
+                    '</button>',
+                minWidth: 50,
+                width: "3%",
+                enableFiltering: false
+            }];
+
+        var paginationOptions = {
+            sort: null
+        };
+
+        $scope.gridOptions = {
+            enableFiltering: true,
+            enablePagination: true,
+            pageSize: 200,
+            enableHorizontalScrollbar: false,
+            enablePaginationControls: true,
+            columnDefs: columnDefs,
+            paginationPageSizes: [200, 500, 1000],
+            paginationPageSize: 200,
+            enableRowHeaderSelection: true,
+
+            exporterMenuPdf: false,
+            enableGridMenu: true,
+
+            useExternalPagination: true,
+            useExternalSorting: true,
+            enableRowSelection: true,
+
+            exporterCsvFilename: 'Registros.csv',
+
+            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+            exporterExcelFilename: 'Registros.xlsx',
+            exporterExcelSheetName: 'Sheet1',
+
+            onRegisterApi: function (gridApi) {
+                $scope.gridApi = gridApi;
+                $scope.gridApi.core.on.sortChanged($scope, function (grid, sortColumns) {
+                    if (getPage) {
+                        if (sortColumns.length > 0) {
+                            paginationOptions.sort = sortColumns[0].sort.direction;
+                        } else {
+                            paginationOptions.sort = null;
+                        }
+                        getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, paginationOptions.sort)
+                    }
+                });
+                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                    if (getPage) {
+                        getPage(newPage, pageSize, paginationOptions.sort);
+                    }
+                });
+            }
+        };
+
+        var getPage = function (curPage, pageSize, sort) {
+            services.registrossoportegpon(curPage, pageSize, sort).then(complete).catch(failed)
+
+            function complete(data) {
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptions.totalItems = counter;
+                var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+
+        };
+
+        getPage(1, $scope.gridOptions.paginationPageSize, paginationOptions.sort);
+    }
+
     if ($scope.RegistrosSoporteGpon.fechaini == undefined || $scope.RegistrosSoporteGpon.fechafin == undefined) {
         var tiempo = new Date().getTime();
         var date1 = new Date();
@@ -8775,9 +8140,6 @@ app.controller('registrossoportegponCtrl', function ($scope, $http, $rootScope, 
 
         $scope.fechaini = tiempo;
         $scope.fechafin = tiempo;
-
-        //console.log("fechaini: ",$scope.fechaini);
-        //console.log("fechafin: ",$scope.fechafin);
     }
 
     $scope.setPage = function (pageNo) {
@@ -8788,72 +8150,32 @@ app.controller('registrossoportegponCtrl', function ($scope, $http, $rootScope, 
         $scope.BuscarRegistros($scope.datapendientes.currentPage);
     };
 
-    $scope.BuscarRegistrosSoporteGpon = function (datos) {
-        console.log("BuscarRegistrosSoporteGpon: ", datos);
-        $scope.errorDatos = null;
-        $scope.csvPend = false;
-        $scope.listaRegistros = {};
-
-        if (datos.fechaini > datos.fechafin) {
-            alert("La fecha inicial debe ser menor que la inicial");
-            return;
-        } else {
-
-            services.registrossoportegpon($scope.datapendientes.currentPage, datos).then(
-                function (data) {
-                    console.log("registros: ", data);
-                    $scope.listaRegistros = data.data[0];
-                    //console.log("listaRegistros: ", $scope.listaRegistros);
-                    $scope.cantidad = data.data[0].length;
-                    $scope.counter = data.data[1];
-
-                    return data.data;
-                },
-
-                function errorCallback(response) {
-                    if (datos.concepto == undefined || datos.buscar == undefined) {
-                        if (datos.fechaini == datos.fechafin) {
-                            $scope.errorDatos = "No hay datos para el día:  " + datos.fechaini;
-                        } else {
-                            $scope.errorDatos = "No hay datos entre " + datos.fechaini + " - " + datos.fechafin;
-                        }
-                    } else
-                        $scope.errorDatos = datos.concepto + " " + datos.buscar + " no existe.";
-                });
-        }
-    }
-
-    $scope.muestraNotas = function (datos) {
-
-        /* $scope.pedido = datos.pedido;
-        $scope.TituloModal = "Observaciones para el pedido:";
-        $scope.observaciones = datos.observaciones; */
-        // console.log( $scope.observaciones);
-
-        console.log("datos", datos);
+    $scope.muestraNotas = function (row) {
 
         $scope.TituloModal = 'Detalle soporte gpon';
-        $scope.pedido = datos.unepedido;
-        $scope.tarea = datos.tarea;
-        $scope.velocidadnavegacion = datos.velocidad_navegacion;
-        $scope.arpon = datos.arpon;
-        $scope.nap = datos.nap;
-        $scope.hilo = datos.hilo;
-        $scope.intenet1 = (datos.port_internet_1 == '1') ? 'X' : '';
-        $scope.intenet2 = (datos.port_internet_2 == '1') ? 'X' : '';
-        $scope.intenet3 = (datos.port_internet_3 == '1') ? 'X' : '';
-        $scope.intenet4 = (datos.port_internet_4 == '1') ? 'X' : '';
-        $scope.television1 = (datos.port_television_1 == '1') ? 'X' : '';
-        $scope.television2 = (datos.port_television_2 == '1') ? 'X' : '';
-        $scope.television3 = (datos.port_television_3 == '1') ? 'X' : '';
-        $scope.television4 = (datos.port_television_4 == '1') ? 'X' : '';
+        $scope.pedido = row.entity.unepedido;
+        $scope.tarea = row.entity.tarea;
+        $scope.velocidadnavegacion = row.entity.velocidad_navegacion;
+        $scope.arpon = row.entity.arpon;
+        $scope.nap = row.entity.nap;
+        $scope.hilo = row.entity.hilo;
+        $scope.intenet1 = (row.entity.port_internet_1 == '1') ? 'X' : '';
+        $scope.intenet2 = (row.entity.port_internet_2 == '1') ? 'X' : '';
+        $scope.intenet3 = (row.entity.port_internet_3 == '1') ? 'X' : '';
+        $scope.intenet4 = (row.entity.port_internet_4 == '1') ? 'X' : '';
+        $scope.television1 = (row.entity.port_television_1 == '1') ? 'X' : '';
+        $scope.television2 = (row.entity.port_television_2 == '1') ? 'X' : '';
+        $scope.television3 = (row.entity.port_television_3 == '1') ? 'X' : '';
+        $scope.television4 = (row.entity.port_television_4 == '1') ? 'X' : '';
 
-        let listaseriales = datos.serial.split(',');
-        let listamacs = datos.mac.split(',');
+        let listaseriales = row.entity.serial.split(',');
+        let listamacs = row.entity.mac.split(',');
 
         $scope.listaSeriales = listaseriales;
         $scope.listaMacs = listamacs;
-        $scope.observaciones = datos.observacion;
+        $scope.observaciones = row.entity.observacion;
+
+        $("#NotasModal").modal('show');
     }
 
 
@@ -8894,15 +8216,6 @@ app.controller('registrossoportegponCtrl', function ($scope, $http, $rootScope, 
                     elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
                     elementToClick.download = "RegistroGpon-" + fullDateCsv + ".csv";
                     elementToClick.click();
-                    console.log(str);
-                    // console.log(data.data[0]);
-
-
-                    //window.location.href = "tmp/" + data.data[0];
-                    //$scope.csvPend = true;
-                    //$scope.counter = data.data[1];
-                    //console.log(data.data);
-                    //return data.data;
                 },
                 function errorCallback(response) {
                     $scope.errorDatos = "No hay datos.";
@@ -8912,9 +8225,7 @@ app.controller('registrossoportegponCtrl', function ($scope, $http, $rootScope, 
         }
     };
 
-    $scope.maxSize = 5;
-    $scope.datapendientes = {maxSize: 5, currentPage: 1, numPerPage: 100, totalItems: 0};
-    $scope.BuscarRegistrosSoporteGpon($scope.datapendientes.currentPage);
+    //$scope.BuscarRegistrosSoporteGpon($scope.datapendientes.currentPage);
 });
 
 
@@ -9026,18 +8337,13 @@ app.controller('GestioncodigoincompletoCtrl', function ($scope, $rootScope, $loc
             }, {
                 name: "Tipificacion",
                 editType: 'dropdown',
-                cellFilter: 'mapNivelacion',
                 enableCellEdit: true,
-                editableCellTemplate: 'ui-grid/dropdownEditor',
-                editDropdownOptionsArray: [{
-                    ID: 'SI',
-                    type: 'SI'
-                }, {
-                    ID: 'NO',
-                    type: 'NO'
-                }],
-                editDropdownIdLabel: 'ID',
-                editDropdownValueLabel: 'type',
+                cellTemplate: "<div style='text-align: center'><select ng-model='row.entity.Tipificacion' class='btn btn-default btn-xs grupo-select'>" +
+                    "<option value=''>Selec</option>" +
+                    "<option value='SI'>SI</option>" +
+                    "<option value='NO'>NO</option>" +
+                    "</select>" +
+                    "</div>",
                 minWidth: 50,
                 width: "5%",
                 enableColumnResizing: true,
@@ -9125,9 +8431,7 @@ app.controller('GestioncodigoincompletoCtrl', function ($scope, $rootScope, $loc
 
     $scope.gestionarCodigoIncompleto = function (row) {
 
-        console.log(row);
-
-        if (row.entity.Tipificacion == undefined) {
+        if (row.entity.Tipificacion == undefined || row.entity.Tipificacion == '') {
             Swal(
                 'Error',
                 'Debes de seleccionar una tipificación.'
@@ -9183,8 +8487,6 @@ app.controller('registroscodigoincompletoCtrl', function ($scope, $http, $rootSc
         $scope.fechaini = tiempo;
         $scope.fechafin = tiempo;
 
-        //console.log("fechaini: ",$scope.fechaini);
-        //console.log("fechafin: ",$scope.fechafin);
     }
 
     $scope.setPage = function (pageNo) {
@@ -9196,7 +8498,6 @@ app.controller('registroscodigoincompletoCtrl', function ($scope, $http, $rootSc
     };
 
     $scope.BuscarRegistrosCodigoIncompleto = function (datos) {
-        console.log("BuscarRegistrosCodigoIncompleto: ", datos);
         $scope.errorDatos = null;
         $scope.csvPend = false;
         $scope.listaRegistros = {};
@@ -9208,9 +8509,7 @@ app.controller('registroscodigoincompletoCtrl', function ($scope, $http, $rootSc
 
             services.registroscodigoincompleto($scope.datapendientes.currentPage, datos).then(
                 function (data) {
-                    console.log("registros: ", data);
                     $scope.listaRegistros = data.data[0];
-                    //console.log("listaRegistros: ", $scope.listaRegistros);
                     $scope.cantidad = data.data[0].length;
                     $scope.counter = data.data[1];
 
@@ -9233,13 +8532,6 @@ app.controller('registroscodigoincompletoCtrl', function ($scope, $http, $rootSc
 
     $scope.muestraNotas = function (datos) {
 
-        /* $scope.pedido = datos.pedido;
-        $scope.TituloModal = "Observaciones para el pedido:";
-        $scope.observaciones = datos.observaciones; */
-        // console.log( $scope.observaciones);
-
-        console.log("datos", datos);
-
         $scope.TituloModal = 'Detalle código incompleto';
         $scope.pedido = datos.unepedido;
         $scope.observaciones = datos.observacion;
@@ -9254,7 +8546,6 @@ app.controller('registroscodigoincompletoCtrl', function ($scope, $http, $rootSc
 
             services.expCsvRegistrosCodigoIncompleto($scope.RegistrosCodigoIncompleto, $rootScope.galletainfo).then(
                 function (datos) {
-                    console.log(datos);
                     var data = datos.data[0];
                     var array = typeof data != 'object' ? JSON.parse(data) : data;
                     var str = '';
@@ -9281,7 +8572,6 @@ app.controller('registroscodigoincompletoCtrl', function ($scope, $http, $rootSc
                     elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
                     elementToClick.download = "RegistrosCodigoIncompleto-" + fullDateCsv + ".csv";
                     elementToClick.click();
-                    console.log(str);
                 },
                 function errorCallback(response) {
                     $scope.errorDatos = "No hay datos.";
@@ -9321,7 +8611,6 @@ app.controller('brutalForceCtrl', function ($scope, $rootScope, $location, $rout
 
         services.Verobservacionasesor($scope.formularioBrutal.pedido).then(function (data) {
             $scope.observacion = data.data[0][0];
-            // console.log($scope.observacion );
             if ($scope.observacion.ObservacionAsesor == "") {
                 alert("El pedido se encuentra en gestión")
                 return;
@@ -9339,135 +8628,6 @@ app.controller('brutalForceCtrl', function ($scope, $rootScope, $location, $rout
 
     $scope.ruta = "#!/actividades";
 
-    /*$scope.validarHorarioBF = function(pedido = '') {
-
-        if(window.location.hash != "#!/brutalForce"){
-            return;
-        }
-
-        var tiempo = new Date();
-        var hora = tiempo.getHours();
-        var dia = tiempo.getDay();
-
-        if (hora >= 7 && hora < 19 && dia != 7) {
-            if($rootScope.galleta.perfil == 7){
-                return;
-            }
-            services.contadorPendientesBrutalForce().then(function(data) {
-                $scope.respuesta = data.data[0][0];
-                var filtersEx = ['1 - B2B', 'B2B', 'C2', 'C3', 'CORPORATE','Corporativo','CORPORATIVO GOBIERNO','CORPORATIVO PRIVADO', 'Pymes', 'PYMES'];
-                var countFilterEx = null;
-                if(pedido != ''){
-                    fetch(`http://10.100.66.254:8080/HCHV/Buscar/${pedido}`)
-                    .then( (data) => data.json())
-                    .then( (response) => {
-                        if ($scope.respuesta.Pendientes > 20) {
-                            if(response){
-                                countFilterEx = filtersEx.indexOf(response.uNEUENcalculada);
-                                if(response.uNERutaTrabajo == 'YAYA' || countFilterEx != -1){
-                                    swal({
-                                        title: "El pedido corresponde a la categoría priorizada",
-                                        type: "success",
-                                        position: 'top-end',
-                                        showConfirmButton: false,
-                                        timer: 3000
-                                    });
-                                }
-                                else{
-                                    swal({
-                                        title: "Tu pedido no corresponde a la categoría priorizada:",
-                                        html: '<div><font size=4><b>ETP:</b> Tipo Trabajo 2037<br/><b>Siebel:</b> OT-C08-Reconfigurar pedido<br/><b>Fénix:</b> O-101 Renumerar o Reconfigurar Oferta<br/><b>Elite:</b> O-101 Renumerar o Reconfigurar Oferta<br/><b>Siebel: </b>OT-C06-Inconsistencia información</font></div>',
-                                        type: "warning"
-                                    });
-                                    window.location = "#!/actividades";
-                                }
-                            }
-                        }
-                        else {
-                            if(response.uNERutaTrabajo == 'PREMISAS'){
-                                swal({
-                                    title: "Tu pedido es una premisa y no corresponde a la categoría priorizada:",
-                                    html: '<div><font size=4><b>ETP:</b> Tipo Trabajo 2037<br/><b>Siebel:</b> OT-C08-Reconfigurar pedido<br/><b>Fénix:</b> O-101 Renumerar o Reconfigurar Oferta<br/><b>Elite:</b> O-101 Renumerar o Reconfigurar Oferta<br/><b>Siebel: </b>OT-C06-Inconsistencia información</font></div>',
-                                    type: "warning"
-                                });
-                                window.location = "#!/actividades";
-                            }
-                        }
-                    })
-                    .catch( (err) => {
-                        console.warn(err);
-                    });
-                }
-                else{
-                    if ($scope.respuesta.Pendientes > 20){
-                        Swal.fire({
-                            title: "En el momento hay " + $scope.respuesta.Pendientes + " transacciones en proceso, los tiempos de atención son altos, procede con el pendiente que corresponda:",
-                            html: '<div><font size=4><div class="label-premisas" style="text-align: left; padding-top: 20px;">Si tienes un pedido prioritario por favor valida tu ingreso especial.</div></font></div>',
-                            type: "warning",
-                            customClass: 'custom-sweet-alert',
-                            input: 'text',
-                            inputPlaceholder: 'Introduzca el pedido a comprobar',
-                            showCancelButton: true,
-                            confirmButtonText: 'Comprobar',
-                            cancelButtonText: 'Cancelar',
-                            showLoaderOnConfirm: true,
-                            preConfirm: (pedido) => {
-                                return fetch(`http://10.100.66.254:8080/HCHV/Buscar/${pedido}`)
-                                .then(response => {
-                                    if (!response.ok) {
-                                        throw new Error(response.statusText)
-                                    }
-                                    return response.json()
-                                })
-                                .catch(error => {
-                                    Swal.showValidationMessage(`Petición Fallida: ${error}`)
-                                })
-                            },
-                            allowOutsideClick: () => !Swal.isLoading()
-                            })
-                            .then((result) => {
-                                if (result.value != undefined) {
-                                    countFilterEx = filtersEx.indexOf(result.value.uNEUENcalculada);
-                                    if(result.value.uNERutaTrabajo == 'YAYA' || countFilterEx != -1){
-                                        swal({
-                                            title: "El pedido corresponde a la categoría priorizada",
-                                            type: "success",
-                                            position: 'top-end',
-                                            showConfirmButton: false,
-                                            timer: 3000
-                                        });
-                                    }
-                                    else{
-                                        swal({
-                                            title: "Tu pedido no corresponde a la categoría priorizada:",
-                                            html: '<div><font size=4><b>ETP:</b> Tipo Trabajo 2037<br/><b>Siebel:</b> OT-C08-Reconfigurar pedido<br/><b>Fénix:</b> O-101 Renumerar o Reconfigurar Oferta<br/><b>Elite:</b> O-101 Renumerar o Reconfigurar Oferta<br/><b>Siebel: </b>OT-C06-Inconsistencia información</font></div>',
-                                            type: "warning"
-                                        });
-                                        window.location = "#!/actividades";
-                                    }
-                                }
-                                else{
-                                    window.location = "#!/actividades";
-                                }
-                            });
-                    }
-                }
-
-
-            }, function errorCallback(response) {
-                alert("Por favor reportar con el Administrador de la página");
-                return;
-            });
-
-
-        }  else {
-                    Swal(
-                            'El ingreso de solicitudes solo esta disponible de lunes a sábado entre las 7 a.m. y las 7 p.m.',
-                        )
-                        window.location = "#!/actividades";
-                }
-    }*/
-
     $scope.validarHorarioBF = function (pedido = '') {
 
         if (window.location.hash != "#!/brutalForce") {
@@ -9477,8 +8637,6 @@ app.controller('brutalForceCtrl', function ($scope, $rootScope, $location, $rout
         var tiempo = new Date();
         var hora = tiempo.getHours();
         var dia = tiempo.getDay();
-        console.log(dia);
-        //if (hora >= 7 && hora < 19 && dia != 7) {
         if (hora >= 7 && hora < 19) {
             if ($rootScope.galleta.perfil == 7) {
                 return;
@@ -9663,7 +8821,6 @@ app.controller('brutalForceCtrl', function ($scope, $rootScope, $location, $rout
 
     $scope.ObservacionesBF = function () {
         services.ObsPedidosBF($rootScope.galletainfo).then(function (data) {
-            console.log('contiengente ', $rootScope)
             $scope.haypedido = true;
             $scope.datosBF = data.data[0];
 
@@ -9683,6 +8840,7 @@ app.controller('usuariosCtrl', function ($scope, $http, $rootScope, $location, $
     $scope.Usuarios = {};
     $scope.crearuser = {};
     getGrid();
+
     function getGrid() {
 
         var columnDefs = [
@@ -9726,7 +8884,7 @@ app.controller('usuariosCtrl', function ($scope, $http, $rootScope, $location, $
                 enableCellEdit: false,
                 enableFiltering: true,
 
-            },  {
+            }, {
                 name: "Acciones",
                 cellTemplate: "<div style='text-align: center'>" +
                     '<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.editUser(row)">' +
@@ -9817,65 +8975,59 @@ app.controller('usuariosCtrl', function ($scope, $http, $rootScope, $location, $
     };
 
     $scope.buscarUsuario = function (concepto, usuario) {
-        if (concepto == '' || concepto == undefined){
+        if (concepto == '' || concepto == undefined) {
             swal({
                 type: 'error',
                 title: 'Selecciona un concepto de busquedad',
             })
-        }else if(usuario == '' || usuario == undefined){
+        } else if (usuario == '' || usuario == undefined) {
             swal({
                 type: 'error',
                 title: 'ingresa el usuario o login a buscar',
             })
-        }else{
-            var sort = [concepto,usuario]
+        } else {
+            var sort = [concepto, usuario]
             services.listadoUsuarios('', '', sort).then(completed).catch(failed)
-            function completed(data){
-                console.log(data.data.data[0]);
+
+            function completed(data) {
                 $scope.gridOptions.data = {};
                 $scope.gridOptions.data = data.data.data[0];
             }
 
-            function failed(error){
+            function failed(error) {
                 console.log(error);
             }
         }
     }
 
 
-
     $scope.createUser = function (concepto, tecnico) {
         $scope.errorDatos = null;
         $scope.respuestaupdate = null;
         $scope.respuestadelete = null;
-        //console.log($scope.crearuser);
         services.creaUsuario($scope.crearuser).then(
             function (data) {
-                // console.log("la lista "+$scope.listaUsuarios);
                 $scope.respuestaupdate = "Usuario creado.";
-                ;
                 return data.data;
             },
             function errorCallback(response) {
 
                 $scope.errorDatos = "Usuario no fue creado.";
 
-                // console.log($scope.errorDatos);
             });
     };
 
 
     $scope.editUser = function (row) {
-        console.log(row.entity.perfil);
         $scope.datos = row.entity;
         $scope.datos.PERFIL = parseInt(row.entity.perfil);
         $("#editarModal").modal('show');
-
     };
 
-    $scope.guardaUsuario = function (datos){
+    $scope.guardaUsuario = function (datos) {
         services.editarUsuario(datos).then(completed).catch(failed)
-        function completed(data){
+
+        function completed(data) {
 
             Swal({
                 type: data.type,
@@ -9886,7 +9038,8 @@ app.controller('usuariosCtrl', function ($scope, $http, $rootScope, $location, $
             })
 
         }
-        function failed(error){
+
+        function failed(error) {
             console.log(error)
         }
     }
@@ -9916,6 +9069,7 @@ app.controller('tecnicosCtrl', function ($scope, $http, $rootScope, $location, $
 
     getGrid();
     ciudades();
+
     function getGrid() {
 
         var columnDefs = [
@@ -9959,7 +9113,7 @@ app.controller('tecnicosCtrl', function ($scope, $http, $rootScope, $location, $
                 enableCellEdit: false,
                 enableFiltering: true,
 
-            },{
+            }, {
                 name: "Empresa",
                 field: "NOM_EMPRESA",
                 cellStyle: {"text-align": "center"},
@@ -9968,7 +9122,7 @@ app.controller('tecnicosCtrl', function ($scope, $http, $rootScope, $location, $
                 enableCellEdit: false,
                 enableFiltering: true,
 
-            },  {
+            }, {
                 name: "Acciones",
                 cellTemplate: "<div style='text-align: center'>" +
                     '<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.editarModal(row)">' +
@@ -10050,39 +9204,13 @@ app.controller('tecnicosCtrl', function ($scope, $http, $rootScope, $location, $
         getPage(1, $scope.gridOptions.paginationPageSize, paginationOptions.sort);
     }
 
-    /*$scope.buscarTecnico = function (concepto, tecnico) {
-        $scope.listaTecnicos = [];
-        $scope.errorDatos = null;
-        $scope.respuestaupdate = null;
-        $scope.respuestadelete = null;
-        //console.log($scope.Usuarios);
-        services.listadoTecnicos($scope.datapendientes.currentPage, concepto, tecnico).then(
-            function (data) {
-                $scope.listaTecnicos = data.data[0];
-                // console.log("la lista "+$scope.listaUsuarios);
-                $scope.cantidad = data.data[0].length;
-                $scope.counter = data.data[1];
-
-                return data.data;
-            },
-            function errorCallback(response) {
-
-                $scope.errorDatos = concepto + " " + tecnico + " no existe.";
-
-                // console.log($scope.errorDatos);
-
-            });
-    };*/
-
     $scope.createTecnico = function () {
         var id_tecnico = "";
         $scope.errorDatos = null;
         $scope.respuestaupdate = null;
         $scope.respuestadelete = null;
-        //console.log($scope.crearTecnico);
         services.creaTecnico($scope.crearTecnico, id_tecnico).then(
             function (data) {
-                console.log(data);
                 if (data.data.state != 0) {
                     Swal({
                         type: 'success',
@@ -10104,7 +9232,7 @@ app.controller('tecnicosCtrl', function ($scope, $http, $rootScope, $location, $
             });
     };
 
-    function ciudades(){
+    function ciudades() {
         services.getCiudades().then(function (data) {
             $scope.listadoCiudades = data.data[1];
         });
@@ -10150,9 +9278,9 @@ app.controller('tecnicosCtrl', function ($scope, $http, $rootScope, $location, $
             closeOnConfirm: true
         }).then(function () {
             $scope.idBorrar = row.entity.ID;
-console.log('diiii');
+
             //services.deleteTecnico($scope.idBorrar).then(completed).catch(failed)
-            function completed (data) {
+            function completed(data) {
                 swal({
                     type: data.type,
                     title: data.msg,
@@ -10161,6 +9289,7 @@ console.log('diiii');
                     $route.reload();
                 })
             }
+
             function failed(response) {
                 console.log(response)
             }
@@ -10213,15 +9342,12 @@ app.controller('turnosCtrl', function ($scope, $http, $rootScope, $location, $ro
 
 
     $scope.desacargarAdherencia = function () {
-        //console.log($scope.gestion_Pendientes);
         services.csvAdherenciaTurnos($scope.fechaIni, $scope.fechaFin, $rootScope.galletainfo).then(
             function (data) {
-                //  console.log(data.data[0]);
                 if (data.data[0] !== undefined) {
                     window.location.href = "tmp/" + data.data[0];
                     $scope.csvPend = true;
                     $scope.counter = "Se exportaron: " + data.data[1] + " Registros";
-                    console.log($scope.counter);
                     return data.data;
                 } else {
                     $scope.counter = "No hay datos para exportar";
@@ -10249,9 +9375,7 @@ app.controller('turnosCtrl', function ($scope, $http, $rootScope, $location, $ro
         var newItemNo = $scope.turnos.length + 1;
 
         $scope.turnos.push({'id': +newItemNo, fecha: '', horaIni: '', horaFin: '', usuariocrea: $rootScope.galletainfo.login});
-        console.log($scope.turnos);
-        //console.log(usuario);
-        //$scope.crearnovedad();
+
     };
 
     $scope.updateStatus = function (data) {
@@ -10271,9 +9395,7 @@ app.controller('turnosCtrl', function ($scope, $http, $rootScope, $location, $ro
         var lastItem = $scope.turnos.length - 1;
         if (lastItem != 0) {
             $scope.turnos.splice(lastItem);
-            //console.log($scope.novedades);
         }
-
     };
 
     $scope.usuariosTurnosSeguimiento();
@@ -10289,8 +9411,6 @@ app.controller('AlarmasCtrl', function ($scope, $http, $rootScope, $location, $r
         services.listadoAlarmas().then(
             function (data) {
                 $scope.listaAlarmas = data.data;
-                //console.log("la lista "+$scope.listaAlarmas);
-
                 return data.data;
             });
     }
@@ -10298,12 +9418,10 @@ app.controller('AlarmasCtrl', function ($scope, $http, $rootScope, $location, $r
     $scope.crearAlarma = function (info) {
         services.creaAlarma(info).then(
             function (data) {
-                // console.log("la lista "+$scope.listaUsuarios);
                 $scope.respuestaupdate = "Alarma creado.";
                 services.listadoAlarmas().then(
                     function (data) {
                         $scope.listaAlarmas = data.data;
-                        //console.log("la lista "+$scope.listaAlarmas);
 
                         return data.data;
                     });
@@ -10322,11 +9440,9 @@ app.controller('AlarmasCtrl', function ($scope, $http, $rootScope, $location, $r
             $scope.listadoProcesos = data.data[0];
             $scope.listadoAcciones = {};
         });
-        //console.log($scope.listadoProcesos);
     };
 
     $scope.editarModal = function (datos) {
-        //console.log(datos);
         $scope.datosAlarmas = datos;
 
     };
@@ -10336,19 +9452,12 @@ app.controller('AlarmasCtrl', function ($scope, $http, $rootScope, $location, $r
         $scope.respuestaupdate = null;
         $scope.respuestadelete = null;
 
-        //     console.log($scope.datosAlarmas);
         services.editAlarma($scope.datosAlarmas).then(
             function (data) {
-                // $errorDatos=null;
                 $scope.respuestaupdate = "Alarma " + $scope.datosAlarmas.nombre_alarma + " actualizado exitosamente";
-                //console.log(datos);
-                //$rootScope.nombre=$scope.respuesta[0].NOMBRE;
-                //$location.path('/home/');
                 services.listadoAlarmas().then(
                     function (data) {
                         $scope.listaAlarmas = data.data;
-                        //console.log("la lista "+$scope.listaAlarmas);
-
                         return data.data;
                     });
             },
@@ -10369,14 +9478,12 @@ app.controller('AlarmasCtrl', function ($scope, $http, $rootScope, $location, $r
                 services.listadoAlarmas().then(
                     function (data) {
                         $scope.listaAlarmas = data.data;
-                        //console.log("la lista "+$scope.listaAlarmas);
 
                         return data.data;
                     });
             },
             function errorCallback(response) {
                 $scope.errorDatos = "No se borro";
-                //console.log($scope.errorDatos);
             }
         );
     };
@@ -10397,10 +9504,8 @@ app.controller('AlarmasCtrl', function ($scope, $http, $rootScope, $location, $r
     };
 
     $scope.calcularSubAcciones = function (proceso, accion) {
-        console.log("entro calcularSubAcciones");
         $scope.listadoSubAcciones = {};
         $scope.validarsubaccion = true;
-        // console.log(proceso, accion);
         services.getSubAcciones(proceso, accion).then(function (data) {
             $scope.listadoSubAcciones = data.data[0];
             $scope.validarsubaccion = true;
@@ -10421,17 +9526,9 @@ app.directive('cookie', function ($rootScope, $cookies) {
 
 
             if ($cookies.get('usuarioseguimiento') !== undefined) {
-                //console.log("carlitos");
                 $scope.galletainfo = JSON.parse($cookies.get("usuarioseguimiento"));
-                //$rootScope.galletainfo = $rootScope.galletainfo;
                 $rootScope.permiso = true;
-                //console.log($rootScope.galletainfo);
-                /* if($scope.galletainfo.CARGO_ID==1){
-                      $rootScope.perfil="ADMIN";
-                 }else{ $rootScope.perfil="ASESOR";} */
-
             }
-
         },
 
         templateUrl: 'partial/navbar.html'
@@ -10631,7 +9728,7 @@ app.config(['$routeProvider',
 ]);
 
 app.run(function ($rootScope, services, i18nService) {
-    i18nService.setCurrentLang('es')
+    i18nService.setCurrentLang('es');
     $rootScope.fechaProceso = function () {
         var tiempo = new Date().getTime();
         var date1 = new Date();
@@ -10943,15 +10040,12 @@ app.run(['$rootScope', 'services', function ($rootScope, services) {
 }]);
 
 app.run(['$location', '$rootScope', '$cookies', 'services', function ($location, $rootScope, $cookies, services) {
-    //i18nService.setCurrentLang('es');
     $rootScope.logout = function () {
-        console.log('cerrar session');
         services.cerrarsesion();
-        $cookies.remove('usuarioseguimiento');
-        $location.path('/');
         $rootScope = undefined;
         $scope = undefined;
-
+        $cookies.remove('usuarioseguimiento');
+        $location.path('/');
     };
 }]);
 //fin de la APP AngularJS

@@ -93,8 +93,7 @@
                             </form>
                         </div>
 
-                        <div class="col-md-6"
-                             ng-hide="nivelacion.solicitud == 1 || nivelacion.motivo == 6 ||  nivelacion.motivo == 7 || nivelacion.motivo == 8 || nivelacion.motivo == 9 || nivelacion.motivo == 10">
+                        <div class="col-md-6" ng-hide="nivelacion.solicitud == 1 || nivelacion.motivo == 6 ||  nivelacion.motivo == 7 || nivelacion.motivo == 8 || nivelacion.motivo == 9 || nivelacion.motivo == 10 || nivelacion.motivo == 13">
                             <form action=" " method="post" name="contact_form3" ng-show="visible" id="contact_form3">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -376,8 +375,8 @@
                         </div>
                         <div class="panel-heading">
                             <h5>
-                                <span class="label label-info">Realizado: {{nivelacion.pendienteTotal}}</span>&nbsp;&nbsp;
-                                <span class="label label-warning">Pendiente: {{nivelacion.realizadoTotal}}</span>&nbsp;&nbsp;
+                                <span class="label label-info">Realizado: {{nivelacion.realizadoTotal}}</span>&nbsp;&nbsp;
+                                <span class="label label-warning">Pendiente: {{nivelacion.pendienteTotal}}</span>&nbsp;&nbsp;
                             </h5>
                         </div>
                     </div>
@@ -435,7 +434,6 @@
                                         <th class="text-center">Fecha Gestion</th>
                                         <th class="text-center">Fecha Respuesta</th>
                                         <th class="text-center">Observaciones</th>
-                                        <th class="text-center">Observaciones Veedor</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -448,22 +446,13 @@
                                         <td class="text-center">{{data.fecha_gestion}}</td>
                                         <td class="text-center">{{data.fecha_respuesta}}</td>
                                         <td class="text-center">{{data.observaciones}}</td>
-                                        <td class="text-center">{{data.observacionVeedor}}</td>
                                         <td class="text-center">
                                             <!-- data-trigger="hover" para que el popover aparezca y desaparezca -->
                                             <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
                                                     data-placement="left" data-html="true" data-selector="" title="Observacion ingreso" data-content="{{data.observacion}}">
                                                 <i class="fa fa-commenting" aria-hidden="true"></i>
                                             </button>
-                                            <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
-                                                    title="Observacion gestión" data-placement="left" data-html="true" data-selector="" data-content="{{data.observContingencia}}">
-                                                <i class="fa fa-commenting" aria-hidden="true"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
-                                                    title="Observacion gestión Corregir Porta" data-placement="left" data-html="true" data-selector=""
-                                                    data-content="{{data.observContingenciaPortafolio}}">
-                                                <i class="fa fa-commenting" aria-hidden="true"></i>
-                                            </button>
+
                                         </td>
                                     </tr>
                                     </tbody>

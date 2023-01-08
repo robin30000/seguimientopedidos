@@ -153,4 +153,8 @@ class contingencia
     {
         $this->_model->graficaAcumuladosrepa($data);
     }
+
+    public function marcarengestion($data){
+        $this->_model->marcarengestion($data);
+    }
 }
