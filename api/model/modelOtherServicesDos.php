@@ -1,8 +1,8 @@
 <?php
 require_once '../class/conection.php';
 
-ini_set('error_reporting', E_ALL);
-ini_set('display_errors', 1);
+//ini_set('error_reporting', E_ALL);
+//ini_set('display_errors', 1);
 
 class modelOtherServicesDos
 {
@@ -942,27 +942,14 @@ class modelOtherServicesDos
     public function csvRegistros($datos)
     {
         try {
-            //session_start();
-            //$usuarioid = $_SESSION['login'];
+            session_start();
+            $usuarioid = $_SESSION['login'];
             $fechaini = $datos['fechaini'] ?? '';
             $fechafin = $datos['fechafin'] ?? '';
-            $concepto = $datos['concepto'] ?? '';
-            $buscar   = $datos['buscar'] ?? '';
 
             if ($fechaini == "" && $fechafin == "") {
-                $fechaini = date("Y") . "-" . date("m") . "-" . date("d");
-                $fechafin = date("Y") . "-" . date("m") . "-" . date("d");
-            }
-
-            if ($fechaini == $fechafin) {
-                $filename = "Registros" . "_" . $fechaini . "_" . $concepto . "_" . $buscar . ".csv";
-            } else {
-                $filename = "Registros" . "_" . $fechaini . "_" . $fechafin . "_" . $concepto . "_" . $buscar . ".csv";
-            }
-            if ($concepto == "" || $buscar == "") {
-                $parametros = "";
-            } else {
-                $parametros = "and $concepto = '$buscar'";
+                $fechaini = date('Y-m-d');
+                $fechafin = date('Y-m-d');
             }
 
             $stmt = $this->_DB->query("select a.pedido,
@@ -985,8 +972,7 @@ class modelOtherServicesDos
                                                        a.diagnostico
                                                 from registros a
                                                 where a.fecha between '$fechaini 00:00:00' and '$fechafin 23:59:59'
-                                                  and a.asesor <> 'IVR'
-                                                    $parametros");
+                                                  and a.asesor <> 'IVR'");
             $stmt->execute();
 
             if ($stmt->rowCount()) {
@@ -1113,22 +1099,15 @@ class modelOtherServicesDos
     public function Csvtecnico($params)
     {
         try {
-            session_start();
 
+            session_start();
             $usuarioid = $_SESSION['login'];
-            $datos     = $params['datos'] ?? '';
-            $fechaini  = $datos['fechaini'] ?? '';
-            $fechafin  = $datos['fechafin'] ?? '';
+            $fechaini = $datos['fechaini'] ?? '';
+            $fechafin = $datos['fechafin'] ?? '';
 
             if ($fechaini == "" && $fechafin == "") {
-                $fechaini = date("Y") . "-" . date("m") . "-" . date("d");
-                $fechafin = date("Y") . "-" . date("m") . "-" . date("d");
-            }
-
-            if ($fechaini == $fechafin) {
-                $filename = "Cambio_Equipos" . "_" . $fechaini . ".csv";
-            } else {
-                $filename = "Cambio_Equipos" . "_" . $fechaini . "_" . $fechafin . "_" . $usuarioid . ".csv";
+                $fechaini = date('Y-m-d');
+                $fechafin = date('Y-m-d');
             }
 
             $query = "SELECT a.pedido AS PEDIDO, a.id_tecnico AS TECNICO, 
@@ -1151,171 +1130,11 @@ class modelOtherServicesDos
             WHERE a.fecha BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' AND (a.tipo_pendiente='Cambio de Equipo' OR a.accion='Cambio Equipo' OR a.tipo_pendiente='') AND a.proceso IN( 'Reparaciones', 'Instalaciones') AND (ce.hfc_equipo_sale IS NOT NULL OR ce.hfc_equipo_entra IS NOT NULL)
             GROUP BY a.pedido , a.id_tecnico , t.nombre , t.ciudad , a.empresa , a.tipo_pendiente , a.accion , DIA, MES, ANO, a.producto , a.plantilla , ce.hfc_equipo_sale , ce.hfc_equipo_entra , a.proceso;";
 
-            // echo "$query\n";
-
             $stmt = $this->_DB->query($query);
             $stmt->execute();
 
-            /*$columnas = [
-                'PEDIDO',
-                'TECNICO',
-                'NOMBRE_TECNICO',
-                'CIUDAD',
-                'EMPRESA',
-                'TIPO_PENDIENTE',
-                'DIA',
-                'MES',
-                'ANO',
-                'PRODUCTO',
-                //'PLANTILLA',
-                'MOTIVO',
-                'MAC_SALE',
-                'MAC_ENTRA',
-                'PROCESO',
-            ];*/
-
-
             if ($stmt->rowCount() > 0) {
                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                //////////////////Si existen datos que cumplen las condiciones
-                /*foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $obj) {
-                    //while ($obj = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
-                    //////////////////Ciclo para cada pedido encontrado
-                    //var_dump($obj);exit();
-
-
-                    $pedido = $obj['PEDIDO'];
-
-                    $tecnico        = $obj['TECNICO'];
-                    $nombre_tecnico = $obj['NOMBRE TECNICO'];
-                    $ciudad         = $obj['CIUDAD'];
-                    $empresa        = $obj['EMPRESA'];
-                    $tipo_pendiente = $obj['TIPO PENDIENTE'];
-
-                    $dia       = $obj['DIA'];
-                    $mes       = $obj['MES'];
-                    $ano       = $obj['ANO'];
-                    $producto  = $obj['PRODUCTO'];
-                    $plantilla = $obj['PLANTILLA'];
-
-                    $sep = ",";
-
-                    $plantilla2 = str_replace("*", ",", $plantilla);
-
-                    $pieces = explode($sep, $plantilla2);
-
-                    $size = count($pieces);
-
-                    $MOTIVO = "";
-                    /* $MAC_SALE = "";
-                    $MARCA_SALE = "";
-                    $REFERENCIA_SALE = "";
-
-                    $MAC_SALE  = $obj['MACSALE'];
-                    $MAC_ENTRA = $obj['MACENTRA'];
-                    $PROCESO   = $obj['PROCESO'];
-
-                    for ($i = 0; $i < $size; $i++) {
-                        //MOTIVO
-                        $bool = stripos($pieces[$i], 'Motivo');
-                        if ($bool === false) {
-                        } else {
-                            $tmp    = explode(":", $pieces[$i]);
-                            $MOTIVO = trim(strtoupper($tmp[1]));
-                            continue;
-                        }
-
-                        //MAC SALE
-                        $bool = stripos($pieces[$i], 'Mac');
-                        if ($bool === false) {
-                        } else {
-                            //echo "DETECTO MAC!!! ".$pieces[$i]." - - ";
-                            $bool = stripos($pieces[$i], 'Sale');
-                            if ($bool === false) {
-                            } else {
-                                $tmp = explode(":", $pieces[$i]);
-
-                                $tmp[1] = str_replace(" ", "", $tmp[1]);
-
-                                if ($tmp[1] == "") {
-                                    continue;
-                                }
-
-                                $MAC_SALE = trim(strtoupper($tmp[1]));
-                                continue;
-                            }
-                        }
-
-                        //CHIP SALE
-                        $bool = stripos($pieces[$i], 'chip');
-                        if ($bool === false) {
-                        } else {
-                            //echo "DETECTO MAC!!! ".$pieces[$i]." - - ";
-                            $bool = stripos($pieces[$i], 'Sale');
-                            if ($bool === false) {
-                            } else {
-                                $tmp = explode(":", $pieces[$i]);
-
-                                $tmp[1] = str_replace(" ", "", $tmp[1]);
-
-                                if ($tmp[1] == "") {
-                                    continue;
-                                }
-
-                                $MAC_SALE = trim(strtoupper($tmp[1]));
-                                continue;
-                            }
-                        }
-
-                        //MARCA SALE
-                        $bool = stripos($pieces[$i], 'Marca');
-                        if ($bool === false) {
-                        } else {
-
-                            $bool = stripos($pieces[$i], 'Sale');
-                            if ($bool === false) {
-                            } else {
-                                $tmp    = explode(":", $pieces[$i]);
-                                $tmp[1] = str_replace(" ", "", $tmp[1]);
-
-                                if ($tmp[1] == "") {
-                                    continue;
-                                }
-
-                                $MARCA_SALE = trim(strtoupper($tmp[1]));
-                                continue;
-                            }
-                        }
-
-                        //REFERENCIA SALE
-                        $bool = stripos($pieces[$i], 'Referencia');
-                        if ($bool === false) {
-                        } else {
-
-                            $bool = stripos($pieces[$i], 'Sale');
-                            if ($bool === false) {
-                            } else {
-                                $tmp    = explode(":", $pieces[$i]);
-                                $tmp[1] = str_replace(" ", "", $tmp[1]);
-
-                                if ($tmp[1] == "") {
-                                    continue;
-                                }
-
-                                $REFERENCIA_SALE = trim(strtoupper($tmp[1]));
-                                continue;
-                            }
-                        }
-                        //echo " $pedido,$tecnico,$nombre_tecnico,$ciudad,$empresa,$tipo_pendiente,$dia,$mes,$ano,$producto,$MOTIVO, $MAC_SALE,$MARCA_SALE,$REFERENCIA_SALE \n";
-
-                    } //END FOR
-                    //echo " $pedido,$tecnico,$nombre_tecnico,$ciudad,$empresa,$tipo_pendiente,$dia,$mes,$ano,$producto,$MOTIVO, $MAC_SALE,$MARCA_SALE,$REFERENCIA_SALE \n";
-
-                    /* fputcsv($fp, array($pedido, $tecnico, $nombre_tecnico, $ciudad, $empresa, $tipo_pendiente, $dia, $mes, $ano, $producto, $MOTIVO, $MAC_SALE, $MARCA_SALE, $REFERENCIA_SALE)); */
-                //fputcsv($fp, [$pedido, $tecnico, $nombre_tecnico, $ciudad, $empresa, $tipo_pendiente, $dia, $mes, $ano, $producto, $MOTIVO, $MAC_SALE, $MAC_ENTRA, $PROCESO]);
-                //$response = [$pedido, $tecnico, $nombre_tecnico, $ciudad, $empresa, $tipo_pendiente, $dia, $mes, $ano, $producto, $MOTIVO, $MAC_SALE, $MAC_ENTRA, $PROCESO];
-                /*
-                                } //ciclo grande*/
                 $response = [$result];
             } else {
                 $response = [];

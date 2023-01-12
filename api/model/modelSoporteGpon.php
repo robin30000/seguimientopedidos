@@ -308,7 +308,15 @@ class modelSoporteGpon
 
         try {
 
-            $stmt = $this->_DB->query("select count(*) as total from soporte_gpon");
+            $fechaini = (!isset($data['sort']['fechaini'])) ? date("Y-m-d") : $data['sort']['fechaini']; //CORRECCION DE VALIDACION DE FECHA
+            $fechafin = (!isset($data['sort']['fechafin'])) ? date("Y-m-d") : $data['sort']['fechafin']; //CORRECCION DE VALIDACION DE FECHA
+
+            if ($fechaini == "" || $fechafin == "") {
+                $fechaini = date("Y-m-d");
+                $fechafin = date("Y-m-d");
+            }
+
+            $stmt = $this->_DB->query("select count(*) as total from soporte_gpon where fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' AND status_soporte = '1'");
             $stmt->execute();
 
             $resCount   = $stmt->fetch(PDO::FETCH_OBJ);
@@ -384,8 +392,7 @@ class modelSoporteGpon
                                                login,
                                                fecha_respuesta
                                         FROM soporte_gpon
-                                        WHERE 1=1
-                                          AND status_soporte = '1'
+                                        WHERE fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' AND status_soporte = '1'
                                         ORDER BY fecha_creado DESC
                                         limit $initial_page, $limit_page");
             $stmt->execute();

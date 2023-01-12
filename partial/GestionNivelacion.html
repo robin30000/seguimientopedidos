@@ -196,28 +196,46 @@
                                         <i class="fa fa-phone-square" aria-hidden="true"></i>Registros Nivelación Técnico</b>
                                 </ul>
                                 <ul class="nav navbar-nav navbar-right">
-                                    <input style="width:130px" type="text" name="fechaini" id="fechaini" class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
-                                           ng-model="fechaini" placeholder="Fecha Inicial" datetime-picker="" date-format="yyyy-MM-dd"> <i class="fa fa-calendar fa-fw"></i>
-                                    <input style="width:130px" type="text" name="fechafin" id="fechafin" class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
-                                           ng-model="fechafin" placeholder="Fecha Final" datetime-picker="" date-format="yyyy-MM-dd"> <i class="fa fa-calendar fa-fw"></i>
-                                    <button type="button"
-                                            class="btn btn-primary btn-xs"
-                                            title="Exportar Registros"
-                                            ng-click="csvNivelacion()"
-                                            ng-disabled="loading"
-                                            title="Exportar"
-                                            tooltip data-placement="top">
-                                        <i class="fa fa-cloud-download" aria-hidden="true"> </i>
-                                    </button>
+                                    <li>
+                                        <div data-ng-if="loading">
+                                            <img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif"/>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <input style="width:130px" type="text" name="fechaini" id="fechaini" class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                               ng-model="Registros.fechaini" placeholder="Fecha Inicial" datetime-picker="" date-format="yyyy-MM-dd"> <i
+                                            class="fa fa-calendar fa-fw"></i>
+                                        <input style="width:130px" type="text" name="fechafin" id="fechafin" class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                               ng-model="Registros.fechafin" placeholder="Fecha Final" datetime-picker="" date-format="yyyy-MM-dd"> <i
+                                            class="fa fa-calendar fa-fw"></i>
 
-                                    <b>
-                                        <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs" ng-model="nivelacion.tarea" placeholder="Buscar Pedido">&nbsp;
-
-                                        <button type="button" class="btn btn-default btn-xs" ng-click="buscarhistoricoNivelacion()" title="Buscar"
-                                                data-toggle="tooltip" data-placement="left" ng-disabled="loading">
-                                            <i class="fa fa-search" aria-hidden="true"></i>
+                                        <button type="button"
+                                                class="btn btn-success btn-xs"
+                                                ng-click="registrosNivelacion()"
+                                                ng-disabled="loading">
+                                            <i class="fa fa-search-plus" aria-hidden="true"></i>
                                         </button>
-                                    </b>&nbsp;
+
+                                        <button type="button"
+                                                class="btn btn-primary btn-xs"
+                                                title="Exportar Registros"
+                                                ng-click="csvNivelacion()"
+                                                ng-disabled="loading"
+                                                title="Exportar"
+                                                tooltip data-placement="top">
+                                            <i class="fa fa-cloud-download" aria-hidden="true"> </i>
+                                        </button>
+
+                                        <b>
+                                            <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs" ng-model="nivelacion.tarea" placeholder="Buscar Pedido">&nbsp;
+
+                                            <button type="button" class="btn btn-default btn-xs" ng-click="buscarhistoricoNivelacion()" title="Buscar"
+                                                    data-toggle="tooltip" data-placement="left" ng-disabled="loading">
+                                                <i class="fa fa-search" aria-hidden="true"></i>
+                                            </button>
+                                        </b>&nbsp;
+                                    </li>
+
                                 </ul>
 
                             </div>

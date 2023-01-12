@@ -99,7 +99,7 @@
 							<a data-toggle="tab" href="/#gestion"> Gestión</a>
 						</li>
 						<li>
-							<a data-toggle="tab" href="/#Kpis"> Seguimiento y auditoría</a>
+							<a data-toggle="tab" href="/#Kpis" ng-click="loadgrid()"> Seguimiento y auditoría</a>
 						</li>
 					</ul>
 				</div>
@@ -819,34 +819,16 @@
 										</li>&nbsp;&nbsp;&nbsp;
 									</ul>
 								</div>
-								<div class="panel panel-default panel-body">
+								<div class="panel panel-default panel-body loadgridcontingencia">
 									<h6 class="subtitulo text-center"><strong>Datos de TV, Internet-ToIp</strong></h6>
 
-									<div id="tntGridServices" ui-grid="gridOptions" ui-grid-exporter ui-grid-edit ui-grid-pagination
-										 style="font-size: 12px;text-transform: lowercase; color: #0f0f0f;height: 300px" external-scopes="gridApi" ></div>
+										<div data-ng-if="loading">
+											<img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif"/>
+										</div>
 
-									<!--<table class="table table-fixed">
-										<thead>
-										<tr>
-											<th>Pedido</th>
-											<th>Login ingreso</th>
-											<th>Fecha ingreso</th>
-											<th>Login gestión</th>
-											<th>Fecha gestión</th>
-											<th>Estado</th>
-										</tr>
-										</thead>
-										<tbody>
-										<tr ng-repeat="data in dataresumenContingencias">
-											<td class="filterable-cell tama">{{data.pedido}}</td>
-											<td class="filterable-cell">{{data.logindepacho}}</td>
-											<td class="filterable-cell">{{data.horagestion}}</td>
-											<td class="filterable-cell">{{data.logincontingencia}}</td>
-											<td class="filterable-cell">{{data.horacontingencia}}</td>
-											<td class="filterable-cell">{{data.estado}}</td>
-										</tr>
-										</tbody>
-									</table>-->
+										<div id="tntGridServices" ui-grid="gridOptions" ui-grid-pagination
+										 style="font-size: 12px;text-transform: lowercase; color: #0f0f0f;height: 300px"></div>
+
 								</div>
 								<!-- CONTADOR DE TV-iNTERNET -->
 								<div class="panel-footer clearfix">

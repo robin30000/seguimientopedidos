@@ -75,7 +75,7 @@ if (isset($data['method'])) {
             $user->graficaAcumuladosrepa($data['data']);
             break;
 
-            case 'marca':
+            case 'marcarengestion':
             require_once '../class/contingencia.php';
             $user = new contingencia();
             $user->marcarengestion($data['data']);

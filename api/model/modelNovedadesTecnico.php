@@ -15,11 +15,10 @@ class modelNovedadesTecnico
         try {
 
 
-
-            $fechaini = (!isset($data['curPage']['fechaini'])) ? date("Y-m-d") : $data['curPage']['fechaini']; //CORRECCION DE VALIDACION DE FECHA
-            $fechafin = (!isset($data['curPage']['fechafin'])) ? date("Y-m-d") : $data['curPage']['fechafin']; //CORRECCION DE VALIDACION DE FECHA
-
-            if ($fechaini == "" || $fechafin == "") {
+            if (!empty($data['sort'])) {
+                $fechaini = $data['sort']['fechaini'];
+                $fechafin = $data['sort']['fechafin'];
+            } else {
                 $fechaini = date('Y-m-d');
                 $fechafin = date('Y-m-d');
             }
@@ -37,7 +36,7 @@ class modelNovedadesTecnico
             if (is_numeric($data['curPage'])) {
                 $page_number = $data['curPage'];
             } else {
-                $page_number = 1;
+                $page_number      = 1;
                 $data['pageSize'] = 50;
             }
 
@@ -342,14 +341,13 @@ class modelNovedadesTecnico
             $fechafin = $data['fechafin'];
         }
 
-
         if ($fechaini == "" && $fechafin == "") {
-            $fechaini = date("Y") . "-" . date("m") . "-" . date("d");
-            $fechafin = date("Y") . "-" . date("m") . "-" . date("d");
+            $fechaini = date('Y-m-d');
+            $fechafin = date('Y-m-d');
         }
 
         try {
-            $stmt = $this->_DB->prepare("SELECT n.fecha,
+            $stmt = $this->_DB->query("SELECT n.fecha,
                                                    n.usuario,
                                                    n.municipio,
                                                    n.region,
@@ -368,12 +366,12 @@ class modelNovedadesTecnico
                                                    n.idllamada
                                             FROM NovedadesVisitas n
                                             WHERE 1 = 1
-                                              AND n.fecha BETWEEN (:fechaini) AND (:fechafin)");
-            $stmt->execute([':fechaini' => "$fechaini 00:00:00", ':fechafin' => "$fechaini 23-59-59"]);
+                                              AND n.fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23-59-59')");
+            $stmt->execute();
 
             if ($stmt->rowCount()) {
                 $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $response = [$result, $stmt->rowCount(), 201];
+                $response = [$result, $stmt->rowCount()];
 
             } else {
                 $response = ['', 400];

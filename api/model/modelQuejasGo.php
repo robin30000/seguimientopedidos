@@ -15,10 +15,10 @@ class modelQuejasGo
 
         try {
 
-            $fechaini = (!isset($data['curPage']['fechaini'])) ? date("Y-m-d") : $data['curPage']['fechaini']; //CORRECCION DE VALIDACION DE FECHA
-            $fechafin = (!isset($data['curPage']['fechafin'])) ? date("Y-m-d") : $data['curPage']['fechafin']; //CORRECCION DE VALIDACION DE FECHA
-
-            if ($fechaini == "" || $fechafin == "") {
+            if (!empty($data['sort'])){
+                $fechaini = $data['sort']['fechaini'];
+                $fechafin = $data['sort']['fechafin'];
+            }else{
                 $fechaini = date('Y-m-d');
                 $fechafin = date('Y-m-d');
             }
@@ -72,28 +72,20 @@ class modelQuejasGo
     public function csvQuejasGo($data)
     {
         try {
-            $usuarioid       = $data['datoslogin'];
-            $usuarioid       = $usuarioid['LOGIN'];
-            $datos           = $data['datos'];
-            $fechaini        = $datos['fechaini'];
-            $fechafin        = $datos['fechafin'];
-            $columnaBusqueda = $datos['columnaBusqueda'];
-            $valorBusqueda   = $datos ['valorBusqueda'];
 
+            session_start();
+
+            $usuarioid       = $_SESSION['login'];
+            $fechaini        = $data['fechaini'];
+            $fechafin        = $data['fechafin'];
 
             if ($fechaini == "" && $fechafin == "") {
-                $fechaini = date("Y") . "-" . date("m") . "-" . date("d");
-                $fechafin = date("Y") . "-" . date("m") . "-" . date("d");
-            }
-
-            if ($fechaini == $fechafin) {
-                $filename = "QuejasGo" . "_" . $fechaini . "_" . $usuarioid . ".csv";
-            } else {
-                $filename = "QuejasGo" . "_" . $fechaini . "_" . $fechafin . "_" . $usuarioid . ".csv";
+                $fechaini = date('Y-m-d');
+                $fechafin = date('Y-m-d');
             }
 
 
-            if ($columnaBusqueda == "" || $valorBusqueda == "") {
+            /*if ($columnaBusqueda == "" || $valorBusqueda == "") {
 
                 $stmt = $this->_DB->prepare("	SELECT g.id, g.pedido, g.cliente, g.cedtecnico, g.tecnico, g.accion, g.asesor, g.fecha, g.duracion, g.region, g.idllamada, g.observacion
 								FROM quejasgo g
@@ -105,45 +97,27 @@ class modelQuejasGo
                     ':fechafin' => "$fechafin 23-59-59",
                 ]);
 
-            } else {
+            } else {*/
 
                 $stmt = $this->_DB->prepare("	SELECT g.id, g.pedido, g.cliente, g.cedtecnico, g.tecnico, g.accion, g.asesor, g.fecha, g.duracion, g.region, g.idllamada, g.observacion
 								FROM quejasgo g
 									WHERE 1=1
-									AND g.fecha BETWEEN (:fechaini) AND (:fechafin) AND :columnaBusqueda = :valorBusqueda
+									AND g.fecha BETWEEN (:fechaini) AND (:fechafin)
 						");
 
                 $stmt->execute([
                     ':fechaini'        => "$fechaini 00:00:00",
-                    ':fechafin'        => "$fechafin 23-59-59",
-                    ':columnaBusqueda' => $columnaBusqueda,
-                    ':valorBusqueda'   => $valorBusqueda,
+                    ':fechafin'        => "$fechafin 23-59-59"
                 ]);
 
-            }
+           // }
 
             if ($stmt->rowCount()) {
                 $counter  = $stmt->rowCount();
-                $fp       = fopen("../tmp/$filename", 'w');
-                $columnas = [
-                    'CONSECUTIVO',
-                    'PEDIDO',
-                    'CLIENTE',
-                    'CEDULA_TECNICO',
-                    'TECNICO',
-                    'ACCION',
-                    'ASESOR',
-                    'FECHA',
-                    'DURACION',
-                    'CIUDAD',
-                    'ID_LLAMADA',
-                    'OBSERVACIONES',
-                ];
-                fputcsv($fp, $columnas);
+
                 $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                fputcsv($fp, $resultado);
-                fclose($fp);
-                $response = [$filename, $counter, 201];
+
+                $response = [$resultado, $counter];
             } else {
                 $response = [0, 203];
             }

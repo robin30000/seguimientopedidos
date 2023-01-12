@@ -166,7 +166,7 @@ class modelotrosServiciosDos
             $query->execute([':process' => $data]);
             if ($query->rowCount()) {
                 $result   = $query->fetchAll(PDO::FETCH_ASSOC);
-                $response = [$result, 201];
+                $response = [$result];
 
             } else {
                 $response = ['', 400];
@@ -174,6 +174,7 @@ class modelotrosServiciosDos
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
         echo json_encode($response);
     }
 

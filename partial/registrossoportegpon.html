@@ -24,7 +24,7 @@
                 </div>
                 <div class="panel-heading nav navbar-default">
                     <div class="col-lg-12 col-xs-10">
-                        <ul class="nav navbar-nav navbar-left">
+                        <ul class="nav navbar-nav navbar-right">
 
                             <input style="width:130px" type="text" name="fechaini" id="fechaini"
                                    class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
@@ -35,38 +35,19 @@
                                    ng-model="RegistrosSoporteGpon.fechafin" datetime-picker="" date-format="yyyy-MM-dd"> <i
                                 class="fa fa-calendar fa-fw"></i>
 
-                        </ul>
-                        <ul class="nav navbar-nav navbar-right">
-                            <li class="nav navbar-nav"
-                                ng-class="csvPend == false?'animated bounceOutRight':'animated bounceInRight'"
-                                ng-show="csvPend==true">
-                                <span class="label label-primary">Se exportaron: {{counter}} Registros</span>&nbsp;
-                            </li>
-                            <li>
-                                <!-- <select ng-model="RegistrosSoporteGpon.concepto" class="btn btn-default btn-xs grupo-select">
-                                    <option ng-repeat="f in conceptosRegistrosSoporteGpon" value="{{f.ID}}">
-                                        {{f.CONCEPTO}}
-                                    </option>
-                                </select> -->
-                                <div class="btn-group">
-
-                                    <!-- <input style="width:140px" class="btn btn-default btn-xs " type="text"
-                                        ng-model="RegistrosSoporteGpon.buscar" placeholder="Buscar..." title="Ingrese dato" tooltip
-                                        data-placement="bottom" ng-disabled="loading" select-on-click capitalize /> -->
-                                    <button type="button" class="btn btn-success btn-xs"
-                                            ng-click="BuscarRegistrosSoporteGpon(RegistrosSoporteGpon)" ng-disabled="loading">
-                                        <i class="fa fa-search-plus" aria-hidden="true"> </i>
-                                    </button>
-                                </div>
-                            </li>
-                            <li> &nbsp;</li>
-                            <li>
-                                <button type="button" ng-show="galletainfo.perfil !== '8'"
-                                        class="btn btn-primary btn-xs" title="Exportar Registros" ng-click="csvRegistros()"
-                                        ng-disabled="loading" title="Exportar" tooltip data-placement="top">
-                                    <i class="fa fa-cloud-download" aria-hidden="true"> </i>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-xs"
+                                        ng-click="BuscarRegistrosSoporteGpon(RegistrosSoporteGpon)" ng-disabled="loading">
+                                    <i class="fa fa-search-plus" aria-hidden="true"> </i>
                                 </button>
-                            </li>
+                            </div>
+
+                            <button type="button"
+                                    class="btn btn-primary btn-xs" title="Exportar Registros" ng-click="csvRegistros(RegistrosSoporteGpon)"
+                                    ng-disabled="loading" title="Exportar" tooltip data-placement="top">
+                                <i class="fa fa-cloud-download" aria-hidden="true"> </i>
+                            </button>
+
                         </ul>
                     </div>
                 </div>

@@ -15,7 +15,7 @@ if (isset($data->method)) {
             $user->login($data->data);
             break;
         case 'logout':
-            require_once '../class/user.php';
+            require_once '../class/authentication.php';
             $user = new authentication();
             $user->logout();
             break;

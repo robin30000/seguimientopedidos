@@ -16,13 +16,23 @@ class modelCodigoIncompleto
 
         try {
 
+            if (!empty($data['sort'])){
+                $sort = $data['sort'];
+                $fechaini = $sort['fechaini'];
+                $fechafin = $sort['fechafin'];
+            }else{
+                $fechaini = date('Y-m-d');
+                $fechafin = date('Y-m-d');
+            }
+
+
             $stmt = $this->_DB->query("select count(*) as total from gestion_codigo_incompleto 
-                                    WHERE status_soporte = '0'");
+                                    WHERE fecha_creado BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' and status_soporte = '0'");
+
             $stmt->execute();
 
             $resCount   = $stmt->fetch(PDO::FETCH_OBJ);
             $totalCount = $resCount->total;
-
 
             if (isset($data['curPage'])) {
                 $page_number = $data['curPage'];
@@ -40,7 +50,7 @@ class modelCodigoIncompleto
 
             $stmt = $this->_DB->query("SELECT *
                                                 FROM gestion_codigo_incompleto
-                                                WHERE status_soporte = '0' order by fecha_creado desc limit $initial_page, $limit_page");
+                                                WHERE fecha_creado BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' and status_soporte = '0' order by fecha_creado desc limit $initial_page, $limit_page");
             $stmt->execute();
 
             if ($stmt->rowCount()) {
@@ -191,11 +201,10 @@ class modelCodigoIncompleto
                 $fechafin = date("Y") . "-" . date("m") . "-" . date("d");
             }
 
-
             $query = "SELECT id_codigo_incompleto, tarea, numero_contacto, nombre_contacto, unepedido, tasktypecategory, unemunicipio, uneproductos, engineer_id, engineer_name, mobile_phone, status_soporte, fecha_solicitud_firebase, fecha_creado, respuesta_gestion, observacion, login, fecha_respuesta 
             FROM gestion_codigo_incompleto
-            WHERE fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' AND status_soporte = '1'
-            ORDER BY fecha_creado DESC;";
+            WHERE fecha_creado BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' AND status_soporte = '0'
+            ORDER BY fecha_creado DESC";
 
             $resQuery = $this->_DB->query($query);
             if ($resQuery->rowCount()) {

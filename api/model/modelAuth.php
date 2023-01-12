@@ -1,7 +1,7 @@
 <?php
 
 require_once '../class/conection.php';
-
+//ini_set('display_errors', 1);
 class modelauthentication
 {
     private $_DB;
@@ -111,6 +111,7 @@ class modelauthentication
 
     public function updatesalida()
     {
+
         session_start();
         $today = date('Y-m-d');
         $stmt  = $this->_DB->prepare("SELECT id, fecha_ingreso 

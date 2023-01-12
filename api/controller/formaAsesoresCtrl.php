@@ -29,6 +29,11 @@ if (isset($data['method'])) {
             $user = new formaAsesores();
             $user->registros($data['data']);
             break;
+            case 'registroscsv':
+            require_once '../class/formaAsesores.php';
+            $user = new formaAsesores();
+            $user->registroscsv($data['data']);
+            break;
 
 
         default:

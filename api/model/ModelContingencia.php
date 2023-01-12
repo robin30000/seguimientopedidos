@@ -615,7 +615,7 @@ class ModelContingencia
 
                 $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                $logincontingencia = $resultado['loginContingenciaPortafolio'];
+                $logincontingencia = $resultado[0]['loginContingenciaPortafolio'];
 
                 $id = $resultado['id'];
                 if ($login == $logincontingencia) {
@@ -666,6 +666,7 @@ class ModelContingencia
     public function guardarpedidocontingencia($datosguardar)
     {
         try {
+            session_start();
 
             $login                = $_SESSION['login'];
             $pedido               = (isset($datosguardar['pedido'])) ? $datosguardar['pedido'] : '';
@@ -687,15 +688,14 @@ class ModelContingencia
 					WHERE pedido = :pedido
 					AND producto= :producto
 					AND finalizado IS NULL
-					AND accion IN('Contingencia', 'Reenvio de registros', 'Refresh', 'Cambio de equipo', 'Crear Espacio', 'crear cliente', 'Registros ToIP', 'mesaOffline', 'Cambio EID', 'Crear Linea IMS')
-				");
-
+					AND accion IN('Contingencia', 'Reenvio de registros', 'Refresh', 'Cambio de equipo', 'Crear Espacio', 'crear cliente', 'Registros ToIP', 'mesaOffline', 'Cambio EID', 'Crear Linea IMS')");
+//var_dump($stmt->debugDumpParams() );
             $stmt->execute([':pedido' => $pedido, ':producto' => $producto]);
 
             if ($stmt->rowCount()) {
 
                 $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $id        = $resultado['id'];
+                $id        = $resultado[0]['id'];
 
                 /*ESTE QUERY ME ACTULIZA LA INFORMACION QUE ANALISTA A GESTIONADO*/
                 $stmtupdate = $this->_DB->prepare("UPDATE contingencias SET horacontingencia = :horacontingencia, 
@@ -714,7 +714,12 @@ class ModelContingencia
                     ':id'                   => $id,
                 ]);
 
-                $response = ['Contingencia actualizada', 201];
+                if ($stmtupdate->rowCount() == 1){
+                    $response = ['Contingencia actualizada', 201];
+                }else{
+                    $response = ['Ha ocurrido un error intentalo nuevamente', 201];
+                }
+
             } else {
                 $response = ['No se encontraron datos'];
             }
@@ -1423,51 +1428,57 @@ class ModelContingencia
 
     public function marcarengestion($params)
     {
+
         try {
+
             session_start();
-
-            $today = date("Y-m-d H:i:s");
-
-            $datosguardar = $params['datos'];
-            $login        = $_SESSION['login'];
-            $pedido       = $datosguardar['pedido'];
-            $gestion      = $datosguardar['bloqueo'];
-            $producto     = $datosguardar['producto'];
-
-            if ($gestion == true) {
-                $gestion = 1;
+            if (!$_SESSION) {
+                $response = ['state' => 99, 'title' => 'Su session ha expirado','text' => 'Inicia session nuevamente para continuar'];
             } else {
-                $gestion = 0;
-            }
 
-            $query = "SELECT id, logincontingencia FROM contingencias where engestion = '1' and finalizado is null and pedido = '$pedido' and producto = '$producto' ";
+                $today = date("Y-m-d H:i:s");
 
-            $rst = $this->_DB->query($query);
-            $rst->execute();
-            $row               = $rst->fetch(PDO::FETCH_OBJ);
-            $logincontingencia = $row->logincontingencia;
-            $id                = $row->id;
+                $datosguardar = $params['datos'];
+                $login        = $_SESSION['login'];
+                $pedido       = $datosguardar['pedido'];
+                $gestion      = $datosguardar['bloqueo'];
+                $producto     = $datosguardar['producto'];
 
-            if ($rst->rowCount() == 1) {
-
-                if ($login == $logincontingencia) {
-                    $sqlupdate = "UPDATE contingencias SET engestion = '0', logincontingencia = '', fechaClickMarca='$today' WHERE id = '$id'";
-
-                    $this->_DB->query($sqlupdate);
-                    $response = ['desbloqueado'];
+                if ($gestion == true) {
+                    $gestion = 1;
                 } else {
+                    $gestion = 0;
+                }
+
+                $query = "SELECT id, logincontingencia FROM contingencias where engestion = '1' and finalizado is null and pedido = '$pedido' and producto = '$producto' ";
+
+                $rst = $this->_DB->query($query);
+                $rst->execute();
+                $row               = $rst->fetch(PDO::FETCH_OBJ);
+                $logincontingencia = $row->logincontingencia;
+                $id                = $row->id;
+
+                if ($rst->rowCount() == 1) {
+
+                    if ($login == $logincontingencia) {
+                        $sqlupdate = "UPDATE contingencias SET engestion = '0', logincontingencia = '', fechaClickMarca='$today' WHERE id = '$id'";
+
+                        $this->_DB->query($sqlupdate);
+                        $response = ['desbloqueado'];
+                    } else {
+                        $response = ['bloqueado'];
+                    }
+                } else {
+
+                    $stmt = $this->_DB->query("SELECT id FROM contingencias where pedido = '$pedido' and producto = '$producto'");
+                    $stmt->execute();
+                    $result = $stmt->fetch(PDO::FETCH_OBJ);
+                    $id     = $result->id;
+
+                    $stmt = $this->_DB->query("UPDATE contingencias SET engestion = '$gestion', logincontingencia = '$login', fechaClickMarca='$today' WHERE id='$id'");
+                    $stmt->execute();
                     $response = ['bloqueado'];
                 }
-            } else {
-
-                $stmt = $this->_DB->query("SELECT id FROM contingencias where pedido = '$pedido' and producto = '$producto'");
-                $stmt->execute();
-                $result = $stmt->fetch(PDO::FETCH_OBJ);
-                $id     = $result->id;
-
-                $stmt = $this->_DB->query("UPDATE contingencias SET engestion = '$gestion', logincontingencia = '$login', fechaClickMarca='$today' WHERE id='$id'");
-                $stmt->execute();
-                $response = ['bloqueado'];
             }
 
         } catch (PDOException $e) {
@@ -1495,12 +1506,12 @@ class ModelContingencia
             $rst = $this->_DB->query($query);
 
             if ($rst->rowCount()) {
-                $result = $rst->fetchAll(PDO::FETCH_ASSOC);
+                $result   = $rst->fetchAll(PDO::FETCH_ASSOC);
                 $response = [$result, 200];
             } else {
                 $response = ['state' => 0];
             }
-        }catch (PDOException $e){
+        } catch (PDOException $e) {
             var_dump($e);
         }
 

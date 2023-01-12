@@ -56,4 +56,9 @@ class formaAsesores
         $this->_model->registros($data);
     }
 
+    public function registroscsv($data)
+    {
+        $this->_model->registroscsv($data);
+    }
+
 }

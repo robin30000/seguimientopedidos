@@ -125,35 +125,24 @@ class ModelFormaAsesores
     public function registros($data)
     {
 
-        /*$fechaini = (!isset($datos['fechaini'])) ? date("Y-m-d") : $datos['fechaini']; //CORRECCION DE VALIDACION DE FECHA
-        $fechafin = (!isset($datos['fechafin'])) ? date("Y-m-d") : $datos['fechafin']; //CORRECCION DE VALIDACION DE FECHA
-        $concepto = (isset($datos['concepto'])) ? $datos['concepto'] : '';
-        $buscar   = (isset($datos['buscar'])) ? $datos['buscar'] : '';
-
-        if ($fechaini == "" || $fechafin == "") {
+        if (!empty($data['sort'])){
+            $sort = $data['sort'];
+            $fechaini = $sort['fechaini']; //CORRECCION DE VALIDACION DE FECHA
+            $fechafin = $sort['fechafin']; //CORRECCION DE VALIDACION DE FECHA
+        }else{
             $fechaini = date("Y-m-d");
             $fechafin = date("Y-m-d");
         }
-        //$today = date("Y-m-d");
 
-        if ($pagina == "undefined") {
-            $pagina = "0";
-        } else {
-            $pagina = $pagina - 1;
-        }
 
-        $pagina = $pagina * 100;
+        //$concepto = (isset($data['sort']['concepto'])) ? $datos['concepto'] : '';
+        //$buscar   = (isset($datos['buscar'])) ? $datos['buscar'] : '';
 
-        if ($concepto == "" || $buscar == "") {
-            $parametro = "";
-        } else {
-            $parametro = " and $concepto = '$buscar'";
-        }*/
 
         try {
 
 
-            $stmt = $this->_DB->query("select count(*) as total from registros");
+            $stmt = $this->_DB->query("select count(*) as total from registros where fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59')");
             $stmt->execute();
 
             $resCount   = $stmt->fetch(PDO::FETCH_OBJ);
@@ -163,6 +152,7 @@ class ModelFormaAsesores
                 $page_number = $data['curPage'];
             } else {
                 $page_number = 1;
+                $data['pageSize'] = 200;
             }
 
             $initial_page = ($page_number - 1) * $data['pageSize'];
@@ -182,7 +172,7 @@ class ModelFormaAsesores
                                       a.observaciones, a.llamada_id, a.id_tecnico, a.empresa, a.despacho, a.producto, 
                                       a.accion, trim(a.tipo_pendiente) as tipo_pendiente, (select ciudad from tecnicos 
                                       where a.id_tecnico = identificacion limit 1) ciudad, a.plantilla 
-                                      FROM registros a where 1=1
+                                      FROM registros a where a.fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59')
                                       and asesor <> 'IVR' order by a.fecha DESC limit $initial_page, $limit_page ");
 
             $stmt->execute();
@@ -197,5 +187,47 @@ class ModelFormaAsesores
         }
         $this->_DB = null;
        echo json_encode($response);
+    }
+
+    public function registroscsv($data){
+        try {
+
+            if (!empty($data['sort'])){
+                $sort = $data['sort'];
+                $fechaini = $sort['fechaini']; //CORRECCION DE VALIDACION DE FECHA
+                $fechafin = $sort['fechafin']; //CORRECCION DE VALIDACION DE FECHA
+            }else{
+                $fechaini = date("Y-m-d");
+                $fechafin = date("Y-m-d");
+            }
+
+            $stmt = $this->_DB->query("select count(*) as total from registros where fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59')");
+            $stmt->execute();
+
+            $resCount   = $stmt->fetch(PDO::FETCH_OBJ);
+            $totalCount = $resCount->total;
+
+            $stmt = $this->_DB->query("SELECT a.id, a.pedido, 
+                                       (select nombre from tecnicos where a.id_tecnico = identificacion limit 1) tecnico, 
+                                      trim(a.accion) AS accion, 
+                                      a.asesor, 
+                                      a.fecha, a.duracion, a.proceso, 
+                                      a.observaciones, a.llamada_id, a.id_tecnico, a.empresa, a.despacho, a.producto, 
+                                      a.accion, trim(a.tipo_pendiente) as tipo_pendiente, (select ciudad from tecnicos 
+                                      where a.id_tecnico = identificacion limit 1) ciudad, a.plantilla 
+                                      FROM registros a where a.fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59')
+                                      and asesor <> 'IVR' order by a.fecha");
+            $stmt->execute();
+            if ($stmt->rowCount()) {
+                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = [$result, $totalCount];
+            } else {
+                $response = ['', 203];
+            }
+        }catch (PDOException $e){
+            var_dump($e);
+        }
+        $this->_DB = null;
+        echo json_encode($response);
     }
 }

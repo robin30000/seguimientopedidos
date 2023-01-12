@@ -225,12 +225,6 @@
                                 <i class="fa fa-male" aria-hidden="true"></i>&nbsp; Técnicos
                             </a>
                         </li>
-                        <li role="separator" class="divider"></li>
-                        <li>
-                            <a href="#!/listadoAlarmas">
-                                <i class="fa fa-bell" aria-hidden="true"></i>&nbsp; Alarmas
-                            </a>
-                        </li>
                     </ul>
                 </li>
 
@@ -612,18 +606,6 @@
                             </a>
                         </li>
                     </ul>
-                </li>
-
-                <li ng-show="(galletainfo.perfil == 11 || galletainfo.login == 'chernanb' || galletainfo.login == 'eardilam')">
-                    <a href="#!/turnos">
-                        Gestión turnos
-                    </a>
-                </li>
-
-                <li ng-show=" (galletainfo.perfil==11 || galletainfo.perfil==5) && !PendientesBrutalerrorDatos && permiso" data-ng-controller="pendientesBrutalCtrl">
-                    <a href="" ng-click="abrirModalPendientes()">
-                        Pendientes Brutal force&nbsp; <span class="badge ">{{total}}<span>
-                    </a>
                 </li>
 
                 <li class="dropdown" ng-show="galletainfo.perfil == 13">

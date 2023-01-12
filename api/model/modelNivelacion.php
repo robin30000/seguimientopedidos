@@ -1,7 +1,7 @@
 <?php
 require_once '../class/conection.php';
 //ini_set('error_reporting', 0);
-ini_set('display_errors', 1);
+//ini_set('display_errors', 1);
 
 date_default_timezone_set('America/Bogota');
 
@@ -83,9 +83,9 @@ class modelNivelacion
             $data->newIdTecnic = 'No Aplica';
         }
 
-        //$submotivo = isset($data->datos->submotivo) ? $data->datos->submotivo : '';
+        $submotivo = isset($data->submotivo) ? $data->submotivo : '';
 
-        $submotivo = match ($submot) {
+        $submotivo = match ($submotivo) {
             '1' => 'Contingencia',
             '2' => 'Auditoria NAP',
             '3' => 'Auditoria TAP',
@@ -205,7 +205,7 @@ class modelNivelacion
 
             $resCount   = $stmt->fetch(PDO::FETCH_OBJ);
             $totalCount = $resCount->total;
-            
+
 
             if (isset($data->curPage)) {
                 $page_number = $data->curPage;
@@ -297,9 +297,18 @@ class modelNivelacion
     {
         try {
 
+            if (!empty($data->sort->fechaini)){
+                $fechaini = $data->sort->fechaini;
+                $fechafin = $data->sort->fechafin;
+
+                $variable = " AND fecha_respuesta BETWEEN '$fechaini 00:00:00' and '$fechafin 23:59:59' ";
+            }else{
+                $variable = " ";
+            }
+
             //curPage: 1, pageSize: 50, sort: null
             //echo $data->curPage;exit();
-            $stmt = $this->_DB->query("select count(*) as total from nivelacion");
+            $stmt = $this->_DB->query("select count(*) as total from nivelacion where 1=1 $variable");
             $stmt->execute();
 
             $resCount   = $stmt->fetch(PDO::FETCH_OBJ);
@@ -335,7 +344,7 @@ class modelNivelacion
                                                        n.id,
                                                        n.se_realiza_nivelacion,
                                                        n.observacionVeedor
-                                                from nivelacion n order by fecha_respuesta desc limit $initial_page, $data->pageSize");
+                                                from nivelacion n where 1=1 $variable order by fecha_respuesta desc limit $initial_page, $data->pageSize");
             $stmt->execute();
             if ($stmt->rowCount()) {
                 $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -389,13 +398,13 @@ class modelNivelacion
 
     public function csvNivelacion($data)
     {
-        $fechaini = $data->fechaini;
-        $fechafin = $data->fechafin;
-
+        $fechaini = $data->datos->fechaini;
+        $fechafin = $data->datos->fechafin;
 
         $stmt = $this->_DB->query("select ticket_id,
                                            fecha_ingreso,
                                            fecha_gestion,
+                                           fecha_respuesta,
                                            nombre_tecnico,
                                            cc_tecnico,
                                            pedido,

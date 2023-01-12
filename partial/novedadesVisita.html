@@ -31,7 +31,7 @@
 						<div class="box">
 							<div class="box-body">
 								<div class="row"><br>
-									<div class="col-xs-4">
+									<div class="col-md-6">
 										<ul class="nav navbar-nav navbar-left">
 											<input style="width:130px" type="text" name="fechaini" id="fechaini" class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="Registros.fechaini" placeholder="Fecha Inicial" datetime-picker="" date-format="yyyy-MM-dd"> <i class="fa fa-calendar fa-fw"></i>
 											<input style="width:130px" type="text" name="fechafin" id="fechafin" class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="Registros.fechafin" placeholder="Fecha Final" datetime-picker="" date-format="yyyy-MM-dd"> <i class="fa fa-calendar fa-fw"></i>
@@ -41,15 +41,11 @@
 													ng-disabled="loading">
 												<i class="fa fa-search-plus" aria-hidden="true"></i>
 											</button>
+
 											<button type="button"
-													ng-show="galletainfo.perfil == '11' || galletainfo.perfil == '1' || galletainfo.perfil == '3'"
-													class="btn btn-primary btn-xs"
-													title="Exportar Registros"
-													ng-click="csvNovedadesTecnicos()"
-													ng-disabled="loading"
-													title="Exportar"
-													tooltip data-placement="top">
-												<i class="fa fa-cloud-download"  aria-hidden="true"> </i>
+													class="btn btn-primary btn-xs" title="Exportar Registros" ng-click="BuscarNovedadescsv(Registros)"
+													ng-disabled="loading" title="Exportar" tooltip data-placement="top">
+												<i class="fa fa-cloud-download" aria-hidden="true"> </i>
 											</button>
 										</ul>
 									</div>
