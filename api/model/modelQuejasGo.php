@@ -132,17 +132,25 @@ class modelQuejasGo
     public function buscarTecnico($data)
     {
         try {
-            $stmt = $this->_DB->prepare("SELECT a.nombre, a.ciudad FROM tecnicos a WHERE 1=1 AND a.identificacion = :cedula");
+            session_start();
+            if (!$_SESSION) {
+                $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
+            }elseif(!isset($data) || $data == '') {
+                $response = ['state' => 0, 'text' => 'Debe ingresar la cédula del técnico'];
+            }else{
+                $stmt = $this->_DB->prepare("SELECT a.nombre, a.ciudad FROM tecnicos a WHERE 1=1 AND a.identificacion = :cedula");
 
-            $stmt->execute([
-                ':cedula' => $data,
-            ]);
-            if ($stmt->rowCount()) {
-                $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $response  = [$resultado, 201];
-            } else {
-                $response = 0;
+                $stmt->execute([
+                    ':cedula' => $data,
+                ]);
+                if ($stmt->rowCount()) {
+                    $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $response  = ['state' => 1,'data' => $resultado];
+                } else {
+                    $response  = ['state' => 0, 'text' => 'No se encontró el técnico'];
+                }
             }
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }

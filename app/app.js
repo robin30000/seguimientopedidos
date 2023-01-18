@@ -4960,7 +4960,7 @@ app.controller('quejasGoCtrl', function ($scope, $http, $rootScope, $location, $
                             $scope.infoTecnico = false;
                         })
                     } else {
-                        $scope.Tecnico = data.data[0];
+                        $scope.Tecnico = data.data.data;
                         $scope.quejasGoSel.tecnico = $scope.Tecnico[0].nombre;
                         $scope.quejasGoSel.region = $scope.Tecnico[0].ciudad;
                         $scope.infoTecnico = true;
