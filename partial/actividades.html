@@ -51,7 +51,7 @@
               <li>
                 <div class="btn-group">
                   <!--Ver registros-->
-                  <a type="button" class="btn btn-primary btn-xs" value="Ver Registros" href="#!/registros"> <span class="fa fa-list" aria-hidden="true"></span> Ver Registros </a>
+                  <a type="button" class="btn btn-primary btn-xs" value="Ver Registros" href="registros"> <span class="fa fa-list" aria-hidden="true"></span> Ver Registros </a>
                   <!--Editar usuario logueado-->
                   <button
                     type="button"
@@ -999,8 +999,8 @@
                     <li class="list-group-item small">
                       <b>CIUDAD:</b><br />
                       <select ng-model="crearTecnico.CIUDAD" name="crearciudad" placeholder="Seleccione la ciudad.." class="btn btn-default btn-xs grupo-select" capitalize required>
-                        <option ng-repeat="f in listadoCiudades" value="{{f.CIUDAD}}">
-                          {{f.CIUDAD}}
+                        <option ng-repeat="f in listadoCiudades" value="{{f.ciudad}}">
+                          {{f.ciudad}}
                         </option>
                       </select>
                     </li>

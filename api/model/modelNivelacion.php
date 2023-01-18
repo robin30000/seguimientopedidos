@@ -47,92 +47,98 @@ class modelNivelacion
 
     public function saveNivelation($data)
     {
-        session_start();
-        $fecha = date('Y-m-d H:i:s');
-        $solicitud = match ($data->solicitud) {
-            '1' => 'Abrir',
-            '2' => 'Asignar',
-            '3' => 'Despachar',
-            default => '',
-        };
 
-        $submot = $data->submotivo ?? '';
-
-        $motivo = match ($data->motivo) {
-            '1' => 'Cubrir Novedad',
-            '2' => 'Ruta Atrasada',
-            '3' => 'Desplazamiento Largo',
-            '4' => 'Microzona errada',
-            '5' => 'Trabajo Futuro',
-            '6' => 'Retraso en la mesa de soporte',
-            '7' => 'Pedido amarillo',
-            '8' => 'Reabrir pedido',
-            '9' => 'Pedido cancelado',
-            '10' => 'Inicio despues de las 9:00am',
-            '11' => 'Pedido Abierto',
-            '12' => 'Técnico no es del proceso',
-            '13' => 'Click no despacho',
-            default => '',
-        };
-
-        if(isset($data->newTecName)  == '' || empty($data->newTecName) || !isset($data->newTecName)){
-            $data->newTecName = 'No Aplica';
-        }
-
-        if (isset($data->newIdTecnic)  == '' || empty($data->newIdTecnic) || !isset($data->newTecName)){
-            $data->newIdTecnic = 'No Aplica';
-        }
-
-        $submotivo = isset($data->submotivo) ? $data->submotivo : '';
-
-        $submotivo = match ($submotivo) {
-            '1' => 'Contingencia',
-            '2' => 'Auditoria NAP',
-            '3' => 'Auditoria TAP',
-            '4' => 'Soporte Gpon',
-            '5' => 'Escalamiento infraestructura',
-            '6' => 'Unidad residencial',
-            '7' => 'Ejecución/Reinstalación',
-            default => '',
-        };
 
         try {
 
-            $stmt = $this->_DB->prepare("SELECT * FROM nivelacion WHERE ticket_id = :id and estado = 0");
-            $stmt->execute([':id' => $data->ticket]);
-
-            if ($stmt->rowCount() > 0) {
-                $response = ['state' => 0, 'msj' => 'Ya se encuentra en el sistema una tarea con este concecutivo sin gestionarse'];
+            session_start();
+            if (!$_SESSION) {
+                $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
+            } elseif ($data->ticket == 0 || $data->ticket == '') {
+                $response = ['state' => 0, 'msj' => 'Verifique que la tarea este ingresada'];
             } else {
-                $stmt = $this->_DB->prepare("INSERT INTO nivelacion (ticket_id, nombre_tecnico, cc_tecnico, pedido, proceso, zona, zubzona, cc_nuevo_tecnico,
+
+                $fecha     = date('Y-m-d H:i:s');
+                $solicitud = match ($data->solicitud) {
+                    '1' => 'Abrir',
+                    '2' => 'Asignar',
+                    '3' => 'Despachar',
+                    default => '',
+                };
+
+                $motivo = match ($data->motivo) {
+                    '1' => 'Cubrir Novedad',
+                    '2' => 'Ruta Atrasada',
+                    '3' => 'Desplazamiento Largo',
+                    '4' => 'Microzona errada',
+                    '5' => 'Trabajo Futuro',
+                    '6' => 'Retraso en la mesa de soporte',
+                    '7' => 'Pedido amarillo',
+                    '8' => 'Reabrir pedido',
+                    '9' => 'Pedido cancelado',
+                    '10' => 'Inicio despues de las 9:00am',
+                    '11' => 'Pedido Abierto',
+                    '12' => 'Técnico no es del proceso',
+                    '13' => 'Click no despacho',
+                    default => '',
+                };
+
+                if (isset($data->newTecName) == '' || empty($data->newTecName) || !isset($data->newTecName)) {
+                    $data->newTecName = 'No Aplica';
+                }
+
+                if (isset($data->newIdTecnic) == '' || empty($data->newIdTecnic) || !isset($data->newTecName)) {
+                    $data->newIdTecnic = 'No Aplica';
+                }
+
+                $submotivo = isset($data->submotivo) ? $data->submotivo : '';
+
+                $submotivo = match ($submotivo) {
+                    '1' => 'Contingencia',
+                    '2' => 'Auditoria NAP',
+                    '3' => 'Auditoria TAP',
+                    '4' => 'Soporte Gpon',
+                    '5' => 'Escalamiento infraestructura',
+                    '6' => 'Unidad residencial',
+                    '7' => 'Ejecución/Reinstalación',
+                    default => '',
+                };
+
+                $stmt = $this->_DB->prepare("SELECT * FROM nivelacion WHERE ticket_id = :id and estado = 0");
+                $stmt->execute([':id' => $data->ticket]);
+
+                if ($stmt->rowCount() > 0) {
+                    $response = ['state' => 0, 'msj' => 'Ya se encuentra en el sistema una tarea con este concecutivo sin gestionarse'];
+                } else {
+                    $stmt = $this->_DB->prepare("INSERT INTO nivelacion (ticket_id, nombre_tecnico, cc_tecnico, pedido, proceso, zona, zubzona, cc_nuevo_tecnico,
                                                                         nombre_nuevo_tecnico, solicitud, motivo, submotivo, fecha_ingreso, creado_por, estado, observacionVeedor)
                                                 VALUES (:ticket_id, :nombre_tecnico, :cc_tecnico, :pedido, :proceso, :zona, :zubzona, :cc_nuevo_tecnico,
                                                                         :nombre_nuevo_tecnico, :solicitud, :motivo, :submotivo, :fecha_ingreso, :creado_por, '0', :observacionVeedor)");
-                $stmt->execute([
-                    ':ticket_id'            => $data->ticket,
-                    ':nombre_tecnico'       => $data->nombreTecnico,
-                    ':cc_tecnico'           => $data->idTecnico,
-                    ':pedido'               => $data->pedido,
-                    ':proceso'              => $data->proceso,
-                    ':zona'                 => $data->zona,
-                    ':zubzona'              => $data->subZona,
-                    ':cc_nuevo_tecnico'     => $data->newIdTecnic,
-                    ':nombre_nuevo_tecnico' => $data->newTecName,
-                    ':solicitud'            => $solicitud,
-                    ':motivo'               => $motivo,
-                    ':submotivo'            => $submotivo,
-                    ':fecha_ingreso'        => $fecha,
-                    ':creado_por'           => $_SESSION['login'],
-                    ':observacionVeedor'    => $data->observacionVeedor,
-                ]);
+                    $stmt->execute([
+                        ':ticket_id'            => $data->ticket,
+                        ':nombre_tecnico'       => $data->nombreTecnico,
+                        ':cc_tecnico'           => $data->idTecnico,
+                        ':pedido'               => $data->pedido,
+                        ':proceso'              => $data->proceso,
+                        ':zona'                 => $data->zona,
+                        ':zubzona'              => $data->subZona,
+                        ':cc_nuevo_tecnico'     => $data->newIdTecnic,
+                        ':nombre_nuevo_tecnico' => $data->newTecName,
+                        ':solicitud'            => $solicitud,
+                        ':motivo'               => $motivo,
+                        ':submotivo'            => $submotivo,
+                        ':fecha_ingreso'        => $fecha,
+                        ':creado_por'           => $_SESSION['login'],
+                        ':observacionVeedor'    => $data->observacionVeedor,
+                    ]);
 
-                if ($stmt->rowCount() == 1) {
-                    $response = ['state' => 1, 'msj' => 'La solicitud de nivelación se ha creado correctamente'];
-                } else {
-                    $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo nuevamente'];
+                    if ($stmt->rowCount() == 1) {
+                        $response = ['state' => 1, 'msj' => 'La solicitud de nivelación se ha creado correctamente'];
+                    } else {
+                        $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo nuevamente'];
+                    }
                 }
             }
-
 
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -146,15 +152,16 @@ class modelNivelacion
         try {
             session_start();
             $login = $_SESSION['login'];
+            $fecha = date('Y-m-d H:i:s');
 
             $stmt = $this->_DB->prepare("SELECT COUNT(*) AS total, CASE estado WHEN 1 THEN 'gestion' WHEN 2 THEN 'realizado' WHEN 0 THEN 'pendiente' END as estado
                                             FROM nivelacion 
                                             GROUP BY estado and creado_por = :login");
             $stmt->execute([':login' => $login]);
 
-            $tarea = $this->_DB->prepare("SELECT ticket_id, observaciones
+            $tarea = $this->_DB->prepare("SELECT ticket_id, observaciones, observacionVeedor
                                             FROM nivelacion
-                                            where creado_por = :login and  estado = 2");
+                                            where creado_por = :login and  estado = 2 and fecha_ingreso between ('$fecha 00:00:00') and ('$fecha 23:59:59')");
 
             $tarea->execute([':login' => $login]);
 
@@ -258,10 +265,7 @@ class modelNivelacion
     public function guardaNivelacion($data)
     {
         session_start();
-
-        $mifecha = new DateTime();
-        $mifecha->modify('+43 minute');
-        $fecha = $mifecha->format('Y-m-d H:i:s');
+        $fecha = date('Y-m-d H:i:s');
         try {
 
             $stmt = $this->_DB->prepare("select en_gestion, gestiona_por from nivelacion where id = :id");
@@ -297,12 +301,12 @@ class modelNivelacion
     {
         try {
 
-            if (!empty($data->sort->fechaini)){
+            if (!empty($data->sort->fechaini)) {
                 $fechaini = $data->sort->fechaini;
                 $fechafin = $data->sort->fechafin;
 
                 $variable = " AND fecha_respuesta BETWEEN '$fechaini 00:00:00' and '$fechafin 23:59:59' ";
-            }else{
+            } else {
                 $variable = " ";
             }
 
@@ -362,31 +366,37 @@ class modelNivelacion
     public function marcarEnGestionNivelacion($data)
     {
         try {
+
             session_start();
+            if (!$_SESSION) {
+                $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
+            } else {
 
-            $fecha = date('Y-m-d H:i:s');
 
-            $stmt  = $this->_DB->prepare("select en_gestion, gestiona_por from nivelacion where id = :id");
-            $stmt->execute([':id' => $data]);
+                $fecha = date('Y-m-d H:i:s');
 
-            $resul = $stmt->fetch(PDO::FETCH_OBJ);
+                $stmt = $this->_DB->prepare("select en_gestion, gestiona_por from nivelacion where id = :id");
+                $stmt->execute([':id' => $data]);
 
-            if ($resul->gestiona_por == $_SESSION['login']) {
+                $resul = $stmt->fetch(PDO::FETCH_OBJ);
 
-                $stmt = $this->_DB->prepare("update nivelacion set en_gestion = '', gestiona_por = '' where id = :id");
-                if ($stmt->execute([':id' => $data])) {
-                    $response = ['state' => 1, 'msj' => 'La tarea se encuentra desbloqueada'];
-                } else {
-                    $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo nuevamente'];
+                if ($resul->gestiona_por == $_SESSION['login']) {
+
+                    $stmt = $this->_DB->prepare("update nivelacion set en_gestion = '', gestiona_por = '' where id = :id");
+                    if ($stmt->execute([':id' => $data])) {
+                        $response = ['state' => 1, 'msj' => 'La tarea se encuentra desbloqueada'];
+                    } else {
+                        $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo nuevamente'];
+                    }
+
+                } elseif ($resul->en_gestion == '') {
+
+                    $stmt = $this->_DB->prepare("update nivelacion set gestiona_por = :gestion, estado = 1, fecha_gestion = :fecha_gestion, en_gestion = 1 where id = :id");
+                    $stmt->execute([':gestion' => $_SESSION['login'], ':id' => $data, ':fecha_gestion' => $fecha]);
+                    $response = ['state' => 1, 'msj' => 'La tarea se encuentra Bloqueada'];
+                } elseif ($resul->en_gestion != $_SESSION['login']) {
+                    $response = ['state' => 1, 'msj' => 'La tarea se encuentra en gestión'];
                 }
-
-            } elseif ($resul->en_gestion == '') {
-
-                $stmt = $this->_DB->prepare("update nivelacion set gestiona_por = :gestion, estado = 1, fecha_gestion = :fecha_gestion, en_gestion = 1 where id = :id");
-                $stmt->execute([':gestion' => $_SESSION['login'], ':id' => $data, ':fecha_gestion' => $fecha]);
-                $response = ['state' => 1, 'msj' => 'La tarea se encuentra Bloqueada'];
-            } elseif ($resul->en_gestion != $_SESSION['login']) {
-                $response = ['state' => 1, 'msj' => 'La tarea se encuentra en gestión'];
             }
 
         } catch (PDOException $e) {
@@ -398,8 +408,10 @@ class modelNivelacion
 
     public function csvNivelacion($data)
     {
+
         $fechaini = $data->datos->fechaini;
         $fechafin = $data->datos->fechafin;
+
 
         $stmt = $this->_DB->query("select ticket_id,
                                            fecha_ingreso,
@@ -417,9 +429,9 @@ class modelNivelacion
                                            cc_nuevo_tecnico,
                                            creado_por,
                                            gestiona_por,
-                                           observaciones,
+                                           REPLACE(observaciones, Char(10), '') AS observaciones,
                                            se_realiza_nivelacion
-                                    from nivelacion where 1=1 and fecha_ingreso BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59')");
+                                    from nivelacion where fecha_ingreso BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59')");
 
         $stmt->execute();
 

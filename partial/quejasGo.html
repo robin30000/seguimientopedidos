@@ -36,8 +36,8 @@
 
 									<div class="col-xs-7">
 										<ul class="nav navbar-nav navbar-left">
-											<input style="width:130px" type="text" name="fechaini" id="fechaini" class="btn btn-default btn-xs" ng-model="Registros.fechaini" placeholder="Fecha Inicial" datetime-picker="" date-format="yyyy-MM-dd"> <i class="fa fa-calendar fa-fw"></i>
-											<input style="width:130px" type="text" name="fechafin" id="fechafin" class="btn btn-default btn-xs" ng-model="Registros.fechafin" placeholder="Fecha Final" datetime-picker="" date-format="yyyy-MM-dd"> <i class="fa fa-calendar fa-fw"></i>
+											<input style="width:130px" type="text" name="fechaini" id="fechaini" class="btn btn-default btn-xs" ng-model="Registros.fechaini" placeholder="Fecha Inicial" datetime-picker="" date-only date-format="yyyy-MM-dd"> <i class="fa fa-calendar fa-fw"></i>
+											<input style="width:130px" type="text" name="fechafin" id="fechafin" class="btn btn-default btn-xs" ng-model="Registros.fechafin" placeholder="Fecha Final" datetime-picker="" date-only date-format="yyyy-MM-dd"> <i class="fa fa-calendar fa-fw"></i>
 											<button type="button"
 													class="btn btn-success btn-xs"
 													ng-click="validarDatos(Registros)"
@@ -51,10 +51,14 @@
 													ng-disabled="loading" title="Exportar" tooltip data-placement="top">
 												<i class="fa fa-cloud-download" aria-hidden="true"> </i>
 											</button>
+
+											<div data-ng-if="loading">
+												<img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif"/>
+											</div>
 										</ul>
 									</div>
 
-									<br><br><br>
+									<br><br>
 								</div>
 
 								<div id="tntGridServices" ui-grid="gridOptions" ui-grid-exporter ui-grid-edit ui-grid-pagination

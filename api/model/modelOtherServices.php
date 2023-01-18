@@ -655,112 +655,144 @@ class modelOtherServices
     {
         try {
             session_start();
-            $login        = $_SESSION['login'];
-            $estadoActual = (isset($datosguardar['estado'])) ? $datosguardar['estado'] : '';
-            $accion       = (isset($datosguardar['accion'])) ? $datosguardar['accion'] : '';
-            $ciudad       = (isset($datosguardar['ciudad'])) ? $datosguardar['ciudad'] : '';
-            $correo       = (isset($datosguardar['correo'])) ? $datosguardar['correo'] : '';
-            $macEntra     = (isset($datosguardar['macEntra'])) ? $datosguardar['macEntra'] : '';
-            $macSale      = (isset($datosguardar['macSale'])) ? $datosguardar['macSale'] : '';
-            $motivo       = (isset($datosguardar['motivo'])) ? $datosguardar['motivo'] : '';
-            $observacion  = (isset($datosguardar['observacion'])) ? $datosguardar['observacion'] : '';
-            $pedido       = (isset($datosguardar['pedido'])) ? $datosguardar['pedido'] : '';
-            $proceso      = (isset($datosguardar['proceso'])) ? $datosguardar['proceso'] : '';
-            $remite       = (isset($datosguardar['remite'])) ? $datosguardar['remite'] : '';
-            $producto     = (isset($datosguardar['producto'])) ? $datosguardar['producto'] : '';
-            $tecnologia   = (isset($datosguardar['tecnologia'])) ? $datosguardar['tecnologia'] : '';
-            $tipoEquipo   = (isset($datosguardar['tipoEquipo'])) ? $datosguardar['tipoEquipo'] : '';
-            $uen          = (isset($datosguardar['uen'])) ? $datosguardar['uen'] : '';
-            $contrato     = (isset($datosguardar['contrato'])) ? $datosguardar['contrato'] : '';
-            $perfil       = (isset($datosguardar['perfil'])) ? $datosguardar['perfil'] : '';
-            $paquetes     = (isset($datosguardar['paquetes'])) ? $datosguardar['paquetes'] : '';
-            $paqueteconca = (isset($datosguardar['$paqueteconca'])) ? $datosguardar['$paqueteconca'] : '';
+
+            if (!$_SESSION) {
+                $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
+            } elseif (!isset($datosguardar['pedido']) || $datosguardar['pedido'] == '') {
+                $response = ['state' => 0, 'msj' => 'El pedido es requerido'];
+            } elseif (!isset($datosguardar['producto']) || $datosguardar['producto'] == '') {
+                $response = ['state' => 0, 'msj' => 'El producto es requerido'];
+            } elseif (!isset($datosguardar['uen']) || $datosguardar['uen'] == '') {
+                $response = ['state' => 0, 'msj' => 'El campo uen es requerido'];
+            } elseif (!isset($datosguardar['proceso']) || $datosguardar['proceso'] == '') {
+                $response = ['state' => 0, 'msj' => 'El campo proceso es requerido'];
+            } elseif (!isset($datosguardar['tecnologia']) || $datosguardar['tecnologia'] == '') {
+                $response = ['state' => 0, 'msj' => 'El campo tecnologia es requerido'];
+            } elseif (!isset($datosguardar['accion']) || $datosguardar['accion'] == '') {
+                $response = ['state' => 0, 'msj' => 'El campo accion es requerido'];
+            } elseif (!isset($datosguardar['motivo']) || $datosguardar['motivo'] == '') {
+                $response = ['state' => 0, 'msj' => 'El campo motivo es requerido'];
+            } elseif (!isset($datosguardar['tipoEquipo']) || $datosguardar['tipoEquipo'] == '') {
+                $response = ['state' => 0, 'msj' => 'El campo tipo de equipo es requerido'];
+            } elseif (!isset($datosguardar['ciudad']) || $datosguardar['ciudad'] == '') {
+                $response = ['state' => 0, 'msj' => 'El campo ciudad es requerido'];
+            } elseif (!isset($datosguardar['macEntra']) || $datosguardar['macEntra'] == '') {
+                $response = ['state' => 0, 'msj' => 'El campo mac que entra es requerido'];
+            } elseif (!isset($datosguardar['macSale']) || $datosguardar['macSale'] == '') {
+                $response = ['state' => 0, 'msj' => 'El campo  mac que sale es requerido'];
+            } elseif (!isset($datosguardar['paquetes']) || $datosguardar['paquetes'] == '') {
+                $response = ['state' => 0, 'msj' => 'Debe ingresar al menos un paquete'];
+            } elseif (!isset($datosguardar['remite']) || $datosguardar['remite'] == '') {
+                $response = ['state' => 0, 'msj' => 'El campo remitente es requerido'];
+            } elseif (!isset($datosguardar['observacion']) || $datosguardar['observacion'] == '') {
+                $response = ['state' => 0, 'msj' => 'Ingrese observaciones'];
+            } else {
+                $login        = $_SESSION['login'];
+                $estadoActual = (isset($datosguardar['estado'])) ? $datosguardar['estado'] : '';
+                $accion       = (isset($datosguardar['accion'])) ? $datosguardar['accion'] : '';
+                $ciudad       = (isset($datosguardar['ciudad'])) ? $datosguardar['ciudad'] : '';
+                $correo       = (isset($datosguardar['correo'])) ? $datosguardar['correo'] : '';
+                $macEntra     = (isset($datosguardar['macEntra'])) ? $datosguardar['macEntra'] : '';
+                $macSale      = (isset($datosguardar['macSale'])) ? $datosguardar['macSale'] : '';
+                $motivo       = (isset($datosguardar['motivo'])) ? $datosguardar['motivo'] : '';
+                $observacion  = (isset($datosguardar['observacion'])) ? $datosguardar['observacion'] : '';
+                $pedido       = (isset($datosguardar['pedido'])) ? $datosguardar['pedido'] : '';
+                $proceso      = (isset($datosguardar['proceso'])) ? $datosguardar['proceso'] : '';
+                $remite       = (isset($datosguardar['remite'])) ? $datosguardar['remite'] : '';
+                $producto     = (isset($datosguardar['producto'])) ? $datosguardar['producto'] : '';
+                $tecnologia   = (isset($datosguardar['tecnologia'])) ? $datosguardar['tecnologia'] : '';
+                $tipoEquipo   = (isset($datosguardar['tipoEquipo'])) ? $datosguardar['tipoEquipo'] : '';
+                $uen          = (isset($datosguardar['uen'])) ? $datosguardar['uen'] : '';
+                $contrato     = (isset($datosguardar['contrato'])) ? $datosguardar['contrato'] : '';
+                $perfil       = (isset($datosguardar['perfil'])) ? $datosguardar['perfil'] : '';
+                $paquetes     = (isset($datosguardar['paquetes'])) ? $datosguardar['paquetes'] : '';
+                $paqueteconca = (isset($datosguardar['$paqueteconca'])) ? $datosguardar['$paqueteconca'] : '';
 
 
-            if ($paquetes != '') {
-                $tam          = count($paquetes);
-                $paqueteconca = "";
-                for ($i = 0; $i < $tam; $i++) {
-                    $paqueteconca = $paqueteconca . $paquetes[$i] . "/";
+                if ($paquetes != '') {
+                    $tam          = count($paquetes);
+                    $paqueteconca = "";
+                    for ($i = 0; $i < $tam; $i++) {
+                        $paqueteconca = $paqueteconca . $paquetes[$i] . "/";
+                    }
                 }
-            }
 
-            /*CUANDO SE SELECCIONE SEGUN EL PRODUCTO GUARDE EN EL CAMPO DE GRUPO*/
-            if ($producto == "TV" && $accion == "Corregir portafolio") {
-                $grupo = "PORTAFOLIO";
-            } elseif ($producto == "Internet" && $accion == "Corregir portafolio") {
-                $grupo = "PORTAFOLIO";
-            } elseif ($producto == "ToIP" && $accion == "Corregir portafolio") {
-                $grupo = "PORTAFOLIO";
-            } elseif ($producto == "Internet+ToIP" && $accion == "Corregir portafolio" || $producto == "Internet+ToIP" && $accion == "OC Telefonia") {
-                $grupo = "PORTAFOLIO";
-            } elseif ($producto == "TV" && $accion == "mesaOffline") {
-                $grupo = "PORTAFOLIO";
-            } elseif ($producto == "Internet" && $accion == "mesaOffline") {
-                $grupo = "PORTAFOLIO";
-            } elseif ($producto == "ToIP" && $accion == "mesaOffline" || $producto == "ToIP" && $accion == "OC Telefonia") {
-                $grupo = "PORTAFOLIO";
-            } elseif ($producto == "Internet+ToIP" && $accion == "mesaOffline") {
-                $grupo = "PORTAFOLIO";
-            } elseif ($producto == "TV") {
-                $grupo = "TV";
-            } elseif ($producto == "Internet") {
-                $grupo = "INTER";
-            } elseif ($producto == "ToIP") {
-                $grupo        = "INTER";
-                $paqueteconca = $datosguardar['linea'];
-            } elseif ($producto == "Internet+ToIP") {
-                $grupo        = "INTER";
-                $paqueteconca = $datosguardar['linea'];
-            }
+                /*CUANDO SE SELECCIONE SEGUN EL PRODUCTO GUARDE EN EL CAMPO DE GRUPO*/
+                if ($producto == "TV" && $accion == "Corregir portafolio") {
+                    $grupo = "PORTAFOLIO";
+                } elseif ($producto == "Internet" && $accion == "Corregir portafolio") {
+                    $grupo = "PORTAFOLIO";
+                } elseif ($producto == "ToIP" && $accion == "Corregir portafolio") {
+                    $grupo = "PORTAFOLIO";
+                } elseif ($producto == "Internet+ToIP" && $accion == "Corregir portafolio" || $producto == "Internet+ToIP" && $accion == "OC Telefonia") {
+                    $grupo = "PORTAFOLIO";
+                } elseif ($producto == "TV" && $accion == "mesaOffline") {
+                    $grupo = "PORTAFOLIO";
+                } elseif ($producto == "Internet" && $accion == "mesaOffline") {
+                    $grupo = "PORTAFOLIO";
+                } elseif ($producto == "ToIP" && $accion == "mesaOffline" || $producto == "ToIP" && $accion == "OC Telefonia") {
+                    $grupo = "PORTAFOLIO";
+                } elseif ($producto == "Internet+ToIP" && $accion == "mesaOffline") {
+                    $grupo = "PORTAFOLIO";
+                } elseif ($producto == "TV") {
+                    $grupo = "TV";
+                } elseif ($producto == "Internet") {
+                    $grupo = "INTER";
+                } elseif ($producto == "ToIP") {
+                    $grupo        = "INTER";
+                    $paqueteconca = $datosguardar['linea'];
+                } elseif ($producto == "Internet+ToIP") {
+                    $grupo        = "INTER";
+                    $paqueteconca = $datosguardar['linea'];
+                }
 
-            $isFieldContingency = isset($datosguardar['_id']);
+                $isFieldContingency = isset($datosguardar['_id']);
 
 
-            if ($isFieldContingency) {
-                $idTerreno               = $datosguardar['_id'];
-                $horaGestionTerreno      = $datosguardar['fecha'];
-                $nuevaHoraGestionTerreno = date('Y-m-d H:i:s', strtotime($horaGestionTerreno));
+                if ($isFieldContingency) {
+                    $idTerreno               = $datosguardar['_id'];
+                    $horaGestionTerreno      = $datosguardar['fecha'];
+                    $nuevaHoraGestionTerreno = date('Y-m-d H:i:s', strtotime($horaGestionTerreno));
 
-                $stmt = $this->_DB->prepare("INSERT INTO contingencias (accion, ciudad, correo, macEntra, macSale, motivo,
+                    $stmt = $this->_DB->prepare("INSERT INTO contingencias (accion, ciudad, correo, macEntra, macSale, motivo,
                                                        observacion, paquetes, pedido, proceso, producto,
                                                        remite, tecnologia, tipoEquipo, uen, contrato, perfil, grupo, logindepacho, id_terreno, horagestion)
                                                     values (:accion, :ciudad, :correo, :macEntra, :macSale, :motivo,
                                                             :observacion, :paqueteconca, :pedido, :proceso, :producto,
                                                             :remite, :tecnologia, :tipoEquipo, :uen, :contrato, :perfil, :grupo, :login, :idTerreno, :nuevaHoraGestionTerreno)");
-                $stmt->execute([
-                    ':accion'                  => $accion,
-                    ':ciudad'                  => $ciudad,
-                    ':correo'                  => $correo,
-                    ':macEntra'                => $macEntra,
-                    ':macSale'                 => $macSale,
-                    ':motivo'                  => $motivo,
-                    ':observacion'             => $observacion,
-                    ':paqueteconca'            => $paqueteconca,
-                    ':pedido'                  => $pedido,
-                    ':proceso'                 => $proceso,
-                    ':producto'                => $producto,
-                    ':remite'                  => $remite,
-                    ':tecnologia'              => $tecnologia,
-                    ':tipoEquipo'              => $tipoEquipo,
-                    ':uen'                     => $uen,
-                    ':contrato'                => $contrato,
-                    ':perfil'                  => $perfil,
-                    ':grupo'                   => $grupo,
-                    ':login'                   => $login,
-                    ':idTerreno'               => $idTerreno,
-                    ':nuevaHoraGestionTerreno' => $nuevaHoraGestionTerreno,
-                ]);
+                    $stmt->execute([
+                        ':accion'                  => $accion,
+                        ':ciudad'                  => $ciudad,
+                        ':correo'                  => $correo,
+                        ':macEntra'                => $macEntra,
+                        ':macSale'                 => $macSale,
+                        ':motivo'                  => $motivo,
+                        ':observacion'             => $observacion,
+                        ':paqueteconca'            => $paqueteconca,
+                        ':pedido'                  => $pedido,
+                        ':proceso'                 => $proceso,
+                        ':producto'                => $producto,
+                        ':remite'                  => $remite,
+                        ':tecnologia'              => $tecnologia,
+                        ':tipoEquipo'              => $tipoEquipo,
+                        ':uen'                     => $uen,
+                        ':contrato'                => $contrato,
+                        ':perfil'                  => $perfil,
+                        ':grupo'                   => $grupo,
+                        ':login'                   => $login,
+                        ':idTerreno'               => $idTerreno,
+                        ':nuevaHoraGestionTerreno' => $nuevaHoraGestionTerreno,
+                    ]);
 
-                if ($stmt->rowCount()) {
-                    $response = ['Datos ingresados correctamente', 201];
+                    if ($stmt->rowCount()) {
+                        $response = ['state' => 1, 'msj' => 'Datos ingresados correctamente'];
+                    } else {
+                        $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo nuevamente'];
+                    }
                 } else {
-                    $response = ['Ah ocurrido un error intentalo nuevamente', 400];
-                }
-            } else {
-                $idTerreno = null;
+                    $idTerreno = null;
 
-                $stmt = $this->_DB->prepare("INSERT INTO contingencias (accion, ciudad, correo, macEntra, macSale, motivo,
+                    $stmt = $this->_DB->prepare("INSERT INTO contingencias (accion, ciudad, correo, macEntra, macSale, motivo,
                                                        observacion, paquetes, pedido, proceso, producto,
                                                        remite, tecnologia, tipoEquipo, uen, contrato, perfil, grupo, logindepacho, id_terreno)
                                                     values (:accion, :ciudad, :correo, :macEntra, :macSale, :motivo,
@@ -768,34 +800,35 @@ class modelOtherServices
                                                             :remite, :tecnologia, :tipoEquipo, :uen, :contrato, :perfil, :grupo, :login, :idTerreno)");
 
 
-                if ($accion !== "" || $correo !== "" || $pedido !== "" || $proceso !== "") {
-                    $stmt->execute([
-                        ':accion'       => $accion,
-                        ':ciudad'       => $ciudad,
-                        ':correo'       => $correo,
-                        ':macEntra'     => $macEntra,
-                        ':macSale'      => $macSale,
-                        ':motivo'       => $motivo,
-                        ':observacion'  => $observacion,
-                        ':paqueteconca' => $paqueteconca,
-                        ':pedido'       => $pedido,
-                        ':proceso'      => $proceso,
-                        ':producto'     => $producto,
-                        ':remite'       => $remite,
-                        ':tecnologia'   => $tecnologia,
-                        ':tipoEquipo'   => $tipoEquipo,
-                        ':uen'          => $uen,
-                        ':contrato'     => $contrato,
-                        ':perfil'       => $perfil,
-                        ':grupo'        => $grupo,
-                        ':login'        => $login,
-                        ':idTerreno'    => $idTerreno,
-                    ]);
+                    if ($accion !== "" || $correo !== "" || $pedido !== "" || $proceso !== "") {
+                        $stmt->execute([
+                            ':accion'       => $accion,
+                            ':ciudad'       => $ciudad,
+                            ':correo'       => $correo,
+                            ':macEntra'     => $macEntra,
+                            ':macSale'      => $macSale,
+                            ':motivo'       => $motivo,
+                            ':observacion'  => $observacion,
+                            ':paqueteconca' => $paqueteconca,
+                            ':pedido'       => $pedido,
+                            ':proceso'      => $proceso,
+                            ':producto'     => $producto,
+                            ':remite'       => $remite,
+                            ':tecnologia'   => $tecnologia,
+                            ':tipoEquipo'   => $tipoEquipo,
+                            ':uen'          => $uen,
+                            ':contrato'     => $contrato,
+                            ':perfil'       => $perfil,
+                            ':grupo'        => $grupo,
+                            ':login'        => $login,
+                            ':idTerreno'    => $idTerreno,
+                        ]);
 
-                    if ($stmt->rowCount()) {
-                        $response = ['Datos ingresados correctamente', 201];
-                    } else {
-                        $response = ['Ah ocurrido un error intentalo nuevamente', 400];
+                        if ($stmt->rowCount()) {
+                            $response = ['state' => 1, 'msj' => 'Datos ingresados correctamente'];
+                        } else {
+                            $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo nuevamente'];
+                        }
                     }
                 }
             }

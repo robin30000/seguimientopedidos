@@ -1,19 +1,28 @@
 <nav class="navbar navbar-default">
-    <nav style="background:#00377B">
+
+    <nav style="background:#00377B" class="hidden-xs">
         <br>
     </nav>
-    <!--Nav Logo - 2016-03-22 -->
-    <div class="container" ng-controller='brutalForceCtrl'>
-        <!--Panel nuevo de login -->
+
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-            <a class="navbar-brand" href="#!/"><img src="img/rsz_logonobg.png">
-                <a class="navbar-brand" href="#!/">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="actividades"><img src="img/rsz_logonobg.png">
+                <a class="navbar-brand" href="actividades">
                     <font color="#00377d"><b>Seguimiento</font>
                     <font color="#00C8FF"> a Pedidos</font>
                 </a>
             </a>
         </div>
-        <div id="navbar" class="navbar-collapse collapse">
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
 
                 <li class="dropdown" ng-show="galletainfo.perfil == 1">
@@ -22,87 +31,79 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="#!/actividades">
+                            <a href="actividades">
                                 <i class="fa fa-fax" aria-hidden="true"></i>&nbsp; Forma Asesores
                             </a>
                         </li>
-                        <li>
-                            <a href="#!/brutalForce">
-                                <i class="fa fa-cogs" aria-hidden="true"></i>&nbsp; Brutal force
-                            </a>
-                        </li>
+
                         <li role="separator" class="divider"></li>
                         <li>
-                            <a href="#!/mesaoffline/mesaoffline">
+                            <a href="mesaoffline/mesaoffline">
                                 <i class="fa fa-toggle-off" aria-hidden="true"></i>&nbsp; Mesa Offline
                             </a>
                         </li>
                         <li>
-                            <a href="#!/contingencias">
+                            <a href="contingencias">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Contingencias Aprovisionamiento
                             </a>
                         </li>
 
                         <li>
-                            <a href="#!/GestionNivelacion">
+                            <a href="GestionNivelacion">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Formulario Gestión Nivelación
                             </a>
                         </li>
                         <li>
-                            <a href="#!/Gestioncontingencias">
+                            <a href="Gestioncontingencias">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Gestión Contingencias
                             </a>
                         </li>
                         <li>
-                            <a href="#!/premisasInfraestructuras">
+                            <a href="premisasInfraestructuras">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Gestión Escalamiento
                             </a>
                         </li>
                         <li>
-                            <a href="#!/novedadesVisita">
+                            <a href="novedadesVisita">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Novedades Visitas
                             </a>
                         </li>
                         <li>
-                            <a href="#!/quejasGo">
+                            <a href="quejasGo">
                                 <i class="fa fa-list-alt" aria-hidden="true" style="color:#00377B"></i>&nbsp; Quejas GO
                             </a>
                         </li>
                         <li>
-                            <a href="#!/consultaSara">
+                            <a href="consultaSara">
                                 <i class="fa fa-list-alt" aria-hidden="true" style="color:#00377B"></i>&nbsp; Consulta SARA y RRHH
                             </a>
                         </li>
                         <li>
-                            <a href="#!/gestionsoportegpon">
+                            <a href="gestionsoportegpon">
                                 <i class="fa fa-list-alt" aria-hidden="true" style="color:#00377B"></i>&nbsp; Gestión Soporte GPON
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#!/gestioncodigoincompleto">
-                                <i class="fa fa-list-alt" aria-hidden="true" style="color:#00377B"></i>&nbsp; Gestión Código Incompleto
                             </a>
                         </li>
 
                         <li role="separator" class="divider"></li>
                         <li>
-                            <a href="#!/registros">
+                            <a href="registros">
                                 <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros
                             </a>
                         </li>
                         <li>
-                            <a href="#!/registrossoportegpon">
+                            <a href="registrossoportegpon">
                                 <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros Soporte Gpon
                             </a>
                         </li>
                         <li>
-                            <a href="#!/registroscodigoincompleto">
-                                <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros Código Incompleto
+                            <a href="mesaoffline/registrosOffline">
+                                <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros Offline
                             </a>
                         </li>
+
                         <li>
-                            <a href="#!/mesaoffline/registrosOffline">
-                                <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros Offline
+                            <a href="gestioncodigoincompleto">
+                                <i class="fa fa-bars" aria-hidden="true" style="color:#00377B"></i>&nbsp; Registros Código Incompleto
                             </a>
                         </li>
                     </ul>
@@ -114,97 +115,90 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="#!/actividades">
+                            <a href="actividades">
                                 <i class="fa fa-fax" aria-hidden="true"></i>&nbsp; Forma Asesores
                             </a>
                         </li>
-                        <li>
-                            <a href="#!/brutalForce">
-                                <i class="fa fa-cogs" aria-hidden="true"></i>&nbsp; Brutal force
-                            </a>
-                        </li>
+
                         <li role="separator" class="divider"></li>
                         <li>
-                            <a href="#!/mesaoffline/mesaoffline">
+                            <a href="mesaoffline/mesaoffline">
                                 <i class="fa fa-toggle-off" aria-hidden="true"></i>&nbsp; Mesa Offline
                             </a>
                         </li>
                         <li>
-                            <a href="#!/contingencias">
+                            <a href="contingencias">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Contingencias Aprovisionamiento
                             </a>
                         </li>
                         <li>
-                            <a href="#!/Gestioncontingencias">
+                            <a href="Gestioncontingencias">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Gestión Contingencias
                             </a>
                         </li>
                         <li>
-                            <a href="#!/nivelacion">
+                            <a href="nivelacion">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Formulario Nivelación
                             </a>
                         </li>
 
                         <li>
-                            <a href="#!/GestionNivelacion">
+                            <a href="GestionNivelacion">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Formulario Gestión Nivelación
                             </a>
                         </li>
 
                         <li>
-                            <a href="#!/premisasInfraestructuras">
+                            <a href="premisasInfraestructuras">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Gestión Escalamiento
                             </a>
                         </li>
                         <li>
-                            <a href="#!/novedadesVisita">
+                            <a href="novedadesVisita">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Novedades Visitas
                             </a>
                         </li>
                         <li>
-                            <a href="#!/contrasenaClick">
+                            <a href="contrasenaClick">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Contraseñas ClickSoftware
                             </a>
                         </li>
                         <li>
-                            <a href="#!/quejasGo">
+                            <a href="quejasGo">
                                 <i class="fa fa-list-alt" aria-hidden="true" style="color:#00377B"></i>&nbsp; Quejas GO
                             </a>
                         </li>
                         <li>
-                            <a href="#!/consultaSara">
+                            <a href="consultaSara">
                                 <i class="fa fa-list-alt" aria-hidden="true" style="color:#00377B"></i>&nbsp; Consulta SARA y RRHH
                             </a>
                         </li>
                         <li>
-                            <a href="#!/gestionsoportegpon">
+                            <a href="gestionsoportegpon">
                                 <i class="fa fa-list-alt" aria-hidden="true" style="color:#00377B"></i>&nbsp; Gestión Soporte GPON
                             </a>
                         </li>
-                        <li>
-                            <a href="#!/gestioncodigoincompleto">
-                                <i class="fa fa-list-alt" aria-hidden="true" style="color:#00377B"></i>&nbsp; Gestión Código Incompleto
-                            </a>
-                        </li>
+
                         <li role="separator" class="divider"></li>
                         <li>
-                            <a href="#!/registros">
+                            <a href="registros">
                                 <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros
                             </a>
                         </li>
                         <li>
-                            <a href="#!/registrossoportegpon">
+                            <a href="registrossoportegpon">
                                 <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros Soporte Gpon
                             </a>
                         </li>
+
                         <li>
-                            <a href="#!/registroscodigoincompleto">
-                                <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros Código Incompleto
+                            <a href="mesaoffline/registrosOffline">
+                                <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros Offline
                             </a>
                         </li>
                         <li>
-                            <a href="#!/mesaoffline/registrosOffline">
-                                <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros Offline
+                            <a href="gestioncodigoincompleto">
+                                <i class="fa fa-bars" aria-hidden="true" style="color:#00377B"></i>&nbsp; Registros Código Incompleto
                             </a>
                         </li>
                     </ul>
@@ -216,12 +210,12 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="#!/usuarios">
+                            <a href="usuarios">
                                 <i class="fa fa-users" aria-hidden="true"></i>&nbsp; Usuarios
                             </a>
                         </li>
                         <li>
-                            <a href="#!/tecnicos">
+                            <a href="tecnicos">
                                 <i class="fa fa-male" aria-hidden="true"></i>&nbsp; Técnicos
                             </a>
                         </li>
@@ -234,81 +228,73 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="#!/actividades">
+                            <a href="actividades">
                                 <i class="fa fa-fax" aria-hidden="true"></i>&nbsp; Forma Asesores
                             </a>
                         </li>
-                        <li>
-                            <a href="#!/brutalForce">
-                                <i class="fa fa-cogs" aria-hidden="true"></i>&nbsp; Brutal force
-                            </a>
-                        </li>
+
                         <li role="separator" class="divider"></li>
                         <li>
-                            <a href="#!/contingencias">
+                            <a href="contingencias">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Contingencias Aprovisionamiento
                             </a>
                         </li>
 
                         <li>
-                            <a href="#!/GestionNivelacion">
+                            <a href="GestionNivelacion">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Formulario Gestión Nivelación
                             </a>
                         </li>
                         <li>
-                            <a href="#!/premisasInfraestructuras">
+                            <a href="premisasInfraestructuras">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Gestión Escalamiento
                             </a>
                         </li>
                         <li>
-                            <a href="#!/mesaoffline/mesaoffline">
+                            <a href="mesaoffline/mesaoffline">
                                 <i class="fa fa-toggle-off" aria-hidden="true"></i>&nbsp; Mesa Offline
                             </a>
                         </li>
                         <li>
-                            <a href="#!/novedadesVisita">
+                            <a href="novedadesVisita">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Novedades Visitas
                             </a>
                         </li>
                         <li>
-                            <a href="#!/quejasGo">
+                            <a href="quejasGo">
                                 <i class="fa fa-list-alt" aria-hidden="true" style="color:#00377B"></i>&nbsp; Quejas GO
                             </a>
                         </li>
                         <li>
-                            <a href="#!/consultaSara">
+                            <a href="consultaSara">
                                 <i class="fa fa-list-alt" aria-hidden="true" style="color:#00377B"></i>&nbsp; Consulta SARA y RRHH
                             </a>
                         </li>
                         <li>
-                            <a href="#!/gestionsoportegpon">
+                            <a href="gestionsoportegpon">
                                 <i class="fa fa-list-alt" aria-hidden="true" style="color:#00377B"></i>&nbsp; Gestión Soporte GPON
                             </a>
                         </li>
-                        <li>
-                            <a href="#!/gestioncodigoincompleto">
-                                <i class="fa fa-list-alt" aria-hidden="true" style="color:#00377B"></i>&nbsp; Gestión Código Incompleto
-                            </a>
-                        </li>
+
                         <li role="separator" class="divider"></li>
                         <li>
-                            <a href="#!/registros">
+                            <a href="registros">
                                 <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros
                             </a>
                         </li>
                         <li>
-                            <a href="#!/registrossoportegpon">
+                            <a href="registrossoportegpon">
                                 <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros Soporte Gpon
                             </a>
                         </li>
                         <li>
-                            <a href="#!/registroscodigoincompleto">
-                                <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros Código Incompleto
+                            <a href="mesaoffline/registrosOffline">
+                                <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros Offline
                             </a>
                         </li>
                         <li>
-                            <a href="#!/mesaoffline/registrosOffline">
-                                <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros Offline
+                            <a href="gestioncodigoincompleto">
+                                <i class="fa fa-bars" aria-hidden="true" style="color:#00377B"></i>&nbsp; Registros Código Incompleto
                             </a>
                         </li>
                     </ul>
@@ -320,57 +306,45 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="#!/nivelacion">
+                            <a href="nivelacion">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Formulario Nivelación
                             </a>
                         </li>
                         <li role="separator" class="divider"></li>
                         <li>
-                            <a href="#!/registros">
+                            <a href="registros">
                                 <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros
                             </a>
                         </li>
                     </ul>
                 </li>
 
-                <!--
-                <li class="dropdown" ng-show="galletainfo.perfil==2">
-                    <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Administracion <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#!/tecnicos"><i class="fa fa-male" aria-hidden="true"></i>&nbsp; Técnicos</a></li>
-                    </ul>
-                </li> -->
-
                 <li class="dropdown" ng-show="galletainfo.perfil == 3">
                     <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                        Administracion <span class="caret"></span>
+                        Despachos <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="#!/registros">
+                            <a href="registros">
                                 <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros
                             </a>
                         </li>
                         <li>
-                            <a href="#!/novedadesVisita">
+                            <a href="novedadesVisita">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Novedades Visitas
                             </a>
                         </li>
                         <li>
-                            <a href="#!/consultaSara">
+                            <a href="consultaSara">
                                 <i class="fa fa-list-alt" aria-hidden="true" style="color:#00377B"></i>&nbsp; Consulta SARA y RRHH
                             </a>
                         </li>
                         <li>
-                            <a href="#!/gestionsoportegpon">
+                            <a href="gestionsoportegpon">
                                 <i class="fa fa-list-alt" aria-hidden="true" style="color:#00377B"></i>&nbsp; Gestión Soporte GPON
                             </a>
                         </li>
-                        <li>
-                            <a href="#!/gestioncodigoincompleto">
-                                <i class="fa fa-list-alt" aria-hidden="true" style="color:#00377B"></i>&nbsp; Gestión Código Incompleto
-                            </a>
-                        </li>
+
                     </ul>
                 </li>
 
@@ -380,51 +354,34 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="#!/actividades">
+                            <a href="actividades">
                                 <i class="fa fa-fax" aria-hidden="true"></i>&nbsp; Forma Asesores
                             </a>
                         </li>
                         <li role="separator" class="divider"></li>
                         <li>
-                            <a href="#!/brutalForce">
-                                <i class="fa fa-cogs" aria-hidden="true"></i>&nbsp; Brutal force
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#!/mesaoffline/mesaoffline">
+                            <a href="mesaoffline/mesaoffline">
                                 <i class="fa fa-toggle-off" aria-hidden="true"></i>&nbsp; Mesa Offline
                             </a>
                         </li>
                         <li role="separator" class="divider"></li>
                         <li>
-                            <a href="#!/registros">
+                            <a href="registros">
                                 <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros
                             </a>
                         </li>
                         <li>
-                            <a href="#!/registrossoportegpon">
+                            <a href="registrossoportegpon">
                                 <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros Soporte Gpon
                             </a>
                         </li>
                         <li>
-                            <a href="#!/registroscodigoincompleto">
-                                <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros Código Incompleto
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#!/mesaoffline/registrosOffline">
+                            <a href="mesaoffline/registrosOffline">
                                 <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros offline
                             </a>
                         </li>
                     </ul>
                 </li>
-
-                <!-- <li class="dropdown" ng-show="galletainfo.perfil==4">
-                    <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Administracion <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#!/tecnicos"><i class="fa fa-male" aria-hidden="true"></i>&nbsp; Técnicos</a></li>
-                    </ul>
-                </li> -->
 
                 <li class="dropdown" ng-show="galletainfo.perfil == 5">
                     <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -432,92 +389,85 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="#!/actividades">
+                            <a href="actividades">
                                 <i class="fa fa-fax" aria-hidden="true"></i>&nbsp; Forma Asesores
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#!/brutalForce">
-                                <i class="fa fa-cogs" aria-hidden="true"></i>&nbsp; Brutal force
                             </a>
                         </li>
                         <li role="separator" class="divider"></li>
                         <li>
-                            <a href="#!/contingencias">
+                            <a href="contingencias">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Contingencias Aprovisionamiento
                             </a>
                         </li>
 
                         <li>
-                            <a href="#!/GestionNivelacion">
+                            <a href="GestionNivelacion">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Formulario Gestión Nivelación
                             </a>
                         </li>
                         <li>
-                            <a href="#!/Gestioncontingencias">
+                            <a href="Gestioncontingencias">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Gestión Contingencias
                             </a>
                         </li>
                         <li>
-                            <a href="#!/premisasInfraestructuras">
+                            <a href="premisasInfraestructuras">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Gestión Escalamiento
                             </a>
                         </li>
                         <li>
-                            <a href="#!/mesaoffline/mesaoffline">
+                            <a href="mesaoffline/mesaoffline">
                                 <i class="fa fa-toggle-off" aria-hidden="true"></i>&nbsp; Mesa Offline
                             </a>
                         </li>
                         <li>
-                            <a href="#!/novedadesVisita">
+                            <a href="novedadesVisita">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Novedades Visitas
                             </a>
                         </li>
                         <li>
-                            <a href="#!/consultaSara">
+                            <a href="consultaSara">
                                 <i class="fa fa-list-alt" aria-hidden="true" style="color:#00377B"></i>&nbsp; Consulta SARA y RRHH
                             </a>
                         </li>
                         <li>
-                            <a href="#!/gestionsoportegpon">
+                            <a href="gestionsoportegpon">
                                 <i class="fa fa-list-alt" aria-hidden="true" style="color:#00377B"></i>&nbsp; Gestión Soporte GPON
                             </a>
                         </li>
+
                         <li>
-                            <a href="#!/gestioncodigoincompleto">
-                                <i class="fa fa-list-alt" aria-hidden="true" style="color:#00377B"></i>&nbsp; Gestión Código Incompleto
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#!/quejasGo">
+                            <a href="quejasGo">
                                 <i class="fa fa-list-alt" aria-hidden="true" style="color:#00377B"></i>&nbsp; Quejas GO
                             </a>
                         </li>
 
                         <li ng-show="galletainfo.login == 'jflorezf' || galletainfo.login == 'jlvilla' || galletainfo.login == 'lfonnegr' || galletainfo.login == 'nfmartinez' || galletainfo.login == 'cvasquor' || galletainfo.login == 'jromang' || galletainfo.login == 'garcila' || galletainfo.login == 'jbaenaa' || galletainfo.login == 'jechavs'">
-                            <a href="#!/contrasenaClick">
+                            <a href="contrasenaClick">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Contraseñas ClickSoftware
                             </a>
                         </li>
                         <li role="separator" class="divider"></li>
                         <li>
-                            <a href="#!/registros">
+                            <a href="registros">
                                 <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros
                             </a>
                         </li>
                         <li>
-                            <a href="#!/registrossoportegpon">
+                            <a href="registrossoportegpon">
                                 <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros Soporte Gpon
                             </a>
                         </li>
+
                         <li>
-                            <a href="#!/registroscodigoincompleto">
-                                <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros Código Incompleto
+                            <a href="mesaoffline/registrosOffline">
+                                <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros offline
                             </a>
                         </li>
+
                         <li>
-                            <a href="#!/mesaoffline/registrosOffline">
-                                <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros offline
+                            <a href="gestioncodigoincompleto">
+                                <i class="fa fa-bars" aria-hidden="true" style="color:#00377B"></i>&nbsp; Registros Código Incompleto
                             </a>
                         </li>
                     </ul>
@@ -529,39 +479,40 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="#!/mesaoffline/mesaoffline">
+                            <a href="mesaoffline/mesaoffline">
                                 <i class="fa fa-toggle-off" aria-hidden="true"></i>&nbsp; Mesa Offline
                             </a>
                         </li>
                         <li>
-                            <a href="#!/contingencias">
+                            <a href="contingencias">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Contingencias Aprovisionamiento
                             </a>
                         </li>
                         <li>
-                            <a href="#!/premisasInfraestructuras">
+                            <a href="premisasInfraestructuras">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Gestión Escalamiento
                             </a>
                         </li>
                         <li role="separator" class="divider"></li>
                         <li>
-                            <a href="#!/registros">
+                            <a href="registros">
                                 <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros
                             </a>
                         </li>
                         <li>
-                            <a href="#!/registrossoportegpon">
+                            <a href="registrossoportegpon">
                                 <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros Soporte Gpon
                             </a>
                         </li>
+
                         <li>
-                            <a href="#!/registroscodigoincompleto">
-                                <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros Código Incompleto
+                            <a href="mesaoffline/registrosOffline">
+                                <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros offline
                             </a>
                         </li>
                         <li>
-                            <a href="#!/mesaoffline/registrosOffline">
-                                <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros offline
+                            <a href="gestioncodigoincompleto">
+                                <i class="fa fa-bars" aria-hidden="true" style="color:#00377B"></i>&nbsp; Registros Código Incompleto
                             </a>
                         </li>
                     </ul>
@@ -573,23 +524,24 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="#!/registros">
+                            <a href="registros">
                                 <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros
                             </a>
                         </li>
                         <li>
-                            <a href="#!/registrossoportegpon">
+                            <a href="registrossoportegpon">
                                 <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros Soporte Gpon
                             </a>
                         </li>
+
                         <li>
-                            <a href="#!/registroscodigoincompleto">
-                                <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros Código Incompleto
+                            <a href="mesaoffline/registrosOffline">
+                                <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros Offline
                             </a>
                         </li>
                         <li>
-                            <a href="#!/mesaoffline/registrosOffline">
-                                <i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Registros Offline
+                            <a href="gestioncodigoincompleto">
+                                <i class="fa fa-bars" aria-hidden="true" style="color:#00377B"></i>&nbsp; Registros Código Incompleto
                             </a>
                         </li>
                     </ul>
@@ -601,7 +553,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="#!/novedadesVisita">
+                            <a href="novedadesVisita">
                                 <i class="fa fa-list-alt" aria-hidden="true" style="color:#00377B"></i>&nbsp; Novedades Visitas
                             </a>
                         </li>
@@ -614,77 +566,43 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="#!/quejasGo">
+                            <a href="quejasGo">
                                 <i class="fa fa-list-alt" aria-hidden="true" style="color:#00377B"></i>&nbsp; Quejas GO
                             </a>
                         </li>
                     </ul>
                 </li>
             </ul>
-            <div ng-controller="loginCtrl" ng-show="!permiso">
-                <form class="navbar-form navbar-right" name="loginUserForm" method="POST" role="form">
-                    <div class="input-group margin-bottom-sm">
-                        <span class="input-group-addon"><i class="fa fa-user fa-fw" data-toggle="tooltip" title="Usuario"></i></span>
-                        <input type="text" class="form-control input-sm" ng-model="autenticacion.username" placeholder="username" required="" />
-                    </div>
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-key fa-fw" data-toggle="tooltip" title="Contraseña"></i></span>
-                        <input type="password" class="form-control input-sm" ng-model="autenticacion.password" placeholder="password" required="" />
-                    </div>
-                    <button type="submit" ng-disabled="!loginUserForm.$valid" class="btn btn-xs btn-primary" ng-click="login()">Login</button>
-                </form>
-            </div>
-            <div ng-show="permiso">
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="active">
-                        <button type="button" class="btn btn-md btn-default" title="{{galletainfo.nombre}}" data-toggle="tooltip" data-placement="bottom">{{galletainfo.login}}</button>
-                        <!-- <button type="button" class="btn btn-sm btn-warning" ng-click="editarModal()" data-toggle="modal" data-target="#editarPassword" data-backdrop="static" popover data-trigger="hover" data-placement="left" data-html="true" data-selector="" >Cambiar Contraseña <i class="fa fa-key" aria-hidden="true"></i></button> -->
-                        <button type="button" class="btn btn-sm btn-info" ng-click="logout()">Salir <i class="fa fa-sign-out" aria-hidden="true"></i></button>
-                    </li>
-                </ul>
-            </div>
 
-            <!-- <div id="editarPassword" class="modal fade" role="dialog">
-                <div class="modal-dialog modal-sm">
-                    <div class="modal-content" >
-                        <div class="modal-header">
-                            <h4 class="modal-title"><i class="fa fa-key" aria-hidden="true"></i> Cambiar Contraseña:</h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="container-fluid">
-                                <form  action=" " method="post"  name="contact_formpwd" id="contact_formpwd">
-                                    <div class="col-md-12">
-                                        <ul class="list-group">
-                                            <div class="form-group">
-                                                <li class="list-group-item small" ><b>Login:</b><input type="text" ng-model="galletainfo.login" value="{{galletainfo.login}}" class="btn btn-default btn-xs" name="login" disabled></li>
-                                            </div>
-                                            <div class="form-group" ng-class="{ 'has-error' : contact_formpwd.pwdActual.$touched && contact_formpwd.pwdActual.$invalid}">
-                                                <li class="list-group-item small" ><b>Contraseña actual:</b><input type="password" ng-model="datos.pwdActual" class="btn btn-default btn-xs" name="pwdActual" capitalize required></li>
-                                            </div>
-                                            <div class="form-group" ng-class="{ 'has-error' : contact_formpwd.pwdNueva.$touched && contact_formpwd.pwdNueva.$invalid}">
-                                                <li class="list-group-item small" ><b>Nueva contraseña:</b><input type="password" ng-model="datos.pwdNueva" class="btn btn-default btn-xs" name="pwdNueva" capitalize required></li>
-                                            </div>
-                                            <div class="form-group" ng-class="{ 'has-error' : contact_formpwd.pwdNuevaConfirm.$touched && contact_formpwd.pwdNuevaConfirm.$invalid}">
-                                                <li class="list-group-item small" ><b>Confirmar nueva contraseña:</b><input type="password" ng-model="datos.pwdNuevaConfirm" class="btn btn-default btn-xs" name="pwdNuevaConfirm"  capitalize required></li>
-                                            </div>
-                                        </ul>
-                                    </div>
-                                </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <div ng-controller="loginCtrl" ng-show="!permiso">
+                        <form class="navbar-form navbar-right" name="loginUserForm" method="POST" role="form">
+                            <div class="input-group margin-bottom-sm">
+                                <span class="input-group-addon"><i class="fa fa-user fa-fw" data-toggle="tooltip" title="Usuario"></i></span>
+                                <input type="text" class="form-control input-sm" ng-model="autenticacion.username" placeholder="username" required=""/>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-success" ng-disabled="contact_formpwd.$invalid" ng-click="changepwd(datos)" >Editar</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                        </div>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-key fa-fw" data-toggle="tooltip" title="Contraseña"></i></span>
+                                <input type="password" class="form-control input-sm" ng-model="autenticacion.password" placeholder="password" required=""/>
+                            </div>
+                            <button type="submit" ng-disabled="!loginUserForm.$valid" class="btn btn-xs btn-primary" ng-click="login()">Login</button>
+                        </form>
                     </div>
-                </div>
-            </div> -->
+                </li>
+                <li ng-show="permiso" class="col-md-12" style="top:7px">
+                        <span title="{{galletainfo.nombre}}" data-toggle="tooltip" data-placement="bottom" >
+                            {{galletainfo.login}}
+                        </span>&nbsp;&nbsp;
 
+                    <button type="button" class="btn btn-sm btn-info" ng-click="logout()">Salir <i class="fa fa-sign-out" aria-hidden="true"></i></button>
+                </li>
+            </ul>
 
-        </div>
-        <!--/.nav-collapse -->
-    </div>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
 </nav>
+
 <div ng-show="galletainfo!=undefined && permiso" class="col-md-6 col-md-offset-3">
     <div class="panel panel-primary">
         <div class="panel-heading text-center">

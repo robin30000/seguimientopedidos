@@ -71,31 +71,35 @@ class modelCodigoIncompleto
     {
         try {
             session_start();
+            if (!$_SESSION) {
+                $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
+            }else {
 
-            $id_codigo_incompleto = $data['id_codigo_incompleto'];
-            $tipificacion         = $data['tipificacion'];
-            $observacion          = $data['observacion'];
-            $fecha_respuesta      = date('Y-m-d H:i:s');
+                $id_codigo_incompleto = $data['id_codigo_incompleto'];
+                $tipificacion         = $data['tipificacion'];
+                $observacion          = $data['observacion'];
+                $fecha_respuesta      = date('Y-m-d H:i:s');
 
-            $stmt = $this->_DB->prepare("UPDATE gestion_codigo_incompleto
+                $stmt = $this->_DB->prepare("UPDATE gestion_codigo_incompleto
                                             SET status_soporte    = 1,
                                                 respuesta_gestion = :tipificacion,
                                                 observacion       = :observacion,
                                                 login             = :login,
                                                 fecha_respuesta   = :fecha_respuesta
                                             WHERE id_codigo_incompleto = :id_codigo_incompleto");
-            $stmt->execute([
-                ':tipificacion'         => $tipificacion,
-                ':observacion'          => $observacion,
-                ':login'                => $_SESSION['login'],
-                ':fecha_respuesta'      => $fecha_respuesta,
-                ':id_codigo_incompleto' => $id_codigo_incompleto,
-            ]);
+                $stmt->execute([
+                    ':tipificacion'         => $tipificacion,
+                    ':observacion'          => $observacion,
+                    ':login'                => $_SESSION['login'],
+                    ':fecha_respuesta'      => $fecha_respuesta,
+                    ':id_codigo_incompleto' => $id_codigo_incompleto,
+                ]);
 
-            if ($stmt->rowCount()) {
-                $response = ['type' => 'success', 'msg' => 'OK'];
-            } else {
-                $response = ['type' => 'Error', 'msg' => 'Ah ocurrido un error intentalo nuevamente'];
+                if ($stmt->rowCount()) {
+                    $response = ['state' => 1, 'type' => 'success', 'text' => 'Datos guardados'];
+                } else {
+                    $response = ['state' => 0,'type' => 'Error', 'text' => 'Ah ocurrido un error intentalo nuevamente'];
+                }
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());

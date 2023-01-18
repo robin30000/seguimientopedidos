@@ -180,7 +180,7 @@
                             <div class="panel-body">
 
                                 <div id="tntGridServices" ui-grid="gridOptions" ui-grid-exporter ui-grid-edit ui-grid-pagination
-                                     style="font-size: 12px;text-transform: lowercase; color: #0f0f0f;height: 500px" external-scopes="gridApi"></div>
+                                     style="font-size: 12px;text-transform: lowercase; color: #0f0f0f;height: 500px" external-scopes="userLog"></div>
 
                             </div>
                         </div>
@@ -203,10 +203,10 @@
                                     </li>
                                     <li>
                                         <input style="width:130px" type="text" name="fechaini" id="fechaini" class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
-                                               ng-model="Registros.fechaini" placeholder="Fecha Inicial" datetime-picker="" date-format="yyyy-MM-dd"> <i
+                                               ng-model="Registros.fechaini" placeholder="Fecha Inicial" datetime-picker="" date-only date-format="yyyy-MM-dd" autocomplete="off"> <i
                                             class="fa fa-calendar fa-fw"></i>
                                         <input style="width:130px" type="text" name="fechafin" id="fechafin" class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
-                                               ng-model="Registros.fechafin" placeholder="Fecha Final" datetime-picker="" date-format="yyyy-MM-dd"> <i
+                                               ng-model="Registros.fechafin" placeholder="Fecha Final" datetime-picker="" date-only date-format="yyyy-MM-dd" autocomplete="off"> <i
                                             class="fa fa-calendar fa-fw"></i>
 
                                         <button type="button"
@@ -227,7 +227,7 @@
                                         </button>
 
                                         <b>
-                                            <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs" ng-model="nivelacion.tarea" placeholder="Buscar Pedido">&nbsp;
+                                            <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs" ng-model="nivelacion.tarea" placeholder="Buscar Pedido" autocomplete="off">&nbsp;
 
                                             <button type="button" class="btn btn-default btn-xs" ng-click="buscarhistoricoNivelacion()" title="Buscar"
                                                     data-toggle="tooltip" data-placement="left" ng-disabled="loading">

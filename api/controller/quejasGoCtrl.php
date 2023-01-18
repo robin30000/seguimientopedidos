@@ -41,7 +41,7 @@ if (isset($data['method'])) {
         case 'registrarQuejaGo':
             require_once '../class/quejasGo.php';
             $user = new quejasGo();
-            $user->guardarQuejaGo($data['data']);
+            $user->registrarQuejaGo($data['data']);
             break;
         case 'ActualizarObserQuejasGo':
             require_once '../class/quejasGo.php';

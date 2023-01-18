@@ -125,13 +125,22 @@ class ModelFormaAsesores
     public function registros($data)
     {
 
+/*        buscar : "1-64153700303606"
+        concepto: "pedido"
+        fechafin: "2023-01-16"
+        fechaini: "2023-01-11"*/
+
         if (!empty($data['sort'])){
             $sort = $data['sort'];
             $fechaini = $sort['fechaini']; //CORRECCION DE VALIDACION DE FECHA
             $fechafin = $sort['fechafin']; //CORRECCION DE VALIDACION DE FECHA
+            $concepto = $sort['concepto'];
+            $buscar = $sort['buscar'];
+            $parametro = " and $concepto = '$buscar' ";
         }else{
             $fechaini = date("Y-m-d");
             $fechafin = date("Y-m-d");
+            $parametro = '';
         }
 
 
@@ -142,7 +151,7 @@ class ModelFormaAsesores
         try {
 
 
-            $stmt = $this->_DB->query("select count(*) as total from registros where fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59')");
+            $stmt = $this->_DB->query("select count(*) as total from registros where fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59') $parametro");
             $stmt->execute();
 
             $resCount   = $stmt->fetch(PDO::FETCH_OBJ);
@@ -160,10 +169,7 @@ class ModelFormaAsesores
             $total_pages = ceil($totalCount / $data['pageSize']);
 
             $limit_page = $data['pageSize'];
-
-            $parametro = '';
-
-
+            
             $stmt = $this->_DB->query("SELECT a.id, a.pedido, 
                                        (select nombre from tecnicos where a.id_tecnico = identificacion limit 1) tecnico, 
                                       trim(a.accion) AS accion, 
@@ -172,7 +178,7 @@ class ModelFormaAsesores
                                       a.observaciones, a.llamada_id, a.id_tecnico, a.empresa, a.despacho, a.producto, 
                                       a.accion, trim(a.tipo_pendiente) as tipo_pendiente, (select ciudad from tecnicos 
                                       where a.id_tecnico = identificacion limit 1) ciudad, a.plantilla 
-                                      FROM registros a where a.fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59')
+                                      FROM registros a where a.fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59') $parametro
                                       and asesor <> 'IVR' order by a.fecha DESC limit $initial_page, $limit_page ");
 
             $stmt->execute();

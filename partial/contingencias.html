@@ -28,7 +28,7 @@ table, th, td {
 }
 
 /*
-Full screen Modal 
+Full screen Modal
 */
 .fullscreen-modal .modal-dialog {
   margin: 0;
@@ -64,18 +64,13 @@ Full screen Modal
                     </ul>
                     <ul class="nav navbar-nav navbar-right" ng-show="pedidoguardado">
                         <span class="label label-success">{{mensaje}}</span>
-                    </ul>   
+                    </ul>
                 </div>
                 <div class = "panel-body">
                     <form  action=" " method="post" name="contact_form1" id="contact_form1">
                             <div class="row">
                                     <div class="col-md-3">
                                         <ul class="list-group" >
-                                            <div class="form-group" ng-class="{'has-error' : contact_form1.correo.$touched && contact_form1.correo.$invalid}">
-                                                <li class="list-group-item small" ><b>Correo: </b><br>
-                                                    <input class="btn btn-default btn-xs" placeholder="correo@dominio.com" type="text" ng-model="contingencias.correo" name="correo" capitalize required>
-                                                </li>
-                                            </div>
 
                                             <div class="form-group" ng-class="{'has-error' : contact_form1.pedido.$touched && contact_form1.pedido.$invalid}">
                                                 <li class="list-group-item small" ><b>Pedido: </b><br>
@@ -98,17 +93,17 @@ Full screen Modal
                                                 </li>
                                             </div>
 
-                                            <div class="form-group" ng-show="contingencias.producto == 'Internet' ||                                         contingencias.producto == 'Internet+ToIP' || 
-                                                                             contingencias.producto == 'ToIP' || 
+                                            <div class="form-group" ng-show="contingencias.producto == 'Internet' ||                                         contingencias.producto == 'Internet+ToIP' ||
+                                                                             contingencias.producto == 'ToIP' ||
                                                                              contingencias.producto == 'TV'">
-                            
+
                                                     <li class="list-group-item small" ><b>Contrato o identificador de servicio: </b><br>
                                                         <input class="btn btn-default btn-xs" placeholder="Contrato o Id" type="text" ng-model="contingencias.contrato" name="contrato">
                                                     </li>
                                             </div>
 
-                                            <div class="form-group" ng-show="contingencias.producto == 'Internet' ||                                         contingencias.producto == 'Internet+ToIP' || 
-                                                                             contingencias.producto == 'ToIP'|| 
+                                            <div class="form-group" ng-show="contingencias.producto == 'Internet' ||                                         contingencias.producto == 'Internet+ToIP' ||
+                                                                             contingencias.producto == 'ToIP'||
                                                                              contingencias.producto == 'TV'">
 
                                                     <li class="list-group-item small" ><b>Perfil, Plan o Equipment ID : </b>
@@ -125,7 +120,7 @@ Full screen Modal
 
                                     <div class="col-md-3">
                                         <ul class="list-group">
-                                            <div class="form-group" ng-class="{'has-error' : contact_form1.uen.$touched && contact_form1.uen.$invalid}">    
+                                            <div class="form-group" ng-class="{'has-error' : contact_form1.uen.$touched && contact_form1.uen.$invalid}">
                                                  <li class="list-group-item small" ><b>UEN:</b><br>
                                                     <select  class= "btn btn-default btn-xs grupo-select" name="uen"
                                                                     ng-model="contingencias.uen" capitalize required>
@@ -136,7 +131,7 @@ Full screen Modal
                                                 </li>
                                             </div>
 
-                                            <div class="form-group" ng-class="{'has-error' : contact_form1.proceso.$touched && contact_form1.proceso.$invalid}">    
+                                            <div class="form-group" ng-class="{'has-error' : contact_form1.proceso.$touched && contact_form1.proceso.$invalid}">
                                                  <li class="list-group-item small" ><b>Proceso: </b><br>
                                                     <select  class= "btn btn-default btn-xs grupo-select"
                                                                     name="proceso"
@@ -148,7 +143,7 @@ Full screen Modal
                                                 </li>
                                             </div>
 
-                                            <div class="form-group" ng-class="{'has-error' : contact_form1.tecnologia.$touched && contact_form1.tecnologia.$invalid}" ng-show="contingencias.producto == 'TV' ">    
+                                            <div class="form-group" ng-class="{'has-error' : contact_form1.tecnologia.$touched && contact_form1.tecnologia.$invalid}" ng-show="contingencias.producto == 'TV' ">
                                                  <li class="list-group-item small" ><b>Tecnología: </b><br>
                                                     <select  class= "btn btn-default btn-xs grupo-select"
                                                                     name="tecnologia"
@@ -163,7 +158,7 @@ Full screen Modal
                                             </div>
 
 
-                                           <div class="form-group" ng-class="{'has-error' : contact_form1.tecnologia.$touched && contact_form1.tecnologia.$invalid}" ng-show="contingencias.producto == 'Internet+ToIP'">   
+                                           <div class="form-group" ng-class="{'has-error' : contact_form1.tecnologia.$touched && contact_form1.tecnologia.$invalid}" ng-show="contingencias.producto == 'Internet+ToIP'">
                                                  <li class="list-group-item small" ><b>Tecnología: </b><br>
                                                     <select  class= "btn btn-default btn-xs grupo-select"
                                                                     name="tecnologia"
@@ -175,7 +170,7 @@ Full screen Modal
                                             </div>
 
 
-                                           <div class="form-group" ng-class="{'has-error' : contact_form1.tecnologia.$touched && contact_form1.tecnologia.$invalid}" ng-show="contingencias.producto == 'ToIP' || contingencias.producto == 'Internet'">    
+                                           <div class="form-group" ng-class="{'has-error' : contact_form1.tecnologia.$touched && contact_form1.tecnologia.$invalid}" ng-show="contingencias.producto == 'ToIP' || contingencias.producto == 'Internet'">
                                                  <li class="list-group-item small" ><b>Tecnología: </b><br>
                                                     <select  class= "btn btn-default btn-xs grupo-select"
                                                                     name="tecnologia"
@@ -186,15 +181,15 @@ Full screen Modal
                                                     </select>
                                                 </li>
                                             </div>
-                                            
 
 
-                                            <div class="form-group" ng-class="{'has-error' : contact_form1.accion.$touched && contact_form1.accion.$invalid}" ng-show="contingencias.producto == 'TV' && contingencias.tecnologia == 'HFC' || contingencias.tecnologia == 'GPON'">  
+
+                                            <div class="form-group" ng-class="{'has-error' : contact_form1.accion.$touched && contact_form1.accion.$invalid}" ng-show="contingencias.producto == 'TV' && contingencias.tecnologia == 'HFC' || contingencias.tecnologia == 'GPON'">
                                                  <li class="list-group-item small" ><b>Acción a ejecutar: </b><br>
                                                     <select  class= "btn btn-default btn-xs grupo-select"
                                                                     name="accion"
-                                                                    id="idaccionTVHFCGPON"  
-                                                                    ng-model="contingencias.accion" 
+                                                                    id="idaccionTVHFCGPON"
+                                                                    ng-model="contingencias.accion"
                                                                     onchange="fn_popup1()" capitalize required>
                                                             <option value="" disabled>Seleccione</option>
                                                             <option value="Contingencia" >Aprov. Contingencia</option>
@@ -206,12 +201,12 @@ Full screen Modal
                                                 </li>
                                             </div>
 
-                                            <div class="form-group" ng-class="{'has-error' : contact_form1.accion.$touched && contact_form1.accion.$invalid}" ng-show="contingencias.producto == 'TV' && contingencias.tecnologia == 'Cobre'">  
+                                            <div class="form-group" ng-class="{'has-error' : contact_form1.accion.$touched && contact_form1.accion.$invalid}" ng-show="contingencias.producto == 'TV' && contingencias.tecnologia == 'Cobre'">
                                                  <li class="list-group-item small" ><b>Acción a ejecutar: </b><br>
                                                     <select  class= "btn btn-default btn-xs grupo-select"
                                                                     name="accion"
-                                                                    id="idaccionTVCobre"    
-                                                                    ng-model="contingencias.accion" 
+                                                                    id="idaccionTVCobre"
+                                                                    ng-model="contingencias.accion"
                                                                     onchange="fn_popup2()" capitalize required>
                                                             <option value="" disabled>Seleccione</option>
                                                             <option value="Contingencia" >Aprov. Contingencia</option>
@@ -225,12 +220,12 @@ Full screen Modal
 
 
 
-                                            <div class="form-group" ng-class="{'has-error' : contact_form1.accion.$touched && contact_form1.accion.$invalid}" ng-show="contingencias.producto == 'TV' && contingencias.tecnologia == 'DTH'">    
+                                            <div class="form-group" ng-class="{'has-error' : contact_form1.accion.$touched && contact_form1.accion.$invalid}" ng-show="contingencias.producto == 'TV' && contingencias.tecnologia == 'DTH'">
                                                  <li class="list-group-item small" ><b>Acción a ejecutar: </b><br>
                                                     <select  class= "btn btn-default btn-xs grupo-select"
                                                                     name="accion"
-                                                                    id="idaccionTVDTH"  
-                                                                    ng-model="contingencias.accion" 
+                                                                    id="idaccionTVDTH"
+                                                                    ng-model="contingencias.accion"
                                                                     onchange="fn_popup3()" capitalize required>
                                                             <option value="" disabled>Seleccione</option>
                                                             <option value="Crear Espacio">Crear Espacio</option>
@@ -241,12 +236,12 @@ Full screen Modal
                                                 </li>
                                             </div>
 
-                                            <div class="form-group" ng-class="{'has-error' : contact_form1.accion.$touched && contact_form1.accion.$invalid}" ng-show="contingencias.producto == 'Internet'">   
+                                            <div class="form-group" ng-class="{'has-error' : contact_form1.accion.$touched && contact_form1.accion.$invalid}" ng-show="contingencias.producto == 'Internet'">
                                                  <li class="list-group-item small" ><b>Acción a ejecutar: </b><br>
                                                     <select  class= "btn btn-default btn-xs grupo-select"
                                                                     name="accion"
-                                                                    id="idaccionINTTOIP"    
-                                                                    ng-model="contingencias.accion" 
+                                                                    id="idaccionINTTOIP"
+                                                                    ng-model="contingencias.accion"
                                                                     onchange="fn_popup4()" capitalize required>
                                                             <option value="" disabled>Seleccione</option>
                                                             <option value="Contingencia" >Aprov. Contingencia</option>
@@ -257,12 +252,12 @@ Full screen Modal
                                                 </li>
                                             </div>
 
-                                            <div class="form-group" ng-class="{'has-error' : contact_form1.accion.$touched && contact_form1.accion.$invalid}" ng-show="contingencias.producto == 'Internet+ToIP' || contingencias.producto == 'ToIP'">  
+                                            <div class="form-group" ng-class="{'has-error' : contact_form1.accion.$touched && contact_form1.accion.$invalid}" ng-show="contingencias.producto == 'Internet+ToIP' || contingencias.producto == 'ToIP'">
                                                  <li class="list-group-item small" ><b>Acción a ejecutar: </b><br>
                                                     <select  class= "btn btn-default btn-xs grupo-select"
                                                                     name="accion"
-                                                                    id="idaccionINTTOIP"    
-                                                                    ng-model="contingencias.accion" 
+                                                                    id="idaccionINTTOIP"
+                                                                    ng-model="contingencias.accion"
                                                                     onchange="fn_popup4()" capitalize required>
                                                             <option value="" disabled>Seleccione</option>
                                                             <option value="Contingencia" >Aprov. Contingencia</option>
@@ -277,12 +272,12 @@ Full screen Modal
                                                 </li>
                                             </div>
 
-                                            <!-- <div class="form-group" ng-class="{'has-error' : contact_form1.accion.$touched && contact_form1.accion.$invalid}" ng-show="contingencias.producto == 'ToIP'">  
+                                            <!-- <div class="form-group" ng-class="{'has-error' : contact_form1.accion.$touched && contact_form1.accion.$invalid}" ng-show="contingencias.producto == 'ToIP'">
                                                  <li class="list-group-item small" ><b>Acción a ejecutar: </b><br>
                                                     <select  class= "btn btn-default btn-xs grupo-select"
                                                                     name="accion"
-                                                                    id="idaccionTOIP"   
-                                                                    ng-model="contingencias.accion" 
+                                                                    id="idaccionTOIP"
+                                                                    ng-model="contingencias.accion"
                                                                     onchange="fn_popup5()" capitalize required>
                                                             <option value="" disabled>Seleccione</option>
                                                             <option value="Registros ToIP" >Envío de registros ToIP</option>
@@ -294,7 +289,7 @@ Full screen Modal
 
 
 
-                                            <div class="form-group" ng-class="{'has-error' : contact_form1.motivo.$touched && contact_form1.motivo.$invalid}" ng-show="contingencias.proceso == 'Instalación'" ng-switch="contingencias.accion"> 
+                                            <div class="form-group" ng-class="{'has-error' : contact_form1.motivo.$touched && contact_form1.motivo.$invalid}" ng-show="contingencias.proceso == 'Instalación'" ng-switch="contingencias.accion">
                                                  <li class="list-group-item small" ng-switch-when="Contingencia|Cambio de equipo|Corregir portafolio|Registros ToIP|Refresh|crear cliente|Crear Espacio"
                                                  ng-switch-when-separator="|"><b>Motivo: </b><br>
                                                     <select  class= "btn btn-default btn-xs grupo-select"
@@ -309,10 +304,10 @@ Full screen Modal
                                                             <option value="Envió registros" >Envió registros</option>
                                                     </select>
                                                 </li>
-                                            </div> 
+                                            </div>
 
 
-                                            <div class="form-group" ng-class="{'has-error' : contact_form1.motivo.$touched && contact_form1.motivo.$invalid}" ng-show="contingencias.proceso == 'Reparacion'" ng-switch="contingencias.accion">  
+                                            <div class="form-group" ng-class="{'has-error' : contact_form1.motivo.$touched && contact_form1.motivo.$invalid}" ng-show="contingencias.proceso == 'Reparacion'" ng-switch="contingencias.accion">
                                                  <li class="list-group-item small" ng-switch-when="Contingencia|Cambio de equipo|Corregir portafolio|Registros ToIP|Refresh|crear cliente|Crear Espacio"
                                                  ng-switch-when-separator="|"><b>Motivo: </b><br>
                                                     <select  class= "btn btn-default btn-xs grupo-select"
@@ -327,7 +322,7 @@ Full screen Modal
                                                             <option value="Envió registros" >Envió registros</option>
                                                     </select>
                                                 </li>
-                                            </div> 
+                                            </div>
 
 
 
@@ -337,7 +332,7 @@ Full screen Modal
 
                                     <div class="col-md-3">
                                             <ul class="list-group">
-                                            
+
                                            <div class="form-group" ng-class="{'has-error' : contact_form1.tipoEquipo.$touched && contact_form1.tipoEquipo.$invalid}" ng-show="contingencias.producto == 'TV' && contingencias.tecnologia == 'HFC' " ng-switch="contingencias.accion">
                                              <li class="list-group-item small" ng-switch-when="Contingencia|Cambio de equipo|Corregir portafolio|Registros ToIP|Refresh|crear cliente|Crear Espacio"
                                                  ng-switch-when-separator="|"><b>Tipo Equipo: </b><br>
@@ -439,7 +434,7 @@ Full screen Modal
 
 
 
-                                            <div class="form-group" ng-class="{'has-error' : contact_form1.ciudad.$touched && contact_form1.ciudad.$invalid}">  
+                                            <div class="form-group" ng-class="{'has-error' : contact_form1.ciudad.$touched && contact_form1.ciudad.$invalid}">
                                                  <li class="list-group-item small" ><b>Ciudad: </b><br>
                                                     <select ng-model="contingencias.ciudad" name="ciudad" class="btn btn-default btn-xs grupo-select" capitalize required>
                                                         <option ng-repeat="f in ciudadesContingencias"
@@ -448,7 +443,7 @@ Full screen Modal
                                                         </option>
                                                     </select>
                                                 </li>
-                                            </div> 
+                                            </div>
 
 
                                             <div class="form-group" ng-class="{'has-error' : contact_form1.macEntra.$touched && contact_form1.macEntra.$invalid}" ng-switch="contingencias.accion">
@@ -476,22 +471,22 @@ Full screen Modal
                                                     </div>
                                                 </li>
                                             </div>
-                                                
-                                            <div class="form-group" ng-class="{'has-error' : contact_form1.paquetes.$touched && contact_form1.paquetes.$invalid}" ng-switch="contingencias.accion" ng-show="contingencias.producto == 'TV'">  
+
+                                            <div class="form-group" ng-class="{'has-error' : contact_form1.paquetes.$touched && contact_form1.paquetes.$invalid}" ng-switch="contingencias.accion" ng-show="contingencias.producto == 'TV'">
                                                  <li class="list-group-item small" ng-switch-when="Contingencia|Cambio de equipo|Corregir portafolio|Registros ToIP|Refresh|crear cliente|Crear Espacio"
                                                      ng-switch-when-separator="|"><b>Paquetes a aprovisionar: </b><br>
-                                                    <select style="width:180px" multiple 
-                                                    class="btn btn-default btn-xs !important" 
-                                                    ui-select2="groupSetup" 
+                                                    <select style="width:180px" multiple
+                                                    class="btn btn-default btn-xs !important"
+                                                    ui-select2="groupSetup"
                                                     name="paquetes"
-                                                    ng-model="contingencias.paquetes" 
+                                                    ng-model="contingencias.paquetes"
                                                     data-placeholder="Seleccione los paquetes..." >
                                                     <option ng-repeat="group1 in paquetescontingencias" value="{{group1.CONCEPTO}}">{{group1.CONCEPTO}}</option>
                                                   </select>
                                                 </li>
                                             </div>
 
-                                            <div class="form-group" ng-show="contingencias.producto == 'Internet+ToIP' || 
+                                            <div class="form-group" ng-show="contingencias.producto == 'Internet+ToIP' ||
                                                                              contingencias.producto == 'ToIP'">
 
                                                     <li class="list-group-item small" ><b>Número de la Línea: </b>
@@ -505,7 +500,7 @@ Full screen Modal
 
                                     <div class="col-md-3">
                                             <ul class="list-group">
-                                             <div class="form-group" ng-class="{'has-error' : contact_form1.remite.$touched && contact_form1.remite.$invalid}"> 
+                                             <div class="form-group" ng-class="{'has-error' : contact_form1.remite.$touched && contact_form1.remite.$invalid}">
                                              <li class="list-group-item small" ><b>Remitente: </b><br>
                                                 <select  class= "btn btn-default btn-xs grupo-select"
                                                                 name="remite"
@@ -520,7 +515,7 @@ Full screen Modal
                                             </li>
                                             </div>
                                               <label for="observacion">Observación:</label>
-                                                <div class="form-group" ng-class="{'has-error' : contact_form1.observacion.$touched && contact_form1.observacion.$invalid}">    
+                                                <div class="form-group" ng-class="{'has-error' : contact_form1.observacion.$touched && contact_form1.observacion.$invalid}">
                                                 <textarea
                                                         name="observacion"
                                                         class="form-control"
@@ -529,7 +524,7 @@ Full screen Modal
                                                         ng-model="contingencias.observacion" capitalize required>
                                                 </textarea>
                                                 </div>
-                                            </ul>   
+                                            </ul>
                                             <ul class="nav navbar-nav navbar-right">
                                                 <li>
                                                 <button type="button" ng-disabled="contact_form1.$invalid" class="btn btn-primary btn-xs" ng-click="BuscarPedidoContingencia()">
@@ -538,9 +533,9 @@ Full screen Modal
                                             </ul>
                                         </div>
                             </div>
-                        </form> 
+                        </form>
                     </div>
-                </div>  
+                </div>
             </div>
 
             <div class="col-md-3">
@@ -549,7 +544,7 @@ Full screen Modal
                         <div class = "panel panel-default">
                             <div class = "panel-heading nav navbar-default">
                                 <b> Buscar histórico del pedido:</b>
-                            </div>                                   
+                            </div>
                             <div class = "panel-heading nav navbar-default" >
                                 <ul class="list-group small" >
                                     <ul class="nav navbar-nav navbar-left" ng-hide="formulario">
@@ -565,7 +560,7 @@ Full screen Modal
                                         </li>
                                     </ul>
                                 </ul>
-                            </div> 
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -580,7 +575,7 @@ Full screen Modal
                     <div class="modal-content" >
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Histórico del pedido en contigencias:</h4>       
+                            <h4 class="modal-title">Histórico del pedido en contigencias:</h4>
                         </div>
                         <div class="modal-body">
                             <div class="panel panel-default">
@@ -597,7 +592,7 @@ Full screen Modal
                                                 <th><center>Motivo</center></th>
                                                 <th><center>Proceso</center></th>
                                                 <th><center>Producto</center></th>
-                                                <th><center>Contrato</center></th>                                        
+                                                <th><center>Contrato</center></th>
                                                 <th><center>Perfil</center></th>
                                                 <th><center>Hora ingreso</center></th>
                                             </tr>
@@ -626,7 +621,7 @@ Full screen Modal
                                                 </th>
                                             </tr>
                                         <thead>
-                                            <tr>                                        
+                                            <tr>
                                                 <th><center>Login Despacho</center></th>
                                                 <th><center>Login Contingencia Corregir Portatafolio</center></th>
                                                 <th><center>Hora Contingencia Corregir Portatafolio</center></th>
@@ -642,7 +637,7 @@ Full screen Modal
                                         </thead>
                                         <tbody>
                                             <tr ng-repeat="data in databsucarPedido">
-                                                                                           
+
                                                 <td><center>{{data.logindepacho}}</center></td>
                                                 <td><center>{{data.loginContingenciaPortafolio}}</center></td>
                                                 <td><center>{{data.horaContingenciaPortafolio}}</center></td>
@@ -654,7 +649,7 @@ Full screen Modal
                                                 <td><center>{{data.acepta}}</center></td>
                                                 <td><center>{{data.aceptaPortafolio}}</center></td>
                                                 <td>
-                                                    <!-- data-trigger="hover" para que el popover aparezca y desaparezca -->                                            
+                                                    <!-- data-trigger="hover" para que el popover aparezca y desaparezca -->
                                                     <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover data-placement="left" data-html="true" data-selector="" title="Observacion ingreso" data-content="{{data.observacion}}">
                                                     <i class="fa fa-commenting" aria-hidden="true"></i>
                                                     </button>
@@ -669,13 +664,13 @@ Full screen Modal
                                         </tbody>
                                     </table>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" ng-disabled="contact_form.$invalid" class="btn btn-info" data-dismiss="modal">Cerrar</button>
                         </div>
                     </div>
-                </div>         
+                </div>
             </div>
 
                 <div class="col-md-3">
@@ -685,16 +680,16 @@ Full screen Modal
                                     <div class = "panel-heading nav navbar-default">
                                         <b> En gestión</b>
                                     </div>
-                                    
+
                                     <div class = "panel-heading nav navbar-default" >
                                         <!-- CAMBIO DE LA COLUMNA 10 A 13 PARA AMPLIAR LA VISTA DE LA GESTION -->
                                         <div class="col-md-13 col-md-offset-1">
                                             <ul class="list-group small" >
-                                                <!-- SE AGREGA EL NUEVO VALOR DE LA LLAVE aceptaPortafolio, observContingenciaPortafolio --> 
+                                                <!-- SE AGREGA EL NUEVO VALOR DE LA LLAVE aceptaPortafolio, observContingenciaPortafolio -->
                                                 <h5><a href=""  ng-repeat="data in pedidosEngestion" class="list-group-item "><span ng-class="{'label label-success': data.acepta == 'Acepta', 'labelPortafolio label-labelPortafolioOK': data.aceptaPortafolio == 'Acepta', 'label label-danger': data.acepta == 'Rechaza', 'labelPortafolio label-labelPortafolioRCH': data.aceptaPortafolio == 'Rechaza', 'label label-warning': data.acepta == 'Pendiente' && data.aceptaPortafolio == 'Pendiente'}">
                                                         {{data.pedido}}</span>
                                                         <button type="button" ng-hide = "data.acepta == 'Pendiente' && data.aceptaPortafolio == 'Pendiente' && data.aceptaPortafolio == 'Acepta'" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover data-trigger="hover" data-placement="top" data-html="true" title="Observaciones (TV/Int-ToIp)" data-selector="" data-content="{{data.observContingencia}}"><i class="fa fa-commenting" aria-hidden="true"></i></button>
-                                                        
+
                                                         <button type="button" ng-hide = "data.acepta == 'Pendiente' && data.aceptaPortafolio == 'Pendiente' && data.aceptaPortafolio == 'Acepta'" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover data-trigger="hover" data-placement="top" data-html="true" title="Observaciones (C.P)" data-selector="" data-content="{{data.observContingenciaPortafolio}}"><i class="fa fa-commenting" aria-hidden="true"></i></button>
 
                                                         <button type="button" ng-click="CancelarContingencia(data)" ng-hide =  "data.engestion == '1'" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover data-trigger="hover" data-placement="top" data-html="true" title="Cancelar Contingencia:" data-selector="" data-content="Al presionar el botón se eliminará la contingencia, siempre y cuando ésta no haya iniciado gestión por parte del personal encargado">Cancelar</button>
@@ -712,16 +707,16 @@ Full screen Modal
                                         <h5>
                                             <span class="labelPortafolioRCH label-labelPortafolioRCH">Rechazado corregir portafolio: {{contingenciaNOCP}}</span>
                                         </h5>
-                                    </div>  
+                                    </div>
                                 </div>
                             </div>
                         </div>
                 </div>
 
-            <div class="col-md-9">
+            <!--<div class="col-md-9">
                 <div class="row">
                                 <div class="help-block" ng-messages="contact_form1.pedido.$error">
-                                    
+
                                     <div class="col-md-4" >
 
                                             <div class="alert alert-warning" ng-show="contact_form1.correo.$error.required">
@@ -756,11 +751,11 @@ Full screen Modal
 
                                     </div>
 
-                                    <div class="col-md-4" > 
+                                    <div class="col-md-4" >
 
                                             <div class="alert alert-warning" ng-show="contact_form1.tipoEquipo.$error.required">
                                                   <strong>Error! </strong> El Tipo equipo es requerido.
-                                            </div>  
+                                            </div>
                                             <div class="alert alert-warning" ng-show="contact_form1.ciudad.$error.required">
                                                   <strong>Error! </strong> El campo ciudad es requerido.
                                             </div>
@@ -784,10 +779,10 @@ Full screen Modal
 
                                 </div>
                 </div>
-            </div>
+            </div>-->
     </div>
-</div>  
+</div>
 
 
 <br>
-<br>    
+<br>

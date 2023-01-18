@@ -15,10 +15,10 @@ class modelQuejasGo
 
         try {
 
-            if (!empty($data['sort'])){
+            if (!empty($data['sort'])) {
                 $fechaini = $data['sort']['fechaini'];
                 $fechafin = $data['sort']['fechafin'];
-            }else{
+            } else {
                 $fechaini = date('Y-m-d');
                 $fechafin = date('Y-m-d');
             }
@@ -35,7 +35,7 @@ class modelQuejasGo
             if (is_numeric($data['curPage'])) {
                 $page_number = $data['curPage'];
             } else {
-                $page_number = 1;
+                $page_number      = 1;
                 $data['pageSize'] = 50;
             }
 
@@ -53,7 +53,7 @@ class modelQuejasGo
                                                     ORDER BY fecha DESC limit $initial_page, $pageSize");
             $stmt->execute();
 
-            if ($stmt->rowCount()){
+            if ($stmt->rowCount()) {
                 $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $response = ['state' => 1, 'data' => $result, 'total' => $total_pages, 'counter' => intval($totalCount)];
             } else {
@@ -75,9 +75,9 @@ class modelQuejasGo
 
             session_start();
 
-            $usuarioid       = $_SESSION['login'];
-            $fechaini        = $data['fechaini'];
-            $fechafin        = $data['fechafin'];
+            $usuarioid = $_SESSION['login'];
+            $fechaini  = $data['fechaini'];
+            $fechafin  = $data['fechafin'];
 
             if ($fechaini == "" && $fechafin == "") {
                 $fechaini = date('Y-m-d');
@@ -99,21 +99,21 @@ class modelQuejasGo
 
             } else {*/
 
-                $stmt = $this->_DB->prepare("	SELECT g.id, g.pedido, g.cliente, g.cedtecnico, g.tecnico, g.accion, g.asesor, g.fecha, g.duracion, g.region, g.idllamada, g.observacion
+            $stmt = $this->_DB->prepare("	SELECT g.id, g.pedido, g.cliente, g.cedtecnico, g.tecnico, g.accion, g.asesor, g.fecha, g.duracion, g.region, g.idllamada, g.observacion
 								FROM quejasgo g
 									WHERE 1=1
 									AND g.fecha BETWEEN (:fechaini) AND (:fechafin)
 						");
 
-                $stmt->execute([
-                    ':fechaini'        => "$fechaini 00:00:00",
-                    ':fechafin'        => "$fechafin 23-59-59"
-                ]);
+            $stmt->execute([
+                ':fechaini' => "$fechaini 00:00:00",
+                ':fechafin' => "$fechafin 23-59-59",
+            ]);
 
-           // }
+            // }
 
             if ($stmt->rowCount()) {
-                $counter  = $stmt->rowCount();
+                $counter = $stmt->rowCount();
 
                 $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -270,4 +270,73 @@ class modelQuejasGo
         $this->_BD = null;
         echo json_encode($response);
     }
+
+    public function registrarQuejaGo($params)
+    {
+        try {
+            session_start();
+            $datos = $params['dataquejago'];
+
+            if (!$_SESSION) {
+                $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
+            } elseif (!isset($params['duracion']) || $params['duracion'] == '') {
+                $response = ['state' => 0, 'text' => 'El campo duración es requerido'];
+            } elseif (!isset($datos['pedido']) || $datos['pedido'] == '') {
+                $response = ['state' => 0, 'text' => 'El campo pedido es requerido'];
+            } elseif (!isset($datos['cliente']) || $datos['cliente'] == '') {
+                $response = ['state' => 0, 'text' => 'El campo cliente es requerido'];
+            } elseif (!isset($datos['cedtecnico']) || $datos['cedtecnico'] == '') {
+                $response = ['state' => 0, 'text' => 'El campo documento tecnico es requerido'];
+            } elseif (!isset($datos['tecnico']) || $datos['tecnico'] == '') {
+                $response = ['state' => 0, 'text' => 'El campo tecnico es requerido'];
+            } elseif (!isset($datos['region']) || $datos['region'] == '') {
+                $response = ['state' => 0, 'text' => 'El campo region es requerido'];
+            } elseif (!isset($datos['idllamada']) || $datos['idllamada'] == '') {
+                $response = ['state' => 0, 'text' => 'El campo id llamada es requerido'];
+            } elseif (!isset($datos['observacion']) || $datos['observacion'] == '') {
+                $response = ['state' => 0, 'text' => 'Ingrese alguna observacion'];
+            } else {
+
+                $duracion    = $params['duracion'];
+                $asesor      = $_SESSION['login'];
+                $pedido      = $datos['pedido'];
+                $cliente     = $datos['cliente'];
+                $cedtecnico  = $datos['cedtecnico'];
+                $tecnico     = $datos['tecnico'];
+                $accion      = $datos['accion'];
+                $region      = $datos['region'];
+                $idllamada   = $datos['idllamada'];
+                $observacion = $datos['observacion'];
+
+                $stmt = $this->_DB->prepare("INSERT INTO quejasgo (pedido, cliente, cedtecnico, tecnico, accion, asesor, fecha, duracion, region, idllamada, observacion) VALUES
+						(:pedido, UPPER(TRIM(:cliente)), :cedtecnico, :tecnico, :accion, :asesor, NOW(), :duracion, :region, :idllamada, :observacion)");
+
+                $stmt->execute([
+                    ':pedido'      => $pedido,
+                    ':cliente'     => $cliente,
+                    ':cedtecnico'  => $cedtecnico,
+                    ':tecnico'     => $tecnico,
+                    ':accion'      => $accion,
+                    ':asesor'      => $asesor,
+                    ':duracion'    => $duracion,
+                    ':region'      => $region,
+                    ':idllamada'   => $idllamada,
+                    ':observacion' => $observacion,
+                ]);
+
+
+                if ($stmt->rowCount() == 1) {
+                    $response = ['state' => 1, 'text' => 'Datos guardados correctamente'];
+                } else {
+                    $response = ['state' => 0, 'text' => 'Ha ocurrido un error intento intentalo nuevamente'];
+                }
+            }
+
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+        $this->_DB = null;
+        echo json_encode($response);
+    }
+
 }

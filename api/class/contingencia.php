@@ -157,4 +157,25 @@ class contingencia
     public function marcarengestion($data){
         $this->_model->marcarengestion($data);
     }
+
+    public function datosgestioncontingenciasTv($data){
+        $this->_model->datosgestioncontingenciasTv($data);
+    }
+
+    public function datosgestioncontingenciasInternet($data){
+        $this->_model->datosgestioncontingenciasInternet($data);
+    }
+
+    public function datosgestioncontingenciasPortafolio($data){
+        $this->_model->datosgestioncontingenciasPortafolio($data);
+    }
+
+    public function registrosContingencias($data){
+        $this->_model->registrosContingencias($data);
+    }
+
+    public function registrosContingenciasCsv($data){
+        $this->_model->registrosContingenciasCsv($data);
+    }
+
 }

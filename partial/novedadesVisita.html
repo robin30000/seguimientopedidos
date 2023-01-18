@@ -47,6 +47,10 @@
 													ng-disabled="loading" title="Exportar" tooltip data-placement="top">
 												<i class="fa fa-cloud-download" aria-hidden="true"> </i>
 											</button>
+
+											<div data-ng-if="loading">
+												<img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif"/>
+											</div>
 										</ul>
 									</div>
 									<!--<div class="col-xs-3 marg"><i>Buscar:</i>

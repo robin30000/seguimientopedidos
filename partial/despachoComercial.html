@@ -13,7 +13,7 @@
 						<div class="col-md-1 col-xs-1 ">
 							<div data-ng-if="loading">
 								<img title="Esperando respuesta" data-toggle="tooltip" data-placement="top" src="img/loader.gif" />
-							</div>				
+							</div>
 						</div>
 						</li>
 					</ul>
@@ -24,7 +24,7 @@
                 <ul class="list-group" >
           			<div class="col-md-4">
                        	<li class="list-group-item small" ><b>PEDIDO ACTUAL:</b>
-                       	<div class="btn-group">	
+                       	<div class="btn-group">
                        		<input type="text" ng-model="FormComercial.PEDIDO_ACTUAL" class="btn btn-default btn-xs" name="pedidoActual" type="text" style="width:220px">
                         	<button type="button" class="btn btn-success btn-xs" ng-click="buscarPedido(FormComercial.PEDIDO_ACTUAL)" ng-disabled="loading" tooltip title="Buscar Pedido" ><i class="fa fa-search-plus" aria-hidden="true"> </i></button>
 						</div>
@@ -37,10 +37,10 @@
 									{{f.CIUDAD}}
 								</option>
 								</select>
-                        	</li>     
+                        	</li>
            			</div>
                     <div class="col-md-4">
-                       	<li class="list-group-item small" ><b>GESTIÓN:</b>   
+                       	<li class="list-group-item small" ><b>GESTIÓN:</b>
 							<select class= "btn btn-default btn-xs grupo-select" style="width:220px"
 									name="Gestion" placeholder="Seleccione el proceso.."
 									ng-model="FormComercial.GESTION"
@@ -48,22 +48,22 @@
 								<option ng-repeat="d in listadoGestion"
 										value="{{d.GESTION}}">
 										{{d.GESTION}}
-								</option>	
+								</option>
 							</select>
 						</li>
-						<li class="list-group-item small" ng-show="validarclasificacion"><b>CLASIFICACIÓN:</b><select 
+						<li class="list-group-item small" ng-show="validarclasificacion"><b>CLASIFICACIÓN:</b><select
 								style="width:220px"
 								class= "btn btn-default btn-xs grupo-select"
 								placeholder="Seleccione la clasificación.."
 								ng-model="FormComercial.CLASIFICACION">
-								<option 
+								<option
 								ng-repeat="d in listadoClasificacion" value="{{d.CLASIFICACION}}">
 									{{d.CLASIFICACION}}
 								</option>
 							</select>
 						</li>
-						<li class="list-group-item small" ng-show="validarestado"><b>ESTADO:</b>       
-							<select 
+						<li class="list-group-item small" ng-show="validarestado"><b>ESTADO:</b>
+							<select
 									style="width:220px"
 									class= "btn btn-default btn-xs grupo-select"
 									placeholder="Seleccione un estado.."
@@ -81,7 +81,7 @@
 												<label for="observaciones">Observación:</label>
 												<textarea
 												class="form-control"
-												ng-model="FormComercial.OBSERVACIONES" 
+												ng-model="FormComercial.OBSERVACIONES"
 												name="observaciones">
 												</textarea>
 								</li>
@@ -95,16 +95,16 @@
 										<!--Ver registros-->
 										<button type="button" class="btn btn-success btn-xs" value="Guardar" ng-click="guardarPedidoComercial(FormComercial)">
 										<span class="fa fa-floppy-o" aria-hidden="true"></span> Guardar</button>
-										<a type="button" class="btn btn-warning btn-xs" value="Ver Registros" href="#!/registrosComercial">
+										<a type="button" class="btn btn-warning btn-xs" value="Ver Registros" href="registrosComercial">
 											<span class="fa fa-list" aria-hidden="true"></span> Ver Registros</a>
 										</div>
 										</li>
-									</ul>	
+									</ul>
 						</div>
 					</ul>
               	</div>
          	</div>
-         </div>			
+         </div>
 		</div>
 	</div>
 	</div>

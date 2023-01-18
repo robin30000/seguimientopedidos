@@ -5,7 +5,7 @@ header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
 header('Access-Control-Max-Age: 1000');
 header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token , Authorization');
 
-$data = json_decode(file_get_contents("php://input"),true);
+$data = json_decode(file_get_contents("php://input"), true);
 
 if (isset($data['method'])) {
     switch ($data['method']) {
@@ -75,10 +75,37 @@ if (isset($data['method'])) {
             $user->graficaAcumuladosrepa($data['data']);
             break;
 
-            case 'marcarengestion':
+        case 'marcarengestion':
             require_once '../class/contingencia.php';
             $user = new contingencia();
             $user->marcarengestion($data['data']);
+            break;
+
+        case 'datosgestioncontingenciasTv':
+            require_once '../class/contingencia.php';
+            $user = new contingencia();
+            $user->datosgestioncontingenciasTv($data['data']);
+            break;
+
+        case 'datosgestioncontingenciasInternet':
+            require_once '../class/contingencia.php';
+            $user = new contingencia();
+            $user->datosgestioncontingenciasInternet($data['data']);
+            break;
+        case 'datosgestioncontingenciasPortafolio':
+            require_once '../class/contingencia.php';
+            $user = new contingencia();
+            $user->datosgestioncontingenciasPortafolio($data['data']);
+            break;
+        case 'registrosContingencias':
+            require_once '../class/contingencia.php';
+            $user = new contingencia();
+            $user->registrosContingencias($data['data']);
+            break;
+        case 'registrosContingenciasCsv':
+            require_once '../class/contingencia.php';
+            $user = new contingencia();
+            $user->registrosContingenciasCsv($data['data']);
             break;
 
         default:

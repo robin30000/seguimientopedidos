@@ -1,6 +1,6 @@
 <?php
 require_once '../class/conection.php';
-
+ini_set('display_errors', 1);
 class modelOtrosServicios
 {
     private $_DB;
@@ -1231,15 +1231,28 @@ class modelOtrosServicios
             $resCount   = $stmt->fetch(PDO::FETCH_OBJ);
             $totalCount = $resCount->total;
 
+            if (!empty($data['sort'])) {
+                if ($data['pageSize'] === 'identificacion') {
+                    $identificacion = $data['sort'];
+                    $variable       = "and identificacion = '$identificacion' ";
+                } else {
+                    $login_click = $data['sort'];
+                    $variable    = " and login_click = '$login_click' ";
+                }
+            } else {
+                $variable = "";
+            }
+
             if (isset($data['curPage'])) {
                 $page_number = $data['curPage'];
             } else {
                 $page_number = 1;
+                $data['pageSize'] = 200;
             }
 
             $initial_page = ($page_number - 1) * $data['pageSize'];
-            $total_pages = ceil($totalCount / $data['pageSize']);
-            $limit_page = $data['pageSize'];
+            $total_pages  = ceil($totalCount / $data['pageSize']);
+            $limit_page   = $data['pageSize'];
 
             /*$pagina = $pagina * 100;
 
@@ -1253,10 +1266,10 @@ class modelOtrosServicios
                 $parametro = " and celular = '$tecnico'";
             };*/
 
-            $query = $this->_DB->query("select a.ID, a.IDENTIFICACION, a.NOMBRE, a.CIUDAD, a.CELULAR,  a.empresa, 
+            $query = $this->_DB->query("select a.ID, a.IDENTIFICACION, a.login_click, a.NOMBRE, a.CIUDAD, a.CELULAR,  a.empresa, 
              (select b.nombre from empresas b where b.id=a.empresa) as NOM_EMPRESA 
              from tecnicos a 
-             where 1 = 1 limit $initial_page, $limit_page");
+             where 1 = 1 $variable limit $initial_page, $limit_page");
 
             $query->execute();
 
@@ -1276,11 +1289,15 @@ class modelOtrosServicios
     public function buscarPedidoContingencias($data)
     {
         try {
-            $pedido = $data;
+            session_start();
+            if (!$_SESSION) {
+                $response = ['state' => 99, 'title' => 'Su session ha caducado','text' => 'Inicia session nuevamente para continuar'];
+            } else {
+                $pedido = $data;
 
-            if ($pedido !== "") {
+                if ($pedido !== "") {
 
-                $query = $this->_DB->prepare("SELECT pedido, accion, ciudad, correo, macEntra, macSale, paquetes, motivo, proceso, producto, contrato, perfil,
+                    $query = $this->_DB->prepare("SELECT pedido, accion, ciudad, correo, macEntra, macSale, paquetes, motivo, proceso, producto, contrato, perfil,
 						horagestion, logindepacho,	logincontingencia, loginContingenciaPortafolio, horacontingencia, horaContingenciaPortafolio,
 						tipoEquipo, tecnologia, remite, tipificacion, tipificacionPortafolio, acepta, aceptaPortafolio, observacion, observContingencia,
 						observContingenciaPortafolio, ingresoEquipos
@@ -1288,19 +1305,19 @@ class modelOtrosServicios
 						WHERE pedido = :pedido
 					");
 
-                $query->execute([':pedido' => $pedido]);
+                    $query->execute([':pedido' => $pedido]);
 
-                if ($query->rowCount()) {
-                    $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+                    if ($query->rowCount()) {
+                        $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
 
-                    $response = [$resultado, 201];
+                        $response = ['state' =>1, 'data' => $resultado];
+                    } else {
+                        $response = ['state' => 0, 'text' => 'No se encontraron datos'];
+                    }
                 } else {
-                    $response = ['', 400];
+                    $response = ['state' => 0, 'text' => 'Ingrese un pedido'];
                 }
-            } else {
-                $response = ['', 400];
             }
-
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }

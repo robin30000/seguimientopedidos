@@ -45,6 +45,10 @@ class quejasGo
         $this->_model->guardarQuejaGo($data);
     }
 
+    public function registrarQuejaGo($data){
+        $this->_model->registrarQuejaGo($data);
+    }
+
     public function ActualizarObserQuejasGo($data)
     {
         $this->_model->ActualizarObserQuejasGo($data);

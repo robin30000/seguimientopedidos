@@ -107,16 +107,16 @@
 						</ul>
 					</div>
 					<div class="panel-heading nav navbar-default">
-						<div class="col-lg-12 col-xs-10">
+						<div class="col-lg-12 col-xs-12">
 							<ul class="nav navbar-nav navbar-right">
 
 								<input style="width:130px" type="text" name="fechaini" id="fechaini"
 									   class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
-									   ng-model="RegistrosCodigoIncompleto.fechaini" placeholder="Fecha Inicial" datetime-picker=""
+									   ng-model="RegistrosCodigoIncompleto.fechaini" placeholder="Fecha Inicial" datetime-picker="" date-only
 									   date-format="yyyy-MM-dd"> <i class="fa fa-calendar fa-fw"></i>
 								<input style="width:130px" placeholder="Fecha Final" type="text" name="fechafin"
 									   id="fechafin" class="btn btn-default btn-xs  ng-pristine ng-valid ng-touched"
-									   ng-model="RegistrosCodigoIncompleto.fechafin" datetime-picker="" date-format="yyyy-MM-dd"> <i
+									   ng-model="RegistrosCodigoIncompleto.fechafin" datetime-picker="" date-only date-format="yyyy-MM-dd"> <i
 									class="fa fa-calendar fa-fw"></i>
 
 								<button type="button" class="btn btn-success btn-xs"
@@ -129,20 +129,15 @@
 										ng-disabled="loading" title="Exportar" tooltip data-placement="top">
 									<i class="fa fa-cloud-download" aria-hidden="true"> </i>
 								</button>
+
+								<div data-ng-if="loading">
+									<img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif"/>
+								</div>
 							</ul>
 						</div>
 					</div>
-					<div class="panel-body">
-						<div class="container-fluid" >
-
-
-							<div ui-grid="gridOptions" ui-grid-exporter ui-grid-edit ui-grid-pagination ui-grid-auto-resize
+					<div ui-grid="gridOptions" ui-grid-exporter ui-grid-edit ui-grid-pagination ui-grid-auto-resize
 								 style="font-size: 12px;text-transform: lowercase; color: #0f0f0f;height: 500px" script></div>
-
-
-						</div>
-
-					</div>
 				</div>
 			</div>
 		</div>

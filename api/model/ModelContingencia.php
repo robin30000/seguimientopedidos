@@ -502,7 +502,7 @@ class ModelContingencia
 
             $pageSize = $data['pageSize'];
 
-            $stmt = $this->_DB->query("SELECT LOGIN_ASESOR_OFF,LOGIN_ASESOR, PEDIDO,PROCESO, PRODUCTO, ACCION, ACTIVIDAD, ACTIVIDAD2, OBSERVACIONES, FECHA_CARGA FROM registros_offline limit $initial_page, $pageSize");
+            $stmt = $this->_DB->query("SELECT LOGIN_ASESOR_OFF,LOGIN_ASESOR, PEDIDO,PROCESO, PRODUCTO, ACCION, ACTIVIDAD, ACTIVIDAD2, OBSERVACIONES, FECHA_CARGA FROM registros_offline order by FECHA_CARGA desc limit $initial_page, $pageSize");
             $stmt->execute();
 
             if ($stmt->rowCount()) {
@@ -667,61 +667,69 @@ class ModelContingencia
     {
         try {
             session_start();
-
-            $login                = $_SESSION['login'];
-            $pedido               = (isset($datosguardar['pedido'])) ? $datosguardar['pedido'] : '';
-            $producto             = (isset($datosguardar['producto'])) ? $datosguardar['producto'] : '';
-            $observacionesconting = (isset($datosguardar['observacionescontingencia'])) ? utf8_decode($datosguardar['observacionescontingencia']) : '';
-            $ingresoClick         = (isset($datosguardar['ingresoClick'])) ? $datosguardar['ingresoClick'] : '';
-            $tipificacion         = (isset($datosguardar['tipificacion'])) ? utf8_decode($datosguardar['tipificacion']) : '';
-            $generarCr            = (isset($datosguardar['generarcr'])) ? $datosguardar['generarcr'] : '';
-            $horacontingencia     = date("Y-m-d H:i:s");
-
-            if ($tipificacion == 'Ok') {
-                $acepta = 'Acepta';
+            if (!$_SESSION) {
+                $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
             } else {
-                $acepta = 'Rechaza';
-            }
+                $login                = $_SESSION['login'];
+                $pedido               = (isset($datosguardar['pedido'])) ? $datosguardar['pedido'] : '';
+                $producto             = (isset($datosguardar['producto'])) ? $datosguardar['producto'] : '';
+                $observacionesconting = (isset($datosguardar['observacionescontingencia'])) ? utf8_decode($datosguardar['observacionescontingencia']) : '';
+                $ingresoClick         = (isset($datosguardar['ingresoClick'])) ? $datosguardar['ingresoClick'] : '';
+                $tipificacion         = (isset($datosguardar['tipificacion'])) ? utf8_decode($datosguardar['tipificacion']) : '';
+                $generarCr            = (isset($datosguardar['generarcr'])) ? $datosguardar['generarcr'] : '';
+                $horacontingencia     = date("Y-m-d H:i:s");
 
-            $stmt = $this->_DB->prepare("SELECT id
+                if ($tipificacion == 'Ok') {
+                    $acepta = 'Acepta';
+                } else {
+                    $acepta = 'Rechaza';
+                }
+
+                $stmt = $this->_DB->prepare("SELECT id, logincontingencia
 					FROM contingencias
 					WHERE pedido = :pedido
 					AND producto= :producto
 					AND finalizado IS NULL
 					AND accion IN('Contingencia', 'Reenvio de registros', 'Refresh', 'Cambio de equipo', 'Crear Espacio', 'crear cliente', 'Registros ToIP', 'mesaOffline', 'Cambio EID', 'Crear Linea IMS')");
-//var_dump($stmt->debugDumpParams() );
-            $stmt->execute([':pedido' => $pedido, ':producto' => $producto]);
 
-            if ($stmt->rowCount()) {
+                $stmt->execute([':pedido' => $pedido, ':producto' => $producto]);
 
-                $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $id        = $resultado[0]['id'];
+                if ($stmt->rowCount()) {
 
-                /*ESTE QUERY ME ACTULIZA LA INFORMACION QUE ANALISTA A GESTIONADO*/
-                $stmtupdate = $this->_DB->prepare("UPDATE contingencias SET horacontingencia = :horacontingencia, 
+                    $resultado         = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $id                = $resultado[0]['id'];
+                    $logincontingencia = $resultado[0]['logincontingencia'];
+
+                    if ($login != $logincontingencia) {
+                        $response = ['state' => 3, 'text' => 'El pedido se encuentra en gestion por otro agente'];
+                    } else {
+                        /*ESTE QUERY ME ACTULIZA LA INFORMACION QUE ANALISTA A GESTIONADO*/
+                        $stmtupdate = $this->_DB->prepare("UPDATE contingencias SET horacontingencia = :horacontingencia, 
                     observContingencia = :observacionesconting, 
                     ingresoEquipos = :ingresoClick, tipificacion = :tipificacion, 
                     acepta = :acepta, generarcr = :generarCr, finalizado = 'OK' 
                      WHERE id = :id");
 
-                $stmtupdate->execute([
-                    ':horacontingencia'     => $horacontingencia,
-                    ':observacionesconting' => $observacionesconting,
-                    ':ingresoClick'         => $ingresoClick,
-                    ':tipificacion'         => $tipificacion,
-                    ':acepta'               => $acepta,
-                    ':generarCr'            => $generarCr,
-                    ':id'                   => $id,
-                ]);
+                        $stmtupdate->execute([
+                            ':horacontingencia'     => $horacontingencia,
+                            ':observacionesconting' => $observacionesconting,
+                            ':ingresoClick'         => $ingresoClick,
+                            ':tipificacion'         => $tipificacion,
+                            ':acepta'               => $acepta,
+                            ':generarCr'            => $generarCr,
+                            ':id'                   => $id,
+                        ]);
 
-                if ($stmtupdate->rowCount() == 1){
-                    $response = ['Contingencia actualizada', 201];
-                }else{
-                    $response = ['Ha ocurrido un error intentalo nuevamente', 201];
+                        if ($stmtupdate->rowCount() == 1) {
+                            $response = ['state' => 1, 'text' => 'Contingencia actualizada'];
+                        } else {
+                            $response = ['state' => 0, 'text' => 'Ha ocurrido un error intentalo nuevamente'];
+                        }
+
+                    }
+                } else {
+                    $response = ['state' => 0, 'text' => 'No se encontraron datos'];
                 }
-
-            } else {
-                $response = ['No se encontraron datos'];
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -1433,7 +1441,7 @@ class ModelContingencia
 
             session_start();
             if (!$_SESSION) {
-                $response = ['state' => 99, 'title' => 'Su session ha expirado','text' => 'Inicia session nuevamente para continuar'];
+                $response = ['state' => 99, 'title' => 'Su session ha expirado', 'text' => 'Inicia session nuevamente para continuar'];
             } else {
 
                 $today = date("Y-m-d H:i:s");
@@ -1464,9 +1472,9 @@ class ModelContingencia
                         $sqlupdate = "UPDATE contingencias SET engestion = '0', logincontingencia = '', fechaClickMarca='$today' WHERE id = '$id'";
 
                         $this->_DB->query($sqlupdate);
-                        $response = ['desbloqueado'];
+                        $response = ['state' => 1, 'title' => 'Desbloqueado', 'text' => 'El pedido se encuentra desbloqueado'];
                     } else {
-                        $response = ['bloqueado'];
+                        $response = ['state' => 2, 'title' => 'Bloqueado', 'text' => 'El pedido se encuentra en gestión'];
                     }
                 } else {
 
@@ -1475,9 +1483,9 @@ class ModelContingencia
                     $result = $stmt->fetch(PDO::FETCH_OBJ);
                     $id     = $result->id;
 
-                    $stmt = $this->_DB->query("UPDATE contingencias SET engestion = '$gestion', logincontingencia = '$login', fechaClickMarca='$today' WHERE id='$id'");
+                    $stmt = $this->_DB->query("UPDATE contingencias SET engestion = '1', logincontingencia = '$login', fechaClickMarca='$today' WHERE id='$id'");
                     $stmt->execute();
-                    $response = ['bloqueado'];
+                    $response = ['state' => 1, 'title' => 'Bloqueado', 'text' => 'El pedido se encuentra bloqueado'];
                 }
             }
 
@@ -1518,5 +1526,146 @@ class ModelContingencia
         echo json_encode($response);
     }
 
+    public function datosgestioncontingenciasTv($data)
+    {
+        try {
+            session_start();
+            if (!empty($data['sort'])) {
+                $fechaini = $data['sort']['fechaini'];
+                $fechafin = $data['sort']['fechafin'];
+                $params   = " AND c.horagestion BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59') ";
+            } else {
+                $params = "";
+            }
+
+            $stmt = $this->_DB->query("SELECT c.pedido, c.macEntra, c.macSale, c.logincontingencia, c.paquetes, c.ciudad, c.proceso, c.accion, c.tipoEquipo, c.remite, c.observacion, 
+					c.engestion, c.producto, c.grupo, c.horagestion, c.perfil, c.tipificacion, c.acepta, c.loginContingenciaPortafolio, c.aceptaPortafolio, 
+					c.tipificacionPortafolio, c.enGestionPortafolio, c.fechaClickMarcaPortafolio, c.id_terreno, CASE WHEN (SELECT COUNT(*)
+					FROM contingencias c1
+					WHERE c1.pedido=c.pedido AND c1.horagestion >= DATE_SUB(CURDATE(), INTERVAL 10 DAY) AND c1.finalizado = 'OK') > 0 THEN 'TRUE' ELSE 'FALSE' END alerta
+				FROM contingencias c
+				WHERE c.finalizado IS NULL AND c.finalizadoPortafolio IS NULL AND c.pedido <> '' and  c.grupo = 'TV'
+				ORDER BY c.horagestion $params");
+            $stmt->execute();
+
+            $totalCount = $stmt->rowCount();
+
+
+            if (isset($data['curPage'])) {
+                $page_number = $data['curPage'];
+            } else {
+                $page_number = 1;
+            }
+
+            $initial_page = ($page_number - 1) * $data['pageSize'];
+            $total_pages  = ceil($totalCount / $data['pageSize']);
+
+            if ($stmt->rowCount()) {
+                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = ['state' => 1, 'data' => $result, 'total' => $total_pages, 'counter' => count($result)];
+
+            } else {
+                $response = ['state' => 0, 'data' => 0, 'total' => 0, 'counter' => 0];
+            }
+        } catch (PDOException $e) {
+            var_dump($e);
+        }
+        $this->_DB = null;
+        echo json_encode($response);
+    }
+
+    public function datosgestioncontingenciasInternet($data)
+    {
+        try {
+            session_start();
+            $fecha = date('Y-m-d H:i:s');
+
+            $stmt = $this->_DB->query("SELECT c.pedido, c.macEntra, c.macSale, c.logincontingencia, c.paquetes, c.ciudad, c.proceso, c.accion, c.tipoEquipo, c.remite, c.observacion, 
+					c.engestion, c.producto, c.grupo, c.horagestion, c.perfil, c.tipificacion, c.acepta, c.loginContingenciaPortafolio, c.aceptaPortafolio, 
+					c.tipificacionPortafolio, c.enGestionPortafolio, c.fechaClickMarcaPortafolio, c.id_terreno, CASE WHEN (SELECT COUNT(*)
+					FROM contingencias c1
+					WHERE c1.pedido=c.pedido AND c1.horagestion >= DATE_SUB(CURDATE(), INTERVAL 10 DAY) AND c1.finalizado = 'OK') > 0 THEN 'TRUE' ELSE 'FALSE' END alerta
+				FROM contingencias c
+				WHERE c.finalizado IS NULL AND c.finalizadoPortafolio IS NULL AND c.pedido <> '' and  c.grupo = 'INTER'
+				ORDER BY c.horagestion");
+            $stmt->execute();
+
+            $totalCount = $stmt->rowCount();
+
+
+            if (isset($data['curPage'])) {
+                $page_number = $data['curPage'];
+            } else {
+                $page_number = 1;
+            }
+
+            $initial_page = ($page_number - 1) * $data['pageSize'];
+            $total_pages  = ceil($totalCount / $data['pageSize']);
+
+            if ($stmt->rowCount()) {
+                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = ['state' => 1, 'data' => $result, 'total' => $total_pages, 'counter' => count($result)];
+
+            } else {
+                $response = ['state' => 0, 'data' => 0, 'total' => 0, 'counter' => 0];
+            }
+        } catch (PDOException $e) {
+            var_dump($e);
+        }
+        $this->_DB = null;
+        echo json_encode($response);
+    }
+
+    public function datosgestioncontingenciasPortafolio($data)
+    {
+        try {
+            session_start();
+            $fecha = date('Y-m-d H:i:s');
+
+            $stmt = $this->_DB->query("SELECT c.pedido, c.macEntra, c.macSale, c.logincontingencia, c.paquetes, c.ciudad, c.proceso, c.accion, c.tipoEquipo, c.remite, c.observacion, 
+					c.engestion, c.producto, c.grupo, c.horagestion, c.perfil, c.tipificacion, c.acepta, c.loginContingenciaPortafolio, c.aceptaPortafolio, 
+					c.tipificacionPortafolio, c.enGestionPortafolio, c.fechaClickMarcaPortafolio, c.id_terreno, CASE WHEN (SELECT COUNT(*)
+					FROM contingencias c1
+					WHERE c1.pedido=c.pedido AND c1.horagestion >= DATE_SUB(CURDATE(), INTERVAL 10 DAY) AND c1.finalizado = 'OK') > 0 THEN 'TRUE' ELSE 'FALSE' END alerta
+				FROM contingencias c
+				WHERE c.finalizado IS NULL AND c.finalizadoPortafolio IS NULL AND c.pedido <> '' and  c.grupo = 'PORTAFOLIO'
+				ORDER BY c.horagestion");
+            $stmt->execute();
+
+            $totalCount = $stmt->rowCount();
+
+
+            if (isset($data['curPage'])) {
+                $page_number = $data['curPage'];
+            } else {
+                $page_number = 1;
+            }
+
+            $initial_page = ($page_number - 1) * $data['pageSize'];
+            $total_pages  = ceil($totalCount / $data['pageSize']);
+
+            if ($stmt->rowCount()) {
+                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = ['state' => 1, 'data' => $result, 'total' => $total_pages, 'counter' => count($result)];
+
+            } else {
+                $response = ['state' => 0, 'data' => 0, 'total' => 0, 'counter' => 0];
+            }
+        } catch (PDOException $e) {
+            var_dump($e);
+        }
+        $this->_DB = null;
+        echo json_encode($response);
+    }
+
+    public function registrosContingencias($data)
+    {
+        var_dump($data);
+    }
+
+    public function registrosContingenciasCsv($data)
+    {
+        var_dump($data);
+    }
 
 }

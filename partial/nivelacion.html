@@ -362,9 +362,15 @@
                                     <!-- SE AGREGA EL NUEVO VALOR DE LA LLAVE aceptaPortafolio, observContingenciaPortafolio -->
                                     <h5><a href="" ng-repeat="data in nivelacion.proceso_terminado" class="list-group-item ">
                                         <span class="label label-success">{{data.ticket_id}}</span>
+
                                         <button type="button"
                                                 class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover data-trigger="hover"
-                                                data-placement="top" data-html="true" title="Observaciones" data-selector=""
+                                                data-placement="top" data-html="true" title="Observaciones veedor" data-selector=""
+                                                data-content="{{data.observacionVeedor}}"><i class="fa fa-commenting" aria-hidden="true"></i></button>
+
+                                        <button type="button"
+                                                class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover data-trigger="hover"
+                                                data-placement="top" data-html="true" title="Observaciones nivelación" data-selector=""
                                                 data-content="{{data.observaciones}}"><i class="fa fa-commenting" aria-hidden="true"></i></button>
 
                                     </a></h5>
