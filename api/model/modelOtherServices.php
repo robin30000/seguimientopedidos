@@ -655,6 +655,20 @@ class modelOtherServices
     {
         try {
             session_start();
+            $pedido = $datosguardar['pedido'];
+            $producto = $datosguardar['producto'];
+            $existe = 0;
+            $stmt = $this->_DB->prepare("SELECT * FROM contingencias
+                                WHERE acepta is null
+                                AND aceptaPortafolio IS NULL
+                                AND pedido = :pedido
+                                AND producto = :producto
+                                AND accion IN('Contingencia','Cambio de equipo','Refresh','Crear Espacio','crear cliente','Registros ToIP','mesaOffline', 'Cambio EID')");
+            $stmt->execute([':pedido' => $pedido, ':producto' => $producto]);
+
+            if ($stmt->rowCount()) {
+                $existe = 1;
+            }
 
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
@@ -672,20 +686,22 @@ class modelOtherServices
                 $response = ['state' => 0, 'msj' => 'El campo accion es requerido'];
             } elseif (!isset($datosguardar['motivo']) || $datosguardar['motivo'] == '') {
                 $response = ['state' => 0, 'msj' => 'El campo motivo es requerido'];
-            } elseif (!isset($datosguardar['tipoEquipo']) || $datosguardar['tipoEquipo'] == '') {
+            } /*elseif (!isset($datosguardar['tipoEquipo']) || $datosguardar['tipoEquipo'] == '') {
                 $response = ['state' => 0, 'msj' => 'El campo tipo de equipo es requerido'];
-            } elseif (!isset($datosguardar['ciudad']) || $datosguardar['ciudad'] == '') {
+            }*/ elseif (!isset($datosguardar['ciudad']) || $datosguardar['ciudad'] == '') {
                 $response = ['state' => 0, 'msj' => 'El campo ciudad es requerido'];
-            } elseif (!isset($datosguardar['macEntra']) || $datosguardar['macEntra'] == '') {
+            } /*elseif (!isset($datosguardar['macEntra']) || $datosguardar['macEntra'] == '') {
                 $response = ['state' => 0, 'msj' => 'El campo mac que entra es requerido'];
-            } elseif (!isset($datosguardar['macSale']) || $datosguardar['macSale'] == '') {
+            }*/ /*elseif (!isset($datosguardar['macSale']) || $datosguardar['macSale'] == '') {
                 $response = ['state' => 0, 'msj' => 'El campo  mac que sale es requerido'];
-            } elseif (!isset($datosguardar['paquetes']) || $datosguardar['paquetes'] == '') {
+            }*/ /*elseif (!isset($datosguardar['paquetes']) || $datosguardar['paquetes'] == '') {
                 $response = ['state' => 0, 'msj' => 'Debe ingresar al menos un paquete'];
-            } elseif (!isset($datosguardar['remite']) || $datosguardar['remite'] == '') {
+            }*/ elseif (!isset($datosguardar['remite']) || $datosguardar['remite'] == '') {
                 $response = ['state' => 0, 'msj' => 'El campo remitente es requerido'];
             } elseif (!isset($datosguardar['observacion']) || $datosguardar['observacion'] == '') {
                 $response = ['state' => 0, 'msj' => 'Ingrese observaciones'];
+            }elseif($existe){
+                $response = ['state' => 0, 'msj' => 'Ya se encuentra en el sistema una pedido con este concecutivo sin gestionarse'];
             } else {
                 $login        = $_SESSION['login'];
                 $estadoActual = (isset($datosguardar['estado'])) ? $datosguardar['estado'] : '';
@@ -746,8 +762,9 @@ class modelOtherServices
                     $paqueteconca = $datosguardar['linea'];
                 }
 
-                $isFieldContingency = isset($datosguardar['_id']);
 
+
+                $isFieldContingency = isset($datosguardar['_id']);
 
                 if ($isFieldContingency) {
                     $idTerreno               = $datosguardar['_id'];
@@ -756,10 +773,10 @@ class modelOtherServices
 
                     $stmt = $this->_DB->prepare("INSERT INTO contingencias (accion, ciudad, correo, macEntra, macSale, motivo,
                                                        observacion, paquetes, pedido, proceso, producto,
-                                                       remite, tecnologia, tipoEquipo, uen, contrato, perfil, grupo, logindepacho, id_terreno, horagestion)
+                                                       remite, tecnologia, tipoEquipo, uen, contrato, perfil, grupo, logindepacho, id_terreno, horagestion, engestion)
                                                     values (:accion, :ciudad, :correo, :macEntra, :macSale, :motivo,
                                                             :observacion, :paqueteconca, :pedido, :proceso, :producto,
-                                                            :remite, :tecnologia, :tipoEquipo, :uen, :contrato, :perfil, :grupo, :login, :idTerreno, :nuevaHoraGestionTerreno)");
+                                                            :remite, :tecnologia, :tipoEquipo, :uen, :contrato, :perfil, :grupo, :login, :idTerreno, :nuevaHoraGestionTerreno,0)");
                     $stmt->execute([
                         ':accion'                  => $accion,
                         ':ciudad'                  => $ciudad,
@@ -794,10 +811,10 @@ class modelOtherServices
 
                     $stmt = $this->_DB->prepare("INSERT INTO contingencias (accion, ciudad, correo, macEntra, macSale, motivo,
                                                        observacion, paquetes, pedido, proceso, producto,
-                                                       remite, tecnologia, tipoEquipo, uen, contrato, perfil, grupo, logindepacho, id_terreno)
+                                                       remite, tecnologia, tipoEquipo, uen, contrato, perfil, grupo, logindepacho, id_terreno, engestion)
                                                     values (:accion, :ciudad, :correo, :macEntra, :macSale, :motivo,
                                                             :observacion, :paqueteconca, :pedido, :proceso, :producto,
-                                                            :remite, :tecnologia, :tipoEquipo, :uen, :contrato, :perfil, :grupo, :login, :idTerreno)");
+                                                            :remite, :tecnologia, :tipoEquipo, :uen, :contrato, :perfil, :grupo, :login, :idTerreno, 0)");
 
 
                     if ($accion !== "" || $correo !== "" || $pedido !== "" || $proceso !== "") {

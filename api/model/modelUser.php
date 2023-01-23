@@ -238,10 +238,8 @@ class modelUser
         echo json_encode($response);
     }
 
-    public
-    function ingresarPedidoAsesor(
-        $params
-    ) {
+    public function ingresarPedidoAsesor($params)
+    {
         try {
 
             session_start();
@@ -454,10 +452,8 @@ class modelUser
         echo json_encode($response);
     }
 
-    public
-    function creaUsuario(
-        $data
-    ) {
+    public function creaUsuario($data)
+    {
         try {
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
@@ -514,10 +510,8 @@ class modelUser
         echo json_encode($response);
     }
 
-    public
-    function creaTecnico(
-        $data
-    ) {
+    public function creaTecnico($data)
+    {
         try {
 
             session_start();
@@ -540,6 +534,14 @@ class modelUser
                     $response = ['state' => 0, 'msj' => 'El número de identificación es muy corto'];
                 } elseif (strlen($datos['IDENTIFICACION']) > 15) {
                     $response = ['state' => 0, 'msj' => 'El número de identificación es muy largo'];
+                } elseif (!isset($datos['REGION']) || $datos['REGION'] == '') {
+                    $response = ['state' => 0, 'msj' => 'Seleccione la region'];
+                } elseif (!isset($datos['CIUDAD']) || $datos['CIUDAD'] == '') {
+                    $response = ['state' => 0, 'msj' => 'Seleccione la ciudad'];
+                } elseif (!isset($datos['LOGIN']) || $datos['LOGIN'] == '') {
+                    $response = ['state' => 0, 'msj' => 'Ingrese el login'];
+                } elseif (!isset($datos['NOMBRE']) || $datos['NOMBRE'] == '') {
+                    $response = ['state' => 0, 'msj' => 'Ingrese el nombre'];
                 } else {
 
                     $UDC      = substr($datos['IDENTIFICACION'], -4);
@@ -561,24 +563,23 @@ class modelUser
 
                     $stmt = $this->_DB->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato)
                                             values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato)");
-
-
+                    
                     $stmt->execute([
                         ':identificacion' => $datos['IDENTIFICACION'],
                         ':nombre'         => $datos['NOMBRE'],
                         ':ciudad'         => $datos['CIUDAD'],
                         ':celular'        => $datos['CELULAR'],
                         ':empresa'        => $datos['empresa'],
-                        ':login_click'    => $datos['LOGIN_CLICK'],
+                        ':login_click'    => $datos['LOGIN'],
                         ':pass'           => $pass,
-                        ':region'         => $datos['regiones'],
+                        ':region'         => $datos['REGION'],
                         ':contrato'       => $contrato,
                     ]);
 
                     if ($stmt->rowCount() == 1) {
                         $response = ['state' => 1, 'msj' => 'Técnico creado'];
                     } else {
-                        $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo nuevamente'];
+                        $response = ['state' => 0, 'msj' => 'Ha ocurrido un error intentalo nuevamente'];
                     }
                 }
             }

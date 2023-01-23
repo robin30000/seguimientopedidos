@@ -476,7 +476,6 @@ class modelOtherServicesDos
 
             $stmt = $this->_DB->prepare("SELECT C.accion,
                                                        C.ciudad,
-                                                       C.correo,
                                                        C.macEntra,
                                                        C.macSale,
                                                        C.motivo,

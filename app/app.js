@@ -117,7 +117,7 @@ app.directive('fileModel', ['$parse', function ($parse) {
 
 app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     var serviceBase = 'services/';
-    var serviceBase1 = 'http://netvm-ptctrl01a/seguimientopedidos-dev/api/controller/';
+    var serviceBase1 = 'http://netvm-ptctrl01a/seguimientopedidos/api/controller/';
     //var serviceBase1 = 'http://localhost/seguimientopedidos/api/controller/';
     var obj = {};
 
@@ -4645,7 +4645,7 @@ app.controller('quejasGoCtrl', function ($scope, $http, $rootScope, $location, $
                 name: "Concecutivo",
                 field: "id",
                 minWidth: 70,
-                width: "7%",
+                width: "4%",
                 enableCellEdit: false,
                 enableFiltering: true
             },
@@ -4653,7 +4653,7 @@ app.controller('quejasGoCtrl', function ($scope, $http, $rootScope, $location, $
                 name: "Pedido",
                 field: "pedido",
                 minWidth: 80,
-                width: "15%",
+                width: "10%",
                 enableCellEdit: false,
                 enableFiltering: true,
 
@@ -4661,7 +4661,7 @@ app.controller('quejasGoCtrl', function ($scope, $http, $rootScope, $location, $
                 name: "Nombre cliente",
                 field: "cliente",
                 minWidth: 80,
-                width: "5%",
+                width: "13%",
                 enableCellEdit: false,
 
             }, {
@@ -4691,13 +4691,13 @@ app.controller('quejasGoCtrl', function ($scope, $http, $rootScope, $location, $
                 field: "asesor",
                 cellStyle: {"text-align": "center"},
                 minWidth: 70,
-                width: "10%",
+                width: "5%",
                 enableCellEdit: false,
             }, {
                 name: "Fecha",
                 field: "fecha",
                 cellStyle: {"text-align": "center"},
-                width: "5%",
+                width: "10%",
                 enableCellEdit: false,
             }, {
                 name: "Duracion",
@@ -4935,41 +4935,43 @@ app.controller('quejasGoCtrl', function ($scope, $http, $rootScope, $location, $
             })
         } else {
             services.traerTecnico($scope.quejasGoSel.cedtecnico).then(completed).catch(failed)
-                function completed(data){
-                    if (data.data.state == 99) {
-                        swal({
-                            type: 'error',
-                            title: data.data.title,
-                            text: data.data.text,
-                            timer: 4000
-                        }).then(function () {
-                            $cookies.remove('usuarioseguimiento');
-                            $location.path('/');
-                            $rootScope.galletainfo = undefined;
-                            $rootScope.permiso = false;
-                            $route.reload();
-                        })
-                    } else if (data.data.state == 0) {
-                        swal({
-                            type: 'error',
-                            text: data.data.text,
-                            timer: 4000
-                        }).then(function (){
-                            $scope.ciudadesQuejasGo();
-                            $('#crearTecnicoQuejasGo').modal('show');
-                            $scope.infoTecnico = false;
-                        })
-                    } else {
-                        $scope.Tecnico = data.data.data;
-                        $scope.quejasGoSel.tecnico = $scope.Tecnico[0].nombre;
-                        $scope.quejasGoSel.region = $scope.Tecnico[0].ciudad;
-                        $scope.infoTecnico = true;
-                    }
 
+            function completed(data) {
+                if (data.data.state == 99) {
+                    swal({
+                        type: 'error',
+                        title: data.data.title,
+                        text: data.data.text,
+                        timer: 4000
+                    }).then(function () {
+                        $cookies.remove('usuarioseguimiento');
+                        $location.path('/');
+                        $rootScope.galletainfo = undefined;
+                        $rootScope.permiso = false;
+                        $route.reload();
+                    })
+                } else if (data.data.state == 0) {
+                    swal({
+                        type: 'error',
+                        text: data.data.text,
+                        timer: 4000
+                    }).then(function () {
+                        $scope.ciudadesQuejasGo();
+                        $('#crearTecnicoQuejasGo').modal('show');
+                        $scope.infoTecnico = false;
+                    })
+                } else {
+                    $scope.Tecnico = data.data.data;
+                    $scope.quejasGoSel.tecnico = $scope.Tecnico[0].nombre;
+                    $scope.quejasGoSel.region = $scope.Tecnico[0].ciudad;
+                    $scope.infoTecnico = true;
                 }
-                function failed(error) {
-                    console.log(error)
-                };
+
+            }
+
+            function failed(error) {
+                console.log(error)
+            };
         }
 
 
@@ -5030,41 +5032,42 @@ app.controller('quejasGoCtrl', function ($scope, $http, $rootScope, $location, $
         $scope.counter = hours + ":" + minutes + ":" + seconds;
 
         services.guardarQuejaGo(quejasGoSel, $scope.counter).then(completed).catch(failed)
-            function completed(data) {
-                $("#modalQuejasGo").modal('hide');
-                if (data.data.state == 99) {
-                    swal({
-                        type: 'error',
-                        title: data.data.title,
-                        text: data.data.text,
-                        timer: 4000
-                    }).then(function () {
-                        $cookies.remove('usuarioseguimiento');
-                        $location.path('/');
-                        $rootScope.galletainfo = undefined;
-                        $rootScope.permiso = false;
-                        $route.reload();
-                    })
-                } else if (data.data.state == 0) {
-                    swal({
-                        type: 'error',
-                        text: data.data.text,
-                        timer: 4000
-                    })
-                } else if(data.data.state == 1) {
-                    swal({
-                        type: 'success',
-                        text: data.data.text,
-                        timer: 4000
-                    }).then(function (){
-                        $route.reload();
-                    })
-                }
-            }
 
-            function failed(error){
-                console.log(error)
+        function completed(data) {
+            $("#modalQuejasGo").modal('hide');
+            if (data.data.state == 99) {
+                swal({
+                    type: 'error',
+                    title: data.data.title,
+                    text: data.data.text,
+                    timer: 4000
+                }).then(function () {
+                    $cookies.remove('usuarioseguimiento');
+                    $location.path('/');
+                    $rootScope.galletainfo = undefined;
+                    $rootScope.permiso = false;
+                    $route.reload();
+                })
+            } else if (data.data.state == 0) {
+                swal({
+                    type: 'error',
+                    text: data.data.text,
+                    timer: 4000
+                })
+            } else if (data.data.state == 1) {
+                swal({
+                    type: 'success',
+                    text: data.data.text,
+                    timer: 4000
+                }).then(function () {
+                    $route.reload();
+                })
             }
+        }
+
+        function failed(error) {
+            console.log(error)
+        }
 
     };
 
@@ -6425,7 +6428,8 @@ app.controller('GestionNivelacionCtrl', ['$scope', '$rootScope', '$location', '$
             }, {
                 name: "Tarea",
                 field: "ticket_id",
-                minWidth: 80,
+                cellTemplate: '<div style="text-align: center;"><button type="button" style="padding: 0; border: none" className="btn btn-default btn-xs ng-binding" ng-click="grid.appScope.CopyPortaPapeles(row.entity.ticket_id)" tooltip="" title="" id="tv0" data-original-title="Copiar pedido">{{row.entity.ticket_id}}</button></div>',
+                minWidth: 120,
                 width: "5%",
                 enableCellEdit: false,
 
@@ -7327,6 +7331,7 @@ app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $ro
 
 });
 
+/*
 app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $location, $route, $routeParams, $cookies, $cookieStore, $timeout, services, fileUpload) {
     $scope.rutaCierreMasivoContin = "partial/modals/cierreMasivoContingencias.html";
     $scope.haypedidoOtros = false;
@@ -7356,6 +7361,10 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
         //loadGridPortafolio();
     }
 
+    $scope.reloadContingenciaTv = function () {
+       gestioncontingencias();
+    }
+
     function loadGridOptionsTv() {
 
         Date.prototype.addMins = function (m) {
@@ -7380,7 +7389,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             {
                 name: "Login",
                 field: "logincontingencia",
-                cellTemplate: "<div style='text-align: center' ng-show='(row.entity.logincontingencia !== null)'>" +
+                cellTemplate: "<div style='text-align: center' ng-show='(row.entity.logincontingencia)'>" +
                     "<span class='label label-primary label-xsmall' ng-if='(row.entity.logincontingencia ==  grid.appScope.userLog)' style='vertical-align: sub'>{{grid.appScope.userLog}}</span>" +
                     "<span class='label label-primary label-xsmall' ng-if='(row.entity.logincontingencia != grid.appScope.userLog)' style='vertical-align: sub'>En gestion</span>" +
                     "</div>",
@@ -7390,7 +7399,8 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             }, {
                 name: "Pedido",
                 field: "pedido",
-                minWidth: 80,
+                cellTemplate: '<div style="text-align: center;margin-top: 4px"><button type="button" style="padding: 0; border: none" className="btn btn-default btn-xs ng-binding" ng-click="grid.appScope.CopyPortaPapeles(row.entity.pedido)" tooltip="" title="" id="tv0" data-original-title="Copiar pedido">{{row.entity.pedido}}</button></div>',
+                minWidth: 120,
                 width: "7%",
                 enableCellEdit: false,
                 cellTooltip:
@@ -7401,6 +7411,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             }, {
                 name: "Mac entra",
                 field: "macEntra",
+                cellTemplate: '<div ng-dblclick="grid.appScope.descriptionModal(row,colDef, uid, grid)" style="text-align: center;">{{row.entity.macEntra}}</div>',
                 cellStyle: {"text-align": "center"},
                 minWidth: 70,
                 width: "11%",
@@ -7412,6 +7423,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             }, {
                 name: "Mac sale",
                 field: "macSale",
+                cellTemplate: '<div ng-dblclick="grid.appScope.descriptionModal(row,colDef, uid, grid)" style="text-align: center;">{{row.entity.macSale}}</div>',
                 cellStyle: {"text-align": "center"},
                 minWidth: 70,
                 width: "10%",
@@ -7433,21 +7445,10 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                         return row.entity.paquetes;
                     }
             }, {
-                name: "Perfil",
-                field: "perfil",
-                cellStyle: {"text-align": "center"},
-                minWidth: 70,
-                width: "5%",
-                enableCellEdit: false,
-                cellTooltip:
-                    function (row, col) {
-                        return row.entity.perfil;
-                    }
-            }, {
                 name: "Ciudad",
                 field: "ciudad",
                 cellStyle: {"text-align": "center"},
-                width: "5%",
+                width: "10%",
                 enableCellEdit: false,
             }, {
                 name: "Proceso",
@@ -7480,7 +7481,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                 name: "Tipo equipo",
                 field: "tipoEquipo",
                 cellStyle: {"text-align": "center"},
-                width: "9%",
+                width: "10%",
                 enableCellEdit: false,
             }, {
                 name: "Remitente",
@@ -7537,21 +7538,25 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                 cellStyle: {"text-align": "center"},
             }];
 
+        /!*$scope.gridOptionsTv.onRegisterApi = function(gridApi){
+            $scope.gridApi = gridApi;
+            gridApi.grid.isScrollingVertically = false;
+        };*!/
+
         var paginationOptions = {
             sort: null
         };
 
         $scope.gridOptionsTv = {
             enableFiltering: false,
-            enablePagination: true,
+            enablePagination: false,
             pageSize: 200,
             enableHorizontalScrollbar: false,
-            enablePaginationControls: true,
+            enablePaginationControls: false,
             columnDefs: columnDefs,
             paginationPageSizes: [200, 500, 1000],
             paginationPageSize: 200,
             enableRowHeaderSelection: true,
-
             exporterMenuPdf: false,
             enableGridMenu: false,
 
@@ -7565,51 +7570,21 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             exporterExcelFilename: 'Registros.xlsx',
             exporterExcelSheetName: 'Sheet1',
 
-            onRegisterApi: function (gridApi) {
-                $scope.gridApi = gridApi;
-                $scope.gridApi.core.on.sortChanged($scope, function (grid, sortColumns) {
-                    if (getPage) {
-                        if (sortColumns.length > 0) {
-                            paginationOptions.sort = sortColumns[0].sort.direction;
-                        } else {
-                            paginationOptions.sort = null;
-                        }
-                        getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, paginationOptions.sort)
-                    }
-                });
-                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
-                    if (getPage) {
-                        getPage(newPage, pageSize, paginationOptions.sort);
-                    }
-                });
-            }
         };
+        $scope.gridOptionsTv.totalItems = 0;
+        $scope.gridOptionsTv.data = '';
+        //$scope.gridOptionsTv.enableHorizontalScrollbar = 2;
+        //$scope.gridOptionsTv.enableVerticalScrollbar = 2;
+    }
 
-        var getPage = function (curPage, pageSize, sort) {
-            services.datosgestioncontingenciasTv(curPage, pageSize, sort).then(complete).catch(failed)
+    /!*$scope.gridOptionsTv.onRegisterApi = function(gridApi){
+        $scope.gridApi = gridApi;
+    };*!/
 
-            function complete(data) {
-                var datos = data.data.data;
-                var counter = data.data.counter;
-
-                $scope.gridOptionsTv.totalItems = counter;
-                $scope.gridOptionsTv.data = datos;
-
-                if ($scope.gridOptionsTv.data !== 0) {
-                    $scope.haypedidoTV = true;
-                } else {
-                    $scope.haypedidoTV = false;
-                    $scope.mensaje = "No hay pedidos para gestionar!!!";
-                }
-            }
-
-            function failed(error) {
-                console.log(error);
-            }
-
-        };
-
-        getPage(1, $scope.gridOptionsTv.paginationPageSize, paginationOptions.sort);
+    $scope.descriptionModal = function (row,colDef, uid, grid) {
+        console.log(row,' - ',colDef, uid, grid)
+        $scope.detalles = row.entity.macEntra;
+        $('#descripcionModal').modal('show');
     }
 
     function loadgridOptionsInternet() {
@@ -7624,7 +7599,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
         var columnDefs = [
             {
                 name: "Marcar",
-                cellTemplate: "<div style='text-align: center'><input ng-checked='(row.entity.engestion === \"1\")' value='{{row.entity.engestion}}' ng-model='row.entity.engestion' type='checkbox' ng-click='grid.appScope.engestionContingenciaTv(row)'></div>",
+                cellTemplate: "<div style='text-align: center'><input ng-checked='(row.entity.engestion === \"1\" )' value='{{row.entity.engestion}}' ng-model='row.entity.engestion' type='checkbox' ng-click='grid.appScope.engestionContingenciaTv(row)'></div>",
                 minWidth: 70,
                 width: "3%",
                 enableCellEdit: false,
@@ -7636,7 +7611,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             {
                 name: "Login",
                 field: "logincontingencia",
-                cellTemplate: "<div style='text-align: center' ng-show='(row.entity.logincontingencia !== null)'>" +
+                cellTemplate: "<div style='text-align: center' ng-show='(row.entity.logincontingencia)'>" +
                     "<span class='label label-primary label-xsmall' ng-if='(row.entity.logincontingencia ==  grid.appScope.userLog)' style='vertical-align: sub'>{{grid.appScope.userLog}}</span>" +
                     "<span class='label label-primary label-xsmall' ng-if='(row.entity.logincontingencia != grid.appScope.userLog)' style='vertical-align: sub'>En gestion</span>" +
                     "</div>",
@@ -7646,7 +7621,8 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             }, {
                 name: "Pedido",
                 field: "pedido",
-                minWidth: 80,
+                cellTemplate: '<div style="text-align: center;margin-top: 4px"><button type="button" style="padding: 0; border: none" className="btn btn-default btn-xs ng-binding" ng-click="grid.appScope.CopyPortaPapeles(row.entity.pedido)" tooltip="" title="" id="tv0" data-original-title="Copiar pedido">{{row.entity.pedido}}</button></div>',
+                minWidth: 120,
                 width: "7%",
                 enableCellEdit: false,
                 cellTooltip:
@@ -7657,6 +7633,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             }, {
                 name: "Mac entra",
                 field: "macEntra",
+                cellTemplate: '<div ng-dblclick="grid.appScope.descriptionModal(row,col)" style="text-align: center;">{{row.entity.macEntra}}</div>',
                 cellStyle: {"text-align": "center"},
                 minWidth: 70,
                 width: "11%",
@@ -7668,6 +7645,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             }, {
                 name: "Mac sale",
                 field: "macSale",
+                cellTemplate: '<div ng-dblclick="grid.appScope.descriptionModal(row,colDef, uid, grid)" style="text-align: center;">{{row.entity.macSale}}</div>',
                 cellStyle: {"text-align": "center"},
                 minWidth: 70,
                 width: "10%",
@@ -7716,7 +7694,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                 name: "Acción",
                 field: "accion",
                 cellStyle: {"text-align": "center"},
-                width: "6%",
+                width: "7%",
                 enableCellEdit: false,
             },
             {
@@ -7820,286 +7798,12 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
             exporterExcelFilename: 'Registros.xlsx',
             exporterExcelSheetName: 'Sheet1',
-
-            onRegisterApi: function (gridApi) {
-                $scope.gridApi = gridApi;
-                $scope.gridApi.core.on.sortChanged($scope, function (grid, sortColumns) {
-                    if (getPage) {
-                        if (sortColumns.length > 0) {
-                            paginationOptions.sort = sortColumns[0].sort.direction;
-                        } else {
-                            paginationOptions.sort = null;
-                        }
-                        getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, paginationOptions.sort)
-                    }
-                });
-                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
-                    if (getPage) {
-                        getPage(newPage, pageSize, paginationOptions.sort);
-                    }
-                });
-            }
         };
+        $scope.gridOptionsInternet.totalItems = 0;
+        $scope.gridOptionsInternet.data = ''
 
-        var getPage = function (curPage, pageSize, sort) {
-            services.datosgestioncontingenciasInternet(curPage, pageSize, sort).then(complete).catch(failed)
+    };
 
-            function complete(data) {
-                var datos = data.data.data;
-                var counter = data.data.counter;
-
-                $scope.gridOptionsInternet.totalItems = counter;
-                $scope.gridOptionsInternet.data = datos
-
-                if ($scope.gridOptionsInternet.data !== 0) {
-                    $scope.haypedidoOtros = true;
-                } else {
-                    $scope.haypedidoOtros = false;
-                    $scope.mensajeotros = "No hay pedidos para gestionar!!!";
-                }
-            }
-
-            function failed(error) {
-                console.log(error);
-            }
-
-        };
-
-        getPage(1, $scope.gridOptionsInternet.paginationPageSize, paginationOptions.sort);
-    }
-
-    /*function loadGridPortafolio(){
-        Date.prototype.addMins = function (m) {
-            this.setTime(this.getTime() + (m * 60 * 1000));  // minutos * seg * milisegundos
-            return this;
-        }
-
-        var fechaI2 = new Date();
-        //fechaI2.addMins(15);
-
-        var columnDefs = [
-            {
-                name: "Marcar",
-                cellTemplate: "<div style='text-align: center'><input ng-checked='(row.entity.engestion === \"1\")' value='{{row.entity.engestion}}' ng-model='row.entity.engestion' type='checkbox' ng-click='grid.appScope.engestionContingenciaTv(row)'></div>",
-                minWidth: 70,
-                width: "3%",
-                enableCellEdit: false,
-                enableFiltering: false,
-                enableRowHeaderSelection: false
-            },
-            {
-                name: "Login",
-                field: "logincontingencia",
-                //cellTemplate: 'partial/modals/templateNivelacion.html',
-                minWidth: 80,
-                width: "4%",
-                enableCellEdit: false,
-            }, {
-                name: "Pedido",
-                field: "pedido",
-                minWidth: 80,
-                width: "7%",
-                enableCellEdit: false,
-                cellTooltip:
-                    function (row, col) {
-                        return row.entity.pedido;
-                    }
-
-            }, {
-                name: "Mac entra",
-                field: "macEntra",
-                cellStyle: {"text-align": "center"},
-                minWidth: 70,
-                width: "11%",
-                enableCellEdit: false,
-                cellTooltip:
-                    function (row, col) {
-                        return row.entity.macEntra;
-                    }
-            }, {
-                name: "Mac sale",
-                field: "macSale",
-                cellStyle: {"text-align": "center"},
-                minWidth: 70,
-                width: "11%",
-                enableCellEdit: false,
-                cellTooltip:
-                    function (row, col) {
-                        return row.entity.macSale;
-                    }
-
-            }, {
-                name: "Nro linea",
-                field: "paquetes",
-                cellStyle: {"text-align": "center"},
-                minWidth: 80,
-                width: "9%",
-                enableCellEdit: false,
-                cellTooltip:
-                    function (row, col) {
-                        return row.entity.paquetes;
-                    }
-            }, {
-                name: "Perfil",
-                field: "perfil",
-                cellStyle: {"text-align": "center"},
-                minWidth: 70,
-                width: "5%",
-                enableCellEdit: false,
-            }, {
-                name: "Ciudad",
-                field: "ciudad",
-                cellStyle: {"text-align": "center"},
-                width: "5%",
-                enableCellEdit: false,
-            }, {
-                name: "Proceso",
-                field: "proceso",
-                cellStyle: {"text-align": "center"},
-                minWidth: 70,
-                width: "5%",
-                enableCellEdit: false,
-            }, {
-                name: "Acción",
-                field: "accion",
-                cellStyle: {"text-align": "center"},
-                width: "6%",
-                enableCellEdit: false,
-            },
-            {
-                name: "Fecha",
-                field: "horagestion",
-                cellStyle: {"text-align": "center"},
-                width: "8%",
-                enableCellEdit: false,
-            }, {
-                name: "Producto",
-                field: "producto",
-                cellStyle: {"text-align": "center"},
-                width: "3%",
-                enableCellEdit: false,
-            }, {
-                name: "Tipo equipo",
-                field: "tipoEquipo",
-                cellStyle: {"text-align": "center"},
-                width: "8%",
-                enableCellEdit: false,
-            }, {
-                name: "Remitente",
-                field: "remite",
-                cellStyle: {"text-align": "center"},
-                minWidth: 70,
-                width: "5%",
-                suppressSizeToFit: true,
-                enableColumnResizing: true
-            }, {
-                name: "Tipificación",
-                editType: 'dropdown',
-                cellFilter: 'mapNivelacion',
-                enableCellEdit: false,
-                cellTemplate: "<div style='text-align: center'><select ng-model='row.entity.tipificacion' class='btn btn-default btn-xs grupo-select'>" +
-                    "<option value=''>Selec</option>" +
-                    "<option value='SI'>SI</option>" +
-                    "<option value='NO'>NO</option>" +
-                    "</select>" +
-                    "</div>",
-
-                minWidth: 50,
-                width: "4%",
-                enableColumnResizing: true,
-                enableFiltering: false,
-
-            }, {
-                name: "Observaciones",
-                //cellTemplate: 'partial/modals/templateContingenciaTv.html',
-                cellTemplate: "<div style='text-align: center'>" +
-                    '<button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover\n' +
-                    '            data-placement="left" data-html="true" data-selector="" data-content="{{row.entity.observacion}}">' +
-                    '<i class="fa fa-commenting" aria-hidden="true"> </i>' +
-                    '</button>&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.guardarcontingenciaTv(row)">' +
-                    '<i class="fa fa-floppy-o" aria-hidden="true"> </i>' +
-                    '</button>&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-hide="row.entity.alerta == \'FALSE\'" tooltip\n' +
-                    '            title="El pedido ya pasó por contingencias anteriormente, por favor validar!" data-placement="top" data-html="true" data-selector="">' +
-                    '<i class="fa fa-exclamation" aria-hidden="true" style="color:red"> </i>' +
-                    '</button>' +
-                    '</div>',
-                cellTooltip:
-                    function (row, col) {
-                        return row.entity.observacion;
-                    },
-                width: "6%",
-                enableFiltering: false,
-                enableCellEdit: false,
-                cellStyle: {"text-align": "center"},
-            }];
-
-        var paginationOptions = {
-            sort: null
-        };
-
-        $scope.gridOptionsPortafolio = {
-            enableFiltering: true,
-            enablePagination: true,
-            pageSize: 200,
-            enableHorizontalScrollbar: false,
-            enablePaginationControls: true,
-            columnDefs: columnDefs,
-            paginationPageSizes: [200, 500, 1000],
-            paginationPageSize: 200,
-            enableRowHeaderSelection: true,
-
-            exporterMenuPdf: false,
-            enableGridMenu: true,
-
-            useExternalPagination: true,
-            useExternalSorting: true,
-            enableRowSelection: true,
-
-            exporterCsvFilename: 'Registros.csv',
-
-            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
-            exporterExcelFilename: 'Registros.xlsx',
-            exporterExcelSheetName: 'Sheet1',
-
-            onRegisterApi: function (gridApi) {
-                $scope.gridApi = gridApi;
-                $scope.gridApi.core.on.sortChanged($scope, function (grid, sortColumns) {
-                    if (getPage) {
-                        if (sortColumns.length > 0) {
-                            paginationOptions.sort = sortColumns[0].sort.direction;
-                        } else {
-                            paginationOptions.sort = null;
-                        }
-                        getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, paginationOptions.sort)
-                    }
-                });
-                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
-                    if (getPage) {
-                        getPage(newPage, pageSize, paginationOptions.sort);
-                    }
-                });
-            }
-        };
-
-        var getPage = function (curPage, pageSize, sort) {
-            services.datosgestioncontingenciasPortafolio(curPage, pageSize, sort).then(complete).catch(failed)
-
-            function complete(data) {
-                var datos = data.data.data;
-                var counter = data.data.counter;
-
-                $scope.gridOptionsPortafolio.totalItems = counter;
-                $scope.gridOptionsPortafolio.data = datos
-            }
-
-            function failed(error) {
-                console.log(error);
-            }
-
-        };
-
-        getPage(1, $scope.gridOptionsPortafolio.paginationPageSize, paginationOptions.sort);
-    }*/
 
     $scope.loadContingeciaInternet = function () {
         window.setTimeout(function () {
@@ -8108,14 +7812,6 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             $(window).resize();
         }, 500);
     }
-
-    /*$scope.loadContingenciaPortafolio = function () {
-        window.setTimeout(function () {
-            loadGridPortafolio();
-            $(window).resize();
-            $(window).resize();
-        }, 500);
-    }*/
 
     $scope.engestionContingenciaTv = function (row) {
         services.marcarengestion(row.entity).then(completed).catch(failed)
@@ -8136,9 +7832,8 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                 })
             } else if (data.data.state == 1) {
                 window.setTimeout(function () {
-                    loadGridOptionsTv();
-                    loadgridOptionsInternet();
-                }, 1000);
+                    gestioncontingencias();
+                }, 500);
                 swal({
                     title: data.data.title,
                     text: data.data.text,
@@ -8149,9 +7844,8 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                 })
             } else if (data.data.state == 2) {
                 window.setTimeout(function () {
-                    loadGridOptionsTv();
-                    loadgridOptionsInternet();
-                }, 1000);
+                    gestioncontingencias();
+                }, 500);
                 swal({
                     title: data.data.title,
                     text: data.data.text,
@@ -8169,7 +7863,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
     }
 
     $scope.guardarcontingenciaTv = function (row) {
-        if (row.entity.engestion == null) {
+        if (row.entity.engestion == undefined) {
             swal({
                 type: 'error',
                 text: 'Debes marcar el pedido',
@@ -8200,6 +7894,25 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
 
     $scope.reloadGridOptionsTv = function () {
         loadGridOptionsTv();
+    }
+
+    gestioncontingencias();
+
+    function gestioncontingencias() {
+
+        services.datosgestioncontingencias().then(function (data) {
+
+            //$scope.contingenciasTV = $scope.contingenciesDataTV.concat(data.data[0]);
+            //$scope.contingenciasOTROS = $scope.contingenciesDataInternetToIP.concat(data.data[1]);
+
+            $scope.gridOptionsInternet.data = data.data[1]
+            $scope.gridOptionsTv.data = data.data[0];
+
+        }).catch(function (err) {
+            console.log(err);
+
+        });
+
     }
 
     $scope.CopyPortaPapeles = function (data) {
@@ -8444,8 +8157,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                             text: data.data.text,
                             timer: 4000
                         }).then(function () {
-                            loadGridOptionsTv();
-                            loadgridOptionsInternet();
+                            gestioncontingencias();
                         })
                     } else if (data.data.state == 1) {
                         swal({
@@ -8453,8 +8165,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                             text: data.data.text,
                             timer: 4000
                         }).then(function () {
-                            loadGridOptionsTv();
-                            loadgridOptionsInternet();
+                            gestioncontingencias();
                         })
                     } else if (data.data.state == 0) {
                         swal({
@@ -8462,8 +8173,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                             text: data.data.text,
                             timer: 4000
                         }).then(function () {
-                            loadGridOptionsTv();
-                            loadgridOptionsInternet();
+                            gestioncontingencias();
                         })
                     }
                 })
@@ -8515,7 +8225,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                         showConfirmButton: false,
                         timer: 3000
                     });
-                    $scope.gestioncontingencias();
+                    gestioncontingencias();
                     return;
                 } else {
                     $scope.respuestaMarca = data.data[0][0];
@@ -8526,7 +8236,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                         showConfirmButton: false,
                         timer: 3000
                     });
-                    $scope.gestioncontingencias();
+                    gestioncontingencias();
                     //$scope.gestioncontingenciasPrueba();
                     return;
                 }
@@ -8539,7 +8249,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                     showConfirmButton: false,
                     timer: 3000
                 });
-                $scope.gestioncontingencias();
+                gestioncontingencias();
                 return;
             }
         })
@@ -8653,11 +8363,10 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
     }
 
     $scope.loadgrid = function () {
-
         window.setTimeout(function () {
             $(window).resize();
             $(window).resize();
-        }, 1000);
+        }, 200);
     }
 
     $scope.resumenContingencias = function (fechaInicial, fechafinal) {
@@ -8697,7 +8406,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                 ;
             }
 
-            /*CONTADOR DIARIO PARA TV*/
+            /!*CONTADOR DIARIO PARA TV*!/
             var tam1 = $scope.dataresumenContingenciasTV.length;
             $scope.Totaltotal_pedidos_aceptadosTV = 0;
             $scope.Totaltotal_pedidos_pendientesTV = 0;
@@ -8722,7 +8431,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                 ;
             }
             $scope.Totaltotal_pedidos_pendientesTV += $scope.cantidadContingenciasTV;
-            /*SE RECORREO EL ARREGLO IDENTIFICNADO Y ALMACENANDO LOS LOGINES DE QUIENES TIENEN MARCADAS CONTINGENCIAS PARA GESTIONAR*/
+            /!*SE RECORREO EL ARREGLO IDENTIFICNADO Y ALMACENANDO LOS LOGINES DE QUIENES TIENEN MARCADAS CONTINGENCIAS PARA GESTIONAR*!/
             for (var i = 0; i < tam1; i++) {
                 if ($scope.dataresumenContingenciasTV[i].estado == 'Pendiente' && $scope.dataresumenContingenciasTV[i].logincontingencia !== null && $scope.dataresumenContingenciasTV[i].estado == 'Pendiente' && $scope.dataresumenContingenciasTV[i].logincontingencia !== "") {
                     $scope.LoginsGestionandoTV[indiceTV] = $scope.dataresumenContingenciasTV[i].logincontingencia;
@@ -8730,10 +8439,10 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                 }
                 ;
             }
-            /*SE CUENTAN LOS USUARIOS ÚNICOS, PARA SABER LA CANTIDAD REAL DE PERSONAS QUE ESTAN GESTIONANDO CONTINGENCIAS*/
+            /!*SE CUENTAN LOS USUARIOS ÚNICOS, PARA SABER LA CANTIDAD REAL DE PERSONAS QUE ESTAN GESTIONANDO CONTINGENCIAS*!/
             $scope.Total_Personas_GestionandoTV = $scope.LoginsGestionandoTV.filter((v, i, a) => a.indexOf(v) === i).length;
 
-            /*SE HACE EL CONTEO POR LOGIN YA QUE HAY PERSONAS QUE MARCAN PARA GESTIONAR MAS DE UNA CONTINGENCIA*/
+            /!*SE HACE EL CONTEO POR LOGIN YA QUE HAY PERSONAS QUE MARCAN PARA GESTIONAR MAS DE UNA CONTINGENCIA*!/
             const cantAnalistasTV = $scope.LoginsGestionandoTV.reduce((contadorAnalistasTV, indiceTV) => {
                 contadorAnalistasTV[indiceTV] = (contadorAnalistasTV[indiceTV] || 0) + 1;
                 return contadorAnalistasTV;
@@ -8741,7 +8450,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
 
             $scope.cantidadAnalistasTV = cantAnalistasTV;
 
-            /*CONTADOR DIARIO PARA Internet-ToIp*/
+            /!*CONTADOR DIARIO PARA Internet-ToIp*!/
             var tam2 = $scope.dataresumenContingenciasInTo.length;
             $scope.Totaltotal_pedidos_aceptadosInTo = 0;
             $scope.Totaltotal_pedidos_pendientesInTo = 0;
@@ -8765,7 +8474,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                 ;
             }
             $scope.Totaltotal_pedidos_pendientesInTo += $scope.cantidadContingenciasINT;
-            /*SE RECORREO EL ARREGLO IDENTIFICNADO Y ALMACENANDO LOS LOGINES DE QUIENES TIENEN MARCADAS CONTINGENCIAS PARA GESTIONAR*/
+            /!*SE RECORREO EL ARREGLO IDENTIFICNADO Y ALMACENANDO LOS LOGINES DE QUIENES TIENEN MARCADAS CONTINGENCIAS PARA GESTIONAR*!/
             for (var i = 0; i < tam2; i++) {
                 if ($scope.dataresumenContingenciasInTo[i].estado == 'Pendiente' && $scope.dataresumenContingenciasInTo[i].logincontingencia !== null && $scope.dataresumenContingenciasInTo[i].estado == 'Pendiente' && $scope.dataresumenContingenciasInTo[i].logincontingencia !== "") {
                     $scope.LoginsGestionandoInternet[indiceInternet] = $scope.dataresumenContingenciasInTo[i].logincontingencia;
@@ -8773,10 +8482,10 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                 }
                 ;
             }
-            /*SE CUENTAN LOS USUARIOS ÚNICOS, PARA SABER LA CANTIDAD REAL DE PERSONAS QUE ESTAN GESTIONANDO CONTINGENCIAS*/
+            /!*SE CUENTAN LOS USUARIOS ÚNICOS, PARA SABER LA CANTIDAD REAL DE PERSONAS QUE ESTAN GESTIONANDO CONTINGENCIAS*!/
             $scope.Total_Personas_GestionandoInternet = $scope.LoginsGestionandoInternet.filter((v, i, a) => a.indexOf(v) === i).length;
 
-            /*SE HACE EL CONTEO POR LOGIN YA QUE HAY PERSONAS QUE MARCAN PARA GESTIONAR MAS DE UNA CONTINGENCIA*/
+            /!*SE HACE EL CONTEO POR LOGIN YA QUE HAY PERSONAS QUE MARCAN PARA GESTIONAR MAS DE UNA CONTINGENCIA*!/
             const cantAnalistasInt = $scope.LoginsGestionandoInternet.reduce((contadorAnalistasInternet, indiceInternet) => {
                 contadorAnalistasInternet[indiceInternet] = (contadorAnalistasInternet[indiceInternet] || 0) + 1;
                 return contadorAnalistasInternet;
@@ -8784,7 +8493,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
 
             $scope.cantidadAnalistasInt = cantAnalistasInt;
 
-            /*CONTADOR DIARIO PARA CORREGIR PORTAFOLIO*/
+            /!*CONTADOR DIARIO PARA CORREGIR PORTAFOLIO*!/
             var tam = $scope.dataresumenContingenciasCP.length;
             $scope.Totaltotal_pedidos_aceptadosCP = 0;
             $scope.Totaltotal_pedidos_pendientesCP = 0;
@@ -8807,7 +8516,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                 ;
             }
 
-            /*CONTADOR DE PERSONAS GESTIONANDO CONTINGENCIAS DE CP*/
+            /!*CONTADOR DE PERSONAS GESTIONANDO CONTINGENCIAS DE CP*!/
             for (var i = 0; i < tam; i++) {
                 if ($scope.dataresumenContingenciasCP[i].estado == 'Pendiente' && $scope.dataresumenContingenciasCP[i].loginContingenciaPortafolio !== null && $scope.dataresumenContingenciasCP[i].estado == 'Pendiente' && $scope.dataresumenContingenciasCP[i].loginContingenciaPortafolio !== "") {
                     $scope.Total_Personas_GestionandoCP = +$scope.Total_Personas_GestionandoCP + 1;
@@ -8860,7 +8569,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
 
     };
 
-    /*MOSTRAR MODAL PARA CIERRE MASIVO DE CONTINGENCIAS*/
+    /!*MOSTRAR MODAL PARA CIERRE MASIVO DE CONTINGENCIAS*!/
 
     $scope.callModalCierreMasivoConti = function () {
 
@@ -8868,7 +8577,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
         $("#cierreMasivoContingencias").modal();
     }
 
-    /*FUNCION PARA CERRAR DE FORMA MASIVA LAS OONTINGENCIAS*/
+    /!*FUNCION PARA CERRAR DE FORMA MASIVA LAS OONTINGENCIAS*!/
     $scope.cierreMasivoContingencias = function (dataCierreMasivoContin, frmCierreMasivoContin) {
 
         if (dataCierreMasivoContin.TV != true && dataCierreMasivoContin.Internet != true && dataCierreMasivoContin.ToIP != true && dataCierreMasivoContin.InternetToIP != true) {
@@ -8988,6 +8697,1312 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                             }
                         }
 
+                        /!*PARA QUE EL MODAL SE OCULTE SOLO*!/
+                        $("#cierreMasivoContingencias").modal('hide');
+                        $scope.cierreMasivoSel = {};
+
+                        /!*LIMPIEZA DEL MODAL*!/
+                        frmCierreMasivoContin.autoValidateFormOptions.resetForm();
+
+                    }, function errorCallback(response) {
+
+                        if (response.status == '400') {
+
+                            Swal({
+                                type: 'error',
+                                title: 'Oops...',
+                                text: 'Hubo un error',
+                                footer: '¡Escalarlo al administrador!'
+                            })
+                        }
+                    });
+                $scope.gestioncontingencias();
+
+            }
+        })
+    }
+
+    //$scope.gestioncontingencias();
+    //$scope.gestioncontingenciasPrueba();
+    $scope.resumenContingencias($scope.fechaupdateInical, $scope.fechaupdateFinal);
+});
+*/
+
+app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $location, $route, $routeParams, $cookies, $cookieStore, $timeout, services, fileUpload) {
+    $scope.rutaCierreMasivoContin = "partial/modals/cierreMasivoContingencias.html";
+    $scope.haypedidoOtros = false;
+    $scope.haypedidoTV = false;
+    $scope.loadingData = false;
+    $scope.haypedidoPortafolio = false;
+    $scope.haypedidoCEQPortafolio = false;
+    $scope.status = true;
+    $scope.sinPedido = false;
+    $scope.isContingenciesFromField = false;
+    $scope.contingenciesDataTV = [];
+    $scope.contingenciesDataInternetToIP = [];
+    $scope.contingenciasTV = [];
+    $scope.contingenciasOTROS = [];
+    var database = firebase.firestore();
+    $scope.cantidadContingenciasTV = 0;
+    $scope.cantidadContingenciasINT = 0;
+
+    getGrid();
+
+    $scope.reloadContingenciaTv = function () {
+        $scope.gestioncontingencias();
+    }
+
+    $scope.loadgrid = function () {
+        window.setTimeout(function () {
+            $(window).resize();
+            $(window).resize();
+        }, 200);
+    }
+
+    function getGrid() {
+        var columnDefs = [
+            {
+                name: "Pedido",
+                field: "pedido",
+                minWidth: 70,
+                width: "15%",
+                enableCellEdit: false,
+                enableFiltering: true
+            },
+            {
+                name: "Login ingreso",
+                field: "logindepacho",
+                minWidth: 80,
+                width: "15%",
+                enableCellEdit: false,
+                enableFiltering: true,
+
+            }, {
+                name: "Fecha ingreso",
+                field: "horagestion",
+                minWidth: 80,
+                width: "20%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Login gestion",
+                field: "logincontingencia",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "15%",
+                enableCellEdit: false,
+            }, {
+                name: "Fecha gestion",
+                field: "horacontingencia",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "20%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Estado",
+                field: "estado",
+                cellStyle: {"text-align": "center"},
+                minWidth: 80,
+                width: "15%",
+                enableCellEdit: false,
+            }];
+
+        $scope.gridOptions = {
+            enableFiltering: true,
+            enablePagination: true,
+            pageSize: 200,
+            columnDefs: columnDefs,
+            paginationPageSizes: [200, 500, 1000],
+            paginationPageSize: 200,
+
+        };
+
+        $scope.gridOptions.totalItems = '';
+        $scope.gridOptions.data = ''
+    }
+
+    $scope.listarcontingenciasterreno = () => {
+
+        /* database.collection("contingencies").where("status","==", 0).orderBy("contingencies_Date","asc").get().then((querySnapshot) => {
+            $scope.isContingenciesFromField = false;
+            $scope.contingenciesDataTV = [];
+            $scope.contingenciesDataInternetToIP = [];
+            $scope.cantidadContingenciasTV = 0;
+            $scope.cantidadContingenciasINT = 0;
+            querySnapshot.forEach((doc) => {
+                let dataQuerySnapshot = {};
+                dataQuerySnapshot = {
+                    _id: doc.id,
+                    references: doc.data().references,
+                    macIn: doc.data().macIn,
+                    macOut: doc.data().macOut,
+                    details: doc.data().details,
+                    contingencies_Type: doc.data().contingencies_Type,
+                    contingencies_Date: doc.data().contingencies_Date,
+                    contingencies_State: doc.data().contingencies_State,
+                    product: doc.data().product,
+                    user_email: doc.data().user_email,
+                    user_identification: doc.data().user_identification
+                }
+                special_access = [98644514,15335939,16268236,70191900
+                    ,71638399,10137123,71789293,98621522,70254182
+                    ,98567429,71733363,71669597,98593889,71653347
+                    ,70753885,70954170,70384636,1094947317,71625390];
+
+                dataQuerySnapshot.correo = dataQuerySnapshot.user_email;
+                var date = dataQuerySnapshot.contingencies_Date.toDate();
+                var year = date.getFullYear();
+                var month = "0" + (date.getMonth() + 1);
+                var day = "0" + date.getDate();
+                var hours = "0" + date.getHours();
+                var minutes = "0" + date.getMinutes();
+                var seconds = "0" + date.getSeconds();
+                var formattedTime = year + '-' + month.substr(-2) + '-' + day.substr(-2) + ' ' + hours.substr(-2) + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+                dataQuerySnapshot.horagestion = formattedTime;
+                dataQuerySnapshot.fecha = date;
+                dataQuerySnapshot.macEntra = dataQuerySnapshot.macIn;
+                dataQuerySnapshot.macSale = dataQuerySnapshot.macOut;
+                dataQuerySnapshot.observacion = dataQuerySnapshot.details;
+                dataQuerySnapshot.pedido = dataQuerySnapshot.references;
+                dataQuerySnapshot.producto = dataQuerySnapshot.product;
+                dataQuerySnapshot.accion = dataQuerySnapshot.contingencies_Type;
+
+                if(special_access.indexOf(dataQuerySnapshot.user_identification) != -1){
+                    dataQuerySnapshot.remite = "Teléfonos Públicos";
+                } else {
+                    dataQuerySnapshot.remite = "Terreno";
+                }
+
+                if(dataQuerySnapshot.product == "TV"){
+                    $scope.contingenciasTV.push(dataQuerySnapshot);
+                    $scope.contingenciesDataTV.push(dataQuerySnapshot);
+                    $scope.cantidadContingenciasTV++;
+                }
+                else if(dataQuerySnapshot.product == "Internet" || dataQuerySnapshot.product == "ToIP" || dataQuerySnapshot.product == "Internet+ToIP"){
+                    $scope.contingenciasOTROS.push(dataQuerySnapshot);
+                    $scope.contingenciesDataInternetToIP.push(dataQuerySnapshot);
+                    $scope.cantidadContingenciasINT++;
+                }
+            });
+            $scope.isContingenciesFromField = true;
+
+            if($scope.contingenciasTV.length == 0 ){
+                $scope.contingenciasTV = $scope.contingenciasTV.concat($scope.contingenciesDataTV);
+            }
+            if($scope.contingenciasOTROS.length == 0){
+                $scope.contingenciasOTROS = $scope.contingenciasOTROS.concat($scope.contingenciesDataInternetToIP);
+            }
+        }).catch( (err) => {
+            console.log(err);
+        }); */
+
+
+    }
+
+    var tiempo = new Date().getTime();
+    var date1 = new Date();
+    var year = date1.getFullYear();
+    var month = (date1.getMonth() + 1 <= 9) ? '0' + (date1.getMonth() + 1) : (date1.getMonth() + 1);
+    var day = (date1.getDate() <= 9) ? '0' + date1.getDate() : date1.getDate();
+
+    tiempo = year + "-" + month + "-" + day;
+
+    $scope.fechaupdateInical = tiempo;
+    $scope.fechaupdateFinal = tiempo;
+
+
+    $scope.changeStatus = function (data) {
+        //console.log("Aceptado/Rechazado: ",data);
+    }
+
+    /*$scope.palancatv = function(data,idxtv)
+    {
+        var TIPITV = $scope.contingenciasTV.map((doc)=>doc.tipificacion);
+        var PALANCATV= $scope.contingenciasTV.map((doc)=>doc.acepta);
+
+        if(TIPITV[idxtv]=="Ok") //Si la tipificación es "Ok" pone el acepta en "Si"
+        {
+            acepta[idxtv].click();
+        }
+        else if(PALANCATV[idxtv]==true) //cuando se dio ok y luego se rechaza por cualquier motivo pone el acepta en no
+        {
+            acepta[idxtv].click();
+        }
+        else //Cuando se rechaza directamente por cualquier motivo pone el acepta en no
+        {
+            acepta[idxtv].checked=false;
+        }
+    }
+
+    $scope.palancaotro = function(data,idxotros)
+    {
+        var TIPIOTROS = $scope.contingenciasOTROS.map((doc)=>doc.tipificacion);
+        var PALANCAOTROS= $scope.contingenciasOTROS.map((doc)=>doc.acepta);
+
+        if(TIPIOTROS[idxotros]=="Ok") //Si la tipificación es "Ok" pone el acepta en "Si"
+        {
+            aceptaotro[idxotros].click();
+        }
+        else if(PALANCAOTROS[idxotros]==true) //cuando se dio ok y luego se rechaza por cualquier motivo pone el acepta en no
+        {
+            aceptaotro[idxotros].click();
+        }
+        else //Cuando se rechaza directamente por cualquier motivo pone el acepta en no
+        {
+            aceptaotro[idxotros].checked=false;
+        }
+    }
+
+    $scope.palancacp = function(data,idxcp)
+    {
+        var TIPICP = $scope.contingenciasPortafolio.map((doc)=>doc.tipificacionPortafolio);
+        var PALANCACP= $scope.contingenciasPortafolio.map((doc)=>doc.aceptaPortafolio);
+
+        if(TIPICP[idxcp]=="Ok") //Si la tipificación es "Ok" pone el acepta en "Si"
+        {
+            aceptacp[idxcp].click();
+        }
+        else if(PALANCACP[idxcp]==true) //cuando se dio ok y luego se rechaza por cualquier motivo pone el acepta en no
+        {
+            aceptacp[idxcp].click();
+        }
+        else //Cuando se rechaza directamente por cualquier motivo pone el acepta en no
+        {
+            aceptacp[idxcp].checked=false;
+        }
+    }*/
+
+    $scope.gestioncontingencias = function () {
+        $scope.loadingData = true;
+
+        // $scope.contingenciasTV = [];
+        // $scope.contingenciasOTROS = [];
+        $scope.listarcontingenciasterreno();
+
+        services.datosgestioncontingencias().then(function (data) {
+
+            //console.log("datosgestioncontingencias: ", data);
+            $scope.loadingData = false;
+
+            $scope.contingenciasTV = $scope.contingenciesDataTV.concat(data.data[0]);
+            $scope.contingenciasOTROS = $scope.contingenciesDataInternetToIP.concat(data.data[1]);
+
+            $scope.contingenciasPortafolio = data.data[2];
+
+            var TV = $scope.contingenciasTV.map((doc) => doc.horagestion);
+            var OTROS = $scope.contingenciasOTROS.map((doc) => doc.horagestion);
+            var CPORTAFOLIO = $scope.contingenciasPortafolio.map((doc) => doc.horagestion);
+
+            /*Se formatea la hora del sistema*/
+            function js_yyyy_mm_dd_hh_mm_ss() {
+                now = new Date();
+                year = "" + now.getFullYear();
+                month = "" + (now.getMonth() + 1); if (month.length == 1) { month = "0" + month; }
+                day = "" + now.getDate(); if (day.length == 1) { day = "0" + day; }
+                hour = "" + now.getHours(); if (hour.length == 1) { hour = "0" + hour; }
+                minute = "" + now.getMinutes(); if (minute.length == 1) { minute = "0" + minute; }
+                second = "" + now.getSeconds(); if (second.length == 1) { second = "0" + second; }
+                return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
+            }
+
+            $scope.hora_sistema = js_yyyy_mm_dd_hh_mm_ss();
+
+            /*Se recorre el arreglo restando la hora del sistema con la hora de llegada,
+            si es mayor a 15 minutos se almacena el indice de la contingencia mas reciente
+            que cumplio los 15 minutos*/
+            TV.forEach(function (valor, indice) {
+
+                $scope.diferencia = new Date(js_yyyy_mm_dd_hh_mm_ss()) - new Date(TV[indice]);
+
+                if ($scope.diferencia > 900000) {
+                    $scope.indice = (indice);
+                    $scope.quinceminutos = new Array();
+                    $scope.quinceminutos[$scope.indice] = TV[$scope.indice];
+
+                }
+            });
+
+            OTROS.forEach(function (valor, indice) {
+
+                $scope.diferencia = new Date(js_yyyy_mm_dd_hh_mm_ss()) - new Date(OTROS[indice]);
+
+                if ($scope.diferencia > 900000) {
+                    $scope.indice = (indice);
+                    $scope.quinceminutos = new Array();
+                    $scope.quinceminutos[$scope.indice] = OTROS[$scope.indice];
+                }
+            });
+
+            CPORTAFOLIO.forEach(function (valor, indice) {
+
+                $scope.diferencia = new Date(js_yyyy_mm_dd_hh_mm_ss()) - new Date(CPORTAFOLIO[indice]);
+
+                if ($scope.diferencia > 900000) {
+                    $scope.indice = (indice);
+                    $scope.quinceminutos = new Array();
+                    $scope.quinceminutos[$scope.indice] = CPORTAFOLIO[$scope.indice];
+                }
+            });
+
+            if ($scope.contingenciasTV.length !== 0) {
+                //console.log("contingenciasTV: ",$scope.contingenciasTV[0]);
+                $scope.haypedidoTV = true;
+            } else {
+                $scope.haypedidoTV = false;
+                $scope.mensaje = "No hay pedidos para gestionar!!!";
+            }
+
+            if ($scope.contingenciasOTROS.length !== 0) {
+                //console.log("contingenciasOTROS: ",$scope.contingenciasOTROS[0]);
+                $scope.haypedidoOtros = true;
+            } else {
+                $scope.haypedidoOtros = false;
+                $scope.mensajeotros = "No hay pedidos para gestionar!!!";
+            }
+
+            /*CONDICIONAL PARA RECORRER TODA LA DATA*/
+            if ($scope.contingenciasPortafolio.length !== 0) {
+                //console.log("contingenciasPortafolio: ",$scope.contingenciasPortafolio[0]);
+                $scope.haypedidoPortafolio = true;
+            } else {
+                $scope.haypedidoPortafolio = false;
+                $scope.mensajeotros = "No hay pedidos prioritarios!!!";
+            }
+
+
+
+            return data.data;
+        }).catch(function (err) {
+            console.log(err);
+            $scope.contingenciasTV = [];
+            $scope.contingenciasOTROS = [];
+            $scope.listarcontingenciasterreno();
+            $scope.loadingData = false;
+        });
+
+    }
+
+
+    $scope.CopyPortaPapeles = function (data) {
+        var copyTextTV = document.createElement("input");
+        copyTextTV.value = data;
+        document.body.appendChild(copyTextTV);
+        copyTextTV.select();
+        document.execCommand("copy");
+        document.body.removeChild(copyTextTV);
+        Swal({
+            type: 'info',
+            title: 'Aviso',
+            text: "El texto seleccionado fue copiado",
+            timer: 2000
+        });
+    }
+
+    $scope.autocompletarContingencia = async (data) => {
+        var contingencia = {};
+        try {
+            var autocompleteQuery = await fetch('http://10.100.66.254:8080/HCHV_DEV/BuscarB/' + data.references);
+            var autocompleteData = await autocompleteQuery.json();
+            var equiposIn = "";
+            var equiposOut = "";
+            var sep = "";
+            // servicios bb8
+            // if (data.product == "TV"){
+            //     var querytvmss = await fetch('http://10.100.66.254:7776/api/plan/tvmss/' + data.references);
+            //     var querytvmssData = await querytvmss.json();
+            //     contingencia.paquete = querytvmssData[0][0];
+
+            // }
+            // else if(data.product == "Internet"){
+            //     var querytoipmss = await fetch('http://10.100.66.254:7776/api/plan/toipmss/' + data.references);
+            //     var querytoipmssData = await querytoipmss.json();
+            //     var queryBaMSS = await fetch('http://10.100.66.254:7776/api/plan/bamss/' + data.references);
+            //     var queryBaMSSData = await queryBaMSS.json();
+            //     contingencia.paquete = querytoipmssData[1][3];
+            //     contingencia.perfil = queryBaMSSData[0][0];
+            // }
+            // Homologación
+            contingencia.accion = data.contingencies_Type;
+            contingencia.ciudad = (autocompleteData.uNEMunicipio) ? autocompleteData.uNEMunicipio.toUpperCase() : "";
+            contingencia.correo = data.user_email;
+            contingencia.fecha = data.contingencies_Date.toDate();
+            contingencia.macEntra = data.macIn;
+            contingencia.macSale = data.macOut;
+            contingencia.observacion = data.details;
+            contingencia.pedido = data.references;
+            contingencia.proceso = autocompleteData.TaskType;
+            contingencia.remite = data.remite;
+
+            contingencia.producto = data.product;
+            contingencia.uen = autocompleteData.uNEUen;
+            contingencia._id = data._id;
+
+            for (var equipo of contingencia.macEntra) {
+                if (equipo.name == undefined || equipo.name == "undefined") continue;
+                else {
+                    equiposIn = equiposIn + sep + equipo.name;
+                    sep = "-";
+                }
+            }
+            sep = "";
+            contingencia.macEntra = equiposIn;
+
+            for (var equipo of contingencia.macSale) {
+                if (equipo.name == undefined || equipo.name == "undefined") continue;
+                else {
+                    equiposOut = equiposOut + sep + equipo.name;
+                    sep = "-";
+                }
+            }
+            contingencia.macSale = equiposOut;
+
+            if (data.remite != "Teléfonos Públicos") {
+                if ((autocompleteData.Type == "Install" || autocompleteData.Type == "Traslado") && (autocompleteData.RTA == 'NA' || autocompleteData.RTA == 'N')) {
+                    if (data.user_identification != autocompleteData.engineerID) {
+                        swal({
+                            title: "Aviso Importante: ",
+                            html: "El pedido no concuerda con el técnico que solicita su gestión ni tampoco ha sido gestionado a través de Click.",
+                            type: "warning",
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Sí, Lo tengo presente!'
+                        });
+                    } else {
+                        swal({
+                            title: "Aviso Importante: ",
+                            html: "El pedido no ha sido gestionado a través Click.",
+                            type: "warning",
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Sí, Lo tengo presente!'
+                        });
+                    }
+                } else if (autocompleteData.Type == "Repair" && (autocompleteData.MAC == '' || autocompleteData.MAC == null) && autocompleteData.RTA3 == null) {
+                    if (data.user_identification != autocompleteData.engineerID) {
+                        swal({
+                            title: "Aviso Importante: ",
+                            html: "El pedido no concuerda con el técnico que solicita su gestión ni tampoco ha sido gestionado a través de Click.",
+                            type: "warning",
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Sí, Lo tengo presente!'
+                        });
+                    } else {
+                        swal({
+                            title: "Aviso Importante: ",
+                            html: "El pedido no ha sido gestionado a través Click.",
+                            type: "warning",
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Sí, Lo tengo presente!'
+                        });
+                    }
+                } else {
+                    if (autocompleteData.Description == null || autocompleteData.LaborType == '1166073856') {
+                        if (data.user_identification != autocompleteData.engineerID) {
+                            swal({
+                                title: "Aviso Importante: ",
+                                html: "El pedido no concuerda con el técnico que solicita su gestión ni tampoco ha sido gestionado a través de Sara.",
+                                type: "warning",
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'Sí, Lo tengo presente!'
+                            });
+                        }
+                        else {
+                            swal({
+                                title: "Aviso Importante: ",
+                                html: "El pedido no ha sido gestionado a través de Sara.",
+                                type: "warning",
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'Sí, Lo tengo presente!'
+                            });
+                        }
+                    } else if (data.user_identification != autocompleteData.engineerID) {
+                        swal({
+                            title: "Aviso Importante: ",
+                            html: "El pedido no concuerda con el técnico que solicita su gestión.",
+                            type: "warning",
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Sí, Lo tengo presente!'
+                        });
+                    }
+                }
+
+                if (autocompleteData.Type == null) {
+                    if (data.user_identification != autocompleteData.engineerID) {
+                        swal({
+                            title: "Aviso Importante: ",
+                            html: "El pedido no concuerda con el técnico que solicita su gestión y no ha sido diligenciado en click.",
+                            type: "warning",
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Sí, Lo tengo presente!'
+                        });
+                    }
+                    else {
+                        swal({
+                            title: "Aviso Importante: ",
+                            html: "El pedido no ha sido diligenciado en click.",
+                            type: "warning",
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Sí, Lo tengo presente!'
+                        });
+                    }
+                }
+            }
+
+            var queryIsAlreadyToken = database.collection("contingencies").doc(data._id);
+            var querySnapshotAT = await queryIsAlreadyToken.get();
+            if (querySnapshotAT.data().status == 1) {
+                swal({
+                    title: "Este pedido ya ha sido tomado: ",
+                    html: `El pedido ${data.pedido} que ha seleccionado, ya ha sido tomado.`,
+                    type: "warning"
+                });
+            } else {
+                var queryUpdateStatus = await database.collection("contingencies").doc(data._id).update({ status: 1 });
+                var querySaveContingency = await services.guardarContingencia(contingencia, $rootScope.galletainfo);
+                $scope.contingenciasTV = [];
+                $scope.contingenciasOTROS = [];
+                // $scope.gestioncontingencias();
+            }
+
+        } catch (error) {
+            swal({
+                title: "Información Pedido: ",
+                html: "No encontrado",
+                type: "warning"
+            });
+            console.log(error);
+            return;
+        }
+
+
+    }
+
+    $scope.guardarcontingencia = function (data) {
+        //console.log("guardarcontingencia: ",data);
+        if (data.engestion == null) {
+            swal({
+                type: 'error',
+                text: 'Debes marcar el pedido',
+            })
+        } else if (data.tipificacion == undefined) {
+            swal({
+                type: 'error',
+                text: 'Selecciona la tipificacion'
+            })
+        } else {
+            $scope.gestioncontin = data;
+            //console.log("gestioncontin: ",$scope.gestioncontin);
+            $('#editarModal').modal('show');
+            return data.data;
+        }
+    }
+
+    $scope.guardarpedido = function (data) {
+        //console.log("guardarpedido: ",data);
+        console.log(data);
+        if (data.logincontingencia == null) {
+            swal({
+                type: 'error',
+                text: 'Debes marcar el pedido',
+            })
+        }
+        else {
+            if (!data.observacionescontingencia) {
+                swal({
+                    type: 'error',
+                    text: 'Debes Ingresar observaciones',
+                })
+                return;
+            } else {
+                //console.log("Antes de pasar a appi: ",data);
+                if (data.id_terreno != null && data.id_terreno != undefined && data.id_terreno != "") {
+                    var currentTimeDate = new Date().toLocaleString();
+                    var statusContingencieField = (data.tipificacion == "Ok") ? "Aprobado" : "Rechazado";
+                    database.collection("contingencies").doc(data.id_terreno).update({
+                        answer: data.observacionescontingencia,
+                        answer_Date: currentTimeDate,
+                        contingencies_State: statusContingencieField
+                    });
+                }
+                services.editarregistrocontingencia(data, $rootScope.galletainfo)
+                    .then(function (data) {
+                        if (data.data.state == 99) {
+                            swal({
+                                type: 'error',
+                                title: data.data.title,
+                                text: data.data.text,
+                                timer: 4000
+                            }).then(function () {
+                                $cookies.remove('usuarioseguimiento');
+                                $location.path('/');
+                                $rootScope.galletainfo = undefined;
+                                $rootScope.permiso = false;
+                                $route.reload();
+                            })
+                        } else if (data.data.state == 3) {
+                            swal({
+                                type: 'warning',
+                                text: data.data.text,
+                                timer: 4000
+                            }).then(function () {
+                                $scope.gestioncontingencias();
+                            })
+                        } else if (data.data.state == 1) {
+                            swal({
+                                type: 'success',
+                                text: data.data.text,
+                                timer: 4000
+                            }).then(function () {
+                                $scope.gestioncontingencias();
+                            })
+                        } else if (data.data.state == 0) {
+                            swal({
+                                type: 'error',
+                                text: data.data.text,
+                                timer: 4000
+                            }).then(function () {
+                                $scope.gestioncontingencias();
+                            })
+                        }
+                    })
+                    .catch(err => alert(err));
+                $scope.gestioncontingencias();
+                //$scope.gestioncontingenciasPrueba();
+            }
+        }
+    }
+
+    $scope.marcarEngestion = async (data) => {
+
+        // Bloque de condición para contingencias desde terreno.
+        if (data._id != null && data._id != undefined) {
+            try {
+                data.pedido = data.references;
+                data.producto = data.product;
+                await $scope.autocompletarContingencia(data);
+            } catch (error) {
+                return swal({
+                    title: "Aviso Importante: ",
+                    html: "El pedido no fue desbloqueado.",
+                    type: "error",
+                });
+            }
+        }
+
+        services.marcarengestion(data, $rootScope.galletainfo).then(function (data) {
+
+            //console.log("marcarengestion: ",data);
+
+            if (data.data.state == 99) {
+                swal({
+                    type: 'error',
+                    title: data.data.title,
+                    text: data.data.text,
+                    timer: 3000
+                }).then(function () {
+                    $cookies.remove('usuarioseguimiento');
+                    $location.path('/');
+                    $rootScope.galletainfo = undefined;
+                    $rootScope.permiso = false;
+                    $route.reload();
+                })
+            } else if (data.data.state == 1) {
+                window.setTimeout(function () {
+                    $scope.gestioncontingencias();
+                }, 500);
+                swal({
+                    title: data.data.title,
+                    text: data.data.text,
+                    type: "success",
+                    position: 'center',
+                    showConfirmButton: false,
+                    timer: 3000
+                })
+            } else if (data.data.state == 2) {
+                window.setTimeout(function () {
+                    $scope.gestioncontingencias();
+                }, 1000);
+                swal({
+                    title: data.data.title,
+                    text: data.data.text,
+                    type: "warning",
+                    position: 'center',
+                    showConfirmButton: false,
+                    timer: 3000
+                })
+            }
+        })
+            .catch(err => console.log(err));
+    }
+
+    /*INICIO DEL BLOQUE QUE GUARDAR LA GESTION DE CONTINGENCIA CORREGIR PORTAFOLIO*/
+
+    $scope.guardarContingenciaPortafolio = function (data) {
+        //console.log("guardarContingenciaPortafolio: ",data);
+        if (data.enGestionPortafolio == 0) {
+            alert("Debes bloquear el pedido");
+            return;
+        } else if (data.tipificacionPortafolio == "") {
+            alert("Recuerda seleccionar todas las opciones!!");
+            return;
+        } else {
+            $scope.gestioncontinPortafilio = data;
+            //console.log("gestioncontinPortafilio: ",$scope.gestioncontinPortafilio);
+            $('#editarModalPortafolio').modal('show');
+            return data.data;
+        }
+    }
+
+    $scope.guardarpedidoPortafolio = function (data) {
+        //console.log("guardarpedidoPortafolio: ",data);
+        if (!data.observContingenciaPortafolio) {
+            alert("Debes ingresar las observaciones.");
+            return;
+        } else {
+            alert("Pedido guardado, recuerda actualizar!!");
+            //console.log("Antes de pasar a appi: ",data);
+            services.editarRegistroContingenciaPortafolio(data, $rootScope.galletainfo).then(function (data) { });
+            $scope.gestioncontingencias();
+            //$scope.gestioncontingenciasPrueba();
+        }
+    }
+
+    $scope.marcarEnGestionPortafolio = function (data) {
+        //console.log("marcarEnGestionPortafolio: ",data);
+        services.marcarEnGestionPorta(data, $rootScope.galletainfo).then(function (data) {
+
+            //console.log("marcarEnGestionPorta: ",data.data[0]);
+            //console.log("marcarEnGestionPorta: ",data.config.data.login.LOGIN);
+
+            if (data.data !== "") {
+                if (data.data[0] == "desbloqueado") {
+                    $scope.respuestaMarca = data.data[0][0];
+                    //console.log("respuestaMarcaDesbloqueado: ",$scope.respuestaMarca);
+                    alert("Pedido desbloqueado!!");
+                    $scope.gestioncontingencias();
+                    return;
+                } else {
+                    $scope.respuestaMarca = data.data[0][0];
+                    //console.log("respuestaMarcaOcupado: ",$scope.respuestaMarca);
+
+                    if ($scope.respuestaMarca.logincontingencia) {
+                        alert("El pedido se encuentra bloqueado.");
+                    } else {
+                        alert("El pedido se encuentra bloqueado.");
+                    }
+
+                    $scope.gestioncontingencias();
+                    //$scope.gestioncontingenciasPrueba();
+                    return;
+                }
+            } else if (data.data == "") {
+                $scope.respuestaMarca = "";
+                alert("Pedido bloqueado!!!");
+                $scope.gestioncontingencias();
+                //$scope.gestioncontingenciasPrueba();
+                return;
+            }
+        });
+    }
+
+    /*POR SI SE ME DAÑA EL BUENO*/
+    // $scope.marcarEnGestionPortafolio = function (data) {
+    //     console.log("marcarEnGestionPortafolio: ",data);
+    //     services.marcarEnGestionPorta(data, $rootScope.galletainfo).then(function (data) {
+
+    //         console.log("marcarEnGestionPorta: ",data.data[0]);
+
+    //         if (data.data !== "") {
+    //             if (data.data[0] == "desbloqueado") {
+    //                 $scope.respuestaMarca = data.data[0][0];
+    //                 console.log("respuestaMarcaDesbloqueado: ",$scope.respuestaMarca);
+    //                 alert("Pedido desbloqueado!!");
+    //                 $scope.gestioncontingencias();
+    //                 //$scope.gestioncontingenciasPrueba();
+    //                 return;
+    //             } else {
+    //                 $scope.respuestaMarca = data.data[0][0];
+    //                 console.log("respuestaMarcaOcupado: ",$scope.respuestaMarca);
+    //                 alert("El pedido se encuentra bloqueado por: " + $scope.respuestaMarca.logincontingencia);
+    //                 $scope.gestioncontingencias();
+    //                 //$scope.gestioncontingenciasPrueba();
+    //                 return;
+    //             }
+    //         } else if (data.data == "") {
+    //             $scope.respuestaMarca = "";
+    //             alert("Pedido bloqueado!!!");
+    //             $scope.gestioncontingencias();
+    //             //$scope.gestioncontingenciasPrueba();
+    //             return;
+    //         }
+    //     });
+    // }
+
+    // $scope.marcarEnGestionCEQPortafolio = function (data) {
+    //      console.log("marcarEnGestionCEQPortafolio: ",data);
+    //      services.marcarEnGestionCEQPorta(data, $rootScope.galletainfo).then(function (data) {
+
+    //          //console.log("marcarEnGestionPorta: ",data.data[0]);
+    //          console.log("marcarEnGestionCEQPorta: ",data.config.data.login.LOGIN);
+
+    //          if (data.data !== "") {
+    //              if (data.data[0] == "desbloqueado") {
+    //                  $scope.respuestaMarca = data.data[0][0];
+    //                  console.log("respuestaMarcaCEQDesbloqueado: ",$scope.respuestaMarca);
+    //                  alert("Pedido desbloqueado!!");
+    //                  $scope.gestioncontingencias();
+    //                  return;
+    //              } else {
+    //                  $scope.respuestaMarca = data.data[0][0];
+    //                  console.log("respuestaMarcaOcupadoCEQ: ",$scope.respuestaMarca);
+
+    //                  if ($scope.respuestaMarca.logincontingencia ){
+    //                    alert("El pedido se encuentra bloqueado por: " + $scope.respuestaMarca.logincontingencia);
+    //                  } else {
+    //                    alert("El pedido se encuentra bloqueado por: " + $scope.respuestaMarca.loginContingenciaPortafolio);
+    //                  }
+
+    //                  $scope.gestioncontingencias();
+    //                  //$scope.gestioncontingenciasPrueba();
+    //                  return;
+    //              }
+    //          } else if (data.data == "") {
+    //              $scope.respuestaMarca = "";
+    //              alert("Pedido bloqueado!!!");
+    //              $scope.gestioncontingencias();
+    //              //$scope.gestioncontingenciasPrueba();
+    //              return;
+    //          }
+    //      });
+    //  }
+
+    /*FIN DEL BLOQUE QUE GUARDAR LA GESTION DE CONTINGENCIA CORREGIR PORTAFOLIO*/
+
+    /*$scope.buscarPedidoContingencia = function (pedido) {
+        console.log("pedido: ", pedido);
+
+        if (pedido == undefined || pedido == "") {
+            alert("Debe ingresar un pedido");
+            return;
+        } else {
+            services.getbuscarPedidoContingencia(pedido).then(function (data) {
+                console.log("getbuscarPedidoContingencia: ", data);
+                $scope.databsucarPedido = data.data[0];
+                console.log("databsucarPedido: ", $scope.databsucarPedido);
+                $scope.sinPedido = true;
+                return data.data;
+            }, function errorCallback(response) {
+                $scope.sinPedido = false;
+                $scope.mensajeBuscar = "No hay contingencia para el pedido: " + pedido;
+            });
+
+        }
+    }*/
+
+    $scope.buscarPedidoContingencia = function (pedido) {
+
+        if (pedido == undefined || pedido == "") {
+            swal({
+                type: 'error',
+                text: 'Ingrese el pedido a consultar'
+            })
+        } else {
+            services.getbuscarPedidoContingencia(pedido).then(completed).catch(failed)
+
+            function completed(data) {
+                if (data.data.state == 99) {
+                    swal({
+                        type: 'error',
+                        title: data.data.title,
+                        text: data.data.text,
+                        timer: 4000
+                    }).then(function () {
+                        $cookies.remove('usuarioseguimiento');
+                        $location.path('/');
+                        $rootScope.galletainfo = undefined;
+                        $rootScope.permiso = false;
+                        $route.reload();
+                    })
+                } else if (data.data.state === 0) {
+                    Swal({
+                        type: 'error',
+                        title: data.data.msj
+                    })
+                } else {
+                    $scope.databsucarPedido = data.data.data;
+                    $('#modalHistoricoContingencias').modal('show');
+                    return data.data;
+                }
+            }
+
+            function failed(data) {
+                console.log(data)
+            }
+
+        }
+    }
+
+
+    $scope.resumenContingencias = function (fechaInicial, fechafinal) {
+        services.getresumenContingencias(fechaInicial, fechafinal).then(function (data) {
+            console.log(data);
+
+            //console.log("resumenContingencias: ",data);
+            $scope.gridOptions.totalItems = 200;
+            $scope.gridOptions.data = data.data[0]
+
+            $scope.dataresumenContingencias = data.data[0];
+            //console.log("dataresumenContingencias: ",$scope.dataresumenContingencias);
+
+            $scope.dataresumenContingenciasCP = data.data[5];
+            //console.log("dataresumenContingenciasCP: ",$scope.dataresumenContingenciasCP);
+
+            $scope.dataresumenContingenciasTV = data.data[6];
+            //console.log("dataresumenContingenciasTV: ", $scope.dataresumenContingenciasTV);
+
+            $scope.dataresumenContingenciasInTo = data.data[7];
+            //console.log("dataresumenContingenciasInTo: ",$scope.dataresumenContingenciasInTo);
+
+            /*TRAE LA ARRAY CON EL ESTADO Y LA CANTIDAD $resultadoestadosMes*/
+            $scope.estados = data.data[1];
+            //console.log("estados: ",$scope.estados);
+
+            /*TRAE LA ARRAY CON EL ESTADO Y LA CANTIDAD $queryestadosMesCP*/
+            $scope.estadosCP = data.data[3];
+            //console.log("estadosCP: ",$scope.estados);
+
+            $scope.dia = data.data[2];
+            //console.log("dia: ",$scope.dia);
+            $scope.diaCP = data.data[4];
+            //console.log("diaCP: ",$scope.diaCP);
+
+            /*CONTADOR DIARIO PARA GENERAL*/
+            var tam = $scope.dataresumenContingencias.length;
+            $scope.Totaltotal_pedidos_aceptados = 0;
+            $scope.Totaltotal_pedidos_pendientes = 0;
+            $scope.Totaltotal_pedidos_rechazados = 0;
+
+            for (var i = 0; i < tam; i++) {
+
+                if ($scope.dataresumenContingencias[i].estado == 'Acepta') {
+                    $scope.Totaltotal_pedidos_aceptados = +$scope.Totaltotal_pedidos_aceptados + 1;
+                };
+                if ($scope.dataresumenContingencias[i].estado == 'Rechaza') {
+                    $scope.Totaltotal_pedidos_rechazados = +$scope.Totaltotal_pedidos_rechazados + 1;
+                };
+                if ($scope.dataresumenContingencias[i].estado == 'Pendiente') {
+                    $scope.Totaltotal_pedidos_pendientes = +$scope.Totaltotal_pedidos_pendientes + 1;
+                };
+            }
+
+            /*CONTADOR DIARIO PARA TV*/
+            var tam1 = $scope.dataresumenContingenciasTV.length;
+            $scope.Totaltotal_pedidos_aceptadosTV = 0;
+            $scope.Totaltotal_pedidos_pendientesTV = 0;
+            $scope.Totaltotal_pedidos_rechazadosTV = 0;
+            $scope.Total_Personas_GestionandoTV = 0;
+            $scope.LoginsGestionandoTV = [];
+            var indiceTV = 0;
+
+
+            for (var i = 0; i < tam1; i++) {
+                if ($scope.dataresumenContingenciasTV[i].estado == 'Acepta') {
+                    $scope.Totaltotal_pedidos_aceptadosTV = +$scope.Totaltotal_pedidos_aceptadosTV + 1;
+                };
+                if ($scope.dataresumenContingenciasTV[i].estado == 'Rechaza') {
+                    $scope.Totaltotal_pedidos_rechazadosTV = +$scope.Totaltotal_pedidos_rechazadosTV + 1;
+                };
+                if ($scope.dataresumenContingenciasTV[i].estado == 'Pendiente') {
+                    $scope.Totaltotal_pedidos_pendientesTV = +$scope.Totaltotal_pedidos_pendientesTV + 1;
+                };
+            }
+            $scope.Totaltotal_pedidos_pendientesTV += $scope.cantidadContingenciasTV;
+            /*SE RECORREO EL ARREGLO IDENTIFICNADO Y ALMACENANDO LOS LOGINES DE QUIENES TIENEN MARCADAS CONTINGENCIAS PARA GESTIONAR*/
+            for (var i = 0; i < tam1; i++) {
+                if ($scope.dataresumenContingenciasTV[i].estado == 'Pendiente' && $scope.dataresumenContingenciasTV[i].logincontingencia !== null && $scope.dataresumenContingenciasTV[i].estado == 'Pendiente' && $scope.dataresumenContingenciasTV[i].logincontingencia !== "") {
+                    $scope.LoginsGestionandoTV[indiceTV] = $scope.dataresumenContingenciasTV[i].logincontingencia;
+                    indiceTV = indiceTV + 1;
+                };
+            }
+            /*SE CUENTAN LOS USUARIOS ÚNICOS, PARA SABER LA CANTIDAD REAL DE PERSONAS QUE ESTAN GESTIONANDO CONTINGENCIAS*/
+            $scope.Total_Personas_GestionandoTV = $scope.LoginsGestionandoTV.filter((v, i, a) => a.indexOf(v) === i).length;
+
+            /*SE HACE EL CONTEO POR LOGIN YA QUE HAY PERSONAS QUE MARCAN PARA GESTIONAR MAS DE UNA CONTINGENCIA*/
+            const cantAnalistasTV = $scope.LoginsGestionandoTV.reduce((contadorAnalistasTV, indiceTV) => {
+                contadorAnalistasTV[indiceTV] = (contadorAnalistasTV[indiceTV] || 0) + 1;
+                return contadorAnalistasTV;
+            }, {});
+
+            $scope.cantidadAnalistasTV = cantAnalistasTV;
+
+            /*CONTADOR DIARIO PARA Internet-ToIp*/
+            var tam2 = $scope.dataresumenContingenciasInTo.length;
+            $scope.Totaltotal_pedidos_aceptadosInTo = 0;
+            $scope.Totaltotal_pedidos_pendientesInTo = 0;
+            $scope.Totaltotal_pedidos_rechazadosInTo = 0;
+            $scope.Total_Personas_GestionandoInternet = 0;
+            $scope.LoginsGestionandoInternet = [];
+            var indiceInternet = 0;
+
+            for (var i = 0; i < tam2; i++) {
+                if ($scope.dataresumenContingenciasInTo[i].estado == 'Acepta') {
+                    $scope.Totaltotal_pedidos_aceptadosInTo = +$scope.Totaltotal_pedidos_aceptadosInTo + 1;
+                };
+                if ($scope.dataresumenContingenciasInTo[i].estado == 'Rechaza') {
+                    $scope.Totaltotal_pedidos_rechazadosInTo = +$scope.Totaltotal_pedidos_rechazadosInTo + 1;
+                };
+                if ($scope.dataresumenContingenciasInTo[i].estado == 'Pendiente') {
+                    $scope.Totaltotal_pedidos_pendientesInTo = +$scope.Totaltotal_pedidos_pendientesInTo + 1;
+                };
+            }
+            $scope.Totaltotal_pedidos_pendientesInTo += $scope.cantidadContingenciasINT;
+            /*SE RECORREO EL ARREGLO IDENTIFICNADO Y ALMACENANDO LOS LOGINES DE QUIENES TIENEN MARCADAS CONTINGENCIAS PARA GESTIONAR*/
+            for (var i = 0; i < tam2; i++) {
+                if ($scope.dataresumenContingenciasInTo[i].estado == 'Pendiente' && $scope.dataresumenContingenciasInTo[i].logincontingencia !== null && $scope.dataresumenContingenciasInTo[i].estado == 'Pendiente' && $scope.dataresumenContingenciasInTo[i].logincontingencia !== "") {
+                    $scope.LoginsGestionandoInternet[indiceInternet] = $scope.dataresumenContingenciasInTo[i].logincontingencia;
+                    indiceInternet = indiceInternet + 1;
+                };
+            }
+            /*SE CUENTAN LOS USUARIOS ÚNICOS, PARA SABER LA CANTIDAD REAL DE PERSONAS QUE ESTAN GESTIONANDO CONTINGENCIAS*/
+            $scope.Total_Personas_GestionandoInternet = $scope.LoginsGestionandoInternet.filter((v, i, a) => a.indexOf(v) === i).length;
+
+            /*SE HACE EL CONTEO POR LOGIN YA QUE HAY PERSONAS QUE MARCAN PARA GESTIONAR MAS DE UNA CONTINGENCIA*/
+            const cantAnalistasInt = $scope.LoginsGestionandoInternet.reduce((contadorAnalistasInternet, indiceInternet) => {
+                contadorAnalistasInternet[indiceInternet] = (contadorAnalistasInternet[indiceInternet] || 0) + 1;
+                return contadorAnalistasInternet;
+            }, {});
+
+            $scope.cantidadAnalistasInt = cantAnalistasInt;
+
+            /*CONTADOR DIARIO PARA CORREGIR PORTAFOLIO*/
+            var tam = $scope.dataresumenContingenciasCP.length;
+            $scope.Totaltotal_pedidos_aceptadosCP = 0;
+            $scope.Totaltotal_pedidos_pendientesCP = 0;
+            $scope.Totaltotal_pedidos_rechazadosCP = 0;
+            $scope.Total_Personas_GestionandoCP = 0;
+
+            for (var i = 0; i < tam; i++) {
+
+                if ($scope.dataresumenContingenciasCP[i].estado == 'Acepta') {
+                    $scope.Totaltotal_pedidos_aceptadosCP = +$scope.Totaltotal_pedidos_aceptadosCP + 1;
+                };
+                if ($scope.dataresumenContingenciasCP[i].estado == 'Rechaza') {
+                    $scope.Totaltotal_pedidos_rechazadosCP = +$scope.Totaltotal_pedidos_rechazadosCP + 1;
+                };
+                if ($scope.dataresumenContingenciasCP[i].estado == 'Pendiente') {
+                    $scope.Totaltotal_pedidos_pendientesCP = +$scope.Totaltotal_pedidos_pendientesCP + 1;
+                };
+            }
+
+            /*CONTADOR DE PERSONAS GESTIONANDO CONTINGENCIAS DE CP*/
+            for (var i = 0; i < tam; i++) {
+                if ($scope.dataresumenContingenciasCP[i].estado == 'Pendiente' && $scope.dataresumenContingenciasCP[i].loginContingenciaPortafolio !== null && $scope.dataresumenContingenciasCP[i].estado == 'Pendiente' && $scope.dataresumenContingenciasCP[i].loginContingenciaPortafolio !== "") {
+                    $scope.Total_Personas_GestionandoCP = +$scope.Total_Personas_GestionandoCP + 1;
+                };
+            }
+
+            return data.data;
+        }, function errorCallback(response) {
+
+        });
+    }
+
+    $scope.descargarContingencias = function (fechaInicial, fechafinal) {
+        services.getexporteContingencias(fechaInicial, fechafinal, $rootScope.galletainfo).then(
+            function (datos) {
+
+                var data = datos.data[0];
+                var array = typeof data != 'object' ? JSON.parse(data) : data;
+                var str = '';
+                var column = `ACCION| CIUDAD| MAC_ENTRA| MAC_SALE| MOTIVO| OBSERVACIONES| PAQUETES| PEDIDO| PROCESO| PRODUCTO| REMITENTE| TECNOLOGIA| TIPO_EQUIPO| UEN| CONTRATO| PERFIL| LOGIN| LOGIN_GESTION| HORA_INGRESO| HORA_GESTION| OBSERVACIONES_GESTION| ESTADO| TIPIFICACION| FECHACLICKMARCA| LOGIN_PORTAFILO| HORA_GESTION_PORTAFOLIO| TIPIFICACION_PORTAFOLIO| OBSERVACIONES_GESTION_PORTAFOLIO| GENERAR_CR \r\n`;
+                str += column;
+                for (var i = 0; i < array.length; i++) {
+                    var line = '';
+                    for (var index in array[i]) {
+                        if (line != '') line += '|'
+                        line += array[i][index];
+                    }
+
+                    str += line + '\r\n';
+                }
+                var dateCsv = new Date();
+                var yearCsv = dateCsv.getFullYear();
+                var monthCsv = (dateCsv.getMonth() + 1 <= 9) ? '0' + (dateCsv.getMonth() + 1) : (dateCsv.getMonth() + 1);
+                var dayCsv = (dateCsv.getDate() <= 9) ? '0' + dateCsv.getDate() : dateCsv.getDate();
+                var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
+
+
+                var blob = new Blob([str]);
+                var elementToClick = window.document.createElement("a");
+                elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
+                elementToClick.download = "RegistroContingencia-" + fullDateCsv + ".csv";
+                elementToClick.click();
+            },
+            function errorCallback(response) {
+                $scope.errorDatos = "No hay datos.";
+                $scope.csvPend = false;
+            }
+        );
+
+    };
+
+
+    /*$scope.descargarContingencias = function (fechaInicial, fechafinal) {
+        //console.log(datoExportar+$scope.indicadores.fecha);
+        services.getexporteContingencias(fechaInicial, fechafinal, $rootScope.galletainfo).then(
+            function (data) {
+                // console.log(data.data[0]);
+                window.location.href = "tmp/" + data.data[0];
+                return data.data;
+            },
+            function errorCallback(response) { }
+        );
+
+    };*/
+
+    /*MOSTRAR MODAL PARA CIERRE MASIVO DE CONTINGENCIAS*/
+
+    $scope.callModalCierreMasivoConti = function () {
+
+        angular.copy();
+        $("#cierreMasivoContingencias").modal();
+    }
+
+    /*FUNCION PARA CERRAR DE FORMA MASIVA LAS OONTINGENCIAS*/
+    $scope.cierreMasivoContingencias = function (dataCierreMasivoContin, frmCierreMasivoContin) {
+
+        if (dataCierreMasivoContin.TV != true && dataCierreMasivoContin.Internet != true && dataCierreMasivoContin.ToIP != true && dataCierreMasivoContin.InternetToIP != true) {
+            swal("Debe seleccionar mínimo un producto.");
+            return;
+        }
+
+
+        if (dataCierreMasivoContin.Instalaciones != true && dataCierreMasivoContin.Reparaciones != true) {
+            console.log("Punto " + dataCierreMasivoContin.Instalaciones);
+            swal("Debe seleccionar mínimo un proceso.");
+            return;
+        }
+
+        if (dataCierreMasivoContin.AprovisionarContin != true && dataCierreMasivoContin.Refresh != true && dataCierreMasivoContin.CambioEquipo != true && dataCierreMasivoContin.CambioEID != true && dataCierreMasivoContin.RegistrosToIP != true) {
+            swal("Debe seleccionar mínimo una acción.");
+            return;
+        }
+
+        Swal.fire({
+            title: '¿Está seguro que desea cancelar de forma masiva las contigencias?',
+            text: "no prodrás revertir esto!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, Ejecutar Ahora!'
+        }).then((result) => {
+            if (result.value) {
+
+
+                if (frmCierreMasivoContin.TV.$modelValue == undefined || frmCierreMasivoContin.TV.$modelValue == false) {
+                    dataCierreMasivoContin.TV = 'Sin Informacion';
+                    console.log("SIN SELECCIONAR: " + dataCierreMasivoContin.TV);
+                } else {
+                    dataCierreMasivoContin.TV = $("#TV:checked").val();
+                    console.log("SELECCIONADO: " + dataCierreMasivoContin.TV);
+                }
+
+                if (frmCierreMasivoContin.Internet.$modelValue == undefined || frmCierreMasivoContin.Internet.$modelValue == false) {
+                    dataCierreMasivoContin.Internet = 'Sin Informacion';
+                } else {
+                    dataCierreMasivoContin.Internet = $("#Internet:checked").val();
+                }
+
+                if (frmCierreMasivoContin.ToIP.$modelValue == undefined || frmCierreMasivoContin.ToIP.$modelValue == false) {
+                    dataCierreMasivoContin.ToIP = 'Sin Informacion';
+                } else {
+                    dataCierreMasivoContin.ToIP = $("#ToIP:checked").val();
+                }
+
+                if (frmCierreMasivoContin.InternetToIP.$modelValue == undefined || frmCierreMasivoContin.InternetToIP.$modelValue == false) {
+                    dataCierreMasivoContin.InternetToIP = 'Sin Informacion';
+                } else {
+                    dataCierreMasivoContin.InternetToIP = $("#InternetToIP:checked").val();
+                }
+
+                if (frmCierreMasivoContin.Instalaciones.$modelValue == undefined || frmCierreMasivoContin.Instalaciones.$modelValue == false) {
+                    dataCierreMasivoContin.Instalaciones = 'Sin Informacion';
+                } else {
+                    dataCierreMasivoContin.Instalaciones = $("#Instalaciones:checked").val();
+                }
+
+                if (frmCierreMasivoContin.Reparaciones.$modelValue == undefined || frmCierreMasivoContin.Reparaciones.$modelValue == false) {
+                    dataCierreMasivoContin.Reparaciones = 'Sin Informacion';
+                } else {
+                    dataCierreMasivoContin.Reparaciones = $("#Reparaciones:checked").val();
+                }
+
+                if (frmCierreMasivoContin.AprovisionarContin.$modelValue == undefined || frmCierreMasivoContin.AprovisionarContin.$modelValue == false) {
+                    dataCierreMasivoContin.AprovisionarContin = 'Sin Informacion';
+                } else {
+                    dataCierreMasivoContin.AprovisionarContin = $("#AprovisionarContin:checked").val();
+                }
+
+                if (frmCierreMasivoContin.Refresh.$modelValue == undefined || frmCierreMasivoContin.Refresh.$modelValue == false) {
+                    dataCierreMasivoContin.Refresh = 'Sin Informacion';
+                } else {
+                    dataCierreMasivoContin.Refresh = $("#Refresh:checked").val();
+                }
+
+                if (frmCierreMasivoContin.CambioEquipo.$modelValue == undefined || frmCierreMasivoContin.CambioEquipo.$modelValue == false) {
+                    dataCierreMasivoContin.CambioEquipo = 'Sin Informacion';
+                } else {
+                    dataCierreMasivoContin.CambioEquipo = $("#CambioEquipo:checked").val();
+                }
+
+                if (frmCierreMasivoContin.CambioEID.$modelValue == undefined || frmCierreMasivoContin.CambioEID.$modelValue == false) {
+                    dataCierreMasivoContin.CambioEID = 'Sin Informacion';
+                } else {
+                    dataCierreMasivoContin.CambioEID = $("#CambioEID:checked").val();
+                }
+
+                if (frmCierreMasivoContin.RegistrosToIP.$modelValue == undefined || frmCierreMasivoContin.RegistrosToIP.$modelValue == false) {
+                    dataCierreMasivoContin.RegistrosToIP = 'Sin Informacion';
+                    console.log("SIN SELECCIONART: " + dataCierreMasivoContin.RegistrosToIP);
+                } else {
+                    dataCierreMasivoContin.RegistrosToIP = $("#RegistrosToIP:checked").val();
+                    console.log("SELECCIONADOT: " + dataCierreMasivoContin.RegistrosToIP);
+                }
+
+                console.log(dataCierreMasivoContin);
+
+                services.cierreMasivoContingencia(dataCierreMasivoContin).then(
+                    function (respuesta) {
+
+                        $scope.counter = respuesta.data[0];
+
+                        if (respuesta.status == '200') {
+
+                            if ($scope.counter == 0) {
+
+                                Swal(
+                                    'No se encontraron contingencias con esas condiciones para eliminar!',
+                                    'Por favor revisar'
+                                )
+
+                            } else {
+
+                                Swal(
+                                    'Se rechazaron masivamente ' + $scope.counter + ' contingencias!',
+                                    'Por favor actualizar'
+                                )
+                            }
+                        }
+
                         /*PARA QUE EL MODAL SE OCULTE SOLO*/
                         $("#cierreMasivoContingencias").modal('hide');
                         $scope.cierreMasivoSel = {};
@@ -9013,10 +10028,11 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
         })
     }
 
-    //$scope.gestioncontingencias();
+    $scope.gestioncontingencias();
     //$scope.gestioncontingenciasPrueba();
     $scope.resumenContingencias($scope.fechaupdateInical, $scope.fechaupdateFinal);
 });
+
 
 app.controller('pendientesBrutalCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, $uibModal, services) {
 
@@ -11265,16 +12281,16 @@ app.run(['$rootScope', 'services', function ($rootScope, services) {
     ];
 
     $rootScope.empresas = [
-        {ID: 1, EMPRESA: 'UNE'},
-        {ID: 0, EMPRESA: 'SIN EMPRESA'},
-        {ID: 3, EMPRESA: 'REDES Y EDIFICACIONES'},
-        {ID: 4, EMPRESA: 'ENERGIA INTEGRAL ANDINA'},
-        {ID: 6, EMPRESA: 'EAGLE'},
-        {ID: 7, EMPRESA: 'SERVTEK'},
-        {ID: 8, EMPRESA: 'FURTELCOM'},
-        {ID: 9, EMPRESA: 'EMTELCO'},
-        {ID: 10, EMPRESA: 'CONAVANCES'},
-        {ID: 11, EMPRESA: 'TECHCOM'}
+        {ID: 1, EMPRESA: 'Une'},
+        {ID: 0, EMPRESA: 'Sin empresa'},
+        {ID: 3, EMPRESA: 'Redes y edificaciones'},
+        {ID: 4, EMPRESA: 'Energia integral andina'},
+        {ID: 6, EMPRESA: 'Eagle'},
+        {ID: 7, EMPRESA: 'Servtek'},
+        {ID: 8, EMPRESA: 'Furtelcom'},
+        {ID: 9, EMPRESA: 'Emtelco'},
+        {ID: 10, EMPRESA: 'Conavances'},
+        {ID: 11, EMPRESA: 'Techcom'}
     ];
 
     $rootScope.procesosoffline = [

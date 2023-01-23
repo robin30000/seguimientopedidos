@@ -5231,10 +5231,13 @@ echo '200';exit();
 		$Total_Sheet = $objPHPExcel2->getSheetCount();
 		$Sheet = $objPHPExcel2->getSheet(0)->toArray(null, true, true, true);
 
+		$OkInsert = false;
 		foreach ($Sheet as $key => $value) {
 			if ($key == 1) {
 				continue;
 			}
+
+
 
 			$pedido = trim($value['A']);
 			$id_tecnico = trim($value['B']);
@@ -5245,9 +5248,19 @@ echo '200';exit();
 			$sub_accion = trim($value['G']);
 			$proceso = trim($value['H']);
 
+			if($pedido == '' OR $id_tecnico== '' OR $empresa == ''OR $despacho== '' or $observaciones == '' or $accion == '' or $proceso== '' or $pedido == NULL OR $id_tecnico == NULL OR $empresa== NULL OR $despacho== NULL or $observaciones== NULL or $accion == NULL or $proceso == NULL){
+				echo 'El archvio no puede venir con datos incompletos';
+				exit();
+			}else{
+				$OkInsert = true;
+			}
+
 			$sql = "INSERT INTO registros (pedido, id_tecnico, empresa, asesor, despacho, observaciones, accion, tipo_pendiente, fecha, proceso) VALUES ('$pedido','$id_tecnico','$empresa','CARGAMASIVA', '$despacho','$observaciones','$accion', '$sub_accion', NOW(),'$proceso');";
 
 			$rst = $this->connseguimiento->query($sql);
+		}
+		if($OkInsert = true ){
+			echo 'Carga masiva ejecutada correctamente';
 		}
 		die();
 

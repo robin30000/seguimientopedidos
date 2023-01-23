@@ -284,11 +284,11 @@ class modelSoporteGpon
                                                 status_soporte    = '1'
                                             WHERE id_soporte = :id_soporte");
             $stmt->execute([
-                ':$tipificacion'    => $tipificacion,
-                ':$observacion'     => $observacion,
-                ':$login'           => $login,
-                ':$fecha_respuesta' => $fecha_respuesta,
-                ':$id_soporte'      => $id_soporte,
+                ':tipificacion'    => $tipificacion,
+                ':observacion'     => $observacion,
+                ':login'           => $login,
+                ':fecha_respuesta' => $fecha_respuesta,
+                ':id_soporte'      => $id_soporte,
             ]);
 
             if ($stmt->rowCount()) {
