@@ -50,6 +50,13 @@ if (isset($data['method'])) {
             $user->marcarEngestionGpon($data['data']);
             break;
 
+        case 'BuscarSoporteGpon':
+            require_once '../class/soporteGpon.php';
+            $user = new soporteGpon();
+            $user->BuscarSoporteGpon($data['data']);
+            break;
+
+
         default:
             echo 'ninguna opción valida.';
             break;

@@ -1,7 +1,7 @@
 <?php
 require_once '../class/conection.php';
-ini_set('error_reporting', E_ALL);
-ini_set('display_errors', 1);
+//ini_set('error_reporting', E_ALL);
+//ini_set('display_errors', 1);
 
 class modelSoporteGpon
 {
@@ -284,11 +284,11 @@ class modelSoporteGpon
                                                 status_soporte    = '1'
                                             WHERE id_soporte = :id_soporte");
             $stmt->execute([
-                ':$tipificacion'    => $tipificacion,
-                ':$observacion'     => $observacion,
-                ':$login'           => $login,
-                ':$fecha_respuesta' => $fecha_respuesta,
-                ':$id_soporte'      => $id_soporte,
+                ':tipificacion'    => $tipificacion,
+                ':observacion'     => $observacion,
+                ':login'           => $login,
+                ':fecha_respuesta' => $fecha_respuesta,
+                ':id_soporte'      => $id_soporte,
             ]);
 
             if ($stmt->rowCount()) {
@@ -303,11 +303,38 @@ class modelSoporteGpon
         echo json_encode($response);
     }
 
-    public function registrossoportegpon($params)
+    public function registrossoportegpon($data)
     {
 
         try {
-            $pagina = $params['page'];
+
+            $fechaini = (!isset($data['sort']['fechaini'])) ? date("Y-m-d") : $data['sort']['fechaini']; //CORRECCION DE VALIDACION DE FECHA
+            $fechafin = (!isset($data['sort']['fechafin'])) ? date("Y-m-d") : $data['sort']['fechafin']; //CORRECCION DE VALIDACION DE FECHA
+
+            if ($fechaini == "" || $fechafin == "") {
+                $fechaini = date("Y-m-d");
+                $fechafin = date("Y-m-d");
+            }
+
+            $stmt = $this->_DB->query("select count(*) as total from soporte_gpon where fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' AND status_soporte = '1'");
+            $stmt->execute();
+
+            $resCount   = $stmt->fetch(PDO::FETCH_OBJ);
+            $totalCount = $resCount->total;
+
+            if (isset($data['curPage'])) {
+                $page_number = $data['curPage'];
+            } else {
+                $page_number = 1;
+            }
+
+            $initial_page = ($page_number - 1) * $data['pageSize'];
+
+            $total_pages = ceil($totalCount / $data['pageSize']);
+
+            $limit_page = $data['pageSize'];
+
+            /*$pagina = $params['page'];
             $datos  = $params['datos'];
 
             $fechaini = (!isset($datos['fechaini'])) ? date("Y-m-d") : $datos['fechaini']; //CORRECCION DE VALIDACION DE FECHA
@@ -324,7 +351,7 @@ class modelSoporteGpon
                 $pagina = $pagina - 1;
             }
 
-            $pagina = $pagina * 100;
+            $pagina = $pagina * 100;*/
 
             $stmt = $this->_DB->prepare("SELECT id_soporte,
                                                tarea,
@@ -365,19 +392,15 @@ class modelSoporteGpon
                                                login,
                                                fecha_respuesta
                                         FROM soporte_gpon
-                                        WHERE fecha_respuesta BETWEEN :fechaini AND :fechafin
-                                          AND status_soporte = '1'
+                                        WHERE fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' AND status_soporte = '1'
                                         ORDER BY fecha_creado DESC
-                                        LIMIT 100 offset $pagina");
-            $stmt->execute([
-                ':fechaini' => "$fechaini 00:00:00",
-                ':fechafin' => "$fechafin 23:59:59",
-            ]);
-
+                                        limit $initial_page, $limit_page");
+            $stmt->execute();
             if ($stmt->rowCount()) {
-                $response = [$stmt->fetchAll(PDO::FETCH_ASSOC), $stmt->rowCount(), 201];
+                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = ['state' => 1, 'data' => $result, 'total' => $total_pages, 'counter' => intval($totalCount)];
             } else {
-                $response = ['', $stmt->rowCount(), 400];
+                $response = ['state' => 0];
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -505,7 +528,7 @@ class modelSoporteGpon
 
             $rst = $this->_DB->query("SELECT id_soporte, login FROM soporte_gpon WHERE id_soporte = '$id_soporte' AND status_soporte = '2' AND login IS NOT NULL");
             $rst->rowCount();
-            if ($rst->rowCount() > 0) {
+            if ($rst->rowCount() == 1) {
                 $row              = $rst->fetchAll(PDO::FETCH_ASSOC);
                 $loginsoportegpon = $row[0]['login'];
                 $id               = $row[0]['id_soporte'];
@@ -514,17 +537,18 @@ class modelSoporteGpon
                     $this->_DB->query("UPDATE soporte_gpon SET status_soporte = '0', login = NULL, fecha_marca = '$today' WHERE id_soporte ='$id'");
                     $response = ['state' => 1, 'msj' => 'El pedido se encuentra desbloqueado'];
                 } else {
-                    $response = ['state' => 0, 'msj' => 'El pedido se encuentra en gestion'];
+                    $response = ['state' => 0, 'msj' => 'El pedido se encuentra en gestión'];
                 }
 
             } else {
 
                 $rst = $this->_DB->query("SELECT id_soporte, login FROM soporte_gpon WHERE id_soporte = '$id_soporte' AND status_soporte = '0' AND login IS NULL");
                 $rst->execute();
-                if ($rst->rowCount() > 0) {
+                if ($rst->rowCount() == 1) {
                     $row       = $rst->fetchAll(PDO::FETCH_ASSOC);
                     $id        = $row[0]['id_soporte'];
-                    $sqlupdate = $this->_DB->query("UPDATE soporte_gpon SET status_soporte = 2, login = '$login', fecha_marca = '$today' WHERE id_soporte = '$id'");
+                    //echo "UPDATE soporte_gpon SET status_soporte = 2, login = '$login', fecha_marca = '$today' WHERE id_soporte = '$id'";exit();
+                    $sqlupdate = $this->_DB->query("UPDATE soporte_gpon SET status_soporte = '2', login = '$login', fecha_marca = '$today' WHERE id_soporte = '$id'");
                     $sqlupdate->execute();
 
                     if ($sqlupdate->rowCount() == 1) {
@@ -540,5 +564,36 @@ class modelSoporteGpon
         }
         $this->_DB = null;
         echo json_encode($response);
+    }
+
+    public function BuscarSoporteGpon($pedido)
+    {
+        try{
+            session_start();
+            $pedido = $pedido['pedido'];
+            if (!$_SESSION) {
+                $response = ['state' => 99, 'title' => 'Su session ha caducado','text' => 'Inicia session nuevamente para continuar'];
+            } else {
+                if($pedido != ""){
+                    $stmt = $this->_DB->prepare("SELECT * FROM soporte_gpon WHERE tarea = :pedido");
+                    $stmt->execute([':pedido' => $pedido]);
+                    if ($stmt->rowCount() > 0) {
+                        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                        $response = ['state' =>1, 'data' => $result];
+                    } else {
+                        $response = ['state' => 0, 'text' => 'No se encontraron datos'];
+                    }
+                }else{
+                    $response = ['state' => 0, 'text' => 'Ingrese un pedido'];
+                }
+            }
+
+        }catch (PDOException $e){
+            var_dump($e->getMessage());
+        }
+
+        $this->_DB = null;
+        echo json_encode($response);
+
     }
 }

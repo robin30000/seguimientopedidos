@@ -50,4 +50,8 @@ class soporteGpon
         $this->_model->marcarEngestionGpon($data);
     }
 
+    public function BuscarSoporteGpon($data)
+    {
+        $this->_model->BuscarSoporteGpon($data);
+    }
 }

@@ -12,6 +12,10 @@ var app = angular.module('seguimientopedidos', [
     'ui.grid',
     'ui.grid.pagination',
     'ui.grid.selection',
+    'ui.grid.edit',
+    'ui.grid.cellNav',
+    'ui.grid.exporter',
+    'ui.grid.autoResize'
 ]);
 
 app.service('fileUpload', ['$http', '$cookieStore', function ($http, $cookieStore) {
@@ -24,7 +28,6 @@ app.service('fileUpload', ['$http', '$cookieStore', function ($http, $cookieStor
         fd.append('user', user);
         fd.append('tipocarga', tipocarga);
 
-        //console.log (file['size']);
         fd.append('fileUpload', file);
 
         if (tipocarga == "vistaCliente" || tipocarga == "alarmados" || tipocarga == "SeguiClick") {
@@ -58,9 +61,6 @@ app.service('fileUploadrepa', ['$http', '$cookieStore', function ($http, $cookie
         file['user'] = user + '6666666';
 
         fd.append('user', user);
-        //fd.append('tipocarga',tipocarga);
-
-        //console.log (file['size']);
         fd.append('fileUpload', file);
 
         $http.post('services/cargar_datosNPSreparacion', fd, {
@@ -82,9 +82,6 @@ app.service('cargaRegistros', ['$http', '$cookieStore', function ($http, $cookie
         file['user'] = user + '6666666';
 
         fd.append('user', user);
-        //fd.append('tipocarga',tipocarga);
-
-        //console.log (file['size']);
         fd.append('fileUpload', file);
 
         $http.post('services/cargaRegistros', fd, {
@@ -120,7 +117,7 @@ app.directive('fileModel', ['$parse', function ($parse) {
 
 app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     var serviceBase = 'services/';
-    var serviceBase1 = 'http://netvm-ptctrl01a/seguimientopedidos/api/controller/';
+    var serviceBase1 = 'http://netvm-ptctrl01a/seguimientopedidos-dev/api/controller/';
     //var serviceBase1 = 'http://localhost/seguimientopedidos/api/controller/';
     var obj = {};
 
@@ -267,13 +264,13 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
     };
 
 
-    obj.listadoUsuarios = function (page, concepto, usuario) {
+    obj.listadoUsuarios = function (curPage, pageSize, sort) {
         var data = {
             method: 'listadoUsuarios',
             data: {
-                'page': page,
-                'concepto': concepto,
-                'usuario': usuario
+                'curPage': curPage,
+                'pageSize': pageSize,
+                'sort': sort
             }
         }
         return $http.post(serviceBase1 + 'userCtrl.php', data);
@@ -808,12 +805,13 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     /*===========================================================*/
 
-    obj.novedadesTecnicoService = function (page, datos) {
+    obj.novedadesTecnicoService = function (curPage, pageSize, sort) {
         var data = {
             method: 'novedadesTecnico',
             data: {
-                'page': page,
-                'datos': datos
+                'curPage': curPage,
+                'pageSize': pageSize,
+                'sort': sort
             }
         }
         return $http.post(serviceBase1 + 'novedadesTecnicoCtrl.php', data);
@@ -878,12 +876,13 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     /*------------->INICIO SERVICIOS PARA QUEJASGO<------------*/
 
-    obj.listaQuejasGoDia = function (page, datos) {
+    obj.listaQuejasGoDia = function (curPage, pageSize, sort) {
         var data = {
             method: 'extraeQuejasGoDia',
             data: {
-                'page': page,
-                'datos': datos
+                'curPage': curPage,
+                'pageSize': pageSize,
+                'sort': sort
             }
         }
         return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
@@ -902,7 +901,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
             method: 'traerTecnico',
             data: cedula
         }
-        return $http.post(serviceBase1 + 'quejasGoCtrl.php' + data);
+        return $http.post(serviceBase1 + 'quejasGoCtrl.php', data);
     };
 
     obj.creaTecnicoQuejasGo = function (crearTecnicoquejasGoSel) {
@@ -953,6 +952,53 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
 
+    obj.datosgestioncontingenciasTv = function (curPage, pageSize, sort) {
+        var data = {
+            method: 'datosgestioncontingenciasTv',
+            data: {
+                'curPage': curPage,
+                'pageSize': pageSize,
+                'sort': sort
+            }
+        }
+        return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
+    };
+
+    obj.datosgestioncontingenciasInternet = function (curPage, pageSize, sort) {
+        var data = {
+            method: 'datosgestioncontingenciasInternet',
+            data: {
+                'curPage': curPage,
+                'pageSize': pageSize,
+                'sort': sort
+            }
+        }
+        return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
+    };
+
+    obj.datosgestioncontingenciasPortafolio = function (curPage, pageSize, sort) {
+        var data = {
+            method: 'datosgestioncontingenciasPortafolio',
+            data: {
+                'curPage': curPage,
+                'pageSize': pageSize,
+                'sort': sort
+            }
+        }
+        return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
+    };
+
+    obj.registrosContingenciasCsv = function (datos, param) {
+        var data = {
+            method: 'registrosContingenciasCsv',
+            data: {
+                'datos': datos,
+                'param': param,
+            }
+        }
+        return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
+    };
+
     obj.datosgestionescalamientos = function () {
         var data = {
             method: 'datosescalamientos'
@@ -982,10 +1028,15 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'novedadesTecnicoCtrl.php', data);
     };
 
-    obj.registrosOffline = function () {
+    obj.registrosOffline = function (curPage, pageSize, sort) {
 
         var data = {
-            method: 'registrosOffline'
+            method: 'registrosOffline',
+            data: {
+                'curPage': curPage,
+                'pageSize': pageSize,
+                'sort': sort
+            }
         }
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
     };
@@ -1000,7 +1051,7 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     obj.marcarengestion = function (datos, login) {
         var data = {
-            method: 'marca',
+            method: 'marcarengestion',
             data: {datos, login}
         }
         return $http.post(serviceBase1 + 'contingenciaCtrl.php', data);
@@ -1131,13 +1182,13 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'otrosServiciosCtrl.php', data);
     };
 
-    obj.listadoTecnicos = function (page, concepto, tecnico) {
+    obj.listadoTecnicos = function (curPage, pageSize, sort) {
         var data = {
             method: 'listadoTecnicos',
             data: {
-                'page': page,
-                'concepto': concepto,
-                'tecnico': tecnico
+                'curPage': curPage,
+                'pageSize': pageSize,
+                'sort': sort
             }
         }
         return $http.post(serviceBase1 + 'otrosServiciosCtrl.php', data);
@@ -1184,23 +1235,23 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'formaAsesoresCtrl.php', data);
     };
 
-    obj.registros = function (page, datos) {
+    obj.registros = function (curPage, pageSize, sort) {
         var data = {
             method: 'registros',
             data: {
-                "page": page,
-                "datos": datos
+                "curPage": curPage,
+                "pageSize": pageSize,
+                "sort": sort
             }
         }
         return $http.post(serviceBase1 + 'formaAsesoresCtrl.php', data);
     };
 
-    obj.registros = function (page, datos) {
+    obj.registroscsv = function (sort) {
         var data = {
-            method: 'registros',
+            method: 'registroscsv',
             data: {
-                "page": page,
-                "datos": datos
+                "sort": sort
             }
         }
         return $http.post(serviceBase1 + 'formaAsesoresCtrl.php', data);
@@ -1622,12 +1673,13 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'soporteGponCtrl.php', data);
     };
 
-    obj.registrossoportegpon = function (page, datos) {
+    obj.registrossoportegpon = function (curPage, pageSize, sort) {
         var data = {
             method: 'registrossoportegpon',
             data: {
-                'page': page,
-                'datos': datos
+                'curPage': curPage,
+                'pageSize': pageSize,
+                'sort': sort
             }
         }
         return $http.post(serviceBase1 + 'soporteGponCtrl.php', data);
@@ -1662,14 +1714,19 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
 
     /* ------------------------------- CODIGO INCOMPLETO ---------------------------- */
 
-    obj.getListaCodigoIncompleto = function () {
+    obj.getListaCodigoIncompleto = function (curPage, pageSize, sort) {
         var data = {
-            method: 'getListaCodigoIncompleto'
+            method: 'getListaCodigoIncompleto',
+            data: {
+                'curPage': curPage,
+                'pageSize': pageSize,
+                'sort': sort
+            }
         }
         return $http.post(serviceBase1 + 'codigoIncompletoCtrl.php', data);
     };
 
-    obj.gestionarCodigoIncompleto = function (id_codigo_incompleto, tipificacion, observacion, login) {
+    obj.gestionarCodigoIncompleto = function (id_codigo_incompleto, tipificacion, observacion) {
         var data = {
             method: 'gestionarCodigoIncompleto',
             data: {
@@ -1745,16 +1802,26 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'nivelacionCtrl.php', data);
     };
 
-    obj.gestionarNivelacion = function () {
+    obj.gestionarNivelacion = function (curPage, pageSize, sort) {
         var data = {
             method: 'gestionarNivelacion',
+            data: {
+                'curPage': curPage,
+                'pageSize': pageSize,
+                'sort': sort
+            }
         }
         return $http.post(serviceBase1 + 'nivelacionCtrl.php', data);
     };
 
-    obj.gestionarRegistrosNivelacion = function () {
+    obj.gestionarRegistrosNivelacion = function (curPage, pageSize, sort) {
         var data = {
             method: 'gestionarRegistrosNivelacion',
+            data: {
+                'curPage': curPage,
+                'pageSize': pageSize,
+                'sort': sort
+            }
         }
         return $http.post(serviceBase1 + 'nivelacionCtrl.php', data);
     };
@@ -1775,17 +1842,23 @@ app.factory("services", ['$http', '$timeout', function ($http, $q, $timeout) {
         return $http.post(serviceBase1 + 'nivelacionCtrl.php', data);
     };
 
-    obj.csvNivelacion = function (fechaini, fechafin) {
+    obj.csvNivelacion = function (datos) {
         var data = {
             method: 'csvNivelacion',
             data: {
-                'fechaini': fechaini,
-                'fechafin': fechafin
+                'datos': datos
             }
         }
         return $http.post(serviceBase1 + 'nivelacionCtrl.php', data);
     };
 
+
+    obj.BuscarSoporteGpon=function (pedido){
+        var data={
+            method:'BuscarSoporteGpon',data:{'pedido':pedido}
+        }
+        return $http.post(serviceBase1+ 'soporteGponCtrl.php',data);
+    };
 
     return obj;
 }]);
@@ -1834,54 +1907,40 @@ app.service('LoadingInterceptor', ['$q', '$rootScope', '$log',
 ]);
 
 
-app.controller('loginCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services) {
-    $rootScope.permiso = false;
-    $rootScope.error = "";
-    $rootScope.msg_error = "";
-    $scope.autenticacion = {};
-    var today = new Date();
-    $rootScope.year = today.getFullYear();
-    //console.log($rootScope.permiso);
+app.controller('loginCtrl', ['$scope', '$http', '$rootScope', '$location', '$route', '$routeParams', '$cookies', '$timeout', 'services', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services) {
     $scope.login = function () {
-        console.log("autenticacion: ", $scope.autenticacion);
-
         services.loginUser($scope.autenticacion).then(
             function (data) {
-                console.log("data: ", data);
-                $errorDatos = null;
-                $scope.respuesta = data.data;
-                //console.log("respuesta: ", $scope.respuesta);
-                $rootScope.nombre = $scope.respuesta.nombre;
-                //console.log("nombre: ", $rootScope.nombre);
+                var today = new Date();
+                $rootScope.year = today.getFullYear();
+                $rootScope.nombre = data.data.nombre;
+                $rootScope.login = data.data.login;
+                $rootScope.perfil = data.data.perfil;
+                $rootScope.identificacion = data.data.identificacion;
+                $rootScope.authenticated = true;
+                $rootScope.permiso = true;
                 $location.path('/actividades/');
-
                 $cookies.put("usuarioseguimiento", JSON.stringify(data.data));
 
                 var galleta = JSON.parse($cookies.get("usuarioseguimiento"));
-                //
-                //galleta = ($cookies.get("usuarioInfoDespacho"));
 
                 $rootScope.galletainfo = galleta;
-                //$rootScope.galleta.perfil = 11;
                 $rootScope.permiso = true;
-                console.log('aca ', $rootScope.galletainfo)
-                //console.log("galletainfo: ",$rootScope.galletainfo);
-                if ($rootScope.galleta.perfil === '1' && $rootScope.galleta.perfil === '2' && $rootScope.galleta.perfil === '5') {
+                if ($rootScope.galletainfo.perfil === '1' && $rootScope.galletainfo.perfil === '2' && $rootScope.galletainfo.perfil === '5') {
                     $location.path('/actividades/');
-                } else if ($rootScope.galleta.perfil === '3' || $rootScope.galleta.perfil === '8') {
+                } else if ($rootScope.galletainfo.perfil === '3' || $rootScope.galletainfo.perfil === '8') {
                     $location.path('/registros/');
-                } else if ($rootScope.galleta.perfil === '4') {
+                } else if ($rootScope.galletainfo.perfil === '4') {
                     $location.path('/mesaoffline/mesaoffline/');
-                } else if ($rootScope.galleta.perfil === '6') {
+                } else if ($rootScope.galletainfo.perfil === '6') {
                     $location.path('/premisasInfraestructuras/');
-                } else if ($rootScope.galleta.perfil === '12') {
+                } else if ($rootScope.galletainfo.perfil === '12') {
                     $location.path('/novedadesVisita/');
-                } else if ($rootScope.galleta.perfil === '13') {
+                } else if ($rootScope.galletainfo.perfil === '13') {
                     $location.path('/quejasGo/');
                 }
 
                 $scope.autenticacion = {};
-                //console.log(galleta);
                 return data.data;
             },
             function errorCallback(response) {
@@ -1890,42 +1949,7 @@ app.controller('loginCtrl', function ($scope, $http, $rootScope, $location, $rou
             });
     };
 
-    // $rootScope.changepwd = function(datos) {
-
-    //     if (datos.pwdNueva == datos.pwdNuevaConfirm) {
-    //         services.cambiarPWD($rootScope.galletainfo.ID, datos).then(
-    //             function(data){
-
-    //                 if (data.status == '201') {
-    //                     $("#editarPassword").modal('hide');
-    //                     swal("La contraseña se cambió exitosamente!", "La sesión se terminó para que inicies con la nueva contraseña.", "success")
-    //                     $rootScope.logout();
-    //                 } else{
-    //                     swal({
-    //                         title: "La contraseña actual no coincide!",
-    //                         text: "Por favor valida, ya que la contraseña que has escrito no coincide con la contraseña actual.",
-    //                         type: "error",
-    //                         confirmButtonClass: "btn-danger",
-    //                         confirmButtonText: "Aceptar",
-    //                         closeOnConfirm: false
-    //                     });
-    //                 }
-    //             }
-    //         );
-
-    //     }else{
-    //             swal({
-    //                 title: "El campo Nueva contraseña y Confirmar nueva contraseña no coinciden!",
-    //                 type: "warning",
-    //                 confirmButtonClass: "btn-danger",
-    //                 confirmButtonText: "Aceptar",
-    //                 closeOnConfirm: false
-    //             });
-    //     }
-    // };
-
-
-});
+}]);
 
 app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services) {
     $scope.iniciaGestion = true;
@@ -1956,16 +1980,12 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         } else {
             services.editarUsuario(editarUser).then(
                 function (data) {
-                    // $errorDatos=null;
                     $scope.respuesta = "Usuario " + editarUser.login + " actualizado exitosamente";
-                    //console.log($scope.respuesta);
-                    //$rootScope.nombre=$scope.respuesta[0].NOMBRE;
+
                     $scope.update = true;
-                    //$location.path('/home/');
                     return data.data;
                 },
                 function errorCallback(response) {
-                    //$scope.error="Usuario no editado";
                 }
             );
         }
@@ -1977,7 +1997,6 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         $scope.idUsuario = $rootScope.galletainfo.ID;
         $scope.UsuarioNom = $rootScope.galletainfo.NOMBRE;
         $scope.TituloModal = "Editar Usuario con el ID:";
-        //console.log($scope.editaInfo);
     };
 
     $scope.procesos = function () {
@@ -2016,8 +2035,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         $scope.listadoAcciones = {};
 
         services.getAcciones($scope.gestionmanual.proceso).then(function (data) {
-            console.log(' pppp', data.data[0][0]);
-            $scope.listadoAcciones = data.data[0][0];
+            $scope.listadoAcciones = data.data[0];
             $scope.validaraccion = true;
             $scope.validarsubaccion = false;
         });
@@ -2294,15 +2312,12 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         }
     };
 
-    //este bloque añade al modal de materiales los inputs deseados
     $scope.addNuevoMaterial = function () {
         var newItemNo = $scope.materiales.length + 1;
         $scope.materiales.push({'id': +newItemNo, tipoCable: 'No uso'});
-        //console.log(usuario);
-        //$scope.crearnovedad();
+
     };
 
-    //este bloque añade al modal de recogida de equipos los inputs deseados
     $scope.addEquipoRecoger = function () {
         var newEquiporecoger = $scope.equiposRecoger.length + 1;
         $scope.equiposRecoger.push({
@@ -2316,16 +2331,13 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         });
     };
 
-    //este bloque elimina al modal de materiales los inputs deseados
     $scope.removeNuevoMaterial = function () {
         var lastItem = $scope.materiales.length - 1;
         if (lastItem != 0) {
             $scope.materiales.splice(lastItem);
-            //console.log($scope.novedades);
         }
     }
 
-    //este bloque elimina al modal de recogida de equipos los inputs deseados
     $scope.removeEquipoRecoger = function () {
         var lastEquipoRecoger = $scope.equiposRecoger.length - 1;
         if (lastEquipoRecoger != 0) {
@@ -2349,7 +2361,6 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
             services.insertarCambioEquipo('DTH', $scope.equipoDTH, $scope.pedido).then(
                 function (data) {
                     $scope.datoscambioEquipo = data.data[0];
-                    console.log("id cambio equipo DTH: " + $scope.datoscambioEquipo);
                 }
             );
 
@@ -2360,9 +2371,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
 
             services.insertarCambioEquipo('HFC', $scope.equipoHFC, $scope.pedido).then(
                 function (data) {
-                    //console.log("data: ", data);
                     $scope.datoscambioEquipo = data.data[0];
-                    //console.log("id cambio equipo HFC: " + $scope.datoscambioEquipo);
                 }
             );
         }
@@ -2373,7 +2382,6 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
             services.insertarCambioEquipo('ADSL', $scope.equipoOtros, $scope.pedido).then(x |
                 function (data) {
                     $scope.datoscambioEquipo = data.data[0];
-                    //console.log("id cambio equipo ADSL: " + $scope.datoscambioEquipo);
                 }
             );
         }
@@ -2787,8 +2795,6 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
             var diagnostico = "";
             var sep = "";
 
-            //console.log($scope.cumplir);
-
             if ($scope.cumplir.sinalarmas != undefined && $scope.cumplir.sinalarmas) {
                 diagnostico = "0";
             } else {
@@ -2867,7 +2873,6 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
             ;
 
             $scope.observacion = "Productos: " + producto + ", CR o Autoriza: " + $scope.contingenciaCambio.autoriza + ", MAC de datos entra: " + $scope.contingenciaCambio.MacdatosEntra + ", MAC de datos sale: " + $scope.contingenciaCambio.MacdatosSale + ", Línea: " + $scope.contingenciaCambio.linea + ", MAC de voz entra: " + $scope.contingenciaCambio.MacvozEntra + ", MAC de voz sale: " + $scope.contingenciaCambio.MacvozSale + ", Deco(s) entra: " + $scope.contingenciaCambio.decoEntra + ", Deco(s) Sale: " + $scope.contingenciaCambio.decoSale + ", Puertos: " + puertos
-            console.log($scope.observacion);
         }
 
         if ($scope.OpenModal == "ContingenciaNuevo") {
@@ -2881,10 +2886,8 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
             if ($scope.contingenciaNuevo.TV == true) {
                 producto = producto + "-TV-";
             }
-            ;
 
             $scope.observacion = "Productos: " + producto + ", CR o Autoriza: " + $scope.contingenciaNuevo.autoriza + ", Decos: " + $scope.contingenciaNuevo.Decos + ", línea: " + $scope.contingenciaNuevo.linea + ", MAC de datos: " + $scope.contingenciaNuevo.MacDatos + ", MAC de voz: " + $scope.contingenciaNuevo.MacVoz
-            console.log($scope.observacion);
         }
 
         if ($scope.OpenModal == "ContingenciaReuso") {
@@ -3279,19 +3282,11 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
                                 ;
                                 return data.data;
                             }, function (err) {
-                                console.log("ERROR DE CONEXION: NO PUEDO ALCANZAR EL SERVIDOR!!!");
                                 $scope.infopedido = false;
                                 $scope.errorconexion1 = true;
                                 $scope.myWelcome = {};
                                 $scope.errorconexion = "No hay conexión con Web Service, ingrese datos manualmente";
                             });
-                        /**
-                         console.log("ERROR DE CONEXION: NO PUEDO ALCANZAR EL SERVIDOR!!!");
-                         $scope.infopedido=false;
-                         $scope.errorconexion1=true;
-                         $scope.myWelcome={};
-                         $scope.errorconexion="No hay conexión con Web Service, ingrese datos manualmente";
-                         **/
                     },
                     function errorCallback(response) {
                         console.log("ERRORRRR");
@@ -3326,12 +3321,10 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
                 } else {
                     $scope.celular = $scope.Tecnico[0].CELULAR;
                 }
-                //   console.log($scope.Tecnico[0]);
                 $scope.creaTecnico = true;
                 return;
             },
             function errorCallback(response) {
-                //$scope.errorDatos=concepto+" "+$scope.gestionmanual.tecnico+" no existe.";
                 $('#NuevoTecnico').modal('show');
                 $scope.creaTecnico = false;
             }
@@ -3339,24 +3332,18 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
     };
 
     $scope.createTecnico = function () {
-        // console.log($scope.gestionmanual.tecnico);
         services.creaTecnico($scope.crearTecnico, $scope.gestionmanual.tecnico).then(
             function (data) {
-                // console.log("la lista "+$scope.listaUsuarios);
                 $scope.BuscarTecnico();
                 return data.data;
-                // $scope.creaTecnico=true;
             },
             function errorCallback(response) {
-                // console.log($scope.errorDatos);
             }
         );
     };
 
 
     $scope.guardarPedido = function () {
-
-        console.log($scope.gestionmanual.accion, $scope.gestionmanual.subAccion);
 
         if ($scope.gestionmanual.interaccion == "" || $scope.gestionmanual.interaccion == undefined) {
             alert("Debe seleccionar el tipo de interacción.");
@@ -3438,8 +3425,6 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
 
         $scope.counter = hours + ":" + minutes + ":" + seconds;
 
-        // console.log("id cambio equipo1: ",$scope.datoscambioEquipo);
-
         /*SE QUITA datoscambioEquipo POR LA OBSERVAION QUE SE HIZO EN LA LINEA 148*/
         services.ingresarPedidoAsesor(
             $scope.gestionmanual,
@@ -3452,33 +3437,40 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
             $scope.datoscambioEquipo = 0
         ).then(
             function (data) {
-                //console.log('data: ', data);
-                //if ($scope.creaTecnico==true) {
-                //
-                $route.reload();
-                //location.reload();
-                //};
+                if (data.data.state == 99) {
+                    swal({
+                        type: 'error',
+                        title: data.data.title,
+                        text: data.data.text,
+                        timer: 4000
+                    }).then(function () {
+                        $cookies.remove('usuarioseguimiento');
+                        $location.path('/');
+                        $rootScope.galletainfo = undefined;
+                        $rootScope.permiso = false;
+                        $route.reload();
+                    })
+                } else if (data.data.state != 1) {
+                    swal({
+                        type: 'error',
+                        text: data.data.text,
+                        timer: 4000
+                    })
+                } else {
+                    swal({
+                        type: 'success',
+                        text: data.data.text,
+                        timer: 4000
+                    }).then(function () {
+                        $route.reload();
+                    })
+                }
+
             },
             function errorCallback(response) {
                 $scope.errorDatos = "Registros no fue ingresado.";
-                //alert($scope.errorDatos);
-                //console.log('errorDatos: ', $scope.errorDatos);
             }
         );
-
-        //console.log("ingresarPedidoAsesor: ", services.ingresarPedidoAsesor);
-        //console.log("datospedido: ",$scope.gestionmanual);
-        //console.log("pedido: ",$scope.pedido);
-        //console.log("datosLogin: ",$scope.galletainfo);
-        //console.log("datosClick: ",$scope.myWelcome);
-        //console.log("plantilla: ",$scope.observacion);
-        // console.log("id cambio equipo2: ",$scope.datoscambioEquipo);
-
-
-        /* }else{
-            $scope.BuscarTecnico();
-        }*/
-
     };
 
     $scope.limpiar = function () {
@@ -3580,37 +3572,22 @@ app.controller('premisasInfraestructurasCtrl', function ($scope, $rootScope, $lo
 
         services.datosgestionescalamientosprioridad2().then(function (data) {
             $scope.dataEscalamientoInfraestructuraPrioridad2 = data.data[0];
-            console.log($scope.dataEscalamientoInfraestructuraPrioridad2);
         }).catch((err) => {
             console.log(err)
         });
     }
-
-    /*$scope.exportarRegistros = function () {
-        services.exportEscalamientos().then(completed).catch(failed)
-
-        function completed(data) {
-            console.log(data)
-        }
-
-        function failed(error) {
-            console.log(error)
-        }
-
-    }*/
-
 
     $scope.exportarRegistros = () => {
         services.exportEscalamientos().then((res) => {
             var data = res.data[0];
             var array = typeof data != 'object' ? JSON.parse(data) : data;
             var str = '';
-            var column = `ID, Pedido, Tarea, Tecnico, ID Tecnico, Fecha Solicitud, Fecha Gestion, Fecha Respuesta, Login Gestion, En Gestion, Proceso, Producto, Motivo, Area, Region, Tipo Tarea, Tecnologia, CRM, Departamento, Prueba SMNET, Foto?, Marcacion TAP, Direccion TAP, Valor TAP, Informacion Adicional, MAC Real CPE, Correa Marcacion, Observacion, Respuesta, ID Terreno, Tipificacion, Estado, ANS \r\n`;
+            var column = `ID| Pedido| Tarea| Tecnico| ID Tecnico| Fecha Solicitud| Fecha Gestion| Fecha Respuesta| Login Gestion| En Gestion| Proceso| Producto| Motivo| Area| Region| Tipo Tarea| Tecnologia| CRM| Departamento| Prueba SMNET| Foto?| Marcacion TAP| Direccion TAP| Valor TAP| Informacion Adicional| MAC Real CPE| Correa Marcacion| Observacion| Respuesta| ID Terreno| Tipificacion| Estado| ANS \r\n`;
             str += column;
             for (var i = 0; i < array.length; i++) {
                 var line = '';
                 for (var index in array[i]) {
-                    if (line != '') line += ','
+                    if (line != '') line += '|'
                     line += array[i][index];
                 }
 
@@ -3628,7 +3605,6 @@ app.controller('premisasInfraestructurasCtrl', function ($scope, $rootScope, $lo
             elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
             elementToClick.download = "Escalamientos-" + fullDateCsv + ".csv";
             elementToClick.click();
-            console.log(str);
         });
     }
 
@@ -3644,7 +3620,6 @@ app.controller('premisasInfraestructurasCtrl', function ($scope, $rootScope, $lo
     }
 
     $scope.mostrarModalEscalamiento = function (data) {
-        //console.log("guardarcontingencia: ",data);
         if (data.engestion == null || data.engestion == '0') {
             alert("Debes bloquear el pedido");
             return;
@@ -3653,7 +3628,6 @@ app.controller('premisasInfraestructurasCtrl', function ($scope, $rootScope, $lo
             return;
         } else {
             $scope.gestionescala = data;
-            //console.log("gestioncontin: ",$scope.gestioncontin);
             $('#editarModal').modal('show');
             return data.data;
         }
@@ -3718,7 +3692,6 @@ app.controller('premisasInfraestructurasCtrl', function ($scope, $rootScope, $lo
                 var ansData = await ansQuery.json();
                 data.ans = ansData.horas;
             }
-            console.log(data);
 
             if (data.status == "" || data.status == undefined || data.status == null) {
                 swal({
@@ -3752,8 +3725,6 @@ app.controller('premisasInfraestructurasCtrl', function ($scope, $rootScope, $lo
                     type: "warning"
                 });
             } else {
-                console.log(querySnapshotAT.data());
-                // var queryUpdateStatus = await database.collection("infraestructure").doc(data._id).update({status: 1});
                 await fetch('https://autogestionterreno.com.co/api/state-infraestructure/', {
                     method: 'PUT',
                     mode: 'cors',
@@ -3787,7 +3758,6 @@ app.controller('premisasInfraestructurasCtrl', function ($scope, $rootScope, $lo
             } else {
                 try {
                     alert("Pedido guardado, recuerda actualizar!!");
-                    console.log(data);
                     var currentTimeDate = new Date().toLocaleString();
                     var statusInfraestructure = (data.tipificacion == "Escalamiento realizado ok" || data.tipificacion == "Escalamiento ok nivel 2" || data.tipificacion == "Escalamiento ok nivel 2 Prioridad") ? "Aprobado" : "Rechazado";
 
@@ -3798,19 +3768,12 @@ app.controller('premisasInfraestructurasCtrl', function ($scope, $rootScope, $lo
                         headers: {"Content-type": "application/json;charset=UTF-8"}
                     });
 
-                    //   database.collection("infraestructure").doc(data.id_terreno).update({
-                    //     answer: data.observacionesescalamiento,
-                    //     dateAswered: currentTimeDate,
-                    //     infraestructure_Status: statusInfraestructure
-                    //   });
-
                     services.editarregistroescalamiento(data, $rootScope.galletainfo)
                         .then(function (data) {
 
                         })
                         .catch(err => alert(err));
                     $scope.gestionescalamiento();
-                    //$scope.gestioncontingenciasPrueba();
                 } catch (error) {
                     swal({
                         title: "Hay problemas al almacenar la gestión ",
@@ -3855,7 +3818,7 @@ app.controller('premisasInfraestructurasCtrl', function ($scope, $rootScope, $lo
 app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services, cargaRegistros) {
 
     /*INCLUDE DE LOS MODULOS*/
-    $scope.novedadesTecnico = "partial/novedadesVisita/novedadesTecnico.html";
+    //$scope.novedadesTecnico = "partial/novedadesVisita/novedadesTecnico.html";
 
     /*INCLUDE DE LOS MODALES*/
     $scope.mostarModalNovedadesVisitas = "partial/novedadesVisita/modal/modalNovedadVisitas.html";
@@ -3866,8 +3829,184 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
     $scope.observacionCCO = '';
     $scope.pedidoElegido = '';
 
-    $scope.pageChanged = function () {
-        $scope.RegistrosTecnicos($scope.datapendientes.currentPage);
+    getGrid();
+
+    function getGrid() {
+        var columnDefs = [
+            {
+                name: "Cedula tecnico",
+                field: "cedulaTecnico",
+                minWidth: 100,
+                width: "7%",
+                enableCellEdit: false,
+                enableFiltering: true
+            },
+            {
+                name: "Nombre tecnico",
+                field: "nombreTecnico",
+                minWidth: 100,
+                width: "15%",
+                enableCellEdit: false,
+                enableFiltering: true,
+
+            }, {
+                name: "Contrato",
+                field: "contracto",
+                minWidth: 80,
+                width: "5%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Proceso",
+                field: "proceso",
+                cellStyle: {"text-align": "center"},
+                minWidth: 100,
+                width: "5%",
+                enableCellEdit: false,
+            }, {
+                name: "Proceso",
+                field: "proceso",
+                cellStyle: {"text-align": "center"},
+                minWidth: 100,
+                width: "10%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Pedido",
+                field: "pedido",
+                cellStyle: {"text-align": "center"},
+                minWidth: 90,
+                width: "8%",
+                enableCellEdit: false,
+            }, {
+                name: "Tipo de novedad",
+                field: "tiponovedad",
+                cellStyle: {"text-align": "center"},
+                minWidth: 100,
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "Municipio",
+                field: "municipio",
+                cellStyle: {"text-align": "center"},
+                minWidth: 100,
+                width: "5%",
+                enableCellEdit: false,
+            }, {
+                name: "Situacion",
+                field: "situacion",
+                cellStyle: {"text-align": "center"},
+                minWidth: 100,
+                width: "5%",
+                cellFilter: 'currency:"":0',
+                enableCellEdit: false,
+            }, {
+                name: "Hora marca sitio",
+                field: "horamarcaensitio",
+                cellStyle: {"text-align": "center"},
+                minWidth: 100,
+                width: "5%",
+                enableCellEdit: false,
+            },
+            {
+                name: "Id llamada",
+                field: "idllamada",
+                cellStyle: {"text-align": "center"},
+                minWidth: 120,
+                width: "15%",
+                enableCellEdit: false,
+            }, {
+                name: "Observacion 11",
+                cellTemplate: 'partial/modals/templateTecnico.html',
+                minWidth: 100,
+                width: "5%",
+                enableFiltering: false,
+                enableCellEdit: false,
+                cellStyle: {"text-align": "center"},
+
+            }, {
+                name: "Observaciones CCO",
+                cellTemplate: 'partial/modals/templateTecnicoCoo.html',
+                minWidth: 100,
+                width: "5%",
+                enableCellEdit: false,
+                enableFiltering: false,
+            }, {
+                name: "Accion",
+                cellTemplate: "<div style='text-align: center'>" +
+                    "<button type='button' class='btn btn-default btn-xs' ng-click='grid.appScope.abrirAgregarObservacion(row)'>" +
+                    "<i class='fa fa-pencil-square-o' aria-hidden='true'> </i>",
+                minWidth: 70,
+                width: "5%",
+                enableFiltering: false,
+            }];
+
+        var paginationOptions = {
+            sort: null
+        };
+
+        $scope.gridOptions = {
+            enableFiltering: true,
+            enablePagination: true,
+            pageSize: 200,
+            enableHorizontalScrollbar: true,
+            enablePaginationControls: true,
+            columnDefs: columnDefs,
+            paginationPageSizes: [200, 500, 1000],
+            paginationPageSize: 200,
+
+            exporterMenuPdf: false,
+            enableGridMenu: true,
+
+            useExternalPagination: true,
+            useExternalSorting: true,
+            enableRowSelection: true,
+
+            exporterCsvFilename: 'Registros.csv',
+
+            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+            exporterExcelFilename: 'Registros.xlsx',
+            exporterExcelSheetName: 'Sheet1',
+
+            onRegisterApi: function (gridApi) {
+                $scope.gridApi = gridApi;
+                $scope.gridApi.core.on.sortChanged($scope, function (grid, sortColumns) {
+                    if (getPage) {
+                        if (sortColumns.length > 0) {
+                            paginationOptions.sort = sortColumns[0].sort.direction;
+                        } else {
+                            paginationOptions.sort = null;
+                        }
+                        getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, $scope.Registros)
+                    }
+                });
+                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                    if (getPage) {
+                        getPage(newPage, pageSize, $scope.Registros);
+                    }
+                });
+            }
+        };
+
+        var getPage = function (curPage, pageSize, sort) {
+            services.novedadesTecnicoService(curPage, pageSize, $scope.Registros).then(complete).catch(failed)
+
+            function complete(data) {
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptions.totalItems = counter;
+                var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+
+        };
+
+        getPage(1, $scope.gridOptions.paginationPageSize, paginationOptions.sort);
     }
 
     //=====================================================================
@@ -3877,66 +4016,75 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
     $scope.RegistrosTecnicos = function (datos) {
         $scope.novedadesVisitasTecnicos = {};
 
-        services.novedadesTecnicoService($scope.datapendientes.currentPage, datos).then(
+        services.novedadesTecnicoService(datos).then(
             function (data) {
 
-                //console.log('novedadesTecnicoService: ',data);
+                var datos = data.data.data;
+                var counter = data.data.counter;
 
-                $scope.novedadesVisitasTecnicos = data.data.data;
-                $scope.cantidad = data.data.data.length;
-                $scope.counter = data.data.contador;
-
-                return data.data;
+                $scope.gridOptions.totalItems = counter;
+                $scope.gridOptions.data = datos
             },
             function errorCallback(response) {
                 $scope.errorDatos = "No hay datos";
             });
     }
 
-    $scope.maxSize = 4;
-    $scope.datapendientes = {maxSize: 4, currentPage: 1, numPerPage: 100, totalItems: 0};
-    $scope.RegistrosTecnicos($scope.datapendientes.currentPage);
-
     // =================================================
     //                 MOSTRAR MODAL
     // =================================================
 
     $scope.mostraModal = function (registrosTenicos) {
-        //console.log("registrosTenicos: ",registrosTenicos);
         angular.copy(registrosTenicos, $scope.novedadesVisitasSel);
 
         $("#modalNovedadVisita").modal();
     }
 
-    $scope.abrirAgregarObservacion = (pedido) => {
+    $scope.abrirAgregarObservacion = (row) => {
         $("#novedadesVisitaObservacion").modal();
-        $scope.pedidoElegido = pedido;
+        $scope.pedidoElegido = row.entity.pedido;
+        $scope.observacionCCO = row.entity.observacionCCO;
     };
 
     $scope.agregarObservacion = (observacionCCO) => {
 
-        services.updateNovedadesTecnico(observacionCCO, $scope.pedidoElegido)
-            .then(res => {
-                console.log(res);
-                Swal(
-                    'Tu Novedad fue Actualizada!',
-                    'Bien Hecho'
-                )
-                $('#observacionCCO').val('');
-                $scope.pedidoElegido = '';
-                $scope.observacionCCO = '';
-            })
-            .catch(err => {
-                console.log(err);
-                Swal(
-                    'Tu Novedad tuvo un Error!',
-                    'Vuelve a intentar'
-                )
-                $('#observacionCCO').val('');
-                $scope.pedidoElegido = '';
-                $scope.observacionCCO = '';
-            });
+        services.updateNovedadesTecnico(observacionCCO, $scope.pedidoElegido).then(completed).catch(failed)
 
+        function completed(data) {
+            if (data.data.state == 99) {
+                swal({
+                    type: 'error',
+                    title: data.data.title,
+                    text: data.data.text,
+                    timer: 4000
+                }).then(function () {
+                    $cookies.remove('usuarioseguimiento');
+                    $location.path('/');
+                    $rootScope.galletainfo = undefined;
+                    $rootScope.permiso = false;
+                    $route.reload();
+                })
+            } else if (data.data.state == 0) {
+                swal({
+                    type: 'error',
+                    text: data.data.text,
+                    timer: 4000
+                })
+            } else if (data.data.state == 1) {
+                $("#novedadesVisitaObservacion").modal('hide')
+                swal({
+                    type: 'success',
+                    text: data.data.text,
+                    timer: 4000
+                }).then(function () {
+                    $route.reload();
+                })
+            }
+        }
+
+        function failed(error) {
+            console.log(error)
+        }
     };
 
     // =================================================
@@ -3990,10 +4138,8 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
     $scope.regiones = function () {
         $scope.validaraccion = false;
         services.getRegiones().then(function (res) {
-            //console.log("respuestaRegiones: ",res);
             $scope.listadoRegiones = res.data[0];
             $scope.listadoMunicipios = {};
-            //return data.data;
 
         });
     };
@@ -4001,7 +4147,6 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
     $scope.calcularAcciones = function () {
         $scope.listadoMunicipios = {};
         services.getMunicipios($scope.novedadesVisitasSel.region).then(function (data) {
-            //console.log('peticionMunicipios: ', data);
             $scope.listadoMunicipios = data.data[0];
             $scope.validaraccion = true;
         });
@@ -4014,7 +4159,6 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
     $scope.situacion = function () {
         $scope.validaraccion = false;
         services.getSituacion().then(function (res) {
-            console.log("respuestaRegiones: ", res);
             $scope.listadoSituacion = res.data[0];
             $scope.listadoDetalle = {};
             //return data.data;
@@ -4025,7 +4169,6 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
     $scope.calcularDetalle = function () {
         $scope.listadoDetalle = {};
         services.getDetalle($scope.novedadesVisitasSel.situacion).then(function (data) {
-            console.log('peticionMunicipios: ', data);
             $scope.listadoDetalle = data.data[0];
             $scope.validaraccion = true;
         });
@@ -4110,7 +4253,6 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
 
                 }, function errorCallback(response) {
 
-                    // console.log("ERRORRRR");
                 });
 
         }
@@ -4127,61 +4269,112 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
 
     $scope.guardar = function (registrosTenicos, frmNovedadVisita) {
 
-        services.guardarNovedadesTecnico(registrosTenicos, $rootScope.galletainfo).then(
-            function (respuesta) {
-                //console.log("guardar: ",respuesta);
-                if (respuesta.status == '201') {
-                    Swal(
-                        'Tu Novedad fue Guardada!',
-                        'Bien Hecho'
-                    )
-                }
+        services.guardarNovedadesTecnico(registrosTenicos).then(completed).catch(failed)
 
-                /*PARA QUE EL MODAL SE OCULTE SOLO*/
+        function completed(data) {
+            if (data.data.state == 99) {
+                swal({
+                    type: 'error',
+                    title: data.data.title,
+                    text: data.data.text,
+                    timer: 4000
+                }).then(function () {
+                    $cookies.remove('usuarioseguimiento');
+                    $location.path('/');
+                    $rootScope.galletainfo = undefined;
+                    $rootScope.permiso = false;
+                    $route.reload();
+                })
+            } else if (data.data.state == 0) {
+                swal({
+                    type: 'error',
+                    text: data.data.text,
+                    timer: 4000
+                })
+            } else if (data.data.state == 1) {
                 $("#modalNovedadVisita").modal('hide');
-                $scope.novedadesVisitasSel = {};
+                swal({
+                    type: 'success',
+                    text: data.data.text,
+                    timer: 4000
+                }).then(function () {
+                    $route.reload();
+                })
+            }
 
-                /*LIMPIEZA DEL MODAL*/
-                frmNovedadVisita.autoValidateFormOptions.resetForm();
+        }
 
-            }, function errorCallback(response) {
-
-                if (response.status == '400') {
-
-                    Swal({
-                        type: 'error',
-                        title: 'Oops...',
-                        text: 'El formulario no se guardó',
-                        footer: '¡Intenta de nuevo o reporta con el administrador!'
-                    })
-                }
-
-            });
-        $scope.RegistrosTecnicos(registrosTenicos);
+        function failed(error) {
+            console.log(error)
+        };
     }
 
     // =================================================
     //                 FUNCION PARA EXPORTAR EN CSV
     // =================================================
 
-    $scope.csvNovedadesTecnicos = function () {
-        $scope.csvPend = false;
-        if ($scope.Registros.fechaini > $scope.Registros.fechafin) {
-            Swal("La fecha inicial debe ser menor que la inicial");
+    $scope.RegistrosTecnicos = function (datos) {
+        if ($scope.Registros.fechaini == '' || $scope.Registros.fechaini == undefined) {
+            swal({
+                type: 'error',
+                text: 'Ingrese la fecha inicial'
+            })
+        } else if ($scope.Registros.fechafin == '' || $scope.Registros.fechafin == undefined) {
+            swal({
+                type: 'error',
+                text: 'Ingrese la fecha final'
+            })
+        } else if ($scope.Registros.fechaini > $scope.Registros.fechafin) {
+            swal({
+                type: 'error',
+                text: 'La fecha final no puede ser mayor que la inicial'
+            })
         } else {
+            services.novedadesTecnicoService(1, 200, $scope.Registros).then(complete).catch(failed)
 
-            services.expCsvNovedadesTecnico($scope.Registros, $rootScope.galletainfo).then(
+            function complete(data) {
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptions.totalItems = counter;
+                var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+        }
+    }
+
+    $scope.BuscarNovedadescsv = function (datos) {
+        if ($scope.Registros.fechaini == '' || $scope.Registros.fechaini == undefined) {
+            swal({
+                type: 'error',
+                text: 'Ingrese la fecha inicial'
+            })
+        } else if ($scope.Registros.fechafin == '' || $scope.Registros.fechafin == undefined) {
+            swal({
+                type: 'error',
+                text: 'Ingrese la fecha final'
+            })
+        } else if ($scope.Registros.fechaini > $scope.Registros.fechafin) {
+            swal({
+                type: 'error',
+                text: 'La fecha final no puede ser mayor que la inicial'
+            })
+        } else {
+            services.expCsvNovedadesTecnico($scope.Registros).then(
                 function (datos) {
-                    console.log(datos);
                     var data = datos.data[0];
                     var array = typeof data != 'object' ? JSON.parse(data) : data;
                     var str = '';
-                    var column = `Fecha, Despachador, Municipio, Region, Proceso, Hora marca en sitio, Tipo de Novedad, Pedido, Cedula del Tecnico, Nombre del Tecnico, Contrato, Situacion, Motivo, Submotivo, Observaciones, Observacion CCO, ID Llamada \r\n`;
+                    var column = `Fecha| Despachador| Municipio| Region| Proceso| Hora marca en sitio| Tipo de Novedad| Pedido| Cedula del Tecnico| Nombre del Tecnico| Contrato| Situacion| Motivo| Submotivo| Observaciones| Observacion CCO| ID Llamada \r\n`;
                     str += column;
                     for (var i = 0; i < array.length; i++) {
                         var line = '';
                         for (var index in array[i]) {
-                            if (line != '') line += ','
+                            if (line != '') line += '|'
                             line += array[i][index];
                         }
 
@@ -4199,7 +4392,6 @@ app.controller('novedadesVisitaCtrl', function ($scope, $http, $rootScope, $loca
                     elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
                     elementToClick.download = "NovedadesTecnicos-" + fullDateCsv + ".csv";
                     elementToClick.click();
-                    console.log(str);
                 },
                 function errorCallback(response) {
                     $scope.errorDatos = "No hay datos.";
@@ -4226,6 +4418,60 @@ app.controller('contrasenasClickCtrl', function ($scope, $http, $rootScope, $loc
     // =========================================================
     //      FUNCIÓN PARA BUSCAR EL TÉCNICO POR LÓGIN O CÉDULA
     // =========================================================
+    gridTecnico();
+
+    function gridTecnico() {
+        var columnDefs = [
+            {
+                name: "Cedula",
+                field: "cedula",
+                minWidth: 70,
+                width: "20%",
+                enableCellEdit: false,
+                enableFiltering: false
+            },
+            {
+                name: "Login",
+                field: "login",
+                minWidth: 80,
+                width: "20%",
+                enableCellEdit: false,
+                enableFiltering: false,
+
+            }, {
+                name: "Nombre tecnico",
+                field: "nombre",
+                minWidth: 80,
+                width: "25%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Password",
+                field: "password",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "20%",
+                enableCellEdit: false,
+            }, {
+                name: "Acciones",
+                cellTemplate: "<div style='text-align: center'><button  ng-click='grid.appScope.cambioPassword(row)'>Cambiar Password</button></div>",
+                minWidth: 70,
+                width: "15%",
+            }];
+        $scope.gridOptions = {
+            enableFiltering: false,
+            enablePagination: false,
+            columnDefs: columnDefs
+        }
+        $scope.gridOptions.data = ''
+
+    }
+
+    $scope.cambioPassword = function (row) {
+
+        $scope.datosTecnico = row.entity;
+        $('#updateModalContrasenasClick').modal('show');
+    }
 
     $scope.BuscarcontrasenasTecnicos = function (datos) {
 
@@ -4260,40 +4506,38 @@ app.controller('contrasenasClickCtrl', function ($scope, $http, $rootScope, $loc
             });
             return;
         } else {
-            services.registrosContrasenasTecnicos(datos).then(
-                function (data) {
+            services.registrosContrasenasTecnicos(datos).then(completed).catch(failed)
 
-                    $scope.listaContrasenasClick = data.data[0];
+            function completed(data) {
+                console.log(data)
+                if (data.data.state == 99) {
+                    swal({
+                        type: 'error',
+                        title: data.data.title,
+                        text: data.data.text,
+                        timer: 4000
+                    }).then(function () {
+                        $cookies.remove('usuarioseguimiento');
+                        $location.path('/');
+                        $rootScope.galletainfo = undefined;
+                        $rootScope.permiso = false;
+                        $route.reload();
+                    })
+                } else if (data.data.state == 0) {
+                    swal({
+                        text: "El tecnico " + datos.buscar + " no existe en la base de datos",
+                        type: "error",
+                    });
+                } else {
+                    $scope.gridOptions.data = data.data.data
+                }
 
+            }
 
-                    if ($scope.listaContrasenasClick == "<") {
+            function failed(error) {
+                console.log(error)
+            }
 
-                        swal({
-                            title: "El técnico " + datos.buscar + " no existe en la Base de Datos.",
-                            type: "warning",
-                            confirmButtonClass: "btn-danger",
-                        });
-
-                    }
-
-                    return data.data;
-
-                },
-
-                function errorCallback(response) {
-
-                    if (response.status == '400') {
-
-                        swal({
-                            title: "El técnico " + datos.buscar + " no existe en la Base de Datos.",
-                            type: "warning",
-                            confirmButtonClass: "btn-danger",
-                        });
-                    }
-                    ;
-
-
-                });
         }
     }
 
@@ -4304,19 +4548,17 @@ app.controller('contrasenasClickCtrl', function ($scope, $http, $rootScope, $loc
 
 
     $scope.csvcontrasenasTecnicos = function () {
-        //console.log(datoExportar+$scope.indicadores.fecha);
         services.expCsvContrasenasTecnicos($rootScope.galletainfo).then(
             function (datos) {
-                // console.log(data.data[0]);
                 var data = datos.data[0];
                 var array = typeof data != 'object' ? JSON.parse(data) : data;
                 var str = '';
-                var column = `Fecha, Login, Nombre, Password, Expira Cuenta, Expira PSW \r\n`;
+                var column = `Fecha| Login| Nombre| Password| Expira Cuenta| Expira PSW \r\n`;
                 str += column;
                 for (var i = 0; i < array.length; i++) {
                     var line = '';
                     for (var index in array[i]) {
-                        if (line != '') line += ','
+                        if (line != '') line += '|'
                         line += array[i][index];
                     }
 
@@ -4334,7 +4576,6 @@ app.controller('contrasenasClickCtrl', function ($scope, $http, $rootScope, $loc
                 elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
                 elementToClick.download = "ContrasenasTecnicos-" + fullDateCsv + ".csv";
                 elementToClick.click();
-                console.log(str);
             },
             function errorCallback(response) {
             }
@@ -4343,28 +4584,20 @@ app.controller('contrasenasClickCtrl', function ($scope, $http, $rootScope, $loc
     };
 
 
-    // =================================================
-    //            MODAL PARA CAMBIO CONTRASEÑA
-    // =================================================
-
-    $scope.updateModalContrasenasClick = function (data) {
-        $rootScope.datos = data;
-    };
-
     // =====================================================
     //            FUNCION PARA CAMBIAR LA CONTRASEÑA
     // =====================================================
 
-    $scope.editPwdTecnicos = function (datos) {
+    $scope.editPwdTecnicos = function (datosTecnico) {
 
-        if (datos.newpwd == undefined || datos.confnewpwd == undefined) {
+        if (datosTecnico.newpwd == undefined || datosTecnico.confnewpwd == '') {
             swal({
                 title: "Por favor ingrese la contraseña",
                 type: "warning",
                 confirmButtonClass: "btn-danger",
             });
             return;
-        } else if (datos.newpwd != datos.confnewpwd) {
+        } else if (datosTecnico.newpwd != datosTecnico.confnewpwd) {
 
             swal({
                 title: "Las contraseñas no coinciden, por favor digitar de nuevo",
@@ -4374,18 +4607,23 @@ app.controller('contrasenasClickCtrl', function ($scope, $http, $rootScope, $loc
             return;
         } else {
 
-            services.editarPasswordTecnicos(datos).then(
+            services.editarPasswordTecnicos(datosTecnico).then(
                 function (data) {
-
-                    Swal(
-                        'Se actualizó la contraseña!',
-                        'Bien Hecho'
-                    )
-                    /*PARA QUE EL MODAL SE OCULTE SOLO*/
-                    $("#updateModalContrasenasClick").modal('hide');
-                    return data.data;
+                    if (data.data.state == 0) {
+                        Swal({
+                            type: 'error',
+                            title: data.data.data,
+                            timer: 4000
+                        })
+                    } else if (data.data.state == 1) {
+                        Swal(
+                            data.data.data,
+                            'Bien Hecho'
+                        ).then(function () {
+                            $route.reload();
+                        })
+                    }
                 },
-
                 function errorCallback(response) {
                 });
         }
@@ -4406,54 +4644,263 @@ app.controller('quejasGoCtrl', function ($scope, $http, $rootScope, $location, $
     var timer;
     var idqueja;
 
-    $scope.pageChanged = function () {
+    getGrid();
 
-        $scope.LoadQuejasGo($scope.datapendientes.currentPage);
-    };
+    function getGrid() {
+        var columnDefs = [
+            {
+                name: "Concecutivo",
+                field: "id",
+                minWidth: 70,
+                width: "4%",
+                enableCellEdit: false,
+                enableFiltering: true
+            },
+            {
+                name: "Pedido",
+                field: "pedido",
+                minWidth: 80,
+                width: "10%",
+                enableCellEdit: false,
+                enableFiltering: true,
+
+            }, {
+                name: "Nombre cliente",
+                field: "cliente",
+                minWidth: 80,
+                width: "13%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Cedula tecnico",
+                field: "cedtecnico",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "5%",
+                enableCellEdit: false,
+            }, {
+                name: "Nombre tecnico",
+                field: "tecnico",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Accion",
+                field: "accion",
+                cellStyle: {"text-align": "center"},
+                minWidth: 80,
+                width: "8%",
+                enableCellEdit: false,
+            }, {
+                name: "Asesor",
+                field: "asesor",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "5%",
+                enableCellEdit: false,
+            }, {
+                name: "Fecha",
+                field: "fecha",
+                cellStyle: {"text-align": "center"},
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "Duracion",
+                field: "duracion",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "5%",
+                enableCellEdit: false,
+            }, {
+                name: "Ciudad",
+                field: "region",
+                cellStyle: {"text-align": "center"},
+                width: "5%",
+                enableCellEdit: false,
+            },
+            {
+                name: "Id llamada",
+                field: "idllamada",
+                cellStyle: {"text-align": "center"},
+                width: "15%",
+                enableCellEdit: false,
+            }, {
+                name: "Observaciones",
+                cellTemplate: 'partial/modals/templateQueja.html',
+                width: "5%",
+                enableFiltering: false,
+                enableCellEdit: false,
+                cellStyle: {"text-align": "center"},
+
+            }, {
+                name: "Editar",
+                cellTemplate: "<div style='text-align: center'><button  ng-click='grid.appScope.abrirModalModificarObs(row)'>Editar</button></div>",
+                minWidth: 70,
+                width: "5%",
+                enableFiltering: false,
+            }];
+
+        var paginationOptions = {
+            sort: null
+        };
+
+        $scope.gridOptions = {
+            enableFiltering: true,
+            enablePagination: true,
+            pageSize: 200,
+            enableHorizontalScrollbar: false,
+            enablePaginationControls: true,
+            columnDefs: columnDefs,
+            paginationPageSizes: [200, 500, 1000],
+            paginationPageSize: 200,
+
+            exporterMenuPdf: false,
+            enableGridMenu: true,
+
+            useExternalPagination: true,
+            useExternalSorting: true,
+            enableRowSelection: true,
+
+            exporterCsvFilename: 'Registros.csv',
+
+            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+            exporterExcelFilename: 'Registros.xlsx',
+            exporterExcelSheetName: 'Sheet1',
+
+            onRegisterApi: function (gridApi) {
+                $scope.gridApi = gridApi;
+                $scope.gridApi.core.on.sortChanged($scope, function (grid, sortColumns) {
+                    if (getPage) {
+                        if (sortColumns.length > 0) {
+                            paginationOptions.sort = sortColumns[0].sort.direction;
+                        } else {
+                            paginationOptions.sort = null;
+                        }
+                        getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, $scope.Registros)
+                    }
+                });
+                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                    if (getPage) {
+                        getPage(newPage, pageSize, $scope.Registros);
+                    }
+                });
+            }
+        };
+
+        var getPage = function (curPage, pageSize, sort) {
+            services.listaQuejasGoDia(curPage, pageSize, $scope.Registros).then(complete).catch(failed)
+
+            function complete(data) {
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptions.totalItems = counter;
+                var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+
+        };
+
+        getPage(1, $scope.gridOptions.paginationPageSize, paginationOptions.sort);
+    }
 
     /* FUNCION PARA VALIDAR LOS DATOS ANTES DE BUSCAR */
     $scope.validarDatos = function (datos) {
-
-        if (datos.columnaBusqueda == undefined || datos.valorBusqueda == undefined) {
-            datos.columnaBusqueda = "";
-            datos.valorBusqueda = "";
-        }
-
-        if (datos.fechaini == undefined || datos.fechafin == undefined) {
-            Swal({
+        if (datos.fechaini == '' || datos.fechaini == undefined) {
+            swal({
                 type: 'error',
-                title: 'Oops...',
-                text: 'Debe seleccionar un rango de fecha!',
+                text: 'Ingrese la fecha inicial'
+            })
+        } else if (datos.fechafin == '' || datos.fechafin == undefined) {
+            swal({
+                type: 'error',
+                text: 'Ingrese la fecha final'
+            })
+        } else if (datos.fechafin < datos.fechaini) {
+            swal({
+                type: 'error',
+                text: 'La fecha inicial no peude mayor que la final'
+            })
+        } else {
+            services.listaQuejasGoDia(1, 200, datos).then(complete).catch(failed)
+
+            function complete(data) {
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptions.totalItems = counter;
+                //var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+
+        }
+    };
+
+    $scope.BuscarRegistrosqueja = function (datos) {
+        if (datos.fechaini == '' || datos.fechaini == undefined) {
+            swal({
+                type: 'error',
+                text: 'Ingrese la fecha inicial'
+            })
+        } else if (datos.fechafin == '' || datos.fechafin == undefined) {
+            swal({
+                type: 'error',
+                text: 'Ingrese la fecha final'
+            })
+        } else if (datos.fechafin < datos.fechaini) {
+            swal({
+                type: 'error',
+                text: 'La fecha inicial no peude mayor que la final'
             })
         } else {
 
-            $scope.LoadQuejasGo(datos);
-        }
-    };
+            services.expCsvQuejasGo(datos).then(completed).catch(failed)
 
-    /* FUNCION PARA CARGAR LA DATA DEL DIA EN LA VISTA PRINCIPAL */
-    $scope.LoadQuejasGo = function (datos) {
+            function completed(response) {
+                var data = response.data[0];
+                var array = typeof data != 'object' ? JSON.parse(data) : data;
+                var str = '';
+                var column = `CONSECUTIVO| PEDIDO| CLIENTE| CEDULA_TECNICO| TECNICO| ACCION| ASESOR| FECHA| DURACION| CIUDAD| ID_LLAMADA| OBSERVACIONES \r\n`;
+                str += column;
+                for (var i = 0; i < array.length; i++) {
+                    var line = '';
+                    for (var index in array[i]) {
+                        if (line != '') line += '|'
+                        line += array[i][index];
+                    }
 
-        $scope.listaQuejasGo = {};
-
-        services.listaQuejasGoDia($scope.datapendientes.currentPage, datos).then(
-            function (data) {
-                $scope.listaQuejasGo = data.data.data;
-                $scope.cantidad = data.data.data.length;
-                $scope.counterpag = data.data.contador;
-                return data.data;
-            },
-
-            function errorCallback(response) {
-                if (response.status == "400") {
-                    $scope.counterpag = 0;
+                    str += line + '\r\n';
                 }
-            });
-    };
+                var dateCsv = new Date();
+                var yearCsv = dateCsv.getFullYear();
+                var monthCsv = (dateCsv.getMonth() + 1 <= 9) ? '0' + (dateCsv.getMonth() + 1) : (dateCsv.getMonth() + 1);
+                var dayCsv = (dateCsv.getDate() <= 9) ? '0' + dateCsv.getDate() : dateCsv.getDate();
+                var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
 
-    $scope.maxSize = 4;
-    $scope.datapendientes = {maxSize: 4, currentPage: 1, numPerPage: 100, totalItems: 0};
-    $scope.LoadQuejasGo($scope.datapendientes.currentPage);
+
+                var blob = new Blob([str]);
+                var elementToClick = window.document.createElement("a");
+                elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
+                elementToClick.download = "Registros-quejas-go" + fullDateCsv + ".csv";
+                elementToClick.click();
+            }
+
+            function failed(response) {
+                $scope.errorDatos = "No hay datos.";
+                $scope.csvPend = false;
+            }
+        }
+    }
 
     /* FUNCION PARA LLAMAR EL MODAL */
     $scope.mostraModal = function () {
@@ -4487,47 +4934,54 @@ app.controller('quejasGoCtrl', function ($scope, $http, $rootScope, $location, $
 
     /* FUNCION PARA LLAMAR LAS BUSCAR AL TECNICO */
     $scope.BuscarTecnico = function () {
-
-        var cedula = $scope.quejasGoSel.cedtecnico;
-
-        if (cedula == undefined) {
-
+        console.log($scope.quejasGoSel.cedtecnico);
+        if ($scope.quejasGoSel.cedtecnico == undefined || $scope.quejasGoSel.cedtecnico == '') {
             Swal({
                 type: 'error',
-                title: 'Oops...',
                 text: 'Debe ingresar la cédula del técnico!',
             })
+        } else {
+            services.traerTecnico($scope.quejasGoSel.cedtecnico).then(completed).catch(failed)
 
-            return;
-
-        }
-
-        services.traerTecnico(cedula).then(function (data) {
-
-                if (data.status == '201') {
-                    $scope.Tecnico = data.data[0];
+            function completed(data) {
+                if (data.data.state == 99) {
+                    swal({
+                        type: 'error',
+                        title: data.data.title,
+                        text: data.data.text,
+                        timer: 4000
+                    }).then(function () {
+                        $cookies.remove('usuarioseguimiento');
+                        $location.path('/');
+                        $rootScope.galletainfo = undefined;
+                        $rootScope.permiso = false;
+                        $route.reload();
+                    })
+                } else if (data.data.state == 0) {
+                    swal({
+                        type: 'error',
+                        text: data.data.text,
+                        timer: 4000
+                    }).then(function () {
+                        $scope.ciudadesQuejasGo();
+                        $('#crearTecnicoQuejasGo').modal('show');
+                        $scope.infoTecnico = false;
+                    })
+                } else {
+                    $scope.Tecnico = data.data.data;
                     $scope.quejasGoSel.tecnico = $scope.Tecnico[0].nombre;
                     $scope.quejasGoSel.region = $scope.Tecnico[0].ciudad;
                     $scope.infoTecnico = true;
-                    return;
-
-                } else if (data.status == '200') {
-                    $scope.ciudadesQuejasGo();
-                    $('#crearTecnicoQuejasGo').modal('show');
-                    $scope.infoTecnico = false;
                 }
-            },
-            function errorCallback(data) {
 
-                if (data.status == '400') {
-                    Swal({
-                        type: 'error',
-                        title: 'Oops...',
-                        text: 'No fue posible buscar el técnico!',
-                        footer: '¡Reporta con el administrador!'
-                    })
-                }
-            });
+            }
+
+            function failed(error) {
+                console.log(error)
+            };
+        }
+
+
     };
 
     /* FUNCION PARA CREAR TECNICO */
@@ -4584,80 +5038,51 @@ app.controller('quejasGoCtrl', function ($scope, $http, $rootScope, $location, $
 
         $scope.counter = hours + ":" + minutes + ":" + seconds;
 
-        services.guardarQuejaGo(quejasGoSel, $scope.counter, $rootScope.galletainfo).then(
-            function (respuesta) {
+        services.guardarQuejaGo(quejasGoSel, $scope.counter).then(completed).catch(failed)
 
-                if (respuesta.status == '201') {
-                    Swal(
-                        'La Queja fue Guardada!',
-                        'Bien Hecho'
-                    )
-                }
-                $scope.infoTecnico = false;
-
-                /*PARA QUE EL MODAL SE OCULTE SOLO UNA VEZ GUARDE*/
-                $("#modalQuejasGo").modal('hide');
-                $scope.quejasGoSel = {};
-
-                /*LIMPIAR EL MODAL*/
-                frmGenereacionTT.autoValidateFormOptions.resetForm();
-
-            }, function errorCallback(response) {
-
-                if (response.status == '400') {
-
-                    Swal({
-                        type: 'error',
-                        title: 'Oops...',
-                        text: 'No fue posible guardar la queja!',
-                        footer: '¡Reporta con el administrador!'
-                    })
-                }
-            });
-
-        $scope.LoadQuejasGo($scope.datapendientes.currentPage);
-    };
-
-    /* FUNCION PARA EXPORTAR LAS QUEJAS EN CSV */
-    $scope.csvQuejasGo = function () {
-        $scope.csvPend = false;
-
-        if ($scope.Registros.columnaBusqueda == undefined || $scope.Registros.valorBusqueda == undefined) {
-            $scope.Registros.columnaBusqueda = "";
-            $scope.Registros.valorBusqueda = "";
+        function completed(data) {
+            $("#modalQuejasGo").modal('hide');
+            if (data.data.state == 99) {
+                swal({
+                    type: 'error',
+                    title: data.data.title,
+                    text: data.data.text,
+                    timer: 4000
+                }).then(function () {
+                    $cookies.remove('usuarioseguimiento');
+                    $location.path('/');
+                    $rootScope.galletainfo = undefined;
+                    $rootScope.permiso = false;
+                    $route.reload();
+                })
+            } else if (data.data.state == 0) {
+                swal({
+                    type: 'error',
+                    text: data.data.text,
+                    timer: 4000
+                })
+            } else if (data.data.state == 1) {
+                swal({
+                    type: 'success',
+                    text: data.data.text,
+                    timer: 4000
+                }).then(function () {
+                    $route.reload();
+                })
+            }
         }
 
-        if ($scope.Registros.fechaini == undefined || $scope.Registros.fechafin == undefined) {
-            $scope.Registros.fechaini = "";
-            $scope.Registros.fechafin = "";
+        function failed(error) {
+            console.log(error)
         }
 
-        if ($scope.Registros.fechaini > $scope.Registros.fechafin) {
-            alert("La fecha inicial debe ser menor que la inicial");
-            return;
-        } else {
-
-            services.expCsvQuejasGo($scope.Registros, $rootScope.galletainfo).then(
-                function (data) {
-                    window.location.href = "tmp/" + data.data[0];
-                    $scope.csvPend = true;
-                    $scope.counter = data.data[1];
-
-                    return data.data;
-                },
-                function errorCallback(response) {
-                    $scope.errorDatos = "No hay datos.";
-                    $scope.csvPend = false;
-                }
-            );
-        }
     };
 
     /* FUNCION PARA LLAMAR EL MODAL PARA MODIFICAR LAS OBSERVACIONES DE LA QUEJAGO */
-    $scope.abrirModalModificarObs = function (id, observacion) {
+    $scope.abrirModalModificarObs = function (row) {
 
-        $scope.quejasGoSel.observacion = observacion;
-        idqueja = id;
+        $scope.quejasGoSel.observacion = row.entity.observacion;
+        idqueja = row.entity.id;
 
         angular.copy();
         $("#modObserQuejasGo").modal();
@@ -4666,36 +5091,23 @@ app.controller('quejasGoCtrl', function ($scope, $http, $rootScope, $location, $
     /* FUNCION PARA MODIFICAR LAS OBSERVACIONES DE LA QUEJAGO */
     $scope.modificarObservacionQuejasGo = function (quejasGoSel, frmModObserQuejasGo, id) {
 
-        services.modiObserQuejasGo(quejasGoSel, idqueja).then(function (respuesta) {
+        services.modiObserQuejasGo(quejasGoSel, idqueja).then(completed).catch(failed)
 
-            if (respuesta.status == '201') {
-                Swal(
-                    'Las observaciones fueron modificadas!',
-                    'Bien Hecho'
-                )
-            }
-            /*PARA ACTUALIZAR LA VISTA PRINCIPAL*/
-            $scope.LoadQuejasGo($scope.datapendientes.currentPage);
-
-            /*PARA QUE EL MODAL SE OCULTE SOLO UNA VEZ GUARDE*/
+        function completed(data) {
             $("#modObserQuejasGo").modal('hide');
-            $scope.quejasGoSel = {};
+            swal({
+                type: data.data.type,
+                //tittle: data.data.msj,
+                text: data.data.msj,
+                timer: 4000
+            }).then(function () {
+                $route.reload();
+            })
+        }
 
-            /*LIMPIAR EL MODAL*/
-            frmModObserQuejasGo.autoValidateFormOptions.resetForm();
-
-        }, function errorCallback(response) {
-
-            if (response.status == '400') {
-
-                Swal({
-                    type: 'error',
-                    title: 'Oops...',
-                    text: 'No fue posible actualizar las observaciones!',
-                    footer: '¡Reporta con el administrador!'
-                })
-            }
-        });
+        function failed(error) {
+            console.log(error)
+        }
     };
 });
 
@@ -4753,12 +5165,12 @@ app.controller('saraCtrl', function ($scope, $http, $rootScope, $location, $rout
             var data = response.data;
             var array = typeof data != 'object' ? JSON.parse(data) : data;
             var str = '';
-            var column = 'Cedula, Login, Nombre, Telefono, Region, Distrito, Tipo Tecnico, Contratista, Latitud, Longitud, Calendario, No Disponibilidad, Fecha Registro \r\n';
+            var column = 'Cedula| Login| Nombre| Telefono| Region| Distrito| Tipo Tecnico| Contratista| Latitud| Longitud| Calendario| No Disponibilidad| Fecha Registro \r\n';
             str += column;
             for (var i = 0; i < array.length; i++) {
                 var line = '';
                 for (var index in array[i]) {
-                    if (line != '') line += ','
+                    if (line != '') line += '|'
                     line += array[i][index];
                 }
 
@@ -4776,7 +5188,6 @@ app.controller('saraCtrl', function ($scope, $http, $rootScope, $location, $rout
             elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
             elementToClick.download = "Disponibilidad-" + fullDateCsv + ".csv";
             elementToClick.click();
-            console.log(str);
 
         }).catch(error => console.log(error));
     }
@@ -4792,76 +5203,186 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
     $scope.datosRegistros = {};
     $scope.verplantilla = false;
 
-    if ($scope.Registros.fechaini == undefined || $scope.Registros.fechafin == undefined) {
-        var tiempo = new Date().getTime();
-        var date1 = new Date();
-        var year = date1.getFullYear();
-        var month = (date1.getMonth() + 1 <= 9) ? '0' + (date1.getMonth() + 1) : (date1.getMonth() + 1);
-        var day = (date1.getDate() <= 9) ? '0' + date1.getDate() : date1.getDate();
+    getGrid();
 
-        tiempo = year + "-" + month + "-" + day;
+    function getGrid() {
+        var columnDefs = [
+            {
+                name: "Pedido",
+                field: "pedido",
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+                enableFiltering: true
+            },
+            {
+                name: "Técnico",
+                field: "tecnico",
+                minWidth: 80,
+                width: "15%",
+                enableCellEdit: false,
+                enableFiltering: true,
 
-        $scope.fechaini = tiempo;
-        $scope.fechafin = tiempo;
+            }, {
+                name: "Accion",
+                field: "accion",
+                minWidth: 80,
+                width: "15%",
+                enableCellEdit: false,
 
-        //console.log("fechaini: ",$scope.fechaini);
-        //console.log("fechafin: ",$scope.fechafin);
+            }, {
+                name: "Asesor",
+                field: "asesor",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "Fecha",
+                field: "fecha",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "15%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Duracion (HH:MM:SS)",
+                field: "duracion",
+                cellStyle: {"text-align": "center"},
+                minWidth: 80,
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "Proceso",
+                field: "proceso",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "15%",
+                enableCellEdit: false,
+            }, {
+                name: "Acciones",
+                cellTemplate: "<div style='text-align: center'>" +
+                    '<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.muestraNotas(row)">' +
+                    '<i class="fa fa-pencil-square-o" aria-hidden="true"> </i>' +
+                    '</button>&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.editarRegistros(row)">' +
+                    '<i class="fa fa-pencil" aria-hidden="true"> </i>' +
+                    '</button></div>',
+                minWidth: 50,
+                width: "10%",
+                enableFiltering: false
+            }];
+
+        var paginationOptions = {
+            sort: null
+        };
+
+        $scope.gridOptions = {
+            enableFiltering: true,
+            enablePagination: true,
+            pageSize: 200,
+            enableHorizontalScrollbar: false,
+            enablePaginationControls: true,
+            columnDefs: columnDefs,
+            paginationPageSizes: [200, 500, 1000],
+            paginationPageSize: 200,
+
+            exporterMenuPdf: false,
+            enableGridMenu: true,
+
+            useExternalPagination: true,
+            useExternalSorting: true,
+            enableRowSelection: true,
+
+            exporterCsvFilename: 'Registros.csv',
+
+            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+            exporterExcelFilename: 'Registros.xlsx',
+            exporterExcelSheetName: 'Sheet1',
+
+            onRegisterApi: function (gridApi) {
+                $scope.gridApi = gridApi;
+                $scope.gridApi.core.on.sortChanged($scope, function (grid, sortColumns) {
+                    if (getPage) {
+                        if (sortColumns.length > 0) {
+                            paginationOptions.sort = sortColumns[0].sort.direction;
+                        } else {
+                            paginationOptions.sort = null;
+                        }
+                        getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, $scope.Registros)
+                    }
+                });
+                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                    if (getPage) {
+                        getPage(newPage, pageSize, $scope.Registros);
+                    }
+                });
+            }
+        };
+
+        var getPage = function (curPage, pageSize, Registros) {
+            services.registros(curPage, pageSize, $scope.Registros).then(complete).catch(failed)
+
+            function complete(data) {
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptions.totalItems = counter;
+                var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+
+        };
+
+        getPage(1, $scope.gridOptions.paginationPageSize, paginationOptions.sort);
     }
 
-    $scope.setPage = function (pageNo) {
-        $scope.datapendientes.currentPage = pageNo;
-    };
-
-    $scope.pageChanged = function () {
-        $scope.BuscarRegistros($scope.datapendientes.currentPage);
-    };
-
     $scope.BuscarRegistros = function (datos) {
-        console.log("BuscarRegistros: ", datos);
-        $scope.errorDatos = null;
-        $scope.csvPend = false;
-        $scope.listaRegistros = {};
-
-        if (datos.fechaini > datos.fechafin) {
-            alert("La fecha inicial debe ser menor que la inicial");
-            return;
+        if (datos.fechaini == '' || datos.fechaini == undefined) {
+            swal({
+                type: 'error',
+                text: 'Ingrese la fecha inicial'
+            })
+        } else if (datos.fechafin == '' || datos.fechafin == undefined) {
+            swal({
+                type: 'error',
+                text: 'Ingrese la fecha final'
+            })
+        } else if (datos.fechaini > datos.fechafin) {
+            swal({
+                type: 'error',
+                text: 'La fecha inicial no puede ser menor que la inicial'
+            })
         } else {
+            services.registros(1, 200, $scope.Registros).then(complete).catch(failed)
 
-            services.registros($scope.datapendientes.currentPage, datos).then(
-                function (data) {
-                    console.log("registros: ", data);
-                    $scope.listaRegistros = data.data[0];
-                    //console.log("listaRegistros: ", $scope.listaRegistros);
-                    $scope.cantidad = data.data[0].length;
-                    $scope.counter = data.data[1];
+            function complete(data) {
+                var datos = data.data.data;
+                var counter = data.data.counter;
 
-                    return data.data;
-                },
-                function errorCallback(response) {
-                    if (datos.concepto == undefined || datos.buscar == undefined) {
-                        if (datos.fechaini == datos.fechafin) {
-                            $scope.errorDatos = "No hay datos para el día:  " + datos.fechaini;
-                        } else {
-                            $scope.errorDatos = "No hay datos entre " + datos.fechaini + " - " + datos.fechafin;
-                        }
-                    } else
-                        $scope.errorDatos = datos.concepto + " " + datos.buscar + " no existe.";
-                });
+                $scope.gridOptions.totalItems = counter;
+                //var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
         }
     }
 
-    $scope.muestraNotas = function (datos) {
+    $scope.muestraNotas = function (row) {
 
-        $scope.pedido = datos.pedido;
+        $scope.pedido = row.entity.pedido;
         $scope.TituloModal = "Observaciones para el pedido:";
-        $scope.observaciones = datos.observaciones;
-        // console.log( $scope.observaciones);
+        $scope.observaciones = row.entity.observaciones;
+        $("#NotasModal").modal('show');
     }
 
-
     $scope.calcularSubAcciones = function (proceso, accion) {
-        //    console.log(proceso);
-        //  console.log(accion);
         $scope.listadoSubAcciones = {};
         $scope.validarsubaccion = true;
 
@@ -4874,7 +5395,6 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
     };
 
     $scope.calcularAcciones = function (proceso) {
-        //console.log(proceso);
         if (proceso == "") {
             $scope.validaraccion = false;
             $scope.validarsubaccion = false;
@@ -4888,95 +5408,63 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
         }
     };
 
-    $scope.editarRegistros = function (datos) {
-        $scope.datosRegistros = datos;
+    $scope.editarRegistros = function (row) {
+        $scope.datosRegistros = row.entity;
         if ($scope.datosRegistros.plantilla != "") {
             $scope.verplantilla = true;
         } else {
             $scope.verplantilla = false;
         }
-        console.log("datosRegistros: ", $scope.datosRegistros);
         $scope.TituloModal = "Editar pedido:";
-        $scope.pedido = datos.pedido;
+        $scope.pedido = row.entity.pedido;
         $scope.calcularAcciones($scope.datosRegistros.proceso);
         $scope.calcularSubAcciones($scope.datosRegistros.proceso, $scope.datosRegistros.accion);
+        $("#Editardato").modal('show');
     }
 
     $scope.editRegistro = function (datos) {
         $scope.errorDatos = null;
         $scope.respuestaupdate = null;
         $scope.respuestadelete = null;
-        //  console.log(datos);
 
         services.editarRegistro(datos, $rootScope.galletainfo).then(
             function (data) {
-
-                console.log("editarRegistro: ", data);
-                // $errorDatos=null;
                 $scope.respuestaupdate = "Pedido " + datos.pedido + " actualizado exitosamente";
-                //$rootScope.nombre=$scope.respuesta[0].NOMBRE;
-                //$location.path('/home/');
                 return data.data;
             },
             function errorCallback(response) {
             });
-
-        $scope.BuscarRegistros(datos);
-    };
-
-
-    /**
-     * cambio robincambio
-     *
-     services.exportEscalamientos().then((res) => {
-        var data = res.data[0];
-        var array = typeof data != 'object' ? JSON.parse(data) : data;
-        var str = '';
-        var column = `ID, Pedido, Tarea, Tecnico, ID Tecnico, Fecha Solicitud, Fecha Gestion, Fecha Respuesta, Login Gestion, En Gestion, Proceso, Producto, Motivo, Area, Region, Tipo Tarea, Tecnologia, CRM, Departamento, Prueba SMNET, Foto?, Marcacion TAP, Direccion TAP, Valor TAP, Informacion Adicional, MAC Real CPE, Correa Marcacion, Observacion, Respuesta, ID Terreno, Tipificacion, Estado, ANS \r\n`;
-        str += column;
-        for (var i = 0; i < array.length; i++) {
-            var line = '';
-            for (var index in array[i]) {
-                if (line != '') line += ','
-                line += array[i][index];
-            }
-
-            str += line + '\r\n';
-        }
-        var dateCsv = new Date();
-        var yearCsv = dateCsv.getFullYear();
-        var monthCsv = (dateCsv.getMonth() + 1 <= 9) ? '0' + (dateCsv.getMonth() + 1) : (dateCsv.getMonth() + 1);
-        var dayCsv = (dateCsv.getDate() <= 9) ? '0' + dateCsv.getDate() : dateCsv.getDate();
-        var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
-
-
-        var blob = new Blob([str]);
-        var elementToClick = window.document.createElement("a");
-        elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
-        elementToClick.download = "Escalamientos-" + fullDateCsv + ".csv";
-        elementToClick.click();
-        console.log(str);
-     */
-
+    }
 
     $scope.csvRegistros = function () {
-        $scope.csvPend = false;
-        if ($scope.Registros.fechaini > $scope.Registros.fechafin) {
-            alert("La fecha inicial debe ser menor que la inicial");
-            return;
+        if ($scope.Registros.fechaini == '' || $scope.Registros.fechaini == undefined) {
+            swal({
+                type: 'error',
+                text: 'Ingrese la fecha inicial'
+            })
+        } else if ($scope.Registros.fechafin == '' || $scope.Registros.fechafin == undefined) {
+            swal({
+                type: 'error',
+                text: 'Ingrese la fecha final'
+            })
+        } else if ($scope.Registros.fechaini > $scope.Registros.fechafin) {
+            swal({
+                type: 'error',
+                text: 'La fecha inicial no puede ser menor que la inicial'
+            })
         } else {
 
-            services.expCsvRegistros($scope.Registros, $rootScope.galletainfo).then(
+            services.expCsvRegistros($scope.Registros).then(
                 function (data) {
                     var data = data.data[0];
                     var array = typeof data != 'object' ? JSON.parse(data) : data;
                     var str = '';
-                    var column = `PEDIDO, ID_TECNICO, EMPRESA, LOGIN_ASESOR, DESPACHO, OBSERVACIONES, ACCION, SUB_ACCION, FECHA, PROCESO, PRODUCTO, DURACION_LLAMADA, IDLLAMADA, PRUEBA_INTEGRADA, PRUEBASMNET, UNESOURCESYSTEM, PENDIENTE, DIAGNOSTICO \r\n`;
+                    var column = `PEDIDO| ID_TECNICO| EMPRESA| LOGIN_ASESOR| DESPACHO| OBSERVACIONES| ACCION| SUB_ACCION| FECHA| PROCESO| PRODUCTO| DURACION_LLAMADA| IDLLAMADA| PRUEBA_INTEGRADA| PRUEBASMNET| UNESOURCESYSTEM| PENDIENTE| DIAGNOSTICO \r\n`;
                     str += column;
                     for (var i = 0; i < array.length; i++) {
                         var line = '';
                         for (var index in array[i]) {
-                            if (line != '') line += ','
+                            if (line != '') line += '|'
                             line += array[i][index];
                         }
 
@@ -4994,7 +5482,6 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
                     elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
                     elementToClick.download = "Registros-" + fullDateCsv + ".csv";
                     elementToClick.click();
-                    console.log(str);
                 },
                 function errorCallback(response) {
                     $scope.errorDatos = "No hay datos.";
@@ -5005,56 +5492,66 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
     };
 
     $scope.csvtecnico = function () {
-        services.expCsvtecnico($scope.Registros, $rootScope.galletainfo).then(
-            function (datos) {
-                var data = datos.data[0];
-                var array = typeof data != 'object' ? JSON.parse(data) : data;
-                var str = '';
-                var column = `PEDIDO, TECNICO, NOMBRE_TECNICO, CIUDAD, EMPRESA, TIPO_PENDIENTE, DIA, MES, MOTIVO, MAC_SALE, MAC_ENTRA, PROCESO \r\n`;
-                str += column;
-                for (var i = 0; i < array.length; i++) {
-                    var line = '';
-                    for (var index in array[i]) {
-                        if (line != '') line += ','
-                        line += array[i][index];
+        if ($scope.Registros.fechaini == '' || $scope.Registros.fechaini == undefined) {
+            swal({
+                type: 'error',
+                text: 'Ingrese la fecha inicial'
+            })
+        } else if ($scope.Registros.fechafin == '' || $scope.Registros.fechafin == undefined) {
+            swal({
+                type: 'error',
+                text: 'Ingrese la fecha final'
+            })
+        } else if ($scope.Registros.fechaini > $scope.Registros.fechafin) {
+            swal({
+                type: 'error',
+                text: 'La fecha inicial no puede ser menor que la inicial'
+            })
+        } else {
+            services.expCsvtecnico($scope.Registros).then(
+                function (datos) {
+                    var data = datos.data[0];
+                    var array = typeof data != 'object' ? JSON.parse(data) : data;
+                    var str = '';
+                    var column = `PEDIDO| TECNICO| NOMBRE_TECNICO| CIUDAD| EMPRESA| TIPO_PENDIENTE| DIA| MES| MOTIVO| MAC_SALE| MAC_ENTRA| PROCESO \r\n`;
+                    str += column;
+                    for (var i = 0; i < array.length; i++) {
+                        var line = '';
+                        for (var index in array[i]) {
+                            if (line != '') line += '|'
+                            line += array[i][index];
+                        }
+
+                        str += line + '\r\n';
                     }
+                    var dateCsv = new Date();
+                    var yearCsv = dateCsv.getFullYear();
+                    var monthCsv = (dateCsv.getMonth() + 1 <= 9) ? '0' + (dateCsv.getMonth() + 1) : (dateCsv.getMonth() + 1);
+                    var dayCsv = (dateCsv.getDate() <= 9) ? '0' + dateCsv.getDate() : dateCsv.getDate();
+                    var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
 
-                    str += line + '\r\n';
+
+                    var blob = new Blob([str]);
+                    var elementToClick = window.document.createElement("a");
+                    elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
+                    elementToClick.download = "Cambio_Equipos-" + fullDateCsv + ".csv";
+                    elementToClick.click();
+
+                },
+                function errorCallback(response) {
+                    $scope.errorDatos = "No hay datos.";
+                    $scope.csvPend = false;
                 }
-                var dateCsv = new Date();
-                var yearCsv = dateCsv.getFullYear();
-                var monthCsv = (dateCsv.getMonth() + 1 <= 9) ? '0' + (dateCsv.getMonth() + 1) : (dateCsv.getMonth() + 1);
-                var dayCsv = (dateCsv.getDate() <= 9) ? '0' + dateCsv.getDate() : dateCsv.getDate();
-                var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
-
-
-                var blob = new Blob([str]);
-                var elementToClick = window.document.createElement("a");
-                elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
-                elementToClick.download = "Cambio_Equipos-" + fullDateCsv + ".csv";
-                elementToClick.click();
-                console.log(str);
-
-            },
-            function errorCallback(response) {
-                $scope.errorDatos = "No hay datos.";
-                $scope.csvPend = false;
-            }
-        );
+            );
+        }
     };
 
-    $scope.maxSize = 5;
-    $scope.datapendientes = {maxSize: 5, currentPage: 1, numPerPage: 100, totalItems: 0};
-    $scope.BuscarRegistros($scope.datapendientes.currentPage);
 
     $scope.uploadFile = function () {
         $scope.carga_ok = true;
         var file = $scope.myFile;
         $scope.user = $rootScope.galletainfo.login;
         $scope.name = '';
-        //   console.log('file is ');
-        // console.dir(file);
-        // console.dir($scope.tipoCarga);
         $scope.delete_ok = false;
 
         var uploadUrl = 'services/cargaRegistros';
@@ -5074,24 +5571,177 @@ app.controller('registrosCtrl', function ($scope, $http, $rootScope, $location, 
 app.controller('registrosOfflineCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services) {
     $scope.listaRegistrosOffline = {};
 
+    getGrid();
 
-    $scope.RegistrosOffline = function () {
+    function getGrid() {
 
-        services.registrosOffline().then(
-            function (data) {
-                $scope.listaRegistrosOffline = data.data[0];
-                //console.log(data.data);
-                $scope.cantidad = data.data[0].length;
-                $scope.counter = data.data[1];
+        Date.prototype.addMins = function (m) {
+            this.setTime(this.getTime() + (m * 60 * 1000));  // minutos * seg * milisegundos
+            return this;
+        }
 
-                return data.data;
+        var fechaI2 = new Date();
+        fechaI2.addMins(15);
+
+        var columnDefs = [
+            {
+                name: "Login óffline",
+                field: "LOGIN_ASESOR_OFF",
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
             },
-            function errorCallback(response) {
-                $scope.errorDatos = "No hay datos";
+            {
+                name: "Asesor",
+                field: "LOGIN_ASESOR",
+                minWidth: 80,
+                width: "10%",
+                enableCellEdit: false,
 
-            });
+            }, {
+                name: "Pedido",
+                field: "PEDIDO",
+                minWidth: 80,
+                width: "10%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Proceso",
+                field: "PROCESO",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    if (new Date(row.entity.fecha_ingreso) <= fechaI2) {
+                        return 'blue';
+                    }
+                }
+            }, {
+                name: "Producto",
+                field: "PRODUCTO",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Accion",
+                field: "ACCION",
+                cellStyle: {"text-align": "center"},
+                minWidth: 80,
+                width: "12%",
+                enableCellEdit: false,
+                cellTooltip:
+                    function (row, col) {
+                        return row.entity.ACCION;
+                    }
+            }, {
+                name: "Actividad",
+                field: "ACTIVIDAD",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "13%",
+                enableCellEdit: false,
+                cellTooltip:
+                    function (row, col) {
+                        return row.entity.ACTIVIDAD;
+                    }
+            }, {
+                name: "Sub-Actividad",
+                field: "ACTIVIDAD2",
+                cellStyle: {"text-align": "center"},
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "Fecha carga",
+                field: "FECHA_CARGA",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "Observaciones",
+                //field: "OBSERVACIONES",
+                cellTemplate: "<div style='text-align: center' ng-if='row.entity.OBSERVACIONES'>" +
+                    '<button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover\n' +
+                    '            data-placement="left" data-html="true" data-selector="" data-content="{{row.entity.OBSERVACIONES}}">' +
+                    '<i class="fa fa-commenting" aria-hidden="true"> </i></div',
+                cellStyle: {"text-align": "center"},
+                width: "5%",
+                enableCellEdit: false,
+                enableFiltering: false
+            }];
+
+        var paginationOptions = {
+            sort: null
+        };
+
+        $scope.gridOptions = {
+            enableFiltering: true,
+            enablePagination: true,
+            pageSize: 200,
+            enableHorizontalScrollbar: false,
+            enablePaginationControls: true,
+            columnDefs: columnDefs,
+            paginationPageSizes: [200, 500, 1000],
+            paginationPageSize: 200,
+
+            exporterMenuPdf: false,
+            enableGridMenu: false,
+
+            useExternalPagination: true,
+            useExternalSorting: true,
+            enableRowSelection: true,
+
+            exporterCsvFilename: 'Registros.csv',
+
+            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+            exporterExcelFilename: 'Registros.xlsx',
+            exporterExcelSheetName: 'Sheet1',
+
+            onRegisterApi: function (gridApi) {
+                $scope.gridApi = gridApi;
+                $scope.gridApi.core.on.sortChanged($scope, function (grid, sortColumns) {
+                    if (getPage) {
+                        if (sortColumns.length > 0) {
+                            paginationOptions.sort = sortColumns[0].sort.direction;
+                        } else {
+                            paginationOptions.sort = null;
+                        }
+                        getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, paginationOptions.sort)
+                    }
+                });
+                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                    if (getPage) {
+                        getPage(newPage, pageSize, paginationOptions.sort);
+                    }
+                });
+            }
+        };
+
+        var getPage = function (curPage, pageSize, sort) {
+
+            services.registrosOffline(curPage, pageSize, sort).then(complete).catch(failed)
+
+            function complete(data) {
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptions.totalItems = counter;
+                var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+
+        };
+
+        getPage(1, $scope.gridOptions.paginationPageSize, paginationOptions.sort);
     }
-    $scope.RegistrosOffline();
+
 });
 
 app.controller('mesaofflineCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services) {
@@ -5122,19 +5772,42 @@ app.controller('mesaofflineCtrl', function ($scope, $http, $rootScope, $location
     };
 
     $scope.guardarPedidoOffline = function () {
-        services.pedidoOffline($scope.offline, $rootScope.galletainfo).then(
-            function (data) {
-                // console.log("la lista "+$scope.listaUsuarios);
-                $scope.respuestaupdate = "Pedido creado.";
-                ;
-                return data.data;
-            },
-            function errorCallback(response) {
+        services.pedidoOffline($scope.offline).then(completed).catch(failed)
 
-                $scope.errorDatos = "Pedido no fue creado.";
+        function completed(data) {
+            if (data.data.state == 99) {
+                swal({
+                    type: 'error',
+                    title: data.data.title,
+                    text: data.data.text,
+                    timer: 4000
+                }).then(function () {
+                    $cookies.remove('usuarioseguimiento');
+                    $location.path('/');
+                    $rootScope.galletainfo = undefined;
+                    $rootScope.permiso = false;
+                    $route.reload();
+                })
+            } else if (data.data.state != 1) {
+                swal({
+                    type: 'error',
+                    text: data.data.text,
+                    timer: 4000
+                })
+            } else {
+                swal({
+                    type: 'success',
+                    text: data.data.text,
+                    timer: 4000
+                }).then(function () {
+                    $route.reload();
+                })
+            }
+        }
 
-                // console.log($scope.errorDatos);
-            });
+        function failed(error) {
+            console.log(error)
+        };
     };
 
 });
@@ -5214,20 +5887,19 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
 
     en_genstion_nivelacion();
 
-
     function en_genstion_nivelacion() {
         services.en_genstion_nivelacion().then(complete).catch(failed)
 
         function complete(data) {
             $scope.nivelacion.proceso_terminado = data.data.tarea;
             if (data.data.gestion[0].total !== 'undefined') {
-                $scope.nivelacion.pendienteTotal = data.data.gestion[1].total;
+                $scope.nivelacion.pendienteTotal = data.data.gestion[0].total;
             } else {
                 $scope.nivelacion.pendienteTotal = 0;
             }
 
             if (data.data.gestion[1].total !== 'undefined') {
-                $scope.nivelacion.realizadoTotal = data.data.gestion[0].total;
+                $scope.nivelacion.realizadoTotal = data.data.gestion[1].total;
             } else {
                 $scope.nivelacion.realizadoTotal = 0;
             }
@@ -5239,18 +5911,25 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
     }
 
     $scope.buscarhistoricoNivelacion = function () {
-        services.buscarhistoricoNivelacion($scope.nivelacion.historico).then(complete).catch(failed)
+        if ($scope.nivelacion.historico == '' || $scope.nivelacion.historico == undefined) {
+            swal({
+                type: 'error',
+                text: 'Ingrese la tarea a buscar'
+            })
+        } else {
+            services.buscarhistoricoNivelacion($scope.nivelacion.historico).then(complete).catch(failed)
 
-        function complete(data) {
+            function complete(data) {
 
-            $scope.nivelacion.databsucarPedido = data.data.data;
-            $('#modalHistoricoNivelacion').modal('show');
-            return data.data;
+                $scope.nivelacion.databsucarPedido = data.data.data;
+                $('#modalHistoricoNivelacion').modal('show');
+                return data.data;
 
-        }
+            }
 
-        function failed(data) {
-            console.log(data)
+            function failed(data) {
+                console.log(data)
+            }
         }
     }
 
@@ -5343,7 +6022,20 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
                                         services.saveNivelation($scope.nivelacion, $rootScope.galletainfo).then(complete).catch(failed);
 
                                         function complete(data) {
-                                            if (data.data.state === 0) {
+                                            if (data.data.state == 99) {
+                                                swal({
+                                                    type: 'error',
+                                                    title: data.data.title,
+                                                    text: data.data.text,
+                                                    timer: 4000
+                                                }).then(function () {
+                                                    $cookies.remove('usuarioseguimiento');
+                                                    $location.path('/');
+                                                    $rootScope.galletainfo = undefined;
+                                                    $rootScope.permiso = false;
+                                                    $route.reload();
+                                                })
+                                            } else if (data.data.state === 0) {
                                                 Swal({
                                                     type: 'error',
                                                     title: data.data.msj,
@@ -5407,7 +6099,20 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
                                                                 services.saveNivelation($scope.nivelacion, $rootScope.galletainfo).then(complete).catch(failed);
 
                                                                 function complete(data) {
-                                                                    if (data.data.state === 0) {
+                                                                    if (data.data.state == 99) {
+                                                                        swal({
+                                                                            type: 'error',
+                                                                            title: data.data.title,
+                                                                            text: data.data.text,
+                                                                            timer: 4000
+                                                                        }).then(function () {
+                                                                            $cookies.remove('usuarioseguimiento');
+                                                                            $location.path('/');
+                                                                            $rootScope.galletainfo = undefined;
+                                                                            $rootScope.permiso = false;
+                                                                            $route.reload();
+                                                                        })
+                                                                    } else if (data.data.state === 0) {
                                                                         Swal({
                                                                             type: 'error',
                                                                             title: data.data.msj,
@@ -5443,7 +6148,20 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
                                                             services.saveNivelation($scope.nivelacion, $rootScope.galletainfo).then(complete).catch(failed);
 
                                                             function complete(data) {
-                                                                if (data.data.state === 0) {
+                                                                if (data.data.state == 99) {
+                                                                    swal({
+                                                                        type: 'error',
+                                                                        title: data.data.title,
+                                                                        text: data.data.text,
+                                                                        timer: 4000
+                                                                    }).then(function () {
+                                                                        $cookies.remove('usuarioseguimiento');
+                                                                        $location.path('/');
+                                                                        $rootScope.galletainfo = undefined;
+                                                                        $rootScope.permiso = false;
+                                                                        $route.reload();
+                                                                    })
+                                                                } else if (data.data.state === 0) {
                                                                     Swal({
                                                                         type: 'error',
                                                                         title: data.data.msj,
@@ -5507,7 +6225,20 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
                                                                 services.saveNivelation($scope.nivelacion, $rootScope.galletainfo).then(complete).catch(failed);
 
                                                                 function complete(data) {
-                                                                    if (data.data.state === 0) {
+                                                                    if (data.data.state == 99) {
+                                                                        swal({
+                                                                            type: 'error',
+                                                                            title: data.data.title,
+                                                                            text: data.data.text,
+                                                                            timer: 4000
+                                                                        }).then(function () {
+                                                                            $cookies.remove('usuarioseguimiento');
+                                                                            $location.path('/');
+                                                                            $rootScope.galletainfo = undefined;
+                                                                            $rootScope.permiso = false;
+                                                                            $route.reload();
+                                                                        })
+                                                                    } else if (data.data.state === 0) {
                                                                         Swal({
                                                                             type: 'error',
                                                                             title: data.data.msj,
@@ -5541,7 +6272,20 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
                                                             services.saveNivelation($scope.nivelacion, $rootScope.galletainfo).then(complete).catch(failed);
 
                                                             function complete(data) {
-                                                                if (data.data.state === 0) {
+                                                                if (data.data.state == 99) {
+                                                                    swal({
+                                                                        type: 'error',
+                                                                        title: data.data.title,
+                                                                        text: data.data.text,
+                                                                        timer: 4000
+                                                                    }).then(function () {
+                                                                        $cookies.remove('usuarioseguimiento');
+                                                                        $location.path('/');
+                                                                        $rootScope.galletainfo = undefined;
+                                                                        $rootScope.permiso = false;
+                                                                        $route.reload();
+                                                                    })
+                                                                } else if (data.data.state === 0) {
                                                                     Swal({
                                                                         type: 'error',
                                                                         title: data.data.msj,
@@ -5575,8 +6319,20 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
                                         services.saveNivelation($scope.nivelacion, $rootScope.galletainfo).then(complete).catch(failed);
 
                                         function complete(data) {
-
-                                            if (data.data.state === 0) {
+                                            if (data.data.state == 99) {
+                                                swal({
+                                                    type: 'error',
+                                                    title: data.data.title,
+                                                    text: data.data.text,
+                                                    timer: 4000
+                                                }).then(function () {
+                                                    $cookies.remove('usuarioseguimiento');
+                                                    $location.path('/');
+                                                    $rootScope.galletainfo = undefined;
+                                                    $rootScope.permiso = false;
+                                                    $route.reload();
+                                                })
+                                            } else if (data.data.state === 0) {
                                                 Swal({
                                                     type: 'error',
                                                     title: data.data.msj,
@@ -5616,27 +6372,463 @@ app.controller('nivelacionCtrl', function ($scope, $http, $rootScope, $location,
             ;
         }
     }
-})
-;
+});
 
-app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location, $route, $routeParams, $cookies, $cookieStore, $timeout, services) {
+app.filter('mapNivelacion', function () {
+    var genderHash = {
+        'SI': 'SI',
+        'NO': 'NO'
+    };
+
+    return function (input) {
+        if (!input) {
+            return '';
+        } else {
+            return genderHash[input];
+        }
+    };
+});
+
+app.controller('GestionNivelacionCtrl', ['$scope', '$rootScope', '$location', '$route', '$routeParams', '$cookies', '$cookieStore', '$timeout', 'services', 'i18nService', function ($scope, $rootScope, $location, $route, $routeParams, $cookies, $cookieStore, $timeout, services, i18nService) {
     $scope.GestionNivelacion = {};
-    $scope.fechaini = '';
-    $scope.fechafin = '';
-    $scope.registroTecnicos = function () {
-        services.gestionarRegistrosNivelacion().then(complete).catch(failed)
+    $scope.Registros = {};
+    $scope.nivelacion = {};
+    i18nService.setCurrentLang('es')
+    $scope.userLog = $rootScope.galletainfo.login
+    init();
+
+    function init() {
+        getGrid();
+        registrosTecnicos();
+    }
+
+    function getGrid() {
+
+        Date.prototype.addMins = function (m) {
+            this.setTime(this.getTime() + (m * 60 * 1000));  // minutos * seg * milisegundos
+            return this;
+        }
+
+        var fechaI2 = new Date();
+        //fechaI2.addMins(15);
+
+        var columnDefs = [
+            {
+                name: "Marcar",
+                cellTemplate: "<div style='text-align: center'><input ng-checked={{row.entity.en_gestion}} value='{{row.entity.en_gestion}}' ng-model='row.entity.en_gestion' type='checkbox' ng-click='grid.appScope.engestion(row)'></div>",
+                minWidth: 70,
+                width: "3%",
+                enableCellEdit: false,
+                enableFiltering: false,
+                enableRowHeaderSelection: true
+            },
+            {
+                name: "Login",
+                field: "gestiona_por",
+                cellTemplate: "<div style='text-align: center' ng-show='(row.entity.gestiona_por !== null)'>" +
+                    "<span class='label label-primary label-xsmall' ng-if='(row.entity.gestiona_por ==  grid.appScope.userLog)' style='vertical-align: sub'>{{grid.appScope.userLog}}</span>" +
+                    "<span class='label label-primary label-xsmall' ng-if='(row.entity.gestiona_por != grid.appScope.userLog)' style='vertical-align: sub'>En gestion</span>" +
+                    "</div>",
+                minWidth: 80,
+                width: "5%",
+                enableCellEdit: false,
+            }, {
+                name: "Tarea",
+                field: "ticket_id",
+                cellTemplate: '<div style="text-align: center;"><button type="button" style="padding: 0; border: none" className="btn btn-default btn-xs ng-binding" ng-click="grid.appScope.CopyPortaPapeles(row.entity.ticket_id)" tooltip="" title="" id="tv0" data-original-title="Copiar pedido">{{row.entity.ticket_id}}</button></div>',
+                minWidth: 120,
+                width: "5%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Fecha ingreso",
+                field: "fecha_ingreso",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "7%",
+                enableCellEdit: false,
+                cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                    var date = new Date(row.entity.fecha_ingreso);
+                    //Add two hours var dd = date.setHours(date.getHours() + 2);
+                    // Go back 3 days var dd = date.setDate(date.getDate() - 3);
+                    // One minute ago... var dd = date.setMinutes(date.getMinutes() - 1);
+                    date.addMins(15);
+                    //var dd = date.setMinutes(15);
+                    if (date <= fechaI2) {
+                        return 'blue';
+                    }
+                }
+            }, {
+                name: "Proceso",
+                field: "proceso",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "7%",
+                enableCellEdit: false,
+                cellTooltip:
+                    function (row, col) {
+                        return row.entity.proceso;
+                    }
+
+            }, {
+                name: "Zona",
+                field: "zona",
+                cellStyle: {"text-align": "center"},
+                minWidth: 80,
+                width: "7%",
+                enableCellEdit: false,
+            }, {
+                name: "Sub zona",
+                field: "zubzona",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "7%",
+                enableCellEdit: false,
+            }, {
+                name: "Nombre técnico",
+                field: "nombre_tecnico",
+                cellStyle: {"text-align": "center"},
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "cc técnico",
+                field: "cc_tecnico",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "5%",
+                cellFilter: 'currency:"":0',
+                enableCellEdit: false,
+            }, {
+                name: "Tipo solicitud",
+                field: "solicitud",
+                cellStyle: {"text-align": "center"},
+                width: "6%",
+                enableCellEdit: false,
+                cellTooltip:
+                    function (row, col) {
+                        return row.entity.solicitud;
+                    }
+            },
+            {
+                name: "Motivo",
+                field: "motivo",
+                cellStyle: {"text-align": "center"},
+                width: "8%",
+                enableCellEdit: false,
+            }, {
+                name: "Submotivo",
+                field: "submotivo",
+                cellStyle: {"text-align": "center"},
+                width: "5%",
+                enableCellEdit: false,
+            }, {
+                name: "N. nuevo técnico",
+                field: "nombre_nuevo_tecnico",
+                cellStyle: {"text-align": "center"},
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "c. n. técnico",
+                field: "cc_nuevo_tecnico",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "5%",
+                suppressSizeToFit: true,
+                enableColumnResizing: true,
+                cellFilter: 'currency:"":0',
+            }, {
+                name: "nivelacion",
+                editType: 'dropdown',
+                cellFilter: 'mapNivelacion',
+                enableCellEdit: true,
+                cellTemplate: "<div style='text-align: center'><select ng-model='row.entity.nivelacion' class='btn btn-default btn-xs grupo-select'>" +
+                    "<option value=''>Selec</option>" +
+                    "<option value='SI'>SI</option>" +
+                    "<option value='NO'>NO</option>" +
+                    "</select>" +
+                    "</div>",
+
+                /*editableCellTemplate: 'ui-grid/dropdownEditor',
+                editDropdownOptionsArray: [{
+                    ID: 'SI',
+                    type: 'SI'
+                }, {
+                    ID: 'NO',
+                    type: 'NO'
+                }],
+                editDropdownIdLabel: 'ID',
+                editDropdownValueLabel: 'type',*/
+                minWidth: 50,
+                width: "4%",
+                enableColumnResizing: true,
+
+            }, {
+                name: "Obs.",
+                cellTemplate: 'partial/modals/template.html',
+                width: "3%",
+                enableFiltering: false,
+                enableCellEdit: false,
+                cellStyle: {"text-align": "center"},
+            }, {
+                name: "Acc.",
+                cellTemplate: "<div style='text-align: center'>" +
+                    '<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.guardagestion(row)">' +
+                    '<i class="fa fa-floppy-o" aria-hidden="true"> </i>' +
+                    '</button>',
+                minWidth: 50,
+                width: "3%",
+                enableFiltering: false
+            }];
+
+        var paginationOptions = {
+            sort: null
+        };
+
+        $scope.gridOptions = {
+            enableFiltering: false,
+            enablePagination: true,
+            pageSize: 200,
+            enableHorizontalScrollbar: false,
+            enablePaginationControls: true,
+            columnDefs: columnDefs,
+            paginationPageSizes: [200, 500, 1000],
+            paginationPageSize: 200,
+            enableRowHeaderSelection: true,
+
+            exporterMenuPdf: false,
+            enableGridMenu: false,
+
+            useExternalPagination: true,
+            useExternalSorting: true,
+            enableRowSelection: true,
+
+            exporterCsvFilename: 'Registros.csv',
+            /*            exporterPdfDefaultStyle: {fontSize: 9},
+                        exporterPdfTableStyle: {margin: [30, 30, 30, 30]},
+                        exporterPdfTableHeaderStyle: {fontSize: 10, bold: true, italics: true, color: 'red'},
+                        exporterPdfHeader: {text: "Registros", style: 'headerStyle'},
+                        exporterPdfFooter: function (currentPage, pageCount) {
+                            return {text: currentPage.toString() + ' of ' + pageCount.toString(), style: 'footerStyle'};
+                        },
+                        exporterPdfCustomFormatter: function (docDefinition) {
+                            docDefinition.styles.headerStyle = {fontSize: 22, bold: true};
+                            docDefinition.styles.footerStyle = {fontSize: 10, bold: true};
+                            return docDefinition;
+                        },
+                        exporterPdfOrientation: 'portrait',
+                        exporterPdfPageSize: 'LETTER',
+                        exporterPdfMaxGridWidth: 500,*/
+            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+            exporterExcelFilename: 'Registros.xlsx',
+            exporterExcelSheetName: 'Sheet1',
+
+            onRegisterApi: function (gridApi) {
+                $scope.gridApi = gridApi;
+                $scope.gridApi.core.on.sortChanged($scope, function (grid, sortColumns) {
+                    if (getPage) {
+                        if (sortColumns.length > 0) {
+                            paginationOptions.sort = sortColumns[0].sort.direction;
+                        } else {
+                            paginationOptions.sort = null;
+                        }
+                        getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, paginationOptions.sort)
+                    }
+                });
+                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                    if (getPage) {
+                        getPage(newPage, pageSize, paginationOptions.sort);
+                    }
+                });
+            }
+        };
+
+        var getPage = function (curPage, pageSize, sort) {
+            services.gestionarNivelacion(curPage, pageSize, sort).then(complete).catch(failed)
+
+            function complete(data) {
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptions.totalItems = counter;
+                var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+
+        };
+
+        getPage(1, $scope.gridOptions.paginationPageSize, paginationOptions.sort);
+    }
+
+    function registrosTecnicos() {
+
+        var columnDefs = [
+            {
+                name: "Tarea",
+                field: "ticket_id",
+                minWidth: 80,
+                width: "5%",
+            },
+            {
+                name: "Proceso",
+                field: "proceso",
+                minWidth: 80,
+                width: "10%",
+            }, {
+                name: "Nombre Teçnico",
+                field: "nombre_tecnico",
+                minWidth: 70,
+                width: "15%",
+            }, {
+                name: "CC Técnico",
+                field: "cc_tecnico",
+                minWidth: 80,
+                width: "7%",
+            }, {
+                name: "Tipo Solicitud",
+                field: "solicitud",
+                minWidth: 70,
+                width: "8%",
+            }, {
+                name: "Motivo",
+                field: "motivo",
+                width: "13%",
+            }, {
+                name: "Sub Motivo",
+                field: "submotivo",
+                minWidth: 70,
+                width: "7%",
+            }, {
+                name: "CC Nuevo Téc.",
+                field: "cc_nuevo_tecnico",
+                minWidth: 70,
+                width: "8%",
+            },
+            {
+                name: "Nombre Nuevo Tec.",
+                field: "nombre_nuevo_tecnico",
+                minWidth: 70,
+                width: "12%",
+            }, {
+                name: "Nivelacion",
+                field: "se_realiza_nivelacion",
+                minWidth: 70,
+                width: "10%",
+            },
+            {
+                name: "Detalles",
+                cellTemplate: "<div style='text-align: center'>" +
+                    '<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.DetalleTotal(row)">' +
+                    '<i class="fa fa-info-circle" aria-hidden="true"> </i>' +
+                    '</button>',
+                minWidth: 70,
+                width: "5%",
+                enableFiltering: false,
+            }];
+
+        var paginationOptions = {
+            sort: null
+        };
+
+        $scope.gridOptionsRegistros = {
+            enableFiltering: true,
+            enablePagination: true,
+            pageSize: 200,
+            enableHorizontalScrollbar: false,
+            enablePaginationControls: true,
+            columnDefs: columnDefs,
+            paginationPageSizes: [200, 500, 1000],
+            paginationPageSize: 200,
+
+            useExternalPagination: true,
+            useExternalSorting: true,
+            enableRowSelection: true,
+
+            enableGridMenu: true,
+            enableSelectAll: true,
+            exporterCsvFilename: 'Registros-nivelacion.csv',
+            exporterMenuPdf: false,
+            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+            exporterExcelFilename: 'Registros-nivelacion.xlsx',
+            exporterExcelSheetName: 'Sheet1',
+            onRegisterApi: function (gridApi) {
+                $scope.gridApi = gridApi;
+                $scope.gridApi.core.on.sortChanged($scope, function (grid, sortColumns) {
+                    if (getPage) {
+                        if (sortColumns.length > 0) {
+                            paginationOptions.sort = sortColumns[0].sort.direction;
+                        } else {
+                            paginationOptions.sort = null;
+                        }
+                        getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, $scope.Registros)
+                    }
+                });
+                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                    if (getPage) {
+                        getPage(newPage, pageSize, $scope.Registros);
+                    }
+                });
+            }
+        };
+
+        var getPage = function (curPage, pageSize, sort) {
+            services.gestionarRegistrosNivelacion(curPage, pageSize, $scope.Registros).then(complete).catch(failed)
+
+            function complete(data) {
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptionsRegistros.totalItems = counter;
+                var firstRow = (curPage - 1) * datos
+                $scope.gridOptionsRegistros.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+
+        };
+
+        getPage(1, $scope.gridOptionsRegistros.paginationPageSize, paginationOptions.sort);
+    }
+
+    $scope.gestion_nivelacion = function () {
+        getGrid();
+    }
+
+    $scope.registros_nivelacion = function () {
+        window.setTimeout(function () {
+            registrosTecnicos();
+            $(window).resize();
+            $(window).resize();
+
+        }, 1000);
+        /*setTimeout(function () {
+
+        }, 1000);*/
+    }
+
+    $scope.DetalleTotal = function (row) {
+        services.buscarhistoricoNivelacion(row.entity.ticket_id).then(complete).catch(failed)
 
         function complete(data) {
-
-            if (data.data.state == 0) {
-                $scope.GestionNivelacion.respuestaNivelacion = '';
+            if (data.data.state === 0) {
+                Swal({
+                    type: 'error',
+                    title: data.data.msj
+                })
             } else {
-                $scope.GestionNivelacion.respuestaNivelacion = data.data.data;
+                $scope.nivelacion.databsucarPedido = data.data.data;
+                $('#modalHistoricoNivelacion').modal('show');
+                return data.data;
             }
         }
 
-        function failed(error) {
-            console.log(error);
+        function failed(data) {
+            console.log(data)
         }
     }
 
@@ -5667,159 +6859,62 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
     }
 
     $scope.hora_sistema = js_yyyy_mm_dd_hh_mm_ss();
-    getGrid();
 
-    function getGrid() {
-        var columnDefs = [
-            {
-                name: "Login",
-                field: "gestiona_por",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "Tarea",
-                field: "ticket_id",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "Fecha ingreso",
-                field: "fecha_ingreso",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "Proceso",
-                field: "proceso",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "Zona",
-                field: "zona",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "Sub zona",
-                field: "zubzona",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "Nombre técnico",
-                field: "nombre_tecnico",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "cc técnico",
-                field: "cc_tecnico",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "Tipo solicitud",
-                field: "solicitud",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "Motivo",
-                field: "motivo",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "Submotivo",
-                field: "submotivo",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "Nombre nombre técnico",
-                field: "nombre_nuevo_tecnico",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "CC nuevo técnico",
-                field: "cc_nuevo_tecnico",
-                cellStyle: {"text-align": "center"}
-            }, {
-                name: "Se realiza nivelación",
-                field: "estado",
-                cellStyle: {"text-align": "center"},
-                editableCellTemplate: 'uiSelect',
-                editDropdownOptionsArray: [
-                    'male',
-                    'female',
-                    'other'
-                ]
-            }];
-        $scope.gridOptions = {
-            enablePagination: true,
-            pageSize: 10,
-            enableHorizontalScrollbar: false,
-            enablePaginationControls: true,
-            columnDefs: columnDefs,
-            paginationPageSizes: [10, 25, 50, 75],
-            paginationPageSize: 10
-        };
-        services.gestionarNivelacion().then(complete).catch(failed)
-
-        function complete(data) {
-            $scope.gridOptions.data = data.data.data
-        }
-
-        function failed(data) {
-        }
+    $scope.reloaddata = function () {
+        getGrid();
     }
 
-    gestionarNivelacion();
+    $scope.delete = function (row) {
+        console.log(row.entity)
+    };
 
-    function gestionarNivelacion() {
-
-        services.gestionarNivelacion().then(complete).catch(failed)
+    $scope.engestion = function (row) {
+        services.marcarEnGestionNivelacion(row.entity.id).then(complete).catch(failed)
 
         function complete(data) {
-
-            if (data.data.state == 0) {
-                $scope.GestionNivelacion.respuestaDatos = '';
+            if (data.data.state == 99) {
+                swal({
+                    type: 'error',
+                    title: data.data.title,
+                    text: data.data.text,
+                    timer: 4000
+                }).then(function () {
+                    $cookies.remove('usuarioseguimiento');
+                    $location.path('/');
+                    $rootScope.galletainfo = undefined;
+                    $rootScope.permiso = false;
+                    $route.reload();
+                })
             } else {
-                $scope.GestionNivelacion.respuestaDatos = data.data.data;
-                var cnivela = $scope.GestionNivelacion.respuestaDatos.map((doc) => doc.fecha_ingreso);
-                //cnivela.forEach(function (valor, indice) {
-
-                /*$scope.diferencia = new Date(js_yyyy_mm_dd_hh_mm_ss()) - new Date(cnivela[indice]);
-
-                if ($scope.diferencia > 900000) {
-                    $scope.indice = (indice);
-                    $scope.quinceminutos = new Array();
-                    $scope.quinceminutos[$scope.indice] = cnivela[$scope.indice];
-
-                }
-            });*/
-
-                $scope.quinceminutos = [];
-                cnivela.forEach(function (valor, indice) {
-
-                    $scope.diferencia = new Date(js_yyyy_mm_dd_hh_mm_ss()) - new Date(cnivela[indice]);
-
-                    //var today = new Date();
-                    //var diffMs = (today - $scope.diferencia);
-                    $scope.indice = (indice);
-                    $scope.quinceminutos = new Array();
-                    $scope.quinceminutos[$scope.indice] = cnivela[$scope.indice];
-                    var diffMins = Math.round((($scope.diferencia % 86400000) % 3600000) / 60000); // minutes
-                    if (diffMins > 15) {
-                        $scope.quinceminutos[$scope.indice] = 'si';
-                    } else {
-                        $scope.quinceminutos[$scope.indice] = 'no'
-                    }
-
-                    /*$scope.indice = (indice);
-                    $scope.quinceminutos = new Array();
-                    console.log($scope.diferencia);
-                    $scope.quinceminutos[$scope.indice] = cnivela[$scope.indice];
-                    //43489000
-                    if ($scope.diferencia > 3600000) {
-                        $scope.quinceminutos[$scope.indice] = 'si';
-                    } else {
-                        $scope.quinceminutos[$scope.indice] = 'no'
-                    }
-                    console.log($scope.quinceminutos[$scope.indice])*/
+                Swal({
+                    type: 'success',
+                    title: data.data.msj,
+                    timer: 4000
                 });
+                $route.reload();
             }
         }
 
         function failed(error) {
-            console.log(error);
+            console.log(error)
         }
+    }
+
+    $scope.guardagestion = function (row) {
+
+        if (!row.entity.nivelacion) {
+            Swal('Selecciona el estado de nivelación');
+            return;
+        }
+        $scope.GestionNivelacion.observacionesNivelacion = '';
+        $scope.datos = row.entity;
+        $('#editarModal').modal('show');
     }
 
     $scope.buscarhistoricoNivelacion = function () {
         services.buscarhistoricoNivelacion($scope.nivelacion.tarea).then(complete).catch(failed)
 
         function complete(data) {
-            console.log(data);
             if (data.data.state === 0) {
                 Swal({
                     type: 'error',
@@ -5889,13 +6984,7 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
         }
     }
 
-    $scope.csvNivelacion = function () {
-
-
-        //var diffDays = Math.round(diffMs / 86400000); // days
-        //var diffHrs = Math.round((diffMs % 86400000) / 3600000); // hours
-        //var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
-        //alert(diffDays + " days, " + diffHrs + " hours, " + diffMins + " minutes until Christmas 2009 =)");
+    $scope.registrosNivelacion = function () {
 
         var fechaini = new Date($scope.fechaini);
         var fechafin = new Date($scope.fechafin);
@@ -5903,27 +6992,74 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
         var diffDays = Math.round(diffMs / 86400000);
 
 
-        if ($scope.fechaini === '' || $scope.fechaini === undefined) {
-            Swal('Ingrese la fecha inicial');
-        } else if ($scope.fechafin === '' || $scope.fechafin === undefined) {
-            Swal('Ingrese la fecha final');
-        } else if ($scope.fechafin < $scope.fechaini) {
-            Swal('Ingrese la fecha final no puede ser menor que la inicial');
-        } else if (diffDays > 30) {
-            Swal('Para efectos de optimización solo se pueden exportar reportes de un maximo de 30 dias');
+        if ($scope.Registros.fechaini === '' || $scope.Registros.fechaini === undefined) {
+            Swal({
+                type: 'error',
+                text: 'Ingrese la fecha inicial'
+            });
+        } else if ($scope.Registros.fechafin === '' || $scope.Registros.fechafin === undefined) {
+            Swal({
+                type: 'error',
+                text: 'Ingrese la fecha final'
+            });
+        } else if ($scope.Registros.fechafin < $scope.Registros.fechaini) {
+            Swal({
+                type: 'error',
+                text: 'La fecha final no puede ser menor que la inicial'
+            });
         } else {
-            services.csvNivelacion($scope.fechaini, $scope.fechafin).then(
+            services.gestionarRegistrosNivelacion(1, 200, $scope.Registros).then(complete).catch(failed)
+
+            function complete(data) {
+                console.log(data.data.counter);
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptionsRegistros.totalItems = counter;
+                //var firstRow = (curPage - 1) * datos
+                $scope.gridOptionsRegistros.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+        }
+    }
+
+    $scope.csvNivelacion = function () {
+        var fechaini = new Date($scope.fechaini);
+        var fechafin = new Date($scope.fechafin);
+        var diffMs = (fechafin - fechaini);
+        var diffDays = Math.round(diffMs / 86400000);
+
+
+        if ($scope.Registros.fechaini === '' || $scope.Registros.fechaini === undefined) {
+            Swal({
+                type: 'error',
+                text: 'Ingrese la fecha inicial'
+            });
+        } else if ($scope.Registros.fechafin === '' || $scope.Registros.fechafin === undefined) {
+            Swal({
+                type: 'error',
+                text: 'Ingrese la fecha final'
+            });
+        } else if ($scope.Registros.fechafin < $scope.Registros.fechaini) {
+            Swal({
+                type: 'error',
+                text: 'La fecha final no puede ser menor que la inicial'
+            });
+        } else {
+            services.csvNivelacion($scope.Registros).then(
                 function (datos) {
-                    console.log(datos)
                     var data = datos.data[0];
                     var array = typeof data != 'object' ? JSON.parse(data) : data;
                     var str = '';
-                    var column = `ticket_id, fecha_ingreso, fecha_gestion, fecha_respuesta, nombre_tecnico, cc_tecnico, pedido, proceso, motivo, submotivo, zona, zubzona, nombre_nuevo_tecnico, cc_nuevo_tecnico, creado_por, gestiona_por,observaciones, se_realiza_nivelacion \r\n`;
+                    var column = `ticket_id| fecha_ingreso| fecha_gestion| fecha_respuesta| nombre_tecnico| cc_tecnico| pedido| proceso| motivo| submotivo| zona| subzona| nombre_nuevo_tecnico| cc_nuevo_tecnico| creado_por| gestiona_por|observaciones| se_realiza_nivelacion \r\n`;
                     str += column;
                     for (var i = 0; i < array.length; i++) {
                         var line = '';
                         for (var index in array[i]) {
-                            if (line != '') line += ','
+                            if (line != '') line += '|'
                             line += array[i][index];
                         }
 
@@ -5941,7 +7077,6 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
                     elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
                     elementToClick.download = "csvNivelacion-" + fullDateCsv + ".csv";
                     elementToClick.click();
-                    console.log(str);
                 },
 
                 function errorCallback(response) {
@@ -5952,29 +7087,11 @@ app.controller('GestionNivelacionCtrl', function ($scope, $rootScope, $location,
         }
     }
 
-    $scope.marcarEnGestionNivelacion = function (data) {
-
-        services.marcarEnGestionNivelacion(data, $rootScope.galletainfo).then(complete).catch(failed)
-
-        function complete(data) {
-            Swal({
-                type: 'success',
-                title: data.data.msj,
-                timer: 4000
-            });
-            $route.reload();
-        }
-
-        function failed(error) {
-            console.log(error)
-        }
-    }
-
     $scope.reloadNivelacion = function () {
-        gestionarNivelacion();
+        getGrid();
     }
 
-});
+}])
 
 app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $route, $routeParams, $cookies, $cookieStore, $timeout, services, fileUpload) {
     $scope.contingencias = {};
@@ -5982,30 +7099,21 @@ app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $ro
     $scope.pedidoguardado = false;
     $scope.haypedido = false;
     $scope.equiposEntran = [];
-    $scope.equiposEntran.push({}); //incializo con un input...
+    $scope.equiposEntran.push({});
     $scope.equiposSalen = [];
     $scope.equiposSalen.push({});
 
-
     $scope.BuscarPedidoContingencia = function () {
-        //console.log("contingencias: ",$scope.contingencias);
-        //emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
-
-        //if (emailRegex.test($scope.contingencias.correo)) {
 
         services.buscarPedidoSeguimiento($scope.contingencias.pedido, $scope.contingencias.producto, $scope.contingencias.remite).then(function (data) {
 
-            /*AQUI PUNTO DE CONTROL QUE SE ESTA GUARDANDO*/
-            console.log("buscarPedidoSeguimiento: ", data);
-            console.log($scope.contingencias);
             $scope.GuardarContingencia($scope.contingencias);
-            $scope.contingencias = {};
+            //$scope.contingencias = {};
 
         }, function errorCallback(response) {
             $scope.pedidoexiste = true;
             $scope.pedidoguardado = false;
 
-            console.log("status: ", response.status);
 
             if (response.status == '401') {
                 $scope.mensaje = "El pedido con el producto: " + $scope.contingencias.producto + ", se encuentra pendiente, no es posible gestionar nuevamente."
@@ -6014,10 +7122,6 @@ app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $ro
             }
             return;
         });
-        //} else {
-        //    alert("El correo debe tener el formato de E-mail: correo@dominio.com");
-        //    return;
-        //}
     }
 
     $scope.buscarhistoricoPedidoContingencia = function (pedido) {
@@ -6028,20 +7132,15 @@ app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $ro
         } else {
             services.getbuscarPedidoContingencia(pedido).then(function (data) {
                     $scope.databsucarPedido = data.data[0];
-                    //$scope.hayDatosPedido = true;
-                    //console.log("paso->1");
-                    //console.log($scope.databsucarPedido);
                     if ($scope.databsucarPedido == "<") {
                         swal("No hay contingencias para el pedido: " + pedido);
                     } else {
 
                         $('#modalHistoricoContingencias').modal('show');
-                        //console.log("paso-->2");
+
                     }
 
                     return data.data;
-
-                    //console.log("paso-->3");
 
                 },
                 function errorCallback(response) {
@@ -6057,19 +7156,14 @@ app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $ro
         $scope.equiposEntran.push({});
     }
 
-
     $scope.addEquipoSale = function () {
         $scope.equiposSalen.push({});
     }
-
 
     $scope.updateEnGestion = function () {
         services.UpdatePedidosEngestion($rootScope.galletainfo).then(function (data) {
             $scope.haypedido = true;
             $scope.pedidosEngestion = data.data[0];
-
-            /*AQUI PARA REVISAR COMO ESTA LLEGANDO LA INFORMACION AL DESPACHADOR*/
-            //console.log("pedidosEngestion: ",$scope.pedidosEngestion);
 
             var tam = $scope.pedidosEngestion.length;
             $scope.contingenciaOK = 0;
@@ -6107,15 +7201,13 @@ app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $ro
         });
     }
 
-
     $scope.GuardarContingencia = function (contingencias) {
         $scope.pedidoguardado = true;
         $scope.pedidoexiste = false;
-        $scope.mensaje = "Pedido guardado con exito.";
+        //$scope.mensaje = "Pedido guardado con exito.";
 
         var equiposIn = "";
 
-        //console.log("equiposEntran: ", $scope.equiposEntran);
         var sep = "";
 
         for (var equipo of $scope.equiposEntran) {
@@ -6128,8 +7220,6 @@ app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $ro
         contingencias.macEntra = equiposIn;
         $scope.equiposEntran = [];
         $scope.equiposEntran.push({});
-        //console.log("Listado final de equipos entran: " + equiposIn);
-
 
         var equiposOut = "";
 
@@ -6144,17 +7234,45 @@ app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $ro
         contingencias.macSale = equiposOut;
         $scope.equiposSalen = [];
         $scope.equiposSalen.push({});
-        //console.log("equiposSalen: ", $scope.equiposSalen);
 
-        services.guardarContingencia(contingencias, $rootScope.galletainfo).then(function (data) {
-            console.log("guardarContingencia: ", services.guardarContingencia);
-        });
+        services.guardarContingencia(contingencias, $rootScope.galletainfo).then(completed).catch(failed)
 
-        $scope.updateEnGestion();
+        function completed(data) {
+            if (data.data.state == 99) {
+                swal({
+                    type: 'error',
+                    title: data.data.title,
+                    text: data.data.text,
+                    timer: 3000
+                }).then(function () {
+                    $cookies.remove('usuarioseguimiento');
+                    $location.path('/');
+                    $rootScope.galletainfo = undefined;
+                    $rootScope.permiso = false;
+                    $route.reload();
+                })
+            } else if (data.data.state == 0) {
+                swal({
+                    type: 'error',
+                    text: data.data.msj
+                })
+                return;
+            } else {
+                swal({
+                    type: 'success',
+                    text: data.data.msj,
+                    timer: 4000
+                }).then(function () {
+                    $route.reload();
+                    $scope.updateEnGestion();
+                })
+            }
+        }
+
+        function failed(error) {
+            console.log(error)
+        }
     }
-    //console.log("GuardarContingencia: ",$scope.GuardarContingencia);
-
-    //INICIO CANCELAR CONTINGENCIA POR EL DESPACHADOR
 
     $scope.CancelarContingencia = function (data) {
 
@@ -6205,10 +7323,7 @@ app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $ro
         })
     }
 
-    //FIN CANCELAR CONTINGENCIA POR EL DESPACHADOR
-
     $scope.updateContingencias = setInterval(function () {
-        //console.log($scope.indicadores);
         $scope.updateEnGestion();
     }, 300000);
 
@@ -6223,6 +7338,7 @@ app.controller('contingenciasCtrl', function ($scope, $rootScope, $location, $ro
 
 });
 
+/*
 app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $location, $route, $routeParams, $cookies, $cookieStore, $timeout, services, fileUpload) {
     $scope.rutaCierreMasivoContin = "partial/modals/cierreMasivoContingencias.html";
     $scope.haypedidoOtros = false;
@@ -6240,84 +7356,536 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
     var database = firebase.firestore();
     $scope.cantidadContingenciasTV = 0;
     $scope.cantidadContingenciasINT = 0;
+    $scope.Registros = {};
+    $scope.Registro = {};
+    $scope.userLog = $rootScope.galletainfo.login
+    init();
+
+    function init() {
+        loadGridOptionsTv();
+        getGrid();
+        loadgridOptionsInternet();
+        //loadGridPortafolio();
+    }
+
+    $scope.reloadContingenciaTv = function () {
+       gestioncontingencias();
+    }
+
+    function loadGridOptionsTv() {
+
+        Date.prototype.addMins = function (m) {
+            this.setTime(this.getTime() + (m * 60 * 1000));  // minutos * seg * milisegundos
+            return this;
+        }
+
+        var fechaI2 = new Date();
+        //fechaI2.addMins(15);
+
+        var columnDefs = [
+            {
+                name: "M.",
+                cellTemplate: "<div style='text-align: center'><input ng-checked='(row.entity.engestion === \"1\")' value='{{row.entity.engestion}}' ng-model='row.entity.engestion' type='checkbox' ng-click='grid.appScope.engestionContingenciaTv(row)'></div>",
+                minWidth: 40,
+                width: "3%",
+                enableCellEdit: false,
+                enableFiltering: false,
+                enableRowHeaderSelection: false,
+                enableSorting: false
+            },
+            {
+                name: "Login",
+                field: "logincontingencia",
+                cellTemplate: "<div style='text-align: center' ng-show='(row.entity.logincontingencia)'>" +
+                    "<span class='label label-primary label-xsmall' ng-if='(row.entity.logincontingencia ==  grid.appScope.userLog)' style='vertical-align: sub'>{{grid.appScope.userLog}}</span>" +
+                    "<span class='label label-primary label-xsmall' ng-if='(row.entity.logincontingencia != grid.appScope.userLog)' style='vertical-align: sub'>En gestion</span>" +
+                    "</div>",
+                minWidth: 80,
+                width: "4%",
+                enableCellEdit: false,
+            }, {
+                name: "Pedido",
+                field: "pedido",
+                cellTemplate: '<div style="text-align: center;margin-top: 4px"><button type="button" style="padding: 0; border: none" className="btn btn-default btn-xs ng-binding" ng-click="grid.appScope.CopyPortaPapeles(row.entity.pedido)" tooltip="" title="" id="tv0" data-original-title="Copiar pedido">{{row.entity.pedido}}</button></div>',
+                minWidth: 120,
+                width: "7%",
+                enableCellEdit: false,
+                cellTooltip:
+                    function (row, col) {
+                        return row.entity.pedido;
+                    }
+
+            }, {
+                name: "Mac entra",
+                field: "macEntra",
+                cellTemplate: '<div ng-dblclick="grid.appScope.descriptionModal(row,colDef, uid, grid)" style="text-align: center;">{{row.entity.macEntra}}</div>',
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "11%",
+                enableCellEdit: false,
+                cellTooltip:
+                    function (row, col) {
+                        return row.entity.macEntra;
+                    }
+            }, {
+                name: "Mac sale",
+                field: "macSale",
+                cellTemplate: '<div ng-dblclick="grid.appScope.descriptionModal(row,colDef, uid, grid)" style="text-align: center;">{{row.entity.macSale}}</div>',
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+                cellTooltip:
+                    function (row, col) {
+                        return row.entity.macSale;
+                    }
+
+            }, {
+                name: "Paquetes",
+                field: "paquetes",
+                cellStyle: {"text-align": "center"},
+                minWidth: 80,
+                width: "9%",
+                enableCellEdit: false,
+                cellTooltip:
+                    function (row, col) {
+                        return row.entity.paquetes;
+                    }
+            }, {
+                name: "Ciudad",
+                field: "ciudad",
+                cellStyle: {"text-align": "center"},
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "Proceso",
+                field: "proceso",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "5%",
+                enableCellEdit: false,
+            }, {
+                name: "Acción",
+                field: "accion",
+                cellStyle: {"text-align": "center"},
+                width: "6%",
+                enableCellEdit: false,
+            },
+            {
+                name: "Fecha",
+                field: "horagestion",
+                cellStyle: {"text-align": "center"},
+                width: "8%",
+                enableCellEdit: false,
+            }, {
+                name: "Producto",
+                field: "producto",
+                cellStyle: {"text-align": "center"},
+                width: "3%",
+                enableCellEdit: false,
+                visible: false
+            }, {
+                name: "Tipo equipo",
+                field: "tipoEquipo",
+                cellStyle: {"text-align": "center"},
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "Remitente",
+                field: "remite",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "5%",
+                suppressSizeToFit: true,
+                enableColumnResizing: true
+            }, {
+                name: "Tipificación",
+                editType: 'dropdown',
+                cellFilter: 'mapNivelacion',
+                enableCellEdit: false,
+                cellTemplate: "<div style='text-align: center'>" +
+                    "<select ng-model='row.entity.tipificacion' class='btn btn-default btn-xs grupo-select' style='width: 100%; vertical-align: sub'>" +
+                    "<option value='Ok'>Ok</option>" +
+                    "<option value='Rechazado por posible fraude'>Rechazado por posible fraude</option>" +
+                    "<option value='Rechazado por mal ingreso'>Rechazado por mal ingreso</option>" +
+                    "<option value='Duplicado'>Duplicado</option>" +
+                    "<option value='Error de despacho(faltó gestión)'>Error de despacho(faltó gestión)</option>" +
+                    "<option value='Reenvio Falla'>Reenvio Falla</option>" +
+                    "<option value='error del sistema'>Error del Sistema</option>" +
+                    "<option value='No uso SARA'>No uso SARA</option>" +
+                    "</select>" +
+                    "</div>",
+
+                minWidth: 50,
+                width: "6%",
+                enableColumnResizing: true,
+                enableFiltering: false,
+
+            }, {
+                name: "Observaciones",
+                //cellTemplate: 'partial/modals/templateContingenciaTv.html',
+                cellTemplate: "<div style='text-align: center'>" +
+                    '<button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover\n' +
+                    '            data-placement="left" data-html="true" data-selector="" data-content="{{row.entity.observacion}}">' +
+                    '<i class="fa fa-commenting" aria-hidden="true"> </i>' +
+                    '</button>&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.guardarcontingenciaTv(row)">' +
+                    '<i class="fa fa-floppy-o" aria-hidden="true"> </i>' +
+                    '</button>&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-hide="row.entity.alerta == \'FALSE\'" tooltip\n' +
+                    '            title="El pedido ya pasó por contingencias anteriormente, por favor validar!" data-placement="top" data-html="true" data-selector="">' +
+                    '<i class="fa fa-exclamation" aria-hidden="true" style="color:red"> </i>' +
+                    '</button>' +
+                    '</div>',
+                cellTooltip:
+                    function (row, col) {
+                        return row.entity.observacion;
+                    },
+                width: "6%",
+                enableFiltering: false,
+                enableCellEdit: false,
+                cellStyle: {"text-align": "center"},
+            }];
+
+        /!*$scope.gridOptionsTv.onRegisterApi = function(gridApi){
+            $scope.gridApi = gridApi;
+            gridApi.grid.isScrollingVertically = false;
+        };*!/
+
+        var paginationOptions = {
+            sort: null
+        };
+
+        $scope.gridOptionsTv = {
+            enableFiltering: false,
+            enablePagination: false,
+            pageSize: 200,
+            enableHorizontalScrollbar: false,
+            enablePaginationControls: false,
+            columnDefs: columnDefs,
+            paginationPageSizes: [200, 500, 1000],
+            paginationPageSize: 200,
+            enableRowHeaderSelection: true,
+            exporterMenuPdf: false,
+            enableGridMenu: false,
+
+            useExternalPagination: true,
+            useExternalSorting: true,
+            enableRowSelection: true,
+
+            exporterCsvFilename: 'Registros.csv',
+
+            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+            exporterExcelFilename: 'Registros.xlsx',
+            exporterExcelSheetName: 'Sheet1',
+
+        };
+        $scope.gridOptionsTv.totalItems = 0;
+        $scope.gridOptionsTv.data = '';
+        //$scope.gridOptionsTv.enableHorizontalScrollbar = 2;
+        //$scope.gridOptionsTv.enableVerticalScrollbar = 2;
+    }
+
+    /!*$scope.gridOptionsTv.onRegisterApi = function(gridApi){
+        $scope.gridApi = gridApi;
+    };*!/
+
+    $scope.descriptionModal = function (row,colDef, uid, grid) {
+        console.log(row,' - ',colDef, uid, grid)
+        $scope.detalles = row.entity.macEntra;
+        $('#descripcionModal').modal('show');
+    }
+
+    function loadgridOptionsInternet() {
+        Date.prototype.addMins = function (m) {
+            this.setTime(this.getTime() + (m * 60 * 1000));  // minutos * seg * milisegundos
+            return this;
+        }
+
+        var fechaI2 = new Date();
+        //fechaI2.addMins(15);
+
+        var columnDefs = [
+            {
+                name: "Marcar",
+                cellTemplate: "<div style='text-align: center'><input ng-checked='(row.entity.engestion === \"1\" )' value='{{row.entity.engestion}}' ng-model='row.entity.engestion' type='checkbox' ng-click='grid.appScope.engestionContingenciaTv(row)'></div>",
+                minWidth: 70,
+                width: "3%",
+                enableCellEdit: false,
+                enableFiltering: false,
+                enableRowHeaderSelection: false,
+                showHeader: false,
+                headerTemplate: '<div></div>'
+            },
+            {
+                name: "Login",
+                field: "logincontingencia",
+                cellTemplate: "<div style='text-align: center' ng-show='(row.entity.logincontingencia)'>" +
+                    "<span class='label label-primary label-xsmall' ng-if='(row.entity.logincontingencia ==  grid.appScope.userLog)' style='vertical-align: sub'>{{grid.appScope.userLog}}</span>" +
+                    "<span class='label label-primary label-xsmall' ng-if='(row.entity.logincontingencia != grid.appScope.userLog)' style='vertical-align: sub'>En gestion</span>" +
+                    "</div>",
+                minWidth: 80,
+                width: "4%",
+                enableCellEdit: false,
+            }, {
+                name: "Pedido",
+                field: "pedido",
+                cellTemplate: '<div style="text-align: center;margin-top: 4px"><button type="button" style="padding: 0; border: none" className="btn btn-default btn-xs ng-binding" ng-click="grid.appScope.CopyPortaPapeles(row.entity.pedido)" tooltip="" title="" id="tv0" data-original-title="Copiar pedido">{{row.entity.pedido}}</button></div>',
+                minWidth: 120,
+                width: "7%",
+                enableCellEdit: false,
+                cellTooltip:
+                    function (row, col) {
+                        return row.entity.pedido;
+                    }
+
+            }, {
+                name: "Mac entra",
+                field: "macEntra",
+                cellTemplate: '<div ng-dblclick="grid.appScope.descriptionModal(row,col)" style="text-align: center;">{{row.entity.macEntra}}</div>',
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "11%",
+                enableCellEdit: false,
+                cellTooltip:
+                    function (row, col) {
+                        return row.entity.macEntra;
+                    }
+            }, {
+                name: "Mac sale",
+                field: "macSale",
+                cellTemplate: '<div ng-dblclick="grid.appScope.descriptionModal(row,colDef, uid, grid)" style="text-align: center;">{{row.entity.macSale}}</div>',
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+                cellTooltip:
+                    function (row, col) {
+                        return row.entity.macSale;
+                    }
+
+            }, {
+                name: "Nro linea",
+                field: "paquetes",
+                cellStyle: {"text-align": "center"},
+                minWidth: 80,
+                width: "10%",
+                enableCellEdit: false,
+                cellTooltip:
+                    function (row, col) {
+                        return row.entity.paquetes;
+                    }
+            }, {
+                name: "Perfil",
+                field: "perfil",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "5%",
+                enableCellEdit: false,
+                cellTooltip:
+                    function (row, col) {
+                        return row.entity.perfil;
+                    }
+            }, {
+                name: "Ciudad",
+                field: "ciudad",
+                cellStyle: {"text-align": "center"},
+                width: "5%",
+                enableCellEdit: false,
+            }, {
+                name: "Proceso",
+                field: "proceso",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "5%",
+                enableCellEdit: false,
+            }, {
+                name: "Acción",
+                field: "accion",
+                cellStyle: {"text-align": "center"},
+                width: "7%",
+                enableCellEdit: false,
+            },
+            {
+                name: "Fecha",
+                field: "horagestion",
+                cellStyle: {"text-align": "center"},
+                width: "8%",
+                enableCellEdit: false,
+            }, {
+                name: "Producto",
+                field: "producto",
+                cellStyle: {"text-align": "center"},
+                width: "3%",
+                enableCellEdit: false,
+                visible: false
+            }, {
+                name: "Tipo equipo",
+                field: "tipoEquipo",
+                cellStyle: {"text-align": "center"},
+                width: "8%",
+                enableCellEdit: false,
+            }, {
+                name: "Remitente",
+                field: "remite",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "5%",
+                suppressSizeToFit: true,
+                enableColumnResizing: true
+            }, {
+                name: "Tipificación",
+                editType: 'dropdown',
+                cellFilter: 'mapNivelacion',
+                enableCellEdit: false,
+                cellTemplate: "<div style='text-align: center'>" +
+                    "<select ng-model='row.entity.tipificacion' class='btn btn-default btn-xs grupo-select' style='width: 100%; vertical-align: sub'>" +
+                    "<option value='Ok'>Ok</option>" +
+                    "<option value='Rechazado por posible fraude'>Rechazado por posible fraude</option>" +
+                    "<option value='Rechazado por mal ingreso'>Rechazado por mal ingreso</option>" +
+                    "<option value='Duplicado'>Duplicado</option>" +
+                    "<option value='Error de despacho(faltó gestión)'>Error de despacho(faltó gestión)</option>" +
+                    "<option value='Reenvio Falla'>Reenvio Falla</option>" +
+                    "<option value='error del sistema'>Error del Sistema</option>" +
+                    "<option value='No uso SARA'>No uso SARA</option>" +
+                    "</select>" +
+                    "</div>",
+
+                minWidth: 50,
+                width: "6%",
+                enableColumnResizing: true,
+                enableFiltering: false,
+
+            }, {
+                name: "Observaciones",
+                //cellTemplate: 'partial/modals/templateContingenciaTv.html',
+                cellTemplate: "<div style='text-align: center'>" +
+                    '<button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover\n' +
+                    '            data-placement="left" data-html="true" data-selector="" data-content="{{row.entity.observacion}}">' +
+                    '<i class="fa fa-commenting" aria-hidden="true"> </i>' +
+                    '</button>&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.guardarcontingenciaTv(row)">' +
+                    '<i class="fa fa-floppy-o" aria-hidden="true"> </i>' +
+                    '</button>&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-hide="row.entity.alerta == \'FALSE\'" tooltip\n' +
+                    '            title="El pedido ya pasó por contingencias anteriormente, por favor validar!" data-placement="top" data-html="true" data-selector="">' +
+                    '<i class="fa fa-exclamation" aria-hidden="true" style="color:red"> </i>' +
+                    '</button>' +
+                    '</div>',
+                cellTooltip:
+                    function (row, col) {
+                        return row.entity.observacion;
+                    },
+                width: "6%",
+                enableFiltering: false,
+                enableCellEdit: false,
+                cellStyle: {"text-align": "center"},
+            }];
+
+        var paginationOptions = {
+            sort: null
+        };
+
+        $scope.gridOptionsInternet = {
+            enableFiltering: false,
+            enablePagination: true,
+            pageSize: 200,
+            enableHorizontalScrollbar: false,
+            enablePaginationControls: true,
+            columnDefs: columnDefs,
+            paginationPageSizes: [200, 500, 1000],
+            paginationPageSize: 200,
+            enableRowHeaderSelection: true,
+
+            exporterMenuPdf: false,
+            enableGridMenu: false,
+
+            useExternalPagination: true,
+            useExternalSorting: true,
+            enableRowSelection: true,
+
+            exporterCsvFilename: 'Registros.csv',
+
+            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+            exporterExcelFilename: 'Registros.xlsx',
+            exporterExcelSheetName: 'Sheet1',
+        };
+        $scope.gridOptionsInternet.totalItems = 0;
+        $scope.gridOptionsInternet.data = ''
+
+    };
 
 
-    $scope.listarcontingenciasterreno = () => {
+    $scope.loadContingeciaInternet = function () {
+        window.setTimeout(function () {
+            loadgridOptionsInternet();
+            $(window).resize();
+            $(window).resize();
+        }, 500);
+    }
 
-        /* database.collection("contingencies").where("status","==", 0).orderBy("contingencies_Date","asc").get().then((querySnapshot) => {
-            $scope.isContingenciesFromField = false;
-            $scope.contingenciesDataTV = [];
-            $scope.contingenciesDataInternetToIP = [];
-            $scope.cantidadContingenciasTV = 0;
-            $scope.cantidadContingenciasINT = 0;
-            querySnapshot.forEach((doc) => {
-                let dataQuerySnapshot = {};
-                dataQuerySnapshot = {
-                    _id: doc.id,
-                    references: doc.data().references,
-                    macIn: doc.data().macIn,
-                    macOut: doc.data().macOut,
-                    details: doc.data().details,
-                    contingencies_Type: doc.data().contingencies_Type,
-                    contingencies_Date: doc.data().contingencies_Date,
-                    contingencies_State: doc.data().contingencies_State,
-                    product: doc.data().product,
-                    user_email: doc.data().user_email,
-                    user_identification: doc.data().user_identification
-                }
-                special_access = [98644514,15335939,16268236,70191900
-                    ,71638399,10137123,71789293,98621522,70254182
-                    ,98567429,71733363,71669597,98593889,71653347
-                    ,70753885,70954170,70384636,1094947317,71625390];
+    $scope.engestionContingenciaTv = function (row) {
+        services.marcarengestion(row.entity).then(completed).catch(failed)
 
-                dataQuerySnapshot.correo = dataQuerySnapshot.user_email;
-                var date = dataQuerySnapshot.contingencies_Date.toDate();
-                var year = date.getFullYear();
-                var month = "0" + (date.getMonth() + 1);
-                var day = "0" + date.getDate();
-                var hours = "0" + date.getHours();
-                var minutes = "0" + date.getMinutes();
-                var seconds = "0" + date.getSeconds();
-                var formattedTime = year + '-' + month.substr(-2) + '-' + day.substr(-2) + ' ' + hours.substr(-2) + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-                dataQuerySnapshot.horagestion = formattedTime;
-                dataQuerySnapshot.fecha = date;
-                dataQuerySnapshot.macEntra = dataQuerySnapshot.macIn;
-                dataQuerySnapshot.macSale = dataQuerySnapshot.macOut;
-                dataQuerySnapshot.observacion = dataQuerySnapshot.details;
-                dataQuerySnapshot.pedido = dataQuerySnapshot.references;
-                dataQuerySnapshot.producto = dataQuerySnapshot.product;
-                dataQuerySnapshot.accion = dataQuerySnapshot.contingencies_Type;
-
-                if(special_access.indexOf(dataQuerySnapshot.user_identification) != -1){
-                    dataQuerySnapshot.remite = "Teléfonos Públicos";
-                } else {
-                    dataQuerySnapshot.remite = "Terreno";
-                }
-
-                if(dataQuerySnapshot.product == "TV"){
-                    $scope.contingenciasTV.push(dataQuerySnapshot);
-                    $scope.contingenciesDataTV.push(dataQuerySnapshot);
-                    $scope.cantidadContingenciasTV++;
-                }
-                else if(dataQuerySnapshot.product == "Internet" || dataQuerySnapshot.product == "ToIP" || dataQuerySnapshot.product == "Internet+ToIP"){
-                    $scope.contingenciasOTROS.push(dataQuerySnapshot);
-                    $scope.contingenciesDataInternetToIP.push(dataQuerySnapshot);
-                    $scope.cantidadContingenciasINT++;
-                }
-            });
-            $scope.isContingenciesFromField = true;
-
-            if($scope.contingenciasTV.length == 0 ){
-                $scope.contingenciasTV = $scope.contingenciasTV.concat($scope.contingenciesDataTV);
+        function completed(data) {
+            if (data.data.state == 99) {
+                swal({
+                    type: 'error',
+                    title: data.data.title,
+                    text: data.data.text,
+                    timer: 3000
+                }).then(function () {
+                    $cookies.remove('usuarioseguimiento');
+                    $location.path('/');
+                    $rootScope.galletainfo = undefined;
+                    $rootScope.permiso = false;
+                    $route.reload();
+                })
+            } else if (data.data.state == 1) {
+                window.setTimeout(function () {
+                    gestioncontingencias();
+                }, 500);
+                swal({
+                    title: data.data.title,
+                    text: data.data.text,
+                    type: "success",
+                    position: 'center',
+                    showConfirmButton: false,
+                    timer: 3000
+                })
+            } else if (data.data.state == 2) {
+                window.setTimeout(function () {
+                    gestioncontingencias();
+                }, 500);
+                swal({
+                    title: data.data.title,
+                    text: data.data.text,
+                    type: "warning",
+                    position: 'center',
+                    showConfirmButton: false,
+                    timer: 3000
+                })
             }
-            if($scope.contingenciasOTROS.length == 0){
-                $scope.contingenciasOTROS = $scope.contingenciasOTROS.concat($scope.contingenciesDataInternetToIP);
-            }
-        }).catch( (err) => {
-            console.log(err);
-        }); */
+        }
 
+        function failed(error) {
+            console.log(error);
+        }
+    }
 
+    $scope.guardarcontingenciaTv = function (row) {
+        if (row.entity.engestion == undefined) {
+            swal({
+                type: 'error',
+                text: 'Debes marcar el pedido',
+            })
+        } else if (row.entity.tipificacion == undefined) {
+            swal({
+                type: 'error',
+                text: 'Selecciona la tipificacion'
+            })
+        } else {
+            $scope.gestioncontin = row.entity;
+            //console.log("gestioncontin: ",$scope.gestioncontin);
+            $('#editarModal').modal('show');
+            return $scope.gestioncontin;
+        }
     }
 
     var tiempo = new Date().getTime();
@@ -6331,192 +7899,28 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
     $scope.fechaupdateInical = tiempo;
     $scope.fechaupdateFinal = tiempo;
 
-
-    $scope.changeStatus = function (data) {
-        //console.log("Aceptado/Rechazado: ",data);
+    $scope.reloadGridOptionsTv = function () {
+        loadGridOptionsTv();
     }
 
-    /*$scope.palancatv = function(data,idxtv)
-    {
-        var TIPITV = $scope.contingenciasTV.map((doc)=>doc.tipificacion);
-        var PALANCATV= $scope.contingenciasTV.map((doc)=>doc.acepta);
+    gestioncontingencias();
 
-        if(TIPITV[idxtv]=="Ok") //Si la tipificación es "Ok" pone el acepta en "Si"
-        {
-            acepta[idxtv].click();
-        }
-        else if(PALANCATV[idxtv]==true) //cuando se dio ok y luego se rechaza por cualquier motivo pone el acepta en no
-        {
-            acepta[idxtv].click();
-        }
-        else //Cuando se rechaza directamente por cualquier motivo pone el acepta en no
-        {
-            acepta[idxtv].checked=false;
-        }
-    }
-
-    $scope.palancaotro = function(data,idxotros)
-    {
-        var TIPIOTROS = $scope.contingenciasOTROS.map((doc)=>doc.tipificacion);
-        var PALANCAOTROS= $scope.contingenciasOTROS.map((doc)=>doc.acepta);
-
-        if(TIPIOTROS[idxotros]=="Ok") //Si la tipificación es "Ok" pone el acepta en "Si"
-        {
-            aceptaotro[idxotros].click();
-        }
-        else if(PALANCAOTROS[idxotros]==true) //cuando se dio ok y luego se rechaza por cualquier motivo pone el acepta en no
-        {
-            aceptaotro[idxotros].click();
-        }
-        else //Cuando se rechaza directamente por cualquier motivo pone el acepta en no
-        {
-            aceptaotro[idxotros].checked=false;
-        }
-    }
-
-    $scope.palancacp = function(data,idxcp)
-    {
-        var TIPICP = $scope.contingenciasPortafolio.map((doc)=>doc.tipificacionPortafolio);
-        var PALANCACP= $scope.contingenciasPortafolio.map((doc)=>doc.aceptaPortafolio);
-
-        if(TIPICP[idxcp]=="Ok") //Si la tipificación es "Ok" pone el acepta en "Si"
-        {
-            aceptacp[idxcp].click();
-        }
-        else if(PALANCACP[idxcp]==true) //cuando se dio ok y luego se rechaza por cualquier motivo pone el acepta en no
-        {
-            aceptacp[idxcp].click();
-        }
-        else //Cuando se rechaza directamente por cualquier motivo pone el acepta en no
-        {
-            aceptacp[idxcp].checked=false;
-        }
-    }*/
-
-    $scope.gestioncontingencias = function () {
-        $scope.loadingData = true;
-
-        // $scope.contingenciasTV = [];
-        // $scope.contingenciasOTROS = [];
-        $scope.listarcontingenciasterreno();
+    function gestioncontingencias() {
 
         services.datosgestioncontingencias().then(function (data) {
 
-            //console.log("datosgestioncontingencias: ", data);
-            $scope.loadingData = false;
+            //$scope.contingenciasTV = $scope.contingenciesDataTV.concat(data.data[0]);
+            //$scope.contingenciasOTROS = $scope.contingenciesDataInternetToIP.concat(data.data[1]);
 
-            $scope.contingenciasTV = $scope.contingenciesDataTV.concat(data.data[0]);
-            $scope.contingenciasOTROS = $scope.contingenciesDataInternetToIP.concat(data.data[1]);
+            $scope.gridOptionsInternet.data = data.data[1]
+            $scope.gridOptionsTv.data = data.data[0];
 
-            $scope.contingenciasPortafolio = data.data[2];
-
-            var TV = $scope.contingenciasTV.map((doc) => doc.horagestion);
-            var OTROS = $scope.contingenciasOTROS.map((doc) => doc.horagestion);
-            var CPORTAFOLIO = $scope.contingenciasPortafolio.map((doc) => doc.horagestion);
-
-            /*Se formatea la hora del sistema*/
-            function js_yyyy_mm_dd_hh_mm_ss() {
-                now = new Date();
-                year = "" + now.getFullYear();
-                month = "" + (now.getMonth() + 1);
-                if (month.length == 1) {
-                    month = "0" + month;
-                }
-                day = "" + now.getDate();
-                if (day.length == 1) {
-                    day = "0" + day;
-                }
-                hour = "" + now.getHours();
-                if (hour.length == 1) {
-                    hour = "0" + hour;
-                }
-                minute = "" + now.getMinutes();
-                if (minute.length == 1) {
-                    minute = "0" + minute;
-                }
-                second = "" + now.getSeconds();
-                if (second.length == 1) {
-                    second = "0" + second;
-                }
-                return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
-            }
-
-            $scope.hora_sistema = js_yyyy_mm_dd_hh_mm_ss();
-
-            /*Se recorre el arreglo restando la hora del sistema con la hora de llegada,
-            si es mayor a 15 minutos se almacena el indice de la contingencia mas reciente
-            que cumplio los 15 minutos*/
-            TV.forEach(function (valor, indice) {
-
-                $scope.diferencia = new Date(js_yyyy_mm_dd_hh_mm_ss()) - new Date(TV[indice]);
-
-                if ($scope.diferencia > 900000) {
-                    $scope.indice = (indice);
-                    $scope.quinceminutos = new Array();
-                    $scope.quinceminutos[$scope.indice] = TV[$scope.indice];
-
-                }
-            });
-
-            OTROS.forEach(function (valor, indice) {
-
-                $scope.diferencia = new Date(js_yyyy_mm_dd_hh_mm_ss()) - new Date(OTROS[indice]);
-
-                if ($scope.diferencia > 900000) {
-                    $scope.indice = (indice);
-                    $scope.quinceminutos = new Array();
-                    $scope.quinceminutos[$scope.indice] = OTROS[$scope.indice];
-                }
-            });
-
-            CPORTAFOLIO.forEach(function (valor, indice) {
-
-                $scope.diferencia = new Date(js_yyyy_mm_dd_hh_mm_ss()) - new Date(CPORTAFOLIO[indice]);
-
-                if ($scope.diferencia > 900000) {
-                    $scope.indice = (indice);
-                    $scope.quinceminutos = new Array();
-                    $scope.quinceminutos[$scope.indice] = CPORTAFOLIO[$scope.indice];
-                }
-            });
-
-            if ($scope.contingenciasTV.length !== 0) {
-                //console.log("contingenciasTV: ",$scope.contingenciasTV[0]);
-                $scope.haypedidoTV = true;
-            } else {
-                $scope.haypedidoTV = false;
-                $scope.mensaje = "No hay pedidos para gestionar!!!";
-            }
-
-            if ($scope.contingenciasOTROS.length !== 0) {
-                //console.log("contingenciasOTROS: ",$scope.contingenciasOTROS[0]);
-                $scope.haypedidoOtros = true;
-            } else {
-                $scope.haypedidoOtros = false;
-                $scope.mensajeotros = "No hay pedidos para gestionar!!!";
-            }
-
-            /*CONDICIONAL PARA RECORRER TODA LA DATA*/
-            if ($scope.contingenciasPortafolio.length !== 0) {
-                //console.log("contingenciasPortafolio: ",$scope.contingenciasPortafolio[0]);
-                $scope.haypedidoPortafolio = true;
-            } else {
-                $scope.haypedidoPortafolio = false;
-                $scope.mensajeotros = "No hay pedidos prioritarios!!!";
-            }
-
-
-            return data.data;
         }).catch(function (err) {
             console.log(err);
-            $scope.contingenciasTV = [];
-            $scope.contingenciasOTROS = [];
-            $scope.listarcontingenciasterreno();
-            $scope.loadingData = false;
+
         });
 
     }
-
 
     $scope.CopyPortaPapeles = function (data) {
         var copyTextTV = document.createElement("input");
@@ -6717,14 +8121,1189 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
 
     }
 
+    $scope.guardarpedido = function (data) {
+
+        if (data.logincontingencia == null) {
+            swal({
+                type: 'error',
+                text: 'Debes de marcar la contingencia, antes de guardar!'
+            })
+        } else if (!data.observacionescontingencia) {
+            swal({
+                type: 'error',
+                text: 'Debes ingresar las observaciones.'
+            })
+        } else {
+            if (data.id_terreno != null && data.id_terreno != undefined && data.id_terreno != "") {
+                var currentTimeDate = new Date().toLocaleString();
+                var statusContingencieField = (data.tipificacion == "Ok") ? "Aprobado" : "Rechazado";
+                database.collection("contingencies").doc(data.id_terreno).update({
+                    answer: data.observacionescontingencia,
+                    answer_Date: currentTimeDate,
+                    contingencies_State: statusContingencieField
+                });
+            }
+            services.editarregistrocontingencia(data)
+                .then(function (data) {
+                    if (data.data.state == 99) {
+                        swal({
+                            type: 'error',
+                            title: data.data.title,
+                            text: data.data.text,
+                            timer: 4000
+                        }).then(function () {
+                            $cookies.remove('usuarioseguimiento');
+                            $location.path('/');
+                            $rootScope.galletainfo = undefined;
+                            $rootScope.permiso = false;
+                            $route.reload();
+                        })
+                    } else if (data.data.state == 3) {
+                        swal({
+                            type: 'warning',
+                            text: data.data.text,
+                            timer: 4000
+                        }).then(function () {
+                            gestioncontingencias();
+                        })
+                    } else if (data.data.state == 1) {
+                        swal({
+                            type: 'success',
+                            text: data.data.text,
+                            timer: 4000
+                        }).then(function () {
+                            gestioncontingencias();
+                        })
+                    } else if (data.data.state == 0) {
+                        swal({
+                            type: 'error',
+                            text: data.data.text,
+                            timer: 4000
+                        }).then(function () {
+                            gestioncontingencias();
+                        })
+                    }
+                })
+                .catch(err => alert(err));
+            init();
+            //$scope.gestioncontingenciasPrueba();
+        }
+    }
+
+
+    $scope.marcarEngestion = async (data) => {
+
+        // Bloque de condición para contingencias desde terreno.
+        if (data._id != null && data._id != undefined) {
+            try {
+                data.pedido = data.references;
+                data.producto = data.product;
+                await $scope.autocompletarContingencia(data);
+            } catch (error) {
+                return swal({
+                    title: "Aviso Importante: ",
+                    html: "El pedido no fue desbloqueado.",
+                    type: "error",
+                });
+            }
+        }
+
+        services.marcarengestion(data).then(function (data) {
+            if (data.data.state == 99) {
+                swal({
+                    type: 'error',
+                    title: data.data.title,
+                    text: data.data.text,
+                    timer: 4000
+                }).then(function () {
+                    $cookies.remove('usuarioseguimiento');
+                    $location.path('/');
+                    $rootScope.galletainfo = undefined;
+                    $rootScope.permiso = false;
+                    $route.reload();
+                })
+            } else if (data.data !== "") {
+                if (data.data[0] == "desbloqueado") {
+                    $scope.respuestaMarca = data.data[0][0];
+                    swal({
+                        title: "Pedido Desbloqueado",
+                        type: "success",
+                        position: 'center',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                    gestioncontingencias();
+                    return;
+                } else {
+                    $scope.respuestaMarca = data.data[0][0];
+                    swal({
+                        title: "El pedido se encuentra bloqueado",
+                        type: "warning",
+                        position: 'center',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                    gestioncontingencias();
+                    //$scope.gestioncontingenciasPrueba();
+                    return;
+                }
+            } else if (data.data == "") {
+                $scope.respuestaMarca = "";
+                swal({
+                    title: "Pedido Bloqueado",
+                    type: "success",
+                    position: 'center',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+                gestioncontingencias();
+                return;
+            }
+        })
+            .catch(err => console.log(err));
+    }
+
+    $scope.buscarPedidoContingencia = function (pedido) {
+
+        if (pedido == undefined || pedido == "") {
+            swal({
+                type: 'error',
+                text: 'Ingrese el pedido a consultar'
+            })
+        } else {
+            services.getbuscarPedidoContingencia(pedido).then(completed).catch(failed)
+
+            function completed(data) {
+                if (data.data.state == 99) {
+                    swal({
+                        type: 'error',
+                        title: data.data.title,
+                        text: data.data.text,
+                        timer: 4000
+                    }).then(function () {
+                        $cookies.remove('usuarioseguimiento');
+                        $location.path('/');
+                        $rootScope.galletainfo = undefined;
+                        $rootScope.permiso = false;
+                        $route.reload();
+                    })
+                } else if (data.data.state === 0) {
+                    Swal({
+                        type: 'error',
+                        title: data.data.msj
+                    })
+                } else {
+                    $scope.databsucarPedido = data.data.data;
+                    $('#modalHistoricoContingencias').modal('show');
+                    return data.data;
+                }
+            }
+
+            function failed(data) {
+                console.log(data)
+            }
+
+        }
+    }
+
+    function getGrid() {
+        var columnDefs = [
+            {
+                name: "Pedido",
+                field: "pedido",
+                minWidth: 70,
+                width: "15%",
+                enableCellEdit: false,
+                enableFiltering: true
+            },
+            {
+                name: "Login ingreso",
+                field: "logindepacho",
+                minWidth: 80,
+                width: "15%",
+                enableCellEdit: false,
+                enableFiltering: true,
+
+            }, {
+                name: "Fecha ingreso",
+                field: "horagestion",
+                minWidth: 80,
+                width: "20%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Login gestion",
+                field: "logincontingencia",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "15%",
+                enableCellEdit: false,
+            }, {
+                name: "Fecha gestion",
+                field: "horacontingencia",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "20%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Estado",
+                field: "estado",
+                cellStyle: {"text-align": "center"},
+                minWidth: 80,
+                width: "15%",
+                enableCellEdit: false,
+            }];
+
+        $scope.gridOptions = {
+            enableFiltering: true,
+            enablePagination: true,
+            pageSize: 200,
+            columnDefs: columnDefs,
+            paginationPageSizes: [200, 500, 1000],
+            paginationPageSize: 200,
+
+        };
+
+        $scope.gridOptions.totalItems = '';
+        $scope.gridOptions.data = ''
+    }
+
+    $scope.loadgrid = function () {
+        window.setTimeout(function () {
+            $(window).resize();
+            $(window).resize();
+        }, 200);
+    }
+
+    $scope.resumenContingencias = function (fechaInicial, fechafinal) {
+
+        services.getresumenContingencias(fechaInicial, fechafinal).then(function (data) {
+
+            $scope.gridOptions.totalItems = 200;
+            $scope.gridOptions.data = data.data[0]
+
+
+            $scope.dataresumenContingencias = data.data[0];
+            $scope.dataresumenContingenciasCP = data.data[5];
+            $scope.dataresumenContingenciasTV = data.data[6];
+            $scope.dataresumenContingenciasInTo = data.data[7];
+            $scope.estados = data.data[1];
+            $scope.estadosCP = data.data[3];
+            $scope.dia = data.data[2];
+            $scope.diaCP = data.data[4];
+            var tam = $scope.dataresumenContingencias.length;
+            $scope.Totaltotal_pedidos_aceptados = 0;
+            $scope.Totaltotal_pedidos_pendientes = 0;
+            $scope.Totaltotal_pedidos_rechazados = 0;
+
+            for (var i = 0; i < tam; i++) {
+
+                if ($scope.dataresumenContingencias[i].estado == 'Acepta') {
+                    $scope.Totaltotal_pedidos_aceptados = +$scope.Totaltotal_pedidos_aceptados + 1;
+                }
+                ;
+                if ($scope.dataresumenContingencias[i].estado == 'Rechaza') {
+                    $scope.Totaltotal_pedidos_rechazados = +$scope.Totaltotal_pedidos_rechazados + 1;
+                }
+                ;
+                if ($scope.dataresumenContingencias[i].estado == 'Pendiente') {
+                    $scope.Totaltotal_pedidos_pendientes = +$scope.Totaltotal_pedidos_pendientes + 1;
+                }
+                ;
+            }
+
+            /!*CONTADOR DIARIO PARA TV*!/
+            var tam1 = $scope.dataresumenContingenciasTV.length;
+            $scope.Totaltotal_pedidos_aceptadosTV = 0;
+            $scope.Totaltotal_pedidos_pendientesTV = 0;
+            $scope.Totaltotal_pedidos_rechazadosTV = 0;
+            $scope.Total_Personas_GestionandoTV = 0;
+            $scope.LoginsGestionandoTV = [];
+            var indiceTV = 0;
+
+
+            for (var i = 0; i < tam1; i++) {
+                if ($scope.dataresumenContingenciasTV[i].estado == 'Acepta') {
+                    $scope.Totaltotal_pedidos_aceptadosTV = +$scope.Totaltotal_pedidos_aceptadosTV + 1;
+                }
+                ;
+                if ($scope.dataresumenContingenciasTV[i].estado == 'Rechaza') {
+                    $scope.Totaltotal_pedidos_rechazadosTV = +$scope.Totaltotal_pedidos_rechazadosTV + 1;
+                }
+                ;
+                if ($scope.dataresumenContingenciasTV[i].estado == 'Pendiente') {
+                    $scope.Totaltotal_pedidos_pendientesTV = +$scope.Totaltotal_pedidos_pendientesTV + 1;
+                }
+                ;
+            }
+            $scope.Totaltotal_pedidos_pendientesTV += $scope.cantidadContingenciasTV;
+            /!*SE RECORREO EL ARREGLO IDENTIFICNADO Y ALMACENANDO LOS LOGINES DE QUIENES TIENEN MARCADAS CONTINGENCIAS PARA GESTIONAR*!/
+            for (var i = 0; i < tam1; i++) {
+                if ($scope.dataresumenContingenciasTV[i].estado == 'Pendiente' && $scope.dataresumenContingenciasTV[i].logincontingencia !== null && $scope.dataresumenContingenciasTV[i].estado == 'Pendiente' && $scope.dataresumenContingenciasTV[i].logincontingencia !== "") {
+                    $scope.LoginsGestionandoTV[indiceTV] = $scope.dataresumenContingenciasTV[i].logincontingencia;
+                    indiceTV = indiceTV + 1;
+                }
+                ;
+            }
+            /!*SE CUENTAN LOS USUARIOS ÚNICOS, PARA SABER LA CANTIDAD REAL DE PERSONAS QUE ESTAN GESTIONANDO CONTINGENCIAS*!/
+            $scope.Total_Personas_GestionandoTV = $scope.LoginsGestionandoTV.filter((v, i, a) => a.indexOf(v) === i).length;
+
+            /!*SE HACE EL CONTEO POR LOGIN YA QUE HAY PERSONAS QUE MARCAN PARA GESTIONAR MAS DE UNA CONTINGENCIA*!/
+            const cantAnalistasTV = $scope.LoginsGestionandoTV.reduce((contadorAnalistasTV, indiceTV) => {
+                contadorAnalistasTV[indiceTV] = (contadorAnalistasTV[indiceTV] || 0) + 1;
+                return contadorAnalistasTV;
+            }, {});
+
+            $scope.cantidadAnalistasTV = cantAnalistasTV;
+
+            /!*CONTADOR DIARIO PARA Internet-ToIp*!/
+            var tam2 = $scope.dataresumenContingenciasInTo.length;
+            $scope.Totaltotal_pedidos_aceptadosInTo = 0;
+            $scope.Totaltotal_pedidos_pendientesInTo = 0;
+            $scope.Totaltotal_pedidos_rechazadosInTo = 0;
+            $scope.Total_Personas_GestionandoInternet = 0;
+            $scope.LoginsGestionandoInternet = [];
+            var indiceInternet = 0;
+
+            for (var i = 0; i < tam2; i++) {
+                if ($scope.dataresumenContingenciasInTo[i].estado == 'Acepta') {
+                    $scope.Totaltotal_pedidos_aceptadosInTo = +$scope.Totaltotal_pedidos_aceptadosInTo + 1;
+                }
+                ;
+                if ($scope.dataresumenContingenciasInTo[i].estado == 'Rechaza') {
+                    $scope.Totaltotal_pedidos_rechazadosInTo = +$scope.Totaltotal_pedidos_rechazadosInTo + 1;
+                }
+                ;
+                if ($scope.dataresumenContingenciasInTo[i].estado == 'Pendiente') {
+                    $scope.Totaltotal_pedidos_pendientesInTo = +$scope.Totaltotal_pedidos_pendientesInTo + 1;
+                }
+                ;
+            }
+            $scope.Totaltotal_pedidos_pendientesInTo += $scope.cantidadContingenciasINT;
+            /!*SE RECORREO EL ARREGLO IDENTIFICNADO Y ALMACENANDO LOS LOGINES DE QUIENES TIENEN MARCADAS CONTINGENCIAS PARA GESTIONAR*!/
+            for (var i = 0; i < tam2; i++) {
+                if ($scope.dataresumenContingenciasInTo[i].estado == 'Pendiente' && $scope.dataresumenContingenciasInTo[i].logincontingencia !== null && $scope.dataresumenContingenciasInTo[i].estado == 'Pendiente' && $scope.dataresumenContingenciasInTo[i].logincontingencia !== "") {
+                    $scope.LoginsGestionandoInternet[indiceInternet] = $scope.dataresumenContingenciasInTo[i].logincontingencia;
+                    indiceInternet = indiceInternet + 1;
+                }
+                ;
+            }
+            /!*SE CUENTAN LOS USUARIOS ÚNICOS, PARA SABER LA CANTIDAD REAL DE PERSONAS QUE ESTAN GESTIONANDO CONTINGENCIAS*!/
+            $scope.Total_Personas_GestionandoInternet = $scope.LoginsGestionandoInternet.filter((v, i, a) => a.indexOf(v) === i).length;
+
+            /!*SE HACE EL CONTEO POR LOGIN YA QUE HAY PERSONAS QUE MARCAN PARA GESTIONAR MAS DE UNA CONTINGENCIA*!/
+            const cantAnalistasInt = $scope.LoginsGestionandoInternet.reduce((contadorAnalistasInternet, indiceInternet) => {
+                contadorAnalistasInternet[indiceInternet] = (contadorAnalistasInternet[indiceInternet] || 0) + 1;
+                return contadorAnalistasInternet;
+            }, {});
+
+            $scope.cantidadAnalistasInt = cantAnalistasInt;
+
+            /!*CONTADOR DIARIO PARA CORREGIR PORTAFOLIO*!/
+            var tam = $scope.dataresumenContingenciasCP.length;
+            $scope.Totaltotal_pedidos_aceptadosCP = 0;
+            $scope.Totaltotal_pedidos_pendientesCP = 0;
+            $scope.Totaltotal_pedidos_rechazadosCP = 0;
+            $scope.Total_Personas_GestionandoCP = 0;
+
+            for (var i = 0; i < tam; i++) {
+
+                if ($scope.dataresumenContingenciasCP[i].estado == 'Acepta') {
+                    $scope.Totaltotal_pedidos_aceptadosCP = +$scope.Totaltotal_pedidos_aceptadosCP + 1;
+                }
+                ;
+                if ($scope.dataresumenContingenciasCP[i].estado == 'Rechaza') {
+                    $scope.Totaltotal_pedidos_rechazadosCP = +$scope.Totaltotal_pedidos_rechazadosCP + 1;
+                }
+                ;
+                if ($scope.dataresumenContingenciasCP[i].estado == 'Pendiente') {
+                    $scope.Totaltotal_pedidos_pendientesCP = +$scope.Totaltotal_pedidos_pendientesCP + 1;
+                }
+                ;
+            }
+
+            /!*CONTADOR DE PERSONAS GESTIONANDO CONTINGENCIAS DE CP*!/
+            for (var i = 0; i < tam; i++) {
+                if ($scope.dataresumenContingenciasCP[i].estado == 'Pendiente' && $scope.dataresumenContingenciasCP[i].loginContingenciaPortafolio !== null && $scope.dataresumenContingenciasCP[i].estado == 'Pendiente' && $scope.dataresumenContingenciasCP[i].loginContingenciaPortafolio !== "") {
+                    $scope.Total_Personas_GestionandoCP = +$scope.Total_Personas_GestionandoCP + 1;
+                }
+                ;
+            }
+
+            return data.data;
+        }, function errorCallback(response) {
+
+        });
+    }
+
+    $scope.descargarContingencias = function (fechaInicial, fechafinal) {
+        services.getexporteContingencias(fechaInicial, fechafinal, $rootScope.galletainfo).then(
+            function (datos) {
+
+                var data = datos.data[0];
+                var array = typeof data != 'object' ? JSON.parse(data) : data;
+                var str = '';
+                var column = `ACCION| CIUDAD| CORREO| MAC_ENTRA| MAC_SALE| MOTIVO| OBSERVACIONES| PAQUETES| PEDIDO| PROCESO| PRODUCTO| REMITENTE| TECNOLOGIA| TIPO_EQUIPO| UEN| CONTRATO| PERFIL| LOGIN| LOGIN_GESTION| HORA_INGRESO| HORA_GESTION| OBSERVACIONES_GESTION| ESTADO| TIPIFICACION| FECHACLICKMARCA| LOGIN_PORTAFILO| HORA_GESTION_PORTAFOLIO| TIPIFICACION_PORTAFOLIO| OBSERVACIONES_GESTION_PORTAFOLIO| GENERAR_CR \r\n`;
+                str += column;
+                for (var i = 0; i < array.length; i++) {
+                    var line = '';
+                    for (var index in array[i]) {
+                        if (line != '') line += '|'
+                        line += array[i][index];
+                    }
+
+                    str += line + '\r\n';
+                }
+                var dateCsv = new Date();
+                var yearCsv = dateCsv.getFullYear();
+                var monthCsv = (dateCsv.getMonth() + 1 <= 9) ? '0' + (dateCsv.getMonth() + 1) : (dateCsv.getMonth() + 1);
+                var dayCsv = (dateCsv.getDate() <= 9) ? '0' + dateCsv.getDate() : dateCsv.getDate();
+                var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
+
+
+                var blob = new Blob([str]);
+                var elementToClick = window.document.createElement("a");
+                elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
+                elementToClick.download = "RegistroContingencia-" + fullDateCsv + ".csv";
+                elementToClick.click();
+            },
+            function errorCallback(response) {
+                $scope.errorDatos = "No hay datos.";
+                $scope.csvPend = false;
+            }
+        );
+
+    };
+
+    /!*MOSTRAR MODAL PARA CIERRE MASIVO DE CONTINGENCIAS*!/
+
+    $scope.callModalCierreMasivoConti = function () {
+
+        angular.copy();
+        $("#cierreMasivoContingencias").modal();
+    }
+
+    /!*FUNCION PARA CERRAR DE FORMA MASIVA LAS OONTINGENCIAS*!/
+    $scope.cierreMasivoContingencias = function (dataCierreMasivoContin, frmCierreMasivoContin) {
+
+        if (dataCierreMasivoContin.TV != true && dataCierreMasivoContin.Internet != true && dataCierreMasivoContin.ToIP != true && dataCierreMasivoContin.InternetToIP != true) {
+            swal("Debe seleccionar mínimo un producto.");
+            return;
+        }
+
+
+        if (dataCierreMasivoContin.Instalaciones != true && dataCierreMasivoContin.Reparaciones != true) {
+            swal("Debe seleccionar mínimo un proceso.");
+            return;
+        }
+
+        if (dataCierreMasivoContin.AprovisionarContin != true && dataCierreMasivoContin.Refresh != true && dataCierreMasivoContin.CambioEquipo != true && dataCierreMasivoContin.CambioEID != true && dataCierreMasivoContin.RegistrosToIP != true) {
+            swal("Debe seleccionar mínimo una acción.");
+            return;
+        }
+
+        Swal.fire({
+            title: '¿Está seguro que desea cancelar de forma masiva las contigencias?',
+            text: "no prodrás revertir esto!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, Ejecutar Ahora!'
+        }).then((result) => {
+            if (result.value) {
+
+
+                if (frmCierreMasivoContin.TV.$modelValue == undefined || frmCierreMasivoContin.TV.$modelValue == false) {
+                    dataCierreMasivoContin.TV = 'Sin Informacion';
+                } else {
+                    dataCierreMasivoContin.TV = $("#TV:checked").val();
+                }
+
+                if (frmCierreMasivoContin.Internet.$modelValue == undefined || frmCierreMasivoContin.Internet.$modelValue == false) {
+                    dataCierreMasivoContin.Internet = 'Sin Informacion';
+                } else {
+                    dataCierreMasivoContin.Internet = $("#Internet:checked").val();
+                }
+
+                if (frmCierreMasivoContin.ToIP.$modelValue == undefined || frmCierreMasivoContin.ToIP.$modelValue == false) {
+                    dataCierreMasivoContin.ToIP = 'Sin Informacion';
+                } else {
+                    dataCierreMasivoContin.ToIP = $("#ToIP:checked").val();
+                }
+
+                if (frmCierreMasivoContin.InternetToIP.$modelValue == undefined || frmCierreMasivoContin.InternetToIP.$modelValue == false) {
+                    dataCierreMasivoContin.InternetToIP = 'Sin Informacion';
+                } else {
+                    dataCierreMasivoContin.InternetToIP = $("#InternetToIP:checked").val();
+                }
+
+                if (frmCierreMasivoContin.Instalaciones.$modelValue == undefined || frmCierreMasivoContin.Instalaciones.$modelValue == false) {
+                    dataCierreMasivoContin.Instalaciones = 'Sin Informacion';
+                } else {
+                    dataCierreMasivoContin.Instalaciones = $("#Instalaciones:checked").val();
+                }
+
+                if (frmCierreMasivoContin.Reparaciones.$modelValue == undefined || frmCierreMasivoContin.Reparaciones.$modelValue == false) {
+                    dataCierreMasivoContin.Reparaciones = 'Sin Informacion';
+                } else {
+                    dataCierreMasivoContin.Reparaciones = $("#Reparaciones:checked").val();
+                }
+
+                if (frmCierreMasivoContin.AprovisionarContin.$modelValue == undefined || frmCierreMasivoContin.AprovisionarContin.$modelValue == false) {
+                    dataCierreMasivoContin.AprovisionarContin = 'Sin Informacion';
+                } else {
+                    dataCierreMasivoContin.AprovisionarContin = $("#AprovisionarContin:checked").val();
+                }
+
+                if (frmCierreMasivoContin.Refresh.$modelValue == undefined || frmCierreMasivoContin.Refresh.$modelValue == false) {
+                    dataCierreMasivoContin.Refresh = 'Sin Informacion';
+                } else {
+                    dataCierreMasivoContin.Refresh = $("#Refresh:checked").val();
+                }
+
+                if (frmCierreMasivoContin.CambioEquipo.$modelValue == undefined || frmCierreMasivoContin.CambioEquipo.$modelValue == false) {
+                    dataCierreMasivoContin.CambioEquipo = 'Sin Informacion';
+                } else {
+                    dataCierreMasivoContin.CambioEquipo = $("#CambioEquipo:checked").val();
+                }
+
+                if (frmCierreMasivoContin.CambioEID.$modelValue == undefined || frmCierreMasivoContin.CambioEID.$modelValue == false) {
+                    dataCierreMasivoContin.CambioEID = 'Sin Informacion';
+                } else {
+                    dataCierreMasivoContin.CambioEID = $("#CambioEID:checked").val();
+                }
+
+                if (frmCierreMasivoContin.RegistrosToIP.$modelValue == undefined || frmCierreMasivoContin.RegistrosToIP.$modelValue == false) {
+                    dataCierreMasivoContin.RegistrosToIP = 'Sin Informacion';
+                } else {
+                    dataCierreMasivoContin.RegistrosToIP = $("#RegistrosToIP:checked").val();
+                }
+
+                services.cierreMasivoContingencia(dataCierreMasivoContin).then(
+                    function (respuesta) {
+
+                        $scope.counter = respuesta.data[0];
+
+                        if (respuesta.status == '200') {
+
+                            if ($scope.counter == 0) {
+
+                                Swal(
+                                    'No se encontraron contingencias con esas condiciones para eliminar!',
+                                    'Por favor revisar'
+                                )
+
+                            } else {
+
+                                Swal(
+                                    'Se rechazaron masivamente ' + $scope.counter + ' contingencias!',
+                                    'Por favor actualizar'
+                                )
+                            }
+                        }
+
+                        /!*PARA QUE EL MODAL SE OCULTE SOLO*!/
+                        $("#cierreMasivoContingencias").modal('hide');
+                        $scope.cierreMasivoSel = {};
+
+                        /!*LIMPIEZA DEL MODAL*!/
+                        frmCierreMasivoContin.autoValidateFormOptions.resetForm();
+
+                    }, function errorCallback(response) {
+
+                        if (response.status == '400') {
+
+                            Swal({
+                                type: 'error',
+                                title: 'Oops...',
+                                text: 'Hubo un error',
+                                footer: '¡Escalarlo al administrador!'
+                            })
+                        }
+                    });
+                $scope.gestioncontingencias();
+
+            }
+        })
+    }
+
+    //$scope.gestioncontingencias();
+    //$scope.gestioncontingenciasPrueba();
+    $scope.resumenContingencias($scope.fechaupdateInical, $scope.fechaupdateFinal);
+});
+*/
+
+app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $location, $route, $routeParams, $cookies, $cookieStore, $timeout, services, fileUpload) {
+    $scope.rutaCierreMasivoContin = "partial/modals/cierreMasivoContingencias.html";
+    $scope.haypedidoOtros = false;
+    $scope.haypedidoTV = false;
+    $scope.loadingData = false;
+    $scope.haypedidoPortafolio = false;
+    $scope.haypedidoCEQPortafolio = false;
+    $scope.status = true;
+    $scope.sinPedido = false;
+    $scope.isContingenciesFromField = false;
+    $scope.contingenciesDataTV = [];
+    $scope.contingenciesDataInternetToIP = [];
+    $scope.contingenciasTV = [];
+    $scope.contingenciasOTROS = [];
+    var database = firebase.firestore();
+    $scope.cantidadContingenciasTV = 0;
+    $scope.cantidadContingenciasINT = 0;
+
+    getGrid();
+
+    $scope.reloadContingenciaTv = function () {
+        $scope.gestioncontingencias();
+    }
+
+    $scope.loadgrid = function () {
+        window.setTimeout(function () {
+            $(window).resize();
+            $(window).resize();
+        }, 200);
+    }
+
+    function getGrid() {
+        var columnDefs = [
+            {
+                name: "Pedido",
+                field: "pedido",
+                minWidth: 70,
+                width: "15%",
+                enableCellEdit: false,
+                enableFiltering: true
+            },
+            {
+                name: "Login ingreso",
+                field: "logindepacho",
+                minWidth: 80,
+                width: "15%",
+                enableCellEdit: false,
+                enableFiltering: true,
+
+            }, {
+                name: "Fecha ingreso",
+                field: "horagestion",
+                minWidth: 80,
+                width: "20%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Login gestion",
+                field: "logincontingencia",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "15%",
+                enableCellEdit: false,
+            }, {
+                name: "Fecha gestion",
+                field: "horacontingencia",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "20%",
+                enableCellEdit: false,
+
+            }, {
+                name: "Estado",
+                field: "estado",
+                cellStyle: {"text-align": "center"},
+                minWidth: 80,
+                width: "15%",
+                enableCellEdit: false,
+            }];
+
+        $scope.gridOptions = {
+            enableFiltering: true,
+            enablePagination: true,
+            pageSize: 200,
+            columnDefs: columnDefs,
+            paginationPageSizes: [200, 500, 1000],
+            paginationPageSize: 200,
+
+        };
+
+        $scope.gridOptions.totalItems = '';
+        $scope.gridOptions.data = ''
+    }
+
+    $scope.listarcontingenciasterreno = () => {
+
+        /* database.collection("contingencies").where("status","==", 0).orderBy("contingencies_Date","asc").get().then((querySnapshot) => {
+            $scope.isContingenciesFromField = false;
+            $scope.contingenciesDataTV = [];
+            $scope.contingenciesDataInternetToIP = [];
+            $scope.cantidadContingenciasTV = 0;
+            $scope.cantidadContingenciasINT = 0;
+            querySnapshot.forEach((doc) => {
+                let dataQuerySnapshot = {};
+                dataQuerySnapshot = {
+                    _id: doc.id,
+                    references: doc.data().references,
+                    macIn: doc.data().macIn,
+                    macOut: doc.data().macOut,
+                    details: doc.data().details,
+                    contingencies_Type: doc.data().contingencies_Type,
+                    contingencies_Date: doc.data().contingencies_Date,
+                    contingencies_State: doc.data().contingencies_State,
+                    product: doc.data().product,
+                    user_email: doc.data().user_email,
+                    user_identification: doc.data().user_identification
+                }
+                special_access = [98644514,15335939,16268236,70191900
+                    ,71638399,10137123,71789293,98621522,70254182
+                    ,98567429,71733363,71669597,98593889,71653347
+                    ,70753885,70954170,70384636,1094947317,71625390];
+
+                dataQuerySnapshot.correo = dataQuerySnapshot.user_email;
+                var date = dataQuerySnapshot.contingencies_Date.toDate();
+                var year = date.getFullYear();
+                var month = "0" + (date.getMonth() + 1);
+                var day = "0" + date.getDate();
+                var hours = "0" + date.getHours();
+                var minutes = "0" + date.getMinutes();
+                var seconds = "0" + date.getSeconds();
+                var formattedTime = year + '-' + month.substr(-2) + '-' + day.substr(-2) + ' ' + hours.substr(-2) + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+                dataQuerySnapshot.horagestion = formattedTime;
+                dataQuerySnapshot.fecha = date;
+                dataQuerySnapshot.macEntra = dataQuerySnapshot.macIn;
+                dataQuerySnapshot.macSale = dataQuerySnapshot.macOut;
+                dataQuerySnapshot.observacion = dataQuerySnapshot.details;
+                dataQuerySnapshot.pedido = dataQuerySnapshot.references;
+                dataQuerySnapshot.producto = dataQuerySnapshot.product;
+                dataQuerySnapshot.accion = dataQuerySnapshot.contingencies_Type;
+
+                if(special_access.indexOf(dataQuerySnapshot.user_identification) != -1){
+                    dataQuerySnapshot.remite = "Teléfonos Públicos";
+                } else {
+                    dataQuerySnapshot.remite = "Terreno";
+                }
+
+                if(dataQuerySnapshot.product == "TV"){
+                    $scope.contingenciasTV.push(dataQuerySnapshot);
+                    $scope.contingenciesDataTV.push(dataQuerySnapshot);
+                    $scope.cantidadContingenciasTV++;
+                }
+                else if(dataQuerySnapshot.product == "Internet" || dataQuerySnapshot.product == "ToIP" || dataQuerySnapshot.product == "Internet+ToIP"){
+                    $scope.contingenciasOTROS.push(dataQuerySnapshot);
+                    $scope.contingenciesDataInternetToIP.push(dataQuerySnapshot);
+                    $scope.cantidadContingenciasINT++;
+                }
+            });
+            $scope.isContingenciesFromField = true;
+
+            if($scope.contingenciasTV.length == 0 ){
+                $scope.contingenciasTV = $scope.contingenciasTV.concat($scope.contingenciesDataTV);
+            }
+            if($scope.contingenciasOTROS.length == 0){
+                $scope.contingenciasOTROS = $scope.contingenciasOTROS.concat($scope.contingenciesDataInternetToIP);
+            }
+        }).catch( (err) => {
+            console.log(err);
+        }); */
+
+
+    }
+
+    var tiempo = new Date().getTime();
+    var date1 = new Date();
+    var year = date1.getFullYear();
+    var month = (date1.getMonth() + 1 <= 9) ? '0' + (date1.getMonth() + 1) : (date1.getMonth() + 1);
+    var day = (date1.getDate() <= 9) ? '0' + date1.getDate() : date1.getDate();
+
+    tiempo = year + "-" + month + "-" + day;
+
+    $scope.fechaupdateInical = tiempo;
+    $scope.fechaupdateFinal = tiempo;
+
+
+    $scope.changeStatus = function (data) {
+        //console.log("Aceptado/Rechazado: ",data);
+    }
+
+    /*$scope.palancatv = function(data,idxtv)
+    {
+        var TIPITV = $scope.contingenciasTV.map((doc)=>doc.tipificacion);
+        var PALANCATV= $scope.contingenciasTV.map((doc)=>doc.acepta);
+
+        if(TIPITV[idxtv]=="Ok") //Si la tipificación es "Ok" pone el acepta en "Si"
+        {
+            acepta[idxtv].click();
+        }
+        else if(PALANCATV[idxtv]==true) //cuando se dio ok y luego se rechaza por cualquier motivo pone el acepta en no
+        {
+            acepta[idxtv].click();
+        }
+        else //Cuando se rechaza directamente por cualquier motivo pone el acepta en no
+        {
+            acepta[idxtv].checked=false;
+        }
+    }
+
+    $scope.palancaotro = function(data,idxotros)
+    {
+        var TIPIOTROS = $scope.contingenciasOTROS.map((doc)=>doc.tipificacion);
+        var PALANCAOTROS= $scope.contingenciasOTROS.map((doc)=>doc.acepta);
+
+        if(TIPIOTROS[idxotros]=="Ok") //Si la tipificación es "Ok" pone el acepta en "Si"
+        {
+            aceptaotro[idxotros].click();
+        }
+        else if(PALANCAOTROS[idxotros]==true) //cuando se dio ok y luego se rechaza por cualquier motivo pone el acepta en no
+        {
+            aceptaotro[idxotros].click();
+        }
+        else //Cuando se rechaza directamente por cualquier motivo pone el acepta en no
+        {
+            aceptaotro[idxotros].checked=false;
+        }
+    }
+
+    $scope.palancacp = function(data,idxcp)
+    {
+        var TIPICP = $scope.contingenciasPortafolio.map((doc)=>doc.tipificacionPortafolio);
+        var PALANCACP= $scope.contingenciasPortafolio.map((doc)=>doc.aceptaPortafolio);
+
+        if(TIPICP[idxcp]=="Ok") //Si la tipificación es "Ok" pone el acepta en "Si"
+        {
+            aceptacp[idxcp].click();
+        }
+        else if(PALANCACP[idxcp]==true) //cuando se dio ok y luego se rechaza por cualquier motivo pone el acepta en no
+        {
+            aceptacp[idxcp].click();
+        }
+        else //Cuando se rechaza directamente por cualquier motivo pone el acepta en no
+        {
+            aceptacp[idxcp].checked=false;
+        }
+    }*/
+
+    $scope.gestioncontingencias = function () {
+        $scope.loadingData = true;
+
+        // $scope.contingenciasTV = [];
+        // $scope.contingenciasOTROS = [];
+        $scope.listarcontingenciasterreno();
+
+        services.datosgestioncontingencias().then(function (data) {
+
+            //console.log("datosgestioncontingencias: ", data);
+            $scope.loadingData = false;
+
+            $scope.contingenciasTV = $scope.contingenciesDataTV.concat(data.data[0]);
+            $scope.contingenciasOTROS = $scope.contingenciesDataInternetToIP.concat(data.data[1]);
+
+            $scope.contingenciasPortafolio = data.data[2];
+
+            var TV = $scope.contingenciasTV.map((doc) => doc.horagestion);
+            var OTROS = $scope.contingenciasOTROS.map((doc) => doc.horagestion);
+            var CPORTAFOLIO = $scope.contingenciasPortafolio.map((doc) => doc.horagestion);
+
+            /*Se formatea la hora del sistema*/
+            function js_yyyy_mm_dd_hh_mm_ss() {
+                now = new Date();
+                year = "" + now.getFullYear();
+                month = "" + (now.getMonth() + 1); if (month.length == 1) { month = "0" + month; }
+                day = "" + now.getDate(); if (day.length == 1) { day = "0" + day; }
+                hour = "" + now.getHours(); if (hour.length == 1) { hour = "0" + hour; }
+                minute = "" + now.getMinutes(); if (minute.length == 1) { minute = "0" + minute; }
+                second = "" + now.getSeconds(); if (second.length == 1) { second = "0" + second; }
+                return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
+            }
+
+            $scope.hora_sistema = js_yyyy_mm_dd_hh_mm_ss();
+
+            /*Se recorre el arreglo restando la hora del sistema con la hora de llegada,
+            si es mayor a 15 minutos se almacena el indice de la contingencia mas reciente
+            que cumplio los 15 minutos*/
+            TV.forEach(function (valor, indice) {
+
+                $scope.diferencia = new Date(js_yyyy_mm_dd_hh_mm_ss()) - new Date(TV[indice]);
+
+                if ($scope.diferencia > 900000) {
+                    $scope.indice = (indice);
+                    $scope.quinceminutos = new Array();
+                    $scope.quinceminutos[$scope.indice] = TV[$scope.indice];
+
+                }
+            });
+
+            OTROS.forEach(function (valor, indice) {
+
+                $scope.diferencia = new Date(js_yyyy_mm_dd_hh_mm_ss()) - new Date(OTROS[indice]);
+
+                if ($scope.diferencia > 900000) {
+                    $scope.indice = (indice);
+                    $scope.quinceminutos = new Array();
+                    $scope.quinceminutos[$scope.indice] = OTROS[$scope.indice];
+                }
+            });
+
+            CPORTAFOLIO.forEach(function (valor, indice) {
+
+                $scope.diferencia = new Date(js_yyyy_mm_dd_hh_mm_ss()) - new Date(CPORTAFOLIO[indice]);
+
+                if ($scope.diferencia > 900000) {
+                    $scope.indice = (indice);
+                    $scope.quinceminutos = new Array();
+                    $scope.quinceminutos[$scope.indice] = CPORTAFOLIO[$scope.indice];
+                }
+            });
+
+            if ($scope.contingenciasTV.length !== 0) {
+                //console.log("contingenciasTV: ",$scope.contingenciasTV[0]);
+                $scope.haypedidoTV = true;
+            } else {
+                $scope.haypedidoTV = false;
+                $scope.mensaje = "No hay pedidos para gestionar!!!";
+            }
+
+            if ($scope.contingenciasOTROS.length !== 0) {
+                //console.log("contingenciasOTROS: ",$scope.contingenciasOTROS[0]);
+                $scope.haypedidoOtros = true;
+            } else {
+                $scope.haypedidoOtros = false;
+                $scope.mensajeotros = "No hay pedidos para gestionar!!!";
+            }
+
+            /*CONDICIONAL PARA RECORRER TODA LA DATA*/
+            if ($scope.contingenciasPortafolio.length !== 0) {
+                //console.log("contingenciasPortafolio: ",$scope.contingenciasPortafolio[0]);
+                $scope.haypedidoPortafolio = true;
+            } else {
+                $scope.haypedidoPortafolio = false;
+                $scope.mensajeotros = "No hay pedidos prioritarios!!!";
+            }
+
+
+
+            return data.data;
+        }).catch(function (err) {
+            console.log(err);
+            $scope.contingenciasTV = [];
+            $scope.contingenciasOTROS = [];
+            $scope.listarcontingenciasterreno();
+            $scope.loadingData = false;
+        });
+
+    }
+
+
+    $scope.CopyPortaPapeles = function (data) {
+        var copyTextTV = document.createElement("input");
+        copyTextTV.value = data;
+        document.body.appendChild(copyTextTV);
+        copyTextTV.select();
+        document.execCommand("copy");
+        document.body.removeChild(copyTextTV);
+        Swal({
+            type: 'info',
+            title: 'Aviso',
+            text: "El texto seleccionado fue copiado",
+            timer: 2000
+        });
+    }
+
+    $scope.autocompletarContingencia = async (data) => {
+        var contingencia = {};
+        try {
+            var autocompleteQuery = await fetch('http://10.100.66.254:8080/HCHV_DEV/BuscarB/' + data.references);
+            var autocompleteData = await autocompleteQuery.json();
+            var equiposIn = "";
+            var equiposOut = "";
+            var sep = "";
+            // servicios bb8
+            // if (data.product == "TV"){
+            //     var querytvmss = await fetch('http://10.100.66.254:7776/api/plan/tvmss/' + data.references);
+            //     var querytvmssData = await querytvmss.json();
+            //     contingencia.paquete = querytvmssData[0][0];
+
+            // }
+            // else if(data.product == "Internet"){
+            //     var querytoipmss = await fetch('http://10.100.66.254:7776/api/plan/toipmss/' + data.references);
+            //     var querytoipmssData = await querytoipmss.json();
+            //     var queryBaMSS = await fetch('http://10.100.66.254:7776/api/plan/bamss/' + data.references);
+            //     var queryBaMSSData = await queryBaMSS.json();
+            //     contingencia.paquete = querytoipmssData[1][3];
+            //     contingencia.perfil = queryBaMSSData[0][0];
+            // }
+            // Homologación
+            contingencia.accion = data.contingencies_Type;
+            contingencia.ciudad = (autocompleteData.uNEMunicipio) ? autocompleteData.uNEMunicipio.toUpperCase() : "";
+            contingencia.correo = data.user_email;
+            contingencia.fecha = data.contingencies_Date.toDate();
+            contingencia.macEntra = data.macIn;
+            contingencia.macSale = data.macOut;
+            contingencia.observacion = data.details;
+            contingencia.pedido = data.references;
+            contingencia.proceso = autocompleteData.TaskType;
+            contingencia.remite = data.remite;
+
+            contingencia.producto = data.product;
+            contingencia.uen = autocompleteData.uNEUen;
+            contingencia._id = data._id;
+
+            for (var equipo of contingencia.macEntra) {
+                if (equipo.name == undefined || equipo.name == "undefined") continue;
+                else {
+                    equiposIn = equiposIn + sep + equipo.name;
+                    sep = "-";
+                }
+            }
+            sep = "";
+            contingencia.macEntra = equiposIn;
+
+            for (var equipo of contingencia.macSale) {
+                if (equipo.name == undefined || equipo.name == "undefined") continue;
+                else {
+                    equiposOut = equiposOut + sep + equipo.name;
+                    sep = "-";
+                }
+            }
+            contingencia.macSale = equiposOut;
+
+            if (data.remite != "Teléfonos Públicos") {
+                if ((autocompleteData.Type == "Install" || autocompleteData.Type == "Traslado") && (autocompleteData.RTA == 'NA' || autocompleteData.RTA == 'N')) {
+                    if (data.user_identification != autocompleteData.engineerID) {
+                        swal({
+                            title: "Aviso Importante: ",
+                            html: "El pedido no concuerda con el técnico que solicita su gestión ni tampoco ha sido gestionado a través de Click.",
+                            type: "warning",
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Sí, Lo tengo presente!'
+                        });
+                    } else {
+                        swal({
+                            title: "Aviso Importante: ",
+                            html: "El pedido no ha sido gestionado a través Click.",
+                            type: "warning",
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Sí, Lo tengo presente!'
+                        });
+                    }
+                } else if (autocompleteData.Type == "Repair" && (autocompleteData.MAC == '' || autocompleteData.MAC == null) && autocompleteData.RTA3 == null) {
+                    if (data.user_identification != autocompleteData.engineerID) {
+                        swal({
+                            title: "Aviso Importante: ",
+                            html: "El pedido no concuerda con el técnico que solicita su gestión ni tampoco ha sido gestionado a través de Click.",
+                            type: "warning",
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Sí, Lo tengo presente!'
+                        });
+                    } else {
+                        swal({
+                            title: "Aviso Importante: ",
+                            html: "El pedido no ha sido gestionado a través Click.",
+                            type: "warning",
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Sí, Lo tengo presente!'
+                        });
+                    }
+                } else {
+                    if (autocompleteData.Description == null || autocompleteData.LaborType == '1166073856') {
+                        if (data.user_identification != autocompleteData.engineerID) {
+                            swal({
+                                title: "Aviso Importante: ",
+                                html: "El pedido no concuerda con el técnico que solicita su gestión ni tampoco ha sido gestionado a través de Sara.",
+                                type: "warning",
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'Sí, Lo tengo presente!'
+                            });
+                        }
+                        else {
+                            swal({
+                                title: "Aviso Importante: ",
+                                html: "El pedido no ha sido gestionado a través de Sara.",
+                                type: "warning",
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'Sí, Lo tengo presente!'
+                            });
+                        }
+                    } else if (data.user_identification != autocompleteData.engineerID) {
+                        swal({
+                            title: "Aviso Importante: ",
+                            html: "El pedido no concuerda con el técnico que solicita su gestión.",
+                            type: "warning",
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Sí, Lo tengo presente!'
+                        });
+                    }
+                }
+
+                if (autocompleteData.Type == null) {
+                    if (data.user_identification != autocompleteData.engineerID) {
+                        swal({
+                            title: "Aviso Importante: ",
+                            html: "El pedido no concuerda con el técnico que solicita su gestión y no ha sido diligenciado en click.",
+                            type: "warning",
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Sí, Lo tengo presente!'
+                        });
+                    }
+                    else {
+                        swal({
+                            title: "Aviso Importante: ",
+                            html: "El pedido no ha sido diligenciado en click.",
+                            type: "warning",
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Sí, Lo tengo presente!'
+                        });
+                    }
+                }
+            }
+
+            var queryIsAlreadyToken = database.collection("contingencies").doc(data._id);
+            var querySnapshotAT = await queryIsAlreadyToken.get();
+            if (querySnapshotAT.data().status == 1) {
+                swal({
+                    title: "Este pedido ya ha sido tomado: ",
+                    html: `El pedido ${data.pedido} que ha seleccionado, ya ha sido tomado.`,
+                    type: "warning"
+                });
+            } else {
+                var queryUpdateStatus = await database.collection("contingencies").doc(data._id).update({ status: 1 });
+                var querySaveContingency = await services.guardarContingencia(contingencia, $rootScope.galletainfo);
+                $scope.contingenciasTV = [];
+                $scope.contingenciasOTROS = [];
+                // $scope.gestioncontingencias();
+            }
+
+        } catch (error) {
+            swal({
+                title: "Información Pedido: ",
+                html: "No encontrado",
+                type: "warning"
+            });
+            console.log(error);
+            return;
+        }
+
+
+    }
+
     $scope.guardarcontingencia = function (data) {
         //console.log("guardarcontingencia: ",data);
         if (data.engestion == null) {
-            alert("Debes bloquear el pedido");
-            return;
+            swal({
+                type: 'error',
+                text: 'Debes marcar el pedido',
+            })
         } else if (data.tipificacion == undefined) {
-            alert("Recuerda seleccionar todas las opciones!!");
-            return;
+            swal({
+                type: 'error',
+                text: 'Selecciona la tipificacion'
+            })
         } else {
             $scope.gestioncontin = data;
             //console.log("gestioncontin: ",$scope.gestioncontin);
@@ -6737,13 +9316,19 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
         //console.log("guardarpedido: ",data);
         console.log(data);
         if (data.logincontingencia == null) {
-            alert("Debes de marcar la contingencia, antes de guardar!");
-        } else {
+            swal({
+                type: 'error',
+                text: 'Debes marcar el pedido',
+            })
+        }
+        else {
             if (!data.observacionescontingencia) {
-                alert("Debes ingresar las observaciones.");
+                swal({
+                    type: 'error',
+                    text: 'Debes Ingresar observaciones',
+                })
                 return;
             } else {
-                alert("Pedido guardado, recuerda actualizar!!");
                 //console.log("Antes de pasar a appi: ",data);
                 if (data.id_terreno != null && data.id_terreno != undefined && data.id_terreno != "") {
                     var currentTimeDate = new Date().toLocaleString();
@@ -6756,7 +9341,44 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                 }
                 services.editarregistrocontingencia(data, $rootScope.galletainfo)
                     .then(function (data) {
-
+                        if (data.data.state == 99) {
+                            swal({
+                                type: 'error',
+                                title: data.data.title,
+                                text: data.data.text,
+                                timer: 4000
+                            }).then(function () {
+                                $cookies.remove('usuarioseguimiento');
+                                $location.path('/');
+                                $rootScope.galletainfo = undefined;
+                                $rootScope.permiso = false;
+                                $route.reload();
+                            })
+                        } else if (data.data.state == 3) {
+                            swal({
+                                type: 'warning',
+                                text: data.data.text,
+                                timer: 4000
+                            }).then(function () {
+                                $scope.gestioncontingencias();
+                            })
+                        } else if (data.data.state == 1) {
+                            swal({
+                                type: 'success',
+                                text: data.data.text,
+                                timer: 4000
+                            }).then(function () {
+                                $scope.gestioncontingencias();
+                            })
+                        } else if (data.data.state == 0) {
+                            swal({
+                                type: 'error',
+                                text: data.data.text,
+                                timer: 4000
+                            }).then(function () {
+                                $scope.gestioncontingencias();
+                            })
+                        }
                     })
                     .catch(err => alert(err));
                 $scope.gestioncontingencias();
@@ -6786,46 +9408,43 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
 
             //console.log("marcarengestion: ",data);
 
-            if (data.data !== "") {
-                if (data.data[0] == "desbloqueado") {
-                    $scope.respuestaMarca = data.data[0][0];
-                    //console.log("respuestaMarcaDesbloqueado: ",$scope.respuestaMarca);
-                    swal({
-                        title: "Pedido Desbloqueado",
-                        type: "success",
-                        position: 'center',
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
-                    $scope.gestioncontingencias();
-                    //$scope.gestioncontingenciasPrueba();
-                    return;
-                } else {
-                    $scope.respuestaMarca = data.data[0][0];
-                    //console.log("respuestaMarcaOcupado: ",$scope.respuestaMarca);
-                    swal({
-                        title: "El pedido se encuentra bloqueado",
-                        type: "warning",
-                        position: 'center',
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
-                    $scope.gestioncontingencias();
-                    //$scope.gestioncontingenciasPrueba();
-                    return;
-                }
-            } else if (data.data == "") {
-                $scope.respuestaMarca = "";
+            if (data.data.state == 99) {
                 swal({
-                    title: "Pedido Bloqueado",
+                    type: 'error',
+                    title: data.data.title,
+                    text: data.data.text,
+                    timer: 3000
+                }).then(function () {
+                    $cookies.remove('usuarioseguimiento');
+                    $location.path('/');
+                    $rootScope.galletainfo = undefined;
+                    $rootScope.permiso = false;
+                    $route.reload();
+                })
+            } else if (data.data.state == 1) {
+                window.setTimeout(function () {
+                    $scope.gestioncontingencias();
+                }, 500);
+                swal({
+                    title: data.data.title,
+                    text: data.data.text,
                     type: "success",
                     position: 'center',
                     showConfirmButton: false,
                     timer: 3000
-                });
-                $scope.gestioncontingencias();
-                //$scope.gestioncontingenciasPrueba();
-                return;
+                })
+            } else if (data.data.state == 2) {
+                window.setTimeout(function () {
+                    $scope.gestioncontingencias();
+                }, 1000);
+                swal({
+                    title: data.data.title,
+                    text: data.data.text,
+                    type: "warning",
+                    position: 'center',
+                    showConfirmButton: false,
+                    timer: 3000
+                })
             }
         })
             .catch(err => console.log(err));
@@ -6857,8 +9476,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
         } else {
             alert("Pedido guardado, recuerda actualizar!!");
             //console.log("Antes de pasar a appi: ",data);
-            services.editarRegistroContingenciaPortafolio(data, $rootScope.galletainfo).then(function (data) {
-            });
+            services.editarRegistroContingenciaPortafolio(data, $rootScope.galletainfo).then(function (data) { });
             $scope.gestioncontingencias();
             //$scope.gestioncontingenciasPrueba();
         }
@@ -6869,7 +9487,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
         services.marcarEnGestionPorta(data, $rootScope.galletainfo).then(function (data) {
 
             //console.log("marcarEnGestionPorta: ",data.data[0]);
-            //console.log("marcarEnGestionPorta: ",data.config.data.login.login);
+            //console.log("marcarEnGestionPorta: ",data.config.data.login.LOGIN);
 
             if (data.data !== "") {
                 if (data.data[0] == "desbloqueado") {
@@ -6940,7 +9558,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
     //      services.marcarEnGestionCEQPorta(data, $rootScope.galletainfo).then(function (data) {
 
     //          //console.log("marcarEnGestionPorta: ",data.data[0]);
-    //          console.log("marcarEnGestionCEQPorta: ",data.config.data.login.login);
+    //          console.log("marcarEnGestionCEQPorta: ",data.config.data.login.LOGIN);
 
     //          if (data.data !== "") {
     //              if (data.data[0] == "desbloqueado") {
@@ -6975,7 +9593,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
 
     /*FIN DEL BLOQUE QUE GUARDAR LA GESTION DE CONTINGENCIA CORREGIR PORTAFOLIO*/
 
-    $scope.buscarPedidoContingencia = function (pedido) {
+    /*$scope.buscarPedidoContingencia = function (pedido) {
         console.log("pedido: ", pedido);
 
         if (pedido == undefined || pedido == "") {
@@ -6994,16 +9612,62 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             });
 
         }
+    }*/
+
+    $scope.buscarPedidoContingencia = function (pedido) {
+
+        if (pedido == undefined || pedido == "") {
+            swal({
+                type: 'error',
+                text: 'Ingrese el pedido a consultar'
+            })
+        } else {
+            services.getbuscarPedidoContingencia(pedido).then(completed).catch(failed)
+
+            function completed(data) {
+                if (data.data.state == 99) {
+                    swal({
+                        type: 'error',
+                        title: data.data.title,
+                        text: data.data.text,
+                        timer: 4000
+                    }).then(function () {
+                        $cookies.remove('usuarioseguimiento');
+                        $location.path('/');
+                        $rootScope.galletainfo = undefined;
+                        $rootScope.permiso = false;
+                        $route.reload();
+                    })
+                } else if (data.data.state === 0) {
+                    Swal({
+                        type: 'error',
+                        title: data.data.msj
+                    })
+                } else {
+                    $scope.databsucarPedido = data.data.data;
+                    $('#modalHistoricoContingencias').modal('show');
+                    return data.data;
+                }
+            }
+
+            function failed(data) {
+                console.log(data)
+            }
+
+        }
     }
 
 
     $scope.resumenContingencias = function (fechaInicial, fechafinal) {
         services.getresumenContingencias(fechaInicial, fechafinal).then(function (data) {
+            console.log(data);
 
-            console.log("resumenContingenciasasdasd: ", data.data[0]);
+            //console.log("resumenContingencias: ",data);
+            $scope.gridOptions.totalItems = 200;
+            $scope.gridOptions.data = data.data[0]
 
             $scope.dataresumenContingencias = data.data[0];
-            console.log("dataresumenContingencias: ", $scope.dataresumenContingencias);
+            //console.log("dataresumenContingencias: ",$scope.dataresumenContingencias);
 
             $scope.dataresumenContingenciasCP = data.data[5];
             //console.log("dataresumenContingenciasCP: ",$scope.dataresumenContingenciasCP);
@@ -7037,16 +9701,13 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
 
                 if ($scope.dataresumenContingencias[i].estado == 'Acepta') {
                     $scope.Totaltotal_pedidos_aceptados = +$scope.Totaltotal_pedidos_aceptados + 1;
-                }
-                ;
+                };
                 if ($scope.dataresumenContingencias[i].estado == 'Rechaza') {
                     $scope.Totaltotal_pedidos_rechazados = +$scope.Totaltotal_pedidos_rechazados + 1;
-                }
-                ;
+                };
                 if ($scope.dataresumenContingencias[i].estado == 'Pendiente') {
                     $scope.Totaltotal_pedidos_pendientes = +$scope.Totaltotal_pedidos_pendientes + 1;
-                }
-                ;
+                };
             }
 
             /*CONTADOR DIARIO PARA TV*/
@@ -7062,16 +9723,13 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             for (var i = 0; i < tam1; i++) {
                 if ($scope.dataresumenContingenciasTV[i].estado == 'Acepta') {
                     $scope.Totaltotal_pedidos_aceptadosTV = +$scope.Totaltotal_pedidos_aceptadosTV + 1;
-                }
-                ;
+                };
                 if ($scope.dataresumenContingenciasTV[i].estado == 'Rechaza') {
                     $scope.Totaltotal_pedidos_rechazadosTV = +$scope.Totaltotal_pedidos_rechazadosTV + 1;
-                }
-                ;
+                };
                 if ($scope.dataresumenContingenciasTV[i].estado == 'Pendiente') {
                     $scope.Totaltotal_pedidos_pendientesTV = +$scope.Totaltotal_pedidos_pendientesTV + 1;
-                }
-                ;
+                };
             }
             $scope.Totaltotal_pedidos_pendientesTV += $scope.cantidadContingenciasTV;
             /*SE RECORREO EL ARREGLO IDENTIFICNADO Y ALMACENANDO LOS LOGINES DE QUIENES TIENEN MARCADAS CONTINGENCIAS PARA GESTIONAR*/
@@ -7079,13 +9737,12 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                 if ($scope.dataresumenContingenciasTV[i].estado == 'Pendiente' && $scope.dataresumenContingenciasTV[i].logincontingencia !== null && $scope.dataresumenContingenciasTV[i].estado == 'Pendiente' && $scope.dataresumenContingenciasTV[i].logincontingencia !== "") {
                     $scope.LoginsGestionandoTV[indiceTV] = $scope.dataresumenContingenciasTV[i].logincontingencia;
                     indiceTV = indiceTV + 1;
-                }
-                ;
+                };
             }
             /*SE CUENTAN LOS USUARIOS ÚNICOS, PARA SABER LA CANTIDAD REAL DE PERSONAS QUE ESTAN GESTIONANDO CONTINGENCIAS*/
             $scope.Total_Personas_GestionandoTV = $scope.LoginsGestionandoTV.filter((v, i, a) => a.indexOf(v) === i).length;
 
-            /*SE HACE EL CONTEO POR login YA QUE HAY PERSONAS QUE MARCAN PARA GESTIONAR MAS DE UNA CONTINGENCIA*/
+            /*SE HACE EL CONTEO POR LOGIN YA QUE HAY PERSONAS QUE MARCAN PARA GESTIONAR MAS DE UNA CONTINGENCIA*/
             const cantAnalistasTV = $scope.LoginsGestionandoTV.reduce((contadorAnalistasTV, indiceTV) => {
                 contadorAnalistasTV[indiceTV] = (contadorAnalistasTV[indiceTV] || 0) + 1;
                 return contadorAnalistasTV;
@@ -7105,16 +9762,13 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
             for (var i = 0; i < tam2; i++) {
                 if ($scope.dataresumenContingenciasInTo[i].estado == 'Acepta') {
                     $scope.Totaltotal_pedidos_aceptadosInTo = +$scope.Totaltotal_pedidos_aceptadosInTo + 1;
-                }
-                ;
+                };
                 if ($scope.dataresumenContingenciasInTo[i].estado == 'Rechaza') {
                     $scope.Totaltotal_pedidos_rechazadosInTo = +$scope.Totaltotal_pedidos_rechazadosInTo + 1;
-                }
-                ;
+                };
                 if ($scope.dataresumenContingenciasInTo[i].estado == 'Pendiente') {
                     $scope.Totaltotal_pedidos_pendientesInTo = +$scope.Totaltotal_pedidos_pendientesInTo + 1;
-                }
-                ;
+                };
             }
             $scope.Totaltotal_pedidos_pendientesInTo += $scope.cantidadContingenciasINT;
             /*SE RECORREO EL ARREGLO IDENTIFICNADO Y ALMACENANDO LOS LOGINES DE QUIENES TIENEN MARCADAS CONTINGENCIAS PARA GESTIONAR*/
@@ -7122,13 +9776,12 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                 if ($scope.dataresumenContingenciasInTo[i].estado == 'Pendiente' && $scope.dataresumenContingenciasInTo[i].logincontingencia !== null && $scope.dataresumenContingenciasInTo[i].estado == 'Pendiente' && $scope.dataresumenContingenciasInTo[i].logincontingencia !== "") {
                     $scope.LoginsGestionandoInternet[indiceInternet] = $scope.dataresumenContingenciasInTo[i].logincontingencia;
                     indiceInternet = indiceInternet + 1;
-                }
-                ;
+                };
             }
             /*SE CUENTAN LOS USUARIOS ÚNICOS, PARA SABER LA CANTIDAD REAL DE PERSONAS QUE ESTAN GESTIONANDO CONTINGENCIAS*/
             $scope.Total_Personas_GestionandoInternet = $scope.LoginsGestionandoInternet.filter((v, i, a) => a.indexOf(v) === i).length;
 
-            /*SE HACE EL CONTEO POR login YA QUE HAY PERSONAS QUE MARCAN PARA GESTIONAR MAS DE UNA CONTINGENCIA*/
+            /*SE HACE EL CONTEO POR LOGIN YA QUE HAY PERSONAS QUE MARCAN PARA GESTIONAR MAS DE UNA CONTINGENCIA*/
             const cantAnalistasInt = $scope.LoginsGestionandoInternet.reduce((contadorAnalistasInternet, indiceInternet) => {
                 contadorAnalistasInternet[indiceInternet] = (contadorAnalistasInternet[indiceInternet] || 0) + 1;
                 return contadorAnalistasInternet;
@@ -7147,24 +9800,20 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
 
                 if ($scope.dataresumenContingenciasCP[i].estado == 'Acepta') {
                     $scope.Totaltotal_pedidos_aceptadosCP = +$scope.Totaltotal_pedidos_aceptadosCP + 1;
-                }
-                ;
+                };
                 if ($scope.dataresumenContingenciasCP[i].estado == 'Rechaza') {
                     $scope.Totaltotal_pedidos_rechazadosCP = +$scope.Totaltotal_pedidos_rechazadosCP + 1;
-                }
-                ;
+                };
                 if ($scope.dataresumenContingenciasCP[i].estado == 'Pendiente') {
                     $scope.Totaltotal_pedidos_pendientesCP = +$scope.Totaltotal_pedidos_pendientesCP + 1;
-                }
-                ;
+                };
             }
 
             /*CONTADOR DE PERSONAS GESTIONANDO CONTINGENCIAS DE CP*/
             for (var i = 0; i < tam; i++) {
                 if ($scope.dataresumenContingenciasCP[i].estado == 'Pendiente' && $scope.dataresumenContingenciasCP[i].loginContingenciaPortafolio !== null && $scope.dataresumenContingenciasCP[i].estado == 'Pendiente' && $scope.dataresumenContingenciasCP[i].loginContingenciaPortafolio !== "") {
                     $scope.Total_Personas_GestionandoCP = +$scope.Total_Personas_GestionandoCP + 1;
-                }
-                ;
+                };
             }
 
             return data.data;
@@ -7174,21 +9823,18 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
     }
 
     $scope.descargarContingencias = function (fechaInicial, fechafinal) {
-        //console.log(datoExportar+$scope.indicadores.fecha);
         services.getexporteContingencias(fechaInicial, fechafinal, $rootScope.galletainfo).then(
             function (datos) {
-                // console.log(data.data[0]);
-                //window.location.href = "tmp/" + data.data[0];
-                //return data.data;
+
                 var data = datos.data[0];
                 var array = typeof data != 'object' ? JSON.parse(data) : data;
                 var str = '';
-                var column = `ACCION, CIUDAD, CORREO, MAC_ENTRA, MAC_SALE, MOTIVO, OBSERVACIONES, PAQUETES, PEDIDO, PROCESO, PRODUCTO, REMITENTE, TECNOLOGIA, TIPO_EQUIPO, UEN, CONTRATO, PERFIL, LOGIN, LOGIN_GESTION, HORA_INGRESO, HORA_GESTION, OBSERVACIONES_GESTION, ESTADO, TIPIFICACION, FECHACLICKMARCA, LOGIN_PORTAFILO, HORA_GESTION_PORTAFOLIO, TIPIFICACION_PORTAFOLIO, OBSERVACIONES_GESTION_PORTAFOLIO, GENERAR_CR \r\n`;
+                var column = `ACCION| CIUDAD| MAC_ENTRA| MAC_SALE| MOTIVO| OBSERVACIONES| PAQUETES| PEDIDO| PROCESO| PRODUCTO| REMITENTE| TECNOLOGIA| TIPO_EQUIPO| UEN| CONTRATO| PERFIL| LOGIN| LOGIN_GESTION| HORA_INGRESO| HORA_GESTION| OBSERVACIONES_GESTION| ESTADO| TIPIFICACION| FECHACLICKMARCA| LOGIN_PORTAFILO| HORA_GESTION_PORTAFOLIO| TIPIFICACION_PORTAFOLIO| OBSERVACIONES_GESTION_PORTAFOLIO| GENERAR_CR \r\n`;
                 str += column;
                 for (var i = 0; i < array.length; i++) {
                     var line = '';
                     for (var index in array[i]) {
-                        if (line != '') line += ','
+                        if (line != '') line += '|'
                         line += array[i][index];
                     }
 
@@ -7204,15 +9850,30 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
                 var blob = new Blob([str]);
                 var elementToClick = window.document.createElement("a");
                 elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
-                elementToClick.download = "Contingencias-" + fullDateCsv + ".csv";
+                elementToClick.download = "RegistroContingencia-" + fullDateCsv + ".csv";
                 elementToClick.click();
-                console.log(str);
             },
             function errorCallback(response) {
+                $scope.errorDatos = "No hay datos.";
+                $scope.csvPend = false;
             }
         );
 
     };
+
+
+    /*$scope.descargarContingencias = function (fechaInicial, fechafinal) {
+        //console.log(datoExportar+$scope.indicadores.fecha);
+        services.getexporteContingencias(fechaInicial, fechafinal, $rootScope.galletainfo).then(
+            function (data) {
+                // console.log(data.data[0]);
+                window.location.href = "tmp/" + data.data[0];
+                return data.data;
+            },
+            function errorCallback(response) { }
+        );
+
+    };*/
 
     /*MOSTRAR MODAL PARA CIERRE MASIVO DE CONTINGENCIAS*/
 
@@ -7379,6 +10040,7 @@ app.controller('GestioncontingenciasCtrl', function ($scope, $rootScope, $locati
     $scope.resumenContingencias($scope.fechaupdateInical, $scope.fechaupdateFinal);
 });
 
+
 app.controller('pendientesBrutalCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, $uibModal, services) {
 
     $scope.abrirModalPendientes = function () {
@@ -7421,258 +10083,6 @@ app.controller('GestionsoportegponCtrl', function ($scope, $rootScope, $location
 
     var database = firebase.firestore();
 
-    // $scope.listarsoportegpon = () => {
-
-    //     $scope.isLoadingData = false;
-
-    //     database.collection("support-gpon")
-    //         .where("status", "==", 0)
-    //         .orderBy("date_created", "asc")
-    //         .get()
-    //         .then((querySnapshot) => {
-
-    //             $scope.listaSoporteGpon = [];
-
-    //             querySnapshot.forEach(async (doc) => {
-    //                 let dataQuerySnapshot = {};
-    //                 dataQuerySnapshot = {
-    //                     _id: doc.id,
-    //                     task: doc.data().task,
-    //                     arpon: doc.data().arpon,
-    //                     nap: doc.data().nap,
-    //                     hilo: doc.data().hilo,
-    //                     internet1: doc.data().internet1,
-    //                     internet2: doc.data().internet2,
-    //                     internet3: doc.data().internet3,
-    //                     internet4: doc.data().internet4,
-    //                     television1: doc.data().television1,
-    //                     television2: doc.data().television2,
-    //                     television3: doc.data().television3,
-    //                     television4: doc.data().television4,
-    //                     numeroContacto: doc.data().numeroContacto,
-    //                     nombreContacto: doc.data().nombreContacto,
-    //                     observacion: doc.data().observacion,
-    //                     userId: doc.data().userId,
-    //                     emailUsr: doc.data().emailUsr,
-    //                     userIdentification: doc.data().userIdentification,
-    //                     status: doc.data().status,
-    //                     date_created: doc.data().date_created,
-    //                 }
-
-    //                 var date = dataQuerySnapshot.date_created.toDate();
-    //                 var year = date.getFullYear();
-    //                 var month = ((date.getMonth() + 1) < 10) ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1);
-    //                 var day = (date.getDate() < 10) ? "0" + date.getDate() : date.getDate();
-    //                 var hours = (date.getHours() < 10) ? "0" + date.getHours() : date.getHours();
-    //                 var minutes = (date.getMinutes() < 10) ? "0" + date.getMinutes() : date.getMinutes();
-    //                 var seconds = (date.getSeconds() < 10) ? "0" + date.getSeconds() : date.getSeconds();
-
-    //                 var formattedTime = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
-
-    //                 dataQuerySnapshot.fecha_solicitud = formattedTime;
-    //                 $scope.listaSoporteGpon.push(dataQuerySnapshot);
-    //             });
-
-    //             console.log('$scope.listaSoporteGpon', $scope.listaSoporteGpon);
-
-    //             $scope.listaSoporteGpon.forEach(async (val) => {
-
-    //                 let task = val.task;
-    //                 let arpon = val.arpon;
-    //                 let nap = val.nap;
-    //                 let hilo = val.hilo;
-    //                 let internet1 = val.internet1;
-    //                 let internet2 = val.internet2;
-    //                 let internet3 = val.internet3;
-    //                 let internet4 = val.internet4;
-    //                 let television1 = val.television1;
-    //                 let television2 = val.television2;
-    //                 let television3 = val.television3;
-    //                 let television4 = val.television4;
-    //                 let numeroContacto = val.numeroContacto;
-    //                 let nombreContacto = val.nombreContacto;
-    //                 let observacionTerreno = val.observacion;
-    //                 let user_id = val.userId;
-    //                 let request_id = val._id;
-    //                 let user_identification = val.userIdentification;
-    //                 let fecha_solicitud = val.fecha_solicitud;
-    //                 let unepedido = '';
-    //                 let tasktypecategory = '';
-    //                 let unemunicipio = '';
-    //                 let uneproductos = '';
-    //                 let datoscola = '';
-    //                 let engineer_id = '';
-    //                 let engineer_name = '';
-    //                 let mobile_phone = '';
-    //                 let serial = '';
-    //                 let mac = '';
-    //                 let tipo_equipo = '';
-    //                 let velocidad_navegacion = '';
-
-    //                 var autocompleteQuery = await fetch('http://10.100.66.254:8080/HCHV_DEV/BuscarTaskGpon/' + task);
-    //                 var autocompleteData = await autocompleteQuery.json();
-
-    //                 if (autocompleteData.length != 0) {
-
-    //                     unepedido = autocompleteData[0].UNEPedido
-    //                     tasktypecategory = autocompleteData[0].categoria
-    //                     unemunicipio = autocompleteData[0].UNEMunicipio
-    //                     uneproductos = autocompleteData[0].UNEProductos
-    //                     engineer_id = autocompleteData[0].EngineerID
-    //                     engineer_name = autocompleteData[0].EngineerName
-    //                     mobile_phone = autocompleteData[0].MobilePhone
-    //                     velocidad_navegacion = autocompleteData[0].VelocidadNavegacion
-
-    //                     var serialsArray = [];
-    //                     autocompleteData.forEach((item) => { if (serialsArray.indexOf(item.SerialNo) < 0) { serialsArray.push(item.SerialNo) } });
-
-    //                     var macsArray = [];
-    //                     autocompleteData.forEach((item) => { if (macsArray.indexOf(item.MAC) < 0) { macsArray.push(item.MAC) } });
-
-    //                     var tipoEqArray = [];
-    //                     autocompleteData.forEach((item) => { if (tipoEqArray.indexOf(item.TipoEquipo) < 0) { tipoEqArray.push(item.TipoEquipo) } });
-
-    //                     var planProdArray = [];
-    //                     autocompleteData.forEach((item) => { if (planProdArray.indexOf(item.UNEPlanProducto) < 0) { planProdArray.push(item.UNEPlanProducto) } });
-
-
-    //                     autocompleteData.forEach((item) => {
-    //                         if (item.UNEPlanProducto.indexOf('TO') >= 0) {
-    //                             let splitdatoscolas = item.DatosCola1.split('*');
-    //                             let datanumero = splitdatoscolas.find((element) => {
-    //                                 if (element.indexOf('Numero') >= 0) {
-    //                                     return element;
-    //                                 }
-    //                             });
-
-    //                             if (planProdArray.indexOf(datanumero) < 0) { planProdArray.push(datanumero) }
-    //                         }
-    //                     });
-
-    //                     serial = serialsArray.join(', ');
-    //                     mac = macsArray.join(', ');
-    //                     tipo_equipo = tipoEqArray.join(', ');
-    //                     datoscola = planProdArray.join(', ');
-
-    //                 }
-
-    //                 /* await services.validarLlenadoSoporteGpon(task)
-    //                 .then(async function(data) {
-
-    //                     if (data.data.length > 0) {
-    //                         let validarllenado = data.data[0][0]['unepedido'];
-
-    //                         if (validarllenado == '' || validarllenado == null) {
-    //                             console.log('INGRESO AL LLENADO');
-    //                             await services.postPendientesSoporteGpon(task, arpon, nap, hilo, internet1, internet2, internet3, internet4, television1, television2, television3, television4, numeroContacto, nombreContacto, user_id, request_id, user_identification, fecha_solicitud, unepedido, tasktypecategory, unemunicipio, uneproductos, datoscola, engineer_id, engineer_name, mobile_phone, serial, mac, tipo_equipo, velocidad_navegacion).then(function(data) {
-    //                                 console.log('successPOST', data);
-    //                             }).catch( (err) => {
-    //                                 //$scope.listarsoportegpon();
-    //                                 console.log('err', err);
-    //                             });
-    //                         } else {
-    //                             console.log('NO LLENO NADA');
-    //                         }
-    //                     } else {
-    //                         await services.postPendientesSoporteGpon(task, arpon, nap, hilo, internet1, internet2, internet3, internet4, television1, television2, television3, television4, numeroContacto, nombreContacto, user_id, request_id, user_identification, fecha_solicitud, unepedido, tasktypecategory, unemunicipio, uneproductos, datoscola, engineer_id, engineer_name, mobile_phone, serial, mac, tipo_equipo, velocidad_navegacion).then(function(data) {
-    //                             console.log('successPOST', data);
-    //                         }).catch( (err) => {
-    //                             //$scope.listarsoportegpon();
-    //                             console.log('err', err);
-    //                         });
-    //                     }
-
-    //                 }).catch( (err) => {
-    //                     //$scope.listarsoportegpon();
-    //                     console.log('errValLlenado', err);
-    //                 }); */
-
-    //                 await services.postPendientesSoporteGpon(task, arpon, nap, hilo, internet1, internet2, internet3, internet4, television1, television2, television3, television4, numeroContacto, nombreContacto, user_id, request_id, user_identification, fecha_solicitud, unepedido, tasktypecategory, unemunicipio, uneproductos, datoscola, engineer_id, engineer_name, mobile_phone, serial, mac, tipo_equipo, velocidad_navegacion, observacionTerreno).then(function (data) {
-    //                     console.log('successPOST', data);
-    //                 }).catch((err) => {
-    //                     //$scope.listarsoportegpon();
-    //                     console.log('err', err);
-    //                 });
-
-
-    //                 /* services.getPendientesSoporteGpon(val.task).then(function(data) {
-
-    //                     if (data.data.length != 0) {
-
-    //                         unepedido = data.data[0].UNEPedido
-    //                         tasktypecategory = data.data[0].categoria
-    //                         unemunicipio = data.data[0].UNEMunicipio
-    //                         uneproductos = data.data[0].UNEProductos
-    //                         engineer_id = data.data[0].EngineerID
-    //                         engineer_name = data.data[0].EngineerName
-    //                         mobile_phone = data.data[0].MobilePhone
-    //                         velocidad_navegacion = data.data[0].VelocidadNavegacion
-
-    //                         var serialsArray = [];
-    //                         data.data.forEach((item) => { if (serialsArray.indexOf(item.SerialNo) < 0) {serialsArray.push(item.SerialNo)} });
-
-    //                         var macsArray = [];
-    //                         data.data.forEach((item) => { if (macsArray.indexOf(item.MAC) < 0) {macsArray.push(item.MAC)} });
-
-    //                         var tipoEqArray = [];
-    //                         data.data.forEach((item) => { if (tipoEqArray.indexOf(item.TipoEquipo) < 0) {tipoEqArray.push(item.TipoEquipo)} });
-
-    //                         var planProdArray = [];
-    //                         data.data.forEach((item) => { if (planProdArray.indexOf(item.UNEPlanProducto) < 0) {planProdArray.push(item.UNEPlanProducto)} });
-
-    //                         serial = serialsArray.join(', ');
-    //                         mac = macsArray.join(', ');
-    //                         tipo_equipo = tipoEqArray.join(', ');
-    //                         datoscola = planProdArray.join(', ');
-
-    //                     }
-
-    //                     services.postPendientesSoporteGpon(task, arpon, nap, hilo, internet1, internet2, internet3, internet4, television1, television2, television3, television4, numeroContacto, nombreContacto, user_id, request_id, user_identification, fecha_solicitud, unepedido, tasktypecategory, unemunicipio, uneproductos, datoscola, engineer_id, engineer_name, mobile_phone, serial, mac, tipo_equipo, velocidad_navegacion).then(function(data) {
-    //                         console.log('successPOST', data);
-    //                     }).catch( (err) => {
-    //                         //$scope.listarsoportegpon();
-    //                         console.log('err', err);
-    //                     });
-
-    //                     //return data;
-    //                 }).catch( (err) => {
-    //                     //$scope.listarsoportegpon();
-    //                     console.log('err', err);
-    //                 }); */
-
-    //             });
-
-    //             services.getListaPendientesSoporteGpon().then(function (data) {
-
-    //                 if (data.data.length > 0) {
-
-    //                     console.log('data', data.data[0]);
-
-    //                     $scope.dataSoporteGpon = data.data[0];
-    //                     $scope.isLoadingData = false;
-    //                 }
-    //                 else {
-    //                     $scope.flagOnlyPSData = true;
-    //                 }
-
-    //                 return data;
-    //             }).catch((err) => {
-    //                 console.log(err)
-    //             });
-
-    //             $scope.isLoadingData = false;
-
-    //             //$scope.gestionsoportegpon();
-
-    //             /* if($scope.flagOnlyPSData){
-    //                 $scope.dataSoporteGpon = $scope.listaSoporteGpon.concat($scope.dataGestionEscalamiento);
-    //                 $scope.isLoadingData = false;
-    //             } */
-    //         }).catch((err) => {
-    //             console.log(err);
-    //         });
-    // }
-
     $scope.listarsoportegpon = () => {
 
         $scope.isLoadingData = true;
@@ -7681,9 +10091,6 @@ app.controller('GestionsoportegponCtrl', function ($scope, $rootScope, $location
             .then(function (data) {
 
                 if (data.data.length > 0) {
-
-                    console.log('data', data.data[0]);
-
                     $scope.dataSoporteGpon = data.data[0];
                     $scope.isLoadingData = false;
                 } else {
@@ -7702,10 +10109,7 @@ app.controller('GestionsoportegponCtrl', function ($scope, $rootScope, $location
 
         services.marcarEngestionGpon(data, $rootScope.galletainfo).then(function (data) {
 
-            console.log("marcarengestion: ", data);
             if (data.data.state == 0) {
-                //$scope.respuestaMarca = data.data[0][0];
-                //console.log("respuestaMarcaDesbloqueado: ",$scope.respuestaMarca);
                 swal({
                     title: data.data.msj,
                     type: "warning",
@@ -7714,10 +10118,7 @@ app.controller('GestionsoportegponCtrl', function ($scope, $rootScope, $location
                     timer: 3000
                 });
                 $scope.listarsoportegpon();
-                //$scope.gestioncontingenciasPrueba();
             } else {
-                //$scope.respuestaMarca = data.data[0][0];
-                //console.log("respuestaMarcaOcupado: ",$scope.respuestaMarca);
                 swal({
                     title: data.data.msj,
                     type: "success",
@@ -7762,8 +10163,6 @@ app.controller('GestionsoportegponCtrl', function ($scope, $rootScope, $location
             }
 
             services.gestionarSoporteGpon(id_soporte, tipificacion, observacion, $rootScope.galletainfo).then(function (data) {
-                console.log('successPUT', data);
-                //database.collection("support-gpon").doc(id_firebase).update({status: 1});
 
                 $scope.listarsoportegpon();
 
@@ -7774,7 +10173,6 @@ app.controller('GestionsoportegponCtrl', function ($scope, $rootScope, $location
                 });
 
             }).catch((err) => {
-                //$scope.listarsoportegpon();
                 console.log('err', err);
             });
 
@@ -7786,6 +10184,44 @@ app.controller('GestionsoportegponCtrl', function ($scope, $rootScope, $location
             });
             return false;
         }
+
+    }
+
+    $scope.BuscarSoporteGpon = function () {
+
+            services.BuscarSoporteGpon($scope.gpon.pedido).then(complete).catch(failed)
+            function complete(data) {
+
+                if (data.data.state == 99) {
+                    swal({
+                        type: 'error',
+                        title: data.data.title,
+                        text: data.data.text,
+                        timer: 4000
+                    }).then(function () {
+                        $cookies.remove('usuarioseguimiento');
+                        $location.path('/');
+                        $rootScope.galletainfo = undefined;
+                        $rootScope.permiso = false;
+                        $route.reload();
+                    })
+                } else if (data.data.state != 1) {
+                    swal({
+                        type: 'error',
+                        text: data.data.text,
+                        timer: 4000
+                    })
+                }else {
+                    console.log(data.data.data)
+                    $scope.gpon.databsucarPedido = data.data.data;
+                    $('#modalPedidoGpon').modal('show');
+                    return data.data;
+                }
+            }
+
+            function failed(data) {
+                console.log(data)
+            }
 
     }
 
@@ -7802,106 +10238,295 @@ app.controller('registrossoportegponCtrl', function ($scope, $http, $rootScope, 
     $scope.datosRegistros = {};
     $scope.verplantilla = false;
 
-    if ($scope.RegistrosSoporteGpon.fechaini == undefined || $scope.RegistrosSoporteGpon.fechafin == undefined) {
-        var tiempo = new Date().getTime();
-        var date1 = new Date();
-        var year = date1.getFullYear();
-        var month = (date1.getMonth() + 1 <= 9) ? '0' + (date1.getMonth() + 1) : (date1.getMonth() + 1);
-        var day = (date1.getDate() <= 9) ? '0' + date1.getDate() : date1.getDate();
+    getGrid();
 
-        tiempo = year + "-" + month + "-" + day;
+    var database = firebase.firestore();
 
-        $scope.fechaini = tiempo;
-        $scope.fechafin = tiempo;
+    function getGrid() {
 
-        //console.log("fechaini: ",$scope.fechaini);
-        //console.log("fechafin: ",$scope.fechafin);
-    }
+        var columnDefs = [
+            {
+                name: "Tarea",
+                field: "tarea",
+                minWidth: 70,
+                width: "5%",
+                enableCellEdit: false,
+                enableFiltering: true,
+                enableRowHeaderSelection: true,
+                cellFilter: 'currency:"":0',
+            },
+            {
+                name: "Pedido",
+                field: "unepedido",
+                minWidth: 80,
+                width: "7%",
+                enableCellEdit: false,
+                enableFiltering: true,
 
-    $scope.setPage = function (pageNo) {
-        $scope.datapendientes.currentPage = pageNo;
-    };
+            }, {
+                name: "Numero contacto",
+                field: "numero_contacto",
+                minWidth: 80,
+                width: "5%",
+                enableCellEdit: false,
 
-    $scope.pageChanged = function () {
-        $scope.BuscarRegistros($scope.datapendientes.currentPage);
-    };
+            }, {
+                name: "Nombre contacto",
+                field: "nombre_contacto",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+                cellTooltip:
+                    function (row, col) {
+                        return row.entity.nombre_contacto;
+                    }
+            }, {
+                name: "Tasktypecategory",
+                field: "tasktypecategory",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "7%",
+                enableCellEdit: false,
 
-    $scope.BuscarRegistrosSoporteGpon = function (datos) {
-        console.log("BuscarRegistrosSoporteGpon: ", datos);
-        $scope.errorDatos = null;
-        $scope.csvPend = false;
-        $scope.listaRegistros = {};
+            }, {
+                name: "Municipio",
+                field: "unemunicipio",
+                cellStyle: {"text-align": "center"},
+                minWidth: 80,
+                width: "4%",
+                enableCellEdit: false,
+            }, {
+                name: "Productos",
+                field: "uneproductos",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "7%",
+                enableCellEdit: false,
+                cellTooltip:
+                    function (row, col) {
+                        return row.entity.uneproductos;
+                    }
+            }, {
+                name: "Datoscola",
+                field: "datoscola",
+                cellStyle: {"text-align": "center"},
+                width: "5%",
+                enableCellEdit: false,
+                cellFilter: 'currency:"":0',
+            }, {
+                name: "CC técnico",
+                field: "engineer_id",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "6%",
+                enableCellEdit: false,
+            }, {
+                name: "Nom técnico",
+                field: "engineer_name",
+                cellStyle: {"text-align": "center"},
+                width: "10%",
+                enableCellEdit: false,
+            },
+            {
+                name: "Celular",
+                field: "mobile_phone",
+                cellStyle: {"text-align": "center"},
+                width: "6%",
+                enableCellEdit: false,
+            }, {
+                name: "Tipo equipo",
+                field: "tipo_equipo",
+                cellStyle: {"text-align": "center"},
+                width: "10%",
+                enableCellEdit: false,
+                cellTooltip:
+                    function (row, col) {
+                        return row.entity.tipo_equipo;
+                    }
+            }, {
+                name: "Respuesta soporte",
+                field: "respuesta_soporte",
+                cellStyle: {"text-align": "center"},
+                width: "8%",
+                enableCellEdit: false,
+            }, {
+                name: "Login",
+                field: "login",
+                cellStyle: {"text-align": "center"},
+                width: "5%",
+                enableCellEdit: false,
+            }, {
+                name: "Fecha creado",
+                field: "fecha_creado",
+                cellStyle: {"text-align": "center"},
+                width: "8%",
+                enableCellEdit: false,
+            }, {
+                name: "Fecha respuesta",
+                field: "fecha_respuesta",
+                cellStyle: {"text-align": "center"},
+                width: "8%",
+                enableCellEdit: false,
+            }, {
+                name: "Acc.",
+                cellTemplate: "<div style='text-align: center'>" +
+                    '<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.muestraNotas(row)">' +
+                    '<i class="fa fa-pencil-square" aria-hidden="true"> </i>' +
+                    '</button>',
+                minWidth: 50,
+                width: "3%",
+                enableFiltering: false
+            }];
 
-        if (datos.fechaini > datos.fechafin) {
-            alert("La fecha inicial debe ser menor que la inicial");
-            return;
-        } else {
+        var paginationOptions = {
+            sort: null
+        };
 
-            services.registrossoportegpon($scope.datapendientes.currentPage, datos).then(
-                function (data) {
-                    console.log("registros: ", data);
-                    $scope.listaRegistros = data.data[0];
-                    //console.log("listaRegistros: ", $scope.listaRegistros);
-                    $scope.cantidad = data.data[0].length;
-                    $scope.counter = data.data[1];
+        $scope.gridOptions = {
+            enableFiltering: true,
+            enablePagination: true,
+            pageSize: 200,
+            enableHorizontalScrollbar: false,
+            enablePaginationControls: true,
+            columnDefs: columnDefs,
+            paginationPageSizes: [200, 500, 1000],
+            paginationPageSize: 200,
+            enableRowHeaderSelection: true,
 
-                    return data.data;
-                },
+            exporterMenuPdf: false,
+            enableGridMenu: true,
 
-                function errorCallback(response) {
-                    if (datos.concepto == undefined || datos.buscar == undefined) {
-                        if (datos.fechaini == datos.fechafin) {
-                            $scope.errorDatos = "No hay datos para el día:  " + datos.fechaini;
+            useExternalPagination: true,
+            useExternalSorting: true,
+            enableRowSelection: true,
+
+            exporterCsvFilename: 'Registros.csv',
+
+            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+            exporterExcelFilename: 'Registros.xlsx',
+            exporterExcelSheetName: 'Sheet1',
+
+            onRegisterApi: function (gridApi) {
+                $scope.gridApi = gridApi;
+                $scope.gridApi.core.on.sortChanged($scope, function (grid, sortColumns) {
+                    if (getPage) {
+                        if (sortColumns.length > 0) {
+                            paginationOptions.sort = sortColumns[0].sort.direction;
                         } else {
-                            $scope.errorDatos = "No hay datos entre " + datos.fechaini + " - " + datos.fechafin;
+                            paginationOptions.sort = null;
                         }
-                    } else
-                        $scope.errorDatos = datos.concepto + " " + datos.buscar + " no existe.";
+                        getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, $scope.RegistrosSoporteGpon)
+                    }
                 });
-        }
+                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                    if (getPage) {
+                        getPage(newPage, pageSize, $scope.RegistrosSoporteGpon);
+                    }
+                });
+            }
+        };
+
+        var getPage = function (curPage, pageSize, RegistrosSoporteGpon) {
+            services.registrossoportegpon(curPage, pageSize, RegistrosSoporteGpon).then(complete).catch(failed)
+
+            function complete(data) {
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptions.totalItems = counter;
+                var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+
+        };
+
+        getPage(1, $scope.gridOptions.paginationPageSize, paginationOptions.sort);
     }
 
-    $scope.muestraNotas = function (datos) {
-
-        /* $scope.pedido = datos.pedido;
-        $scope.TituloModal = "Observaciones para el pedido:";
-        $scope.observaciones = datos.observaciones; */
-        // console.log( $scope.observaciones);
-
-        console.log("datos", datos);
+    $scope.muestraNotas = function (row) {
 
         $scope.TituloModal = 'Detalle soporte gpon';
-        $scope.pedido = datos.unepedido;
-        $scope.tarea = datos.tarea;
-        $scope.velocidadnavegacion = datos.velocidad_navegacion;
-        $scope.arpon = datos.arpon;
-        $scope.nap = datos.nap;
-        $scope.hilo = datos.hilo;
-        $scope.intenet1 = (datos.port_internet_1 == '1') ? 'X' : '';
-        $scope.intenet2 = (datos.port_internet_2 == '1') ? 'X' : '';
-        $scope.intenet3 = (datos.port_internet_3 == '1') ? 'X' : '';
-        $scope.intenet4 = (datos.port_internet_4 == '1') ? 'X' : '';
-        $scope.television1 = (datos.port_television_1 == '1') ? 'X' : '';
-        $scope.television2 = (datos.port_television_2 == '1') ? 'X' : '';
-        $scope.television3 = (datos.port_television_3 == '1') ? 'X' : '';
-        $scope.television4 = (datos.port_television_4 == '1') ? 'X' : '';
+        $scope.pedido = row.entity.unepedido;
+        $scope.tarea = row.entity.tarea;
+        $scope.velocidadnavegacion = row.entity.velocidad_navegacion;
+        $scope.arpon = row.entity.arpon;
+        $scope.nap = row.entity.nap;
+        $scope.hilo = row.entity.hilo;
+        $scope.intenet1 = (row.entity.port_internet_1 == '1') ? 'X' : '';
+        $scope.intenet2 = (row.entity.port_internet_2 == '1') ? 'X' : '';
+        $scope.intenet3 = (row.entity.port_internet_3 == '1') ? 'X' : '';
+        $scope.intenet4 = (row.entity.port_internet_4 == '1') ? 'X' : '';
+        $scope.television1 = (row.entity.port_television_1 == '1') ? 'X' : '';
+        $scope.television2 = (row.entity.port_television_2 == '1') ? 'X' : '';
+        $scope.television3 = (row.entity.port_television_3 == '1') ? 'X' : '';
+        $scope.television4 = (row.entity.port_television_4 == '1') ? 'X' : '';
 
-        let listaseriales = datos.serial.split(',');
-        let listamacs = datos.mac.split(',');
+        let listaseriales = row.entity.serial.split(',');
+        let listamacs = row.entity.mac.split(',');
 
         $scope.listaSeriales = listaseriales;
         $scope.listaMacs = listamacs;
-        $scope.observaciones = datos.observacion;
+        $scope.observaciones = row.entity.observacion;
+
+        $("#NotasModal").modal('show');
     }
 
-
-    $scope.csvRegistros = function () {
-        $scope.csvPend = false;
-        if ($scope.RegistrosSoporteGpon.fechaini > $scope.RegistrosSoporteGpon.fechafin) {
-            alert("La fecha inicial debe ser menor que la inicial");
-            return;
+    $scope.BuscarRegistrosSoporteGpon = function (RegistrosSoporteGpon) {
+        if (RegistrosSoporteGpon.fechaini == '' || RegistrosSoporteGpon.fechaini == undefined) {
+            swal({
+                type: 'error',
+                text: 'Ingrese la fecha inicial'
+            })
+        } else if (RegistrosSoporteGpon.fechafin == '' || RegistrosSoporteGpon.fechafin == undefined) {
+            swal({
+                type: 'error',
+                text: 'Ingrese la fecha final'
+            })
+        } else if (RegistrosSoporteGpon.fechafin < RegistrosSoporteGpon.fechaini) {
+            swal({
+                type: 'error',
+                text: 'La fecha final no puede ser menor que la inicial'
+            })
         } else {
+            services.registrossoportegpon(1, 200, RegistrosSoporteGpon).then(complete).catch(failed)
 
+            function complete(data) {
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptions.totalItems = counter;
+                //var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+        }
+    }
+
+    $scope.csvRegistros = function (RegistrosSoporteGpon) {
+        if (RegistrosSoporteGpon.fechaini == '' || RegistrosSoporteGpon.fechaini == undefined) {
+            swal({
+                type: 'error',
+                text: 'Ingrese la fecha inicial'
+            })
+        } else if (RegistrosSoporteGpon.fechafin == '' || RegistrosSoporteGpon.fechafin == undefined) {
+            swal({
+                type: 'error',
+                text: 'Ingrese la fecha final'
+            })
+        } else if (RegistrosSoporteGpon.fechafin < RegistrosSoporteGpon.fechaini) {
+            swal({
+                type: 'error',
+                text: 'La fecha final no puede ser menor que la inicial'
+            })
+        } else {
             services.expCsvRegistrosSoporteGpon($scope.RegistrosSoporteGpon, $rootScope.galletainfo).then(
                 function (datos) {
 
@@ -7909,12 +10534,12 @@ app.controller('registrossoportegponCtrl', function ($scope, $http, $rootScope, 
                     var array = typeof data != 'object' ? JSON.parse(data) : data;
                     var str = '';
                     //var column = `ID, Pedido, Tarea, Tecnico, ID Tecnico, Fecha Solicitud, Fecha Gestion, Fecha Respuesta, Login Gestion, En Gestion, Proceso, Producto, Motivo, Area, Region, Tipo Tarea, Tecnologia, CRM, Departamento, Prueba SMNET, Foto?, Marcacion TAP, Direccion TAP, Valor TAP, Informacion Adicional, MAC Real CPE, Correa Marcacion, Observacion, Respuesta, ID Terreno, Tipificacion, Estado, ANS \r\n`;
-                    var column = `TAREA, ARPON, NAP, HILO, PORT_INTERNET_1, PORT_INTERNET_2, PORT_INTERNET_3, PORT_INTERNET_4, PORT_TELEVISION_1, PORT_TELEVISION_2, PORT_TELEVISION_3, PORT_TELEVISION_4, NUMERO_CONTACTO', NOMBRE_CONTACTO, UNEPEDIDOTASKTYPECATEGORY, UNEMUNICIPIO,UNEPRODUCTOS, DATOSCOLA, ENGINEER_ID, ENGINEER_NAME, MOBILE_PHONE, SERIAL, MAC, TIPO_EQUIPO, VELOCIDAD_NAVEGACION, USER_ID_FIREBASE, REQUEST_ID_FIREBASE, USER_IDENTIFICATION_FIREBASE, STATUS_SOPORTE, FECHA_SOLICITUD_FIREBASE, FECHA_CREADO, RESPUESTA_SOPORTE, OBSERVACION, OBSERVACION TERRENO,LOGIN, FECHA_RESPUESTA \r\n`;
+                    var column = `TAREA| ARPON| NAP| HILO| PORT_INTERNET_1| PORT_INTERNET_2| PORT_INTERNET_3| PORT_INTERNET_4| PORT_TELEVISION_1| PORT_TELEVISION_2| PORT_TELEVISION_3| PORT_TELEVISION_4| NUMERO_CONTACTO| NOMBRE_CONTACTO| UNEPEDIDOTASKTYPECATEGORY| UNEMUNICIPIO| UNEPRODUCTOS| DATOSCOLA| ENGINEER_ID| ENGINEER_NAME| MOBILE_PHONE| SERIAL| MAC| TIPO_EQUIPO| VELOCIDAD_NAVEGACION| USER_ID_FIREBASE| REQUEST_ID_FIREBASE| USER_IDENTIFICATION_FIREBASE| STATUS_SOPORTE| FECHA_SOLICITUD_FIREBASE| FECHA_CREADO| RESPUESTA_SOPORTE| OBSERVACION| OBSERVACION TERRENO|LOGIN| FECHA_RESPUESTA \r\n`;
                     str += column;
                     for (var i = 0; i < array.length; i++) {
                         var line = '';
                         for (var index in array[i]) {
-                            if (line != '') line += ','
+                            if (line != '') line += '|'
                             line += array[i][index];
                         }
 
@@ -7932,15 +10557,6 @@ app.controller('registrossoportegponCtrl', function ($scope, $http, $rootScope, 
                     elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
                     elementToClick.download = "RegistroGpon-" + fullDateCsv + ".csv";
                     elementToClick.click();
-                    console.log(str);
-                    // console.log(data.data[0]);
-
-
-                    //window.location.href = "tmp/" + data.data[0];
-                    //$scope.csvPend = true;
-                    //$scope.counter = data.data[1];
-                    //console.log(data.data);
-                    //return data.data;
                 },
                 function errorCallback(response) {
                     $scope.errorDatos = "No hay datos.";
@@ -7948,11 +10564,8 @@ app.controller('registrossoportegponCtrl', function ($scope, $http, $rootScope, 
                 }
             );
         }
-    };
+    }
 
-    $scope.maxSize = 5;
-    $scope.datapendientes = {maxSize: 5, currentPage: 1, numPerPage: 100, totalItems: 0};
-    $scope.BuscarRegistrosSoporteGpon($scope.datapendientes.currentPage);
 });
 
 
@@ -7972,90 +10585,313 @@ app.controller('GestioncodigoincompletoCtrl', function ($scope, $rootScope, $loc
     $scope.isSoporteGponFromIntranet = false;
     $scope.isLoadingData = true;
     $scope.dataCodigoIncompleto = [];
+    $scope.RegistrosCodigoIncompleto = {};
+
+    getGrid();
 
     var database = firebase.firestore();
 
-    $scope.listarcodigoincompleto = () => {
+    function getGrid() {
 
-        services.getListaCodigoIncompleto().then(function (data) {
+        var columnDefs = [
+            {
+                name: "Tarea",
+                field: "tarea",
+                minWidth: 70,
+                width: "5%",
+                enableCellEdit: false,
+                enableFiltering: true,
+                enableRowHeaderSelection: true,
+                cellFilter: 'currency:"":0',
+            },
+            {
+                name: "Número de contacto",
+                field: "numero_contacto",
+                minWidth: 80,
+                width: "10%",
+                enableCellEdit: false,
+                enableFiltering: true,
 
-            if (data.data.length > 0) {
+            }, {
+                name: "Nombre contrato",
+                field: "nombre_contacto",
+                minWidth: 80,
+                width: "10%",
+                enableCellEdit: false,
 
-                console.log('data', data.data[0]);
+            }, {
+                name: "Pedido",
+                field: "unepedido",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "Categoria",
+                field: "tasktypecategory",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
 
-                $scope.dataCodigoIncompleto = data.data[0];
-                $scope.isLoadingData = false;
-            } else {
-                $scope.isLoadingData = true;
+            }, {
+                name: "Municipio",
+                field: "unemunicipio",
+                cellStyle: {"text-align": "center"},
+                minWidth: 80,
+                width: "5%",
+                enableCellEdit: false,
+            }, {
+                name: "Productos",
+                field: "uneproductos",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "15%",
+                enableCellEdit: false,
+            }, {
+                name: "cc Tecnico",
+                field: "engineer_id",
+                cellStyle: {"text-align": "center"},
+                width: "10%",
+                enableCellEdit: false,
+                cellFilter: 'currency:"":0',
+            }, {
+                name: "nombre técnico",
+                field: "engineer_name",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+            }, {
+                name: "Celular",
+                field: "mobile_phone",
+                cellStyle: {"text-align": "center"},
+                width: "5%",
+                enableCellEdit: false,
+            },
+            {
+                name: "Fecha solicitud",
+                field: "fecha_creado",
+                cellStyle: {"text-align": "center"},
+                width: "10%",
+                enableCellEdit: false,
+            }];
+
+        var paginationOptions = {
+            sort: null
+        };
+
+        $scope.gridOptions = {
+            enableFiltering: true,
+            enablePagination: true,
+            pageSize: 200,
+            enableHorizontalScrollbar: false,
+            enablePaginationControls: true,
+            columnDefs: columnDefs,
+            paginationPageSizes: [200, 500, 1000],
+            paginationPageSize: 200,
+            enableRowHeaderSelection: true,
+
+            exporterMenuPdf: false,
+            enableGridMenu: false,
+
+            useExternalPagination: true,
+            useExternalSorting: true,
+            enableRowSelection: true,
+
+            exporterCsvFilename: 'Registros.csv',
+
+            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+            exporterExcelFilename: 'Registros.xlsx',
+            exporterExcelSheetName: 'Sheet1',
+
+            onRegisterApi: function (gridApi) {
+                $scope.gridApi = gridApi;
+                $scope.gridApi.core.on.sortChanged($scope, function (grid, sortColumns) {
+                    if (getPage) {
+                        if (sortColumns.length > 0) {
+                            paginationOptions.sort = sortColumns[0].sort.direction;
+                        } else {
+                            paginationOptions.sort = null;
+                        }
+                        getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, $scope.RegistrosCodigoIncompleto)
+                    }
+                });
+                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                    if (getPage) {
+                        getPage(newPage, pageSize, $scope.RegistrosCodigoIncompleto);
+                    }
+                });
+            }
+        };
+
+        var getPage = function (curPage, pageSize, RegistrosCodigoIncompleto) {
+            services.getListaCodigoIncompleto(curPage, pageSize, $scope.RegistrosCodigoIncompleto).then(complete).catch(failed)
+
+            function complete(data) {
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptions.totalItems = counter;
+                var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
             }
 
-            return data;
-        }).catch((err) => {
-            $scope.isLoadingData = true;
-            console.log(err)
-        });
+            function failed(error) {
+                console.log(error);
+            }
 
-        $scope.isLoadingData = false;
+        };
 
+        getPage(1, $scope.gridOptions.paginationPageSize, paginationOptions.sort);
     }
 
-    $scope.gestionarCodigoIncompleto = async (id_codigo_incompleto) => {
+    $scope.gestionarCodigoIncompleto = function (row) {
 
-        let tipificacion = $('#tipificacion' + id_codigo_incompleto).val();
-
-        const {value: observacion} = await Swal({
-            title: 'Gestión Código Incompleto',
-            input: 'textarea',
-            inputPlaceholder: 'Gestion...',
-            inputAttributes: {
-                'aria-label': 'Gestion'
-            },
-            showCancelButton: true,
-
-        });
-
-        if (observacion) {
-
-            Swal('Cargando...')
-
-            if (tipificacion == "") {
-                Swal({
-                    title: 'Error',
-                    text: 'Debes de seleccionar una tipificación.',
-                    type: 'error'
-                });
-                return false;
-            }
-
-            services.gestionarCodigoIncompleto(id_codigo_incompleto, tipificacion, observacion, $rootScope.galletainfo).then(function (data) {
-                console.log('successPUT', data);
-
-                $scope.listarcodigoincompleto();
-
-                Swal({
-                    title: 'Excelente',
-                    text: data.data.msg,
-                    type: 'success'
-                });
-
-            }).catch((err) => {
-                //$scope.listarcodigoincompleto();
-                console.log('err', err);
-            });
-
+        if (row.entity.Tipificacion == undefined || row.entity.Tipificacion == '') {
+            Swal(
+                'Error',
+                'Debes de seleccionar una tipificación.'
+            )
         } else {
-            Swal({
-                title: 'Error',
-                text: 'Debes ingresar una observacion.',
-                type: 'error'
-            });
-            return false;
+            $scope.codigo = row.entity;
+            $scope.codigo.observacion = '';
+
+            $('#editarModal').modal('show');
+
         }
 
     }
 
-    //$scope.gestionsoportegpon();
-    $scope.listarcodigoincompleto();
+    $scope.guardaObsCodigo = function (data) {
+
+        services.gestionarCodigoIncompleto(data.tarea, data.Tipificacion, data.observacion).then(completed).catch(failed)
+
+        function completed(data) {
+            if (data.data.state == 99) {
+                swal({
+                    type: 'error',
+                    title: data.data.title,
+                    text: data.data.text,
+                    timer: 4000
+                }).then(function () {
+                    $cookies.remove('usuarioseguimiento');
+                    $location.path('/');
+                    $rootScope.galletainfo = undefined;
+                    $rootScope.permiso = false;
+                    $route.reload();
+                })
+            } else if (data.data.state != 1) {
+                swal({
+                    type: 'error',
+                    text: data.data.text,
+                    timer: 4000
+                })
+            } else {
+                swal({
+                    type: 'success',
+                    text: data.data.text,
+                    timer: 4000
+                }).then(function () {
+                    $route.reload();
+                })
+            }
+        }
+
+        function failed(error) {
+            console.log(error)
+        }
+    }
+
+    $scope.BuscarRegistrosCodigo = function (datos) {
+        if (datos.fechaini == '' || datos.fechaini == undefined) {
+            swal({
+                type: 'error',
+                text: 'Ingrese la fecha inicial'
+            })
+        } else if (datos.fechafin == '' || datos.fechafin == undefined) {
+            swal({
+                type: 'error',
+                text: 'Ingrese la fecha final'
+            })
+        } else if (datos.fechafin < datos.fechaini) {
+            swal({
+                type: 'error',
+                text: 'La fecha inicial no puede ser mayor que la final'
+            })
+        } else {
+            services.getListaCodigoIncompleto(1, 200, datos).then(complete).catch(failed)
+
+            function complete(data) {
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptions.totalItems = counter;
+                //var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+        }
+    }
+
+    $scope.BuscarRegistrosCodigoIncompleto = function (datos) {
+        console.log(datos);
+        if (datos.fechaini == '' || datos.fechaini == undefined) {
+            swal({
+                type: 'error',
+                text: 'Ingrese la fecha inicial'
+            })
+        } else if (datos.fechafin == '' || datos.fechafin == undefined) {
+            swal({
+                type: 'error',
+                text: 'Ingrese la fecha final'
+            })
+        } else if (datos.fechafin < datos.fechaini) {
+            swal({
+                type: 'error',
+                text: 'La fecha inicial no puede ser mayor que la final'
+            })
+        } else {
+            console.log('sdkfhasdkjf');
+            services.expCsvRegistrosCodigoIncompleto(datos).then(
+                function (datos) {
+                    var data = datos.data[0];
+                    var array = typeof data != 'object' ? JSON.parse(data) : data;
+                    var str = '';
+                    var column = `ID_CODIGO_INCOMPLETO| TAREA| NUMERO_CONTACTO| NOMBRE_CONTACTO| UNEPEDIDO| TASKTYPECATEGORY| UNEMUNICIPIO| UNEPRODUCTOS| ENGINEER_ID| ENGINEER_NAME| MOBILE_PHONE| STATUS_SOPORTE| FECHA_SOLICITUD_FIREBASE| FECHA_CREADO| RESPUESTA_GESTION| OBSERVACION| LOGIN| FECHA_RESPUESTA \r\n`;
+                    str += column;
+                    for (var i = 0; i < array.length; i++) {
+                        var line = '';
+                        for (var index in array[i]) {
+                            if (line != '') line += '|'
+                            line += array[i][index];
+                        }
+
+                        str += line + '\r\n';
+                    }
+                    var dateCsv = new Date();
+                    var yearCsv = dateCsv.getFullYear();
+                    var monthCsv = (dateCsv.getMonth() + 1 <= 9) ? '0' + (dateCsv.getMonth() + 1) : (dateCsv.getMonth() + 1);
+                    var dayCsv = (dateCsv.getDate() <= 9) ? '0' + dateCsv.getDate() : dateCsv.getDate();
+                    var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
+
+
+                    var blob = new Blob([str]);
+                    var elementToClick = window.document.createElement("a");
+                    elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
+                    elementToClick.download = "RegistrosCodigoIncompleto-" + fullDateCsv + ".csv";
+                    elementToClick.click();
+                },
+                function errorCallback(response) {
+                    $scope.errorDatos = "No hay datos.";
+                    $scope.csvPend = false;
+                }
+            );
+        }
+    }
 
 });
 
@@ -8079,8 +10915,6 @@ app.controller('registroscodigoincompletoCtrl', function ($scope, $http, $rootSc
         $scope.fechaini = tiempo;
         $scope.fechafin = tiempo;
 
-        //console.log("fechaini: ",$scope.fechaini);
-        //console.log("fechafin: ",$scope.fechafin);
     }
 
     $scope.setPage = function (pageNo) {
@@ -8092,7 +10926,6 @@ app.controller('registroscodigoincompletoCtrl', function ($scope, $http, $rootSc
     };
 
     $scope.BuscarRegistrosCodigoIncompleto = function (datos) {
-        console.log("BuscarRegistrosCodigoIncompleto: ", datos);
         $scope.errorDatos = null;
         $scope.csvPend = false;
         $scope.listaRegistros = {};
@@ -8104,9 +10937,7 @@ app.controller('registroscodigoincompletoCtrl', function ($scope, $http, $rootSc
 
             services.registroscodigoincompleto($scope.datapendientes.currentPage, datos).then(
                 function (data) {
-                    console.log("registros: ", data);
                     $scope.listaRegistros = data.data[0];
-                    //console.log("listaRegistros: ", $scope.listaRegistros);
                     $scope.cantidad = data.data[0].length;
                     $scope.counter = data.data[1];
 
@@ -8129,13 +10960,6 @@ app.controller('registroscodigoincompletoCtrl', function ($scope, $http, $rootSc
 
     $scope.muestraNotas = function (datos) {
 
-        /* $scope.pedido = datos.pedido;
-        $scope.TituloModal = "Observaciones para el pedido:";
-        $scope.observaciones = datos.observaciones; */
-        // console.log( $scope.observaciones);
-
-        console.log("datos", datos);
-
         $scope.TituloModal = 'Detalle código incompleto';
         $scope.pedido = datos.unepedido;
         $scope.observaciones = datos.observacion;
@@ -8150,16 +10974,15 @@ app.controller('registroscodigoincompletoCtrl', function ($scope, $http, $rootSc
 
             services.expCsvRegistrosCodigoIncompleto($scope.RegistrosCodigoIncompleto, $rootScope.galletainfo).then(
                 function (datos) {
-                    console.log(datos);
                     var data = datos.data[0];
                     var array = typeof data != 'object' ? JSON.parse(data) : data;
                     var str = '';
-                    var column = `ID_CODIGO_INCOMPLETO, TAREA, NUMERO_CONTACTO, NOMBRE_CONTACTO, UNEPEDIDO, TASKTYPECATEGORY, UNEMUNICIPIO, UNEPRODUCTOS, ENGINEER_ID, ENGINEER_NAME, MOBILE_PHONE, STATUS_SOPORTE, FECHA_SOLICITUD_FIREBASE, FECHA_CREADO, RESPUESTA_GESTION, OBSERVACION, LOGIN, FECHA_RESPUESTA \r\n`;
+                    var column = `ID_CODIGO_INCOMPLETO| TAREA| NUMERO_CONTACTO| NOMBRE_CONTACTO| UNEPEDIDO| TASKTYPECATEGORY| UNEMUNICIPIO| UNEPRODUCTOS| ENGINEER_ID| ENGINEER_NAME| MOBILE_PHONE| STATUS_SOPORTE| FECHA_SOLICITUD_FIREBASE| FECHA_CREADO| RESPUESTA_GESTION| OBSERVACION| LOGIN| FECHA_RESPUESTA \r\n`;
                     str += column;
                     for (var i = 0; i < array.length; i++) {
                         var line = '';
                         for (var index in array[i]) {
-                            if (line != '') line += ','
+                            if (line != '') line += '|'
                             line += array[i][index];
                         }
 
@@ -8177,7 +11000,6 @@ app.controller('registroscodigoincompletoCtrl', function ($scope, $http, $rootSc
                     elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
                     elementToClick.download = "RegistrosCodigoIncompleto-" + fullDateCsv + ".csv";
                     elementToClick.click();
-                    console.log(str);
                 },
                 function errorCallback(response) {
                     $scope.errorDatos = "No hay datos.";
@@ -8217,7 +11039,6 @@ app.controller('brutalForceCtrl', function ($scope, $rootScope, $location, $rout
 
         services.Verobservacionasesor($scope.formularioBrutal.pedido).then(function (data) {
             $scope.observacion = data.data[0][0];
-            // console.log($scope.observacion );
             if ($scope.observacion.ObservacionAsesor == "") {
                 alert("El pedido se encuentra en gestión")
                 return;
@@ -8233,148 +11054,17 @@ app.controller('brutalForceCtrl', function ($scope, $rootScope, $location, $rout
     }
 
 
-    $scope.ruta = "#!/actividades";
-
-    /*$scope.validarHorarioBF = function(pedido = '') {
-
-        if(window.location.hash != "#!/brutalForce"){
-            return;
-        }
-
-        var tiempo = new Date();
-        var hora = tiempo.getHours();
-        var dia = tiempo.getDay();
-
-        if (hora >= 7 && hora < 19 && dia != 7) {
-            if($rootScope.galleta.perfil == 7){
-                return;
-            }
-            services.contadorPendientesBrutalForce().then(function(data) {
-                $scope.respuesta = data.data[0][0];
-                var filtersEx = ['1 - B2B', 'B2B', 'C2', 'C3', 'CORPORATE','Corporativo','CORPORATIVO GOBIERNO','CORPORATIVO PRIVADO', 'Pymes', 'PYMES'];
-                var countFilterEx = null;
-                if(pedido != ''){
-                    fetch(`http://10.100.66.254:8080/HCHV/Buscar/${pedido}`)
-                    .then( (data) => data.json())
-                    .then( (response) => {
-                        if ($scope.respuesta.Pendientes > 20) {
-                            if(response){
-                                countFilterEx = filtersEx.indexOf(response.uNEUENcalculada);
-                                if(response.uNERutaTrabajo == 'YAYA' || countFilterEx != -1){
-                                    swal({
-                                        title: "El pedido corresponde a la categoría priorizada",
-                                        type: "success",
-                                        position: 'top-end',
-                                        showConfirmButton: false,
-                                        timer: 3000
-                                    });
-                                }
-                                else{
-                                    swal({
-                                        title: "Tu pedido no corresponde a la categoría priorizada:",
-                                        html: '<div><font size=4><b>ETP:</b> Tipo Trabajo 2037<br/><b>Siebel:</b> OT-C08-Reconfigurar pedido<br/><b>Fénix:</b> O-101 Renumerar o Reconfigurar Oferta<br/><b>Elite:</b> O-101 Renumerar o Reconfigurar Oferta<br/><b>Siebel: </b>OT-C06-Inconsistencia información</font></div>',
-                                        type: "warning"
-                                    });
-                                    window.location = "#!/actividades";
-                                }
-                            }
-                        }
-                        else {
-                            if(response.uNERutaTrabajo == 'PREMISAS'){
-                                swal({
-                                    title: "Tu pedido es una premisa y no corresponde a la categoría priorizada:",
-                                    html: '<div><font size=4><b>ETP:</b> Tipo Trabajo 2037<br/><b>Siebel:</b> OT-C08-Reconfigurar pedido<br/><b>Fénix:</b> O-101 Renumerar o Reconfigurar Oferta<br/><b>Elite:</b> O-101 Renumerar o Reconfigurar Oferta<br/><b>Siebel: </b>OT-C06-Inconsistencia información</font></div>',
-                                    type: "warning"
-                                });
-                                window.location = "#!/actividades";
-                            }
-                        }
-                    })
-                    .catch( (err) => {
-                        console.warn(err);
-                    });
-                }
-                else{
-                    if ($scope.respuesta.Pendientes > 20){
-                        Swal.fire({
-                            title: "En el momento hay " + $scope.respuesta.Pendientes + " transacciones en proceso, los tiempos de atención son altos, procede con el pendiente que corresponda:",
-                            html: '<div><font size=4><div class="label-premisas" style="text-align: left; padding-top: 20px;">Si tienes un pedido prioritario por favor valida tu ingreso especial.</div></font></div>',
-                            type: "warning",
-                            customClass: 'custom-sweet-alert',
-                            input: 'text',
-                            inputPlaceholder: 'Introduzca el pedido a comprobar',
-                            showCancelButton: true,
-                            confirmButtonText: 'Comprobar',
-                            cancelButtonText: 'Cancelar',
-                            showLoaderOnConfirm: true,
-                            preConfirm: (pedido) => {
-                                return fetch(`http://10.100.66.254:8080/HCHV/Buscar/${pedido}`)
-                                .then(response => {
-                                    if (!response.ok) {
-                                        throw new Error(response.statusText)
-                                    }
-                                    return response.json()
-                                })
-                                .catch(error => {
-                                    Swal.showValidationMessage(`Petición Fallida: ${error}`)
-                                })
-                            },
-                            allowOutsideClick: () => !Swal.isLoading()
-                            })
-                            .then((result) => {
-                                if (result.value != undefined) {
-                                    countFilterEx = filtersEx.indexOf(result.value.uNEUENcalculada);
-                                    if(result.value.uNERutaTrabajo == 'YAYA' || countFilterEx != -1){
-                                        swal({
-                                            title: "El pedido corresponde a la categoría priorizada",
-                                            type: "success",
-                                            position: 'top-end',
-                                            showConfirmButton: false,
-                                            timer: 3000
-                                        });
-                                    }
-                                    else{
-                                        swal({
-                                            title: "Tu pedido no corresponde a la categoría priorizada:",
-                                            html: '<div><font size=4><b>ETP:</b> Tipo Trabajo 2037<br/><b>Siebel:</b> OT-C08-Reconfigurar pedido<br/><b>Fénix:</b> O-101 Renumerar o Reconfigurar Oferta<br/><b>Elite:</b> O-101 Renumerar o Reconfigurar Oferta<br/><b>Siebel: </b>OT-C06-Inconsistencia información</font></div>',
-                                            type: "warning"
-                                        });
-                                        window.location = "#!/actividades";
-                                    }
-                                }
-                                else{
-                                    window.location = "#!/actividades";
-                                }
-                            });
-                    }
-                }
-
-
-            }, function errorCallback(response) {
-                alert("Por favor reportar con el Administrador de la página");
-                return;
-            });
-
-
-        }  else {
-                    Swal(
-                            'El ingreso de solicitudes solo esta disponible de lunes a sábado entre las 7 a.m. y las 7 p.m.',
-                        )
-                        window.location = "#!/actividades";
-                }
-    }*/
+    $scope.ruta = "actividades";
 
     $scope.validarHorarioBF = function (pedido = '') {
 
-        if (window.location.hash != "#!/brutalForce") {
+        if (window.location.hash != "brutalForce") {
             return;
         }
 
         var tiempo = new Date();
         var hora = tiempo.getHours();
         var dia = tiempo.getDay();
-        console.log(dia);
-        //if (hora >= 7 && hora < 19 && dia != 7) {
         if (hora >= 7 && hora < 19) {
             if ($rootScope.galleta.perfil == 7) {
                 return;
@@ -8400,7 +11090,7 @@ app.controller('brutalForceCtrl', function ($scope, $rootScope, $location, $rout
                                         html: '<div>Solo se reciben solicitudes de traslado</div>',
                                         type: "warning"
                                     });
-                                    window.location = "#!/actividades";
+                                    window.location = "actividades";
                                 }
                             }
                         })
@@ -8456,10 +11146,10 @@ app.controller('brutalForceCtrl', function ($scope, $rootScope, $location, $rout
                                         html: '<div>Solo se reciben solicitudes de traslado</div>',
                                         type: "warning"
                                     });
-                                    window.location = "#!/actividades";
+                                    window.location = "actividades";
                                 }
                             } else {
-                                window.location = "#!/actividades";
+                                window.location = "actividades";
                             }
                         });
                 }
@@ -8475,7 +11165,7 @@ app.controller('brutalForceCtrl', function ($scope, $rootScope, $location, $rout
                 //'El ingreso de solicitudes solo esta disponible de lunes a sábado entre las 7 a.m. y las 7 p.m.',
                 'El ingreso de solicitudes solo esta disponible entre las 7 a.m. y las 7 p.m.',
             )
-            window.location = "#!/actividades";
+            window.location = "actividades";
         }
     }
 
@@ -8559,7 +11249,6 @@ app.controller('brutalForceCtrl', function ($scope, $rootScope, $location, $rout
 
     $scope.ObservacionesBF = function () {
         services.ObsPedidosBF($rootScope.galletainfo).then(function (data) {
-            console.log('contiengente ', $rootScope)
             $scope.haypedido = true;
             $scope.datosBF = data.data[0];
 
@@ -8578,96 +11267,231 @@ app.controller('usuariosCtrl', function ($scope, $http, $rootScope, $location, $
     $scope.listaUsuarios = {};
     $scope.Usuarios = {};
     $scope.crearuser = {};
+    getGrid();
 
-    $scope.setPage = function (pageNo) {
-        $scope.datapendientes.currentPage = pageNo;
-    };
+    function getGrid() {
 
-    $scope.pageChanged = function () {
-        $scope.buscarUsuario($scope.datapendientes.currentPage);
-    };
-
-    $scope.buscarUsuario = function (concepto, usuario) {
-        $scope.errorDatos = null;
-        $scope.respuestaupdate = null;
-        $scope.respuestadelete = null;
-        $scope.listaUsuarios = {};
-        //console.log($scope.Usuarios);
-        services.listadoUsuarios($scope.datapendientes.currentPage, concepto, usuario).then(
-            function (data) {
-                $scope.listaUsuarios = data.data[0];
-                // console.log("la lista "+$scope.listaUsuarios);
-                $scope.cantidad = data.data[0].length;
-                $scope.counter = data.data[1];
-
-                return data.data;
+        var columnDefs = [
+            {
+                name: "ID",
+                field: "ID",
+                minWidth: 70,
+                width: "15%",
+                enableCellEdit: false,
+                enableFiltering: true,
+                enableRowHeaderSelection: true
             },
-            function errorCallback(response) {
+            {
+                name: "Login",
+                field: "LOGIN",
+                minWidth: 80,
+                width: "15%",
+                enableCellEdit: false,
+                enableFiltering: true,
+            }, {
+                name: "Nombre",
+                field: "NOMBRE",
+                minWidth: 80,
+                width: "25%",
+                enableCellEdit: false,
+                enableFiltering: true,
+            }, {
+                name: "Cedula",
+                field: "IDENTIFICACION",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "15%",
+                enableCellEdit: false,
+                enableFiltering: true,
+            }, {
+                name: "Perfil",
+                field: "PERFIL",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "15%",
+                enableCellEdit: false,
+                enableFiltering: true,
 
-                $scope.errorDatos = concepto + " " + usuario + " no existe.";
+            }, {
+                name: "Acciones",
+                cellTemplate: "<div style='text-align: center'>" +
+                    '<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.editUser(row)">' +
+                    '<i class="fa fa-pencil-square-o" aria-hidden="true"> </i>' +
+                    '</button>&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.borrarUsuario(row)">' +
+                    '<i class="fa fa-trash" aria-hidden="true"> </i>' +
+                    '</button></div>',
+                minWidth: 50,
+                width: "15%",
+                enableFiltering: false
+            }];
 
-                // console.log($scope.errorDatos);
+        var paginationOptions = {
+            sort: null
+        };
 
-            });
-    };
+        $scope.gridOptions = {
+            enableFiltering: true,
+            enablePagination: true,
+            pageSize: 200,
+            enableHorizontalScrollbar: false,
+            enablePaginationControls: true,
+            columnDefs: columnDefs,
+            paginationPageSizes: [200, 500, 1000],
+            paginationPageSize: 200,
+            enableRowHeaderSelection: true,
 
-    $scope.editarModal = function (datos) {
-        // console.log(datos);
-        $rootScope.datos = datos;
-        $scope.idUsuario = datos.ID;
-        $scope.UsuarioNom = datos.NOMBRE;
-        $rootScope.TituloModal = "Editar Usuario con el ID:";
-        //console.log($scope.editaInfo);
-    };
+            exporterMenuPdf: false,
+            enableGridMenu: true,
+
+            useExternalPagination: true,
+            useExternalSorting: true,
+            enableRowSelection: true,
+
+            exporterCsvFilename: 'Registros.csv',
+
+            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+            exporterExcelFilename: 'Registros.xlsx',
+            exporterExcelSheetName: 'Sheet1',
+
+            onRegisterApi: function (gridApi) {
+                $scope.gridApi = gridApi;
+                $scope.gridApi.core.on.sortChanged($scope, function (grid, sortColumns) {
+                    if (getPage) {
+                        if (sortColumns.length > 0) {
+                            paginationOptions.sort = sortColumns[0].sort.direction;
+                        } else {
+                            paginationOptions.sort = null;
+                        }
+                        getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, paginationOptions.sort)
+                    }
+                });
+                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                    if (getPage) {
+                        getPage(newPage, pageSize, paginationOptions.sort);
+                    }
+                });
+            }
+        };
+
+        var getPage = function (curPage, pageSize, sort) {
+            services.listadoUsuarios(curPage, pageSize, sort).then(complete).catch(failed)
+
+            function complete(data) {
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptions.totalItems = counter;
+                var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+
+        };
+
+        getPage(1, $scope.gridOptions.paginationPageSize, paginationOptions.sort);
+    }
+
+
+    $scope.buscarUsuario = function (usuario) {
+        if (usuario == '' || usuario == undefined) {
+            swal({
+                type: 'error',
+                title: 'ingresa el usuario o login a buscar',
+            })
+        } else {
+
+            services.listadoUsuarios('', '', usuario).then(completed).catch(failed)
+
+            function completed(data) {
+
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptions.totalItems = counter;
+                //var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+        }
+    }
+
 
     $scope.createUser = function (concepto, tecnico) {
         $scope.errorDatos = null;
         $scope.respuestaupdate = null;
         $scope.respuestadelete = null;
-        //console.log($scope.crearuser);
         services.creaUsuario($scope.crearuser).then(
             function (data) {
-                // console.log("la lista "+$scope.listaUsuarios);
+                if (data.data.state == 99) {
+                    swal({
+                        type: 'error',
+                        title: data.data.title,
+                        text: data.data.text,
+                    }).then(function () {
+                        $cookies.remove('usuarioseguimiento');
+                        $location.path('/');
+                        $rootScope.galletainfo = undefined;
+                        $rootScope.permiso = false;
+                        $route.reload();
+                    })
+                } else if (data.data.state == 0) {
+                    swal({
+                        type: 'error',
+                        text: data.data.msj,
+                    })
+                } else {
+                    swal({
+                        type: 'success',
+                        text: data.data.msj,
+                        timer: 4000
+                    }).then(function () {
+                        $route.reload
+                    })
+                }
                 $scope.respuestaupdate = "Usuario creado.";
-                ;
                 return data.data;
             },
             function errorCallback(response) {
 
                 $scope.errorDatos = "Usuario no fue creado.";
 
-                // console.log($scope.errorDatos);
             });
-        $scope.buscarUsuario();
     };
 
+    $scope.editUser = function (row) {
+        $scope.datos = row.entity;
+        $scope.datos.PERFIL = parseInt(row.entity.perfil);
+        $("#editarModal").modal('show');
+    };
 
-    $scope.editUser = function (datos) {
-        $scope.errorDatos = null;
-        $scope.respuestaupdate = null;
-        $scope.respuestadelete = null;
-        if (datos.PASSWORD == "") {
-            alert("Por favor ingrese la contraseña");
-            return;
-        } else {
-            services.editarUsuario(datos).then(
-                function (data) {
-                    // $errorDatos=null;
-                    $scope.respuestaupdate = "Usuario " + datos.login + " actualizado exitosamente";
-                    //  console.log(datos);
-                    //$rootScope.nombre=$scope.respuesta[0].NOMBRE;
-                    //$location.path('/home/');
-                    return data.data;
-                },
-                function errorCallback(response) {
-                });
+    $scope.guardaUsuario = function (datos) {
+        services.editarUsuario(datos).then(completed).catch(failed)
+
+        function completed(data) {
+
+            Swal({
+                type: data.type,
+                title: data.msj,
+                timer: 4000
+            }).then(function () {
+                $route.reload();
+            })
+
         }
 
-        $scope.buscarUsuario();
-    };
+        function failed(error) {
+            console.log(error)
+        }
+    }
 
-    $scope.borrarUsuario = function (id) {
-        $scope.idBorrar = id;
+    $scope.borrarUsuario = function (row) {
+        $scope.idBorrar = row.entity.ID;
         $scope.Usuarios = {};
         $scope.errorDatos = null;
         $scope.respuestaupdate = null;
@@ -8680,22 +11504,7 @@ app.controller('usuariosCtrl', function ($scope, $http, $rootScope, $location, $
             confirmButtonText: "Aceptar",
             closeOnConfirm: false
         });
-        // Temporalmente deshabilitado
-        // services.deleteUsuario($scope.idBorrar).then(
-        //     function(data) {
-        //         $scope.respuestadelete = "Usuario " + $rootScope.datos.login + " eliminado exitosamente";
-        //     },
-        //     function errorCallback(response) {
-        //         $scope.errorDatos = "No se borro";
-        //     }
-        // );
-        $scope.buscarUsuario($scope.datapendientes.currentPage);
     };
-
-    $scope.maxSize = 5;
-    $scope.datapendientes = {maxSize: 5, currentPage: 1, numPerPage: 100, totalItems: 0};
-    $scope.buscarUsuario($scope.datapendientes.currentPage);
-
 });
 
 app.controller('tecnicosCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services) {
@@ -8704,93 +11513,252 @@ app.controller('tecnicosCtrl', function ($scope, $http, $rootScope, $location, $
     $scope.concepto = null;
     $scope.crearTecnico = {};
 
+    getGrid();
 
-    $scope.setPage = function (pageNo) {
-        $scope.datapendientes.currentPage = pageNo;
-    };
+    function getGrid() {
 
-    $scope.pageChanged = function () {
-        $scope.buscarTecnico($scope.datapendientes.currentPage);
-    };
-
-    $scope.buscarTecnico = function (concepto, tecnico) {
-        $scope.listaTecnicos = [];
-        $scope.errorDatos = null;
-        $scope.respuestaupdate = null;
-        $scope.respuestadelete = null;
-        //console.log($scope.Usuarios);
-        services.listadoTecnicos($scope.datapendientes.currentPage, concepto, tecnico).then(
-            function (data) {
-                $scope.listaTecnicos = data.data[0];
-                // console.log("la lista "+$scope.listaUsuarios);
-                $scope.cantidad = data.data[0].length;
-                $scope.counter = data.data[1];
-
-                return data.data;
+        var columnDefs = [
+            {
+                name: "ID",
+                field: "ID",
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+                enableFiltering: true,
+                enableRowHeaderSelection: true
             },
-            function errorCallback(response) {
+            {
+                name: "Identificacion",
+                field: "IDENTIFICACION",
+                minWidth: 80,
+                width: "10%",
+                enableCellEdit: false,
+                enableFiltering: true,
+            }, {
+                name: "Nombre",
+                field: "NOMBRE",
+                minWidth: 80,
+                width: "20%",
+                enableCellEdit: false,
+                enableFiltering: true,
+            }, {
+                name: "Login",
+                field: "login_click",
+                minWidth: 80,
+                width: "10%",
+                enableCellEdit: false,
+                enableFiltering: true,
+            }, {
+                name: "Ciudad",
+                field: "CIUDAD",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "15%",
+                enableCellEdit: false,
+                enableFiltering: true,
+            }, {
+                name: "Celular",
+                field: "CELULAR",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+                enableFiltering: true,
 
-                $scope.errorDatos = concepto + " " + tecnico + " no existe.";
+            }, {
+                name: "Empresa",
+                field: "NOM_EMPRESA",
+                cellStyle: {"text-align": "center"},
+                minWidth: 70,
+                width: "10%",
+                enableCellEdit: false,
+                enableFiltering: true,
 
-                // console.log($scope.errorDatos);
+            }, {
+                name: "Acciones",
+                cellTemplate: "<div style='text-align: center'>" +
+                    '<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.editarModal(row)">' +
+                    '<i class="fa fa-pencil-square-o" aria-hidden="true"> </i>' +
+                    '</button>&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.borrarTecnico(row)">' +
+                    '<i class="fa fa-trash" aria-hidden="true"> </i>' +
+                    '</button></div>',
+                minWidth: 50,
+                width: "15%",
+                enableFiltering: false
+            }];
 
-            });
-    };
+        var paginationOptions = {
+            sort: null
+        };
+
+        $scope.gridOptions = {
+            enableFiltering: true,
+            enablePagination: true,
+            pageSize: 200,
+            enableHorizontalScrollbar: false,
+            enablePaginationControls: true,
+            columnDefs: columnDefs,
+            paginationPageSizes: [200, 500, 1000],
+            paginationPageSize: 200,
+            enableRowHeaderSelection: true,
+
+            exporterMenuPdf: false,
+            enableGridMenu: true,
+
+            useExternalPagination: true,
+            useExternalSorting: true,
+            enableRowSelection: true,
+
+            exporterCsvFilename: 'Registros.csv',
+
+            exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+            exporterExcelFilename: 'Registros.xlsx',
+            exporterExcelSheetName: 'Sheet1',
+
+            onRegisterApi: function (gridApi) {
+                $scope.gridApi = gridApi;
+                $scope.gridApi.core.on.sortChanged($scope, function (grid, sortColumns) {
+                    if (getPage) {
+                        if (sortColumns.length > 0) {
+                            paginationOptions.sort = sortColumns[0].sort.direction;
+                        } else {
+                            paginationOptions.sort = null;
+                        }
+                        getPage(grid.options.paginationCurrentPage, grid.options.paginationPageSize, paginationOptions.sort)
+                    }
+                });
+                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                    if (getPage) {
+                        getPage(newPage, pageSize, paginationOptions.sort);
+                    }
+                });
+            }
+        };
+
+        var getPage = function (curPage, pageSize, sort) {
+            services.listadoTecnicos(curPage, pageSize, sort).then(complete).catch(failed)
+
+            function complete(data) {
+                var datos = data.data.data;
+                var counter = data.data.counter;
+
+                $scope.gridOptions.totalItems = counter;
+                //var firstRow = (curPage - 1) * datos
+                $scope.gridOptions.data = datos
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+
+        };
+
+        getPage(1, $scope.gridOptions.paginationPageSize, paginationOptions.sort);
+    }
+
+    $scope.buscarTecnicoPorLogin = function (tecnico) {
+        services.listadoTecnicos(1, 200, tecnico).then(complete).catch(failed)
+
+        function complete(data) {
+            var datos = data.data.data;
+            var counter = data.data.counter;
+
+            $scope.gridOptions.totalItems = counter;
+            //var firstRow = (curPage - 1) * datos
+            $scope.gridOptions.data = datos
+        }
+
+        function failed(error) {
+            console.log(error);
+        }
+    }
 
     $scope.createTecnico = function () {
         var id_tecnico = "";
-        $scope.errorDatos = null;
-        $scope.respuestaupdate = null;
-        $scope.respuestadelete = null;
-        //console.log($scope.crearTecnico);
-        services.creaTecnico($scope.crearTecnico, id_tecnico).then(
-            function (data) {
-                console.log(data);
-                if (data.data.state != 0) {
-                    Swal({
-                        type: 'success',
-                        title: data.data.msj,
-                        timer: 4000
-                    }).then(function () {
-                        $route.reload();
-                    })
-                } else {
-                    Swal({
-                        title: 'Error',
-                        text: data.data.msj,
-                        type: 'error'
-                    });
-                }
-            },
-            function errorCallback(response) {
-                $scope.errorDatos = "Técnico no fue creado.";
-            });
+        if ($scope.crearTecnico.NOMBRE == '' || $scope.crearTecnico.NOMBRE == undefined) {
+            Swal({
+                type: 'error',
+                text: 'El nombre es un campo obligatorio'
+            })
+        } else if ($scope.crearTecnico.CIUDAD == '' || $scope.crearTecnico.CIUDAD == undefined) {
+            Swal({
+                type: 'error',
+                text: 'La ciudad es un campo obligatorio'
+            })
+        } else if ($scope.crearTecnico.IDENTIFICACION == '' || $scope.crearTecnico.IDENTIFICACION == undefined) {
+            Swal({
+                type: 'error',
+                text: 'La identificación es un campo obligatorio'
+            })
+        } else if ($scope.crearTecnico.empresa == '' || $scope.crearTecnico.empresa == undefined) {
+            Swal({
+                type: 'error',
+                text: 'La empresa es un campo obligatorio'
+            })
+        } else if ($scope.crearTecnico.CELULAR == '' || $scope.crearTecnico.CELULAR == undefined) {
+            Swal({
+                type: 'error',
+                text: 'La empresa es un campo celular es obligatorio'
+            })
+        } else {
+            services.creaTecnico($scope.crearTecnico, id_tecnico).then(
+                function (data) {
+                    if (data.data.state == 99) {
+                        swal({
+                            type: 'error',
+                            title: data.data.title,
+                            text: data.data.text,
+                            timer: 4000
+                        }).then(function () {
+                            $cookies.remove('usuarioseguimiento');
+                            $location.path('/');
+                            $rootScope.galletainfo = undefined;
+                            $rootScope.permiso = false;
+                            $route.reload();
+                        })
+                    } else if (data.data.state == 1) {
+                        Swal({
+                            type: 'success',
+                            title: data.data.msj,
+                            timer: 4000
+                        }).then(function () {
+                            $route.reload();
+                        })
+                    } else {
+                        Swal({
+                            title: 'Error',
+                            text: data.data.msj,
+                            type: 'error'
+                        });
+                    }
+                },
+                function errorCallback(response) {
+                    $scope.errorDatos = "Técnico no fue creado.";
+                });
+        }
     };
 
-
-    $scope.editarModal = function (datos) {
-        console.log(datos);
-        $rootScope.datos = datos;
-        $scope.idTecnico = datos.ID;
-        $scope.TecnicoNom = datos.NOMBRE;
-        $scope.UsuarioLog = datos.login;
-        $rootScope.TituloModal = "Editar Técnico con el ID:";
-        //console.log($scope.editaInfo);
+    $scope.editarModal = function (row) {
+        $scope.datos = row.entity;
+        $scope.idTecnico = row.entity.ID;
+        $scope.TecnicoNom = row.entity.NOMBRE;
+        $scope.UsuarioLog = row.entity.login;
+        //$scope.datos.CIUDAD = row.entity.ciudad;
+        $scope.TituloModal = "Editar Técnico con el ID:";
+        $("#editarModal").modal('show')
     };
 
     $scope.edittecnico = function (datos) {
-        $scope.errorDatos = null;
-        $scope.respuestaupdate = null;
-        $scope.respuestadelete = null;
-        console.log(datos);
+
         services.editarTecnico(datos).then(
             function (data) {
-                // $errorDatos=null;
-                $scope.respuestaupdate = "Técnico " + datos.NOMBRE + " actualizado exitosamente";
-                //console.log(datos);
-                //$rootScope.nombre=$scope.respuesta[0].NOMBRE;
-                //$location.path('/home/');
-                return data.data;
+                swal({
+                    type: data.type,
+                    title: data.msg,
+                    timer: 4000
+                }).then(function () {
+                    $route.reload();
+                })
             },
             function errorCallback(response) {
             });
@@ -8798,31 +11766,34 @@ app.controller('tecnicosCtrl', function ($scope, $http, $rootScope, $location, $
     };
 
 
-    $scope.borrarTecnico = function (id) {
-        $scope.idBorrar = id;
-        $scope.Tecnico = {};
-        $scope.errorDatos = null;
-        $scope.respuestaupdate = null;
-        $scope.respuestadelete = null;
-        services.deleteTecnico($scope.idBorrar).then(
-            function (data) {
+    $scope.borrarTecnico = function (row) {
 
-                $scope.respuestadelete = "Técnico " + $rootScope.datos.NOMBRE + " eliminado exitosamente";
-            },
-            function errorCallback(response) {
+        swal({
+            title: "Aviso",
+            text: "Esta seguro que desea eliminar al Tecnico: " + row.entity.NOMBRE + " con Identificacion: " + row.entity.IDENTIFICACION,
+            type: "error",
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Aceptar",
+            closeOnConfirm: true
+        }).then(function () {
+            $scope.idBorrar = row.entity.ID;
 
-                $scope.errorDatos = "No se borro";
-
-                //console.log($scope.errorDatos);
-
+            //services.deleteTecnico($scope.idBorrar).then(completed).catch(failed)
+            function completed(data) {
+                swal({
+                    type: data.type,
+                    title: data.msg,
+                    timer: 4000
+                }).then(function () {
+                    $route.reload();
+                })
             }
-        );
-        $scope.buscarTecnico($scope.datapendientes.currentPage);
-    };
-    $scope.maxSize = 5;
-    $scope.datapendientes = {maxSize: 5, currentPage: 1, numPerPage: 100, totalItems: 0};
 
-    $scope.buscarTecnico($scope.datapendientes.currentPage);
+            function failed(response) {
+                console.log(response)
+            }
+        })
+    };
 });
 
 app.controller('turnosCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $cookieStore, $timeout, services, fileUpload) {
@@ -8870,15 +11841,12 @@ app.controller('turnosCtrl', function ($scope, $http, $rootScope, $location, $ro
 
 
     $scope.desacargarAdherencia = function () {
-        //console.log($scope.gestion_Pendientes);
         services.csvAdherenciaTurnos($scope.fechaIni, $scope.fechaFin, $rootScope.galletainfo).then(
             function (data) {
-                //  console.log(data.data[0]);
                 if (data.data[0] !== undefined) {
                     window.location.href = "tmp/" + data.data[0];
                     $scope.csvPend = true;
                     $scope.counter = "Se exportaron: " + data.data[1] + " Registros";
-                    console.log($scope.counter);
                     return data.data;
                 } else {
                     $scope.counter = "No hay datos para exportar";
@@ -8906,9 +11874,7 @@ app.controller('turnosCtrl', function ($scope, $http, $rootScope, $location, $ro
         var newItemNo = $scope.turnos.length + 1;
 
         $scope.turnos.push({'id': +newItemNo, fecha: '', horaIni: '', horaFin: '', usuariocrea: $rootScope.galletainfo.login});
-        console.log($scope.turnos);
-        //console.log(usuario);
-        //$scope.crearnovedad();
+
     };
 
     $scope.updateStatus = function (data) {
@@ -8928,9 +11894,7 @@ app.controller('turnosCtrl', function ($scope, $http, $rootScope, $location, $ro
         var lastItem = $scope.turnos.length - 1;
         if (lastItem != 0) {
             $scope.turnos.splice(lastItem);
-            //console.log($scope.novedades);
         }
-
     };
 
     $scope.usuariosTurnosSeguimiento();
@@ -8946,8 +11910,6 @@ app.controller('AlarmasCtrl', function ($scope, $http, $rootScope, $location, $r
         services.listadoAlarmas().then(
             function (data) {
                 $scope.listaAlarmas = data.data;
-                //console.log("la lista "+$scope.listaAlarmas);
-
                 return data.data;
             });
     }
@@ -8955,12 +11917,10 @@ app.controller('AlarmasCtrl', function ($scope, $http, $rootScope, $location, $r
     $scope.crearAlarma = function (info) {
         services.creaAlarma(info).then(
             function (data) {
-                // console.log("la lista "+$scope.listaUsuarios);
                 $scope.respuestaupdate = "Alarma creado.";
                 services.listadoAlarmas().then(
                     function (data) {
                         $scope.listaAlarmas = data.data;
-                        //console.log("la lista "+$scope.listaAlarmas);
 
                         return data.data;
                     });
@@ -8979,11 +11939,9 @@ app.controller('AlarmasCtrl', function ($scope, $http, $rootScope, $location, $r
             $scope.listadoProcesos = data.data[0];
             $scope.listadoAcciones = {};
         });
-        //console.log($scope.listadoProcesos);
     };
 
     $scope.editarModal = function (datos) {
-        //console.log(datos);
         $scope.datosAlarmas = datos;
 
     };
@@ -8993,19 +11951,12 @@ app.controller('AlarmasCtrl', function ($scope, $http, $rootScope, $location, $r
         $scope.respuestaupdate = null;
         $scope.respuestadelete = null;
 
-        //     console.log($scope.datosAlarmas);
         services.editAlarma($scope.datosAlarmas).then(
             function (data) {
-                // $errorDatos=null;
                 $scope.respuestaupdate = "Alarma " + $scope.datosAlarmas.nombre_alarma + " actualizado exitosamente";
-                //console.log(datos);
-                //$rootScope.nombre=$scope.respuesta[0].NOMBRE;
-                //$location.path('/home/');
                 services.listadoAlarmas().then(
                     function (data) {
                         $scope.listaAlarmas = data.data;
-                        //console.log("la lista "+$scope.listaAlarmas);
-
                         return data.data;
                     });
             },
@@ -9026,14 +11977,12 @@ app.controller('AlarmasCtrl', function ($scope, $http, $rootScope, $location, $r
                 services.listadoAlarmas().then(
                     function (data) {
                         $scope.listaAlarmas = data.data;
-                        //console.log("la lista "+$scope.listaAlarmas);
 
                         return data.data;
                     });
             },
             function errorCallback(response) {
                 $scope.errorDatos = "No se borro";
-                //console.log($scope.errorDatos);
             }
         );
     };
@@ -9054,10 +12003,8 @@ app.controller('AlarmasCtrl', function ($scope, $http, $rootScope, $location, $r
     };
 
     $scope.calcularSubAcciones = function (proceso, accion) {
-        console.log("entro calcularSubAcciones");
         $scope.listadoSubAcciones = {};
         $scope.validarsubaccion = true;
-        // console.log(proceso, accion);
         services.getSubAcciones(proceso, accion).then(function (data) {
             $scope.listadoSubAcciones = data.data[0];
             $scope.validarsubaccion = true;
@@ -9078,17 +12025,9 @@ app.directive('cookie', function ($rootScope, $cookies) {
 
 
             if ($cookies.get('usuarioseguimiento') !== undefined) {
-                //console.log("carlitos");
                 $scope.galletainfo = JSON.parse($cookies.get("usuarioseguimiento"));
-                //$rootScope.galletainfo = $rootScope.galletainfo;
                 $rootScope.permiso = true;
-                //console.log($rootScope.galletainfo);
-                /* if($scope.galletainfo.CARGO_ID==1){
-                      $rootScope.perfil="ADMIN";
-                 }else{ $rootScope.perfil="ASESOR";} */
-
             }
-
         },
 
         templateUrl: 'partial/navbar.html'
@@ -9120,8 +12059,8 @@ app.config(['$httpProvider', function ($httpProvider) {
     $httpProvider.interceptors.push('LoadingInterceptor');
 }]);
 
-app.config(['$routeProvider',
-    function ($routeProvider) {
+app.config(['$routeProvider', '$locationProvider',
+    function ($routeProvider, $locationProvider) {
 
         $routeProvider
             .when('/', {
@@ -9152,7 +12091,7 @@ app.config(['$routeProvider',
             })
 
             .when('/registroscodigoincompleto', {
-                title: 'Registros Soporte GPON',
+                title: 'Registros Codigo incompleto',
                 templateUrl: 'partial/registroscodigoincompleto.html',
                 controller: 'registroscodigoincompletoCtrl',
                 authorize: true
@@ -9235,7 +12174,7 @@ app.config(['$routeProvider',
             })
 
             .when('/gestioncodigoincompleto', {
-                title: 'Gestión Código Incompleto',
+                title: 'Registros Código Incompleto',
                 templateUrl: 'partial/Gestioncodigoincompleto.html',
                 controller: 'GestioncodigoincompletoCtrl',
                 authorize: true
@@ -9283,12 +12222,21 @@ app.config(['$routeProvider',
                 authorize: true
             })
 
+            .otherwise({
+                redirectTo: '/'
+            });
+
+        $locationProvider.html5Mode({
+            enabled: true,
+            requireBase: true
+        }).hashPrefix(['!']);
+
 
     }
 ]);
 
-app.run(function ($rootScope, services) {
-
+app.run(function ($rootScope, services, i18nService) {
+    i18nService.setCurrentLang('es');
     $rootScope.fechaProceso = function () {
         var tiempo = new Date().getTime();
         var date1 = new Date();
@@ -9342,8 +12290,8 @@ app.run(['$rootScope', 'services', function ($rootScope, services) {
 
     $rootScope.ciudades = function () {
         services.getCiudades().then(function (data) {
-            $rootScope.listadoCiudades = data.data[0];
-            $rootScope.listadoDepartamentos = data.data[1];
+            $rootScope.listadoCiudades = data.data[1];
+            $rootScope.listadoDepartamentos = data.data[0];
         });
     };
 
@@ -9378,16 +12326,16 @@ app.run(['$rootScope', 'services', function ($rootScope, services) {
     ];
 
     $rootScope.empresas = [
-        {ID: 1, EMPRESA: 'UNE'},
-        {ID: 0, EMPRESA: 'SIN EMPRESA'},
-        {ID: 3, EMPRESA: 'REDES Y EDIFICACIONES'},
-        {ID: 4, EMPRESA: 'ENERGIA INTEGRAL ANDINA'},
-        {ID: 6, EMPRESA: 'EAGLE'},
-        {ID: 7, EMPRESA: 'SERVTEK'},
-        {ID: 8, EMPRESA: 'FURTELCOM'},
-        {ID: 9, EMPRESA: 'EMTELCO'},
-        {ID: 10, EMPRESA: 'CONAVANCES'},
-        {ID: 11, EMPRESA: 'TECHCOM'}
+        {ID: 1, EMPRESA: 'Une'},
+        {ID: 0, EMPRESA: 'Sin empresa'},
+        {ID: 3, EMPRESA: 'Redes y edificaciones'},
+        {ID: 4, EMPRESA: 'Energia integral andina'},
+        {ID: 6, EMPRESA: 'Eagle'},
+        {ID: 7, EMPRESA: 'Servtek'},
+        {ID: 8, EMPRESA: 'Furtelcom'},
+        {ID: 9, EMPRESA: 'Emtelco'},
+        {ID: 10, EMPRESA: 'Conavances'},
+        {ID: 11, EMPRESA: 'Techcom'}
     ];
 
     $rootScope.procesosoffline = [
@@ -9444,11 +12392,19 @@ app.run(['$rootScope', 'services', function ($rootScope, services) {
     ];
 
     $rootScope.perfiles = [
-        {ID: 1, PERFIL: 'Supervisor'}, {ID: 2, PERFIL: 'Creador de Experiencia'}, {ID: 3, PERFIL: 'Perfil Regional'},
-        {ID: 4, PERFIL: 'Mesa Offline'}, {ID: 5, PERFIL: 'Creador de Experiencia Plus'}, {ID: 6, PERFIL: 'Premisas Infraestructuras'}, {ID: 7, PERFIL: 'Asesor VIP'}, {
-            ID: 8,
-            PERFIL: 'Registros'
-        }, {ID: 9, PERFIL: 'Brutal Force'}, {ID: 10, PERFIL: 'Gestión Brutal'}, {ID: 12, PERFIL: 'Regionales'}, {ID: 13, PERFIL: 'Quejas GO'}
+        {ID: 1, PERFIL: 'Supervisor'},
+        {ID: 2, PERFIL: 'Creador de Experiencia'},
+        {ID: 3, PERFIL: 'Perfil Regional'},
+        {ID: 4, PERFIL: 'Mesa Offline'},
+        {ID: 5, PERFIL: 'Creador de Experiencia Plus'},
+        {ID: 6, PERFIL: 'Premisas Infraestructuras'},
+        {ID: 7, PERFIL: 'Asesor VIP'},
+        {ID: 8, PERFIL: 'Registros'},
+        {ID: 9, PERFIL: 'Brutal Force'},
+        {ID: 10, PERFIL: 'Gestión Brutal'},
+        {ID: 12, PERFIL: 'Regionales'},
+        {ID: 13, PERFIL: 'Quejas GO'},
+        {ID: 14, PERFIL: 'Nivelacion'},
     ];
 
     $rootScope.conceptosBuscartecnico = [
@@ -9593,15 +12549,21 @@ app.run(['$rootScope', 'services', function ($rootScope, services) {
 }]);
 
 app.run(['$location', '$rootScope', '$cookies', 'services', function ($location, $rootScope, $cookies, services) {
-    //i18nService.setCurrentLang('es');
+
     $rootScope.logout = function () {
-        console.log('cerrar session');
+
         services.cerrarsesion();
+        /* if($cookies.get('usuarioInfo')!=undefined){ */
         $cookies.remove('usuarioseguimiento');
         $location.path('/');
-        $rootScope = undefined;
-        $scope = undefined;
+        $rootScope.galletainfo = undefined;
+        $rootScope.permiso = false;
+        //$rootScope.error="Desconectado";
+        console.log("Desconectado");
+        //console.log($rootScope.galletainfo);
+        //$route.reload();
 
+        //}
     };
 }]);
 //fin de la APP AngularJS
