@@ -1,0 +1,84 @@
+<style>
+
+</style>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-heading nav navbar-default">
+					<ul class="nav nav-tabs">
+						<li class="active">
+							<a data-toggle="tab" href="/#QuejasGestOper">Quejas GO</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="tab-content">
+				<!--<div id="QuejasGestOper" class="tab-pane fade in active" ng-include="rutaQuejasGo"></div>-->
+
+				<!-- cabecera de la página -->
+				<div class="panel-heading nav navbar-default">
+					<ul class="nav navbar-nav navbar-left">
+						<b><i class="fa fa-list-alt" aria-hidden="true"></i> Formulario Quejas Gestión Operativa</b>
+					</ul>
+					<div class="d-flex flex-row-reverse box-tools pull-right">
+						<div class="input-group d-flex flex-row">
+							<a class="btn btn-primary" ng-click="mostraModal({})"><i class="fa fa-plus"></i> Agregar Queja</a>
+						</div>
+					</div>
+				</div>
+				<!-- cuerpo de la página -->
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="box">
+							<div class="box-body">
+								<div class="row"><br>
+
+									<div class="col-xs-7">
+										<ul class="nav navbar-nav navbar-left">
+											<input style="width:130px" type="text" name="fechaini" id="fechaini" class="btn btn-default btn-xs" ng-model="Registros.fechaini" placeholder="Fecha Inicial" datetime-picker="" date-only date-format="yyyy-MM-dd"> <i class="fa fa-calendar fa-fw"></i>
+											<input style="width:130px" type="text" name="fechafin" id="fechafin" class="btn btn-default btn-xs" ng-model="Registros.fechafin" placeholder="Fecha Final" datetime-picker="" date-only date-format="yyyy-MM-dd"> <i class="fa fa-calendar fa-fw"></i>
+											<button type="button"
+													class="btn btn-success btn-xs"
+													ng-click="validarDatos(Registros)"
+													ng-disabled="loading"
+													title="Buscar Registros">
+												<i class="fa fa-search-plus" aria-hidden="true"></i>
+											</button>
+
+											<button type="button"
+													class="btn btn-primary btn-xs" title="Exportar Registros" ng-click="BuscarRegistrosqueja(Registros)"
+													ng-disabled="loading" title="Exportar" tooltip data-placement="top">
+												<i class="fa fa-cloud-download" aria-hidden="true"> </i>
+											</button>
+
+											<div data-ng-if="loading">
+												<img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif"/>
+											</div>
+										</ul>
+									</div>
+
+									<br><br>
+								</div>
+
+								<div id="tntGridServices" ui-grid="gridOptions" ui-grid-exporter ui-grid-edit ui-grid-pagination
+									 style="font-size: 12px;text-transform: lowercase; color: #0f0f0f;height: 500px" external-scopes="gridApi" ></div>
+
+							</div>
+						</div>
+
+					</div>
+				</div>
+				<!-- FOOTER -->
+
+
+				<!-- RUTA DEL MODAL QUE ESTA EN EL JS-->
+				<div ng-include="rutaModalQuejasGo"></div>
+
+			</div>
+		</div>
+	</div>
+</div>
+<br>
+<br>
+

@@ -1,0 +1,1125 @@
+<style>
+    .fileUpload {
+        position: relative;
+        overflow: hidden;
+        margin: 10px;
+    }
+
+    table,
+    th,
+    td {
+        font-size: 11px;
+    }
+
+    .fixed-panel-kpiuser {
+
+        max-height: 300px;
+        overflow-y: scroll;
+    }
+
+    .fileUpload input.upload {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 30px;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+
+    .flipswitch {
+        position: relative;
+        background: white;
+        margin: 0px 0 0;
+        padding: 0;
+        width: 42px;
+        height: 22px;
+        -webkit-appearance: initial;
+        border-radius: 3px;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        outline: none;
+        font-size: inherit;
+        /*font-size: 65%;
+    font-size: 9px;
+    font-weight: bold;*/
+        font-family: Trebuchet, Arial, sans-serif;
+        cursor: pointer;
+        border: 1px solid #ddd;
+        z-index: 0;
+    }
+
+    .flipswitch:after {
+        position: absolute;
+        top: 5%;
+        display: block;
+        line-height: 17px;
+        width: 45%;
+        height: 90%;
+        background: #337ab7;
+        box-sizing: border-box;
+        text-align: center;
+        transition: all 0.3s ease-in 0s;
+        color: white;
+        border: #888 1px solid;
+        border-radius: 3px;
+        z-index: 0;
+    }
+
+    .flipswitch:after {
+        left: 2%;
+        content: "No";
+
+    }
+
+    .flipswitch:checked:after {
+        left: 53%;
+        content: "Si";
+        background: #00C8FF;
+
+    }
+
+    .resaltado15min {
+        background-color: #ADE2FF !important;
+    }
+
+    .label-xsmall {
+        vertical-align: super;
+        font-size: x-small;
+    }
+
+    /*    .ui-grid {
+            height: auto;
+            overflow-y: scroll;
+        }
+        .ui-grid-viewport {
+            height: 100% !important;
+            overflow-y: scroll;
+        }*/
+
+    /*    .ui-grid-row,
+        .ui-grid-cell{
+            height: 50px !important;
+        }
+
+        .ui-grid-column-menu-button{
+            display: none!important;
+        }*/
+
+    .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+        background-color: #f0f0f0;
+    }
+
+    .recore {
+        font-size: 16px;
+        padding: 5px 0 5px 0;
+    }
+
+    .sin_nada{
+        padding: 2px;
+        border: none;
+    }
+
+    .mac::before{
+        content: '\A'; white-space: pre;
+    }
+
+</style>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading nav navbar-default">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a data-toggle="tab" href="/#gestion"> Gestión</a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="/#Kpis" ng-click="loadgrid()"> Seguimiento y auditoría</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="tab-content" style="height: auto">
+                    <div id="gestion" class="tab-pane fade in active">
+                        <div class="panel panel-default">
+                            <div class="panel-heading nav navbar-default">
+                                <ul class="nav nav-tabs navbar-left">
+                                    <li class="active">
+                                        <a data-toggle="tab" href="/#home"> TV</a>
+                                    </li>
+                                    <li>
+                                        <a data-toggle="tab" href="/#internet" ng-click="loadContingeciaInternet()"> Internet-Toip</a>
+                                    </li>
+                                </ul>
+                                <ul class="nav navbar-nav navbar-right">
+                                    <b>
+                                        <button type="button" class="btn btn-default btn-xs" ng-click="reloadContingenciaTv()" title="Actualizar" data-toggle="tooltip"
+                                                data-placement="top" ng-disabled="loading">
+                                            <i class="fa fa-refresh" aria-hidden="true"></i>
+                                        </button>
+                                    </b>
+                                </ul>
+                            </div>
+
+                            <div class="tab-content">
+                                <!-- MODULO DE TV -->
+                                <div id="home" class="tab-pane fade in active">
+                                    <div data-ng-if="loading">
+                                        <img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif"/>
+                                    </div>
+
+                                    <!--<div id="gridOptionsTv" ui-grid="gridOptionsTv" ui-grid-auto-resize
+                                         style="font-size: 12px; color: #0f0f0f;" external-scopes="userLog" class="grid2"></div>-->
+                                    <table class="table table-hover table-condensed table-bordered">
+                                        <thead>
+                                        <tr style="background: #00377d;color: #ffffff">
+                                            <th>
+                                                <center>Marcar</center>
+                                            </th>
+                                            <th>
+                                                <center>Login</center>
+                                            </th>
+                                            <th style="padding-left: 49px;padding-right: 49px;">
+                                                <center>Pedido</center>
+                                            </th>
+                                            <th>
+                                                <center>Mac Entra</center>
+                                            </th>
+                                            <th>
+                                                <center>Mac Sale</center>
+                                            </th>
+                                            <th>
+                                                <center>Paquetes</center>
+                                            </th>
+                                            <th>
+                                                <center>Perfíl</center>
+                                            </th>
+                                            <th>
+                                                <center>Ciudad</center>
+                                            </th>
+                                            <th>
+                                                <center>Proceso</center>
+                                            </th>
+                                            <th>
+                                                <center>Acción</center>
+                                            </th>
+                                            <th>
+                                                <center>Fecha</center>
+                                            </th>
+                                            <th>
+                                                <center>Producto</center>
+                                            </th>
+                                            <th>
+                                                <center>Tipo equipo</center>
+                                            </th>
+                                            <th>
+                                                <center>Remitente</center>
+                                            </th>
+                                            <th>
+                                                <center>Tipificación</center>
+                                            </th>
+                                            <th>
+                                                <center>Observaciones</center>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody style="text-align: center">
+                                        <tr ng-repeat="data in contingenciasTV | orderBy : 'horagestion' : false track by $index "
+                                            ng-class="{'resaltado15min': data.horagestion <= quinceminutos[indice]}">
+                                            <td>
+                                                <center ng-show="data._id">
+                                                    <input type="checkbox" ng-model="data.bloqueo" name="bloqueo" id="bloqueo" ng-change="marcarEngestion(data)"
+                                                           ng-show="data.bloqueo != 1">
+                                                    <div class="loadingio-spinner-ellipsis-3nun7cb96ao" ng-show="data.bloqueo == 1">
+                                                        <div class="ldio-pettsxrv7wj">
+                                                            <div></div>
+                                                            <div></div>
+                                                            <div></div>
+                                                            <div></div>
+                                                            <div></div>
+                                                        </div>
+                                                    </div>
+                                                </center>
+                                                <center ng-show="!data._id">
+                                                    <input type="checkbox" ng-model="data.bloqueo" name="bloqueo" id="bloqueo" ng-change="marcarEngestion(data)">
+                                                </center>
+                                            </td>
+                                            <!-- En estas lineas se oculta el login gestión -->
+                                            <td ng-show="data.logincontingencia == galletainfo.login && !data._id"><span
+                                                    ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.logincontingencia == galletainfo.login}">{{data.logincontingencia}}</span>
+                                            </td>
+
+                                            <td ng-show="data.logincontingencia != galletainfo.login && data.engestion == 1 && !data._id"><span
+                                                    ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.logincontingencia != galletainfo.login}">En gestión</span>
+                                            </td>
+
+                                            <td ng-show="data.logincontingencia != galletainfo.login && data.engestion != 1 && !data._id"><span
+                                                    ng-class="{'label label-primary label-xsmall': data.engestion != 1}"></span>
+                                            </td>
+                                            <td ng-show="data._id">
+                                            </td>
+                                            <!-- Fin ocultar el login gestión -->
+                                            <td>
+                                                <button type="button" class="btn btn-default btn-xs sin_nada" ng-click="CopyPortaPapeles(data.pedido)" tooltip title="Copiar pedido"
+                                                        id=tv{{$index}}>
+                                                    {{data.pedido}}
+                                                </button>
+                                                <button type="button" class="btn btn-default btn-xs sin_nada"
+                                                        ng-click="bb8(data.pedido)">
+                                                    <i class="fa fa-plus" aria-hidden="true"></i></button>
+                                            </td>
+                                            <td ng-show="!data._id"><span>{{data.macEntra | replace: '-':'\n'}}</span></td>
+                                            <td ng-show="!data._id"><span>{{data.macSale | replace: '-':'\n'}}</span></td>
+                                            <td ng-show="data._id"><span ng-repeat="mac in data.macIn">{{mac.name}}-</span></td>
+                                            <td ng-show="data._id"><span ng-repeat="mac in data.macOut">{{mac.name}}-</span></td>
+                                            <td>{{data.paquetes}}</td>
+                                            <td>{{data.perfil}}</td>
+                                            <td>{{data.ciudad}}</td>
+                                            <td>{{data.proceso}}</td>
+                                            <td>{{data.accion}}</td>
+                                            <td>{{data.horagestion}}</td>
+                                            <td>{{data.producto}}</td>
+                                            <td>{{data.tipoEquipo}}</td>
+                                            <td>{{data.remite}}</td>
+                                            <td>
+                                                <select ng-model="data.tipificacion" class="btn btn-default btn-xs grupo-select" name="tipificacion" style="width:100px"
+                                                        ng-change="palancatv(data,$index)">
+                                                    <option value="Ok">Ok</option>
+                                                    <option value="Rechazado por posible fraude">Rechazado por posible fraude</option>
+                                                    <option value="Rechazado por mal ingreso">Rechazado por mal ingreso</option>
+                                                    <option value="Duplicado">Duplicado</option>
+                                                    <option value="Error de despacho(faltó gestión)">Error de despacho(faltó gestión)</option>
+                                                    <option value="Reenvio Falla">Reenvio Falla</option>
+                                                    <option value="error del sistema">Error del Sistema</option>
+                                                    <option value="No uso SARA">No uso SARA</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <center>
+                                                    <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
+                                                            data-placement="left" data-html="true" title="Observaciones" data-selector="" data-content="{{data.observacion}}">
+                                                        <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                    </button>
+                                                    <button ng-show="!data._id" type="button" class="btn btn-default btn-xs" data-toggle="modal"
+                                                            ng-click="guardarcontingencia(data)" data-backdrop="static"
+                                                            tooltip title="Observaciones y guardar gestión" data-placement="top" data-html="true" data-selector="">
+                                                        <i class="fa fa-floppy-o" aria-hidden="true"> </i>
+                                                    </button>
+                                                    <div style="display: inline-block;" ng-show="!data._id">
+                                                        <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static"
+                                                                ng-hide="data.alerta == 'FALSE'" tooltip
+                                                                title="El pedido ya pasó por contingencias anteriormente, por favor validar!" data-placement="top" data-html="true"
+                                                                data-selector="">
+                                                            <i class="fa fa-exclamation" style="color:red" aria-hidden="true"> </i>
+                                                        </button>
+                                                    </div>
+                                                </center>
+                                            </td>
+                                        </tr>
+                                        <!-- <tr ng-repeat="data in contingenciesDataTV">
+                                            <td>
+                                                <center>
+                                                    <input type="checkbox" ng-model="data.bloqueo" name="bloqueo" id="bloqueo" ng-change="marcarEngestion(data)" ng-show="data.bloqueo != 1">
+                                                    <div class="loadingio-spinner-ellipsis-3nun7cb96ao" ng-show="data.bloqueo == 1">
+                                                        <div class="ldio-pettsxrv7wj">
+                                                            <div></div><div></div><div></div><div></div><div></div>
+                                                        </div>
+                                                    </div>
+                                                </center>
+                                            </td>
+                                            <td></td>
+                                            <td style="text-align:left !important;">
+                                                <button type="button" class="btn btn-default btn-xs" ng-click="CopyPortaPapeles(data.pedido)" tooltip title="Copiar pedido" id=i{{$index}}>{{data.references}}
+                                                </button>
+                                            </td>
+                                            <td><span ng-repeat="mac in data.macIn">{{mac.name}}-</span></td>
+                                            <td><span ng-repeat="mac in data.macOut">{{mac.name}}-</span></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>{{data.contingencies_Type}}</td>
+                                            <td>{{data.horagestion}}</td>
+                                            <td>{{data.product}}</td>
+                                            <td></td>
+                                            <td>Terreno</td>
+                                            <td>
+                                                <select ng-model="data.tipificacion" class="btn btn-default btn-xs grupo-select" name="tipificacion" style="width:100px">
+                                                    <option value="Ok">Ok</option>
+                                                    <option value="Rechazado por posible fraude">Rechazado por posible fraude</option>
+                                                    <option value="Rechazado por mal ingreso">Rechazado por mal ingreso</option>
+                                                    <option value="Duplicado">Duplicado</option>
+                                                    <option value="Error de despacho(faltó gestión)">Error de despacho(faltó gestión)</option>
+                                                    <option value="Reenvio Falla">Reenvio Falla</option>
+                                                    <option value="error del sistema">Error del Sistema</option>
+                                                    <option value="No uso SARA">No uso SARA</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <center>
+                                                    <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
+                                                     data-placement="left" data-html="true" title="Observaciones" data-selector="" data-content="{{data.details}}">
+                                                        <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                    </button>
+                                                </center>
+                                            </td>
+                                        </tr> -->
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+                                <!-- MODULO DE INTERNET-ToIp -->
+                                <div id="internet" class="tab-pane fade">
+                                    <div data-ng-if="loading">
+                                        <img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif"/>
+                                    </div>
+                                    <table class="table table-hover table-condensed table-bordered">
+                                        <thead>
+                                        <tr style="background: #00377d;color: #ffffff">
+                                            <th>
+                                                <center>Marcar</center>
+                                            </th>
+                                            <th>
+                                                <center>Login</center>
+                                            </th>
+                                            <th style="padding-left: 49px;padding-right: 49px;">
+                                                <center>Pedido</center>
+                                            </th>
+                                            <th>
+                                                <center>Mac Entra</center>
+                                            </th>
+                                            <th>
+                                                <center>Mac Sale</center>
+                                            </th>
+                                            <th>
+                                                <center>Nro Línea</center>
+                                            </th>
+                                            <th>
+                                                <center>Perfíl</center>
+                                            </th>
+                                            <th>
+                                                <center>Ciudad</center>
+                                            </th>
+                                            <th>
+                                                <center>Proceso</center>
+                                            </th>
+                                            <th>
+                                                <center>Acción</center>
+                                            </th>
+                                            <td>
+                                                <center>Hora ingreso</center>
+                                            </td>
+                                            <th>
+                                                <center>Producto</center>
+                                            </th>
+                                            <th>
+                                                <center>Tipo equipo</center>
+                                            </th>
+                                            <th>
+                                                <center>Remitente</center>
+                                            </th>
+                                            <th>
+                                                <center>Tipificación</center>
+                                            </th>
+                                            <th>
+                                                <center>Observaciones</center>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody style="text-align: center">
+                                        <tr ng-repeat="data in contingenciasOTROS | orderBy : 'horagestion' : false track by $index"
+                                            ng-class="{'resaltado15min': data.horagestion <= quinceminutos[indice]}">
+                                            <td>
+                                                <center ng-show="data._id">
+                                                    <input type="checkbox" ng-model="data.bloqueo" name="bloqueo" id="bloqueo" ng-change="marcarEngestion(data)"
+                                                           ng-show="data.bloqueo != 1">
+                                                    <div class="loadingio-spinner-ellipsis-3nun7cb96ao" ng-show="data.bloqueo == 1">
+                                                        <div class="ldio-pettsxrv7wj">
+                                                            <div></div>
+                                                            <div></div>
+                                                            <div></div>
+                                                            <div></div>
+                                                            <div></div>
+                                                        </div>
+                                                    </div>
+                                                </center>
+                                                <center ng-show="!data._id">
+                                                    <input type="checkbox" ng-model="data.bloqueo" name="bloqueo" id="bloqueo" ng-change="marcarEngestion(data)">
+                                                </center>
+                                            </td>
+                                            <!-- En estas lineas se oculta el login gestión -->
+
+                                            <td ng-show="data.logincontingencia == galletainfo.login"><span
+                                                    ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.logincontingencia == galletainfo.login}">{{data.logincontingencia}}</span>
+                                            </td>
+
+                                            <td ng-show="data.logincontingencia != galletainfo.login && data.engestion == 1"><span
+                                                    ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.logincontingencia != galletainfo.login}">En gestión</span>
+                                            </td>
+
+                                            <td ng-show="data.logincontingencia != galletainfo.login && data.engestion != 1"><span
+                                                    ng-class="{'label label-primary label-xsmall': data.engestion != 1}"></span>
+                                            </td>
+
+                                            <!-- Fin ocultar el login gestión -->
+                                            <td>
+                                                <button type="button" class="btn btn-default btn-xs sin_nada" ng-click="CopyPortaPapeles(data.pedido)" tooltip title="Copiar pedido"
+                                                        id=i{{$index}}>{{data.pedido}}
+                                                </button>
+                                                <button type="button" class="btn btn-default btn-xs sin_nada"
+                                                        ng-click="bb8(data.pedido)">
+                                                    <i class="fa fa-plus" aria-hidden="true"></i></button>
+                                            </td>
+                                            <td ng-show="!data._id">{{data.macEntra}}</td>
+                                            <td ng-show="!data._id">{{data.macSale}}</td>
+                                            <td ng-show="data._id"><span ng-repeat="mac in data.macIn">{{mac.name}}-</span></td>
+                                            <td ng-show="data._id"><span ng-repeat="mac in data.macOut">{{mac.name}}-</span></td>
+                                            <td>
+                                                <button type="button" class="btn btn-default btn-xs" ng-click="CopyPortaPapeles(data.paquetes)" tooltip
+                                                        title="Copiar Nro Línea ToIP" id=l{{$index}}>{{data.paquetes}}
+                                                </button>
+                                            </td>
+                                            <td>{{data.perfil}}</td>
+                                            <td>{{data.ciudad}}</td>
+                                            <td>{{data.proceso}}</td>
+                                            <td>{{data.accion}}</td>
+                                            <td>{{data.horagestion}}</td>
+                                            <td>{{data.producto}}</td>
+                                            <td>{{data.tipoEquipo}}</td>
+                                            <td>{{data.remite}}</td>
+                                            <td>
+                                                <select ng-model="data.tipificacion" class="btn btn-default btn-xs grupo-select" name="tipificacion" style="width:100px"
+                                                        ng-change="palancaotro(data,$index)">
+                                                    <option value="Ok">Ok</option>
+                                                    <option value="Rechazado por posible fraude">Rechazado por posible fraude</option>
+                                                    <option value="Rechazado por mal ingreso">Rechazado por mal ingreso</option>
+                                                    <option value="Duplicado">Duplicado</option>
+                                                    <option value="Error de despacho(faltó gestión)">Error de despacho(faltó gestión)</option>
+                                                    <option value="Reenvio Falla">Reenvio Falla</option>
+                                                    <option value="error del sistema">Error del Sistema</option>
+                                                    <option value="No uso SARA">No uso SARA</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <center>
+                                                    <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
+                                                            data-placement="left" data-html="true" title="Observaciones" data-selector="" data-content="{{data.observacion}}">
+                                                        <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                    </button>
+                                                    <button ng-show="!data._id" type="button" class="btn btn-default btn-xs" data-toggle="modal"
+                                                            ng-click="guardarcontingencia(data)" data-backdrop="static"
+                                                            tooltip title="Observaciones y guardar gestión" data-placement="top" data-html="true" data-selector="">
+                                                        <i class="fa fa-floppy-o" aria-hidden="true"> </i>
+                                                    </button>
+                                                    <div style="display: inline-block;" ng-show="!data._id">
+                                                        <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static"
+                                                                ng-hide="data.alerta == 'FALSE'" tooltip
+                                                                title="El pedido ya pasó por contingencias anteriormente, por favor validar!" data-placement="top" data-html="true"
+                                                                data-selector="">
+                                                            <i class="fa fa-exclamation" style="color:red" aria-hidden="true"> </i>
+                                                        </button>
+                                                    </div>
+                                                </center>
+                                            </td>
+                                        </tr>
+                                        <!-- <tr ng-repeat="data in contingenciesDataInternetToIP">
+                                            <td>
+                                                <center>
+                                                    <input type="checkbox" ng-model="data.bloqueo" name="bloqueo" id="bloqueo" ng-change="marcarEngestion(data)" ng-show="data.bloqueo != 1">
+                                                    <div class="loadingio-spinner-ellipsis-3nun7cb96ao" ng-show="data.bloqueo == 1">
+                                                        <div class="ldio-pettsxrv7wj">
+                                                            <div></div><div></div><div></div><div></div><div></div>
+                                                        </div>
+                                                    </div>
+                                                </center>
+                                            </td>
+                                            <td></td>
+                                            <td style="text-align:left !important;">
+                                                <button type="button" class="btn btn-default btn-xs" ng-click="CopyPortaPapeles(data.pedido)" tooltip title="Copiar pedido" id=i{{$index}}>{{data.references}}
+                                                </button>
+                                            </td>
+                                            <td><span ng-repeat="mac in data.macIn">{{mac.name}}-</span></td>
+                                            <td><span ng-repeat="mac in data.macOut">{{mac.name}}-</span></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>{{data.contingencies_Type}}</td>
+                                            <td>{{data.horagestion}}</td>
+                                            <td>{{data.product}}</td>
+                                            <td></td>
+                                            <td>-</td>
+                                            <td>
+                                                <select ng-model="data.tipificacion" class="btn btn-default btn-xs grupo-select" name="tipificacion" style="width:100px">
+                                                    <option value="Ok">Ok</option>
+                                                    <option value="Rechazado por posible fraude">Rechazado por posible fraude</option>
+                                                    <option value="Rechazado por mal ingreso">Rechazado por mal ingreso</option>
+                                                    <option value="Duplicado">Duplicado</option>
+                                                    <option value="Error de despacho(faltó gestión)">Error de despacho(faltó gestión)</option>
+                                                    <option value="Reenvio Falla">Reenvio Falla</option>
+                                                    <option value="error del sistema">Error del Sistema</option>
+                                                    <option value="No uso SARA">No uso SARA</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <center>
+                                                    <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
+                                                     data-placement="left" data-html="true" title="Observaciones" data-selector="" data-content="{{data.details}}">
+                                                        <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                    </button>
+                                                </center>
+                                            </td>
+                                        </tr> -->
+                                        </tbody>
+                                    </table>
+                                    <!--<div id="gridOptionsInternet" ui-grid="gridOptionsInternet" ui-grid-auto-resize
+                                         style="font-size: 12px; color: #0f0f0f;" external-scopes="userLog" class="grid2"></div>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- MODULO DE SEGUMIENTO -->
+                    <div id="Kpis" class="tab-pane fade container-fluid">
+                        <center>
+                            <h5>
+                                <span class="label label-warning" ng-show="!sinPedido">{{mensajeBuscar}}</span>
+                            </h5>
+                        </center>
+
+                        <!-- CUERPO DE PEDIDOS QUE PASARON POR LA PAGINA DE SEGUIMIENTO -->
+                        <div class="col-md-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading nav navbar-default">
+                                    <ul class="nav navbar-nav navbar-left">
+                                        <b><i class="fa fa-list-alt" aria-hidden="true"></i> Ingresos</b>
+                                    </ul>
+                                </div>
+                                <div class="panel-heading nav navbar-default">
+                                    <ul class="nav navbar-nav navbar-right">
+                                        <li>
+                                            <input type="text" name="fechaupdateInical" id="fechaupdateInical" class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                                   ng-model="fechaupdateInical" placeholder="Fecha Inicial" datetime-picker="" date-only date-format="yyyy-MM-dd">
+                                            <i class="fa fa-calendar fa-fw"></i>
+                                        </li>
+                                        <li>
+                                            <input type="text" name="fechaupdateFinal" id="fechaupdateFinal" class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                                   ng-model="fechaupdateFinal" placeholder="Fecha Final" datetime-picker="" date-only date-format="yyyy-MM-dd">
+                                            <i class="fa fa-calendar fa-fw"></i>
+                                        </li>
+                                        <li>
+                                            <b>
+                                                <button type="button" class="btn btn-default btn-xs" ng-click="resumenContingencias(fechaupdateInical, fechaupdateFinal)"
+                                                        title="Actualizar" data-toggle="tooltip" data-placement="left" ng-disabled="loading">
+                                                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                                                </button>
+                                            </b>&nbsp;
+                                        </li>
+                                        <li>
+                                            <button type="button" class="btn btn-primary btn-xs" title="Exportar Registros"
+                                                    ng-click="descargarContingencias(fechaupdateInical, fechaupdateFinal)"
+                                                    ng-disabled="loading" title="Exportar mes en curso" tooltip data-placement="top">
+                                                <i class="fa fa-cloud-download" aria-hidden="true"> </i>
+                                            </button>&nbsp;
+                                        </li>&nbsp;&nbsp;&nbsp;
+                                        <li>
+                                            <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs" ng-model="buscarPedido" placeholder="Buscar Pedido">
+                                        </li>
+                                        <li>
+                                            <b>
+                                                <button type="button" class="btn btn-default btn-xs" ng-click="buscarPedidoContingencia(buscarPedido)" title="Buscar"
+                                                        data-toggle="tooltip" data-placement="left" ng-disabled="loading">
+                                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                                </button>
+                                            </b>&nbsp;
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="panel-heading"><b><i class="fa fa-database" aria-hidden="true"></i> Datos de TV, Internet-ToIp</b></div>
+                                <div data-ng-if="loading">
+                                    <img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif"/>
+                                </div>
+
+                                <div id="tntGridServices" ui-grid="gridOptions" ui-grid-pagination
+                                     style="font-size: 12px;text-transform: lowercase; color: #0f0f0f;height: 400px"></div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+
+                            <div class="panel panel-default">
+                                <div class="panel-heading"><b><i class="fa fa-calculator" aria-hidden="true"></i> Contadores</b></div>
+
+                                <!-- Table -->
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <td><b>Estado</b></td>
+                                        <td><b>Contador tv</b></td>
+                                        <td><b>Contador internet-toip</b></td>
+                                        <td><b>Contador general</b></td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td><b>Aceptados</b></td>
+                                        <td>{{Totaltotal_pedidos_aceptadosTV}}</td>
+                                        <td>{{Totaltotal_pedidos_aceptadosInTo}}</td>
+                                        <td>{{Totaltotal_pedidos_aceptados}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Pendientes</b></td>
+                                        <td>{{Totaltotal_pedidos_pendientesTV}}</td>
+                                        <td>{{Totaltotal_pedidos_pendientesInTo}}</td>
+                                        <td>{{Totaltotal_pedidos_pendientes}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Rechazados</b></td>
+                                        <td>{{Totaltotal_pedidos_rechazadosTV}}</td>
+                                        <td>{{Totaltotal_pedidos_rechazadosInTo}}</td>
+                                        <td>{{Totaltotal_pedidos_rechazados}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <div class="panel-heading"><b><i class="fa fa-users" aria-hidden="true"></i> Recursos Gestionando Contingencias:</b></div>
+
+                                <ul style="margin: 10px;
+                                            display: flex;
+                                            align-content: center;
+                                            flex-wrap: nowrap;
+                                            justify-content: flex-start;
+                                            align-items: center;" class="nav nav-pills" role="tablist">
+                                    <li>
+                                        <span class="label label-default"> Televisión: {{Total_Personas_GestionandoTV}}</span>&nbsp;&nbsp;&nbsp;
+                                    </li>
+                                    <li>
+                                        <span class="label label-default"> Internet: {{Total_Personas_GestionandoInternet}}</span>&nbsp;&nbsp;&nbsp;
+                                    </li>
+                                    <li>
+                                        <span class="label label-default"> Corrección Portafolio: {{Total_Personas_GestionandoCP}}</span>&nbsp;&nbsp;&nbsp;
+                                    </li>
+                                    <li>
+                                        <button type="button" class="btn btn-info btn-sm" ng-show="galletainfo.perfil == 11" ng-click="callModalCierreMasivoConti({})">
+                                            Cierre Masivo <i class="fa fa-check" aria-hidden="true"></i>
+                                        </button>
+
+                                    </li>
+                                </ul>
+                                <div class="col-md-6" style="padding: 0">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading"><b> Contingencias de Televisión</b></div>
+                                        <table class="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th>Login Analista</th>
+                                                <th>Cantidad Marcadas</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr ng-repeat="(key, data) in cantidadAnalistasTV">
+                                                <td class="filterable-cell"><i class="fa fa-user" aria-hidden="true"></i> {{key}}</td>
+                                                <td class="filterable-cell">{{data}}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6" style="padding: 0">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading"><b> Contingencias de Internet + ToIP</b></div>
+                                        <table class="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th>Login Analista</th>
+                                                <th>Cantidad Marcadas</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr ng-repeat="(key, data) in cantidadAnalistasInt">
+                                                <td class="filterable-cell"><i class="fa fa-user" aria-hidden="true"></i> {{key}}</td>
+                                                <td class="filterable-cell">{{data}}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<div id="editarModal" class="modal fade " role="dialog">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Observaciones contingencia para pedido {{gestioncontin.pedido}}</h4>
+            </div>
+            <div class="modal-body">
+                <textarea name="observaciones" id="observaciones" cols="78" rows="6" ng-model="gestioncontin.observacionescontingencia"
+                          placeholder="observaciones contingencia"></textarea>
+                <div class="generar-cr">
+                    Generar CR
+                    <label class="switch">
+                        <input type="checkbox" ng-model="gestioncontin.generarcr">
+                        <span class="slider round"></span>
+                    </label>
+                    <p>* Recuerde marcar generar cr si es necesario para actualizar los equipos.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="guardarpedido(gestioncontin)" data-dismiss="modal">Guardar</button>
+                <button type="button" ng-disabled="contact_form.$invalid" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="descripcionModal" class="modal fade " role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Equipos para aprovisionar</h4>
+            </div>
+            <div class="modal-body">
+                <textarea name="observaciones" id="" cols="35" rows="3" ng-model="detalles"
+                          placeholder="observaciones contingencia" readonly></textarea>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" ng-disabled="contact_form.$invalid" class="btn btn-info" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL PARA CORREGIR PORTAFOLIO -->
+<div id="editarModalPortafolio" class="modal fade " role="dialog">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Observaciones contingencia para pedido {{gestioncontinPortafilio.pedido}}</h4>
+            </div>
+            <div class="modal-body">
+                <textarea name="observaciones" id="observaciones" cols="78" rows="6" ng-model="gestioncontinPortafilio.observContingenciaPortafolio"
+                          placeholder="observaciones contingencia"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="guardarpedidoPortafolio(gestioncontinPortafilio)" data-dismiss="modal">Guardar
+                </button>
+                <button type="button" ng-disabled="contact_form.$invalid" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- MODAL -->
+<div ng-include="rutaCierreMasivoContin"></div>
+
+<div id="modalHistoricoContingencias" class="modal fullscreen-modal fade" role="dialog">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Histórico Contingecias:</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel panel-default">
+                    <div class="panel panel-default">
+                        <div class="panel-heading nav navbar-default">
+                            <table class="table table-striped table-hover table-condensed">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <center>Pedido</center>
+                                    </th>
+                                    <th>
+                                        <center>Acción</center>
+                                    </th>
+                                    <th>
+                                        <center>Ciudad</center>
+                                    </th>
+                                    <th>
+                                        <center>Correo</center>
+                                    </th>
+                                    <th>
+                                        <center>Mac Entra</center>
+                                    </th>
+                                    <th>
+                                        <center>Mac Sale</center>
+                                    </th>
+                                    <th>
+                                        <center>Paquetes</center>
+                                    </th>
+                                    <th>
+                                        <center>Motivo</center>
+                                    </th>
+                                    <th>
+                                        <center>Proceso</center>
+                                    </th>
+                                    <th>
+                                        <center>Producto</center>
+                                    </th>
+                                    <th>
+                                        <center>Contrato</center>
+                                    </th>
+                                    <th>
+                                        <center>Perfil</center>
+                                    </th>
+                                    <th>
+                                        <center>Hora ingreso</center>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="data in databsucarPedido">
+                                    <td>
+                                        <center>{{data.pedido}}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{data.accion}}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{data.ciudad}}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{data.correo}}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{data.macEntra}}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{data.macSale}}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{data.paquetes}}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{data.motivo}}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{data.proceso}}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{data.producto}}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{data.contrato}}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{data.perfil}}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{data.horagestion}}</center>
+                                    </td>
+                                </tr>
+                                </tbody>
+                                <tr>
+                                    <th colspan="11">
+                                        <br>
+                                    </th>
+                                </tr>
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <center>Login despacho</center>
+                                    </th>
+                                    <th>
+                                        <center>Login Contingencia</center>
+                                    </th>
+                                    <th>
+                                        <center>Login Conti Corregir Porta</center>
+                                    </th>
+                                    <th>
+                                        <center>Hora contingencia</center>
+                                    </th>
+                                    <th>
+                                        <center>Hora contingencia Corregir Porta</center>
+                                    </th>
+                                    <th>
+                                        <center>Tipo equipo</center>
+                                    </th>
+                                    <th>
+                                        <center>Tecnología</center>
+                                    </th>
+                                    <th>
+                                        <center>Remitente</center>
+                                    </th>
+                                    <th>
+                                        <center>Tipificación Contingencia</center>
+                                    </th>
+                                    <th>
+                                        <center>Tipificación Corregir Porta</center>
+                                    </th>
+                                    <th>
+                                        <center>Estado</center>
+                                    </th>
+                                    <th>
+                                        <center>Estado Corregir Porta</center>
+                                    </th>
+                                    <th>
+                                        <center>Observaciones</center>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="data in databsucarPedido">
+
+
+                                    <td>
+                                        <center>{{data.logindepacho}}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{data.logincontingencia}}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{data.loginContingenciaPortafolio}}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{data.horacontingencia}}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{data.horaContingenciaPortafolio}}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{data.tipoEquipo}}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{data.tecnologia}}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{data.remite}}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{data.tipificacion}}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{data.tipificacionPortafolio}}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{data.acepta}}</center>
+                                    </td>
+                                    <td>
+                                        <center>{{data.aceptaPortafolio}}</center>
+                                    </td>
+                                    <td>
+                                        <!-- data-trigger="hover" para que el popover aparezca y desaparezca -->
+                                        <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
+                                                data-placement="left" data-html="true" data-selector="" title="Observacion ingreso" data-content="{{data.observacion}}">
+                                            <i class="fa fa-commenting" aria-hidden="true"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
+                                                title="Observacion gestión" data-placement="left" data-html="true" data-selector="" data-content="{{data.observContingencia}}">
+                                            <i class="fa fa-commenting" aria-hidden="true"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
+                                                title="Observacion gestión Corregir Porta" data-placement="left" data-html="true" data-selector=""
+                                                data-content="{{data.observContingenciaPortafolio}}">
+                                            <i class="fa fa-commenting" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" ng-disabled="contact_form.$invalid" class="btn btn-info" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalbb8" class="modal fullscreen-modal fade" role="dialog">
+    <div class="modal-dialog modal-lg" style="width: 80%">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Datos portafolio</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="panel">
+                        <div class="col-md-3">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <b>Datos de clic <i class="fa fa-database" aria-hidden="true"></i></b>
+                                </div>
+                                <div class="panel-body">
+                                    <span class="recore"><b>Pedido: </b>{{UNEPedido}}</span><br>
+                                    <span class="recore"><b>Gis: </b>{{ID_GIS}}</span><br>
+                                    <span class="recore"><b>Estado: </b>{{Estado}}</span><br>
+                                    <span class="recore"><b>Categoría: </b>{{Categoria}}</span><br>
+                                    <span class="recore"><b>CRM: </b>{{CRM}}</span><br>
+                                    <span class="recore"><b>Ciudad: </b>{{UNEMunicipio}}</span><br>
+                                    <span class="recore"><b>Cliente: </b>{{UNENombreCliente}}</span><br>
+                                    <span class="recore"><b>Identificación: </b>{{UNEIdCliente}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" ng-if="bb8Internet">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <b>Internet <i class="fa fa-internet-explorer" aria-hidden="true"></i></b>
+                                </div>
+                                <div class="panel-body">
+                                    <div ng-repeat="data1 in recorreinternet">
+                                        <span class="recore"><b>{{data1.VALUE_LABEL}}: </b>{{data1.VALID_VALUE}}</span><br>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" ng-if="bb8Telefonia">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <b>Telefonía <i class="fa fa-phone" aria-hidden="true"></i></b>
+                                </div>
+                                <div class="panel-body">
+
+                                    <div ng-repeat="data2 in recorretelefonia">
+                                        <span class="recore"><b>{{data2.VALUE_LABEL}}: </b>{{data2.VALID_VALUE}}</span><br>
+                                        <span class="recore"><b>{{data2.ITEM_ALIAS}}: </b>{{data2.LINEA}}</span><br>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" ng-if="bb8Television">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <b>Television <i class="fa fa-television" aria-hidden="true"></i></b>
+                                </div>
+                                <div class="panel-body">
+                                    <div ng-repeat="data in recore">
+                                        <span class="recore"><b>{{data.VALUE_LABEL}}: </b>{{data.VALID_VALUE}}</span><br>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
