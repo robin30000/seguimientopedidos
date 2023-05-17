@@ -498,6 +498,7 @@ class ModelContingencia
     public function registrosOffline($data)
     {
         try {
+            
             session_start();
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
@@ -546,7 +547,7 @@ class ModelContingencia
             session_start();
             $mesenviado = $data;
 
-            if ($mesenviado == "" || $mesenviado == undefined) {
+            if ($mesenviado == "") {
 
                 $stmt1 = $this->_DB->query("select max(fecha_instalacion) as fecha from nps ");
 
@@ -568,8 +569,8 @@ class ModelContingencia
 
             } else {
                 $nom_mes   = $mesenviado;
-                $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
-                $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
+                /* $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
+                $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio)); */
 
             }
 
@@ -1029,7 +1030,7 @@ class ModelContingencia
 
                     while ($sqlTecnicos->fetchAll(PDO::FETCH_ASSOC)) {
 
-                        if ($sqlTecnicos['Total'] == 'Mayores a 30') {
+                        /* if ($sqlTecnicos['Total'] == 'Mayores a 30') {
                             $May30 = $May30 + 1;
                         } elseif ($sqlTecnicos['Total'] == 'Entre 20-29') {
                             $Entre20_29 = $Entre20_29 + 1;
@@ -1039,7 +1040,7 @@ class ModelContingencia
                             $Entre10_14 = $Entre10_14 + 1;
                         } else {
                             $Entre0_10 = $Entre0_10 + 1;
-                        }
+                        } */
                     }
                     $Rangostecnicos[] = ["rango" => "Mayor 30", "total" => "$May30"];
                     $Rangostecnicos[] = ["rango" => "Entre 20-29", "total" => "$Entre20_29"];
@@ -1048,7 +1049,7 @@ class ModelContingencia
                     $Rangostecnicos[] = ["rango" => "Entre 0-9", "total" => "$Entre0_10"];
                 }
 
-                if ($sqlCausa->rowCount()) {
+                /* if ($sqlCausa->rowCount()) {
 
                     while ($sqlCausa->fetchAll([PDO::FETCH_ASSOC])) {
 
@@ -1056,7 +1057,7 @@ class ModelContingencia
                             $RangosCausas[] = $sqlCausa;
                         }
                     }
-                }
+                } */
 
                 $response = [$resultado, $Rangostecnicos, $RangosCausas, 201];
             } else {
@@ -1076,7 +1077,7 @@ class ModelContingencia
             $pregunta   = $datos['pregunta'];
             $mesenviado = $datos['mes'];
 
-            if ($mesenviado == "" || $mesenviado == undefined) {
+            if ($mesenviado == "") {
 
                 $query = $this->_DB->query("select max(fecha_instalacion) as fecha from nps ");
 
@@ -1087,7 +1088,7 @@ class ModelContingencia
                     $result = [];
 
                     $query->fetchAll(PDO::FETCH_ASSOC);
-                    $fecha = $query['fecha'];
+                    //$fecha = $query['fecha'];
                 }
 
                 $dia  = substr($fecha, 8, 2);
@@ -1098,11 +1099,11 @@ class ModelContingencia
                 $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
                 $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
 
-            } else {
+            } /* else {
                 $nom_mes   = $mesenviado;
                 $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
                 $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
-            }
+            } */
 
             $query = $this->_DB->prepare("select gen.respuesta,
                                                        count(gen.respuesta)                                                                                                                       total,
@@ -1273,7 +1274,7 @@ class ModelContingencia
             $pregunta   = $datos['pregunta'];
             $mesenviado = $datos['mes'];
 
-            if ($mesenviado == "" || $mesenviado == undefined) {
+            if ($mesenviado == "") {
 
                 $query = $this->_DB->query("select max(FECHA_2) fecha from npsreparaciones ");
 
@@ -1294,12 +1295,12 @@ class ModelContingencia
                 $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
                 $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
 
-            } else {
+            } /* else {
                 $nom_mes   = $mesenviado;
                 $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
                 $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
             }
-
+ */
             $query = $this->_DB->prepare("select gen.respuesta, count(gen.respuesta) total, 
                 round((count(gen.respuesta)/(select count(pregunta)  
                 from npsreparaciones where num_pregunta = :pregunta and mes = gen.mes limit 1 )) *100, 2) as porcentaje 

@@ -1,138 +1,344 @@
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-md-12">
+		<div class="col-xs-12">
 			<div class="panel panel-default">
-				<div class="panel-heading nav navbar-default">
-					<ul class="nav nav-tabs">
-						<li class="active">
-							<a data-toggle="tab" href="/#novedadesVisita">Registro de Novedades:</a>
-						</li>
+				<div class="panel-heading">
+					<ul class="nav navbar-nav navbar-left">
+						<b><i class="fa fa-wrench" aria-hidden="true"></i> Formulario
+							Novedades de los Técnicos</b>
 					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						&nbsp;
+						<input style="width: 130px" type="text" name="fechaini" id="fechaini"
+							class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="Registros.fechaini"
+							placeholder="Fecha Inicial" datetime-picker="" date-format="yyyy-MM-dd" />
+						<i class="fa fa-calendar fa-fw"></i>
+						<input style="width: 130px" type="text" name="fechafin" id="fechafin"
+							class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="Registros.fechafin"
+							placeholder="Fecha Final" datetime-picker="" date-format="yyyy-MM-dd" />
+						<i class="fa fa-calendar fa-fw"></i>
+						<button type="button" class="btn btn-success btn-xs" ng-click="buscarNovedades(Registros)"
+							ng-disabled="loading">
+							<i class="fa fa-search-plus" aria-hidden="true"></i>
+						</button>
+						<button type="button"
+							ng-show="galletainfo.perfil == '11' || galletainfo.perfil == '1' || galletainfo.perfil == '3'"
+							class="btn btn-primary btn-xs" title="Exportar Registros" ng-click="csvNovedadesTecnicos()"
+							ng-disabled="loading" title="Exportar" tooltip data-placement="top">
+							<i class="fa fa-cloud-download" aria-hidden="true"> </i>
+						</button>
+
+					</ul>
+					<div class="d-flex flex-row-reverse box-tools">
+						<div class="input-group d-flex flex-row">
+							<a class="btn btn-primary btn-xs" ng-show="galletainfo.perfil !='12'"
+								ng-click="mostraModal({})"><i class="fa fa-plus"></i> Agregar Novedad</a>
+						</div>
+						&nbsp;
+					</div>
+				</div>
+
+				<div class="table-responsive animated bounceInRight">
+					<table class="table table-bordered table-condensed small">
+						<thead class="table-header">
+							<tr>
+								<th>Cédula Técnico</th>
+								<th>Nombre Técnico</th>
+								<th>Contrato</th>
+								<th>Proceso</th>
+								<th>Pedido</th>
+								<th>Tipo de Novedad</th>
+								<th>Municipio</th>
+								<th>Situación</th>
+								<th>Hora marca sitio</th>
+								<th>ID Llamada</th>
+								<th>Observación {{galletainfo.perfil}}</th>
+								<th ng-show="galletainfo.perfil == 1 || galletainfo.perfil == 11">
+									Observaciones CCO
+								</th>
+								<th ng-show="galletainfo.perfil == 1 || galletainfo.perfil == 11"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="registrosTenicos in novedadesVisitasTecnicos | filter:busqueda as results">
+								<td>{{registrosTenicos.cedulaTecnico}}</td>
+								<td>{{registrosTenicos.nombreTecnico}}</td>
+								<td>{{registrosTenicos.contracto}}</td>
+								<td>{{registrosTenicos.proceso}}</td>
+								<td>{{registrosTenicos.pedido}}</td>
+								<td>{{registrosTenicos.tiponovedad}}</td>
+								<td>{{registrosTenicos.municipio}}</td>
+								<td>{{registrosTenicos.situacion}}</td>
+								<td>{{registrosTenicos.horamarcaensitio}}</td>
+								<td>{{registrosTenicos.idllamada}}</td>
+								<td>{{registrosTenicos.observaciones}}</td>
+								<td>{{registrosTenicos.observacionCCO}}</td>
+								<td ng-show="galletainfo.perfil == 1 || galletainfo.perfil == 11" class="text-center">
+									<button type="button" class="btn btn-default btn-xs" data-toggle="modal"
+										ng-click="abrirAgregarObservacion(registrosTenicos.pedido)"
+										data-backdrop="static" tooltip="" title="Agregar Observación"
+										data-placement="top" data-html="true" data-selector=""
+										data-original-title="Agregar Observación">
+										<i class="fa fa-plus" aria-hidden="true"></i>
+									</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="text-center">
+					<ul uib-pagination class="pagination-sm" total-items="totalItems" ng-model="currentPage"
+						ng-change="pageChanged()" items-per-page="pageSize" max-size="5" boundary-links="true"
+						rotate="true" previous-text="&#8672;" next-text="&#8674;" first-text="Primero"
+						last-text="Último"></ul>
 				</div>
 			</div>
-			<div class="tab-content">
-				<!-- GenraciónTT -->
-				<!--<div id="novedadesVisita" class="tab-pane fade in active" ng-include="novedadesTecnico"></div>-->
+		</div>
+	</div>
+	<div ng-include="mostarModalNovedadesVisitas"></div>
 
-				<!-- cabezera de la paguina -->
-				<div class="panel-heading nav navbar-default">
-					<ul class="nav navbar-nav navbar-left">
-						<b><i class="fa fa-wrench" aria-hidden="true"></i> Formulario Novedades de los Técnicos</b>
-					</ul>
-					<div class=" d-flex flex-row-reverse box-tools pull-right">
-						<div class="input-group d-flex ">
-							<a class="btn btn-primary" ng-show="galletainfo.perfil !='12'" ng-click="mostraModal({})"><i class="fa fa-plus"></i> Agregar Novedad</a>
-						</div>
-					</div>
+	<div id="novedadesVisitaObservacion" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-md">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						&times;
+					</button>
+					<h4 class="modal-title">Observación de novedades</h4>
 				</div>
-				<!-- cuerpo de la pagina -->
-				<div class="row">
-					<div class="col-xs-12">
-						<div class="box">
-							<div class="box-body">
-								<div class="row"><br>
-									<div class="col-md-6">
-										<ul class="nav navbar-nav navbar-left">
-											<input style="width:130px" type="text" name="fechaini" id="fechaini" class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="Registros.fechaini" placeholder="Fecha Inicial" datetime-picker="" date-format="yyyy-MM-dd"> <i class="fa fa-calendar fa-fw"></i>
-											<input style="width:130px" type="text" name="fechafin" id="fechafin" class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="Registros.fechafin" placeholder="Fecha Final" datetime-picker="" date-format="yyyy-MM-dd"> <i class="fa fa-calendar fa-fw"></i>
-											<button type="button"
-													class="btn btn-success btn-xs"
-													ng-click="RegistrosTecnicos(Registros)"
-													ng-disabled="loading">
-												<i class="fa fa-search-plus" aria-hidden="true"></i>
-											</button>
-
-											<button type="button"
-													class="btn btn-primary btn-xs" title="Exportar Registros" ng-click="BuscarNovedadescsv(Registros)"
-													ng-disabled="loading" title="Exportar" tooltip data-placement="top">
-												<i class="fa fa-cloud-download" aria-hidden="true"> </i>
-											</button>
-
-											<div data-ng-if="loading">
-												<img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif"/>
-											</div>
-										</ul>
-									</div>
-									<!--<div class="col-xs-3 marg"><i>Buscar:</i>
-                                        <input type="text" class="form-control busq" ng-model="busqueda" name="" value="" placeholder="Ingresa lo que desas buscar.">
-                                        <br>
-                                    </div>-->
-								</div>
-
-								<br>
-
-								<div id="tntGridServices" ui-grid="gridOptions" ui-grid-exporter ui-grid-edit ui-grid-pagination
-									 style="font-size: 12px;text-transform: lowercase; color: #0f0f0f;height: 500px" external-scopes="gridApi" ></div>
-
-								<!--<table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Cédula Técnico</th>
-                                            <th>Nombre Técnico</th>
-                                            <th>Contrato</th>
-                                            <th>Proceso</th>
-                                            <th>Pedido</th>
-                                            <th>Tipo de Novedad</th>
-                                            <th>Municipio</th>
-                                            <th>Situación</th>
-                                            <th>Hora marca sitio</th>
-                                            <th>ID Llamada</th>
-                                            <th>Observación {{galletainfo.perfil}}</th>
-                                            <th ng-show="galletainfo.perfil == 1 || galletainfo.perfil == 11">Observaciones CCO</th>
-                                            <th ng-show="galletainfo.perfil == 1 || galletainfo.perfil == 11"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr ng-repeat="registrosTenicos in novedadesVisitasTecnicos | filter:busqueda as results">
-                                            <td>{{registrosTenicos.cedulaTecnico}}</td>
-                                            <td>{{registrosTenicos.nombreTecnico}}</td>
-                                            <td>{{registrosTenicos.contracto}}</td>
-                                            <td>{{registrosTenicos.proceso}}</td>
-                                            <td>{{registrosTenicos.pedido}}</td>
-                                            <td>{{registrosTenicos.tiponovedad}}</td>
-                                            <td>{{registrosTenicos.municipio}}</td>
-                                            <td>{{registrosTenicos.situacion}}</td>
-                                            <td>{{registrosTenicos.horamarcaensitio}}</td>
-                                            <td>{{registrosTenicos.idllamada}}</td>
-                                            <td>{{registrosTenicos.observaciones}}</td>
-                                            <td>{{registrosTenicos.observacionCCO}}</td>
-                                            <td ng-show="galletainfo.perfil == 1 || galletainfo.perfil == 11" class="text-center">
-                                                <button type="button" class="btn btn-default btn-xs" data-toggle="modal" ng-click="abrirAgregarObservacion(registrosTenicos.pedido)" data-backdrop="static" tooltip="" title="Agregar Observación" data-placement="top" data-html="true" data-selector="" data-original-title="Agregar Observación">
-                                                    <i class="fa fa-plus" aria-hidden="true"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>-->
-							</div>
-						</div>
-					</div>
+				<div class="modal-body">
+					<textarea name="observacionCCO" id="observacionCCO" cols="75" rows="6" ng-model="observacionCCO"
+						placeholder="Agregue su observación"></textarea>
 				</div>
-				<!-- MODAL -->
-				<div ng-include="mostarModalNovedadesVisitas"></div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-success" data-dismiss="modal"
+						ng-click="agregarObservacion(observacionCCO)" data-dismiss="modal">
+						Guardar
+					</button>
+					<button type="button" ng-disabled="contact_form.$invalid" class="btn btn-default"
+						data-dismiss="modal">
+						Cerrar
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
-				<div id="novedadesVisitaObservacion" class="modal fade " role="dialog">
-					<div class="modal-dialog modal-md">
-						<div class="modal-content">
-							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal">&times;</button>
-								<h4 class="modal-title">Observación de novedades</h4>
-							</div>
-							<div class="modal-body">
-								<textarea name="observacionCCO" id="observacionCCO" cols="75" rows="6" ng-model="observacionCCO" placeholder="Agregue su observación"></textarea>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-success" data-dismiss="modal" ng-click="agregarObservacion(observacionCCO)" data-dismiss="modal">Guardar</button>
-								<button type="button" ng-disabled="contact_form.$invalid" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-							</div>
-						</div>
-					</div>
+	<div class="modal modal-info fade" id="modalNovedadVisita">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+					<h4 class="modal-title">Registro Novedades en Visitas:</h4>
 				</div>
 
+				<form name="frmNovedadVisita" method="post" novalidate="novalidate"
+					ng-submit="guardar( novedadesVisitasSel, frmNovedadVisita )">
+					<div class="modal-body">
+						<div class="form-group">
+							<label>Tipo de Novedad:</label>
+							<select type="text" class="form-control" name="tiponovedad"
+								ng-model="novedadesVisitasSel.tiponovedad" required>
+								<option value="" disabled>Seleccione</option>
+								<option value="Cumplimiento de Agenda">
+									Cumplimiento de Agenda
+								</option>
+								<option value="Triangulo de Produccion">
+									Triángulo de Producción
+								</option>
+							</select>
+						</div>
 
+						<div class="form-group">
+							<label>ID Llamada:</label>
+							<input type="text" class="form-control" placeholder="ID Llamada"
+								ng-model="novedadesVisitasSel.idLlamada" />
+						</div>
+
+						<div class="form-group">
+							<label>Pedido:</label>
+							<input type="text" class="form-control" placeholder="Pedido"
+								ng-model="novedadesVisitasSel.pedido" />
+							<div style="background: white; color: white; height: 5px"></div>
+							<button type="button" class="btn btn-primary btn-xs"
+								ng-click="BuscarPedidoNovedad(novedadesVisitasSel.pedido)">
+								<i class="fa fa-search-plus" aria-hidden="true"> </i>
+								Buscar</button><br />
+
+							<ul class="nav navbar-nav navbar-default" ng-show="infopedido==false">
+								<span class="label label-danger" ng-show="errorconexion1"><i
+										class="fa fa-exclamation-triangle"
+										aria-hidden="true"></i>{{errorconexion}}</span>
+								<span class="label label-warning" class="pull-right" ng-hide="errorconexion1"><i
+										class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+									No hay datos para el pedido ingresado, ingrese los datos
+									manualmente</span>
+							</ul>
+						</div>
+						<br />
+
+						<div class="form-group" ng-show="infopedido==false">
+							<label>Contrato:</label>
+							<select type="text" class="form-control" placeholder="Seleccionar"
+								ng-model="novedadesVisitasSel.contracto"
+								ng-show="infopedido==false || novedadesVisitasSel.tiponovedad=='Comportamiento Tecnicos'">
+								<option ng-repeat="f in contrato" value="{{f.ID}}">
+									{{f.CONCEPTO}}
+								</option>
+							</select>
+						</div>
+
+						<div class="form-group" ng-show="infopedido==true">
+							<label>Contrato:</label>
+							<input type="text" class="form-control" placeholder="Contrato"
+								ng-model="novedadesVisitasSel.contrato2" ng-show="infopedido==true" />
+						</div>
+
+						<div class="form-group" ng-show="infopedido==false">
+							<label>Cédula Técnico Reportado:</label>
+							<input type="text" class="form-control" placeholder="Digite la cédula del técnico"
+								ng-model="novedadesVisitasSel.cedulaTecnico" />
+						</div>
+
+						<div class="form-group" ng-show="infopedido==true">
+							<label>Cédula Técnico Reportado:</label>
+							<input type="text" class="form-control" placeholder="Digite la cédula del técnico"
+								ng-model="novedadesVisitasSel.cedulaTecnico2" />
+						</div>
+
+						<div class="form-group" ng-show="infopedido==false">
+							<label>Nombre Técnico Reportado:</label>
+							<input type="text" class="form-control" placeholder="Digite el nombre del técnico"
+								ng-model="novedadesVisitasSel.nombreTecnico" />
+						</div>
+
+						<div class="form-group" ng-show="infopedido==true">
+							<label>Nombre Técnico Reportado:</label>
+							<input type="text" class="form-control" placeholder="Digite el nombre del técnico"
+								ng-model="novedadesVisitasSel.nombreTecnico2" />
+						</div>
+
+						<div class="form-group" ng-show="infopedido==false">
+							<label>Proceso:</label>
+							<select type="text" class="form-control" name="proceso"
+								ng-model="novedadesVisitasSel.proceso">
+								<option value="" disabled>Seleccione</option>
+								<option value="Instalaciones">Instalaciones</option>
+								<option value="Reparaciones">Reparaciones</option>
+							</select>
+						</div>
+
+						<div class="form-group" ng-show="infopedido==true">
+							<label>Proceso:</label>
+							<input type="text" class="form-control" placeholder="Proceso"
+								ng-model="novedadesVisitasSel.proceso2" />
+						</div>
+
+						<div class="form-group">
+							<label>Región:</label>
+							<select type="text" class="form-control" name="region" ng-model="novedadesVisitasSel.region"
+								ng-change="calcularAcciones()" required>
+								<option value="" disabled>Seleccione</option>
+								<option ng-repeat="d in listadoRegiones" value="{{d.region}}">
+									{{d.region}}
+								</option>
+							</select>
+						</div>
+
+						<div class="form-group" ng-show="infopedido==false">
+							<label>Municipio:</label>
+							<select type="text" name="minicipio" class="form-control" placeholder="Seleccionar"
+								ng-model="novedadesVisitasSel.municipio" value="novedadesVisitasSel.municipio">
+								<option value="" disabled>Seleccione</option>
+								<option ng-repeat="f in listadoMunicipios" value="{{f.municipio}}">
+									{{f.municipio}}
+								</option>
+							</select>
+						</div>
+
+						<div class="form-group" ng-show="infopedido==true">
+							<label>Municipio:</label>
+							<input type="text" class="form-control" placeholder="Municipio"
+								ng-model="novedadesVisitasSel.municipio2" />
+						</div>
+
+						<div class="form-group" ng-show="novedadesVisitasSel.tiponovedad == 'Triangulo de Produccion'">
+							<label>Situación:</label>
+							<select type="text" class="form-control" name="situaciontriangulo"
+								ng-change="refrescarCamposNovedadesMotivos()"
+								ng-model="novedadesVisitasSel.situaciontriangulo" required>
+								<option value="" disabled>Seleccione</option>
+								<option value="No cumple políticas de tiempos">
+									No cumple políticas de tiempos
+								</option>
+								<option value="Malos procedimientos">Malos procedimientos</option>
+							</select>
+						</div>
+
+						<div class="form-group" ng-show="novedadesVisitasSel.tiponovedad == 'Cumplimiento de Agenda'">
+							<label>Situación:</label>
+							<select type="text" class="form-control" name="situaciontriangulo"
+								ng-change="refrescarCamposNovedadesMotivos()"
+								ng-model="novedadesVisitasSel.situaciontriangulo" required>
+								<option value="" disabled>Seleccione</option>
+								<option value="Riesgo incumplimiento AM">
+									Riesgo incumplimiento AM
+								</option>
+								<option value="Riesgo incumplimiento PM">
+									Riesgo incumplimiento PM
+								</option>
+							</select>
+						</div>
+
+						<div class="form-group" ng-show="novedadesVisitasSel.situaciontriangulo">
+							<label>Motivo:</label>
+							<select type="text" class="form-control" name="motivotriangulo"
+								ng-change="refrescarCamposNovedadesSubmotivos()"
+								ng-model="novedadesVisitasSel.motivotriangulo" required>
+								<option value="" disabled>Seleccione</option>
+								<option ng-repeat="options in optionsMotivo" value="{{options}}">
+									{{options}}
+								</option>
+							</select>
+						</div>
+
+						<div class="form-group" ng-show="novedadesVisitasSel.motivotriangulo && optionsSubmotivo">
+							<label>Submotivo:</label>
+							<select type="text" class="form-control" name="submotivotriangulo"
+								ng-model="novedadesVisitasSel.submotivotriangulo">
+								<option value="" disabled>Seleccione</option>
+								<option ng-repeat="options in optionsSubmotivo" value="{{options}}">
+									{{options}}
+								</option>
+							</select>
+						</div>
+
+						<div class="form-group" ng-show="novedadesVisitasSel.tiponovedad == 'Triangulo de Produccion'">
+							<label>Hora marcación en sitio:</label>
+							<input type="time" name="horamarcaensitio" class="form-control"
+								ng-model="novedadesVisitasSel.horamarcaensitio" />
+							<span class="error" ng-show="frmNovedadVisita.horamarcaensitio.$error.time">La hora
+								ingresada no
+								es válida</span>
+						</div>
+
+						<div class="form-group">
+							<label>Observaciones:</label>
+							<textarea type="text" class="form-control textareaNovedades" placeholder="Observaciones"
+								ng-model="novedadesVisitasSel.observaciones" required></textarea>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-primary">
+							<i class="fa fa-save"></i> Guardar
+						</button>
+					</div>
+				</form>
 			</div>
 		</div>
 	</div>
 </div>
-<br>
-<br>
+<br><br><br>

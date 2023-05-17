@@ -1,25 +1,80 @@
 <?php
-require_once '../model/modelGestionAprovisionamiento.php';
-require_once 'utils.php';
+require_once '../class/conection.php';
 
 class gestionAprovisionamiento
 {
-    public $_model;
 
-    public $_utils;
+    private $_DB;
 
     public function __construct()
     {
-        $this->_model = new modelGestionAprovisionamiento();
-        $this->_utils = new utils();
+        $this->_DB = new Conection();
     }
 
-    public function updateEnGestion()
+    public function updateEnGestionResponse()
     {
+        try {
+            session_start();
 
-        $response = $this->_model->updateEnGestionResponse();
-        $this->_utils->response($this->_utils->json([$response]), 201);
+            if (!$_SESSION) {
+                $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
+            } else {
 
+                $hoy = date('Y-m-d');
+
+                $stmt = $this->_DB->prepare("SELECT id,
+                                                   engestion,
+                                                   pedido,
+                                                   observContingencia,
+                                                   observContingenciaPortafolio,
+                                                   (case when acepta is null then 'Pendiente' else acepta end)                     AS acepta,
+                                                   (case when aceptaPortafolio is null then 'Pendiente' else aceptaPortafolio end) AS aceptaPortafolio
+                                            FROM contingencias
+                                            WHERE logindepacho = :login
+                                              AND horagestion BETWEEN (:fechaini) AND (:fechafin)");
+
+                $stmt->execute([':login' => $_SESSION['login'], ':fechaini' => "$hoy 00-00-00", ':fechafin' => "$hoy 23-59-59"]);
+
+                if ($stmt->rowCount()) {
+                    $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
+                } else {
+                    $response = array('state' => 0, 'msj' => 'No se encontraron registros');
+                }
+            }
+
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+
+        $this->_DB = '';
+        echo json_encode($response);
     }
 
+    public function updateEnGestion($data)
+    {
+        try {
+            $login = $data['login'];
+            $login = $login['LOGIN'];
+
+            $hoy = date("Y-m-d");
+
+            $query = "SELECT  observContingencia, observContingenciaPortafolio
+                    FROM contingencias
+                    WHERE logindepacho = '$login'
+                    AND horagestion BETWEEN '$hoy 00:00:00' AND '$hoy 23:59:59'";
+
+            $stmt = $this->_DB->query($query);
+
+            if ($stmt->rowCount() > 0) {
+                $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
+            } else {
+                $response = array('state' => 0, 'msj' => 'No se encontraron registros');
+
+            }
+        } catch (PDOException $th) {
+            var_dump($th->getMessage());
+        }
+        $this->_DB = '';
+        echo json_encode($response);
+    }
 }

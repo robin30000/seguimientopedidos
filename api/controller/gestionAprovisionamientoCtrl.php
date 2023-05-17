@@ -12,7 +12,7 @@ if (isset($data['method'])) {
         case 'updateEnGestion':
             require_once '../class/gestionAprovisionamiento.php';
             $user = new gestionAprovisionamiento();
-            $user->updateEnGestion();
+            $user->updateEnGestion($data['data']);
             break;
 
 

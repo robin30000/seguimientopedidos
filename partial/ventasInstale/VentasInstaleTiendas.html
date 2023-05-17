@@ -1,0 +1,621 @@
+<style>
+  .details {
+    display: flex;
+  }
+
+  .consolidados {
+    display: none;
+    width: 150px;
+    margin: 0px auto;
+    min-height: 200px;
+    background-color: #ffffff;
+    padding: 3px;
+    position: absolute;
+    margin-left: -160px;
+    box-shadow: 0 2px 5px #666666;
+  }
+</style>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default" style="margin-bottom: -2px">
+        <div class="panel-heading nav navbar-default">
+          <ul class="nav nav-tabs">
+            <li class="active">
+              <a data-toggle="tab" href="/#gestion"> Gestión</a>
+            </li>
+            <li>
+              <a data-toggle="tab" href="/#seguimiento">Seguimiento y auditoría</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tab-content">
+        <div id="gestion" class="tab-pane fade in active">
+          <div class="panel panel-default">
+            <div class="panel-heading nav navbar-default">
+              <ul class="nav navbar-nav navbar-left">
+                <b>Gestión Solicitud venta Instale</b>
+              </ul>
+              <ul class="nav navbar-nav navbar-right">
+                <li>
+                  <button type="button" class="btn btn-default btn-xs" ng-click="consolidadoZona()"
+                    title="Consolidado por zona" data-toggle="tooltip" data-placement="top" ng-disabled="loading">
+                    <i class="fa fa-bar-chart" aria-hidden="true"></i>
+                  </button>
+
+                  &nbsp;
+                </li>
+                <li>
+                  <button type="button" class="btn btn-default btn-xs" ng-click="observacionParaVenta()"
+                    title="Observacion para ventas" data-toggle="tooltip" data-placement="top" ng-disabled="loading">
+                    <i class="fa fa-commenting" aria-hidden="true"></i>
+                  </button>
+                  &nbsp;
+                </li>
+                <li>
+                  <button type="button" class="btn btn-default btn-xs" ng-click="verObservaciones()"
+                    title="ver Observaciones" data-toggle="tooltip" data-placement="top" ng-disabled="loading">
+                    <i class="fa fa-eye" aria-hidden="true"></i>
+                  </button>
+                  &nbsp;
+                </li>
+
+                <li>
+                  <button type="button" class="btn btn-default btn-xs" ng-click="recargaVentas()" title="Actualizar"
+                    data-toggle="tooltip" data-placement="top" ng-disabled="loading">
+                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            <div class="animated bounceInRight table-responsive">
+              <table class="table small table-hover table-striped table-condensed table-bordered">
+                <thead class="table-header">
+                  <tr>
+                    <th class="text-center" style="width: 5%">Marcar</th>
+                    <th class="text-center" style="width: 8%">Login Gestión</th>
+                    <th class="text-center" style="width: 8%">Pedido</th>
+                    <th class="text-center" style="width: 8%">
+                      Login Solicitud
+                    </th>
+                    <th class="text-center" style="width: 8%">
+                      Jornada Atención
+                    </th>
+                    <th class="text-center" style="width: 5%">
+                      Fecha Atención
+                    </th>
+                    <th class="text-center" style="width: 5%">Fecha Ingreso</th>
+                    <th class="text-center" style="width: 8%">
+                      Documento cliente
+                    </th>
+                    <th class="text-center" style="width: 8%">
+                      Contacto cliente
+                    </th>
+                    <th class="text-center" style="width: 8%">Nom. Técnico</th>
+                    <th class="text-center" style="width: 8%">Doc. Técnico</th>
+                    <th class="text-center" style="width: 5%">Regional</th>
+                    <th class="text-center" style="width: 20%">
+                      Observación Solicitud
+                    </th>
+                    <th class="text-center" style="width: 8%">Tipificacion</th>
+                    <th class="text-center" style="width: 8%">
+                      Detalle Tipificacion
+                    </th>
+                    <th class="text-center" style="width: 8%">Categoría</th>
+                    <th class="text-center" style="width: 5%">Accion</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="data in dataVentas">
+                    <td class="text-center">
+                      <input type="checkbox" ng-model="data.bloqueo" ng-checked="data.en_gestion == 1" name="bloqueo"
+                        id="bloqueo" ng-change="marcarEngestion(data.id, data.bloqueo)" />
+                      <div class="loadingio-spinner-ellipsis-3nun7cb96ao" ng-show="data.bloqueo == 1">
+                        <div class="ldio-pettsxrv7wj">
+                          <div></div>
+                          <div></div>
+                          <div></div>
+                          <div></div>
+                          <div></div>
+                        </div>
+                      </div>
+                    </td>
+                    <!-- En estas lineas se oculta el login gestión -->
+                    <td class="text-center">
+                      <span>{{data.login_gestion}}</span>
+                    </td>
+
+                    <td class="text-center">
+                      <button type="button" class="btn btn-default btn-xs" ng-click="CopyPortaPapeles(data.pedido)"
+                        tooltip title="Copiar pedido" id="tv{{$index}}">
+                        {{data.pedido}}
+                      </button>
+                    </td>
+                    <td class="text-center">{{data.login_despacho}}</td>
+                    <td class="text-center">{{data.jornada_atencion}}</td>
+                    <td class="text-center">{{data.fecha_atencion}}</td>
+                    <td class="text-center">{{data.fecha_ingreso}}</td>
+                    <td class="text-center">{{data.documento_cliente}}</td>
+                    <td class="text-center">
+                      {{data.numero_contacto_cliente}}
+                    </td>
+                    <td class="text-center">{{data.nombre_tecnico}}</td>
+                    <td class="text-center">{{data.documento_tecnico}}</td>
+                    <td class="text-center">{{data.regional}}</td>
+                    <td class="text-center">{{data.observacion_canal}}</td>
+
+                    <td class="text-center">
+                      <select ng-model="data.tipificacion" style="width: 120px"
+                        ng-change="obs_tipificacion(data.tipificacion, data.id)"
+                        class="btn btn-default btn-xs grupo-select" name="tipificacion" id="tipificacion">
+                        <option value="Ok">Ok</option>
+                        <option value="Rechazada">Rechazada</option>
+                      </select>
+                    </td>
+
+                    <td class="text-center">
+                      <select ng-if="data.tipificacion != 'Ok'" ng-model="data.obs_tipificacion" style="width: 120px"
+                        class="btn btn-default btn-xs grupo-select">
+                        <option value="Se completo el limite de cupos en el dia">
+                          Se completó el limite de cupos en el dia
+                        </option>
+                        <option value="Rechazado por mal ingreso">
+                          Dato inconsistente (Pedido no existe)
+                        </option>
+                        <option value="Estado pedido no asignable (amarillo)">
+                          Estado pedido no asignable (amarillo)
+                        </option>
+                        <option value="Ya se encuentra asignado a otro técnico (Gestionado)">
+                          Ya se encuentra asignado a otro técnico (Gestionado)
+                        </option>
+                        <option value="Pedido Incompleto/Cancelado/Pendiente">
+                          pedido Incompleto/Cancelado/Pendiente
+                        </option>
+                      </select>
+
+                      <select ng-if="data.tipificacion == 'Ok'" ng-model="data.obs_tipificacion" style="width: 120px"
+                        class="btn btn-default btn-xs grupo-select">
+                        <option value="Ok" selected>Ok</option>
+                      </select>
+                    </td>
+
+                    <td class="text-center">{{data.categoria}}</td>
+
+                    <td class="text-center">
+                      <button type="button" class="btn btn-default btn-xs" data-toggle="modal"
+                        ng-click="abreModal(data)" data-backdrop="static" tooltip title="guardar gestión"
+                        data-placement="top" data-html="true" data-selector="">
+                        <i class="fa fa-floppy-o" aria-hidden="true"> </i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="seguimiento" class="tab-pane fade">
+          <div class="panel panel-default">
+            <div class="panel-heading nav navbar-default">
+              <ul class="nav navbar-nav navbar-left">
+                <b>Registros Venta Instale</b>
+              </ul>
+              <ul class="nav navbar-nav navbar-right">
+                <li>
+                  <div data-ng-if="loading">
+                    <img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif" />
+                  </div>
+                </li>
+                <li>
+                  <select ng-model="ventaIstale.concepto" class="btn btn-default btn-xs grupo-select">
+                    <option ng-repeat="f in conceptoVentaInstale" value="{{f.ID}}">
+                      {{f.CONCEPTO}}
+                    </option>
+                  </select>
+                  &nbsp;
+                </li>
+                <li>
+                  <input style="width: 130px" type="text" name="fechaini" id="fechaini"
+                    class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="ventaIstale.fechaini"
+                    placeholder="Fecha Inicial" datetime-picker="" date-only date-format="yyyy-MM-dd"
+                    autocomplete="off" />
+                  <i class="fa fa-calendar fa-fw"></i>
+                  <input style="width: 130px" type="text" name="fechafin" id="fechafin"
+                    class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="ventaIstale.fechafin"
+                    placeholder="Fecha Final" datetime-picker="" date-only date-format="yyyy-MM-dd"
+                    autocomplete="off" />
+                  <i class="fa fa-calendar fa-fw"></i>
+
+                  <button type="button" class="btn btn-success btn-xs" ng-click="registrosVentaInstale()"
+                    ng-disabled="loading">
+                    <i class="fa fa-search-plus" aria-hidden="true"></i>
+                  </button>
+
+                  <button type="button" class="btn btn-primary btn-xs" title="Exportar Registros"
+                    ng-click="csvVentaInstale()" ng-disabled="loading" title="Exportar" tooltip data-placement="top">
+                    <i class="fa fa-cloud-download" aria-hidden="true"> </i>
+                  </button>
+
+                  <b>
+                    <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs" ng-model="pedido"
+                      placeholder="Buscar Pedido" autocomplete="off" />&nbsp;
+
+                    <button type="button" class="btn btn-default btn-xs" ng-click="detalleVentaPedido(pedido)"
+                      title="Buscar" data-toggle="tooltip" data-placement="left" ng-disabled="loading">
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                    </button> </b>&nbsp;
+                </li>
+              </ul>
+            </div>
+            <div class="animated bounceInRight table-responsive">
+              <table class="table small table-hover table-striped table-condensed table-bordered">
+                <thead class="table-header">
+                  <tr>
+                    <th class="text-center" style="width: 5%">Login Gestión</th>
+                    <th class="text-center" style="width: 5%">Pedido</th>
+                    <th class="text-center" style="width: 5%">Login Solicitud</th>
+                    <th class="text-center" style="width: 5%">
+                      Jornada Atención
+                    </th>
+                    <th class="text-center" style="width: 5%">Fecha Atención</th>
+                    <th class="text-center" style="width: 5%">Fecha Ingreso</th>
+                    <th class="text-center" style="width: 5%">Fecha Gestión</th>
+                    <th class="text-center" style="width: 5%">
+                      Documento cliente
+                    </th>
+                    <th class="text-center" style="width: 5%">
+                      Contacto cliente
+                    </th>
+                    <th class="text-center" style="width: 8%">Nom. Técnico</th>
+                    <th class="text-center" style="width: 8%">Doc. Técnico</th>
+                    <th class="text-center" style="width: 5%">Regional</th>
+                    <th class="text-center" style="width: 15%">
+                      Observación Solicitud
+                    </th>
+                    <th class="text-center" style="width: 15%">
+                      Observación Gestión
+                    </th>
+                    <th class="text-center" style="width: 5%">Tipificacion</th>
+                    <th class="text-center" style="width: 5%">
+                      Detalle Tipificacion
+                    </th>
+                    <th class="text-cente">Categoría</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="data in dataVentasTerminado | orderBy:predicate:reverse | filter:paginate">
+                    <!-- En estas lineas se oculta el login gestión -->
+                    <td class="text-center">
+                      <span>{{data.login_gestion}}</span>
+                    </td>
+
+                    <td class="text-center">
+                      <button type="button" class="btn btn-default btn-xs" ng-click="CopyPortaPapeles(data.pedido)"
+                        tooltip title="Copiar pedido" id="tv{{$index}}">
+                        {{data.pedido}}
+                      </button>
+                    </td>
+                    <td class="text-center">{{data.login_despacho}}</td>
+                    <td class="text-center">{{data.jornada_atencion}}</td>
+                    <td class="text-center">{{data.fecha_atencion}}</td>
+                    <td class="text-center">
+                      {{data.fecha_ingreso}}
+                    </td>
+                    <td class="text-center">{{data.fecha_gestion}}</td>
+                    <td class="text-center">{{data.documento_cliente}}</td>
+                    <td class="text-center">{{data.numero_contacto_cliente}}</td>
+                    <td class="text-center">{{data.nombre_tecnico}}</td>
+                    <td class="text-center">{{data.documento_tecnico}}</td>
+                    <td class="text-center">{{data.regional}}</td>
+                    <td class="text-center">{{data.observacion_canal}}</td>
+                    <td class="text-center">{{data.observacion_gestion}}</td>
+
+                    <td class="text-center">
+                      <select ng-model="data.tipificacion" disabled="true" style="width: 120px"
+                        class="btn btn-default btn-xs grupo-select" name="tipificacion">
+                        <option selected>Seleccione</option>
+                        <option value="Ok">Ok</option>
+                        <option value="Rechazada">Rechazada</option>
+                      </select>
+                    </td>
+
+                    <td class="text-center">
+                      <select ng-model="data.obs_tipificacion" disabled="true" style="width: 120px"
+                        class="btn btn-default btn-xs grupo-select" name="tipificacion">
+                        <option value="Ok" selected>Ok</option>
+                        <option value="Se completo el limite de cupos en el dia">
+                          Se completó el limite de cupos en el dia
+                        </option>
+                        <option value="Rechazado por mal ingreso">
+                          Dato inconsistente (Pedido no existe)
+                        </option>
+                        <option value="Estado pedido no asignable (amarillo)">
+                          Estado pedido no asignable (amarillo)
+                        </option>
+                        <option value="Ya se encuentra asignado a otro técnico (Gestionado)">
+                          Ya se encuentra asignado a otro técnico (Gestionado)
+                        </option>
+                        <option value="Pedido Incompleto/Cancelado/Pendiente">
+                          pedido Incompleto/Cancelado/Pendiente
+                        </option>
+                      </select>
+                    </td>
+                    <td class="text-center">{{data.categoria}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="text-center">
+              <ul uib-pagination class="pagination-sm" total-items="totalItems" ng-model="currentPage"
+                ng-change="pageChanged()" items-per-page="pageSize" max-size="5" boundary-links="true" rotate="true"
+                previous-text="&#8672;" next-text="&#8674;" first-text="Primero" last-text="Último"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" tabindex="-1" role="dialog" id="modalVentaInstale">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Observación Gestión</h4>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="" ng-model="data" />
+          <textarea name="" id="" cols="30" rows="10" class="form-control"
+            ng-model="data.observacion_gestion"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            Cancelar
+          </button>
+          <button type="button" class="btn btn-primary" ng-click="guardaSolicitud(data)">
+            Guardar Solicitud
+          </button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+  <div class="modal fade" tabindex="-1" role="dialog" id="observacionParaVentaModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Observación Para Venta Instale</h4>
+        </div>
+        <div class="modal-body">
+          <textarea name="" id="" cols="30" rows="10" class="form-control"
+            ng-model="data.observacion_gestion"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            Cancelar
+          </button>
+          <button type="button" class="btn btn-primary" ng-click="guardaObservacionVentaInstale(data)">
+            Guarda Observación
+          </button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+  <div class="modal fade" tabindex="-1" role="dialog" id="observacionDetalleVentaModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">
+            Observaciones realizadas durante en el día actual
+          </h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-hover table-striped table-condensed table-bordered"
+            style="width: 100%; font-size: 12rem">
+            <thead class="table-header">
+              <tr>
+                <th class="text-center">Login Gestión</th>
+                <th class="text-center">Observación</th>
+                <th class="text-center">Hora</th>
+                <th class="text-center">Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="item in datosVentaInstale">
+                <td class="text-center">{{item.login}}</td>
+                <td class="text-center">{{item.observacion}}</td>
+                <td class="text-center">{{item.hora}}</td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-default btn-xs" ng-click="EliminaObservacion(item.id)"
+                    title="Eliminar" data-toggle="tooltip" data-placement="top" ng-disabled="loading">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            Cerrar
+          </button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+  <div class="modal fade" tabindex="-1" role="dialog" id="consolidadoZona">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Consolidado por zona (fecha atención)</h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-hover table-striped table-condensed table-bordered"
+            style="width: 100%; font-size: 12rem">
+            <thead class="table-header">
+              <tr>
+                <th class="text-center">Zona</th>
+                <th class="text-center">Aprobadas</th>
+                <th class="text-center">Rechazadas</th>
+                <th class="text-center">Pendientes</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr ng-repeat="item in consolidadosZona">
+                <td class="text-center">{{item.zona}}</td>
+                <td class="text-center">{{item.aprobada}}</td>
+                <td class="text-center">{{item.rechazada}}</td>
+                <td class="text-center">{{item.pendiente}}</td>
+              </tr>
+            </tbody>
+
+            <tfoot>
+              <tr>
+                <th class="text-center">Total</th>
+                <th class="text-center">{{apr}}</th>
+                <th class="text-center">{{rech}}</th>
+                <th class="text-center">{{pend}}</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            Cerrar
+          </button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+  <div class="modal fade" tabindex="-1" role="dialog" id="detallePedidoVentaInstale">
+    <div class="modal-dialog modal-lg" role="document" style="width: 90%">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">
+            Detalle pedido {{detallePedidoVenta[0].pedido}}
+          </h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-hover table-striped table-condensed table-bordered">
+            <thead class="table-header">
+              <tr>
+                <th class="text-center">Login Gestión</th>
+                <th class="text-center">Pedido</th>
+                <th class="text-center">Login Solicitud</th>
+                <th class="text-center">Jornada Atención</th>
+                <th class="text-center">Fecha Atención</th>
+                <th class="text-center">Fecha Ingreso</th>
+                <th class="text-center">Fecha Gestión</th>
+                <th class="text-center">Documento cliente</th>
+                <th class="text-center">Contacto cliente</th>
+                <th class="text-center" style="width: 8%">Nom.Técnico</th>
+                <th class="text-center" style="width: 8%">Doc.Técnico</th>
+                <th class="text-center">Regional</th>
+                <th class="text-center">Observación Solicitud</th>
+                <th class="text-center">Observación Gestion</th>
+                <th class="text-center">Tipificacion</th>
+                <th class="text-center">Detalle Tipificacion</th>
+                <th class="text-center">Categoría</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="data in detallePedidoVenta">
+                <!-- En estas lineas se oculta el login gestión -->
+                <td class="text-center"><span>{{data.login_gestion}}</span></td>
+
+                <td class="text-center">{{data.pedido}}</td>
+                <td class="text-center">{{data.login_despacho}}</td>
+                <td class="text-center">{{data.jornada_atencion}}</td>
+                <td class="text-center">{{data.fecha_atencion}}</td>
+                <td class="text-center">{{fecha_ingreso}}</td>
+                <td class="text-center">{{data.fecha_gestion}}</td>
+                <td class="text-center">{{data.documento_cliente}}</td>
+                <td class="text-center">{{data.numero_contacto_cliente}}</td>
+                <td class="text-center">{{data.nombre_tecnico}}</td>
+                <td class="text-center">{{data.documento_tecnico}}</td>
+                <td class="text-center">{{data.regional}}</td>
+                <td class="text-center">{{data.observacion_canal}}</td>
+                <td class="text-center">{{data.observacion_gestion}}</td>
+
+                <td class="text-center">
+                  <select ng-model="data.tipificacion" disabled="true" class="btn btn-default btn-xs grupo-select"
+                    name="tipificacion">
+                    <option value="Ok">Ok</option>
+                    <option value="Rechazada">Rechazada</option>
+                  </select>
+                </td>
+
+                <td class="text-center">
+                  <select ng-model="data.obs_tipificacion" disabled="true" style="width: 100px"
+                    class="btn btn-default btn-xs grupo-select" name="tipificacion">
+                    <option value="Ok" selected>Ok</option>
+                    <option value="Se completo el limite de cupos en el dia">
+                      Se completó el limite de cupos en el dia
+                    </option>
+                    <option value="Rechazado por mal ingreso">
+                      Dato inconsistente (Pedido no existe)
+                    </option>
+                    <option value="Estado pedido no asignable (amarillo)">
+                      Estado pedido no asignable (amarillo)
+                    </option>
+                    <option value="Ya se encuentra asignado a otro técnico (Gestionado)">
+                      Ya se encuentra asignado a otro técnico (Gestionado)
+                    </option>
+                    <option value="Pedido Incompleto/Cancelado/Pendiente">
+                      pedido Incompleto/Cancelado/Pendiente
+                    </option>
+                  </select>
+                </td>
+                <td class="text-center">{{data.categoria}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            Cerrar
+          </button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+</div>
+<br><br><br>

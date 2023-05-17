@@ -12,12 +12,12 @@ if (isset($data->method)) {
         case 'login':
             require_once '../class/authentication.php';
             $user = new authentication();
-            $user->login($data->data);
+            $user->loginUser($data->data);
             break;
         case 'logout':
             require_once '../class/authentication.php';
             $user = new authentication();
-            $user->logout();
+            $user->updatesalida();
             break;
 
         default:

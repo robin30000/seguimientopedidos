@@ -1,16 +1,41 @@
 <?php
-require_once '../model/modelSubAccion.php';
+require_once '../class/conection.php';
+
 class subAcciones
 {
 
-    public $_model;
+    private $_BD;
 
     public function __construct()
     {
-        $this->_model = new modelSubAccion();
+        $this->_BD = new Conection();
     }
 
-    public function subacciones($data){
-        $this->_model->subacciones($data);
+    public function subacciones($data)
+    {
+        try {
+            session_start();
+            $proceso = $data['proceso'];
+            $accion = $data['accion'];
+
+            $stmt = $this->_BD->prepare("SELECT DISTINCT SUBACCION
+                                                FROM procesos
+                                                where proceso = :proceso
+                                                  and accion = :accion
+                                                  and subaccion <> ''
+                                                ORDER BY SUBACCION");
+
+            $stmt->execute([':accion' => $accion, ':proceso' => $proceso]);
+
+            if ($stmt->rowCount()) {
+                $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
+            } else {
+                $response = array('state' => 0, 'msj' => 'No se encontraron registros');
+            }
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+        $this->_BD = null;
+        echo json_encode($response);
     }
 }

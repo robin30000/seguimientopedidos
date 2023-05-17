@@ -1,10 +1,10 @@
 <?php
-
-class Conection extends PDO
+date_default_timezone_set('America/Bogota');
+ class Conection extends PDO
 {
 
     private $tipo_de_base = 'mysql';
-    private $host = '10.100.88.2';
+    private $host = '10.100.88.2:3306';
     private $nombre_de_base = 'seguimientopedidos';
     private $usuario = 'root';
     private $contrasena = '7iCMKyRgksM39f3ofbehgk';

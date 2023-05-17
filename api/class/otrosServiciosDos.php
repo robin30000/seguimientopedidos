@@ -1,49 +1,230 @@
 <?php
-require_once '../model/modelotrosServiciosDos.php';
+require_once '../class/conection.php';
+
 class otrosServiciosDos
 {
+
+    private $_DB;
+
     public function __construct()
     {
-        $this->_model = new modelotrosServiciosDos();
+        $this->_DB = new Conection();
     }
 
-    public function listadoEstadosClick($data)
+    public function listadoEstadosClick($datos)
     {
-        $this->_model->listadoEstadosClick($data);
+        try {
+            session_start();
+            $fecha        = $datos['fecha'];
+            $uen          = $datos['uen'];
+            $tipo_trabajo = $datos['tipo_trabajo'];
+
+            if ($fecha == "") {
+                $fecha = date("Y") . "-" . date("m") . "-" . date("d");
+            }
+
+            if ($uen != "") {
+                $uen = "and uen = '$uen'";
+            } else {
+                $uen = "";
+            }
+            if ($tipo_trabajo != "") {
+                $tipo_trabajo  = "and tipo_trabajo = '$tipo_trabajo'";
+                $tipo_trabajo1 = "and (select tipo_trabajo from carga_click where pro.pedido_id = pedido_id limit 1) = '$tipo_trabajo'";
+            } else {
+                $tipo_trabajo = "";
+            }
+
+            $query = $this->_DB->query("select estado_id, count(pedido_id) total_estados 
+                from carga_click  
+                where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')  
+                $tipo_trabajo $uen 
+                group by estado_id  
+                order by total_estados DESC  ");
+            //echo $query;
+            $query->execute();
+
+            //echo $this->mysqli->query($sqlLogin);
+            //
+            if ($query->rowCount()) {
+
+                $resultado = [];
+
+                while ($row = $query->fetchAll(PDO::FETCH_ASSOC)) {
+
+                    $resultado[] = $row;
+
+                }
+
+                $response = [$resultado, 201];
+            } else {
+                $response = ['', 400];
+
+            }
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+        echo json_encode($response);
     }
 
     public function BuscarPedidoinsta($data)
     {
-        $this->_model->BuscarPedidoinsta($data);
+        try {
+
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
     }
 
     public function GuardarPedidoPendiInsta($data)
     {
-        $this->_model->GuardarPedidoPendiInsta($data);
+        try {
+            session_start();
+            $today        = date("Y") . "-" . date("m") . "-" . date("d");
+            $usuarioid    = $_SESSION['login'];
+            $datospedidos = $data['datosdelpedido'];
+            $infoGuardar  = $data['info'];
+            $Causa_raiz   = $infoGuardar['causaraiz'];
+            $responsable  = $infoGuardar['responsable'];
+            $observacion  = $infoGuardar['observaciones'];
+
+            $pedido                 = $datospedidos['Pedido'];
+            $id                     = $datospedidos['id'];
+            $Novedad_malo           = $datospedidos['Novedad_malo'];
+            $Finalizado_click       = $datospedidos['Finalizado_click'];
+            $update_concepto_oracle = $datospedidos['update_concepto_oracle'];
+            $fecha_agenda           = $datospedidos['fecha_agenda'];
+
+            $query = $this->_DB->query("INSERT INTO historicoGestionPendientes 
+                (id, pedido, causa_raiz, responsable, observacion, novedad_malo, finalizado_click, 
+                update_concepto_oracle, fecha_agenda) 
+                VALUES ('$id', '$pedido', '$Causa_raiz', '$responsable', '$observacion', '$Novedad_malo', '$Finalizado_click', 
+                '$update_concepto_oracle', '$fecha_agenda') ");
+
+            $query->execute();
+
+            $sqlupdate = $this->_DB->query("UPDATE gestion_pendientes SET bloqueo='NO', causa_raiz='$Causa_raiz', responsable ='$responsable', 
+                observacion='$observacion', Asesor_carga='null', fecha_update='$today', 
+                actualizado ='SI' WHERE id='$id' ");
+
+            $sqlupdate->execute();
+
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
     }
 
     public function deleteregistrosCarga($data)
     {
-        $this->_model->deleteregistrosCarga($data);
+        try {
+            $id = $data;
+
+            //$sql = $this->_DB->prepare("delete from carga_archivos where id = :id");
+            //$sql->execute([':id' => $id]);
+
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
     }
 
     public function Accionesoffline($data)
     {
-        $this->_model->Accionesoffline($data);
+        try {
+            session_start();
+            $producto = $data;
+
+            $stmt = $this->_DB->prepare("SELECT DISTINCT ACCION
+                 FROM accionesoffline 
+                 WHERE producto = :product
+                 ORDER BY ACCION");
+
+            $stmt->execute([':product' => $producto]);
+
+            if ($stmt->rowCount()) {
+
+                $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
+            } else {
+                $response = array('state' => 0, 'msj' => 'No se encontraron registros');
+            } // If no records "No Content" status
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+        $this->_DB = '';
+        echo json_encode($response);
     }
 
     public function acciones($data)
     {
-        $this->_model->acciones($data);
+        try {
+            session_start();
+            $stmt = $this->_DB->prepare("SELECT DISTINCT ACCION
+                                                FROM procesos
+                                                WHERE 1=1 AND proceso = :process AND accion <> ''
+                                                ORDER BY ACCION");
+
+            $stmt->execute([':process' => $data]);
+            if ($stmt->rowCount()) {
+                $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
+            } else {
+                $response = array('state' => 0, 'msj' => 'No se encontraron registros');
+            } 
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+        $this->_DB = null;
+        echo json_encode($response);
     }
 
     public function Codigos($data)
     {
-        $this->_model->Codigos($data);
+        try {
+            session_start();
+            $proceso         = $data['proceso'];
+            $UNESourceSystem = $data['UNESourceSystem'];
+
+            $query = $this->_DB->prepare("SELECT DISTINCT codigo
+					FROM codigosPendiente
+					WHERE proceso = :process AND UNESourceSystem = :une
+					ORDER BY codigo");
+
+            $query->execute([':process' => $proceso, ':une' => $UNESourceSystem]);
+
+            if ($query->rowCount()) {
+
+                $response = [$query->fetchAll(PDO::FETCH_ASSOC), 201];
+
+            } else {
+                $response = ['', 201];
+            }
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+
+        echo json_encode($response);
     }
 
     public function Diagnosticos($data)
     {
-        $this->_model->Diagnosticos($data);
+        try {
+            session_start();
+            $producto = $data['producto'];
+
+            $stmt = $this->_DB->prepare("SELECT DISTINCT diagnostico
+					FROM diagnosticoFalla
+					WHERE producto = :product
+					ORDER BY diagnostico");
+
+            $stmt->execute([':product' => $producto]);
+
+            if ($stmt->rowCount()) {
+                $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
+            } else {
+                $response = array('state' => 0, 'msj' => 'No se encontraon registros');
+            }
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+        $this->_DB = '';
+        echo json_encode($response);
     }
 }

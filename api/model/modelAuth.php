@@ -1,7 +1,7 @@
 <?php
 
 require_once '../class/conection.php';
-//ini_set('display_errors', 1);
+ini_set('display_errors', 0);
 class modelauthentication
 {
     private $_DB;
@@ -27,6 +27,7 @@ class modelauthentication
 
             if ($stmt->rowCount() == 1) {
                 $resLogin = $stmt->fetch(PDO::FETCH_OBJ);
+                $response = array('state' => 1, 'data' => $resLogin);
                 session_destroy();
                 session_start();
 
@@ -54,13 +55,10 @@ class modelauthentication
                     $stmt           = $this->_DB->prepare("update registro_ingresoSeguimiento set status='logged in', ingresos=ingresos+1 where id=?");
                     $stmt->bindParam(1, $resLogin->id, PDO::PARAM_INT);
                     $stmt->execute();
-
-                    $fecha_ingreso = $resStmtIngreso->fecha_ingreso;
-                    $hora_ingreso  = $resStmtIngreso->hora_ingreso;
                 } else {
 
                     $otherStmt = $this->_DB->prepare("insert into registro_ingresoSeguimiento (idusuario,status,fecha_ingreso, ip, pc, aplicacion) " .
-                                                     "values(:usuario_id,'logged in',:fechaIngreso, :ip, :usuarioPc, :aplicacion)");
+                        "values(:usuario_id,'logged in',:fechaIngreso, :ip, :usuarioPc, :aplicacion)");
                     $otherStmt->execute([
                         ':usuario_id'   => $resLogin->login,
                         ':fechaIngreso' => date('Y-m-d H:i:s'),
@@ -68,45 +66,15 @@ class modelauthentication
                         ':usuarioPc'    => $usuarioPc,
                         ':aplicacion'   => $aplicacion,
                     ]);
-
-                    $stmt = $this->_DB->prepare("SELECT fecha_ingreso, date_format(fecha_ingreso,'%H:%i:%s') AS hora_ingreso
-                                                        FROM registro_ingresoSeguimiento
-                                                        WHERE fecha_ingreso between :fechaini and :fechafin
-                                                          and idusuario = :usuario_id
-                                                        limit 1");
-
-                    $stmt->execute([':fechaini' => "$today 00:00:00", ':fechafin' => "$today 23:59:59", ':usuario_id' => $resLogin->id]);
-
-                    if ($stmt->rowCount()) {
-                        $res           = $stmt->fetch(PDO::FETCH_OBJ);
-                        $fecha_ingreso = $res->fecha_ingreso;
-                        $hora_ingreso  = $res->hora_ingreso;
-                    } else {
-                        $fecha_ingreso = 'SinFecha';
-                        $hora_ingreso  = 'SinHora';
-                    }
                 }
-
-                http_response_code(201);
-                header("Content-type: application/json; charset=utf-8");
-                echo json_encode($resLogin);
-                die();
-
             } else {
-                $body = 'Error';
-                http_response_code(406);
-                header("Content-type: application/json; charset=utf-8");
-                echo json_encode($body);
-                die();
+                $response = array('state' => 0, 'msj' => 'Usuario y/o contraseña no validos');
             }
-
-
         } catch (PDOException $e) {
-            //$res = array('state' => 0, 'msg' => 'Error ' . $e->getMessage());
+            var_dump($e->getMessage());
         }
         $this->_DB = null;
-
-        return $res;
+        echo json_encode($response);
     }
 
     public function updatesalida()
