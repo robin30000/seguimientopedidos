@@ -127,10 +127,14 @@ class codigoIncompleto
                 $fechaini = $data['data']['fechaini'];
                 $fechafin = $data['data']['fechafin'];
             }
-            //$today = date("Y-m-d");
+            $condicion = '';
+            if (!empty( $data['tarea'])) {
+                $tarea = $data['tarea'];
+                $condicion = " AND tarea = '$tarea' ";
+            }
 
 
-            $stmt = $this->_DB->query("SELECT * FROM gestion_codigo_incompleto WHERE fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59'");
+            $stmt = $this->_DB->query("SELECT * FROM gestion_codigo_incompleto WHERE 1=1 $condicion AND fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59'");
             $stmt->execute();
             $totalItems = $stmt->rowCount();
 
@@ -141,28 +145,34 @@ class codigoIncompleto
 
             $total_pages = ceil($totalItems / $pagesize);
 
-            $stmt = $this->_DB->query("SELECT id_codigo_incompleto,
-                           tarea,
-                           numero_contacto,
-                           nombre_contacto,
-                           unepedido,
-                           tasktypecategory,
-                           unemunicipio,
-                           uneproductos,
-                           engineer_id,
-                           engineer_name,
-                           mobile_phone,
-                           status_soporte,
-                           fecha_solicitud_firebase,
-                           fecha_creado,
-                           respuesta_gestion,
-                           observacion,
-                           login,
-                           fecha_respuesta
-                    FROM gestion_codigo_incompleto
-                    WHERE fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59'
-                    ORDER BY fecha_creado DESC
-                    LIMIT $offset, $pagesize");
+            $stmt = $this->_DB->query("SELECT
+                                        tarea,
+                                        numero_contacto,
+                                        nombre_contacto,
+                                        unepedido,
+                                        tasktypecategory,
+                                        unemunicipio,
+                                        uneproductos,
+                                        engineer_id,
+                                        engineer_name,
+                                        mobile_phone,
+                                        status_soporte,
+                                        fecha_solicitud_firebase,
+                                        fecha_creado,
+                                        respuesta_gestion,
+                                        observacion,
+                                        login,
+                                        fecha_respuesta,
+                                    CASE WHEN respuesta_gestion = 'En Sitio' THEN
+                                            codigo
+                                        ELSE
+                                            respuesta_gestion
+                                        END AS codigo
+                                    FROM
+                                        gestion_codigo_incompleto
+                                    WHERE fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' $condicion
+                                    ORDER BY fecha_creado DESC
+                                    LIMIT $offset, $pagesize");
 
 
             $stmt->execute();

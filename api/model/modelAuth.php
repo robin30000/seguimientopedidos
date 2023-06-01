@@ -1,7 +1,7 @@
 <?php
 
 require_once '../class/conection.php';
-ini_set('display_errors', 0);
+
 class modelauthentication
 {
     private $_DB;

@@ -1,100 +1,15 @@
 <style>
-  .fileUpload {
-    position: relative;
-    overflow: hidden;
-    margin: 10px;
+  .popover {
+    max-width: 100%;
   }
 
-  table,
-  th,
-  td {
-    font-size: 11px;
-  }
-
-  .fixed-panel-kpiuser {
-    max-height: 300px;
-    overflow-y: scroll;
-  }
-
-  .fileUpload input.upload {
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin: 0;
-    padding: 0;
-    font-size: 30px;
-    cursor: pointer;
-    opacity: 0;
-    filter: alpha(opacity=0);
-  }
-
-  .flipswitch {
-    position: relative;
-    background: white;
-    margin: 0px 0 0;
-    padding: 0;
-    width: 42px;
-    height: 22px;
-    -webkit-appearance: initial;
-    border-radius: 3px;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    outline: none;
-    font-size: inherit;
-    /*font-size: 65%;
-        font-size: 9px;
-        font-weight: bold;*/
-    font-family: Trebuchet, Arial, sans-serif;
-    cursor: pointer;
-    border: 1px solid #ddd;
-    z-index: 0;
-  }
-
-  .flipswitch:after {
-    position: absolute;
-    top: 5%;
-    display: block;
-    line-height: 17px;
-    width: 45%;
-    height: 90%;
-    background: #337ab7;
-    box-sizing: border-box;
-    text-align: center;
-    transition: all 0.3s ease-in 0s;
-    color: white;
-    border: #888 1px solid;
-    border-radius: 3px;
-    z-index: 0;
-  }
-
-  .flipswitch:after {
-    left: 2%;
-    content: "No";
-  }
-
-  .flipswitch:checked:after {
-    left: 53%;
-    content: "Si";
-    background: #00c8ff;
-  }
-
-  .resaltado15min {
-    background-color: #ade2ff !important;
-  }
-
-  .label-xsmall {
-    vertical-align: super;
-    font-size: x-small;
-  }
-
-  .optionTipificacion {
-    display: none;
-    width: 150px;
-    margin: 0px auto;
-    min-height: 200px;
-    background-color: #ffffff;
-    padding: 3px;
-    box-shadow: 0 2px 5px #666666;
-  }
+  /* .popover-content,
+  .popover {
+    max-width: 400px;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    left: 40% !important;
+  } */
 </style>
 
 <div class="container-fluid">
@@ -109,57 +24,52 @@
             <ul class="nav navbar-nav navbar-right">
               <b>
                 <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-backdrop="static"
-                  data-target="#infomodal" data-placement="top" data-html="true">
-                  Contador
-                </button>
+                  data-target="#infomodal" data-placement="top" data-html="true"> Contador</button>
               </b>
 
               <b>
                 <button type="button" class="btn btn-default btn-xs" ng-click="listarsoportegpon()" title="Actualizar"
                   data-toggle="tooltip" data-placement="top" ng-disabled="loading">
                   <i class="fa fa-refresh" aria-hidden="true"></i>
-                </button> </b>&nbsp;
+                </button>
+              </b>&nbsp;
             </ul>
           </div>
-            <div class="table-responsive animated bounceInRight" ng-show="!isLoadingData">
-              <table class="table small table-bordered table-hover table-condensed">
+          <div class="">
+            <div class="container-fluid" ng-show="isLoadingData">
+              <div class="jumbotron">
+                <h3>Gestión Soporte GPON</h3>
+              </div>
+            </div>
+            <div class="table-responsive" ng-show="!isLoadingData">
+              <table class="table table-bordered table-hover table-condensed small">
                 <thead class="table-header">
                   <tr>
-                    <th rowspan="2">Marcar</th>
-                    <th rowspan="2">Login</th>
-                    <th rowspan="2">Tarea</th>
-                    <th rowspan="2">Arpon</th>
-                    <th rowspan="2">Nap</th>
-                    <th rowspan="2">Hilo</th>
-                    <th colspan="4">Internet</th>
-                    <th colspan="4">Televisión</th>
-                    <th rowspan="2">Número Contacto</th>
-                    <th rowspan="2">Nombre Contacto</th>
-                    <th rowspan="2">Pedido</th>
-                    <th rowspan="2">Categoría</th>
-                    <th rowspan="2">Municipio</th>
-                    <th rowspan="2">Productos</th>
-                    <th rowspan="2">Datos cola</th>
-                    <th rowspan="2">Serial</th>
-                    <th rowspan="2">Sistema</th>
-                    <th rowspan="2">MAC</th>
-                    <th rowspan="2">Tipo EQ</th>
-                    <th rowspan="2">Vel Nav</th>
-                    <th rowspan="2">Observación</th>
-                    <th rowspan="2">Tip.</th>
-                    <th rowspan="2">Fecha Solicitud</th>
-                    <th rowspan="2">Tipificacion</th>
-                    <th rowspan="2">Acion</th>
+                    <th class="text-center" rowspan="2"><span>Mar.</span> </th>
+                    <th class="text-center" rowspan="2"><span>Login</span></th>
+                    <th class="text-center" rowspan="2"><span>Tarea</span></th>
+                    <th class="text-center" rowspan="2"><span>Arpón</span></th>
+                    <th class="text-center" rowspan="2"><span>Nap</span></th>
+                    <th class="text-center" rowspan="2"><span>Hilo</span></th>
+                    <th class="text-center" colspan="4"><span>Internet</span></th>
+                    <th class="text-center" colspan="4"><span>Televisión</span></th>
+                    <th class="text-center" rowspan="2"><span>Número Contacto</span></th>
+                    <th class="text-center" rowspan="2"><span>Nombre Contacto</span></th>
+                    <th rowspan="2"><span>Ver +</span></i></th>
+                    <th class="text-center" rowspan="2"><span>Tipificación 1</span></th>
+                    <th class="text-center" rowspan="2"><span>Fecha Solicitud</span></th>
+                    <th class="text-center" rowspan="2"><span>Tipificación 2</span></th>
+                    <th class="text-center" rowspan="2"><span>Acción</span></th>
                   </tr>
                   <tr>
-                    <th>1</th>
-                    <th>2</th>
-                    <th>3</th>
-                    <th>4</th>
-                    <th>1</th>
-                    <th>2</th>
-                    <th>3</th>
-                    <th>4</th>
+                    <th class="text-center">1</th>
+                    <th class="text-center">2</th>
+                    <th class="text-center">3</th>
+                    <th class="text-center">4</th>
+                    <th class="text-center">1</th>
+                    <th class="text-center">2</th>
+                    <th class="text-center">3</th>
+                    <th class="text-center">4</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -167,7 +77,7 @@
                     <td>
                       <div ng-show="data.id_soporte">
                         <input type="checkbox" ng-model="data.bloqueo" ng-change="marcarEngestionGpon(data)"
-                          name="bloqueo" id="bloqueo" ng-show="data.bloqueo != 1" />
+                          name="bloqueo" id="bloqueo" ng-show="data.bloqueo != 1">
                         <div class="loadingio-spinner-ellipsis-3nun7cb96ao" ng-show="data.bloqueo == 1">
                           <div class="ldio-pettsxrv7wj">
                             <div></div>
@@ -180,7 +90,7 @@
                       </div>
                       <div ng-show="!data.id_soporte">
                         <input type="checkbox" ng-model="data.bloqueo" name="bloqueo" id="bloqueo"
-                          ng-change="marcarEngestionGpon(data)" />
+                          ng-change="marcarEngestionGpon(data)">
                       </div>
                     </td>
                     <!-- En estas lineas se oculta el login gestión -->
@@ -206,8 +116,7 @@
                       <span ng-if="data.port_internet_1 == '1'">X</span>
                       <span ng-else></span>
                     </td>
-                    <td>
-                      <span ng-if="data.port_internet_2 == '1'">X</span>
+                    <td><span ng-if="data.port_internet_2 == '1'">X</span>
                       <span ng-else></span>
                     </td>
                     <td>
@@ -236,76 +145,55 @@
                     </td>
                     <td>{{data.numero_contacto}}</td>
                     <td>{{data.nombre_contacto}}</td>
-                    <td>{{data.unepedido}}</td>
-                    <td>{{data.tasktypecategory}}</td>
-                    <td>{{data.unemunicipio}}</td>
-                    <td>{{data.uneproductos}}</td>
-                    <td>{{data.datoscola}}</td>
-                    <!--     <td>{{data.engineer_id}}</td>
-                                         <td>{{data.engineer_name}}</td>
-                                         <td>{{data.mobile_phone}}</td> -->
-                    <td>{{data.serial | replace: ',':'\n'}} <br /></td>
-                    <td>{{data.uneSourceSystem}} <br /></td>
-                    <td>{{data.mac | replace: ',':'\n'}} <br /></td>
-                    <td>{{data.tipo_equipo | replace: ',':'\n'}}</td>
-                    <td>{{data.velocidad_navegacion}}</td>
-                    <td>{{data.observacion_terreno}}</td>
-                    <td>
-                      <div class="content">
-                        <button type="button" class="btn btn-default btn-xs"
-                          ng-click="abreTipificacion(data.id_soporte)" title="Tipificacion" data-toggle="tooltip"
-                          data-placement="top">
-                          <i class="fa fa-list" aria-hidden="true"></i>
-                        </button>
-
-                        <div class="optionTipificacion" id="optionTipificacion_{{data.id_soporte}}">
-                          <select ng-model="tipificacionesModel" class="btn btn-default btn-xs grupo-select" multiple
-                            ui-select2="groupSetup" name="tipificaciones" id="tipificaciones_{{data.id_soporte}}"
-                            style="width: 100%">
-                            <option value="Actualizar Infra">
-                              Actualizar Infra
-                            </option>
-                            <option value="Estabilizar Pon">
-                              Estabilizar Pon
-                            </option>
-                            <option value="Configurar VLAN">
-                              Configurar VLAN
-                            </option>
-                            <option value="Aprovisionar">Aprovisionar</option>
-                            <option value="Cam_Eq">Cam_Eq</option>
-                            <option value="Contingencia">Contingencia</option>
-                            <option value="Red ocupada">Red ocupada</option>
-                            <option value="Puertos Lan">Puertos Lan</option>
-                            <option value="Cierre CBAPON">Cierre CBAPON</option>
-                            <option value="Validacion general">
-                              Validacion general
-                            </option>
-                            <option value="Nap Trocado">Nap Trocado</option>
-                            <option value="Cod_Comp">Cod_Comp</option>
-                            <option value="Reenvio Registros">
-                              Reenvio Registros
-                            </option>
-                            <option value="IP navegacion">IP navegacion</option>
-                          </select>
-                        </div>
-                      </div>
+                    <td style="display: flex;justify-content: center;">
+                      <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static"
+                        ng-click="ver_masss(data)" popover data-placement="left" data-html="true"
+                        data-content="{{dataContent}}">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                      </button>
+                    </td>
+                    <td class="text-center">
+                      <select ng-model="data.tipificaciones" class="btn btn-default btn-xs grupo-select" multiple
+                        ui-select2="groupSetup" name="tipificaciones" id="tipificaciones{{data.id_soporte}}">
+                        <option value="Actualizar Infra">
+                          Actualizar Infra
+                        </option>
+                        <option value="Estabilizar Pon">
+                          Estabilizar Pon
+                        </option>
+                        <option value="Configurar VLAN">
+                          Configurar VLAN
+                        </option>
+                        <option value="Aprovisionar">Aprovisionar</option>
+                        <option value="Cam_Eq">Cam_Eq</option>
+                        <option value="Contingencia">Contingencia</option>
+                        <option value="Red ocupada">Red ocupada</option>
+                        <option value="Puertos Lan">Puertos Lan</option>
+                        <option value="Cierre CBAPON">Cierre CBAPON</option>
+                        <option value="Validacion general">
+                          Validación general
+                        </option>
+                        <option value="Nap Trocado">Nap Trocado</option>
+                        <option value="Cod_Comp">Cod_Comp</option>
+                        <option value="Reenvio Registros">
+                          Reenvió Registros
+                        </option>
+                        <option value="IP navegacion">IP navegación</option>
+                      </select>
                     </td>
                     <td>{{data.fecha_solicitud_firebase}}</td>
                     <td>
-                      <!-- <select ng-model="data.tipificacion" class="btn btn-default btn-xs grupo-select" name="tipificacion" style="width:100px" ng-change="palancatv(data,$index)"> -->
                       <select ng-model="data.tipificacion" class="btn btn-default btn-xs grupo-select"
-                        name="tipificacion" id="tipificacion{{data.id_soporte}}" style="width: 100px">
+                        name="tipificacion" id="tipificacion{{data.id_soporte}}" style="width:100px">
                         <option value="">Seleccionar</option>
                         <option value="Finalizado">Finalizado</option>
                         <option value="Incompleto">Incompleto</option>
-                        <option value="Devuelto al tecnico">
-                          Devuelto al técnico
-                        </option>
+                        <option value="Devuelto al técnico">Devuelto al técnico</option>
                       </select>
                     </td>
                     <td>
                       <button type="button" class="btn btn-default btn-xs"
-                        ng-click="gestionarSoporteGpon(data.id_soporte, data.request_id_firebase)"
+                        ng-click="gestionarSoporteGpon(data.id_soporte)"
                         title="Gestionar soporte gpon" data-toggle="tooltip" data-placement="top">
                         <i class="fa fa-edit" aria-hidden="true"></i>
                       </button>
@@ -323,6 +211,8 @@
                 </div>
               </div>
             </div>
+            <!-- / Loading Circle -->
+          </div>
         </div>
       </div>
     </div>
@@ -349,7 +239,7 @@
                     <th>Pedido</th>
                     <th>Tarea</th>
                     <th>Fecha Ingreso</th>
-                    <th>Tecnico</th>
+                    <th>Técnico</th>
                     <th>Contacto</th>
                     <th>Login Gestiona</th>
                   </tr>
@@ -389,7 +279,7 @@
           <button type="button" class="close" data-dismiss="modal">
             &times;
           </button>
-          <h4 class="modal-title">En gestion</h4>
+          <h4 class="modal-title">En gestión</h4>
         </div>
         <div class="modal-body">
           <table class="table table-striped">
@@ -426,7 +316,7 @@
               </li>
               <li>
                 <span class="label label-warning">
-                  Devueltos al tecnico: {{devuelto}}</span>&nbsp;&nbsp;&nbsp;
+                  Devueltos al técnico: {{devuelto}}</span>&nbsp;&nbsp;&nbsp;
               </li>
             </ul>
             <ul style="
@@ -474,11 +364,11 @@
             <option value="Red ocupada">Red ocupada</option>
             <option value="Puertos Lan">Puertos Lan</option>
             <option value="Cierre CBAPON">Cierre CBAPON</option>
-            <option value="Validacion general">Validacion general</option>
+            <option value="Validacion general">Validación general</option>
             <option value="Nap Trocado">Nap Trocado</option>
             <option value="Cod_Comp">Cod_Comp</option>
-            <option value="Reenvio Registros">Reenvio Registros</option>
-            <option value="IP navegacion">IP navegacion</option>
+            <option value="Reenvio Registros">Reenvió Registros</option>
+            <option value="IP navegacion">IP navegación</option>
           </select>
         </div>
         <div class="modal-footer">
@@ -491,11 +381,14 @@
     </div>
     <!-- /.modal-dialog -->
   </div>
-  <div class="modal-dialog modal-lg modal fade" style="width: 25%; float: right;margin-right: 30px; top: 200px; heigth:50%">
+
+
+  <div class="modal-dialog modal-lg modal fade"
+    style="width: 25%; float: right;margin-right: 30px; top: 200px; heigth:50%">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">En gestion </h4>
+        <h4 class="modal-title">En gestión </h4>
       </div>
       <div class="modal-body">
         <table class="table table-striped">
@@ -522,7 +415,7 @@
             <span class="label label-success"> Finalizados: {{finalizado}}</span>&nbsp;&nbsp;&nbsp;
           </li>
           <li>
-            <span class="label label-warning"> Devueltos al tecnico: {{devuelto}}</span>&nbsp;&nbsp;&nbsp;
+            <span class="label label-warning"> Devueltos al técnico: {{devuelto}}</span>&nbsp;&nbsp;&nbsp;
           </li>
           <li>
             <span class="label label-danger"> Incompletos: {{incompleto}}</span>
@@ -533,5 +426,86 @@
 
     </div>
   </div>
+
+  <div class="modal fade" id="ver_mas" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Mas datos</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered table-condensed table-hover">
+
+            <tbody>
+              <tr>
+                <td>Pedido</td>
+                <td>{{mas_datos.unepedido}}</td>
+              </tr>
+              <tr>
+                <td>Categoría</td>
+                <td>{{mas_datos.tasktypecategory}}</td>
+              </tr>
+              <tr>
+                <td>Municipio</td>
+                <td>{{mas_datos.unemunicipio}}</td>
+              </tr>
+              <tr>
+                <td>Productos</td>
+                <td>{{mas_datos.uneproductos}}</td>
+              </tr>
+              <tr>
+                <td>Datos cola</td>
+                <td>{{mas_datos.datoscola}}</td>
+              </tr>
+              <tr>
+                <td>Serial</td>
+                <td>{{mas_datos.serial | replace: ',':'\n'}}</td>
+              </tr>
+              <tr>
+                <td>Mac</td>
+                <td>{{mas_datos.mac | replace: ',':'\n'}}</td>
+              </tr>
+              <tr>
+                <td>Sistema</td>
+                <td>{{mas_datos.uneSourceSystem}}</td>
+              </tr>
+              <tr>
+                <td>Tipo equipo</td>
+                <td>{{mas_datos.tipo_equipo}}</td>
+              </tr>
+              <tr>
+                <td>Velocidad navegación</td>
+                <td>{{mas_datos.velocidad_navegacion}}</td>
+              </tr>
+              <tr>
+                <td>Observación</td>
+                <td>{{mas_datos.observacion_terreno}}</td>
+              </tr>
+              <tr>
+                <td>Fecha solicitud</td>
+                <td>{{mas_datos.fecha_creado}}</td>
+              </tr>
+
+
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<script>
+  function cerrapopover() {
+    $(".popover").hide();
+  }
+
+</script>
 <br><br><br>

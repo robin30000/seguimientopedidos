@@ -132,7 +132,7 @@ class ventaInstale
         try {
 
 			$stmt = $this->_BD->prepare("SELECT * FROM ventasInstaleTiendas WHERE pedido = :pedido");
-			$stmt->execute(array(':pedido' => $data));
+			$stmt->execute(array(':pedido' => $data['pedido']));
 			if ($stmt->rowCount() > 0) {
 				$res = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
 			}else {
@@ -165,7 +165,7 @@ class ventaInstale
 					$tip = '';
 				}
 
-				$condicion = " $tip AND fecha_gestion BETWEEN '$fechaIni 00:00:00' and '$fechaFin 23:59:59' ";
+				$condicion = " $tip AND fecha_ingreso BETWEEN '$fechaIni 00:00:00' and '$fechaFin 23:59:59' ";
 			}elseif (!empty($fechaIni) && (!empty($concepto))) {
 				if ($concepto == 'sin') {
 					$tip = " AND tipificacion IS NULL ";
@@ -178,9 +178,9 @@ class ventaInstale
 				}else {
 					$tip = '';
 				}
-				$condicion = " $tip AND fecha_gestion BETWEEN '$fechaIni 00:00:00' and '$fechaIni 23:59:59' ";
+				$condicion = " $tip AND fecha_ingreso BETWEEN '$fechaIni 00:00:00' and '$fechaIni 23:59:59' ";
 			}elseif (!empty($fechaIni)) {
-				$condicion = " AND fecha_gestion BETWEEN '$fechaIni 00:00:00' and '$fechaIni 23:59:59' ";
+				$condicion = " AND fecha_ingreso BETWEEN '$fechaIni 00:00:00' and '$fechaIni 23:59:59' ";
 			}
 
 			$stmt =$this->_BD->query("SELECT
@@ -224,7 +224,7 @@ class ventaInstale
 					$tip = '';
 				}
 
-				$condicion = " $tip AND fecha_gestion BETWEEN '$fechaIni 00:00:00' and '$fechaFin 23:59:59' ";
+				$condicion = " $tip AND fecha_ingreso BETWEEN '$fechaIni 00:00:00' and '$fechaFin 23:59:59' ";
 			}elseif (!empty($fechaIni) && (!empty($concepto))) {
 				if ($concepto == 'sin') {
 					$tip = " AND tipificacion IS NULL ";
@@ -237,9 +237,9 @@ class ventaInstale
 				}else {
 					$tip = '';
 				}
-				$condicion = " $tip AND fecha_gestion BETWEEN '$fechaIni 00:00:00' and '$fechaIni 23:59:59' ";
+				$condicion = " $tip AND fecha_ingreso BETWEEN '$fechaIni 00:00:00' and '$fechaIni 23:59:59' ";
 			}elseif (!empty($fechaIni)) {
-				$condicion = " AND fecha_gestion BETWEEN '$fechaIni 00:00:00' and '$fechaIni 23:59:59' ";
+				$condicion = " AND fecha_ingreso BETWEEN '$fechaIni 00:00:00' and '$fechaIni 23:59:59' ";
 			}
 
 			$stmt =$this->_BD->query("SELECT

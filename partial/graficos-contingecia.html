@@ -142,9 +142,10 @@
                                     <div class="form-floating">
                                       <select class="btn btn-default btn-xs grupo-select" name="estadoTabla"
                                         id="estadoTabla" ng-model="estadoTabla" data-placeholder="Estado...">
+                                        <option value="" selected>Seleccione</option>
                                         <option value="Acepta">Acepta</option>
                                         <option value="Rechaza">Rechaza</option>
-                                        <option value="">Todos</option>
+                                        <option value="Todos">Todos</option>
                                       </select>
                                     </div>
                                   </div>
@@ -407,9 +408,10 @@
                                       <select class="btn btn-default btn-xs grupo-select" name="estadoTablaTiempo"
                                         id="estadoTablaTiempo" ng-model="estadoTablaTiempo"
                                         data-placeholder="Estado...">
+                                        <option value="" selected>Seleccione</option>
                                         <option value="Acepta">Acepta</option>
                                         <option value="Rechaza">Rechaza</option>
-                                        <option value="">Todos</option>
+                                        <option value="Todos">Todos</option>
                                       </select>
                                     </div>
                                   </div>
@@ -419,11 +421,12 @@
                                       <select class="btn btn-default btn-xs grupo-select" name="productoTablaTiempo"
                                         id="productoTablaTiempo" ng-model="productoTablaTiempo"
                                         data-placeholder="Producto...">
+                                        <option value="" selected>Seleccione</option>
                                         <option value="Internet+Toip">
                                           Internet+Toip
                                         </option>
                                         <option value="TV">TV</option>
-                                        <option value="">Todos</option>
+                                        <option value="Todos">Todos</option>
                                       </select>
                                     </div>
                                   </div>
@@ -576,9 +579,10 @@
                                     <div class="form-floating">
                                       <select class="btn btn-default btn-xs grupo-select" name="mmssEstado"
                                         id="mmssEstado" ng-model="estadommss">
+                                        <option value="" selected>Seleccione</option>
                                         <option value="Acepta">Acepta</option>
                                         <option value="Rechaza">Rechaza</option>
-                                        <option value="">Todos</option>
+                                        <option value="Todos">Todos</option>
                                       </select>
                                     </div>
                                   </div>
@@ -587,11 +591,12 @@
                                     <div class="form-floating">
                                       <select class="btn btn-default btn-xs grupo-select" name="mmssProducto"
                                         id="mmssProducto" ng-model="productommss">
+                                        <option value="" selected>Seleccione</option>
                                         <option value="Internet+Toip">
                                           Internet+Toip
                                         </option>
                                         <option value="TV">TV</option>
-                                        <option value="">Todos</option>
+                                        <option value="Todos">Todos</option>
                                       </select>
                                     </div>
                                   </div>
@@ -744,9 +749,10 @@
                                     <div class="form-floating">
                                       <select class="btn btn-default btn-xs grupo-select" name="estadoTablaApoyo"
                                         id="estadoTablaApoyo" ng-model="estadoTablaApoyo" data-placeholder="Estado...">
+                                        <option value="" selected>Seleccione</option>
                                         <option value="Acepta">Acepta</option>
                                         <option value="Rechaza">Rechaza</option>
-                                        <option value="">Todos</option>
+                                        <option value="Todos">Todos</option>
                                       </select>
                                     </div>
                                   </div>
@@ -755,11 +761,12 @@
                                       <select class="btn btn-default btn-xs grupo-select" name="productoTablaApoyo"
                                         id="productoTablaApoyo" ng-model="productoTablaApoyo"
                                         data-placeholder="Producto...">
+                                        <option value="" selected>Seleccione</option>
                                         <option value="Internet+Toip">
                                           Internet+Toip
                                         </option>
                                         <option value="TV">TV</option>
-                                        <option value="">Todos</option>
+                                        <option value="Todos">Todos</option>
                                       </select>
                                     </div>
                                   </div>
@@ -868,6 +875,169 @@
               </div>
             </div>
           </div>
+
+
+          <!--tabla emtelco-->
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="col-md-12">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="panel panel-default">
+                      <div class="panel-heading nav navbar-default">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <ul class="nav navbar-nav navbar-left">
+                              <b>Emtelco</b>
+
+                              <span style="color: red" class="pull-right"><i class="fa fa-exclamation-triangle warning"
+                                  aria-hidden="true" ng-hide="errorDatos==null"></i>
+                                {{errorDatos}}</span>
+                            </ul>
+                          </div>
+
+                          <div class="col-md-6">
+                            <ul class="nav navbar-nav navbar-right" style="width: 100%;
+                                      display: flex;
+                                      justify-content: flex-end;">
+                              <div class="col-md-1 col-xs-1">
+                                <div data-ng-if="loading">
+                                  <img title="Esperando respuesta" data-toggle="tooltip" data-placement="top"
+                                    src="img/loader.gif" height="16px" width="16px" />
+                                </div>
+                              </div>
+                              <li>
+
+                                <input style="width:130px" type="text" name="fechafin" id="fechafin"
+                                  class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                  ng-model="fecha_gestion" placeholder="Fecha" datetime-picker="" date-only
+                                  date-format="yyyy-MM-dd" autocomplete="off"> <i class="fa fa-calendar fa-fw"></i>
+
+
+                              </li>
+
+                              <li>
+
+                                <div class="col-md-2 col-xs-6">
+                                  <div class="col-md-5">
+                                    <div class="form-floating">
+                                      <select class="btn btn-default btn-xs grupo-select" name="estadoTabla"
+                                        id="estadoTabla" ng-model="estadoTabla" data-placeholder="Estado...">
+                                        <option value="" selected>Seleccione</option>
+                                        <option value="Acepta">Acepta</option>
+                                        <option value="Rechaza">Rechaza</option>
+                                        <option value="Todos">Todos</option>
+                                      </select>
+                                    </div>
+                                  </div>
+
+                              </li>
+
+                              <li>
+                                <div class="col-md-1">
+                                  <button type="button" class="btn btn-default btn-xs" ng-click="consultaTabla()"
+                                    title="Buscar" data-toggle="tooltip" data-placement="left" ng-disabled="loading">
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                  </button>
+                                </div>
+
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      <table class="table small table-striped table-hover table-bordered table-condensed">
+                        <thead class="table-header">
+                          <tr>
+                            <th class="text-center">Usuario</th>
+                            <th class="text-center">TOTAL</th>
+
+                            <th class="text-center">06 am</th>
+                            <th class="text-center">07 am</th>
+                            <th class="text-center">08 am</th>
+                            <th class="text-center">09 am</th>
+                            <th class="text-center">10 am</th>
+                            <th class="text-center">11 am</th>
+                            <th class="text-center">12 am</th>
+                            <th class="text-center">01 pm</th>
+                            <th class="text-center">02 pm</th>
+                            <th class="text-center">03 pm</th>
+                            <th class="text-center">04 pm</th>
+                            <th class="text-center">05 pm</th>
+                            <th class="text-center">06 pm</th>
+                            <th class="text-center">07 pm</th>
+                            <th class="text-center">08 pm</th>
+                            <th class="text-center">09 pm</th>
+                            <th class="text-center">Más 09 pm</th>
+
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          <tr ng-repeat="datar in emtelco">
+                            <td class="text-center">
+                              <span>{{datar.USUARIO}}</span>
+                            </td>
+                            <td style="font-weight: bolder" class="text-center">
+                              {{datar.CANTIDAD}}
+                            </td>
+                            <td class="text-center">{{datar.am06}}</td>
+                            <td class="text-center">{{datar.am07}}</td>
+                            <td class="text-center">{{datar.am08}}</td>
+                            <td class="text-center">{{datar.am09}}</td>
+                            <td class="text-center">{{datar.am10}}</td>
+                            <td class="text-center">{{datar.am11}}</td>
+                            <td class="text-center">{{datar.am12}}</td>
+                            <td class="text-center">{{datar.pm01}}</td>
+                            <td class="text-center">{{datar.pm02}}</td>
+                            <td class="text-center">{{datar.pm03}}</td>
+                            <td class="text-center">{{datar.pm04}}</td>
+                            <td class="text-center">{{datar.pm05}}</td>
+                            <td class="text-center">{{datar.pm06}}</td>
+                            <td class="text-center">{{datar.pm07}}</td>
+                            <td class="text-center">{{datar.pm08}}</td>
+                            <td class="text-center">{{datar.pm09}}</td>
+                            <td class="text-center">{{datar.Masde09}}</td>
+
+                          </tr>
+                        </tbody>
+                        <tfoot>
+                          <tr>
+                            <th class="text-center">TOTALES</th>
+                            <th class="text-center">{{totalesEm}}</th>
+                            <th class="text-center">{{total06Em}}</th>
+                            <th class="text-center">{{total07Em}}</th>
+                            <th class="text-center">{{total08Em}}</th>
+                            <th class="text-center">{{total09Em}}</th>
+                            <th class="text-center">{{total10Em}}</th>
+                            <th class="text-center">{{total11Em}}</th>
+                            <th class="text-center">{{total12Em}}</th>
+                            <th class="text-center">{{total13Em}}</th>
+                            <th class="text-center">{{total14Em}}</th>
+                            <th class="text-center">{{total15Em}}</th>
+                            <th class="text-center">{{total16Em}}</th>
+                            <th class="text-center">{{total17Em}}</th>
+                            <th class="text-center">{{total18Em}}</th>
+                            <th class="text-center">{{total19Em}}</th>
+                            <th class="text-center">{{total20Em}}</th>
+                            <th class="text-center">{{total21Em}}</th>
+                            <th class="text-center">{{total22Em}}</th>
+
+                          </tr>
+                        </tfoot>
+                      </table>
+                      <div class="panel-footer clearfix">
+                        <div class="col-md-8">
+                          <ul class="nav navbar-nav navbar-left"></ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>

@@ -734,7 +734,7 @@ class otrosServicios
             $mesenviado = $data['mes'];
 
 
-            
+
             $fecha = date("Y-m-d");
             $dia = substr($fecha, 8, 2);
             $mes = substr($fecha, 5, 2);
@@ -1231,18 +1231,14 @@ class otrosServicios
                 $offset = ($pagenum - 1) * $pagesize;
                 $search = $data['search'];
 
-                $stmt = $this->_DB->query("select * from tecnicos");
-                $stmt->execute();
-
-                $counter = $stmt->rowCount();
-
                 $condicion = '';
                 if ($data['buscar']) {
                     $variable = $data['buscar'];
                     $param = $data['variable'];
+                    $condicion = " AND '$variable' = '$param' ";
                     switch ($variable) {
                         case 'identificacion':
-                            $condicion = " AND identificacion = '$param' ";
+                            $condicion = " AND '$variable' = '$param' ";
                             break;
                         case 'ciudad':
                             $condicion = " AND ciudad = '$param' ";
@@ -1253,12 +1249,20 @@ class otrosServicios
                         case 'nombre':
                             $condicion = " AND nombre = '$param' ";
                             break;
+                            case 'login':
+                            $condicion = " AND login_click = '$param' ";
+                            break;
 
                         default:
                             $condicion = '';
                             break;
                     }
                 }
+
+                $stmt = $this->_DB->query("select * from tecnicos WHERE 1=1 $condicion");
+                $stmt->execute();
+
+                $counter = $stmt->rowCount();
 
 
                 $query = $this->_DB->query("SELECT a.ID, a.IDENTIFICACION, a.NOMBRE, a.CIUDAD, a.CELULAR, a.empresa, a.password,a.pass_apk, a.login_Click,a.password_click as pass_clic,

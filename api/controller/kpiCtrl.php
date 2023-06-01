@@ -39,6 +39,11 @@ if (isset($data['method'])) {
             $user = new kpi();
             $user->contigenciaHoraAgenteMmss($data['data']);
             break;
+        case 'AgenteEmtelco':
+            require_once '../class/kpi.php';
+            $user = new kpi();
+            $user->AgenteEmtelco($data['data']);
+            break;
         default:
             echo 'ninguna opción valida.';
             break;

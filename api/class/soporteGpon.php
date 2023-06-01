@@ -277,33 +277,61 @@ class soporteGpon
 
         try {
             session_start();
-            $id_soporte = $params['id_soporte'];
-            $tipificacion = $params['tipificacion'];
-            $observacion = $params['observacion'];
-            $login = $_SESSION['login'];
-
-            $fecha_respuesta = date('Y-m-d H:i:s');
-
-            $stmt = $this->_DB->prepare("UPDATE soporte_gpon
-                                            SET respuesta_soporte = :tipificacion,
-                                                observacion       = :observacion,
-                                                login             = :login,
-                                                fecha_respuesta   = :fecha_respuesta,
-                                                status_soporte    = '1'
-                                            WHERE id_soporte = :id_soporte");
-            $stmt->execute([
-                ':tipificacion' => $tipificacion,
-                ':observacion' => $observacion,
-                ':login' => $login,
-                ':fecha_respuesta' => $fecha_respuesta,
-                ':id_soporte' => $id_soporte,
-            ]);
-
-            if ($stmt->rowCount()) {
-                $response = ['type' => 'success', 'msg' => 'OK', 201];
+            if (!$_SESSION) {
+                $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
             } else {
-                $response = ['type' => 'Error', 'msg' => '', 400];
+                $id_soporte = $params['id_soporte'];
+                $tipificacion = $params['tipificacion'];
+                $tipificaciones = $params['tipificaciones'];
+                $observacion = $params['observacion'];
+                $login = $_SESSION['login'];
+
+                $tip = '';
+                foreach ($tipificaciones as $key => $value) {
+                    $tip .= $value . ', ';
+                }
+
+                $fecha_respuesta = date('Y-m-d H:i:s');
+
+                $stmt = $this->_DB->prepare("SELECT login FROM soporte_gpon WHERE id_soporte = :id");
+                $stmt->execute(array(':id' => $id_soporte));
+
+                if ($stmt->rowCount() == 1) {
+                    $res_soporte = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $login_gestion = $res_soporte[0]['login'];
+
+                    if ($login != $login_gestion) {
+                        $response = array('state' => 3, 'msg' => 'El pedido se encuentra en gestión por otro agente');
+                    } else {
+                        $stmt = $this->_DB->prepare("UPDATE soporte_gpon
+                                                    SET respuesta_soporte = :tipificacion,
+                                                        respuesta_tipificaciones = :respuesta_tipificaciones,
+                                                        observacion       = :observacion,
+                                                        login             = :login,
+                                                        fecha_respuesta   = :fecha_respuesta,
+                                                        status_soporte    = '1'
+                                                    WHERE id_soporte = :id_soporte");
+                        $stmt->execute([
+                            ':tipificacion' => $tipificacion,
+                            ':respuesta_tipificaciones' => $tip,
+                            ':observacion' => $observacion,
+                            ':login' => $login,
+                            ':fecha_respuesta' => $fecha_respuesta,
+                            ':id_soporte' => $id_soporte,
+                        ]);
+
+                        if ($stmt->rowCount()) {
+                            $response = array('state' => 1, 'msg' => 'El registro se guardo exitosamente');
+                        } else {
+                            $response = array('state' => 0, 'msg' => 'Ha ocurrido un error interno inténtalo nuevamente en unos minutos');
+                        }
+                    }
+                } else {
+                    $response = array('state' => 3, 'msg' => 'El pedido no se encuentra en gestión');
+                }
+
             }
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
@@ -467,10 +495,10 @@ class soporteGpon
                 $id = $row[0]['id_soporte'];
 
                 if ($login == $loginsoportegpon) {
-                    $this->_DB->query("UPDATE soporte_gpon SET status_soporte = '0', login = NULL, fecha_marca = '$today' WHERE id_soporte ='$id'");
+                    $this->_DB->query("UPDATE soporte_gpon SET status_soporte = '0', login = NULL, fecha_marca = '' WHERE id_soporte ='$id'");
                     $response = ['state' => 1, 'msj' => 'El pedido se encuentra desbloqueado'];
                 } else {
-                    $response = ['state' => 0, 'msj' => 'El pedido se encuentra en gestión'];
+                    $response = ['state' => 0, 'msj' => 'El pedido se encuentra en gestión por otro asesor'];
                 }
             } else {
 

@@ -17,28 +17,29 @@
                 <div class="row"><br>
                     <div class="col-xs-2">
                         <ul class="nav navbar-nav navbar-left">
-                            <input style="width:130px" type="text" name="fechaini" id="fechaini" class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="Registros.fechaini" placeholder="Fecha Inicial" datetime-picker="" date-format="yyyy-MM-dd"> <i class="fa fa-calendar fa-fw"></i>
-                            <input style="width:130px" type="text" name="fechafin" id="fechafin" class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="Registros.fechafin" placeholder="Fecha Final" datetime-picker="" date-format="yyyy-MM-dd"> <i class="fa fa-calendar fa-fw"></i>
-                            <button type="button"
-                                    class="btn btn-success btn-xs"
-                                    ng-click="RegistrosPremisa(Registros)"
-                                    ng-disabled="loading">
+                            <input style="width:130px" type="text" name="fechaini" id="fechaini"
+                                class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                ng-model="Registros.fechaini" placeholder="Fecha Inicial" datetime-picker=""
+                                date-format="yyyy-MM-dd"> <i class="fa fa-calendar fa-fw"></i>
+                            <input style="width:130px" type="text" name="fechafin" id="fechafin"
+                                class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                ng-model="Registros.fechafin" placeholder="Fecha Final" datetime-picker=""
+                                date-format="yyyy-MM-dd"> <i class="fa fa-calendar fa-fw"></i>
+                            <button type="button" class="btn btn-success btn-xs" ng-click="RegistrosPremisa(Registros)"
+                                ng-disabled="loading">
                                 <i class="fa fa-search-plus" aria-hidden="true"></i>
                             </button>
                             <button type="button"
-                                    ng-show="galletainfo.perfil == 6 || galletainfo.perfil == 1 || galletainfo.perfil == 11"
-                                    class="btn btn-primary btn-xs"
-                                    title="Exportar Registros"
-                                    ng-click="csvGeracionTT()"
-                                    ng-disabled="loading"
-                                    title="Exportar"
-                                    tooltip data-placement="top">
-                                <i class="fa fa-cloud-download"  aria-hidden="true"> </i>
+                                ng-show="galletainfo.perfil == 6 || galletainfo.perfil == 1 || galletainfo.perfil == 11"
+                                class="btn btn-primary btn-xs" title="Exportar Registros" ng-click="csvGeracionTT()"
+                                ng-disabled="loading" title="Exportar" tooltip data-placement="top">
+                                <i class="fa fa-cloud-download" aria-hidden="true"> </i>
                             </button>
                         </ul>
                     </div>
                     <div class="col-xs-3 marg"><i>Buscar:</i>
-                        <input type="text" class="form-control busq" ng-model="busqueda" name="" value="" placeholder="Ingresa lo que desas buscar.">
+                        <input type="text" class="form-control busq" ng-model="busqueda" name="" value=""
+                            placeholder="Ingresa lo que desas buscar.">
                         <br>
                     </div>
                 </div>
@@ -51,7 +52,7 @@
                             <th>Ciudad</th>
                             <th>Región</th>
                             <th>Fecha</th>
-<!--                             <th class="botton">Editar</th> -->
+                            <!--                             <th class="botton">Editar</th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -62,7 +63,7 @@
                             <td>{{registrostt.ciudad}}</td>
                             <td>{{registrostt.region}}</td>
                             <td>{{registrostt.fechaSolicitud}}</td>
-<!--                             <td>
+                            <!--                             <td>
                                 <a ng-click="mostraModal( registrostt )" class="btn btn-warning btn-xs botton"><i class="fa fa-edit"></i></a>
                             </td> -->
                         </tr>
@@ -70,7 +71,7 @@
                 </table>
             </div>
         </div>
-        <div class="panel-footer clearfix" >
+        <div class="panel-footer clearfix">
             <!-- CONTADOR -->
             <div class="col-md-6">
                 <ul class="nav navbar-nav navbar-left">
@@ -80,20 +81,10 @@
             </div>
             <!-- PAGINADO -->
             <div class="col-md-6 pieP">
-                <ul
-                    class="pagination-sm nav navbar-nav navbar-right"
-                    uib-pagination total-items="counter"
-                    ng-model="datapendientes.currentPage"
-                    max-size="maxSize"
-                    boundary-links="true"
-                    num-pages="smallnumPages"
-                    previous-text="&#8672;"
-                    next-text="&#8674;"
-                    last-text="Último"
-                    first-text="Primero"
-                    boundary-link-numbers="false"
-                    max-size="maxSize"
-                    rotate="false"
+                <ul class="pagination-sm nav navbar-nav navbar-right" uib-pagination total-items="counter"
+                    ng-model="datapendientes.currentPage" max-size="maxSize" boundary-links="true"
+                    num-pages="smallnumPages" previous-text="&#8672;" next-text="&#8674;" last-text="Último"
+                    first-text="Primero" boundary-link-numbers="false" max-size="maxSize" rotate="false"
                     ng-change="pageChanged(datapendientes)">
                 </ul>
             </div>
