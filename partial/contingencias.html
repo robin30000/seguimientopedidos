@@ -215,8 +215,7 @@
                                                 <option value="Contingencia">Aprov. Contingencia</option>
                                                 <option value="Refresh">Refresh</option>
                                                 <option value="Cambio de equipo">Cambio de equipo</option>
-                                                <option value="Corregir portafolio">Corregir Portafolio-Inventario
-                                                </option>
+                                                <!-- <option value="Corregir portafolio">Corregir Portafolio-Inventario</option> -->
                                                 <option value="mesaOffline">Mesa Offline</option>
                                             </select>
                                         </li>
@@ -652,7 +651,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Histórico del pedido en contigencias</h4>
+                        <h4 class="modal-title">Histórico del pedido en contingencias</h4>
                     </div>
                     <div class="modal-body">
                         <div class="panel panel-default">
@@ -810,27 +809,46 @@
                                             <td>
                                                 {{data.aceptaPortafolio}}
                                             </td>
-                                            <td>
-                                                <!-- data-trigger="hover" para que el popover aparezca y desaparezca -->
-                                                <button type="button" class="btn btn-default btn-xs" data-toggle="modal"
-                                                    data-backdrop="static" ng-disabled="loading" popover
-                                                    data-placement="left" data-html="true" data-selector=""
-                                                    title="Observacion ingreso" data-content="{{data.observacion}}">
+                                            <td class="icons_in_tables">
+
+                                                <button
+                                                    popover-placement="left" uib-popover="{{data.observacion}}"
+                                                    popover-title="Observación gestión" type="button"
+                                                    class="btn btn-default btn-xs">
                                                     <i class="fa fa-commenting" aria-hidden="true"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-default btn-xs" data-toggle="modal"
-                                                    data-backdrop="static" ng-disabled="loading" popover
-                                                    title="Observacion gestión" data-placement="left" data-html="true"
-                                                    data-selector="" data-content="{{data.observContingencia}}">
+
+                                                <!-- <button type="button" class="btn btn-default btn-xs"
+                                                    data-placement="left" title="Observacion gestión"
+                                                    ng-click="muestraModalObservacion(data.observacion)">
+                                                    <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                </button> -->
+
+                                                <button
+                                                    popover-placement="left" uib-popover="{{data.observContingencia}}"
+                                                    popover-title="Observación ingreso" type="button"
+                                                    class="btn btn-default btn-xs">
                                                     <i class="fa fa-commenting" aria-hidden="true"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-default btn-xs" data-toggle="modal"
-                                                    data-backdrop="static" ng-disabled="loading" popover
-                                                    title="Observacion gestión Corregir Porta" data-placement="left"
-                                                    data-html="true" data-selector=""
-                                                    data-content="{{data.observContingenciaPortafolio}}">
+                                       
+                                               <!--  <button type="button" class="btn btn-default btn-xs"
+                                                    data-placement="left" title="Observacion ingreso"
+                                                    ng-click="muestraModalObservacion(data.observContingencia)">
+                                                    <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                </button> -->
+
+                                                <button
+                                                    popover-placement="left" uib-popover="{{data.observContingenciaPortafolio}}"
+                                                    popover-title="Observación gestión Corregir Portafolio" type="button"
+                                                    class="btn btn-default btn-xs">
                                                     <i class="fa fa-commenting" aria-hidden="true"></i>
                                                 </button>
+                                       
+                                                <!-- <button type="button" class="btn btn-default btn-xs"
+                                                    data-placement="left" title="Observacion gestión Corregir Porta"
+                                                    ng-click="muestraModalObservacion(data.observContingenciaPortafolio)">
+                                                    <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                </button> -->
                                             </td>
                                         </tr>
                                     </tbody>
@@ -839,7 +857,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" ng-disabled="contact_form.$invalid" class="btn btn-info"
+                        <button type="button" ng-disabled="contact_form.$invalid" class="btn btn-default"
                             data-dismiss="modal">Cerrar</button>
                     </div>
                 </div>
@@ -859,35 +877,53 @@
                             <div class="col-md-13 col-md-offset-1">
                                 <ul class="list-group small">
                                     <!-- SE AGREGA EL NUEVO VALOR DE LA LLAVE aceptaPortafolio, observContingenciaPortafolio -->
-                                    <h5><a href="" ng-repeat="data in pedidosEngestion" class="list-group-item "><span
+                                    <h5>
+                                        <a href="" ng-repeat="data in pedidosEngestion" class="list-group-item "><span
                                                 ng-class="{'label label-success': data.acepta == 'Acepta', 'labelPortafolio label-labelPortafolioOK': data.aceptaPortafolio == 'Acepta', 'label label-danger': data.acepta == 'Rechaza', 'labelPortafolio label-labelPortafolioRCH': data.aceptaPortafolio == 'Rechaza', 'label label-warning': data.acepta == 'Pendiente' && data.aceptaPortafolio == 'Pendiente'}">
                                                 {{data.pedido}}</span>
-                                            <button type="button"
+                                            <!-- <button type="button"
                                                 ng-hide="data.acepta == 'Pendiente' && data.aceptaPortafolio == 'Pendiente' && data.aceptaPortafolio == 'Acepta'"
-                                                class="btn btn-default btn-xs" data-toggle="modal"
-                                                data-backdrop="static" ng-disabled="loading" popover
-                                                data-trigger="hover" data-placement="top" data-html="true"
-                                                title="Observaciones (TV/Int-ToIp)" data-selector=""
-                                                data-content="{{data.observContingencia}}"><i class="fa fa-commenting"
-                                                    aria-hidden="true"></i></button>
+                                                class="btn btn-default btn-xs" data-placement="left"
+                                                title="Observaciones (TV/Int-ToIp)"
+                                                ng-click="muestraModalObservacion(data.observContingencia)">
+                                                <i class="fa fa-commenting" aria-hidden="true"></i>
+                                            </button> -->
 
-                                            <button type="button"
+                                            <button
                                                 ng-hide="data.acepta == 'Pendiente' && data.aceptaPortafolio == 'Pendiente' && data.aceptaPortafolio == 'Acepta'"
-                                                class="btn btn-default btn-xs" data-toggle="modal"
-                                                data-backdrop="static" ng-disabled="loading" popover
-                                                data-trigger="hover" data-placement="top" data-html="true"
-                                                title="Observaciones (C.P)" data-selector=""
-                                                data-content="{{data.observContingenciaPortafolio}}"><i
-                                                    class="fa fa-commenting" aria-hidden="true"></i></button>
+                                                popover-placement="left" uib-popover="{{data.observContingencia}}"
+                                                popover-title="Observaciones (TV/Int-ToIp)" type="button"
+                                                class="btn btn-default btn-xs">
+                                                <i class="fa fa-commenting" aria-hidden="true"></i>
+                                            </button>
+
+                                            <!-- <button type="button"
+                                                ng-hide="data.acepta == 'Pendiente' && data.aceptaPortafolio == 'Pendiente' && data.aceptaPortafolio == 'Acepta'"
+                                                class="btn btn-default btn-xs" data-placement="left"
+                                                title="Observaciones (C.P)"
+                                                ng-click="muestraModalObservacion(data.observContingenciaPortafolio)">
+                                                <i class="fa fa-commenting" aria-hidden="true"></i>
+                                            </button> -->
+
+                                            <button
+                                                ng-hide="data.acepta == 'Pendiente' && data.aceptaPortafolio == 'Pendiente' && data.aceptaPortafolio == 'Acepta'"
+                                                popover-placement="left"
+                                                uib-popover="{{data.observContingenciaPortafolio}}"
+                                                popover-title="Observaciones (C.P)" type="button"
+                                                class="btn btn-default btn-xs">
+                                                <i class="fa fa-commenting" aria-hidden="true"></i>
+                                            </button>
 
                                             <button type="button" ng-click="CancelarContingencia(data)"
                                                 ng-hide="data.engestion == '1'" class="btn btn-default btn-xs"
                                                 data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
                                                 data-trigger="hover" data-placement="top" data-html="true"
                                                 title="Cancelar Contingencia:" data-selector=""
-                                                data-content="Al presionar el botón se eliminará la contingencia, siempre y cuando ésta no haya iniciado gestión por parte del personal encargado">Cancelar</button>
-
-                                        </a></h5>
+                                                data-content="Al presionar el botón se eliminará la contingencia, siempre y cuando ésta no haya iniciado gestión por parte del personal encargado">
+                                                Cancelar
+                                            </button>
+                                        </a>
+                                    </h5>
                                 </ul>
                             </div>
                         </div>
@@ -975,6 +1011,27 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="modalObservaciones" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Observaciones</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{observacionContingencia}}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 
 <br>

@@ -43,7 +43,7 @@
               </li>
               <li>
                 <div class="btn-group">
-                  <button type="button" class="btn btn-success btn-xs"
+                  <button type="button" class="btn btn-default btn-xs" tooltip-placement="top" uib-tooltip="Buscar"
                     ng-click="buscarRegistrosSoporteGpon(RegistrosSoporteGpon)" ng-disabled="loading">
                     <i class="fa fa-search-plus" aria-hidden="true"> </i>
                   </button>
@@ -52,9 +52,8 @@
               </li>
 
               <li>
-                <button type="button" ng-show="galletainfo.PERFIL !== '8'" class="btn btn-primary btn-xs"
-                  title="Exportar Registros" ng-click="csvRegistros()" ng-disabled="loading" title="Exportar" tooltip
-                  data-placement="top">
+                <button type="button" ng-show="galletainfo.PERFIL !== '8'" class="btn btn-info btn-xs"
+                tooltip-placement="top" uib-tooltip="Exportar" ng-click="csvRegistros()" ng-disabled="loading">
                   <i class="fa fa-cloud-download" aria-hidden="true"> </i>
                 </button>
                 &nbsp;
@@ -63,9 +62,9 @@
                 <input type="text" name="tarea" id="pedido" class="btn btn-default btn-xs" ng-model="tarea"
                   placeholder="Buscar Pedido" autocomplete="off" />&nbsp;
 
-                <button class="btn btn-info btn-xs" data-toggle="modal" data-backdrop="static"
-                  data-target="#HistoricoModal" data-placement="top" data-html="true"
-                  ng-click="buscarhistoricoSoporteGpon(tarea)" title="Buscar">
+                <button class="btn btn-default btn-xs" data-toggle="modal"
+                  data-target="#HistoricoModal" tooltip-placement="top" uib-tooltip="Buscar"
+                  ng-click="buscarhistoricoSoporteGpon(tarea)" >
                   <i class="fa fa-search" aria-hidden="true"></i>
                 </button> </b>&nbsp;
             </ul>
@@ -117,9 +116,7 @@
                 <td><span>{{data.fecha_respuesta}}</span></td>
                 <td><span>{{data.fecha_marca}}</span></td>
                 <td>
-                  <button type="button" class="btn btn-info btn-xs" ng-click="muestraNotas(data)" data-toggle="modal"
-                    data-target="#NotasModal" popover data-trigger="hover" data-placement="left" data-html="true"
-                    data-content="<code>Ver Detalles</code>">
+                  <button type="button" class="btn btn-info btn-xs" ng-click="muestraNotas(data)" tooltip-placement="top" uib-tooltip="Ver notas">
                     <i class="fa fa-rss" aria-hidden="true"> </i>
                   </button>
                 </td>
@@ -247,7 +244,7 @@
           <div class="jumbotron fixed-panel">{{observaciones}}</div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">
+          <button type="button" class="btn btn-info" data-dismiss="modal">
             Cerrar
           </button>
         </div>
@@ -270,14 +267,14 @@
               <tr>
                 <th>Tarea</th>
                 <th>Pedido</th>
-                <th>Velocidad navegacion</th>
-                <th>Arpon</th>
+                <th>Velocidad navegación</th>
+                <th>Arpón</th>
                 <th>Nap</th>
                 <th>Fecha creado</th>
                 <th>Fecha respuesta</th>
                 <th>Serial</th>
                 <th>Mac</th>
-                <th style="width: 30%;">Observacion</th>
+                <th style="width: 30%;">Observación</th>
               </tr>
             </thead>
             <tbody>

@@ -79,18 +79,18 @@
                     <td class="text-center">{{data.direccion}}</td>
                     <td class="text-center">{{data.movil_cliente}}</td>
                     <td class="text-center">
-                      <button type="button" data-toggle="tooltip" data-placement="left" class="btn btn-default btn-xs"
-                        data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover data-placement="left"
-                        data-html="true" title="Descripción de la queja" data-selector=""
-                        data-content="{{data.descripcion_queja}}">
+                      <button popover-placement="left" uib-popover="{{data.descripcion_queja}}"
+                        popover-title="Descripción de la queja" type="button" class="btn btn-default btn-xs">
                         <i class="fa fa-commenting" aria-hidden="true"></i>
                       </button>
+                      <!-- <button type="button" class="btn btn-default btn-xs" title="Descripción de la queja"
+                        ng-click="ver_mas(data.descripcion_queja)">
+                        <i class="fa fa-commenting" aria-hidden="true"></i>
+                      </button> -->
                     </td>
                     <td class="text-center">
-                      <button type="button" data-toggle="tooltip" data-placement="left" class="btn btn-default btn-xs"
-                        data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover data-placement="left"
-                        data-html="true" title="Observación técnico" data-selector=""
-                        data-content="{{data.observacion}}">
+                      <button popover-placement="left" uib-popover="{{data.observacion}}"
+                        popover-title="Observación técnico" type="button" class="btn btn-default btn-xs">
                         <i class="fa fa-commenting" aria-hidden="true"></i>
                       </button>
                     </td>
@@ -117,13 +117,13 @@
                       <select ng-model="data.gestion" style="width: 120px" class="btn btn-default btn-xs grupo-select"
                         name="tipificacion" id="tipificacion">
                         <option value="Atención">Atención</option>
-                        <option value="Contabilidad"">Contabilidad</option>
+                        <option value="Contactabilidad">Contactabilidad</option>
                         <option value=" Devolución">Devolución</option>
                         <option value="Monitoreo">Monitoreo</option>
                       </select>
                     </td>
                     <td>
-                      <button type="button" class="btn btn-default btn-xs" data-toggle="modal"
+                      <button type="button" class="btn btn-info btn-xs" data-toggle="modal"
                         ng-click="abreModal(data)" data-backdrop="static" tooltip title="guardar gestión"
                         data-placement="top" data-html="true" data-selector="">
                         <i class="fa fa-floppy-o" aria-hidden="true"> </i>
@@ -160,12 +160,12 @@
                     autocomplete="off" />
                   <i class="fa fa-calendar fa-fw"></i>
 
-                  <button type="button" class="btn btn-success btn-xs" ng-click="registrosQuejasGo(quejago)"
+                  <button type="button" class="btn btn-default btn-xs" ng-click="registrosQuejasGo(quejago)"
                     ng-disabled="loading">
                     <i class="fa fa-search-plus" aria-hidden="true"></i>
                   </button>
 
-                  <button type="button" class="btn btn-primary btn-xs" title="Exportar Registros"
+                  <button type="button" class="btn btn-default btn-xs" title="Exportar Registros"
                     ng-click="csvQuejaGo(quejago)" ng-disabled="loading" title="Exportar" tooltip data-placement="top">
                     <i class="fa fa-cloud-download" aria-hidden="true"> </i>
                   </button>
@@ -180,7 +180,7 @@
                     </button> </b>&nbsp;
                 </li>
                 <li>
-                  <button type="button" class="btn btn-default btn-xs" ng-click="recargaPage()" title="Actualizar"
+                  <button type="button" class="btn btn-info btn-xs" ng-click="recargaPage()" title="Actualizar"
                     data-toggle="tooltip" data-placement="top" ng-disabled="loading">
                     <i class="fa fa-refresh" aria-hidden="true"></i>
                   </button>
@@ -233,20 +233,24 @@
                     <td class="text-center">{{data.direccion}}</td>
                     <td class="text-center">{{data.movil_cliente}}</td>
                     <td class="text-center">
-                      <button type="button" data-toggle="tooltip" data-placement="left" class="btn btn-default btn-xs"
-                        data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover data-placement="left"
-                        data-html="true" title="Descripción de la queja" data-selector=""
-                        data-content="{{data.descripcion_queja}}">
+                      <button popover-placement="left" uib-popover="{{data.descripcion_queja}}"
+                        popover-title="Descripción de la queja" type="button" class="btn btn-info btn-xs">
                         <i class="fa fa-commenting" aria-hidden="true"></i>
                       </button>
+                      <!-- <button type="button" class="btn btn-default btn-xs" title="Descripción de la queja"
+                        ng-click="ver_mas(data.descripcion_queja)">
+                        <i class="fa fa-commenting" aria-hidden="true"></i>
+                      </button> -->
                     </td>
                     <td class="text-center">
-                      <button type="button" data-toggle="tooltip" data-placement="left" class="btn btn-default btn-xs"
-                        data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover data-placement="left"
-                        data-html="true" title="Observación técnico" data-selector=""
-                        data-content="{{data.observacion}}">
+                      <button popover-placement="left" uib-popover="{{data.observacion}}"
+                        popover-title="Observación técnico" type="button" class="btn btn-info btn-xs">
                         <i class="fa fa-commenting" aria-hidden="true"></i>
                       </button>
+                      <!-- <button type="button" class="btn btn-default btn-xs" title="Observación técnico"
+                        ng-click="ver_mas(data.observacion)">
+                        <i class="fa fa-commenting" aria-hidden="true"></i>
+                      </button> -->
                     </td>
                     <td class="text-center">
                       <select ng-model="data.accion" style="width: 120px" disabled="true"
@@ -271,18 +275,20 @@
                       <select ng-model="data.gestion_asesor" style="width: 120px" disabled="true"
                         class="btn btn-default btn-xs grupo-select">
                         <option value="Atención">Atención</option>
-                        <option value="Contabilidad">Contabilidad</option>
+                        <option value="Contactabilidad">Contactabilidad</option>
                         <option value=" Devolución">Devolución</option>
                         <option value="Monitoreo">Monitoreo</option>
                       </select>
                     </td>
                     <td class="text-center">
-                      <button type="button" data-toggle="tooltip" data-placement="left" class="btn btn-default btn-xs"
-                        data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover data-placement="left"
-                        data-html="true" title="Observación asesor" data-selector=""
-                        data-content="{{data.observacion_gestion}}">
+                      <button popover-placement="left" uib-popover="{{data.observacion_gestion}}"
+                        popover-title="Observación asesor" type="button" class="btn btn-info btn-xs">
                         <i class="fa fa-commenting" aria-hidden="true"></i>
                       </button>
+                      <!-- <button type="button" class="btn btn-default btn-xs" title="Observación asesor"
+                        ng-click="ver_mas(data.observacion_gestion)">
+                        <i class="fa fa-commenting" aria-hidden="true"></i>
+                      </button> -->
                   </tr>
                 </tbody>
               </table>

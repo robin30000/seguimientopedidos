@@ -411,7 +411,8 @@ class soporteGpon
                                                observacion,
                                                observacion_terreno,
                                                login,
-                                               fecha_respuesta
+                                               fecha_respuesta,
+                                               fecha_marca
                                         FROM soporte_gpon
                                         WHERE 1 = 1 $condicion AND status_soporte = '1'
                                         ORDER BY fecha_creado DESC

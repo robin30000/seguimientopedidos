@@ -16,24 +16,35 @@ class Contingencia
     {
         try {
             session_start();
-            $fechaIni = $data['fechaini'];
-            $fechaFin = $data['fechafin'];
+
+            $pagenum = $data['page'];
+            $pagesize = $data['size'];
+            $offset = ($pagenum - 1) * $pagesize;
+            $search = $data['search'];
+            if (!empty($data['fecha'])) {
+                $fechaIni = $data['fecha']['fechaini'];
+                $fechaFin = $data['fecha']['fechafin'];
+            } else {
+                $fechaIni = date('Y-m-d');
+                $fechaFin = date('Y-m-d');
+            }
+
 
             $month = date('m', strtotime($fechaIni));
-            $year  = date('Y', strtotime($fechaIni));
-            $day   = date("d", mktime(0, 0, 0, $month + 1, 0, $year));
+            $year = date('Y', strtotime($fechaIni));
+            $day = date("d", mktime(0, 0, 0, $month + 1, 0, $year));
 
-            $diaFinal   = date('Y-m-d', mktime(0, 0, 0, $month, $day, $year));
+            $diaFinal = date('Y-m-d', mktime(0, 0, 0, $month, $day, $year));
             $diaInicial = date('Y-m-d', mktime(0, 0, 0, $month, 1, $year));
 
-            /* $query = "select logindepacho, pedido, horagestion, logincontingencia, horacontingencia, " .
-                "(case when acepta is null then 'Pendiente'  " .
-                "else acepta end) estado " .
-                "from contingencias  " .
-                "where horagestion between ('$fechaIni 00:00:00') and ('$fechaFin 23:59:59') " .
-                "AND accion IN ('Cambio de equipo', 'Contingencia', 'Refresh', 'Registros ToIP', 'Reenvio de registros') " .
-                "and pedido <> '' " .
-                "order by horagestion DESC "; */
+            $stmt = $this->_DB->prepare("SELECT count(*) counter
+            FROM contingencias
+            WHERE horagestion BETWEEN ('2023-06-07 00:00:00') AND ('2023-06-07 23:59:59')
+            AND accion IN ('Cambio de equipo', 'Contingencia', 'Refresh', 'Registros ToIP', 'Reenvio de registros')
+            AND pedido <> ''
+            ORDER BY horagestion DESC");
+            $stmt->execute();
+            $counter = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             $query = "SELECT logindepacho, pedido, horagestion, logincontingencia, horacontingencia,
 		(CASE 
@@ -44,7 +55,7 @@ class Contingencia
 		WHERE horagestion BETWEEN ('$fechaIni 00:00:00') AND ('$fechaFin 23:59:59')
 		AND accion IN ('Cambio de equipo', 'Contingencia', 'Refresh', 'Registros ToIP', 'Reenvio de registros')
 		AND pedido <> ''
-		ORDER BY horagestion DESC;";
+		ORDER BY horagestion DESC limit $offset, $pagesize;";
 
             $rst = $this->_DB->query($query);
             $rst->execute();
@@ -206,23 +217,23 @@ class Contingencia
 
                 $resultadoestadosMesCP = [
                     [
-                        "estado"       => "Acepta",
-                        "total"        => "0",
+                        "estado" => "Acepta",
+                        "total" => "0",
                         "totalestados" => "0",
                     ],
                     [
-                        "estado"       => "Rechaza",
-                        "total"        => "0",
+                        "estado" => "Rechaza",
+                        "total" => "0",
                         "totalestados" => "0",
                     ],
                     [
-                        "estado"       => "Pendiente",
-                        "total"        => "0",
+                        "estado" => "Pendiente",
+                        "total" => "0",
                         "totalestados" => "0",
                     ],
                 ];
 
-                $response = [$resultado, $resultadoestadosMes, $resultadodiario, $resultadoestadosMesCP, $resultadodiarioCP, $resultadoCP, $resultadoTV, $resultadoInTo];
+                $response = [$resultado, $resultadoestadosMes, $resultadodiario, $resultadoestadosMesCP, $resultadodiarioCP, $resultadoCP, $resultadoTV, $resultadoInTo, $counter[0]['counter']];
             } else {
                 $response = ['No se encontraron datos'];
             }
@@ -460,8 +471,8 @@ class Contingencia
                 $stmt->execute();
 
                 if ($stmt->rowCount()) {
-                    $resultadoTV         = [];
-                    $resultadoOTROS      = [];
+                    $resultadoTV = [];
+                    $resultadoOTROS = [];
                     $resultadoPORTAFOLIO = [];
                     foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
@@ -500,7 +511,7 @@ class Contingencia
 
                 $stmt = $this->_DB->query("select * from registros_offline");
                 $stmt->execute();
-                $counter   = $stmt->rowCount();
+                $counter = $stmt->rowCount();
 
 
                 $stmt = $this->_DB->query("SELECT LOGIN_ASESOR_OFF,LOGIN_ASESOR, PEDIDO,PROCESO, PRODUCTO, ACCION, ACTIVIDAD, ACTIVIDAD2, OBSERVACIONES, FECHA_CARGA 
@@ -509,7 +520,7 @@ class Contingencia
 
                 if ($stmt->rowCount()) {
 
-                    $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     $response = ['state' => 1, 'data' => $result, 'counter' => $counter];
                 } else {
                     $response = 0;
@@ -540,15 +551,15 @@ class Contingencia
                     $fecha = $stmt1->fetchAll(PDO::FETCH_ASSOC);
                 }
 
-                $dia  = substr($fecha, 8, 2);
-                $mes  = substr($fecha, 5, 2);
+                $dia = substr($fecha, 8, 2);
+                $mes = substr($fecha, 5, 2);
                 $anio = substr($fecha, 0, 4);
 
-                $nom_mes   = date('M', mktime(0, 0, 0, $mes, $dia, $anio));
-                $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
+                $nom_mes = date('M', mktime(0, 0, 0, $mes, $dia, $anio));
+                $semana = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
                 $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
             } else {
-                $nom_mes   = $mesenviado;
+                $nom_mes = $mesenviado;
                 /* $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
                 $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio)); */
             }
@@ -571,9 +582,9 @@ class Contingencia
 
 
             if ($stmt->rowCount()) {
-                $resulta       = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $label         = $resulta['regional'];
-                $ressi         = $resulta['NPS'];
+                $resulta = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $label = $resulta['regional'];
+                $ressi = $resulta['NPS'];
                 $departamentos = ["label" => "$label", "value" => "$ressi"];
 
                 $response = [$departamentos, 201];
@@ -591,10 +602,10 @@ class Contingencia
     {
         try {
             session_start();
-            $today    = date("Y-m-d H:i:s");
-            $login    = $_SESSION['login'];
-            $pedido   = $datosguardar['pedido'];
-            $gestion  = $datosguardar['bloqueo'];
+            $today = date("Y-m-d H:i:s");
+            $login = $_SESSION['login'];
+            $pedido = $datosguardar['pedido'];
+            $gestion = $datosguardar['bloqueo'];
             $producto = $datosguardar['producto'];
 
             if ($gestion == true) {
@@ -640,7 +651,7 @@ class Contingencia
                 if ($stmt->rowCount()) {
 
                     $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    $id        = $resultado['id'];
+                    $id = $resultado['id'];
 
                     $stmtupdate = $this->_DB->prepare("UPDATE contingencias SET enGestionPortafolio = :gestion, loginContingenciaPortafolio = :login , fechaClickMarcaPortafolio=:today WHERE id=:id");
                     $stmtupdate->execute([':gestion' => $gestion, ':login' => $login, ':today' => $today, ':id' => $id]);
@@ -666,14 +677,14 @@ class Contingencia
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
             } else {
-                $login                = $_SESSION['login'];
-                $pedido               = (isset($datosguardar['pedido'])) ? $datosguardar['pedido'] : '';
-                $producto             = (isset($datosguardar['producto'])) ? $datosguardar['producto'] : '';
+                $login = $_SESSION['login'];
+                $pedido = (isset($datosguardar['pedido'])) ? $datosguardar['pedido'] : '';
+                $producto = (isset($datosguardar['producto'])) ? $datosguardar['producto'] : '';
                 $observacionesconting = (isset($datosguardar['observacionescontingencia'])) ? utf8_decode($datosguardar['observacionescontingencia']) : '';
-                $ingresoClick         = (isset($datosguardar['ingresoClick'])) ? $datosguardar['ingresoClick'] : '';
-                $tipificacion         = (isset($datosguardar['tipificacion'])) ? utf8_decode($datosguardar['tipificacion']) : '';
-                $generarCr            = (isset($datosguardar['generarcr'])) ? $datosguardar['generarcr'] : '';
-                $horacontingencia     = date("Y-m-d H:i:s");
+                $ingresoClick = (isset($datosguardar['ingresoClick'])) ? $datosguardar['ingresoClick'] : '';
+                $tipificacion = (isset($datosguardar['tipificacion'])) ? utf8_decode($datosguardar['tipificacion']) : '';
+                $generarCr = (isset($datosguardar['generarcr'])) ? $datosguardar['generarcr'] : '';
+                $horacontingencia = date("Y-m-d H:i:s");
 
                 if ($tipificacion == 'Ok') {
                     $acepta = 'Acepta';
@@ -691,12 +702,12 @@ class Contingencia
 
                 if ($stmt->rowCount()) {
 
-                    $resultado         = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    $id                = $resultado[0]['id'];
+                    $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $id = $resultado[0]['id'];
                     $logincontingencia = $resultado[0]['logincontingencia'];
 
                     if ($login != $logincontingencia) {
-                        $response = ['state' => 3, 'text' => 'El pedido se encuentra en gestion por otro agente'];
+                        $response = ['state' => 3, 'text' => 'El pedido se encuentra en gestión por otro agente'];
                     } else {
                         /*ESTE QUERY ME ACTULIZA LA INFORMACION QUE ANALISTA A GESTIONADO*/
                         $stmtupdate = $this->_DB->prepare("UPDATE contingencias SET horacontingencia = :horacontingencia, 
@@ -706,13 +717,13 @@ class Contingencia
                      WHERE id = :id");
 
                         $stmtupdate->execute([
-                            ':horacontingencia'     => $horacontingencia,
+                            ':horacontingencia' => $horacontingencia,
                             ':observacionesconting' => $observacionesconting,
-                            ':ingresoClick'         => $ingresoClick,
-                            ':tipificacion'         => $tipificacion,
-                            ':acepta'               => $acepta,
-                            ':generarCr'            => $generarCr,
-                            ':id'                   => $id,
+                            ':ingresoClick' => $ingresoClick,
+                            ':tipificacion' => $tipificacion,
+                            ':acepta' => $acepta,
+                            ':generarCr' => $generarCr,
+                            ':id' => $id,
                         ]);
 
                         if ($stmtupdate->rowCount() == 1) {
@@ -736,12 +747,12 @@ class Contingencia
     {
         try {
             session_start();
-            $login                     = $_SESSION['login'];
-            $pedido                    = $datosguardar['pedido'];
-            $producto                  = $datosguardar['producto'];
+            $login = $_SESSION['login'];
+            $pedido = $datosguardar['pedido'];
+            $producto = $datosguardar['producto'];
             $observacionesescalamiento = utf8_decode($datosguardar['observacionesescalamiento']);
-            $tipificacion              = utf8_decode($datosguardar['tipificacion']);
-            $horaescalamiento          = date("Y-m-d H:i:s");
+            $tipificacion = utf8_decode($datosguardar['tipificacion']);
+            $horaescalamiento = date("Y-m-d H:i:s");
 
             $stmt = $this->_DB->prepare("SELECT id
 					FROM escalamiento_infraestructura
@@ -752,7 +763,7 @@ class Contingencia
 
             if ($stmt->rowCount()) {
                 $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $id        = $resultado['id'];
+                $id = $resultado['id'];
 
                 /*ESTE QUERY ME ACTULIZA LA INFORMACION QUE ANALISTA A GESTIONADO*/
 
@@ -773,10 +784,10 @@ class Contingencia
                         estado = '2' 
                          WHERE id=:id ");
                         $sqlupdate->execute([
-                            ':horaescalamiento'          => $horaescalamiento,
+                            ':horaescalamiento' => $horaescalamiento,
                             ':obversacionesEscalamiento' => $observacionesescalamiento,
-                            ':tipificacion'              => $tipificacion,
-                            ':id'                        => $id,
+                            ':tipificacion' => $tipificacion,
+                            ':id' => $id,
                         ]);
                     } else {
                         $sqlupdate = $this->_DB->prepare("UPDATE escalamiento_infraestructura SET fecha_respuesta = :horaescalamiento, 
@@ -785,10 +796,10 @@ class Contingencia
                         estado = '1' 
                         WHERE id=:id ");
                         $sqlupdate->execute([
-                            ':horaescalamiento'          => $horaescalamiento,
+                            ':horaescalamiento' => $horaescalamiento,
                             ':obversacionesEscalamiento' => $observacionesescalamiento,
-                            ':tipificacion'              => $tipificacion,
-                            ':id'                        => $id,
+                            ':tipificacion' => $tipificacion,
+                            ':id' => $id,
                         ]);
                     }
                 }
@@ -808,17 +819,17 @@ class Contingencia
         try {
             session_start();
 
-            $today         = date("Y-m-d H:i:s");
-            $tv            = $datosCierreMasivo['TV'];
-            $internet      = $datosCierreMasivo['Internet'];
-            $toip          = $datosCierreMasivo['ToIP'];
-            $internettoip  = $datosCierreMasivo['InternetToIP'];
+            $today = date("Y-m-d H:i:s");
+            $tv = $datosCierreMasivo['TV'];
+            $internet = $datosCierreMasivo['Internet'];
+            $toip = $datosCierreMasivo['ToIP'];
+            $internettoip = $datosCierreMasivo['InternetToIP'];
             $instalaciones = $datosCierreMasivo['Instalaciones'];
-            $reparaciones  = $datosCierreMasivo['Reparaciones'];
-            $aproequipo    = $datosCierreMasivo['AprovisionarContin'];
-            $refresh       = $datosCierreMasivo['Refresh'];
-            $cambioequipo  = $datosCierreMasivo['CambioEquipo'];
-            $cambioeid     = $datosCierreMasivo["CambioEID"];
+            $reparaciones = $datosCierreMasivo['Reparaciones'];
+            $aproequipo = $datosCierreMasivo['AprovisionarContin'];
+            $refresh = $datosCierreMasivo['Refresh'];
+            $cambioequipo = $datosCierreMasivo['CambioEquipo'];
+            $cambioeid = $datosCierreMasivo["CambioEID"];
             $registrostoip = $datosCierreMasivo['RegistrosToIP'];
             $observaciones = $datosCierreMasivo['observaciones'];
 
@@ -831,16 +842,16 @@ class Contingencia
                                                                       AND proceso IN (:instalaciones, :reparaciones)
                                                                       AND accion IN (:aproequipo, :refresh, :cambioequipo, :cambioeid, :registrostoip)");
             $sqlNroRegistrosEliminar->execute([
-                ':tv'            => $tv,
-                ':internet'      => $internet,
-                ':toip'          => $toip,
-                ':internettoip'  => $internettoip,
+                ':tv' => $tv,
+                ':internet' => $internet,
+                ':toip' => $toip,
+                ':internettoip' => $internettoip,
                 ':instalaciones' => $instalaciones,
-                ':reparaciones'  => $reparaciones,
-                ':aproequipo'    => $aproequipo,
-                ':refresh'       => $refresh,
-                ':cambioequipo'  => $cambioequipo,
-                ':cambioeid'     => $cambioeid,
+                ':reparaciones' => $reparaciones,
+                ':aproequipo' => $aproequipo,
+                ':refresh' => $refresh,
+                ':cambioequipo' => $cambioequipo,
+                ':cambioeid' => $cambioeid,
                 ':registrostoip' => $registrostoip,
             ]);
 
@@ -865,18 +876,18 @@ class Contingencia
                                                       AND proceso IN (:instalaciones, :reparaciones)
                                                       AND accion IN (:aproequipo, :refresh, :cambioequipo, :cambioeid, :registrostoip)");
             $sqlupdate->execute([
-                ':today'         => $today,
+                ':today' => $today,
                 ':observaciones' => $observaciones,
-                ':tv'            => $tv,
-                ':internet'      => $internet,
-                ':toip'          => $toip,
-                ':internettoip'  => $internettoip,
+                ':tv' => $tv,
+                ':internet' => $internet,
+                ':toip' => $toip,
+                ':internettoip' => $internettoip,
                 ':instalaciones' => $instalaciones,
-                ':reparaciones'  => $reparaciones,
-                ':aproequipo'    => $aproequipo,
-                ':refresh'       => $refresh,
-                ':cambioequipo'  => $cambioequipo,
-                ':cambioeid'     => $cambioeid,
+                ':reparaciones' => $reparaciones,
+                ':aproequipo' => $aproequipo,
+                ':refresh' => $refresh,
+                ':cambioequipo' => $cambioequipo,
+                ':cambioeid' => $cambioeid,
                 ':registrostoip' => $registrostoip,
             ]);
             $response = [$counter, 200];
@@ -892,13 +903,13 @@ class Contingencia
         try {
 
             session_start();
-            $login                        = $_SESSION['login'];
-            $pedido                       = $datosguardar['pedido'];
-            $producto                     = $datosguardar['producto'];
+            $login = $_SESSION['login'];
+            $pedido = $datosguardar['pedido'];
+            $producto = $datosguardar['producto'];
             $observContingenciaPortafolio = utf8_decode($datosguardar['observContingenciaPortafolio']);
-            $ingresoClick                 = $datosguardar['ingresoClick'];
-            $tipificacionPortafolio       = utf8_decode($datosguardar['tipificacionPortafolio']);
-            $horaContingenciaPortafolio   = date("Y-m-d H:i:s");
+            $ingresoClick = $datosguardar['ingresoClick'];
+            $tipificacionPortafolio = utf8_decode($datosguardar['tipificacionPortafolio']);
+            $horaContingenciaPortafolio = date("Y-m-d H:i:s");
 
             /*ORGANIZAR LO QUE SE RECHAZA DESDE CORREGIR PORTAFOLIO*/
             if ($tipificacionPortafolio == 'Ok') {
@@ -918,7 +929,7 @@ class Contingencia
             if ($stmt->rowCount()) {
 
                 $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $id        = $resultado['id'];
+                $id = $resultado['id'];
 
                 /*ESTE QUERY ME ACTULIZA LA INFORMACION QUE ANALISTA A GESTIONADO*/
                 $sqlupdate = $this->_DB->prepare("UPDATE contingencias
@@ -930,12 +941,12 @@ class Contingencia
                                                             finalizadoPortafolio         = 'OK'
                                                         WHERE id = :id");
                 $sqlupdate->execute([
-                    ':horaContingenciaPortafolio'   => $horaContingenciaPortafolio,
+                    ':horaContingenciaPortafolio' => $horaContingenciaPortafolio,
                     ':observContingenciaPortafolio' => $observContingenciaPortafolio,
-                    ':ingresoClick'                 => $ingresoClick,
-                    ':tipificacionPortafolio'       => $tipificacionPortafolio,
-                    ':aceptaPortafolio'             => $aceptaPortafolio,
-                    ':id'                           => $id,
+                    ':ingresoClick' => $ingresoClick,
+                    ':tipificacionPortafolio' => $tipificacionPortafolio,
+                    ':aceptaPortafolio' => $aceptaPortafolio,
+                    ':id' => $id,
                 ]);
 
                 $response = ['Datos actualizados', 201];
@@ -990,14 +1001,14 @@ class Contingencia
 
             if ($sqlDeparGarantias->rowCount()) {
 
-                $resultado      = $sqlDeparGarantias->fetchAll(PDO::FETCH_ASSOC);
+                $resultado = $sqlDeparGarantias->fetchAll(PDO::FETCH_ASSOC);
                 $Rangostecnicos = [];
-                $RangosCausas   = [];
-                $May30          = 0;
-                $Entre20_29     = 0;
-                $Entre15_19     = 0;
-                $Entre10_14     = 0;
-                $Entre0_10      = 0;
+                $RangosCausas = [];
+                $May30 = 0;
+                $Entre20_29 = 0;
+                $Entre15_19 = 0;
+                $Entre10_14 = 0;
+                $Entre0_10 = 0;
 
                 if ($sqlTecnicos->rowCount()) {
 
@@ -1047,7 +1058,7 @@ class Contingencia
     {
         try {
             session_start();
-            $pregunta   = $datos['pregunta'];
+            $pregunta = $datos['pregunta'];
             $mesenviado = $datos['mes'];
 
             if ($mesenviado == "") {
@@ -1064,18 +1075,18 @@ class Contingencia
                     //$fecha = $query['fecha'];
                 }
 
-                $dia  = substr($fecha, 8, 2);
-                $mes  = substr($fecha, 5, 2);
+                $dia = substr($fecha, 8, 2);
+                $mes = substr($fecha, 5, 2);
                 $anio = substr($fecha, 0, 4);
 
-                $nom_mes   = date('M', mktime(0, 0, 0, $mes, $dia, $anio));
-                $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
+                $nom_mes = date('M', mktime(0, 0, 0, $mes, $dia, $anio));
+                $semana = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
                 $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
             } /* else {
-                $nom_mes   = $mesenviado;
-                $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
-                $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
-            } */
+           $nom_mes   = $mesenviado;
+           $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
+           $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
+       } */
 
             $query = $this->_DB->prepare("select gen.respuesta,
                                                        count(gen.respuesta)                                                                                                                       total,
@@ -1090,26 +1101,26 @@ class Contingencia
             //
             if ($query->rowCount()) {
                 $categorias = [];
-                $resultado  = [];
-                $total      = [];
+                $resultado = [];
+                $total = [];
                 $porcentaje = [];
 
 
                 while ($row = $query->fetchAll(PDO::FETCH_ASSOC)) {
                     $resultado[] = $row;
-                    $label       = $row['respuesta'];
-                    $totales     = $row['total'];
+                    $label = $row['respuesta'];
+                    $totales = $row['total'];
                     $porcentajes = $row['porcentaje'];
 
                     $categorias[] = ["label" => "$label"];
-                    $total[]      = ["value" => "$totales"];
+                    $total[] = ["value" => "$totales"];
                     $porcentaje[] = ["value" => "$porcentajes"];
                 }
             }
 
             $acumulado = [];
-            $mes       = [];
-            $meta      = [];
+            $mes = [];
+            $meta = [];
 
             if ($pregunta == "4") {
 
@@ -1209,16 +1220,16 @@ class Contingencia
 
                         if ($pregunta == "4") {
                             while ($row = $SqlAcumulado->fetchAll(PDO::FETCH_ASSOC)) {
-                                $nps         = $row['NPS'];
+                                $nps = $row['NPS'];
                                 $acumulado[] = ["value" => "$nps"];
                                 //$mes[]=array("label"=>"$meses");
                             }
                         } else {
                             while ($row = $SqlAcumulado->fetchAll(PDO::FETCH_ASSOC)) {
-                                $meses       = $row['mes'];
-                                $nps         = $row['NPS'];
+                                $meses = $row['mes'];
+                                $nps = $row['NPS'];
                                 $acumulado[] = ["value" => "$nps"];
-                                $mes[]       = ["label" => "$meses"];
+                                $mes[] = ["label" => "$meses"];
                             }
                         }
                     }
@@ -1238,7 +1249,7 @@ class Contingencia
     {
         try {
             session_start();
-            $pregunta   = $datos['pregunta'];
+            $pregunta = $datos['pregunta'];
             $mesenviado = $datos['mes'];
 
             if ($mesenviado == "") {
@@ -1254,19 +1265,19 @@ class Contingencia
                     }
                 }
 
-                $dia  = substr($fecha, 8, 2);
-                $mes  = substr($fecha, 5, 2);
+                $dia = substr($fecha, 8, 2);
+                $mes = substr($fecha, 5, 2);
                 $anio = substr($fecha, 0, 4);
 
-                $nom_mes   = date('M', mktime(0, 0, 0, $mes, $dia, $anio));
-                $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
+                $nom_mes = date('M', mktime(0, 0, 0, $mes, $dia, $anio));
+                $semana = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
                 $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
             } /* else {
-                $nom_mes   = $mesenviado;
-                $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
-                $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
-            }
- */
+           $nom_mes   = $mesenviado;
+           $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
+           $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
+       }
+*/
             $query = $this->_DB->prepare("select gen.respuesta, count(gen.respuesta) total, 
                 round((count(gen.respuesta)/(select count(pregunta)  
                 from npsreparaciones where num_pregunta = :pregunta and mes = gen.mes limit 1 )) *100, 2) as porcentaje 
@@ -1278,26 +1289,26 @@ class Contingencia
             //
             if ($query->rowCount()) {
                 $categorias = [];
-                $resultado  = [];
+                $resultado = [];
 
-                $total      = [];
+                $total = [];
                 $porcentaje = [];
 
                 while ($row = $query->fetchAll(PDO::FETCH_ASSOC)) {
                     $resultado[] = $row;
-                    $label       = $row['respuesta'];
-                    $totales     = $row['total'];
+                    $label = $row['respuesta'];
+                    $totales = $row['total'];
                     $porcentajes = $row['porcentaje'];
 
                     $categorias[] = ["label" => "$label"];
-                    $total[]      = ["value" => "$totales"];
+                    $total[] = ["value" => "$totales"];
                     $porcentaje[] = ["value" => "$porcentajes"];
                 }
             }
 
             $acumulado = [];
-            $mes       = [];
-            $meta      = [];
+            $mes = [];
+            $meta = [];
 
             if ($pregunta == "4") {
 
@@ -1396,16 +1407,16 @@ class Contingencia
                         if ($pregunta == "4") {
                             while ($row = $SqlAcumulado->fetchAll(PDO::FETCH_ASSOC)) {
                                 //	$meses=$row['mes'];
-                                $nps         = $row['NPS'];
+                                $nps = $row['NPS'];
                                 $acumulado[] = ["value" => "$nps"];
                                 //$mes[]=array("label"=>"$meses");
                             }
                         } else {
                             while ($row = $SqlAcumulado->fetchAll(PDO::FETCH_ASSOC)) {
-                                $meses       = $row['mes'];
-                                $nps         = $row['NPS'];
+                                $meses = $row['mes'];
+                                $nps = $row['NPS'];
                                 $acumulado[] = ["value" => "$nps"];
-                                $mes[]       = ["label" => "$meses"];
+                                $mes[] = ["label" => "$meses"];
                             }
                         }
                     }
@@ -1495,10 +1506,10 @@ class Contingencia
                 $today = date("Y-m-d H:i:s");
 
                 $datosguardar = $params['datos'];
-                $login        = $_SESSION['login'];
-                $pedido       = $datosguardar['pedido'];
-                $gestion      = $datosguardar['bloqueo'];
-                $producto     = $datosguardar['producto'];
+                $login = $_SESSION['login'];
+                $pedido = $datosguardar['pedido'];
+                $gestion = $datosguardar['bloqueo'];
+                $producto = $datosguardar['producto'];
 
                 if ($gestion == true) {
                     $gestion = 1;
@@ -1511,7 +1522,7 @@ class Contingencia
                 $rst = $this->_DB->query($query);
                 $rst->execute();
                 $row = $rst->fetch(PDO::FETCH_OBJ);
-                $id  = $row->id;
+                $id = $row->id;
 
                 if ($rst->rowCount() == 1) {
 
@@ -1528,9 +1539,9 @@ class Contingencia
 
                     $rst = $this->_DB->query($query);
                     $rst->execute();
-                    $row               = $rst->fetch(PDO::FETCH_OBJ);
+                    $row = $rst->fetch(PDO::FETCH_OBJ);
                     $logincontingencia = $row->logincontingencia ?? "";
-                    $id                = $row->id;
+                    $id = $row->id;
 
                     if ($login == $logincontingencia) {
 
@@ -1574,7 +1585,7 @@ class Contingencia
             $rst = $this->_DB->query($query);
 
             if ($rst->rowCount()) {
-                $result   = $rst->fetchAll(PDO::FETCH_ASSOC);
+                $result = $rst->fetchAll(PDO::FETCH_ASSOC);
 
                 $response = [$result, 200];
             } else {

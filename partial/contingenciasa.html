@@ -1,62 +1,4 @@
-<style>
-    .fileUpload {
-        position: relative;
-        overflow: hidden;
-        margin: 10px;
-    }
 
-    table, th, td {
-        font-size: 11px;
-    }
-
-    .fixed-panel1 {
-
-        max-height: 400px;
-        overflow-y: scroll;
-    }
-
-    .fileUpload input.upload {
-        position: absolute;
-        top: 0;
-        right: 0;
-        f
-        margin: 0;
-        padding: 0;
-        font-size: 30px;
-        cursor: pointer;
-        opacity: 0;
-        filter: alpha(opacity=0);
-    }
-
-    /*
-    Full screen Modal
-    */
-    .fullscreen-modal .modal-dialog {
-        margin: 0;
-        margin-right: auto;
-        margin-left: auto;
-        width: 100%;
-    }
-
-    @media (min-width: 768px) {
-        .fullscreen-modal .modal-dialog {
-            width: 750px;
-        }
-    }
-
-    @media (min-width: 992px) {
-        .fullscreen-modal .modal-dialog {
-            width: 970px;
-        }
-    }
-
-    @media (min-width: 1200px) {
-        .fullscreen-modal .modal-dialog {
-            width: 1170px;
-        }
-    }
-
-</style>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-9">
@@ -566,7 +508,7 @@
                                 </ul>
                                 <ul class="nav navbar-nav navbar-right">
                                     <li>
-                                        <button type="button" ng-disabled="contact_form1.$invalid" class="btn btn-primary btn-xs" ng-click="BuscarPedidoContingencia()">
+                                        <button type="button" ng-disabled="contact_form1.$invalid" class="btn btn-info btn-xs" ng-click="BuscarPedidoContingencia()">
                                             <i class="fa fa-floppy-o" aria-hidden="true"> </i> Guardar gestión
                                         </button>&nbsp;&nbsp;
                                     </li>
@@ -801,7 +743,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" ng-disabled="contact_form.$invalid" class="btn btn-info" data-dismiss="modal">Cerrar</button>
+                        <button type="button" ng-disabled="contact_form.$invalid" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                     </div>
                 </div>
             </div>

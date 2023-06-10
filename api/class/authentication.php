@@ -1,6 +1,8 @@
 <?php
 
 require_once '../class/conection.php';
+//error_reporting(E_ALL);
+//ini_set('display_errors', 1);
 
 class authentication
 {
@@ -14,10 +16,10 @@ class authentication
     public function loginUser($data)
     {
 
-        $today      = date('Y-m-d');
-        $fecha      = date('Y-m-d H:i:s');
-        $usuarioIp  = $_SERVER['REMOTE_ADDR'];
-        $usuarioPc  = gethostbyaddr($usuarioIp);
+        $today = date('Y-m-d');
+        $fecha = date('Y-m-d H:i:s');
+        $usuarioIp = $_SERVER['REMOTE_ADDR'];
+        $usuarioPc = gethostbyaddr($usuarioIp);
         $aplicacion = "Seguimiento";
 
         try {
@@ -28,18 +30,48 @@ class authentication
 
             if ($stmt->rowCount() == 1) {
                 $resLogin = $stmt->fetch(PDO::FETCH_OBJ);
+
+                $stmt = $this->_DB->prepare("SELECT id, nombre FROM  menu");
+                $stmt->execute();
+                $menu = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $menus = [];
+                foreach ($menu as $key => $value) {
+                                                    $stmt = $this->_DB->prepare("SELECT
+                                                                                    nombre AS sub,
+                                                                                    url,
+                                                                                    icon
+                                                                                FROM
+                                                                                    submenu
+                                                                                INNER JOIN submenu_perfil ON submenu.id = submenu_perfil.submenu_id
+                                                                                WHERE
+                                                                                    menu_id = :menu
+                                                                                AND submenu_perfil.perfil_id = :id
+                                                                                AND estado = 'Activo' ORDER BY sub");
+                    $stmt->execute(array(':menu' => $value['id'], ':id' => $resLogin->perfil));
+                    $sub = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $menus[$key]['tittle'] = $value['nombre'];
+                    for ($i = 0; $i < count($sub); $i++) {
+                        $menus[$key]['n']['sub'][$i] = $sub[$i]['sub'];
+                        $menus[$key]['n']['url'][$i] = $sub[$i]['url'];
+                        $menus[$key]['n']['icon'][$i] = $sub[$i]['icon'];
+                        //$people[$i]['salt']
+                    }
+                }
+
+                $resLogin->menu = $menus;
                 $response = array('state' => 1, 'data' => $resLogin);
+
                 session_destroy();
                 session_start();
 
-                $_SESSION["logueado"]      = true;
-                $_SESSION['timeOnline']    = time() * 1000;
-                $_SESSION['online']        = date("H:i:s");
-                $_SESSION["login"]         = $resLogin->login;
-                $_SESSION['id']            = $resLogin->id;
+                $_SESSION["logueado"] = true;
+                $_SESSION['timeOnline'] = time() * 1000;
+                $_SESSION['online'] = date("H:i:s");
+                $_SESSION["login"] = $resLogin->login;
+                $_SESSION['id'] = $resLogin->id;
                 $_SESSION['token_session'] = uniqid();
                 $_SESSION['fecha_ingreso'] = date('Y-m-d H:i:s');
-                $_SESSION['perfil']        = $resLogin->perfil;
+                $_SESSION['perfil'] = $resLogin->perfil;
 
                 $stmtIngreso = $this->_DB->prepare("SELECT id
                                                          , fecha_ingreso
@@ -53,7 +85,7 @@ class authentication
 
                 if ($stmtIngreso->rowCount()) {
                     $resStmtIngreso = $stmtIngreso->fetch(PDO::FETCH_OBJ);
-                    $stmt           = $this->_DB->prepare("update registro_ingresoSeguimiento set status='logged in', ingresos=ingresos+1 where id=?");
+                    $stmt = $this->_DB->prepare("update registro_ingresoSeguimiento set status='logged in', ingresos=ingresos+1 where id=?");
                     $stmt->bindParam(1, $resLogin->id, PDO::PARAM_INT);
                     $stmt->execute();
                 } else {
@@ -61,11 +93,11 @@ class authentication
                     $otherStmt = $this->_DB->prepare("insert into registro_ingresoSeguimiento (idusuario,status,fecha_ingreso, ip, pc, aplicacion) " .
                         "values(:usuario_id,'logged in',:fechaIngreso, :ip, :usuarioPc, :aplicacion)");
                     $otherStmt->execute([
-                        ':usuario_id'   => $resLogin->login,
+                        ':usuario_id' => $resLogin->login,
                         ':fechaIngreso' => date('Y-m-d H:i:s'),
-                        ':ip'           => $usuarioIp,
-                        ':usuarioPc'    => $usuarioPc,
-                        ':aplicacion'   => $aplicacion,
+                        ':ip' => $usuarioIp,
+                        ':usuarioPc' => $usuarioPc,
+                        ':aplicacion' => $aplicacion,
                     ]);
                 }
             } else {
@@ -83,7 +115,7 @@ class authentication
 
         session_start();
         $today = date('Y-m-d');
-        $stmt  = $this->_DB->prepare("SELECT id, fecha_ingreso 
+        $stmt = $this->_DB->prepare("SELECT id, fecha_ingreso 
                  , date_format(fecha_ingreso,'%H:%i:%s') as hora_ingreso, SEC_TO_TIME((TIMESTAMPDIFF(second, fecha_ingreso, ? ))) total FROM 
                                     registro_ingresoSeguimiento 
                  WHERE fecha_ingreso between ? and ? 
@@ -99,8 +131,8 @@ class authentication
 
         $total_dia = $result->total;
 
-        $hora     = substr($total_dia, 0, 2);
-        $minutos  = substr($total_dia, 3, 2);
+        $hora = substr($total_dia, 0, 2);
+        $minutos = substr($total_dia, 3, 2);
         $segundos = substr($total_dia, 6, 2);
 
         $totalminutos = round((($hora * 60) + $minutos + $segundos) / 60, 2);
@@ -112,13 +144,13 @@ class authentication
                             total_dia = :total_dia, hora = :hora, minutos = :minutos, segundos = :segundos, total_factura = :total_factura
                         where id= :id");
         $stmt->execute([
-            ':fechaSal'      => date('Y-m-d H:i:s'),
-            ':total_dia'     => $total_dia,
-            ':hora'          => $hora,
-            ':minutos'       => $minutos,
-            ':segundos'      => $segundos,
+            ':fechaSal' => date('Y-m-d H:i:s'),
+            ':total_dia' => $total_dia,
+            ':hora' => $hora,
+            ':minutos' => $minutos,
+            ':segundos' => $segundos,
             ':total_factura' => $totalminutos,
-            ':id'            => $result->id,
+            ':id' => $result->id,
         ]);
 
         if ($stmt->rowCount() == 1) {

@@ -289,15 +289,15 @@
     transition: .4s;
 }
 
-input:checked + .slider {
+input:checked+.slider {
     background-color: #5cb85c;
 }
 
-input:focus + .slider {
+input:focus+.slider {
     box-shadow: 0 0 1px #5cb85c;
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
@@ -359,10 +359,16 @@ grid
     color: #f0f0f0;
 }
 
-.table-header > tr > th,
+.table > .table-header > tr > th{
+    vertical-align: middle;
+}
+
+.table-header>tr>th,
 td {
     text-align: center;
 }
+
+
 
 .margen_baja {
     margin-bottom: 3rem;
@@ -430,6 +436,84 @@ td {
     color: #545454;
 }
 
-.btn-info{
-    color:#292929;
+.btn-info {
+    color: #292929;
 }
+
+.icons_in_tables {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+    justify-content: center;
+}
+
+.icons_in_tables > i{
+    cursor: pointer;
+}
+
+.icon_bar{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cuerpoModal{
+    margin: 30px;
+}
+
+.btn-info {
+    background-color: #00377d;
+    color: #f0f0f0;
+    border-color: #002835;
+
+}
+
+.btn-info:hover {
+    color: #fff;
+    background-color: #31b0d5;
+    /* border-color: #021920; */
+}
+
+.label-info{
+    background-color: #00377d;
+    color: #f0f0f0;
+    border-color: #002835;
+}
+
+.label-info:hover{
+    color: #fff;
+    background-color: #31b0d5;
+    border-color: #021920;
+}
+
+.label-primary {
+    background-color: #00377d;
+    color: #f0f0f0;
+    border-color: #002835;
+}
+
+.label-info:hover{
+    background-color: #00377d;
+    color: #f0f0f0;
+    border-color: #002835;
+}
+
+.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+    z-index: 3;
+    color: #f0f0f0;
+    cursor: default;
+    background-color: #00377d;
+    border-color: #002835;
+}
+
+/* .pagination>li>a, .pagination>li>span {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    background-color: #00377d;
+    text-decoration: none;
+    color: #f0f0f0;
+    border: 1px solid #ddd;
+} */

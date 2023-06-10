@@ -41,7 +41,7 @@
 
                   &nbsp;
                 </div>
-                <button type="button" class="btn btn-info btn-xs" ng-click="crearModal()" data-toggle="modal"
+                <button type="button" class="btn btn-default btn-xs" ng-click="crearModal()" data-toggle="modal"
                   data-target="#crearModal" data-backdrop="static" ng-disabled="loading" tooltip title="Agregar usuario"
                   data-placement="top" data-html="true" data-selector=""><i class="fa fa-user-plus" aria-hidden="true">
                   </i>
@@ -70,15 +70,19 @@
                 <td class="text-center">{{data.IDENTIFICACION}}</td>
                 <td class="text-center">{{data.PERFIL}}</td>
 
-                <td class="text-center"><button type="button" class="btn btn-default btn-xs"
-                    ng-click="editarModal(data)" data-toggle="modal" data-target="#editarModal" data-backdrop="static"
-                    ng-disabled="loading" popover data-trigger="hover" data-placement="left" data-html="true"
-                    data-selector="" data-content="Editar: {{data.LOGIN}}">
+                <td class="text-center">
+
+<!--                   <button popover-placement="left" uib-popover="{{data.login}}" popover-title="Observaciones"
+                    type="button" class="btn btn-default btn-xs">
+                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                  </button> -->
+
+                  <button type="button" class="btn btn-info btn-xs" ng-click="editarModal(data)" data-toggle="modal"
+                    data-target="#editarModal" data-backdrop="static" ng-disabled="loading">
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                   </button>
-                  <button type="button" class="btn btn-default btn-xs" ng-click="editarModal(data)" data-toggle="modal"
-                    data-target="#eliminaUsuario" data-backdrop="static" ng-disabled="loading" popover
-                    data-trigger="hover" data-placement="left" data-html="true" data-selector="" data-content="Borrar">
+                  <button type="button" class="btn btn-info btn-xs" ng-click="editarModal(data)" data-toggle="modal"
+                    data-target="#eliminaUsuario" data-backdrop="static" ng-disabled="loading">
                     <i class="fa fa-trash" aria-hidden="true"></i>
                   </button>
                 </td>

@@ -1,0 +1,151 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <b><i class="fa fa-bars" aria-hidden="true"></i> Administración de menu y perfiles</b>
+                    <ul class="nav navbar-nav navbar-right" ng-show="pedidoexiste">
+                        <span class="label label-warning">{{mensaje}}</span>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right" ng-show="pedidoguardado">
+                        <span class="label label-success">{{mensaje}}</span>
+                    </ul>
+                </div>
+                <div class="panel-body">
+
+                    <div class="row">
+
+                        <div class="col-sm-4">
+                            <h4>Submenus <button type="button" class="btn btn-default btn-xs" tooltip-placement="top"
+                                    uib-tooltip="Activa - Inactiva submenu" ng-click="AgregarSubmenu()">
+                                    <i class="fa fa-plus" aria-hidden="true"> </i>
+                                </button></h4>
+                            <table class="table small table-condensed table-bordered table-hover">
+                                <thead class="table-header">
+                                    <tr>
+                                        <th>Submenu</th>
+                                        <th>Estado</th>
+                                        <th>Padre</th>
+                                        <th>Editar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="m in datosSubmenu" ng-class="{'bg-danger' : m.estado == 'Inactivo', 'bg-success' :  m.estado == 'Activo'}">
+                                        <td>{{m.nombre}}</td>
+                                        <td>{{m.estado}}</td>
+                                        <td>{{m.padre}}</td>
+
+                                        <td class="icons_in_tables">
+                                            <button type="button" class="btn btn-info btn-xs" title="Cambiar estado"
+                                                tooltip-placement="top" uib-tooltip="Cambiar estado"
+                                                ng-click="cambiaEstadoSubmenu(m.id,m.estado)">
+                                                <i class="fa fa-edit" aria-hidden="true"> </i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-sm-3">
+                            <h4>Perfiles <button type="button" class="btn btn-info btn-xs" tooltip-placement="top"
+                                    uib-tooltip="Agregar perfil" ng-click="AgregarPerfil()">
+                                    <i class="fa fa-plus" aria-hidden="true"> </i>
+                                </button></h4>
+                            <table class="table small table-condensed table-bordered table-hover">
+                                <thead class="table-header">
+                                    <tr>
+                                        <th>Perfil</th>
+                                        <th>Nombre</th>
+                                        <th>Editar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="m in datosPerfil">
+                                        <td>{{m.perfil}}</td>
+                                        <td>{{m.nombre}}</td>
+                                        <td class="icons_in_tables">
+                                            <button type="button" class="btn btn-info btn-xs"
+                                                ng-click="showPerfilMenu(m.perfil, m.nombre)" tooltip-placement="top"
+                                                uib-tooltip="Ver mas">
+                                                <i class="fa fa-eye" aria-hidden="true"> </i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-sm-2">
+                            <h4>Menu principal</h4>
+                            <table class="ttable small table-condensed table-bordered table-hover">
+                                <thead class="table-header">
+                                    <tr>
+                                        <th>Menu</th>
+                                        <th>Estado</th>
+                                        <th>Editar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="m in datosMenu">
+                                        <td>{{m.nombre}}</td>
+                                        <td>{{m.estado}}</td>
+                                        <td style="display: flex;gap: 3px;">
+                                            <button type="button" class="btn btn-info btn-xs" tooltip-placement="top"
+                                                uib-tooltip="Activa inactiva - menu">
+                                                <i class="fa fa-edit" aria-hidden="true"> </i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="modalDetalles" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Menu - perfiles - {{nombre}}</h5>
+                </div>
+                <div class="modal-body">
+                    <table class="table small table-condensed table-bordered table-hover">
+                        <thead class="table-header">
+                            <tr>
+                                <th>Submenu</th>
+                                <th>Padre</th>
+                                <th>Url</th>
+                                <th>Cambio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="m in datosSubmenu" ng-class="{'bg-success' : estaEnDetalles(m)}">
+                                <td>{{m.nombre}}</td>
+                                <td>{{m.padre}}</td>
+                                <td>{{m.url}}</td>
+                                <td class="text-center">
+                                    <input type="checkbox" ng-checked="estaEnDetalles(m)" ng-model="cambia_menu"
+                                        ng-click="cambioMenu(m.id,perfil_cambio, estaEnDetalles(m))"
+                                        style="width: 20px;">
+
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<br>
+<br>
+<br>

@@ -18,6 +18,8 @@ var app = angular.module("seguimientopedidos", [
     "ui.grid.autoResize",
     "chart.js",
     "angular.filter",
+    "ui.bootstrap",
+    "ui.select2"
 ]);
 
 app.service("fileUpload", [
@@ -42,16 +44,16 @@ app.service("fileUpload", [
                 $http.post("services/cargar_datos", fd, {
                     withCredentials: false,
                     transformRequest: angular.identity,
-                    headers: {"Content-Type": undefined},
-                    params: {user: user, tipocarga: tipocarga},
+                    headers: { "Content-Type": undefined },
+                    params: { user: user, tipocarga: tipocarga },
                     responseType: "arraybuffer",
                 });
             } else {
                 $http.post("services/cargar_datosNPS", fd, {
                     withCredentials: false,
                     transformRequest: angular.identity,
-                    headers: {"Content-Type": undefined},
-                    params: {user: user},
+                    headers: { "Content-Type": undefined },
+                    params: { user: user },
                     responseType: "arraybuffer",
                 });
             }
@@ -74,8 +76,8 @@ app.service("fileUploadrepa", [
             $http.post("services/cargar_datosNPSreparacion", fd, {
                 withCredentials: false,
                 transformRequest: angular.identity,
-                headers: {"Content-Type": undefined},
-                params: {user: user},
+                headers: { "Content-Type": undefined },
+                params: { user: user },
                 responseType: "arraybuffer",
             });
         };
@@ -99,8 +101,8 @@ app.service("cargaRegistros", [
                 .post("services/cargaRegistros", fd, {
                     withCredentials: false,
                     transformRequest: angular.identity,
-                    headers: {"Content-Type": undefined},
-                    params: {user: user},
+                    headers: { "Content-Type": undefined },
+                    params: { user: user },
                     responseType: "arraybuffer",
                 })
                 .then(function (response) {
@@ -1041,7 +1043,7 @@ app.factory("services", [
         obj.marcarengestion = function (datos, login) {
             var data = {
                 method: "marcarengestion",
-                data: {datos, login},
+                data: { datos, login },
             };
             return $http.post(serviceBase1 + "contingenciaCtrl.php", data);
         };
@@ -1178,14 +1180,11 @@ app.factory("services", [
             return $http.post(serviceBase1 + "otrosServiciosCtrl.php", data);
         };
 
-        obj.getresumenContingencias = function (fechaini, fechafin) {
+        obj.getresumenContingencias = function (datos) {
             var data = {
                 method: "resumenContingencias",
-                data: {
-                    fechaini: fechafin,
-                    fechafin: fechafin,
-                },
-            };
+                data: datos
+            }
             return $http.post(serviceBase1 + "contingenciaCtrl.php", data);
         };
 
@@ -1587,7 +1586,7 @@ app.factory("services", [
         obj.BuscarSoporteGpon = function (pedido) {
             var data = {
                 method: "BuscarSoporteGpon",
-                data: {pedido: pedido},
+                data: { pedido: pedido },
             };
             return $http.post(serviceBase1 + "soporteGponCtrl.php", data);
         };
@@ -1918,10 +1917,17 @@ app.factory("services", [
         };
 
         obj.contigenciaHoraAgenteEmtelco = function (datos) {
-            var data = {method: 'AgenteEmtelco', data: datos}
+            var data = { method: 'AgenteEmtelco', data: datos }
             return $http.post(serviceBase1 + 'kpiCtrl.php', data);
 
         }
+
+        obj.quitarUsuarioKpi = function (datos) {
+            var data = { method: 'quitarUsuarioKpi', data: datos }
+            return $http.post(serviceBase1 + 'kpiCtrl.php', data);
+
+        }
+
 
         /**
          * services ventas instale
@@ -2028,33 +2034,77 @@ app.factory("services", [
          */
 
         obj.datosQuejasGo = function () {
-            data = {method: 'datosQuejasGo'}
+            data = { method: 'datosQuejasGo' }
             return $http.post(serviceBase1 + 'gestionQuejasGoCtrl.php', data);
         }
 
         obj.datosQuejasGoTerminado = function (datos) {
-            data = {method: 'datosQuejasGoTerminado', data: datos}
+            data = { method: 'datosQuejasGoTerminado', data: datos }
             return $http.post(serviceBase1 + 'gestionQuejasGoCtrl.php', data);
         }
 
         obj.marcarEnGestionQuejasGo = function (datos) {
-            data = {method: 'marcarEnGestionQuejasGo', data: datos}
+            data = { method: 'marcarEnGestionQuejasGo', data: datos }
             return $http.post(serviceBase1 + 'gestionQuejasGoCtrl.php', data);
         }
 
         obj.guardaGestionQuejasGo = function (datos) {
-            data = {method: 'guardaGestionQuejasGo', data: datos}
+            data = { method: 'guardaGestionQuejasGo', data: datos }
             return $http.post(serviceBase1 + 'gestionQuejasGoCtrl.php', data);
         }
 
         obj.detalleNumeroQuejaGo = function (datos) {
-            data = {method: 'detalleNumeroQuejaGo', data: datos}
+            data = { method: 'detalleNumeroQuejaGo', data: datos }
             return $http.post(serviceBase1 + 'gestionQuejasGoCtrl.php', data);
         }
 
         obj.csvQuejaGo = function (datos) {
-            data = {method: 'csvQuejaGo', data: datos}
+            data = { method: 'csvQuejaGo', data: datos }
             return $http.post(serviceBase1 + 'gestionQuejasGoCtrl.php', data);
+        }
+
+        /**
+         * admin menu - perfil
+         */
+
+        obj.getMenu = function (datos) {
+            data = { method: 'getMenu' }
+            return $http.post(serviceBase1 + 'MenuPerfilCtrl.php', data);
+        }
+
+        obj.getSubmenu = function (datos) {
+            data = { method: 'getSubmenu' }
+            return $http.post(serviceBase1 + 'MenuPerfilCtrl.php', data);
+        }
+
+        obj.getPerfil = function (datos) {
+            data = { method: 'getPerfil' }
+            return $http.post(serviceBase1 + 'MenuPerfilCtrl.php', data);
+        }
+
+        obj.verMenuPerfil = function (datos) {
+            data = { method: 'verMenuPerfil', data: datos }
+            return $http.post(serviceBase1 + 'MenuPerfilCtrl.php', data);
+        }
+
+        obj.cambioMenu = function (datos) {
+            data = { method: 'cambioMenu', data: datos }
+            return $http.post(serviceBase1 + 'MenuPerfilCtrl.php', data);
+        }
+
+        obj.cambiaEstadoSubmenu = function (datos) {
+            data = { method: 'cambiaEstadoSubmenu', data: datos }
+            return $http.post(serviceBase1 + 'MenuPerfilCtrl.php', data);
+        }
+
+        obj.guardaNuevoSubmenu = function (datos) {
+            data = { method: 'guardaNuevoSubmenu', data: datos }
+            return $http.post(serviceBase1 + 'MenuPerfilCtrl.php', data);
+        }
+
+        obj.guardaPerfil = function (datos) {
+            data = { method: 'guardaPerfil', data: datos }
+            return $http.post(serviceBase1 + 'MenuPerfilCtrl.php', data);
         }
 
         return obj;
@@ -2111,7 +2161,6 @@ app.controller("loginCtrl", function ($scope, $rootScope, $location, $cookies, s
         services.loginUser($scope.autenticacion).then(complete).catch(failed);
 
         function complete(data) {
-            console.log(data, ' opop');
             if (data.data.state != 1) {
                 Swal({
                     type: "error",
@@ -2126,13 +2175,13 @@ app.controller("loginCtrl", function ($scope, $rootScope, $location, $cookies, s
                 $rootScope.login = data.data.data.login;
                 $rootScope.perfil = data.data.data.perfil;
                 $rootScope.identificacion = data.data.data.identificacion;
+                $rootScope.menu = data.data.data.menu;
                 $rootScope.authenticated = true;
                 $rootScope.permiso = true;
-                $location.path("/actividades/");
+                $location.path("/actividades");
                 $cookies.put("usuarioseguimiento", JSON.stringify(data.data.data));
 
                 var galleta = JSON.parse($cookies.get("usuarioseguimiento"));
-
                 $rootScope.galletainfo = galleta;
                 $rootScope.permiso = true;
             }
@@ -2168,8 +2217,12 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
     $scope.usuarios = function (editarUser) {
         $scope.update = false;
         if (editarUser.PASSWORD == "") {
-            alert("Por favor ingrese la contraseña");
-            return;
+            Swal({
+                type: 'error',
+                title: 'Opsss...',
+                text: 'Por favor ingrese la contraseña.',
+                timer: 4000
+            })
         } else {
             services.editarUsuario(editarUser).then(
                 function (data) {
@@ -2196,7 +2249,6 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         $scope.validaraccion = false;
         $scope.validarsubaccion = false;
         services.getProcesos().then(function (data) {
-            console.log('lolo', data);
             $scope.listadoProcesos = data.data.data;
             $scope.listadoAcciones = {};
             return data.data;
@@ -2239,71 +2291,71 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         if ($scope.gestionmanual.proceso == "Plan rescate" && ($scope.gestionmanual.accion == "Pendiente" || $scope.gestionmanual.accion == "Incompleto")) {
             $scope.validarsubaccion = true;
             $scope.listadoSubAcciones = [
-                {ID: '1011 - Fuera de cobertura', SUBACCION: '1011 - Fuera de cobertura'},
-                {ID: '1019 - Mala asesoria', SUBACCION: '1019 - Mala asesoria'},
-                {ID: '1020 - Incumplimiento contratista', SUBACCION: '1020 - Incumplimiento contratista'},
-                {ID: '1021 - Imposibilidad técnica', SUBACCION: '1021 - Imposibilidad técnica'},
-                {ID: '1022 - Tap copado', SUBACCION: '1022 - Tap copado'},
-                {ID: '1025 - Cliente no desea', SUBACCION: '1025 - Cliente no desea'},
-                {ID: '1026 - Casa sola', SUBACCION: '1026 - Casa sola'},
-                {ID: '1028 - Aplazada por cliente', SUBACCION: '1028 - Aplazada por cliente'},
-                {ID: '1209 - Zona de invasión', SUBACCION: '1209 - Zona de invasión'},
-                {ID: '1217 - Equipo no engancha', SUBACCION: '1217 - Equipo no engancha'},
-                {ID: '1505 - Dirección errada', SUBACCION: '1505 - Dirección errada'},
-                {ID: '1506 - Cliente solicitó otro producto', SUBACCION: '1506 - Cliente solicitó otro producto'},
-                {ID: '1508 - Ductos obstruídos', SUBACCION: '1508 - Ductos obstruídos'},
-                {ID: '1510 - Cliente no contactado', SUBACCION: '1510 - Cliente no contactado'},
-                {ID: '2898 - Requiere visita supervisor ETP', SUBACCION: '2898 - Requiere visita supervisor ETP'},
-                {ID: '2899 - Aplazada por lluvia', SUBACCION: '2899 - Aplazada por lluvia'},
-                {ID: '8383 - Problemas plataformas', SUBACCION: '8383 - Problemas plataformas'},
-                {ID: 'O-01 - Red pendiente en edificios y urbanizaciones', SUBACCION: 'O-01 - Red pendiente en edificios y urbanizaciones'},
-                {ID: 'O-02 - Pendiente cliente no autoriza', SUBACCION: 'O-02 - Pendiente cliente no autoriza'},
-                {ID: 'O-06 - Gestión de instalaciones', SUBACCION: 'O-06 - Gestión de instalaciones'},
-                {ID: 'O-09 - Pendiente por porteria madera', SUBACCION: 'O-09 - Pendiente por porteria madera'},
-                {ID: 'O-11 - Pend tiene línea con otro operador', SUBACCION: 'O-11 - Pend tiene línea con otro operador'},
-                {ID: 'O-13 - Red pendiente en exteriores', SUBACCION: 'O-13 - Red pendiente en exteriores'},
-                {ID: 'O-14 - Ped solicitud repetida', SUBACCION: 'O-14 - Ped solicitud repetida'},
-                {ID: 'O-15 - Pendiente por mala asignación', SUBACCION: 'O-15 - Pendiente por mala asignación'},
-                {ID: 'O-20 - Pendi inconsistencias infraestructura', SUBACCION: 'O-20 - Pendi inconsistencias infraestructura'},
-                {ID: 'O-40 - Pendiente x orden público y/o factores climát', SUBACCION: 'O-40 - Pendiente x orden público y/o factores climát'},
-                {ID: 'O-48 - Red mal estado', SUBACCION: 'O-48 - Red mal estado'},
-                {ID: 'O-49 - No desea el servicio', SUBACCION: 'O-49 - No desea el servicio'},
-                {ID: 'O-50 - Cliente ilocalizado', SUBACCION: 'O-50 - Cliente ilocalizado'},
-                {ID: 'O-51 - Pend tiene línea con otro operador', SUBACCION: 'O-51 - Pend tiene línea con otro operador'},
-                {ID: 'O-53 - Inconsistencia información', SUBACCION: 'O-53 - Inconsistencia información'},
-                {ID: 'O-69 - Pen cliente no contactado', SUBACCION: 'O-69 - Pen cliente no contactado'},
-                {ID: 'O-85 - Red externa pendiente', SUBACCION: 'O-85 - Red externa pendiente'},
-                {ID: 'O-86 - Pendiente por nodo xdsl', SUBACCION: 'O-86 - Pendiente por nodo xdsl'},
-                {ID: 'O-100 - Pendiente solución con proyecto', SUBACCION: 'O-100 - Pendiente solución con proyecto'},
-                {ID: 'O-101 - Renumerar o reconfigurar oferta', SUBACCION: 'O-101 - Renumerar o reconfigurar oferta'},
-                {ID: 'O-103 - Pendiente por autorización de terceros', SUBACCION: 'O-103 - Pendiente por autorización de terceros'},
-                {ID: 'O-112 - Pendiente por reparación de red', SUBACCION: 'O-112 - Pendiente por reparación de red'},
-                {ID: 'OT-C01 - Cliente no autoriza', SUBACCION: 'OT-C01 - Cliente no autoriza'},
-                {ID: 'OT-C04 - Orden público', SUBACCION: 'OT-C04 - Orden público'},
-                {ID: 'OT-C08 - Reconfigurar pedido', SUBACCION: 'OT-C08 - Reconfigurar pedido'},
-                {ID: 'OT-C10 - Validar condición instalación', SUBACCION: 'OT-C10 - Validar condición instalación'},
-                {ID: 'OT-C12 - Reconfigurar motivo técnico', SUBACCION: 'OT-C12 - Reconfigurar motivo técnico'},
-                {ID: 'OT-C14 - Orden del suscriptor', SUBACCION: 'OT-C14 - Orden del suscriptor'},
-                {ID: 'OT-C17 - Autorización de terceros', SUBACCION: 'OT-C17 - Autorización de terceros'},
-                {ID: 'OT-C19 - Factores climáticos', SUBACCION: 'OT-C19 - Factores climáticos'},
-                {ID: 'OT-T01 - Red pendiente edif y urb', SUBACCION: 'OT-T01 - Red pendiente edif y urb'},
-                {ID: 'OT-T04 - Red externa', SUBACCION: 'OT-T04 - Red externa'},
-                {ID: 'OT-T05 - Mala asignación', SUBACCION: 'OT-T05 - Mala asignación'},
-                {ID: 'OT-T10 - Reparación de red externa', SUBACCION: 'OT-T10 - Reparación de red externa'},
-                {ID: 'P-CRM - Reagendado', SUBACCION: 'P-CRM - Reagendado'},
-                {ID: 'O-08 - Pendiente por orden del suscriptor', SUBACCION: 'O-08 - Pendiente por orden del suscriptor'},
-                {ID: 'O-23 - Pendiente no contestan', SUBACCION: 'O-23 - Pendiente no contestan'},
-                {ID: 'OT-C02 - Cliente ilocalizado', SUBACCION: 'OT-C02 - Cliente ilocalizado'},
-                {ID: 'OT-C06 - Inconsistencia información', SUBACCION: 'OT-C06 - Inconsistencia información'},
-                {ID: 'OT-T02 - Gestión de instalaciones', SUBACCION: 'OT-T02 - Gestión de instalaciones'},
-                {ID: 'O-34 - Pendiente por factores climáticos', SUBACCION: 'O-34 - Pendiente por factores climáticos'},
-                {ID: 'OT-C15 - Por agendar', SUBACCION: 'OT-C15 - Por agendar'},
-                {ID: 'OT-T19 - Plataforma caída', SUBACCION: 'OT-T19 - Plataforma caída'},
-                {ID: '1014 - Poste averiado', SUBACCION: '1014 - Poste averiado'},
-                {ID: 'O-24 - Pendi postería', SUBACCION: 'O-24 - Pendi postería'},
-                {ID: 'OT-C05 - Gestión fraudes instalaciones', SUBACCION: 'OT-C05 - Gestión fraudes instalaciones'},
-                {ID: 'OT-C11 - Cancelar motivo técnico', SUBACCION: 'OT-C11 - Cancelar motivo técnico'},
-                {ID: 'OT-T17 - Solución con proyecto', SUBACCION: 'OT-T17 - Solución con proyecto'}
+                { ID: '1011 - Fuera de cobertura', SUBACCION: '1011 - Fuera de cobertura' },
+                { ID: '1019 - Mala asesoria', SUBACCION: '1019 - Mala asesoria' },
+                { ID: '1020 - Incumplimiento contratista', SUBACCION: '1020 - Incumplimiento contratista' },
+                { ID: '1021 - Imposibilidad técnica', SUBACCION: '1021 - Imposibilidad técnica' },
+                { ID: '1022 - Tap copado', SUBACCION: '1022 - Tap copado' },
+                { ID: '1025 - Cliente no desea', SUBACCION: '1025 - Cliente no desea' },
+                { ID: '1026 - Casa sola', SUBACCION: '1026 - Casa sola' },
+                { ID: '1028 - Aplazada por cliente', SUBACCION: '1028 - Aplazada por cliente' },
+                { ID: '1209 - Zona de invasión', SUBACCION: '1209 - Zona de invasión' },
+                { ID: '1217 - Equipo no engancha', SUBACCION: '1217 - Equipo no engancha' },
+                { ID: '1505 - Dirección errada', SUBACCION: '1505 - Dirección errada' },
+                { ID: '1506 - Cliente solicitó otro producto', SUBACCION: '1506 - Cliente solicitó otro producto' },
+                { ID: '1508 - Ductos obstruídos', SUBACCION: '1508 - Ductos obstruídos' },
+                { ID: '1510 - Cliente no contactado', SUBACCION: '1510 - Cliente no contactado' },
+                { ID: '2898 - Requiere visita supervisor ETP', SUBACCION: '2898 - Requiere visita supervisor ETP' },
+                { ID: '2899 - Aplazada por lluvia', SUBACCION: '2899 - Aplazada por lluvia' },
+                { ID: '8383 - Problemas plataformas', SUBACCION: '8383 - Problemas plataformas' },
+                { ID: 'O-01 - Red pendiente en edificios y urbanizaciones', SUBACCION: 'O-01 - Red pendiente en edificios y urbanizaciones' },
+                { ID: 'O-02 - Pendiente cliente no autoriza', SUBACCION: 'O-02 - Pendiente cliente no autoriza' },
+                { ID: 'O-06 - Gestión de instalaciones', SUBACCION: 'O-06 - Gestión de instalaciones' },
+                { ID: 'O-09 - Pendiente por porteria madera', SUBACCION: 'O-09 - Pendiente por porteria madera' },
+                { ID: 'O-11 - Pend tiene línea con otro operador', SUBACCION: 'O-11 - Pend tiene línea con otro operador' },
+                { ID: 'O-13 - Red pendiente en exteriores', SUBACCION: 'O-13 - Red pendiente en exteriores' },
+                { ID: 'O-14 - Ped solicitud repetida', SUBACCION: 'O-14 - Ped solicitud repetida' },
+                { ID: 'O-15 - Pendiente por mala asignación', SUBACCION: 'O-15 - Pendiente por mala asignación' },
+                { ID: 'O-20 - Pendi inconsistencias infraestructura', SUBACCION: 'O-20 - Pendi inconsistencias infraestructura' },
+                { ID: 'O-40 - Pendiente x orden público y/o factores climát', SUBACCION: 'O-40 - Pendiente x orden público y/o factores climát' },
+                { ID: 'O-48 - Red mal estado', SUBACCION: 'O-48 - Red mal estado' },
+                { ID: 'O-49 - No desea el servicio', SUBACCION: 'O-49 - No desea el servicio' },
+                { ID: 'O-50 - Cliente ilocalizado', SUBACCION: 'O-50 - Cliente ilocalizado' },
+                { ID: 'O-51 - Pend tiene línea con otro operador', SUBACCION: 'O-51 - Pend tiene línea con otro operador' },
+                { ID: 'O-53 - Inconsistencia información', SUBACCION: 'O-53 - Inconsistencia información' },
+                { ID: 'O-69 - Pen cliente no contactado', SUBACCION: 'O-69 - Pen cliente no contactado' },
+                { ID: 'O-85 - Red externa pendiente', SUBACCION: 'O-85 - Red externa pendiente' },
+                { ID: 'O-86 - Pendiente por nodo xdsl', SUBACCION: 'O-86 - Pendiente por nodo xdsl' },
+                { ID: 'O-100 - Pendiente solución con proyecto', SUBACCION: 'O-100 - Pendiente solución con proyecto' },
+                { ID: 'O-101 - Renumerar o reconfigurar oferta', SUBACCION: 'O-101 - Renumerar o reconfigurar oferta' },
+                { ID: 'O-103 - Pendiente por autorización de terceros', SUBACCION: 'O-103 - Pendiente por autorización de terceros' },
+                { ID: 'O-112 - Pendiente por reparación de red', SUBACCION: 'O-112 - Pendiente por reparación de red' },
+                { ID: 'OT-C01 - Cliente no autoriza', SUBACCION: 'OT-C01 - Cliente no autoriza' },
+                { ID: 'OT-C04 - Orden público', SUBACCION: 'OT-C04 - Orden público' },
+                { ID: 'OT-C08 - Reconfigurar pedido', SUBACCION: 'OT-C08 - Reconfigurar pedido' },
+                { ID: 'OT-C10 - Validar condición instalación', SUBACCION: 'OT-C10 - Validar condición instalación' },
+                { ID: 'OT-C12 - Reconfigurar motivo técnico', SUBACCION: 'OT-C12 - Reconfigurar motivo técnico' },
+                { ID: 'OT-C14 - Orden del suscriptor', SUBACCION: 'OT-C14 - Orden del suscriptor' },
+                { ID: 'OT-C17 - Autorización de terceros', SUBACCION: 'OT-C17 - Autorización de terceros' },
+                { ID: 'OT-C19 - Factores climáticos', SUBACCION: 'OT-C19 - Factores climáticos' },
+                { ID: 'OT-T01 - Red pendiente edif y urb', SUBACCION: 'OT-T01 - Red pendiente edif y urb' },
+                { ID: 'OT-T04 - Red externa', SUBACCION: 'OT-T04 - Red externa' },
+                { ID: 'OT-T05 - Mala asignación', SUBACCION: 'OT-T05 - Mala asignación' },
+                { ID: 'OT-T10 - Reparación de red externa', SUBACCION: 'OT-T10 - Reparación de red externa' },
+                { ID: 'P-CRM - Reagendado', SUBACCION: 'P-CRM - Reagendado' },
+                { ID: 'O-08 - Pendiente por orden del suscriptor', SUBACCION: 'O-08 - Pendiente por orden del suscriptor' },
+                { ID: 'O-23 - Pendiente no contestan', SUBACCION: 'O-23 - Pendiente no contestan' },
+                { ID: 'OT-C02 - Cliente ilocalizado', SUBACCION: 'OT-C02 - Cliente ilocalizado' },
+                { ID: 'OT-C06 - Inconsistencia información', SUBACCION: 'OT-C06 - Inconsistencia información' },
+                { ID: 'OT-T02 - Gestión de instalaciones', SUBACCION: 'OT-T02 - Gestión de instalaciones' },
+                { ID: 'O-34 - Pendiente por factores climáticos', SUBACCION: 'O-34 - Pendiente por factores climáticos' },
+                { ID: 'OT-C15 - Por agendar', SUBACCION: 'OT-C15 - Por agendar' },
+                { ID: 'OT-T19 - Plataforma caída', SUBACCION: 'OT-T19 - Plataforma caída' },
+                { ID: '1014 - Poste averiado', SUBACCION: '1014 - Poste averiado' },
+                { ID: 'O-24 - Pendi postería', SUBACCION: 'O-24 - Pendi postería' },
+                { ID: 'OT-C05 - Gestión fraudes instalaciones', SUBACCION: 'OT-C05 - Gestión fraudes instalaciones' },
+                { ID: 'OT-C11 - Cancelar motivo técnico', SUBACCION: 'OT-C11 - Cancelar motivo técnico' },
+                { ID: 'OT-T17 - Solución con proyecto', SUBACCION: 'OT-T17 - Solución con proyecto' }
             ];
         } else {
             services.getSubAcciones($scope.gestionmanual.proceso, $scope.gestionmanual.accion).then(function (data) {
@@ -2354,8 +2406,12 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
                 producto = $scope.gestionmanual.producto;
             }
         } else if ($scope.gestionmanual.producto == undefined) {
-            alert("Por favor seleccione el producto");
-            return;
+            Swal({
+                type: 'error',
+                title: 'Opsss...',
+                text: 'Por favor seleccione el producto',
+                timer: 4000
+            })
         } else {
             var producto = $scope.gestionmanual.producto;
         }
@@ -2373,7 +2429,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         }
 
         if ($scope.gestionmanual.accion == "Registrar materiales") {
-            $scope.materiales = [{id: '1', tipoCable: 'No uso', inicio: '', fin: ''}];
+            $scope.materiales = [{ id: '1', tipoCable: 'No uso', inicio: '', fin: '' }];
             $('#Registrarmateriales').modal('show');
             $scope.OpenModal = "Registrarmateriales";
         }
@@ -2381,8 +2437,12 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
 
         if (tecnologia == "HFC" && ($scope.gestionmanual.subAccion == "INFRAESTRUCTURA HFC" || $scope.gestionmanual.subAccion == "O-112 Pendiente Por Reparacion de Red")) {
             if (producto == undefined) {
-                alert("Por favor seleccione el producto");
-                return;
+                Swal({
+                    type: 'error',
+                    title: 'Opsss...',
+                    text: 'Por favor seleccione el producto',
+                    timer: 4000
+                })
             } else {
                 $('#PendiInfraHFC').modal('show');
                 $scope.OpenModal = "PendiInfraHFC";
@@ -2420,11 +2480,19 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
 
         if ($scope.gestionmanual.subAccion == "Cumple parametros de instalacion" || $scope.gestionmanual.subAccion == "Cumple parametros de reparacion") {
             if (tecnologia == "LTE" || tecnologia == "DTH") {
-                alert("Para los productos DTH y LTE no aplica cumplir con parametros");
-                return;
+                Swal({
+                    type: 'error',
+                    title: 'Opsss...',
+                    text: 'Para los productos DTH y LTE no aplica cumplir con parametros',
+                    timer: 4000
+                })
             } else if ($scope.gestionmanual.CIUDAD == "MESA DE AYUDA" || $scope.gestionmanual.CIUDAD == "MIGRACIONES" || $scope.gestionmanual.CIUDAD == "TECNICOS DE APOYO") {
-                alert("Para los despachos Mesa, migraciones y técnicos de apoyo no aplica cumplir con parametros");
-                return;
+                Swal({
+                    type: 'error',
+                    title: 'Opsss...',
+                    text: 'Para los despachos Mesa, migraciones y técnicos de apoyo no aplica cumplir con parametros',
+                    timer: 4000
+                })
             } else {
                 if ($scope.gestionmanual.subAccion == "Cumple parametros de instalacion") {
                     $scope.cumplirproceso = "Cumplir instalacion";
@@ -2470,8 +2538,12 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
 
         if (tecnologia == "HFC" && ($scope.gestionmanual.subAccion == "OT-T10-Reparacion de red externa")) {
             if (producto == undefined) {
-                alert("Por favor seleccione el producto");
-                return;
+                Swal({
+                    type: 'error',
+                    title: 'Opsss...',
+                    text: 'Por favor seleccione el producto',
+                    timer: 4000
+                })
             } else {
                 $('#PendiInstaHFC-OT-T10').modal('show');
                 $scope.OpenModal = "PendiInstaHFC-OT-T10";
@@ -2481,7 +2553,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
 
     $scope.addNuevoMaterial = function () {
         var newItemNo = $scope.materiales.length + 1;
-        $scope.materiales.push({'id': +newItemNo, tipoCable: 'No uso'});
+        $scope.materiales.push({ 'id': +newItemNo, tipoCable: 'No uso' });
     }
 
     $scope.addEquipoRecoger = function () {
@@ -3211,22 +3283,32 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
     $scope.guardarModalRecogerEq = function (equiposRecoger) {
 
         if ($scope.gestionmanual.tecnico == "" || $scope.gestionmanual.tecnico == undefined) {
-            alert("Por favor ingresar el tecnico.");
-            return;
+            Swal({
+                type: 'error',
+                title: 'Opsss...',
+                text: 'Por favor ingresar el tecnico.',
+                timer: 4000
+            })
         }
 
         if ($scope.gestionmanual.producto == "" || $scope.gestionmanual.producto == undefined) {
-            alert("Por favor ingresar el producto.");
-            return;
+            Swal({
+                type: 'error',
+                title: 'Opsss...',
+                text: 'Por favor ingresar el producto.',
+                timer: 4000
+            })
         }
 
         services.recogidaEquipos(equiposRecoger).then(
             function (respuesta) {
                 if (respuesta.status == '201' || respuesta.status == '200') {
-                    Swal(
-                        'Los equipos a recoger fueron guardados!',
-                        'Bien Hecho'
-                    )
+                    Swal({
+                        type: 'success',
+                        title: 'Muy bien.',
+                        text: 'Los equipos a recoger fueron guardados!',
+                        timer: 4000
+                    })
                 }
                 $("#recogerEquipos").modal('hide');
                 $scope.equipo = {};
@@ -3344,7 +3426,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         $scope.url =
             "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetClick/" + pedido;
         $http
-            .get($scope.url, {timeout: 4000})
+            .get($scope.url, { timeout: 4000 })
             .then(function (data) {
                 $scope.clic = data.data[0];
                 $scope.UNEPedido = $scope.clic.UNEPedido;
@@ -3365,7 +3447,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
                     "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanBaMSS/" +
                     pedido;
                 $http
-                    .get($scope.url, {timeout: 4000})
+                    .get($scope.url, { timeout: 4000 })
                     .then(function (data) {
                         console.log(data, " internet ");
                         if (data.data.length > 0) {
@@ -3386,7 +3468,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
                             $scope.url =
                                 "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanBaMSS/" +
                                 $scope.clic.UNECodigoDireccionServicio;
-                            $http.get($scope.url, {timeout: 4000}).then(function (data) {
+                            $http.get($scope.url, { timeout: 4000 }).then(function (data) {
                                 console.log(data, " internet2 ");
                                 if (data.data.length > 0) {
                                     $scope.NAT = 'SI';
@@ -3408,7 +3490,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
                             "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTOMSS/" +
                             pedido;
                         $http
-                            .get($scope.url, {timeout: 4000})
+                            .get($scope.url, { timeout: 4000 })
                             .then(function (data) {
                                 console.log(data, " telefonia");
                                 if (data.data.length > 0) {
@@ -3428,7 +3510,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
                                         "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTOMSS/" +
                                         $scope.clic.UNECodigoDireccionServicio;
                                     $http
-                                        .get($scope.url, {timeout: 4000})
+                                        .get($scope.url, { timeout: 4000 })
                                         .then(function (data) {
                                             console.log(data, " telefonia2");
                                             if (data.data.length > 0) {
@@ -3450,7 +3532,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
                                     "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTVMSS/" +
                                     pedido;
                                 $http
-                                    .get($scope.url, {timeout: 4000})
+                                    .get($scope.url, { timeout: 4000 })
                                     .then(function (data) {
                                         console.log(data, " tv");
                                         if (data.data.length > 0) {
@@ -3474,7 +3556,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
                                                 "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTVMSS/" +
                                                 $scope.clic.UNECodigoDireccionServicio;
                                             $http
-                                                .get($scope.url, {timeout: 4000})
+                                                .get($scope.url, { timeout: 4000 })
                                                 .then(function (data) {
                                                     console.log(data, " tv2");
                                                     if (data.data.length > 0) {
@@ -3538,44 +3620,47 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         updateCounter();
 
         if (pedido == "" || pedido == undefined) {
-            alert("Ingrese un pedido para buscar");
-            $scope.sininfopedido = false;
-            return;
+            Swal({
+                type: 'info',
+                title: 'Opsss....',
+                text: 'Ingrese un pedido para buscar',
+                timer: 4000
+            })
         } else {
 
             $scope.sininfopedido = true;
             $scope.url = "http://" + $scope.ipServer + ":8080/HCHV/Buscar/" + pedido;
-            $http.get($scope.url, {timeout: 2000})
+            $http.get($scope.url, { timeout: 2000 })
                 .then(function (data) {
-                        $scope.myWelcome = data.data;
-                        $scope.equipos = $scope.myWelcome.Equipos;
-                        if ($scope.myWelcome.pEDIDO_UNE == null) {
-                            $scope.infopedido = false;
-                            $scope.errorconexion1 = false;
-                            $scope.myWelcome = {};
-                        } else if ($scope.myWelcome.engineerID == null) {
-                            $scope.infopedido = false;
-                            $scope.errorconexion1 = false;
-                            $scope.myWelcome = {};
-                        } else if ($scope.myWelcome.pEDIDO_UNE == "TIMEOUT") {
-                            $scope.infopedido = false;
-                            $scope.errorconexion1 = true;
-                            $scope.myWelcome = {};
-                            $scope.errorconexion = "No hay conexión con Click, ingrese datos manualmente";
-                        } else {
-                            $scope.infopedido = true;
-                            $scope.gestionmanual.tecnico = $scope.myWelcome.engineerID;
-                            $scope.gestionmanual.CIUDAD = $scope.myWelcome.uNEMunicipio.toUpperCase();
-                            $scope.BuscarTecnico();
-                        }
+                    $scope.myWelcome = data.data;
+                    $scope.equipos = $scope.myWelcome.Equipos;
+                    if ($scope.myWelcome.pEDIDO_UNE == null) {
+                        $scope.infopedido = false;
+                        $scope.errorconexion1 = false;
+                        $scope.myWelcome = {};
+                    } else if ($scope.myWelcome.engineerID == null) {
+                        $scope.infopedido = false;
+                        $scope.errorconexion1 = false;
+                        $scope.myWelcome = {};
+                    } else if ($scope.myWelcome.pEDIDO_UNE == "TIMEOUT") {
+                        $scope.infopedido = false;
+                        $scope.errorconexion1 = true;
+                        $scope.myWelcome = {};
+                        $scope.errorconexion = "No hay conexión con Click, ingrese datos manualmente";
+                    } else {
+                        $scope.infopedido = true;
+                        $scope.gestionmanual.tecnico = $scope.myWelcome.engineerID;
+                        $scope.gestionmanual.CIUDAD = $scope.myWelcome.uNEMunicipio.toUpperCase();
+                        $scope.BuscarTecnico();
+                    }
 
-                        return data.data;
-                    },
+                    return data.data;
+                },
 
                     function (err) {
                         $scope.ipServer = "10.100.66.254";
                         $scope.url = "http://" + $scope.ipServer + ":8080/HCHV/Buscar/" + pedido;
-                        $http.get($scope.url, {timeout: 2000})
+                        $http.get($scope.url, { timeout: 2000 })
                             .then(function (data) {
                                 $scope.myWelcome = data.data;
                                 if ($scope.myWelcome.pEDIDO_UNE == null) {
@@ -3616,30 +3701,30 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         var tareaSara = pedido;
         $scope.urlServicio = "http://10.100.66.254:8080/SARA/Buscar/" + tareaSara;
 
-        $http.get($scope.urlServicio, {timeout: 8000}).then(function (data) {
-                console.log(data, 'sara');
-                $scope.dataSara = data.data;
+        $http.get($scope.urlServicio, { timeout: 8000 }).then(function (data) {
+            console.log(data, 'sara');
+            $scope.dataSara = data.data;
 
-                if ($scope.dataSara.Error == "No hay datos para mostrar") {
+            if ($scope.dataSara.Error == "No hay datos para mostrar") {
 
-                    $scope.horasTranscurridas = 0;
-                    $scope.minutosTranscurridos = 0;
-                    $scope.segundosTranscurridos = 0;
+                $scope.horasTranscurridas = 0;
+                $scope.minutosTranscurridos = 0;
+                $scope.segundosTranscurridos = 0;
 
-                    Swal({
-                        type: 'error',
-                        title: 'Oops...',
-                        text: 'Aún no se hace la solicitud a SARA',
-                    })
-                }
+                Swal({
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'Aún no se hace la solicitud a SARA',
+                })
+            }
 
-                $scope.indiceSara = (Object.keys($scope.dataSara.SolicitudesSara).length) - 1;
-                var tiempoSara = $scope.dataSara.SolicitudesSara[$scope.indiceSara].TiempoRespuesta;
-                $scope.horasTranscurridas = tiempoSara.substr(0, 2);
-                $scope.minutosTranscurridos = tiempoSara.substr(3, 2);
-                $scope.segundosTranscurridos = tiempoSara.substr(6, 2);
-                return data.data;
-            },
+            $scope.indiceSara = (Object.keys($scope.dataSara.SolicitudesSara).length) - 1;
+            var tiempoSara = $scope.dataSara.SolicitudesSara[$scope.indiceSara].TiempoRespuesta;
+            $scope.horasTranscurridas = tiempoSara.substr(0, 2);
+            $scope.minutosTranscurridos = tiempoSara.substr(3, 2);
+            $scope.segundosTranscurridos = tiempoSara.substr(6, 2);
+            return data.data;
+        },
 
             function (Error) {
 
@@ -3653,7 +3738,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
 
 
     $scope.BuscarPedido = function (pedido) {
-        if(!pedido){
+        if (!pedido) {
             Swal({
                 type: 'error',
                 title: 'Oops...',
@@ -3676,7 +3761,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         if ($scope.gestionmanual.tecnico == undefined || $scope.gestionmanual.tecnico == "") {
             return;
         }
-        data = {'buscar': 'identificacion', 'variable': $scope.gestionmanual.tecnico, 'page': 1, 'size': 15}
+        data = { 'buscar': 'identificacion', 'variable': $scope.gestionmanual.tecnico, 'page': 1, 'size': 15 }
 
         services.listadoTecnicos(data).then(
             function (data) {
@@ -3685,7 +3770,12 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
                 $scope.tecnico = $scope.Tecnico[0].NOMBRE;
                 $scope.empresa = $scope.Tecnico[0].NOM_EMPRESA;
                 if ($scope.Tecnico[0].CELULAR == "") {
-                    alert("El número de celular del tecnico no existe!");
+                    Swal({
+                        type: 'info',
+                        title: 'Opsss....',
+                        text: 'El número de celular del tecnico no existe!',
+                        timer: 4000
+                    })
                     $scope.celular = "0000000000";
                 } else {
                     $scope.celular = $scope.Tecnico[0].CELULAR;
@@ -3717,43 +3807,61 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
     $scope.guardarPedido = function () {
 
         if ($scope.gestionmanual.interaccion == "" || $scope.gestionmanual.interaccion == undefined) {
-            alert("Debe seleccionar el tipo de interacción.");
-            return;
-        }
-
-        if (($scope.gestionmanual.interaccion == "llamada" && $scope.gestionmanual.id_llamada == "") || ($scope.gestionmanual.interaccion == "llamada" && $scope.gestionmanual.id_llamada == undefined)) {
-            alert("Por favor ingresar el ID de llamada.");
-            return;
-        }
-
-        if ($scope.gestionmanual.interaccion == "llamada" && $scope.gestionmanual.id_llamada.length > 40) {
-            alert("Por favor ingrese un Id de Llamada válido.");
-            return;
-        }
-
-        if ($scope.gestionmanual.tecnico == "" || $scope.gestionmanual.tecnico == undefined) {
-            alert("Por favor ingresar el tecnico.");
-            return;
-        }
-
-        if ($scope.gestionmanual.producto == "" || $scope.gestionmanual.producto == undefined) {
-            alert("Por favor ingresar un producto.");
-            return;
-        }
-
-        if ($scope.gestionmanual.proceso == "" || $scope.gestionmanual.proceso == undefined) {
-            alert("Por favor ingresar el proceso.");
-            return;
-        }
-
-        if ($scope.gestionmanual.accion == "" || $scope.gestionmanual.accion == undefined) {
-            alert("Por favor ingresar una accion.");
-            return;
-        }
-
-        if ($scope.gestionmanual.accion == "Soporte GPON" && ($scope.gestionmanual.subAccion == "" || $scope.gestionmanual.subAccion == undefined)) {
-            alert("Por favor ingresar una subaccion.");
-            return;
+            Swal({
+                type: 'info',
+                title: 'Opsss....',
+                text: 'Debe seleccionar el tipo de interacción.',
+                timer: 4000
+            })
+        } else if (($scope.gestionmanual.interaccion == "llamada" && $scope.gestionmanual.id_llamada == "") || ($scope.gestionmanual.interaccion == "llamada" && $scope.gestionmanual.id_llamada == undefined)) {
+            Swal({
+                type: 'info',
+                title: 'Opsss....',
+                text: 'Por favor ingresar el ID de llamada.',
+                timer: 4000
+            })
+        } else if ($scope.gestionmanual.interaccion == "llamada" && $scope.gestionmanual.id_llamada.length > 40) {
+            Swal({
+                type: 'info',
+                title: 'Opsss....',
+                text: 'Por favor ingrese un Id de Llamada válido.',
+                timer: 4000
+            })
+        } else if ($scope.gestionmanual.tecnico == "" || $scope.gestionmanual.tecnico == undefined) {
+            Swal({
+                type: 'info',
+                title: 'Opsss....',
+                text: 'Por favor ingresar el tecnico.',
+                timer: 4000
+            })
+        } else if ($scope.gestionmanual.producto == "" || $scope.gestionmanual.producto == undefined) {
+            Swal({
+                type: 'info',
+                title: 'Opsss....',
+                text: 'Por favor ingresar un producto.',
+                timer: 4000
+            })
+        } else if ($scope.gestionmanual.proceso == "" || $scope.gestionmanual.proceso == undefined) {
+            Swal({
+                type: 'info',
+                title: 'Opsss....',
+                text: 'Por favor ingresar el proceso.',
+                timer: 4000
+            })
+        } else if ($scope.gestionmanual.accion == "" || $scope.gestionmanual.accion == undefined) {
+            Swal({
+                type: 'info',
+                title: 'Opsss....',
+                text: 'Por favor ingresar una accion.',
+                timer: 4000
+            })
+        } else if ($scope.gestionmanual.accion == "Soporte GPON" && ($scope.gestionmanual.subAccion == "" || $scope.gestionmanual.subAccion == undefined)) {
+            Swal({
+                type: 'info',
+                title: 'Opsss....',
+                text: 'Por favor ingresar una subaccion.',
+                timer: 4000
+            })
         }
 
         //se quita validaciones requerimiento por carlos 3-04-2023
@@ -4016,11 +4124,19 @@ app.controller(
 
         $scope.mostrarModalEscalamiento = function (data) {
             if (data.engestion == null || data.engestion == "0") {
-                alert("Debes bloquear el pedido");
-                return;
+                Swal({
+                    type: 'info',
+                    title: 'Opsss....',
+                    text: 'Debes bloquear el pedido',
+                    timer: 4000
+                })
             } else if (data.tipificacion == undefined || data.tipificacion == "") {
-                alert("Recuerda seleccionar todas las opciones!!");
-                return;
+                Swal({
+                    type: 'info',
+                    title: 'Opsss....',
+                    text: 'Recuerda seleccionar todas las opciones!!',
+                    timer: 4000
+                })
             } else {
                 $scope.gestionescala = data;
                 $("#editarModal").modal("show");
@@ -4131,8 +4247,8 @@ app.controller(
                         {
                             method: "PUT",
                             mode: "cors",
-                            body: JSON.stringify({infraestructure_ID: data._id}),
-                            headers: {"Content-type": "application/json;charset=UTF-8"},
+                            body: JSON.stringify({ infraestructure_ID: data._id }),
+                            headers: { "Content-type": "application/json;charset=UTF-8" },
                         }
                     );
 
@@ -4155,19 +4271,33 @@ app.controller(
 
         $scope.guardarescalamiento = async function (data) {
             if (data.login_gestion == null) {
-                alert("Debes de marcar la solicitud, antes de guardar!");
+                Swal({
+                    type: 'info',
+                    title: 'Opsss....',
+                    text: 'Debes de marcar la solicitud, antes de guardar!',
+                    timer: 4000
+                })
             } else {
                 if (!data.observacionesescalamiento) {
-                    alert("Debes ingresar las observaciones.");
-                    return;
+                    Swal({
+                        type: 'info',
+                        title: 'Opsss....',
+                        text: 'Debes ingresar las observaciones.',
+                        timer: 4000
+                    })
                 } else {
                     try {
-                        alert("Pedido guardado, recuerda actualizar!!");
+                        Swal({
+                            type: 'success',
+                            title: 'Muy bien',
+                            text: 'Pedido guardado, recuerda actualizar!!',
+                            timer: 4000
+                        })
                         var currentTimeDate = new Date().toLocaleString();
                         var statusInfraestructure =
                             data.tipificacion == "Escalamiento realizado ok" ||
-                            data.tipificacion == "Escalamiento ok nivel 2" ||
-                            data.tipificacion == "Escalamiento ok nivel 2 Prioridad"
+                                data.tipificacion == "Escalamiento ok nivel 2" ||
+                                data.tipificacion == "Escalamiento ok nivel 2 Prioridad"
                                 ? "Aprobado"
                                 : "Rechazado";
 
@@ -4181,7 +4311,7 @@ app.controller(
                                     infraestructure_Status: statusInfraestructure,
                                     dateAswered: currentTimeDate,
                                 }),
-                                headers: {"Content-type": "application/json;charset=UTF-8"},
+                                headers: { "Content-type": "application/json;charset=UTF-8" },
                             }
                         );
 
@@ -4243,7 +4373,7 @@ app.controller(
                 $scope.totalItems = 0;
                 $scope.pageSize = 15;
                 $scope.searchText = '';
-                data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+                data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
             }
             services
                 .novedadesTecnicoService(data)
@@ -4267,13 +4397,13 @@ app.controller(
         }
 
         $scope.pageChanged = function () {
-            data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+            data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
             console.log(data)
             novedadesVisitas(data);
         }
         $scope.pageSizeChanged = function () {
             console.log(data)
-            data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+            data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
             $scope.currentPage = 1;
             novedadesVisitas(data);
         }
@@ -4284,10 +4414,10 @@ app.controller(
                 $scope.totalItems = 0;
                 $scope.pageSize = 15;
                 $scope.searchText = "";
-                data = {page: $scope.currentPage, size: $scope.pageSize};
+                data = { page: $scope.currentPage, size: $scope.pageSize };
             }
 
-            data = {page: $scope.currentPage, size: $scope.pageSize, data};
+            data = { page: $scope.currentPage, size: $scope.pageSize, data };
             novedadesVisitas(data);
         }
 
@@ -4497,15 +4627,19 @@ app.controller(
             $scope.gestionmanual.producto = "";
 
             if (pedido == "" || pedido == undefined) {
-                alert("Ingrese un pedido para buscar");
+                Swal({
+                    type: 'info',
+                    title: 'Opss...',
+                    text: 'Ingrese un pedido para buscar',
+                    timer: 4000
+                })
                 $scope.sininfopedido = false;
-                return;
             } else {
                 $scope.ipServer = "10.100.66.254";
                 $scope.sininfopedido = true;
                 $scope.url =
                     "http://" + $scope.ipServer + ":8080/HCHV/Buscar/" + pedido;
-                $http.get($scope.url, {timeout: 2000}).then(
+                $http.get($scope.url, { timeout: 2000 }).then(
                     function (data) {
                         $scope.myWelcome = data.data;
                         if ($scope.myWelcome.pEDIDO_UNE == null) {
@@ -4538,7 +4672,7 @@ app.controller(
 
                         $scope.url =
                             "http://" + $scope.ipServer + ":8080/HCHV/Buscar/" + pedido;
-                        $http.get($scope.url, {timeout: 2000}).then(
+                        $http.get($scope.url, { timeout: 2000 }).then(
                             function (data) {
                                 $scope.myWelcome = data.data;
                                 if ($scope.myWelcome.pEDIDO_UNE == null) {
@@ -4613,8 +4747,12 @@ app.controller(
         $scope.csvNovedadesTecnicos = function () {
             $scope.csvPend = false;
             if ($scope.Registros.fechaini > $scope.Registros.fechafin) {
-                alert("La fecha inicial debe ser menor que la inicial");
-                return;
+                Swal({
+                    type: 'info',
+                    title: 'Opss...',
+                    text: 'La fecha inicial debe ser menor que la inicial',
+                    timer: 4000
+                })
             } else {
                 services
                     .expCsvNovedadesTecnico($scope.Registros, $rootScope.galletainfo)
@@ -4650,7 +4788,7 @@ app.controller(
 
                                 var blob = new Blob([str]);
                                 var elementToClick = window.document.createElement("a");
-                                elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
+                                elementToClick.href = window.URL.createObjectURL(blob, { type: 'text/csv' });
                                 elementToClick.download = "novedadades-tecnico-" + fullDateCsv + ".csv";
                                 elementToClick.click();
                             }
@@ -4707,11 +4845,11 @@ app.controller(
         };
 
         $scope.pageChanged = function () {
-            data = {page: $scope.currentPage, size: $scope.pageSize};
+            data = { page: $scope.currentPage, size: $scope.pageSize };
             buscarTecnico(data);
         };
         $scope.pageSizeChanged = function () {
-            data = {page: $scope.currentPage, size: $scope.pageSize};
+            data = { page: $scope.currentPage, size: $scope.pageSize };
             $scope.currentPage = 1;
             buscarTecnico(data);
         };
@@ -4722,7 +4860,7 @@ app.controller(
                 $scope.totalItems = 0;
                 $scope.pageSize = 15;
                 $scope.searchText = "";
-                data = {page: $scope.currentPage, size: $scope.pageSize};
+                data = { page: $scope.currentPage, size: $scope.pageSize };
             }
             services.listadoTecnicos(data).then(
                 function (data) {
@@ -4874,7 +5012,7 @@ app.controller(
                 $scope.totalItems = 0;
                 $scope.pageSize = 15;
                 $scope.searchText = '';
-                data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+                data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
             }
 
             services.extraeQuejasGoDia(data).then(
@@ -4901,11 +5039,11 @@ app.controller(
         };
 
         $scope.pageChanged = function () {
-            data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+            data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
             LoadQuejasGo(data);
         }
         $scope.pageSizeChanged = function () {
-            data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+            data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
             $scope.currentPage = 1;
             LoadQuejasGo(data);
         }
@@ -5107,7 +5245,7 @@ app.controller(
 
                             var blob = new Blob([str]);
                             var elementToClick = window.document.createElement("a");
-                            elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
+                            elementToClick.href = window.URL.createObjectURL(blob, { type: 'text/csv' });
                             elementToClick.download = "csv-quejasgo-" + fullDateCsv + ".csv";
                             elementToClick.click();
                         }
@@ -5124,7 +5262,6 @@ app.controller(
         $scope.abrirModalModificarObs = function (id, observacion) {
             $scope.quejasGoSel.observacion = observacion;
             idqueja = id;
-
             angular.copy();
             $("#modObserQuejasGo").modal();
         };
@@ -5195,7 +5332,7 @@ app.controller('quejasGoCtrl2', function ($scope, $http, $rootScope, $location, 
             $scope.totalItems = 0;
             $scope.pageSize = 10;
             $scope.searchText = '';
-            data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+            data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
         }
 
         services.datosQuejasGoTerminado(data).then(function (data) {
@@ -5213,17 +5350,17 @@ app.controller('quejasGoCtrl2', function ($scope, $http, $rootScope, $location, 
     }
 
     $scope.pageChanged = function () {
-        data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+        data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
         dataQuejasGoTerminado(data);
     }
     $scope.pageSizeChanged = function () {
-        data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+        data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
         dataQuejasGoTerminado(data);
     }
 
     $scope.marcarEngestion = function (id) {
         console.log(id);
-        data = {'id': id, 'login_gestion': $rootScope.galletainfo.LOGIN}
+        data = { 'id': id, 'login_gestion': $rootScope.galletainfo.LOGIN }
         services.marcarEnGestionQuejasGo(data).then(function (data) {
             if (data.data.state == 1) {
                 Swal({
@@ -5270,7 +5407,7 @@ app.controller('quejasGoCtrl2', function ($scope, $http, $rootScope, $location, 
                 timer: 4000
             })
         } else {
-            data = {'accion': data.accion, 'gestion': data.gestion, 'id': data.id, 'login_gestion': $rootScope.galletainfo.LOGIN}
+            data = { 'accion': data.accion, 'gestion': data.gestion, 'id': data.id, 'login_gestion': $rootScope.galletainfo.LOGIN }
             $('#modalQuejasGo').modal('show');
 
             $scope.guardaSolicitudQuejasGo = function (obs) {
@@ -5313,6 +5450,11 @@ app.controller('quejasGoCtrl2', function ($scope, $http, $rootScope, $location, 
 
     }
 
+    $scope.ver_mas = (data) => {
+        $scope.observacionQuejas = data;
+        $("#modalObservaciones").modal('show');
+    }
+
     $scope.recargaPage = function () {
         $scope.quejago = {};
         $scope.pedido = '';
@@ -5328,7 +5470,7 @@ app.controller('quejasGoCtrl2', function ($scope, $http, $rootScope, $location, 
                 timer: 4000
             })
         } else {
-            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'pedido': pedido}
+            data = { 'page': $scope.currentPage, 'size': $scope.pageSize, 'pedido': pedido }
             dataQuejasGoTerminado(data);
         }
     }
@@ -5363,7 +5505,7 @@ app.controller('quejasGoCtrl2', function ($scope, $http, $rootScope, $location, 
                 timer: 4000
             })
         } else {
-            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'fecha': data}
+            data = { 'page': $scope.currentPage, 'size': $scope.pageSize, 'fecha': data }
             dataQuejasGoTerminado(data);
         }
     }
@@ -5403,7 +5545,7 @@ app.controller('quejasGoCtrl2', function ($scope, $http, $rootScope, $location, 
                 timer: 4000
             })
         } else {
-            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'fecha': data}
+            data = { 'page': $scope.currentPage, 'size': $scope.pageSize, 'fecha': data }
             services.csvQuejaGo(data).then(
                 function (datos) {
                     var data = datos.data.data;
@@ -5430,7 +5572,7 @@ app.controller('quejasGoCtrl2', function ($scope, $http, $rootScope, $location, 
 
                     var blob = new Blob([str]);
                     var elementToClick = window.document.createElement("a");
-                    elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
+                    elementToClick.href = window.URL.createObjectURL(blob, { type: 'text/csv' });
                     elementToClick.download = "csvGestionQuejasGo-" + fullDateCsv + ".csv";
                     elementToClick.click();
                 },
@@ -5472,7 +5614,7 @@ app.controller("saraCtrl", function ($scope, $http, $rootScope, services) {
         var tareaSara = datos.tarea;
         $scope.urlServicio = "http://10.100.66.254:8080/SARA/Buscar1/" + tareaSara;
 
-        $http.get($scope.urlServicio, {timeout: 8000}).then(
+        $http.get($scope.urlServicio, { timeout: 8000 }).then(
             function (data) {
                 $scope.dataSara = data.data;
 
@@ -5585,13 +5727,13 @@ app.controller(
         BuscarRegistros();
 
         $scope.pageChanged = function () {
-            data = {page: $scope.currentPage, size: $scope.pageSize, fecha: $scope.Registros};
+            data = { page: $scope.currentPage, size: $scope.pageSize, fecha: $scope.Registros };
             console.log(data);
             BuscarRegistros(data);
         };
         $scope.pageSizeChanged = function () {
             console.log(data);
-            data = {page: $scope.currentPage, size: $scope.pageSize, fecha: $scope.Registros};
+            data = { page: $scope.currentPage, size: $scope.pageSize, fecha: $scope.Registros };
             $scope.currentPage = 1;
             BuscarRegistros(data);
         };
@@ -5602,7 +5744,7 @@ app.controller(
                 $scope.totalItems = 0;
                 $scope.pageSize = 15;
                 $scope.searchText = "";
-                data = {page: $scope.currentPage, size: $scope.pageSize};
+                data = { page: $scope.currentPage, size: $scope.pageSize };
             }
             services.registros(data).then(
                 function (data) {
@@ -5643,22 +5785,29 @@ app.controller(
         };
 
         $scope.muestraNotas = function (datos) {
+
             $scope.pedido = datos.pedido;
             $scope.TituloModal = "Observaciones para el pedido:";
             $scope.observaciones = datos.observaciones;
-        };
+            $("#NotasModal").modal('show');
+            // console.log( $scope.observaciones);
+        }
 
         $scope.calcularSubAcciones = function (proceso, accion) {
             $scope.listadoSubAcciones = {};
-            $scope.validarsubaccion = true;
+            $scope.validarsubaccion = false;
 
             services.getSubAcciones(proceso, accion).then(
                 function (data) {
-                    $scope.listadoSubAcciones = data.data.data;
-                    $scope.validarsubaccion = true;
+                    if (data.data.state == 0) {
+                        $scope.validarsubaccion = false;
+                    } else {
+                        $scope.validarsubaccion = true;
+                        $scope.listadoSubAcciones = data.data.data;
+                    }
                 },
                 function errorCallback(response) {
-                    $scope.validarsubaccion = false;
+                    console.log(response);
                 }
             );
         };
@@ -5669,9 +5818,12 @@ app.controller(
                 $scope.validarsubaccion = false;
             } else {
                 services.getAcciones(proceso).then(function (data) {
-                    $scope.listadoAcciones = data.data.data;
-                    $scope.validaraccion = true;
-                    $scope.validarsubaccion = false;
+                    if (data.data.state == 0) {
+                        $scope.validaraccion = false;
+                    } else {
+                        $scope.validaraccion = true;
+                        $scope.listadoAcciones = data.data.data;
+                    }
                 });
             }
         };
@@ -5690,6 +5842,7 @@ app.controller(
                 $scope.datosRegistros.proceso,
                 $scope.datosRegistros.accion
             );
+            $("#Editardato").modal('show');
         };
 
         $scope.editRegistro = function (datos) {
@@ -5764,7 +5917,7 @@ app.controller(
 
                             var blob = new Blob([str]);
                             var elementToClick = window.document.createElement("a");
-                            elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
+                            elementToClick.href = window.URL.createObjectURL(blob, { type: 'text/csv' });
                             elementToClick.download = "csv-registros-" + fullDateCsv + ".csv";
                             elementToClick.click();
                         }
@@ -5827,7 +5980,7 @@ app.controller(
 
                             var blob = new Blob([str]);
                             var elementToClick = window.document.createElement("a");
-                            elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
+                            elementToClick.href = window.URL.createObjectURL(blob, { type: 'text/csv' });
                             elementToClick.download = "csv-registros-equipos" + fullDateCsv + ".csv";
                             elementToClick.click();
                         }
@@ -5862,13 +6015,13 @@ app.controller("registrosOfflineCtrl", function ($scope, services) {
     RegistrosOffline();
 
     $scope.pageChanged = function () {
-        data = {page: $scope.currentPage, size: $scope.pageSize};
+        data = { page: $scope.currentPage, size: $scope.pageSize };
         console.log(data);
         RegistrosOffline(data);
     };
     $scope.pageSizeChanged = function () {
         console.log(data);
-        data = {page: $scope.currentPage, size: $scope.pageSize};
+        data = { page: $scope.currentPage, size: $scope.pageSize };
         $scope.currentPage = 1;
         RegistrosOffline(data);
     };
@@ -5879,7 +6032,7 @@ app.controller("registrosOfflineCtrl", function ($scope, services) {
             $scope.totalItems = 0;
             $scope.pageSize = 8;
             $scope.searchText = "";
-            data = {page: $scope.currentPage, size: $scope.pageSize};
+            data = { page: $scope.currentPage, size: $scope.pageSize };
         }
         services.registrosOffline(data).then(
             function (data) {
@@ -5931,8 +6084,8 @@ app.controller(
             if ($scope.offline.ACTIVIDAD == "Patinaje") {
                 $scope.validaractividad = true;
                 $scope.actividades2 = [
-                    {ID: "Asesor reiterativo", ACTIVIDAD2: "Asesor reiterativo"},
-                    {ID: "Asesor AHT alto", ACTIVIDAD2: "Asesor AHT alto"},
+                    { ID: "Asesor reiterativo", ACTIVIDAD2: "Asesor reiterativo" },
+                    { ID: "Asesor AHT alto", ACTIVIDAD2: "Asesor AHT alto" },
                     {
                         ID: "Requiere intervencion - Supervisor",
                         ACTIVIDAD2: "Requiere intervencion - Supervisor",
@@ -5975,7 +6128,12 @@ function fn_popup1() {
     var msg =
         "Esta opción es solo para hacer correcciones en portafolio o inventario";
     if (opc1 == action1) {
-        alert(msg);
+        Swal({
+            type: 'info',
+            title: 'Opss...',
+            text: msg,
+            timer: 4000
+        })
         opc1 = document.getElementById("idaccionTVHFCGPON").reset();
     }
 }
@@ -5986,7 +6144,12 @@ function fn_popup2() {
     var msg =
         "Esta opción es solo para hacer correcciones en portafolio o inventario";
     if (opc2 == action2) {
-        alert(msg);
+        Swal({
+            type: 'info',
+            title: 'Opss...',
+            text: msg,
+            timer: 4000
+        })
         opc2 = document.getElementById("idaccionTVCobre").reset();
     }
 }
@@ -5997,7 +6160,12 @@ function fn_popup3() {
     var msg =
         "Esta opción es solo para hacer correcciones en portafolio o inventario";
     if (opc3 == action3) {
-        alert(msg);
+        Swal({
+            type: 'info',
+            title: 'Opss...',
+            text: msg,
+            timer: 4000
+        })
         opc3 = document.getElementById("idaccionTVDTH").reset();
     }
 }
@@ -6008,7 +6176,12 @@ function fn_popup4() {
     var msg =
         "Esta opción es solo para hacer correcciones en portafolio o inventario";
     if (opc4 == action4) {
-        alert(msg);
+        Swal({
+            type: 'info',
+            title: 'Opss...',
+            text: msg,
+            timer: 4000
+        })
         opc4 = document.getElementById("idaccionINTTOIP").reset();
     }
 }
@@ -6019,7 +6192,12 @@ function fn_popup5() {
     var msg =
         "Esta opción es solo para hacer correcciones en portafolio o inventario";
     if (opc5 == action5) {
-        alert(msg);
+        Swal({
+            type: 'info',
+            title: 'Opss...',
+            text: msg,
+            timer: 4000
+        })
         opc5 = document.getElementById("idaccionTOIP").resest();
     }
 }
@@ -6122,7 +6300,7 @@ app.controller(
                 $scope.url =
                     "http://10.100.66.254:8080/HCHV_DEV/BuscarC/" +
                     $scope.nivelacion.ticket;
-                $http.get($scope.url, {timeout: 2000}).then(
+                $http.get($scope.url, { timeout: 2000 }).then(
                     function (data) {
                         if (data.data.state != 0) {
                             Swal({
@@ -6271,7 +6449,7 @@ app.controller(
                                                 "http://10.100.66.254:8080/HCHV_DEV/BuscarF/" +
                                                 $scope.nivelacion.ticket;
                                             $http
-                                                .get($scope.url, {timeout: 2000})
+                                                .get($scope.url, { timeout: 2000 })
                                                 .then(function (data) {
                                                     if (data.data.state == 1) {
                                                         Swal({
@@ -6418,7 +6596,7 @@ app.controller(
                                                 "http://10.100.66.254:8080/HCHV_DEV/BuscarF/" +
                                                 $scope.nivelacion.ticket;
                                             $http
-                                                .get($scope.url, {timeout: 2000})
+                                                .get($scope.url, { timeout: 2000 })
                                                 .then(function (data) {
                                                     if (data.data.state == 1) {
                                                         Swal({
@@ -6706,7 +6884,7 @@ app.controller("GestionNivelacionCtrl", [
                 {
                     name: "Fecha ingreso",
                     field: "fecha_ingreso",
-                    cellStyle: {"text-align": "center"},
+                    cellStyle: { "text-align": "center" },
                     minWidth: 70,
                     width: "10%",
                     enableCellEdit: false,
@@ -6722,7 +6900,7 @@ app.controller("GestionNivelacionCtrl", [
                 {
                     name: "Proceso",
                     field: "proceso",
-                    cellStyle: {"text-align": "center"},
+                    cellStyle: { "text-align": "center" },
                     minWidth: 70,
                     width: "10%",
                     enableCellEdit: false,
@@ -6733,7 +6911,7 @@ app.controller("GestionNivelacionCtrl", [
                 {
                     name: "Zona",
                     field: "zona",
-                    cellStyle: {"text-align": "center"},
+                    cellStyle: { "text-align": "center" },
                     minWidth: 80,
                     width: "8%",
                     enableCellEdit: false,
@@ -6741,7 +6919,7 @@ app.controller("GestionNivelacionCtrl", [
                 {
                     name: "Sub zona",
                     field: "zubzona",
-                    cellStyle: {"text-align": "center"},
+                    cellStyle: { "text-align": "center" },
                     minWidth: 70,
                     width: "8%",
                     enableCellEdit: false,
@@ -6749,14 +6927,14 @@ app.controller("GestionNivelacionCtrl", [
                 {
                     name: "Nombre técnico",
                     field: "nombre_tecnico",
-                    cellStyle: {"text-align": "center"},
+                    cellStyle: { "text-align": "center" },
                     width: "11%",
                     enableCellEdit: false,
                 },
                 {
                     name: "cc técnico",
                     field: "cc_tecnico",
-                    cellStyle: {"text-align": "center"},
+                    cellStyle: { "text-align": "center" },
                     minWidth: 70,
                     width: "6%",
                     cellFilter: 'currency:"":0',
@@ -6765,7 +6943,7 @@ app.controller("GestionNivelacionCtrl", [
                 {
                     name: "Tipo solicitud",
                     field: "solicitud",
-                    cellStyle: {"text-align": "center"},
+                    cellStyle: { "text-align": "center" },
                     width: "6%",
                     enableCellEdit: false,
                     cellTooltip: function (row, col) {
@@ -6775,28 +6953,28 @@ app.controller("GestionNivelacionCtrl", [
                 {
                     name: "Motivo",
                     field: "motivo",
-                    cellStyle: {"text-align": "center"},
+                    cellStyle: { "text-align": "center" },
                     width: "9%",
                     enableCellEdit: false,
                 },
                 {
                     name: "Submotivo",
                     field: "submotivo",
-                    cellStyle: {"text-align": "center"},
+                    cellStyle: { "text-align": "center" },
                     width: "6%",
                     enableCellEdit: false,
                 },
                 {
                     name: "N. nuevo técnico",
                     field: "nombre_nuevo_tecnico",
-                    cellStyle: {"text-align": "center"},
+                    cellStyle: { "text-align": "center" },
                     width: "11%",
                     enableCellEdit: false,
                 },
                 {
                     name: "c. n. técnico",
                     field: "cc_nuevo_tecnico",
-                    cellStyle: {"text-align": "center"},
+                    cellStyle: { "text-align": "center" },
                     minWidth: 70,
                     width: "6%",
                     suppressSizeToFit: true,
@@ -6825,7 +7003,7 @@ app.controller("GestionNivelacionCtrl", [
                     width: "3%",
                     enableFiltering: false,
                     enableCellEdit: false,
-                    cellStyle: {"text-align": "center"},
+                    cellStyle: { "text-align": "center" },
                 },
                 {
                     name: "Acc.",
@@ -7453,16 +7631,13 @@ app.controller(
                 )
                 .then(
                     function (data) {
-                        console.log("buscarPedidoSeguimiento: ", data);
-                        console.log($scope.contingencias);
+                        console.log(data);
                         $scope.GuardarContingencia($scope.contingencias);
                         $scope.contingencias = {};
                     },
                     function errorCallback(response) {
                         $scope.pedidoexiste = true;
                         $scope.pedidoguardado = false;
-
-                        console.log("status: ", response.status);
 
                         if (response.status == "401") {
                             $scope.mensaje =
@@ -7473,7 +7648,6 @@ app.controller(
                             $scope.mensaje =
                                 "El pedido se encuentra sin gestión, no es posible guardar.";
                         }
-                        return;
                     }
                 );
         };
@@ -7489,7 +7663,20 @@ app.controller(
                 services.getbuscarPedidoContingencia(pedido).then(
                     function (data) {
                         console.log(data);
-                        if (data.data.state != 1) {
+                        if (data.data.state == 99) {
+                            swal({
+                                type: "error",
+                                title: data.data.title,
+                                text: data.data.text,
+                                timer: 4000,
+                            }).then(function () {
+                                $cookies.remove("usuarioseguimiento");
+                                $location.path("/");
+                                $rootScope.galletainfo = undefined;
+                                $rootScope.permiso = false;
+                                $route.reload();
+                            });
+                        } else if (data.data.state != 1) {
                             Swal({
                                 type: 'error',
                                 text: data.data.msj,
@@ -7506,6 +7693,11 @@ app.controller(
                 );
             }
         };
+
+        $scope.muestraModalObservacion = (data) => {
+            $scope.observacionContingencia = data;
+            $("#modalObservaciones").modal('show');
+        }
 
         $scope.addEquipoEntra = function () {
             $scope.equiposEntran.push({});
@@ -7668,7 +7860,8 @@ app.controller(
         $scope,
         $rootScope,
         services,
-        $http
+        $http,
+        $route
     ) {
         $scope.rutaCierreMasivoContin =
             "partial/modals/cierreMasivoContingencias.html";
@@ -7687,6 +7880,8 @@ app.controller(
         $scope.cantidadContingenciasTV = 0;
         $scope.cantidadContingenciasINT = 0;
 
+        resumenContingencias();
+
         $scope.bb8 = function (pedido) {
             $scope.bb8Internet = 0;
             $scope.bb8Telefonia = 0;
@@ -7695,7 +7890,7 @@ app.controller(
             $scope.url =
                 "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetClick/" + pedido;
             $http
-                .get($scope.url, {timeout: 4000})
+                .get($scope.url, { timeout: 4000 })
                 .then(function (data) {
                     $scope.clic = data.data[0];
                     $scope.UNEPedido = $scope.clic.UNEPedido;
@@ -7712,9 +7907,8 @@ app.controller(
                         "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanBaMSS/" +
                         pedido;
                     $http
-                        .get($scope.url, {timeout: 4000})
+                        .get($scope.url, { timeout: 4000 })
                         .then(function (data) {
-                            console.log(data, " internet ");
                             if (data.data.length > 0) {
                                 $scope.bb8Internet = 1;
                                 $scope.recorreinternet = data.data;
@@ -7722,8 +7916,7 @@ app.controller(
                                 $scope.url =
                                     "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanBaMSS/" +
                                     $scope.clic.UNECodigoDireccionServicio;
-                                $http.get($scope.url, {timeout: 4000}).then(function (data) {
-                                    console.log(data, " internet2 ");
+                                $http.get($scope.url, { timeout: 4000 }).then(function (data) {
                                     if (data.data.length > 0) {
                                         $scope.bb8Internet = 1;
                                         $scope.recorreinternet = data.data;
@@ -7734,9 +7927,8 @@ app.controller(
                                 "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTOMSS/" +
                                 pedido;
                             $http
-                                .get($scope.url, {timeout: 4000})
+                                .get($scope.url, { timeout: 4000 })
                                 .then(function (data) {
-                                    console.log(data, " telefonia");
                                     if (data.data.length > 0) {
                                         $scope.bb8Telefonia = 1;
                                         $scope.recorretelefonia = data.data;
@@ -7745,9 +7937,8 @@ app.controller(
                                             "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTOMSS/" +
                                             $scope.clic.UNECodigoDireccionServicio;
                                         $http
-                                            .get($scope.url, {timeout: 4000})
+                                            .get($scope.url, { timeout: 4000 })
                                             .then(function (data) {
-                                                console.log(data, " telefonia2");
                                                 if (data.data.length > 0) {
                                                     $scope.bb8Telefonia = 1;
                                                     $scope.recorretelefonia = data.data;
@@ -7758,9 +7949,8 @@ app.controller(
                                         "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTVMSS/" +
                                         pedido;
                                     $http
-                                        .get($scope.url, {timeout: 4000})
+                                        .get($scope.url, { timeout: 4000 })
                                         .then(function (data) {
-                                            console.log(data, " tv");
                                             if (data.data.length > 0) {
                                                 $scope.bb8Television = 1;
                                                 $scope.recore = data.data;
@@ -7769,9 +7959,8 @@ app.controller(
                                                     "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTVMSS/" +
                                                     $scope.clic.UNECodigoDireccionServicio;
                                                 $http
-                                                    .get($scope.url, {timeout: 4000})
+                                                    .get($scope.url, { timeout: 4000 })
                                                     .then(function (data) {
-                                                        console.log(data, " tv2");
                                                         if (data.data.length > 0) {
                                                             $scope.bb8Television = 1;
                                                             $scope.recore = data.data;
@@ -7810,9 +7999,6 @@ app.controller(
 
         $scope.fechaupdateInical = tiempo;
         $scope.fechaupdateFinal = tiempo;
-
-        $scope.changeStatus = function (data) {
-        };
 
         $scope.gestioncontingencias = () => {
             $scope.loadingData = true;
@@ -7940,6 +8126,11 @@ app.controller(
                     $scope.loadingData = false;
                 });
         };
+
+        $scope.muestraModalObservacion = (data) => {
+            $scope.observacionContingencia = data;
+            $("#modalObservaciones").modal('show');
+        }
 
         $scope.CopyPortaPapeles = function (data) {
             var copyTextTV = document.createElement("input");
@@ -8127,7 +8318,7 @@ app.controller(
                     var queryUpdateStatus = await database
                         .collection("contingencies")
                         .doc(data._id)
-                        .update({status: 1});
+                        .update({ status: 1 });
                     var querySaveContingency = await services.guardarContingencia(
                         contingencia,
                         $rootScope.galletainfo
@@ -8181,91 +8372,112 @@ app.controller(
                     text: "Debes documentar claramente la razon de la contingencia (minimo 30 caracteres)",
                 });
             } else {
-                alert("Pedido guardado, recuerda actualizar!!");
-                if (
-                    data.id_terreno != null &&
-                    data.id_terreno != undefined &&
-                    data.id_terreno != ""
-                ) {
-                    var currentTimeDate = new Date().toLocaleString();
-                    var statusContingencieField =
-                        data.tipificacion == "Ok" ? "Aprobado" : "Rechazado";
-                }
                 services
                     .editarregistrocontingencia(data, $rootScope.galletainfo)
                     .then(function (data) {
+                        if (data.data.state === 99) {
+                            swal({
+                                type: "error",
+                                title: data.data.title,
+                                text: data.data.text,
+                                timer: 4000,
+                            }).then(function () {
+                                $cookies.remove("usuarioseguimiento");
+                                $location.path("/");
+                                $rootScope.galletainfo = undefined;
+                                $rootScope.permiso = false;
+                                $route.reload();
+                            });
+                        } else if (data.data.state == 3 || data.data.state == 0) {
+                            swal({
+                                type: "info",
+                                title: 'Ops...',
+                                text: data.data.text,
+                                timer: 4000,
+                            }).then(function () {
+                                $route.reload();
+                            })
+                        } else if (data.data.state == 1) {
+                            swal({
+                                type: "success",
+                                title: 'Muy bien',
+                                text: data.data.text,
+                                timer: 4000,
+                            }).then(function () {
+                                $route.reload();
+                            })
+                        }
                     })
                     .catch((err) => alert(err));
                 $scope.gestioncontingencias();
             }
         };
 
-        $scope.marcarEngestion = async (data) => {
-            if (data._id != null && data._id != undefined) {
-                try {
-                    data.pedido = data.references;
-                    data.producto = data.product;
-                    await $scope.autocompletarContingencia(data);
-                } catch (error) {
-                    return swal({
-                        title: "Aviso Importante: ",
-                        html: "El pedido no fue desbloqueado.",
-                        type: "error",
-                    });
-                }
+        $scope.marcarEngestion = (data) => {
+            if (!data) {
+                Swal({
+                    type: 'info',
+                    title: 'Opss...',
+                    text: 'Debes marcar el pedido',
+                    timer: 4000
+                })
             }
 
             services
                 .marcarengestion(data, $rootScope.galletainfo)
                 .then(function (data) {
-                    if (data.data !== "") {
-                        if (data.data[0] == "desbloqueado") {
-                            $scope.respuestaMarca = data.data[0][0];
-                            swal({
-                                title: "Pedido Desbloqueado",
-                                type: "success",
-                                position: "center",
-                                showConfirmButton: false,
-                                timer: 3000,
-                            });
-                            $scope.gestioncontingencias();
-                            return;
-                        } else {
-                            $scope.respuestaMarca = data.data[0][0];
-                            swal({
-                                title: "El pedido se encuentra bloqueado",
-                                type: "warning",
-                                position: "center",
-                                showConfirmButton: false,
-                                timer: 3000,
-                            });
-                            $scope.gestioncontingencias();
-                            //$scope.gestioncontingenciasPrueba();
-                            return;
-                        }
-                    } else if (data.data == "") {
-                        $scope.respuestaMarca = "";
+                    if (data.data.state === 99) {
                         swal({
-                            title: "Pedido Bloqueado",
-                            type: "success",
-                            position: "center",
-                            showConfirmButton: false,
-                            timer: 3000,
+                            type: "error",
+                            title: data.data.title,
+                            text: data.data.text,
+                            timer: 4000,
+                        }).then(function () {
+                            $cookies.remove("usuarioseguimiento");
+                            $location.path("/");
+                            $rootScope.galletainfo = undefined;
+                            $rootScope.permiso = false;
+                            $route.reload();
                         });
-                        $scope.gestioncontingencias();
-                        return;
+                    } else if (data.data.state != 1) {
+                        swal({
+                            type: "info",
+                            title: data.data.title,
+                            text: data.data.text,
+                            timer: 4000,
+                        }).then(function () {
+                            $route.reload();
+                        })
+                    } else if (data.data.state == 1) {
+                        swal({
+                            type: "success",
+                            title: data.data.title,
+                            text: data.data.text,
+                            timer: 4000,
+                        }).then(function () {
+                            $route.reload();
+                        })
                     }
+
                 })
                 .catch((err) => console.log(err));
         };
 
         $scope.guardarContingenciaPortafolio = function (data) {
             if (data.enGestionPortafolio == 0) {
-                alert("Debes bloquear el pedido");
-                return;
+                Swal({
+                    type: 'info',
+                    title: 'Debes bloquear el pedido',
+                    text: msg,
+                    timer: 4000
+                })
             } else if (data.tipificacionPortafolio == "") {
-                alert("Recuerda seleccionar todas las opciones!!");
-                return;
+                Swal({
+                    type: 'info',
+                    title: 'Recuerda seleccionar todas las opciones!!',
+                    text: msg,
+                    timer: 4000
+                })
             } else {
                 $scope.gestioncontinPortafilio = data;
                 $("#editarModalPortafolio").modal("show");
@@ -8275,10 +8487,19 @@ app.controller(
 
         $scope.guardarpedidoPortafolio = function (data) {
             if (!data.observContingenciaPortafolio) {
-                alert("Debes ingresar las observaciones.");
-                return;
+                Swal({
+                    type: 'info',
+                    title: 'Debes ingresar las observaciones.',
+                    text: msg,
+                    timer: 4000
+                })
             } else {
-                alert("Pedido guardado, recuerda actualizar!!");
+                Swal({
+                    type: 'info',
+                    title: 'Pedido guardado, recuerda actualizar!!',
+                    text: msg,
+                    timer: 4000
+                })
                 services
                     .editarRegistroContingenciaPortafolio(data, $rootScope.galletainfo)
                     .then(function (data) {
@@ -8294,15 +8515,29 @@ app.controller(
                     if (data.data !== "") {
                         if (data.data[0] == "desbloqueado") {
                             $scope.respuestaMarca = data.data[0][0];
-                            alert("Pedido desbloqueado!!");
+                            Swal({
+                                type: 'suceess',
+                                title: 'Pedido desbloqueado!!',
+                                text: msg,
+                                timer: 4000
+                            })
                             $scope.gestioncontingencias();
-                            return;
                         } else {
                             $scope.respuestaMarca = data.data[0][0];
                             if ($scope.respuestaMarca.logincontingencia) {
-                                alert("El pedido se encuentra bloqueado.");
+                                Swal({
+                                    type: 'suceess',
+                                    title: 'El pedido se encuentra bloqueado.',
+                                    text: msg,
+                                    timer: 4000
+                                })
                             } else {
-                                alert("El pedido se encuentra bloqueado.");
+                                Swal({
+                                    type: 'suceess',
+                                    title: 'El pedido se encuentra bloqueado.',
+                                    text: msg,
+                                    timer: 4000
+                                })
                             }
 
                             $scope.gestioncontingencias();
@@ -8310,33 +8545,52 @@ app.controller(
                         }
                     } else if (data.data == "") {
                         $scope.respuestaMarca = "";
-                        alert("Pedido bloqueado!!!");
+                        Swal({
+                            type: 'suceess',
+                            title: 'Pedido bloqueado!!!',
+                            text: msg,
+                            timer: 4000
+                        })
                         $scope.gestioncontingencias();
-                        return;
                     }
                 });
         };
 
         $scope.buscarPedidoContingencia = function (pedido) {
-            console.log("pedido: ", pedido);
-
             if (pedido == undefined || pedido == "") {
-                alert("Debe ingresar un pedido");
-                return;
+                Swal({
+                    type: 'suceess',
+                    title: 'Debe ingresar un pedido',
+                    text: msg,
+                    timer: 4000
+                })
             } else {
                 services.getbuscarPedidoContingencia(pedido).then(
                     function (data) {
-                        if (data.data.state != 1) {
+                        console.log(data, ' lllllll');
+                        if (data.data.state == 99) {
+                            swal({
+                                type: "error",
+                                title: data.data.title,
+                                text: data.data.text,
+                                timer: 4000,
+                            }).then(function () {
+                                $cookies.remove("usuarioseguimiento");
+                                $location.path("/");
+                                $rootScope.galletainfo = undefined;
+                                $rootScope.permiso = false;
+                                $route.reload();
+                            });
+                        } else if (data.data.state != 1) {
                             Swal({
                                 type: 'error',
                                 text: data.data.msj,
                                 timer: 4000
                             })
-                        } else {
+                        } else if (data.data.state == 1) {
                             $scope.databsucarPedido = data.data.data;
-                            $scope.sinPedido = true;
+                            $scope.dataPedido = true;
                         }
-
                     },
                     function errorCallback(response) {
                         console.log(response);
@@ -8345,21 +8599,30 @@ app.controller(
             }
         };
 
-        $scope.resumenContingencias = function (fechaInicial, fechafinal) {
-            services.getresumenContingencias(fechaInicial, fechafinal).then(
+        $scope.pageChanged = function () {
+            data = { page: $scope.currentPage, size: $scope.pageSize, fecha: $scope.resumen };
+            resumenContingencias(data);
+        };
+        $scope.pageSizeChanged = function () {
+            data = { page: $scope.currentPage, size: $scope.pageSize, fecha: $scope.resumen };
+            resumenContingencias(data);
+        };
+
+        function resumenContingencias(data) {
+            if (data === "" || data === undefined) {
+                $scope.currentPage = 1;
+                $scope.totalItems = 0;
+                $scope.pageSize = 15;
+                $scope.searchText = "";
+                data = { page: $scope.currentPage, size: $scope.pageSize, fecha: $scope.fecha };
+            }
+            services.getresumenContingencias(data).then(
                 function (data) {
                     $scope.dataresumenContingencias = data.data[0];
-
-                    $scope.dataresumenContingenciasCP = data.data[5];
-
                     $scope.dataresumenContingenciasTV = data.data[6];
-
                     $scope.dataresumenContingenciasInTo = data.data[7];
-
                     $scope.estados = data.data[1];
-
                     $scope.estadosCP = data.data[3];
-
                     $scope.dia = data.data[2];
                     $scope.diaCP = data.data[4];
 
@@ -8367,6 +8630,16 @@ app.controller(
                     $scope.Totaltotal_pedidos_aceptados = 0;
                     $scope.Totaltotal_pedidos_pendientes = 0;
                     $scope.Totaltotal_pedidos_rechazados = 0;
+
+                    $scope.cantidad = data.data[0].length;
+                    $scope.counter = data.data[8];
+
+                    $scope.totalItems = data.data[8];
+                    $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                    $scope.endItem = $scope.currentPage * $scope.pageSize;
+                    if ($scope.endItem > data.data.counter) {
+                        $scope.endItem = data.data.counter;
+                    }
 
                     for (var i = 0; i < tam; i++) {
                         if ($scope.dataresumenContingencias[i].estado == "Acepta") {
@@ -8488,41 +8761,6 @@ app.controller(
 
                     $scope.cantidadAnalistasInt = cantAnalistasInt;
 
-                    var tam = $scope.dataresumenContingenciasCP.length;
-                    $scope.Totaltotal_pedidos_aceptadosCP = 0;
-                    $scope.Totaltotal_pedidos_pendientesCP = 0;
-                    $scope.Totaltotal_pedidos_rechazadosCP = 0;
-                    $scope.Total_Personas_GestionandoCP = 0;
-
-                    for (var i = 0; i < tam; i++) {
-                        if ($scope.dataresumenContingenciasCP[i].estado == "Acepta") {
-                            $scope.Totaltotal_pedidos_aceptadosCP =
-                                +$scope.Totaltotal_pedidos_aceptadosCP + 1;
-                        }
-                        if ($scope.dataresumenContingenciasCP[i].estado == "Rechaza") {
-                            $scope.Totaltotal_pedidos_rechazadosCP =
-                                +$scope.Totaltotal_pedidos_rechazadosCP + 1;
-                        }
-                        if ($scope.dataresumenContingenciasCP[i].estado == "Pendiente") {
-                            $scope.Totaltotal_pedidos_pendientesCP =
-                                +$scope.Totaltotal_pedidos_pendientesCP + 1;
-                        }
-                    }
-
-                    for (var i = 0; i < tam; i++) {
-                        if (
-                            $scope.dataresumenContingenciasCP[i].estado == "Pendiente" &&
-                            $scope.dataresumenContingenciasCP[i]
-                                .loginContingenciaPortafolio !== null &&
-                            $scope.dataresumenContingenciasCP[i].estado == "Pendiente" &&
-                            $scope.dataresumenContingenciasCP[i]
-                                .loginContingenciaPortafolio !== ""
-                        ) {
-                            $scope.Total_Personas_GestionandoCP =
-                                +$scope.Total_Personas_GestionandoCP + 1;
-                        }
-                    }
-
                     return data.data;
                 },
                 function errorCallback(response) {
@@ -8570,7 +8808,7 @@ app.controller(
 
                             var blob = new Blob([str]);
                             var elementToClick = window.document.createElement("a");
-                            elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
+                            elementToClick.href = window.URL.createObjectURL(blob, { type: 'text/csv' });
                             elementToClick.download = "Contingencias-" + fullDateCsv + ".csv";
                             elementToClick.click();
                         }
@@ -8796,10 +9034,6 @@ app.controller(
         };
 
         $scope.gestioncontingencias();
-        $scope.resumenContingencias(
-            $scope.fechaupdateInical,
-            $scope.fechaupdateFinal
-        );
     }
 );
 
@@ -8828,12 +9062,12 @@ app.controller("pendientesBrutalCtrl", function ($scope, $uibModal, services) {
 
 app.controller(
     "GestionsoportegponCtrl",
-    function ($scope, $rootScope, services, $route) {
+    function ($scope, $rootScope, services, $route, $sce) {
         $scope.isSoporteGponFromField = false;
         $scope.isSoporteGponFromIntranet = false;
         $scope.isLoadingData = true;
         $scope.dataSoporteGpon = [];
-        $scope.dataContent = 'clic';
+        //$scope.dataContent = 'clic';
 
 
         $scope.listarsoportegpon = () => {
@@ -8865,23 +9099,69 @@ app.controller(
             $scope.isLoadingData = false;
         };
 
+        $scope.contadorGpon = () => {
+            let datacount = $scope.datacount;
+            let data = $scope.datacount;
+            let finalizado = $scope.finalizado;
+            let devuelto = $scope.devuelto;
+            let incompleto = $scope.incompleto;
+            let sinrespuesta = $scope.sinrespuesta;
+            $scope.contadorGpon = $sce.trustAsHtml('<div class="modal-body">' +
+                '<table class="table table-striped">' +
+                '<thead>' +
+                '<tr>' +
+                '<th>Login Analista</th>' +
+                '<th>Cantidad Marcadas</th>' +
+                '</tr>' +
+                '</thead>' +
+                '<tbody>' +
+                '<tr ng-repeat="data in datacount">' +
+                '<td class="filterable-cell">' +
+                '<i class="fa fa-user" aria-hidden="true"></i>' + data.login + '</td>' +
+                '<td class="filterable-cell">' + data.Conteo + '</td>' +
+                '</tr>' +
+                '</tbody>' +
+                '</table>' +
+                '<div class="row">' +
+                '<h5 class="subtitulo2" style="text-align: center">' +
+                '<b>Detalles hoy</b>' +
+                '</h5>' +
+                '<ul>' +
+                '<li>' +
+                '<span class="label label-success">Finalizados:' + finalizado + '</span>' +
+                '</li>' +
+                '<li>' +
+                '<span class="label label-warning">Devueltos al técnico:' + devuelto + '</span>' +
+                '</li>' +
+                '</ul>' +
+                '<ul>' +
+                '<li>' +
+                '<span class="label label-danger">Incompletos:' + incompleto + '</span>' +
+                '</li>' +
+                '<li>' +
+                '<span class="label label-info">Sin respuesta:' + sinrespuesta + '</span>' +
+                '</li>' +
+                '</ul>' +
+                '</div>' +
+                '</div>');
+        }
+
+
         $scope.ver_masss = (data) => {
-            console.log(data);
-            $scope.dataContent =
-                "<div class='table-responsive' style='max-width: 380px;'><table class='table table-bordered table-hover table-condensed small style='max-width: 350px;'>" +
-                "<tbody><tr><td style='min-width: 80px'>Pedido</td><td>" + data.unepedido + "</td></tr>" +
-                "<tr><td style='min-width: 80px'>Categoría</td><td>" + data.tasktypecategory + "</td></tr>" +
-                "<tr><td style='min-width: 80px'>Municipio</td><td>" + data.unemunicipio + "</td></tr>" +
-                "<tr><td style='min-width: 80px'>Productos</td><td>" + data.uneproductos + "</td></tr>" +
-                "<tr><td style='min-width: 80px'>Datos cola</td><td>" + data.datoscola + "</td></tr>" +
-                "<tr><td style='min-width: 80px'>Mac</td><td>" + data.mac + "</td></tr>" +
-                "<tr><td style='min-width: 80px'>Serial</td><td>" + data.serial.replace(/,/g, '\n') + "</td></tr>" +
-                "<tr><td style='min-width: 80px'>Sistema</td><td>" + data.uneSourceSystem + "</td></tr>" +
-                "<tr><td style='min-width: 80px'>Tipo equipo</td><td>" + data.tipo_equipo.replace(/,/g, '\n') + "</td></tr>" +
-                "<tr><td style='min-width: 80px'>Velocidad navegación</td><td>" + data.velocidad_navegacion + "</td></tr>" +
-                "<tr><td style='min-width: 80px'>Observación</td><td>" + data.observacion_terreno + "</td></tr>" +
-                "<tr><td style='min-width: 80px'>Fecha solicitud</td><td>" + data.fecha_creado + "</td></tr>" +
-                "</tbody></table></div>";
+            $scope.dataContent = $sce.trustAsHtml('<div class="table-responsive" style="max-width: 380px;"><table class="table table-bordered table-hover table-condensed small" style="max-width: 350px;">' +
+                '<tbody><tr><td style="min-width: 80px">Pedido</td><td>' + data.unepedido + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Categoría</td><td>' + data.tasktypecategory + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Municipio</td><td>' + data.unemunicipio + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Productos</td><td>' + data.uneproductos + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Datos cola</td><td>' + data.datoscola + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Mac</td><td>' + data.mac + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Serial</td><td>' + data.serial.replace(/,/g, '\n') + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Sistema</td><td>' + data.uneSourceSystem + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Tipo equipo</td><td>' + data.tipo_equipo.replace(/,/g, '\n') + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Velocidad navegación</td><td>' + data.velocidad_navegacion + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Observación</td><td>' + data.observacion_terreno + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Fecha solicitud</td><td>' + data.fecha_creado + '</td></tr>' +
+                '</tbody></table></div>');
         }
 
 
@@ -8922,7 +9202,7 @@ app.controller(
             let tipificacion = $("#tipificacion" + id_soporte).val();
             let tipificaciones = $("#tipificaciones" + id_soporte).val();
 
-            const {value: observacion} = await Swal({
+            const { value: observacion } = await Swal({
                 title: "Gestión Soporte GPON",
                 input: "textarea",
                 inputPlaceholder: "Gestion...",
@@ -9041,11 +9321,11 @@ app.controller(
         BuscarRegistrosSoporteGpon();
 
         $scope.pageChanged = function () {
-            data = {page: $scope.currentPage, size: $scope.pageSize, data: $scope.RegistrosSoporteGpon};
+            data = { page: $scope.currentPage, size: $scope.pageSize, data: $scope.RegistrosSoporteGpon };
             BuscarRegistrosSoporteGpon(data);
         };
         $scope.pageSizeChanged = function () {
-            data = {page: $scope.currentPage, size: $scope.pageSize, data: $scope.RegistrosSoporteGpon};
+            data = { page: $scope.currentPage, size: $scope.pageSize, data: $scope.RegistrosSoporteGpon };
             $scope.currentPage = 1;
             BuscarRegistrosSoporteGpon(data);
         };
@@ -9102,7 +9382,7 @@ app.controller(
                     timer: 4000,
                 });
             } else {
-                data = {page: $scope.currentPage, size: $scope.pageSize, data: data};
+                data = { page: $scope.currentPage, size: $scope.pageSize, data: data };
                 BuscarRegistrosSoporteGpon(data);
             }
         };
@@ -9114,7 +9394,7 @@ app.controller(
                 $scope.totalItems = 0;
                 $scope.pageSize = 10;
                 $scope.searchText = "";
-                data = {page: $scope.currentPage, size: $scope.pageSize};
+                data = { page: $scope.currentPage, size: $scope.pageSize };
             }
             services.registrossoportegpon(data).then(
                 function (data) {
@@ -9194,18 +9474,19 @@ app.controller(
 
             $scope.listaSeriales = listaseriales;
             $scope.listaMacs = listamacs;
-            console.log($scope.listaSeriales, $scope.listaMacs);
             $scope.observaciones = datos.observacion;
+            $("#NotasModal").modal('show');
         };
 
         $scope.csvRegistros = function () {
             $scope.csvPend = false;
-            if (
-                $scope.RegistrosSoporteGpon.fechaini >
-                $scope.RegistrosSoporteGpon.fechafin
-            ) {
-                alert("La fecha inicial debe ser menor que la inicial");
-                return;
+            if ($scope.RegistrosSoporteGpon.fechaini > $scope.RegistrosSoporteGpon.fechafin) {
+                swal({
+                    type: 'info',
+                    title: 'Opsss...',
+                    text: 'La fecha inicial debe ser menor que la inicial',
+                    timer: 4000
+                })
             } else {
                 services
                     .expCsvRegistrosSoporteGpon(
@@ -9217,6 +9498,7 @@ app.controller(
                             if (datos.data.state != 1) {
                                 Swal({
                                     type: 'error',
+                                    title: 'Opsss...',
                                     text: datos.data.msj,
                                     timer: 4000
                                 })
@@ -9244,7 +9526,7 @@ app.controller(
 
                                 var blob = new Blob([str]);
                                 var elementToClick = window.document.createElement("a");
-                                elementToClick.href = window.URL.createObjectURL(blob, {type: 'text/csv'});
+                                elementToClick.href = window.URL.createObjectURL(blob, { type: 'text/csv' });
                                 elementToClick.download = "csv-registros-soportegpon" + fullDateCsv + ".csv";
                                 elementToClick.click();
                             }
@@ -9276,7 +9558,7 @@ app.controller(
                 $scope.totalItems = 0;
                 $scope.pageSize = 15;
                 $scope.searchText = '';
-                data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+                data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
             }
             services
                 .getListaCodigoIncompleto(data)
@@ -9299,13 +9581,13 @@ app.controller(
         };
 
         $scope.pageChanged = function () {
-            data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+            data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
             console.log(data)
             listarcodigoincompleto(data);
         }
         $scope.pageSizeChanged = function () {
             console.log(data)
-            data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+            data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
             $scope.currentPage = 1;
             listarcodigoincompleto(data);
         }
@@ -9313,7 +9595,7 @@ app.controller(
         $scope.gestionarCodigoIncompleto = async (id_codigo_incompleto) => {
             let tipificacion = $("#tipificacion" + id_codigo_incompleto).val();
 
-            const {value: observacion} = await Swal({
+            const { value: observacion } = await Swal({
                 title: "Gestión Código Incompleto",
                 input: "textarea",
                 inputPlaceholder: "Gestion...",
@@ -9401,7 +9683,7 @@ app.controller(
                 $scope.totalItems = 0;
                 $scope.pageSize = 15;
                 $scope.searchText = '';
-                data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+                data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
             }
             services
                 .registroscodigoincompleto(data)
@@ -9457,19 +9739,19 @@ app.controller(
                 });
                 return
             }
-            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.RegistrosCodigoIncompleto, 'tarea': tarea}
+            data = { 'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.RegistrosCodigoIncompleto, 'tarea': tarea }
             BuscarRegistrosCodigoIncompleto(data);
         }
 
 
         $scope.pageChanged = function (tarea) {
-            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.RegistrosCodigoIncompleto}
+            data = { 'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.RegistrosCodigoIncompleto }
             console.log(data)
             BuscarRegistrosCodigoIncompleto(data);
         }
         $scope.pageSizeChanged = function () {
             console.log(data)
-            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.RegistrosCodigoIncompleto}
+            data = { 'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.RegistrosCodigoIncompleto }
             $scope.currentPage = 1;
             BuscarRegistrosCodigoIncompleto(data);
         }
@@ -9478,6 +9760,7 @@ app.controller(
             $scope.TituloModal = "Detalle código incompleto";
             $scope.pedido = datos.unepedido;
             $scope.observaciones = datos.observacion;
+            $("#NotasModal").modal('show');
         };
 
         $scope.buscarRegistrosCodigoIncompleto = function (param) {
@@ -9500,7 +9783,7 @@ app.controller(
                     type: "error",
                 });
             } else {
-                data = {'page': $scope.currentPage, 'size': $scope.pageSize, data: param}
+                data = { 'page': $scope.currentPage, 'size': $scope.pageSize, data: param }
                 BuscarRegistrosCodigoIncompleto(data)
             }
 
@@ -9616,8 +9899,7 @@ app.controller("brutalForceCtrl", function ($scope, $rootScope, services) {
 
             },
             function errorCallback(response) {
-                alert("No hay información del pedido");
-                return;
+                console.log(response);
             }
         );
     };
@@ -9731,8 +10013,7 @@ app.controller("brutalForceCtrl", function ($scope, $rootScope, services) {
                     }
                 },
                 function errorCallback(response) {
-                    alert("Por favor reportar con el Administrador de la página");
-                    return;
+                    console.log(response);
                 }
             );
         } else {
@@ -9818,18 +10099,28 @@ app.controller("brutalForceCtrl", function ($scope, $rootScope, services) {
                             }
                         );
                 } else {
-                    alert("El Número celular del técnico debe ser formato de celular");
-                    return;
+                    Swal({
+                        type: 'error',
+                        title: 'Opsss...',
+                        text: 'El Número celular del técnico debe ser formato de celular',
+                        timer: 4000
+                    })
                 }
             } else {
-                alert("El correo debe tener el formato de E-mail: correo@dominio.com");
-                return;
+                Swal({
+                    type: 'error',
+                    title: 'Opsss...',
+                    text: 'El correo debe tener el formato de E-mail: correo@dominio.com',
+                    timer: 4000
+                })
             }
         } else {
-            Swal(
-                "El ingreso de solicitudes solo esta disponible de lunes a sábado entre las 7 a.m. y las 7 p.m."
-            );
-            return;
+            Swal({
+                type: 'error',
+                title: 'Opsss...',
+                text: 'El ingreso de solicitudes solo esta disponible de lunes a sábado entre las 7 a.m. y las 7 p.m.',
+                timer: 4000
+            })
         }
     };
 
@@ -9869,7 +10160,7 @@ app.controller("usuariosCtrl", function ($scope, $rootScope, services) {
             $scope.totalItems = 0;
             $scope.pageSize = 15;
             $scope.searchText = "";
-            data = {page: $scope.currentPage, size: $scope.pageSize};
+            data = { page: $scope.currentPage, size: $scope.pageSize };
         }
         services.listadoUsuarios(data).then(
             function (data) {
@@ -9891,18 +10182,18 @@ app.controller("usuariosCtrl", function ($scope, $rootScope, services) {
     }
 
     $scope.pageChanged = function () {
-        data = {page: $scope.currentPage, size: $scope.pageSize};
+        data = { page: $scope.currentPage, size: $scope.pageSize };
         listadoUsuarios(data);
     };
     $scope.pageSizeChanged = function () {
         console.log(data);
-        data = {page: $scope.currentPage, size: $scope.pageSize};
+        data = { page: $scope.currentPage, size: $scope.pageSize };
         $scope.currentPage = 1;
         listadoUsuarios(data);
     };
 
     $scope.buscarUsuario = function (concepto, usuario) {
-        data = {concepto: concepto, usuario: usuario};
+        data = { concepto: concepto, usuario: usuario };
         listadoUsuarios(data);
     };
 
@@ -9933,8 +10224,12 @@ app.controller("usuariosCtrl", function ($scope, $rootScope, services) {
         $scope.respuestaupdate = null;
         $scope.respuestadelete = null;
         if (datos.PASSWORD == "") {
-            alert("Por favor ingrese la contraseña");
-            return;
+            Swal({
+                type: 'error',
+                title: 'Opsss...',
+                text: 'Por favor ingrese la contraseña.',
+                timer: 4000
+            })
         } else {
             services.editarUsuario(datos).then(
                 function (data) {
@@ -9964,6 +10259,7 @@ app.controller("usuariosCtrl", function ($scope, $rootScope, services) {
         });
     };
 });
+
 app.controller("turnosCtrl", function ($scope, $rootScope, services) {
     $scope.errorDatos = null;
     $scope.turnos = [
@@ -10083,10 +10379,10 @@ app.controller("turnosCtrl", function ($scope, $rootScope, services) {
     };
 
     $scope.statuses = [
-        {value: "Turno", novedades: "Turno"},
-        {value: "Vacaciones", novedades: "Vacaciones"},
-        {value: "Licencia", novedades: "Licencia"},
-        {value: "Incapacidad", novedades: "Incapacidad"},
+        { value: "Turno", novedades: "Turno" },
+        { value: "Vacaciones", novedades: "Vacaciones" },
+        { value: "Licencia", novedades: "Licencia" },
+        { value: "Incapacidad", novedades: "Incapacidad" },
     ];
 
     $scope.removeNuevaNovedad = function () {
@@ -10203,6 +10499,7 @@ app.controller("AlarmasCtrl", function ($scope, services) {
         $scope.validarsubaccion = true;
         services.getSubAcciones(proceso, accion).then(
             function (data) {
+                console.log()
                 $scope.listadoSubAcciones = data.data[0];
                 $scope.validarsubaccion = true;
             },
@@ -10218,7 +10515,7 @@ app.controller("AlarmasCtrl", function ($scope, services) {
 
 app.controller(
     "GraficosContingeciaCtrl",
-    function ($scope, $http, $rootScope, $route, services) {
+    function ($scope, $http, $rootScope, $route, services, $uibModal, $log, $rootScope) {
         init();
         $scope.listado_gestionUser = {};
 
@@ -10465,7 +10762,7 @@ app.controller(
         }
 
         $scope.consultaTablaApoyo = function (fechaApoyo, estado, producto) {
-            data = {fecha: fechaApoyo, estado: estado, producto: producto};
+            data = { fecha: fechaApoyo, estado: estado, producto: producto };
             contigenciaHoraAgenteApoyo(data);
         };
 
@@ -10526,7 +10823,7 @@ app.controller(
         }
 
         $scope.consultaTablaTiempo = function (fechaTiempo, estado, producto) {
-            data = {fecha: fechaTiempo, estado: estado, producto: producto};
+            data = { fecha: fechaTiempo, estado: estado, producto: producto };
             contigenciaHoraAgenteTiempoCompleto(data);
         };
 
@@ -10586,8 +10883,8 @@ app.controller(
             });
         }
 
-        function contigenciaHoraAgenteEmtelco() {
-            data = {'estado': $scope.estadoTabla, 'producto': $scope.productoTabla, 'fecha': $scope.fecha_gestion}
+        function contigenciaHoraAgenteEmtelco(data) {
+            data = { 'estado': $scope.estadoTabla, 'producto': $scope.productoTabla, 'fecha': $scope.fecha_gestion }
             services.contigenciaHoraAgenteEmtelco(data).then(function (data) {
                 $scope.emtelco = data.data.data;
                 $scope.totalesEm = 0;
@@ -10635,22 +10932,217 @@ app.controller(
         }
 
         $scope.mmssConsulta = function (fechamms, estado, producto) {
-            data = {fecha: fechamms, estado: estado, producto: producto};
+            data = { fecha: fechamms, estado: estado, producto: producto };
             contigenciaHoraAgenteMmss(data);
         };
 
         $scope.consultaproducto = function () {
-            data = {estado: $scope.estadoDia, producto: $scope.productoDia};
+            data = { estado: $scope.estadoDia, producto: $scope.productoDia };
             consultaContingenciaAgente(data);
         };
 
         $scope.cunsultaproducto20 = function () {
             console.log($scope.estado20, $scope.producto20);
-            let data = {estado: $scope.estado20, producto: $scope.producto20};
+            let data = { estado: $scope.estado20, producto: $scope.producto20 };
             consultaContingenciaDiario(data);
         };
+
+        $scope.ModificarUsuarioTiempoCompleto = (data, tabla) => {
+            $scope.datos = { data: data, tabla: tabla }
+            var modalInstance = $uibModal.open({
+                ariaLabelledBy: 'modal-title',
+                ariaDescribedBy: 'modal-body',
+                templateUrl: 'partial/modals/usuarioKpi.html',
+                controller: 'ModalInstanceUsuarioKpiCtrl',
+                controllerAs: '$ctrl',
+                size: 'md',
+                resolve: {
+                    items: function () {
+                        return $scope.datos;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function () {
+            }, function () {
+                console.log($scope.datosMenu);
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        }
     }
 );
+
+app.controller('ModalInstanceUsuarioKpiCtrl', function ($uibModalInstance, items, services, $route, $scope, $timeout) {
+    var $ctrl = this;
+    $ctrl.items = items;
+    let usuarioKpi = {};
+
+    for (let i = 0; i < items.data.length; i++) {
+        usuarioKpi[i] = items.data[i]["USUARIO"];
+    }
+
+    $ctrl.nombreTable = items.tabla;
+
+    $ctrl.usuarios = usuarioKpi
+
+    $ctrl.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+
+    $ctrl.agregaUsuario = (data, tabla) => {
+        /*         let array = Object.values($ctrl.usuarios);
+                array.push(data);
+                $ctrl.usuarios = array;
+                $ctrl.nuevoUsuario = ''; */
+        let datos = { usuario: data, tabla: tabla };
+        if (tabla == "Tiempo completo") {
+            services.contigenciaHoraAgenteTiempoCompleto(datos)
+                .then((data) => {
+                    if (data.data.state == 1) {
+                        Swal({
+                            type: 'success',
+                            text: data.data.msj,
+                            timer: 4000
+                        }).then(function () {
+                            $uibModalInstance.dismiss('cancel');
+                            $route.reload();
+                        })
+                    } else {
+                        Swal({
+                            type: 'error',
+                            title: 'Opss...',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        } else if (tabla == "mmss") {
+            services.contigenciaHoraAgenteMmss(datos)
+                .then((data) => {
+                    if (data.data.state == 1) {
+                        Swal({
+                            type: 'success',
+                            text: data.data.msj,
+                            timer: 4000
+                        }).then(function () {
+                            $uibModalInstance.dismiss('cancel');
+                            $route.reload();
+                        })
+                    } else {
+                        Swal({
+                            type: 'error',
+                            title: 'Opss...',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        } else if (tabla == 'apoyo') {
+            services.contigenciaHoraAgenteApoyo(datos)
+                .then((data) => {
+                    if (data.data.state == 1) {
+                        Swal({
+                            type: 'success',
+                            text: data.data.msj,
+                            timer: 4000
+                        }).then(function () {
+                            $uibModalInstance.dismiss('cancel');
+                            $route.reload();
+                        })
+                    } else {
+                        Swal({
+                            type: 'error',
+                            title: 'Opss...',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        } else if (tabla == 'emtelco') {
+            services.contigenciaHoraAgenteEmtelco(datos)
+                .then((data) => {
+                    if (data.data.state == 1) {
+                        Swal({
+                            type: 'success',
+                            text: data.data.msj,
+                            timer: 4000
+                        }).then(function () {
+                            $uibModalInstance.dismiss('cancel');
+                            $route.reload();
+                        })
+                    } else {
+                        Swal({
+                            type: 'error',
+                            title: 'Opss...',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        }
+    }
+
+
+    $ctrl.quitarUsuario = (user, tabla) => {
+        Swal({
+            title: "Está seguro?",
+            text: "Algunos datos pueden perderse.",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Sí, estoy seguro",
+            cancelButtonText: "Cancelar",
+            allowOutsideClick: () => !Swal.isLoading(),
+        }).then((result) => {
+            if (result.value) {
+                let data = { usuario: user, tabla: tabla }
+                services.quitarUsuarioKpi(data)
+                    .then((data) => {
+                        if (data.data.state == 1) {
+                            let array = Object.values($ctrl.usuarios);
+                            array = array.filter(function (valor) {
+                                return valor !== user;
+                            });
+                            $ctrl.usuarios = array;
+                            Swal({
+                                type: 'success',
+                                title: 'Bien',
+                                text: data.data.msj,
+                                timer: 4000
+                            }).then(() => {
+                                $uibModalInstance.dismiss('cancel');
+                                $route.reload();
+                            })
+                        } else {
+                            Swal({
+                                type: 'error',
+                                title: 'Oppsss..',
+                                text: data.data.msj,
+                                timer: 4000
+                            })
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+            } else {
+                $("#modalDetalles").modal('hide');
+            }
+        });
+    }
+});
 
 app.controller(
     "gestionVentasInstaleTiendasCtrl",
@@ -10680,7 +11172,7 @@ app.controller(
                 $scope.totalItems = 0;
                 $scope.pageSize = 15;
                 $scope.searchText = "";
-                data = {page: $scope.currentPage, size: $scope.pageSize};
+                data = { page: $scope.currentPage, size: $scope.pageSize };
             }
             services.datosVentasInstaleTerminado(data).then(function (data) {
                 $scope.dataVentasTerminado = data.data.data;
@@ -10696,19 +11188,19 @@ app.controller(
         }
 
         $scope.pageChanged = function () {
-            data = {page: $scope.currentPage, size: $scope.pageSize};
+            data = { page: $scope.currentPage, size: $scope.pageSize };
             console.log(data);
             dataVentaTerminado(data);
         };
         $scope.pageSizeChanged = function () {
             console.log(data);
-            data = {page: $scope.currentPage, size: $scope.pageSize};
+            data = { page: $scope.currentPage, size: $scope.pageSize };
             $scope.currentPage = 1;
             dataVentaTerminado(data);
         };
 
         $scope.marcarEngestion = function (id) {
-            data = {id: id, login_gestion: $rootScope.galletainfo.LOGIN};
+            data = { id: id, login_gestion: $rootScope.galletainfo.LOGIN };
             services.marcarEnGestionVentaInstale(data).then(function (data) {
                 if (data.data.state == 1) {
                     Swal({
@@ -10745,7 +11237,7 @@ app.controller(
                     timer: 4000,
                 });
             } else {
-                data = {pedido: pedido};
+                data = { pedido: pedido };
                 services.detallePedidoVenta(data).then((data) => {
                     if (data.data.state == 1) {
                         $scope.detallePedidoVenta = data.data.data;
@@ -10897,7 +11389,7 @@ app.controller(
                     timer: 4000,
                 });
             } else {
-                data = {observacion: data, usuario: $rootScope.galletainfo.LOGIN};
+                data = { observacion: data, usuario: $rootScope.galletainfo.LOGIN };
                 services.guardaObservacionParaVentaInstale(data).then(function (data) {
                     console.log(data.state);
                     if (data.data.state != 1) {
@@ -11086,8 +11578,301 @@ app.controller(
                 };
             }
         };
+
     }
 );
+
+app.controller(
+    'MenuPerfilCtrl',
+    function ($scope, $http, services, $route, $uibModal, $log) {
+
+        init();
+
+        function init() {
+            getMenu();
+            getSubmenu();
+            getPerfil();
+        }
+
+        function getMenu() {
+            services.getMenu()
+                .then((data) => {
+                    $scope.datosMenu = data.data.data;
+
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        }
+
+
+        function getSubmenu() {
+            services.getSubmenu()
+                .then((data) => {
+                    $scope.datosSubmenu = data.data.data;
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        }
+
+        function getPerfil() {
+            services.getPerfil()
+                .then((data) => {
+                    $scope.datosPerfil = data.data.data;
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        }
+
+        $scope.showPerfilMenu = (perfil, nombre) => {
+            services.verMenuPerfil(perfil)
+                .then((data) => {
+                    if (data.data.state == 1) {
+                        $scope.nombre = nombre;
+                        $scope.perfil_cambio = perfil;
+                        $scope.datosDetalles = data.data.data;
+                        $scope.estaEnDetalles = function (menu) {
+                            for (var i = 0; i < $scope.datosDetalles.length; i++) {
+                                if ($scope.datosDetalles[i].nombre == menu.nombre) {
+                                    return true;
+                                }
+                            }
+                            return false;
+                        }
+                        $("#modalDetalles").modal('show');
+                    } else {
+                        Swal({
+                            type: 'error',
+                            title: 'Oppsss..',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    }
+
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        }
+
+        $scope.cambioMenu = function (id, perfil, estado) {
+            Swal({
+                title: "Está seguro?",
+                text: "Algunos datos pueden perderse.",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Sí, estoy seguro",
+                cancelButtonText: "Cancelar",
+                allowOutsideClick: () => !Swal.isLoading(),
+            }).then((result) => {
+                if (result.value) {
+                    let data = { id: id, perfil: perfil, estado: estado }
+                    services.cambioMenu(data)
+                        .then((data) => {
+                            if (data.data.state == 1) {
+                                Swal({
+                                    type: 'success',
+                                    title: 'Bien',
+                                    text: data.data.msj,
+                                    timer: 4000
+                                }).then(function () {
+                                    $("#modalDetalles").modal('hide');
+                                    setTimeout(() => {
+                                        $route.reload();
+                                    }, 400);
+
+                                })
+                            } else {
+                                Swal({
+                                    type: 'error',
+                                    title: 'Oppsss..',
+                                    text: data.data.msj,
+                                    timer: 4000
+                                })
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        })
+                } else {
+                    Swal("Cancelado", "Los datos están seguros :)", "error");
+                    $("#modalDetalles").modal('hide');
+                    setTimeout(() => {
+                        $route.reload();
+                    }, 400);
+                }
+            });
+        }
+
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+
+        $scope.AgregarSubmenu = () => {
+
+            var modalInstance = $uibModal.open({
+                ariaLabelledBy: 'modal-title',
+                ariaDescribedBy: 'modal-body',
+                templateUrl: 'partial/modals/agregarSubmenu.html',
+                controller: 'ModalInstanceCtrl',
+                controllerAs: '$ctrl',
+                size: 'md',
+                resolve: {
+                    items: function () {
+                        return $scope.datosMenu;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function () {
+            }, function () {
+                console.log($scope.datosMenu);
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        }
+
+        $scope.cambiaEstadoSubmenu = (id, estado) => {
+            Swal({
+                title: "Está seguro?",
+                text: "Algunos datos pueden perderse.",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Sí, estoy seguro",
+                cancelButtonText: "Cancelar",
+                allowOutsideClick: () => !Swal.isLoading(),
+            }).then((result) => {
+                if (result.value) {
+                    let data = { id: id, estado: estado }
+                    services.cambiaEstadoSubmenu(data)
+                        .then((data) => {
+                            if (data.data.state == 1) {
+                                Swal({
+                                    type: 'success',
+                                    title: 'Bien',
+                                    text: data.data.msj,
+                                    timer: 4000
+                                }).then(function () {
+                                    $("#modalDetalles").modal('hide');
+                                    setTimeout(() => {
+                                        $route.reload();
+                                    }, 400);
+
+                                })
+                            } else {
+                                Swal({
+                                    type: 'error',
+                                    title: 'Oppsss..',
+                                    text: data.data.msj,
+                                    timer: 4000
+                                })
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        })
+                } else {
+                    $("#modalDetalles").modal('hide');
+                }
+            });
+        }
+
+        $scope.AgregarPerfil = () => {
+            var modalInstance = $uibModal.open({
+                ariaLabelledBy: 'modal-title',
+                ariaDescribedBy: 'modal-body',
+                templateUrl: 'partial/modals/agregarPerfil.html',
+                controller: 'ModalInstanceCtrl',
+                controllerAs: '$ctrl',
+                size: 'md',
+                resolve: {
+                    items: function () {
+                        return $scope.datosMenu;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function () {
+            }, function () {
+                console.log($scope.datosMenu);
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        }
+    }
+);
+
+app.controller('ModalInstanceCtrl', function ($uibModalInstance, items, services, $route) {
+    var $ctrl = this;
+    $ctrl.items = items;
+    $ctrl.ok = function () {
+        $uibModalInstance.close($ctrl.selected.item);
+    };
+
+    $ctrl.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+
+    $ctrl.guarda = (data) => {
+        services.guardaNuevoSubmenu(data)
+            .then((data) => {
+                if (data.data.state == 1) {
+                    Swal({
+                        type: 'success',
+                        title: 'Bien',
+                        text: data.data.msj,
+                        timer: 4000
+                    }).then(() => {
+                        $uibModalInstance.dismiss('cancel');
+                        setTimeout(() => {
+                            $route.reload();
+                        }, 400);
+                    })
+                } else {
+                    Swal({
+                        type: 'error',
+                        title: 'Opss...',
+                        text: data.data.msj,
+                        timer: 4000
+                    })
+                }
+            })
+            .catch((data) => {
+                console.log(data);
+            })
+    }
+
+    $ctrl.guardaPerfil = (data) => {
+        services.guardaPerfil(data)
+            .then((data) => {
+                if (data.data.state == 1) {
+                    Swal({
+                        type: 'success',
+                        title: 'Bien',
+                        text: data.data.msj,
+                        timer: 4000
+                    }).then(() => {
+                        $uibModalInstance.dismiss('cancel');
+                        setTimeout(() => {
+                            $route.reload();
+                        }, 400);
+                    })
+                } else {
+                    Swal({
+                        type: 'error',
+                        title: 'Opss...',
+                        text: data.data.msj,
+                        timer: 4000
+                    })
+                }
+            })
+            .catch((data) => {
+                console.log(data);
+            })
+    }
+});
 
 app.directive("cookie", function ($rootScope, $cookies) {
     return {
@@ -11102,7 +11887,8 @@ app.directive("cookie", function ($rootScope, $cookies) {
     };
 });
 
-app.directive("popover", function () {
+
+/* app.directive("popover", function () {
     return function (scope, elem) {
         elem.popover();
     };
@@ -11112,7 +11898,7 @@ app.directive("tooltip", function () {
     return function (scope, elem) {
         elem.tooltip();
     };
-});
+}); */
 
 app.config([
     "$compileProvider",
@@ -11314,16 +12100,25 @@ app.config([
                 authorize: true,
             })
 
+            .when("/perfil-menu", {
+                title: "Administracion menu - perfiles",
+                templateUrl: "partial/menu-perfil.html",
+                controller: "MenuPerfilCtrl",
+                authorize: true,
+            })
+
             .otherwise({
                 redirectTo: "/",
             });
+
+        /* $locationProvider.html5Mode(true);  */
 
         $locationProvider
             .html5Mode({
                 enabled: false,
                 requireBase: true,
             })
-            .hashPrefix(["!"]);
+            .hashPrefix([""]);
     },
 ]);
 
@@ -11514,220 +12309,237 @@ app.run([
         ];
 
         $rootScope.empresas = [
-            {ID: 1, EMPRESA: "Une"},
-            {ID: 0, EMPRESA: "Sin empresa"},
-            {ID: 3, EMPRESA: "Redes y edificaciones"},
-            {ID: 4, EMPRESA: "Energia integral andina"},
-            {ID: 6, EMPRESA: "Eagle"},
-            {ID: 7, EMPRESA: "Servtek"},
-            {ID: 8, EMPRESA: "Furtelcom"},
-            {ID: 9, EMPRESA: "Emtelco"},
-            {ID: 10, EMPRESA: "Conavances"},
-            {ID: 11, EMPRESA: "Techcom"},
+            { ID: 1, EMPRESA: "Une" },
+            { ID: 0, EMPRESA: "Sin empresa" },
+            { ID: 3, EMPRESA: "Redes y edificaciones" },
+            { ID: 4, EMPRESA: "Energia integral andina" },
+            { ID: 6, EMPRESA: "Eagle" },
+            { ID: 7, EMPRESA: "Servtek" },
+            { ID: 8, EMPRESA: "Furtelcom" },
+            { ID: 9, EMPRESA: "Emtelco" },
+            { ID: 10, EMPRESA: "Conavances" },
+            { ID: 11, EMPRESA: "Techcom" },
         ];
 
         $rootScope.procesosoffline = [
-            {ID: "Instalaciones", PROCESO: "Instalaciones"},
-            {ID: "Reparaciones", PROCESO: "Reparaciones"},
+            { ID: "Instalaciones", PROCESO: "Instalaciones" },
+            { ID: "Reparaciones", PROCESO: "Reparaciones" },
         ];
 
         $rootScope.estadosComercial = [
-            {ID: "Cobertura 3G", ESTADO: "Cobertura 3G"},
-            {ID: "Decisión Usuario 42", ESTADO: "Decisión Usuario 42"},
-            {ID: "Estudio Legal 82", ESTADO: "Estudio Legal 82"},
-            {ID: "Oferta Economica", ESTADO: "Oferta Económica"},
-            {ID: "PEREP", ESTADO: "PEREP"},
-            {ID: "PETEC", ESTADO: "PETEC"},
-            {ID: "PFACT", ESTADO: "PFACT"},
-            {ID: "PORDE", ESTADO: "PORDE"},
+            { ID: "Cobertura 3G", ESTADO: "Cobertura 3G" },
+            { ID: "Decisión Usuario 42", ESTADO: "Decisión Usuario 42" },
+            { ID: "Estudio Legal 82", ESTADO: "Estudio Legal 82" },
+            { ID: "Oferta Economica", ESTADO: "Oferta Económica" },
+            { ID: "PEREP", ESTADO: "PEREP" },
+            { ID: "PETEC", ESTADO: "PETEC" },
+            { ID: "PFACT", ESTADO: "PFACT" },
+            { ID: "PORDE", ESTADO: "PORDE" },
         ];
 
         $rootScope.productos = [
-            {ID: "ADSL-Internet", PRODUCTO: "ADSL-Internet"},
-            {ID: "ADSL-IPTV", PRODUCTO: "ADSL-IPTV"},
-            {ID: "ADSL-ToIP", PRODUCTO: "ADSL-ToIP"},
-            {ID: "HFC-Internet", PRODUCTO: "HFC-Internet"},
-            {ID: "HFC-ToIP", PRODUCTO: "HFC-ToIP"},
-            {ID: "HFC-TV_Basica", PRODUCTO: "HFC-TV Basica"},
-            {ID: "HFC-TV_Digital", PRODUCTO: "HFC-TV Digital"},
-            {ID: "GPON", PRODUCTO: "GPON"},
-            {ID: "Telefonia_Basica", PRODUCTO: "Telefonia Basica"},
-            {ID: "DTH-Television", PRODUCTO: "DTH-Television"},
+            { ID: "ADSL-Internet", PRODUCTO: "ADSL-Internet" },
+            { ID: "ADSL-IPTV", PRODUCTO: "ADSL-IPTV" },
+            { ID: "ADSL-ToIP", PRODUCTO: "ADSL-ToIP" },
+            { ID: "HFC-Internet", PRODUCTO: "HFC-Internet" },
+            { ID: "HFC-ToIP", PRODUCTO: "HFC-ToIP" },
+            { ID: "HFC-TV_Basica", PRODUCTO: "HFC-TV Basica" },
+            { ID: "HFC-TV_Digital", PRODUCTO: "HFC-TV Digital" },
+            { ID: "GPON", PRODUCTO: "GPON" },
+            { ID: "Telefonia_Basica", PRODUCTO: "Telefonia Basica" },
+            { ID: "DTH-Television", PRODUCTO: "DTH-Television" },
         ];
 
         $rootScope.conceptosRegistros = [
-            {ID: "", CONCEPTO: "--Seleccione--"},
-            {ID: "pedido", CONCEPTO: "Pedido"},
-            {ID: "asesor", CONCEPTO: "Asesor"},
-            {ID: "accion", CONCEPTO: "Accion"},
-            {ID: "proceso", CONCEPTO: "Proceso"},
+            { ID: "", CONCEPTO: "--Seleccione--" },
+            { ID: "pedido", CONCEPTO: "Pedido" },
+            { ID: "asesor", CONCEPTO: "Asesor" },
+            { ID: "accion", CONCEPTO: "Accion" },
+            { ID: "proceso", CONCEPTO: "Proceso" },
         ];
 
         $rootScope.conceptoVentaInstale = [
-            {ID: "", CONCEPTO: "--Seleccione--"},
-            {ID: "Gestionados", CONCEPTO: "Gestionados"},
-            {ID: "Ok", CONCEPTO: "Aprobados"},
-            {ID: "Rechazados", CONCEPTO: "Rechazados"},
+            { ID: "", CONCEPTO: "--Seleccione--" },
+            { ID: "Gestionados", CONCEPTO: "Gestionados" },
+            { ID: "Ok", CONCEPTO: "Aprobados" },
+            { ID: "Rechazados", CONCEPTO: "Rechazados" },
         ];
 
         $rootScope.conceptosRegistrosComercial = [
-            {ID: "", CONCEPTO: "--Seleccione--"},
-            {ID: "pedido_actual", CONCEPTO: "Pedido"},
-            {ID: "login_asesor", CONCEPTO: "Asesor"},
+            { ID: "", CONCEPTO: "--Seleccione--" },
+            { ID: "pedido_actual", CONCEPTO: "Pedido" },
+            { ID: "login_asesor", CONCEPTO: "Asesor" },
             {
                 ID: "gestion",
                 CONCEPTO: "Gestión",
             },
-            {ID: "clasificacion", CONCEPTO: "Clasificación"},
-            {ID: "ciudad", CONCEPTO: "Ciudad"},
-            {ID: "estado", CONCEPTO: "Estado"},
+            { ID: "clasificacion", CONCEPTO: "Clasificación" },
+            { ID: "ciudad", CONCEPTO: "Ciudad" },
+            { ID: "estado", CONCEPTO: "Estado" },
         ];
 
         $rootScope.conceptosBuscar = [
-            {ID: "", CONCEPTO: "--Seleccione--"},
-            {ID: "nombre", CONCEPTO: "Nombre"},
-            {ID: "login", CONCEPTO: "Login"},
+            { ID: "", CONCEPTO: "--Seleccione--" },
+            { ID: "nombre", CONCEPTO: "Nombre" },
+            { ID: "login", CONCEPTO: "Login" },
         ];
 
         $rootScope.perfiles = [
-            {ID: 1, PERFIL: "Supervisor"},
-            {ID: 2, PERFIL: "Creador de Experiencia"},
-            {ID: 3, PERFIL: "Perfil Regional"},
-            {ID: 4, PERFIL: "Mesa Offline"},
-            {ID: 5, PERFIL: "Creador de Experiencia Plus"},
-            {ID: 6, PERFIL: "Premisas Infraestructuras"},
-            {ID: 7, PERFIL: "Asesor VIP"},
-            {ID: 8, PERFIL: "Registros"},
-            {ID: 9, PERFIL: "Brutal Force"},
-            {ID: 10, PERFIL: "Gestión Brutal"},
-            {ID: 13, PERFIL: "Quejas GO"},
-            {ID: 14, PERFIL: "Nivelacion"},
+            { ID: 1, PERFIL: "Supervisor" },
+            { ID: 2, PERFIL: "Creador de Experiencia" },
+            { ID: 3, PERFIL: "Perfil Regional" },
+            { ID: 4, PERFIL: "Mesa Offline" },
+            { ID: 5, PERFIL: "Creador de Experiencia Plus" },
+            { ID: 6, PERFIL: "Premisas Infraestructuras" },
+            { ID: 7, PERFIL: "Asesor VIP" },
+            { ID: 8, PERFIL: "Registros" },
+            { ID: 9, PERFIL: "Brutal Force" },
+            { ID: 10, PERFIL: "Gestión Brutal" },
+            { ID: 13, PERFIL: "Quejas GO" },
+            { ID: 14, PERFIL: "Nivelacion" },
         ];
 
         $rootScope.conceptosBuscartecnico = [
-            {ID: "", CONCEPTO: "--Seleccione--"},
-            {ID: "nombre", CONCEPTO: "Nombre"},
-            {ID: "identificacion", CONCEPTO: "Cedula"},
-            {ID: "ciudad", CONCEPTO: "Ciudad"},
-            {ID: "celuar", CONCEPTO: "Celuar"},
-            {ID: 'login', CONCEPTO: 'login'}
+            { ID: "", CONCEPTO: "--Seleccione--" },
+            { ID: "nombre", CONCEPTO: "Nombre" },
+            { ID: "identificacion", CONCEPTO: "Cedula" },
+            { ID: "ciudad", CONCEPTO: "Ciudad" },
+            { ID: "celuar", CONCEPTO: "Celuar" },
+            { ID: 'login', CONCEPTO: 'login' }
         ];
 
         $rootScope.contrato = [
-            {ID: "", CONCEPTO: "Seleccione"},
-            {ID: "EMTELCO", CONCEPTO: "EMTELCO"},
-            {ID: "RYE", CONCEPTO: "RYE"},
-            {ID: "EIA", CONCEPTO: "EIA"},
-            {ID: "ETP", CONCEPTO: "ETP"},
+            { ID: "", CONCEPTO: "Seleccione" },
+            { ID: "EMTELCO", CONCEPTO: "EMTELCO" },
+            { ID: "RYE", CONCEPTO: "RYE" },
+            { ID: "EIA", CONCEPTO: "EIA" },
+            { ID: "ETP", CONCEPTO: "ETP" },
         ];
 
         $rootScope.tecnologia = [
-            {ID: "", CONCEPTO: "Seleccione"},
-            {ID: "HFC", CONCEPTO: "HFC"},
-            {ID: "GPON", CONCEPTO: "GPON"},
-            {ID: "COBRE", CONCEPTO: "COBRE"},
-            {ID: "DTH", CONCEPTO: "DTH"},
+            { ID: "", CONCEPTO: "Seleccione" },
+            { ID: "HFC", CONCEPTO: "HFC" },
+            { ID: "GPON", CONCEPTO: "GPON" },
+            { ID: "COBRE", CONCEPTO: "COBRE" },
+            { ID: "DTH", CONCEPTO: "DTH" },
         ];
 
         $rootScope.ciudadesContingencias = [
-            {ID: "", CONCEPTO: "--Seleccione--"},
-            {ID: "ARMENIA", CONCEPTO: "ARMENIA"},
-            {ID: "BARRANCABERMEJA", CONCEPTO: "BARRANCABERMEJA"},
-            {ID: "BARRANQUILLA", CONCEPTO: "BARRANQUILLA"},
-            {ID: "BOGOTA", CONCEPTO: "BOGOTA"},
-            {ID: "BUCARAMANGA", CONCEPTO: "BUCARAMANGA"},
-            {ID: "BUGA", CONCEPTO: "BUGA"},
-            {ID: "CALI", CONCEPTO: "CALI"},
-            {ID: "CARTAGENA", CONCEPTO: "CARTAGENA"},
-            {ID: "CUCUTA", CONCEPTO: "CUCUTA"},
-            {ID: "IBAGUE", CONCEPTO: "IBAGUE"},
-            {ID: "MANIZALES", CONCEPTO: "MANIZALES"},
-            {ID: "MEDELLIN", CONCEPTO: "MEDELLIN"},
-            {ID: "MONTERIA", CONCEPTO: "MONTERIA"},
-            {ID: "PALMIRA", CONCEPTO: "PALMIRA"},
-            {ID: "PEREIRA", CONCEPTO: "PEREIRA"},
-            {ID: "POPAYAN", CONCEPTO: "POPAYAN"},
-            {ID: "SANTA MARTA", CONCEPTO: "SANTA MARTA"},
-            {ID: "SINCELEJO", CONCEPTO: "SINCELEJO"},
-            {ID: "TUNJA", CONCEPTO: "TUNJA"},
-            {ID: "VALLEDUPAR", CONCEPTO: "VALLEDUPAR"},
-            {ID: "VILLAVICENCIO", CONCEPTO: "VILLAVICENCIO"},
+            { ID: "", CONCEPTO: "--Seleccione--" },
+            { ID: "ARMENIA", CONCEPTO: "ARMENIA" },
+            { ID: "BARRANCABERMEJA", CONCEPTO: "BARRANCABERMEJA" },
+            { ID: "BARRANQUILLA", CONCEPTO: "BARRANQUILLA" },
+            { ID: "BOGOTA", CONCEPTO: "BOGOTA" },
+            { ID: "BUCARAMANGA", CONCEPTO: "BUCARAMANGA" },
+            { ID: "BUGA", CONCEPTO: "BUGA" },
+            { ID: "CALI", CONCEPTO: "CALI" },
+            { ID: "CARTAGENA", CONCEPTO: "CARTAGENA" },
+            { ID: "CUCUTA", CONCEPTO: "CUCUTA" },
+            { ID: "IBAGUE", CONCEPTO: "IBAGUE" },
+            { ID: "MANIZALES", CONCEPTO: "MANIZALES" },
+            { ID: "MEDELLIN", CONCEPTO: "MEDELLIN" },
+            { ID: "MONTERIA", CONCEPTO: "MONTERIA" },
+            { ID: "PALMIRA", CONCEPTO: "PALMIRA" },
+            { ID: "PEREIRA", CONCEPTO: "PEREIRA" },
+            { ID: "POPAYAN", CONCEPTO: "POPAYAN" },
+            { ID: "SANTA MARTA", CONCEPTO: "SANTA MARTA" },
+            { ID: "SINCELEJO", CONCEPTO: "SINCELEJO" },
+            { ID: "TUNJA", CONCEPTO: "TUNJA" },
+            { ID: "VALLEDUPAR", CONCEPTO: "VALLEDUPAR" },
+            { ID: "VILLAVICENCIO", CONCEPTO: "VILLAVICENCIO" },
         ];
 
         $rootScope.paquetescontingencias = [
-            {ID: "N/A", CONCEPTO: "N/A"},
-            {ID: "BasicoAXM", CONCEPTO: "BasicoAXM"},
-            {ID: "BasicoBGA", CONCEPTO: "BasicoBGA"},
-            {ID: "BasicoBOG", CONCEPTO: "BasicoBOG"},
-            {ID: "BasicoBQA", CONCEPTO: "BasicoBQA"},
-            {ID: "BasicoBUG", CONCEPTO: "BasicoBUG"},
-            {ID: "BasicoCLO", CONCEPTO: "BasicoCLO"},
-            {ID: "BasicoCTG", CONCEPTO: "BasicoCTG"},
-            {ID: "BasicoCUC", CONCEPTO: "BasicoCUC"},
-            {ID: "BasicoEJA", CONCEPTO: "BasicoEJA"},
-            {ID: "BasicoIBE", CONCEPTO: "BasicoIBE"},
-            {ID: "BasicoMED", CONCEPTO: "BasicoMED"},
-            {ID: "BasicoMTR", CONCEPTO: "BasicoMTR"},
-            {ID: "BasicoMTR", CONCEPTO: "BasicoMTR"},
-            {ID: "BasicoMZL", CONCEPTO: "BasicoMZL"},
-            {ID: "BasicoPEI", CONCEPTO: "BasicoPEI"},
-            {ID: "BasicoPPN", CONCEPTO: "BasicoPPN"},
-            {ID: "BasicoSIN", CONCEPTO: "BasicoSIN"},
-            {ID: "BasicoSMR", CONCEPTO: "BasicoSMR"},
-            {ID: "BasicoVUP", CONCEPTO: "BasicoVUP"},
-            {ID: "BasicoVVC", CONCEPTO: "BasicoVVC"},
-            {ID: "BasicoCLO", CONCEPTO: "BasicoCLO"},
-            {ID: "BasicoHD", CONCEPTO: "BasicoHD"},
-            {ID: "BLACK", CONCEPTO: "BLACK"},
-            {ID: "BRONZE", CONCEPTO: "BRONZE"},
-            {ID: "CO_CLASICAHD", CONCEPTO: "CO_CLASICAHD"},
-            {ID: "CO_CLASICAHD_GP", CONCEPTO: "CO_CLASICAHD_GP"},
-            {ID: "CO_CLAHDPLUSONE", CONCEPTO: "CO_CLAHDPLUSONE"},
-            {ID: "CO_ESPECIAL_GP", CONCEPTO: "CO_ESPECIAL_GP"},
-            {ID: "CO_ANDROIONE", CONCEPTO: "CO_ANDROIONE"},
-            {ID: "WINPREM", CONCEPTO: "WINPREM"},
-            {ID: "FOXMAS", CONCEPTO: "FOXMAS"},
-            {ID: "GOLD", CONCEPTO: "GOLD"},
-            {ID: "HBO-MAX", CONCEPTO: "HBO-MAX"},
-            {ID: "HBOPACK", CONCEPTO: "HBOPACK"},
-            {ID: "HD-NalAXM", CONCEPTO: "HD-NalAXM"},
-            {ID: "HD-NalBGA", CONCEPTO: "HD-NalBGA"},
-            {ID: "HD-NalBOG", CONCEPTO: "HD-NalBOG"},
-            {ID: "HD-NalBUG", CONCEPTO: "HD-NalBUG"},
-            {ID: "HD-NalCLO", CONCEPTO: "HD-NalCLO"},
-            {ID: "HD-NalCTG", CONCEPTO: "HD-NalCTG"},
-            {ID: "HD-NalCUC", CONCEPTO: "HD-NalCUC"},
-            {ID: "HD-NalEJA", CONCEPTO: "HD-NalEJA"},
-            {ID: "HD-NalMED", CONCEPTO: "HD-NalMED"},
-            {ID: "HD-NalMZL", CONCEPTO: "HD-NalMZL"},
-            {ID: "HD-NalPEI", CONCEPTO: "HD-NalPEI"},
-            {ID: "HOTELES", CONCEPTO: "HOTELES"},
-            {ID: "HOTPACK", CONCEPTO: "HOTPACK"},
-            {ID: "LIFESTYLE", CONCEPTO: "LIFESTYLE"},
-            {ID: "MINIPACK", CONCEPTO: "MINIPACK"},
-            {ID: "MOVIECITY", CONCEPTO: "MOVIECITY"},
-            {ID: "MUSIC", CONCEPTO: "MUSIC"},
-            {ID: "PLAYBOY", CONCEPTO: "PLAYBOY"},
-            {ID: "Premium", CONCEPTO: "Premium"},
-            {ID: "PRIVATEGOLD", CONCEPTO: "PRIVATEGOLD"},
-            {ID: "SILVER", CONCEPTO: "SILVER"},
-            {ID: "SPORTS", CONCEPTO: "SPORTS"},
-            {ID: "TVDIG-HDBAS", CONCEPTO: "TVDIG-HDBAS"},
-            {ID: "TVDIG-HDPREM", CONCEPTO: "TVDIG-HDPREM"},
-            {ID: "TVDIGITAL", CONCEPTO: "TVDIGITAL"},
-            {ID: "UFC", CONCEPTO: "UFC"},
-            {ID: "FOX-TEMP", CONCEPTO: "FOX-TEMP"},
-            {ID: "ESCENCIAL", CONCEPTO: "ESCENCIAL"},
-            {ID: "ESCENCIAL-PLUS", CONCEPTO: "ESCENCIAL-PLUS"},
-            {ID: "IDEAL", CONCEPTO: "IDEAL"},
-            {ID: "IDEAL-PLUS", CONCEPTO: "IDEAL-PLUS"},
-            {ID: "ONE", CONCEPTO: "ONE"},
-            {ID: "ONE PLUS", CONCEPTO: "ONE PLUS"},
-            {ID: "ONE ELITE", CONCEPTO: "ONE ELITE"},
-            {ID: "DTHCOL-BASICO", CONCEPTO: "DTHCOL-BASICO"},
-            {ID: "DTHCOL-AVANZADO", CONCEPTO: "DTHCOL-AVANZADO"},
-            {ID: "BASICO MIPYME", CONCEPTO: "BASICO MIPYME"},
+            { ID: "N/A", CONCEPTO: "N/A" },
+            { ID: "BasicoAXM", CONCEPTO: "BasicoAXM" },
+            { ID: "BasicoBGA", CONCEPTO: "BasicoBGA" },
+            { ID: "BasicoBOG", CONCEPTO: "BasicoBOG" },
+            { ID: "BasicoBQA", CONCEPTO: "BasicoBQA" },
+            { ID: "BasicoBUG", CONCEPTO: "BasicoBUG" },
+            { ID: "BasicoCLO", CONCEPTO: "BasicoCLO" },
+            { ID: "BasicoCTG", CONCEPTO: "BasicoCTG" },
+            { ID: "BasicoCUC", CONCEPTO: "BasicoCUC" },
+            { ID: "BasicoEJA", CONCEPTO: "BasicoEJA" },
+            { ID: "BasicoIBE", CONCEPTO: "BasicoIBE" },
+            { ID: "BasicoMED", CONCEPTO: "BasicoMED" },
+            { ID: "BasicoMTR", CONCEPTO: "BasicoMTR" },
+            { ID: "BasicoMTR", CONCEPTO: "BasicoMTR" },
+            { ID: "BasicoMZL", CONCEPTO: "BasicoMZL" },
+            { ID: "BasicoPEI", CONCEPTO: "BasicoPEI" },
+            { ID: "BasicoPPN", CONCEPTO: "BasicoPPN" },
+            { ID: "BasicoSIN", CONCEPTO: "BasicoSIN" },
+            { ID: "BasicoSMR", CONCEPTO: "BasicoSMR" },
+            { ID: "BasicoVUP", CONCEPTO: "BasicoVUP" },
+            { ID: "BasicoVVC", CONCEPTO: "BasicoVVC" },
+            { ID: "BasicoCLO", CONCEPTO: "BasicoCLO" },
+            { ID: "BasicoHD", CONCEPTO: "BasicoHD" },
+            { ID: "BLACK", CONCEPTO: "BLACK" },
+            { ID: "BRONZE", CONCEPTO: "BRONZE" },
+            { ID: "CO_CLASICAHD", CONCEPTO: "CO_CLASICAHD" },
+            { ID: "CO_CLASICAHD_GP", CONCEPTO: "CO_CLASICAHD_GP" },
+            { ID: "CO_CLAHDPLUSONE", CONCEPTO: "CO_CLAHDPLUSONE" },
+            { ID: "CO_ESPECIAL_GP", CONCEPTO: "CO_ESPECIAL_GP" },
+            { ID: "CO_ANDROIONE", CONCEPTO: "CO_ANDROIONE" },
+            { ID: "WINPREM", CONCEPTO: "WINPREM" },
+            { ID: "FOXMAS", CONCEPTO: "FOXMAS" },
+            { ID: "GOLD", CONCEPTO: "GOLD" },
+            { ID: "HBO-MAX", CONCEPTO: "HBO-MAX" },
+            { ID: "HBOPACK", CONCEPTO: "HBOPACK" },
+            { ID: "HD-NalAXM", CONCEPTO: "HD-NalAXM" },
+            { ID: "HD-NalBGA", CONCEPTO: "HD-NalBGA" },
+            { ID: "HD-NalBOG", CONCEPTO: "HD-NalBOG" },
+            { ID: "HD-NalBUG", CONCEPTO: "HD-NalBUG" },
+            { ID: "HD-NalCLO", CONCEPTO: "HD-NalCLO" },
+            { ID: "HD-NalCTG", CONCEPTO: "HD-NalCTG" },
+            { ID: "HD-NalCUC", CONCEPTO: "HD-NalCUC" },
+            { ID: "HD-NalEJA", CONCEPTO: "HD-NalEJA" },
+            { ID: "HD-NalMED", CONCEPTO: "HD-NalMED" },
+            { ID: "HD-NalMZL", CONCEPTO: "HD-NalMZL" },
+            { ID: "HD-NalPEI", CONCEPTO: "HD-NalPEI" },
+            { ID: "HOTELES", CONCEPTO: "HOTELES" },
+            { ID: "HOTPACK", CONCEPTO: "HOTPACK" },
+            { ID: "LIFESTYLE", CONCEPTO: "LIFESTYLE" },
+            { ID: "MINIPACK", CONCEPTO: "MINIPACK" },
+            { ID: "MOVIECITY", CONCEPTO: "MOVIECITY" },
+            { ID: "MUSIC", CONCEPTO: "MUSIC" },
+            { ID: "PLAYBOY", CONCEPTO: "PLAYBOY" },
+            { ID: "Premium", CONCEPTO: "Premium" },
+            { ID: "PRIVATEGOLD", CONCEPTO: "PRIVATEGOLD" },
+            { ID: "SILVER", CONCEPTO: "SILVER" },
+            { ID: "SPORTS", CONCEPTO: "SPORTS" },
+            { ID: "TVDIG-HDBAS", CONCEPTO: "TVDIG-HDBAS" },
+            { ID: "TVDIG-HDPREM", CONCEPTO: "TVDIG-HDPREM" },
+            { ID: "TVDIGITAL", CONCEPTO: "TVDIGITAL" },
+            { ID: "UFC", CONCEPTO: "UFC" },
+            { ID: "FOX-TEMP", CONCEPTO: "FOX-TEMP" },
+            { ID: "ESCENCIAL", CONCEPTO: "ESCENCIAL" },
+            { ID: "ESCENCIAL-PLUS", CONCEPTO: "ESCENCIAL-PLUS" },
+            { ID: "IDEAL", CONCEPTO: "IDEAL" },
+            { ID: "IDEAL-PLUS", CONCEPTO: "IDEAL-PLUS" },
+            { ID: "ONE", CONCEPTO: "ONE" },
+            { ID: "ONE PLUS", CONCEPTO: "ONE PLUS" },
+            { ID: "ONE ELITE", CONCEPTO: "ONE ELITE" },
+            { ID: "DTHCOL-BASICO", CONCEPTO: "DTHCOL-BASICO" },
+            { ID: "DTHCOL-AVANZADO", CONCEPTO: "DTHCOL-AVANZADO" },
+            { ID: "BASICO MIPYME", CONCEPTO: "BASICO MIPYME" },
         ];
+
+        $rootScope.productoGrafico = [
+            { id: 'Internet+Toip', concepto: 'Internet+Toip' },
+            { id: 'TV', concepto: 'TV' }
+        ];
+        $rootScope.estadoGrafico = [
+            { id: 'Acepta', concepto: 'Acepta' },
+            { id: 'Rechaza', concepto: 'Rechaza' }
+        ];
+
+        $rootScope.empresaGrafico = [
+            {
+                id: 'Tigo', concepto: 'Tigo'
+            }, {
+                id: 'Emtelco', concepto: 'Emtelco'
+            }
+        ]
 
         $rootScope.PendientesBrutalerrorDatos = true;
 

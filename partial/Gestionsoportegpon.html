@@ -23,13 +23,16 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
               <b>
-                <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-backdrop="static"
+                <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-backdrop="static" ng-click="contadorGpon()"
+                tooltip-placement="top" uib-tooltip="Contador"
                   data-target="#infomodal" data-placement="top" data-html="true"> Contador</button>
+                  <!-- <button type="button" class="btn btn-info btn-xs" data-backdrop="static" ng-click="contadorGpon()"
+                tooltip-placement="top" uib-tooltip="Contador"  popover-placement="left" uib-popover-html="contadorGpon">Contador</button> -->
               </b>
 
               <b>
-                <button type="button" class="btn btn-default btn-xs" ng-click="listarsoportegpon()" title="Actualizar"
-                  data-toggle="tooltip" data-placement="top" ng-disabled="loading">
+                <button type="button" class="btn btn-default btn-xs" ng-click="listarsoportegpon()" tooltip-placement="top"
+                uib-tooltip="Actualizar" ng-disabled="loading">
                   <i class="fa fa-refresh" aria-hidden="true"></i>
                 </button>
               </b>&nbsp;
@@ -146,14 +149,14 @@
                     <td>{{data.numero_contacto}}</td>
                     <td>{{data.nombre_contacto}}</td>
                     <td style="display: flex;justify-content: center;">
-                      <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-backdrop="static"
-                        ng-click="ver_masss(data)" popover data-placement="left" data-html="true"
-                        data-content="{{dataContent}}">
+                      <button popover-placement="left" ng-click="ver_masss(data)" uib-popover-html="dataContent"
+                        popover-title="Ver mas" type="button" class="btn btn-info btn-xs" tooltip-placement="top"
+                        uib-tooltip="Ver mas">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
                     </td>
                     <td class="text-center">
-                      <select ng-model="data.tipificaciones" class="btn btn-default btn-xs grupo-select" multiple
+                      <select ng-model="data.tipificaciones" class="btn btn-default btn-xs grupo-select" multiple 
                         ui-select2="groupSetup" name="tipificaciones" id="tipificaciones{{data.id_soporte}}">
                         <option value="Actualizar Infra">
                           Actualizar Infra
@@ -175,7 +178,7 @@
                         </option>
                         <option value="Nap Trocado">Nap Trocado</option>
                         <option value="Cod_Comp">Cod_Comp</option>
-                        <option value="Reenvio Registros">
+                        <option value="Reenvió Registros">
                           Reenvió Registros
                         </option>
                         <option value="IP navegacion">IP navegación</option>
@@ -192,9 +195,9 @@
                       </select>
                     </td>
                     <td>
-                      <button type="button" class="btn btn-default btn-xs"
-                        ng-click="gestionarSoporteGpon(data.id_soporte)"
-                        title="Gestionar soporte gpon" data-toggle="tooltip" data-placement="top">
+                      <button type="button" class="btn btn-info btn-xs" tooltip-placement="top"
+                      uib-tooltip="Gestionar soporte gpon"
+                        ng-click="gestionarSoporteGpon(data.id_soporte)">
                         <i class="fa fa-edit" aria-hidden="true"></i>
                       </button>
                     </td>
@@ -259,7 +262,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" ng-disabled="contact_form.$invalid" class="btn btn-info" data-dismiss="modal">
+          <button type="button" ng-disabled="contact_form.$invalid" class="btn btn-default" data-dismiss="modal">
             Cerrar
           </button>
         </div>
@@ -343,45 +346,6 @@
     </div>
   </div>
 
-  <div class="modal fade" tabindex="-1" role="dialog" id="tipificacionNueva">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-          <h4 class="modal-title">Seleccione</h4>
-        </div>
-        <div class="modal-body">
-          <select ng-model="tipificacionesModel" class="btn btn-default btn-xs grupo-select" multiple
-            ui-select2="groupSetup" name="tipificaciones" id="tipificaciones{{data.id_soporte}}" style="width: 100%">
-            <option value="Actualizar Infra">Actualizar Infra</option>
-            <option value="Estabilizar Pon">Estabilizar Pon</option>
-            <option value="Configurar VLAN">Configurar VLAN</option>
-            <option value="Aprovisionar">Aprovisionar</option>
-            <option value="Cam_Eq">Cam_Eq</option>
-            <option value="Contingencia">Contingencia</option>
-            <option value="Red ocupada">Red ocupada</option>
-            <option value="Puertos Lan">Puertos Lan</option>
-            <option value="Cierre CBAPON">Cierre CBAPON</option>
-            <option value="Validacion general">Validación general</option>
-            <option value="Nap Trocado">Nap Trocado</option>
-            <option value="Cod_Comp">Cod_Comp</option>
-            <option value="Reenvio Registros">Reenvió Registros</option>
-            <option value="IP navegacion">IP navegación</option>
-          </select>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">
-            Cerrar
-          </button>
-        </div>
-      </div>
-      <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-  </div>
-
 
   <div class="modal-dialog modal-lg modal fade"
     style="width: 25%; float: right;margin-right: 30px; top: 200px; heigth:50%">
@@ -429,7 +393,7 @@
 
   <div class="modal fade" id="ver_mas" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-lg" role="document" style="width: 350px;">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">Mas datos</h5>
@@ -438,7 +402,61 @@
           </button>
         </div>
         <div class="modal-body">
-          <table class="table table-bordered table-condensed table-hover">
+          <div class='table-responsive' style='max-width: 380px;'>
+            <table class='table table-bordered table-hover table-condensed small style=' max-width: 350px;'>
+              <tbody>
+                <tr>
+                  <td style='min-width: 80px'>Pedido</td>
+                  <td>{{data.unepedido}}</td>
+                </tr>
+                <tr>
+                  <td style='min-width: 80px'>Categoría</td>
+                  <td>{{data.tasktypecategory}}</td>
+                </tr>
+                <tr>
+                  <td style='min-width: 80px'>Municipio</td>
+                  <td>{{ data.unemunicipio}}</td>
+                </tr>
+                <tr>
+                  <td style='min-width: 80px'>Productos</td>
+                  <td>{{ data.uneproductos}}</td>
+                </tr>
+                <tr>
+                  <td style='min-width: 80px'>Datos cola</td>
+                  <td>{{ data.datoscola}}</td>
+                </tr>
+                <tr>
+                  <td style='min-width: 80px'>Mac</td>
+                  <td>{{ data.mac }}</td>
+                </tr>
+                <tr>
+                  <td style='min-width: 80px'>Serial</td>
+                  <td>{{ data.serial }}</td>
+                </tr>
+                <tr>
+                  <td style='min-width: 80px'>Sistema</td>
+                  <td>{{ data.uneSourceSystem }}</td>
+                </tr>
+                <tr>
+                  <td style='min-width: 80px'>Tipo equipo</td>
+                  <td>{{ data.tipo_equipo }}</td>
+                </tr>
+                <tr>
+                  <td style='min-width: 80px'>Velocidad navegación</td>
+                  <td>{{ data.velocidad_navegacion }}</td>
+                </tr>
+                <tr>
+                  <td style='min-width: 80px'>Observación</td>
+                  <td>{{ data.observacion_terreno }}</td>
+                </tr>
+                <tr>
+                  <td style='min-width: 80px'>Fecha solicitud</td>
+                  <td>{{ data.fecha_creado }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>;
+          <!--<table class="table table-bordered table-condensed table-hover">
 
             <tbody>
               <tr>
@@ -492,10 +510,10 @@
 
 
             </tbody>
-          </table>
+          </table>-->
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
         </div>
       </div>
     </div>

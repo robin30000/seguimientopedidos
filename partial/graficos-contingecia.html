@@ -112,7 +112,6 @@
                           <div class="col-md-6">
                             <ul class="nav navbar-nav navbar-left">
                               <b>Gestion Usuario Por Hora</b>
-
                               <span style="color: red" class="pull-right"><i class="fa fa-exclamation-triangle warning"
                                   aria-hidden="true" ng-hide="errorDatos==null"></i>
                                 {{errorDatos}}</span>
@@ -153,7 +152,7 @@
 
                               <li>
                                 <div class="col-md-1">
-                                  <button type="button" class="btn btn-default btn-xs" ng-click="consultaTabla()"
+                                  <button type="button" class="btn btn-info btn-xs" ng-click="consultaTabla()"
                                     title="Buscar" data-toggle="tooltip" data-placement="left" ng-disabled="loading">
                                     <i class="fa fa-search" aria-hidden="true"></i>
                                   </button>
@@ -375,7 +374,11 @@
                         <div class="row">
                           <div class="col-md-6">
                             <ul class="nav navbar-nav navbar-left">
-                              <b>Tiempo completo</b>
+                              <b>Tiempo completo <button ng-show="galletainfo.perfil == 11" type="button" class="btn btn-info btn-xs"
+                                  tooltip-placement="top" uib-tooltip="Modificar usuarios"
+                                  ng-click="ModificarUsuarioTiempoCompleto(tiempoCompleto, 'Tiempo completo')">
+                                  <i class="fa fa-plus" aria-hidden="true"> </i>
+                                </button></b>
 
                               <span style="color: red" class="pull-right"><i class="fa fa-exclamation-triangle warning"
                                   aria-hidden="true" ng-hide="errorDatos==null"></i>
@@ -432,7 +435,7 @@
                                   </div>
 
                                   <div class="col-md-1">
-                                    <button type="button" class="btn btn-default btn-xs"
+                                    <button type="button" class="btn btn-info btn-xs"
                                       ng-click="consultaTablaTiempo(fechaTiempo,estadoTablaTiempo,productoTablaTiempo)"
                                       title="Buscar" data-toggle="tooltip" data-placement="left" ng-disabled="loading">
                                       <i class="fa fa-search" aria-hidden="true"></i>
@@ -550,7 +553,11 @@
                         <div class="row">
                           <div class="col-md-6">
                             <ul class="nav navbar-nav navbar-left">
-                              <b>SSMM</b>
+                              <b>SSMM <button ng-show="galletainfo.perfil == 11" type="button" class="btn btn-ifo btn-xs"
+                                  tooltip-placement="top" uib-tooltip="Modificar usuarios"
+                                  ng-click="ModificarUsuarioTiempoCompleto(mmss, 'mmss')">
+                                  <i class="fa fa-plus" aria-hidden="true"> </i>
+                                </button></b>
                               <span style="color: red" class="pull-right"><i class="fa fa-exclamation-triangle warning"
                                   aria-hidden="true" ng-hide="errorDatos==null"></i>
                                 {{errorDatos}}</span>
@@ -602,7 +609,7 @@
                                   </div>
 
                                   <div class="col-md-1">
-                                    <button type="button" class="btn btn-default btn-xs"
+                                    <button type="button" class="btn btn-info btn-xs"
                                       ng-click="mmssConsulta(fechammss,estadommss,productommss)" title="Buscar"
                                       data-toggle="tooltip" data-placement="left" ng-disabled="loading">
                                       <i class="fa fa-search" aria-hidden="true"></i>
@@ -717,7 +724,11 @@
                         <div class="row">
                           <div class="col-md-6">
                             <ul class="nav navbar-nav navbar-left">
-                              <b>Apoyo</b>
+                              <b>Apoyo <button ng-show="galletainfo.perfil == 11" type="button" class="btn btn-info btn-xs"
+                                  tooltip-placement="top" uib-tooltip="Modificar usuarios"
+                                  ng-click="ModificarUsuarioTiempoCompleto(apoyo, 'apoyo')">
+                                  <i class="fa fa-plus" aria-hidden="true"> </i>
+                                </button></b>
                               <span style="color: red" class="pull-right"><i class="fa fa-exclamation-triangle warning"
                                   aria-hidden="true" ng-hide="errorDatos==null"></i>
                                 {{errorDatos}}</span>
@@ -759,19 +770,17 @@
                                   <div class="col-md-5">
                                     <div class="form-floating">
                                       <select class="btn btn-default btn-xs grupo-select" name="productoTablaApoyo"
-                                        id="productoTablaApoyo" ng-model="productoTablaApoyo"
+                                        ui-select2="groupSetup" id="productoTablaApoyo" ng-model="productoTablaApoyo"
                                         data-placeholder="Producto...">
                                         <option value="" selected>Seleccione</option>
-                                        <option value="Internet+Toip">
-                                          Internet+Toip
-                                        </option>
+                                        <option value="Internet+Toip">Internet+Toip</option>
                                         <option value="TV">TV</option>
                                         <option value="Todos">Todos</option>
                                       </select>
                                     </div>
                                   </div>
                                   <div class="col-md-1">
-                                    <button type="button" class="btn btn-default btn-xs"
+                                    <button type="button" class="btn btn-info btn-xs"
                                       ng-click="consultaTablaApoyo(fechaApoyo,estadoTablaApoyo,productoTablaApoyo)"
                                       title="Buscar" data-toggle="tooltip" data-placement="left" ng-disabled="loading">
                                       <i class="fa fa-search" aria-hidden="true"></i>
@@ -888,7 +897,12 @@
                         <div class="row">
                           <div class="col-md-6">
                             <ul class="nav navbar-nav navbar-left">
-                              <b>Emtelco</b>
+                              <b>Emtelco <button ng-show="galletainfo.perfil == 11" type="button"
+                                  class="btn btn-info btn-xs" tooltip-placement="top"
+                                  uib-tooltip="Modificar usuarios"
+                                  ng-click="ModificarUsuarioTiempoCompleto(emtelco, 'emtelco')">
+                                  <i class="fa fa-plus" aria-hidden="true"> </i>
+                                </button></b>
 
                               <span style="color: red" class="pull-right"><i class="fa fa-exclamation-triangle warning"
                                   aria-hidden="true" ng-hide="errorDatos==null"></i>
@@ -912,8 +926,6 @@
                                   class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
                                   ng-model="fecha_gestion" placeholder="Fecha" datetime-picker="" date-only
                                   date-format="yyyy-MM-dd" autocomplete="off"> <i class="fa fa-calendar fa-fw"></i>
-
-
                               </li>
 
                               <li>
@@ -935,7 +947,7 @@
 
                               <li>
                                 <div class="col-md-1">
-                                  <button type="button" class="btn btn-default btn-xs" ng-click="consultaTabla()"
+                                  <button type="button" class="btn btn-info btn-xs" ng-click="consultaTabla()"
                                     title="Buscar" data-toggle="tooltip" data-placement="left" ng-disabled="loading">
                                     <i class="fa fa-search" aria-hidden="true"></i>
                                   </button>

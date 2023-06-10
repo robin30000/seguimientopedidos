@@ -44,6 +44,11 @@ if (isset($data['method'])) {
             $user = new kpi();
             $user->AgenteEmtelco($data['data']);
             break;
+        case 'quitarUsuarioKpi':
+            require_once '../class/kpi.php';
+            $user = new kpi();
+            $user->quitarUsuarioKpi($data['data']);
+            break;
         default:
             echo 'ninguna opción valida.';
             break;

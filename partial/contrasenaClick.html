@@ -26,18 +26,18 @@
                 </select>
                 <div class="btn-group">
                   <input style="width: 140px" class="btn btn-default btn-xs" type="text" ng-model="tecnico"
-                    placeholder="Buscar..." tooltip data-placement="bottom" ng-disabled="loading" select-on-click
+                    placeholder="Buscar..." ng-disabled="loading" select-on-click
                     capitalize />
-                  <button type="button" class="btn btn-success btn-xs" ng-click="buscarTec(concepto, tecnico)"
-                    ng-disabled="loading" tooltip title="Buscar">
+                  <button type="button" class="btn btn-default btn-xs" ng-click="buscarTec(concepto, tecnico)"
+                    ng-disabled="loading" tooltip-placement="top" uib-tooltip="Buscar">
                     <i class="fa fa-search-plus" aria-hidden="true"> </i>
                   </button>
                 </div>
               </li>
               <li>
                 &nbsp;
-                <button type="button" class="btn btn-success btn-xs" ng-click="tecnicos()" ng-disabled="loading">
-                  Actualizar tecnicos
+                <button type="button" class="btn btn-info btn-xs" ng-click="tecnicos()" ng-disabled="loading" tooltip-placement="top" uib-tooltip="Actualizar técnicos">
+                  Actualizar técnicos
                 </button>
               </li>
               <li>

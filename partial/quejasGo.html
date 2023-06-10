@@ -40,26 +40,25 @@
 								class="btn btn-default btn-xs" ng-model="Registros.fechafin" placeholder="Fecha Final"
 								datetime-picker="" date-format="yyyy-MM-dd" date-only>
 							<i class="fa fa-calendar fa-fw"></i>
-							<button type="button" class="btn btn-success btn-xs" ng-click="validarDatos(Registros)"
-								ng-disabled="loading" title="Buscar Registros">
+							<button type="button" class="btn btn-default btn-xs" ng-click="validarDatos(Registros)"
+								ng-disabled="loading" tooltip-placement="top" uib-tooltip="Buscar">
 								<i class="fa fa-search-plus" aria-hidden="true"></i>
 							</button>
 							<button type="button" ng-show="galletainfo.perfil == 13 || galletainfo.perfil == 1"
-								class="btn btn-primary btn-xs" title="Exportar Registros"
-								ng-click="csvQuejasGo(Registros)" ng-disabled="loading" title="Exportar" tooltip
-								data-placement="top">
+								class="btn btn-info btn-xs" tooltip-placement="top" uib-tooltip="Exportar"
+								ng-click="csvQuejasGo(Registros)" ng-disabled="loading">
 								<i class="fa fa-cloud-download" aria-hidden="true"> </i>
 							</button>
 
-							<button type="button" ng-show="galletainfo.PERFIL !== '8'" class="btn btn-primary btn-xs"
-								title="Exportar Registros" ng-click="csvQuejasGo()" ng-disabled="loading"
-								title="Exportar" tooltip data-placement="top">
+							<button type="button" ng-show="galletainfo.PERFIL !== '8'" class="btn btn-info btn-xs"
+								tooltip-placement="top" uib-tooltip="Exportar" ng-click="csvQuejasGo()"
+								ng-disabled="loading" title="Exportar" tooltip data-placement="top">
 								<i class="fa fa-cloud-download" aria-hidden="true"> </i>
 							</button>
 
-							<button type="button" ng-click="mostraModal({})" class="btn btn-primary btn-xs"
-								title="Exportar Registros" ng-click="csvQuejasGo(Registros)" ng-disabled="loading"
-								title="Exportar" tooltip data-placement="top">
+							<button type="button" ng-click="mostraModal({})" class="btn btn-info btn-xs"
+								tooltip-placement="top" uib-tooltip="Agregar novedad" ng-click="csvQuejasGo(Registros)"
+								ng-disabled="loading">
 								<i class="fa fa-plus"></i> Agregar
 								Queja</a>
 							</button>
@@ -67,7 +66,7 @@
 					</div>
 				</div>
 				<div class="table-responsive animated bounceInRight">
-					<table class="table table-bordered small table-condensed table-striped">
+					<table class="table table-bordered small table-condensed table-striped table-hover">
 						<thead class="table-header">
 							<tr>
 								<th>Consecutivo</th>
@@ -99,12 +98,10 @@
 								<td>{{registrosQuejasGo.region}}</td>
 								<td>{{registrosQuejasGo.idllamada}}</td>
 								<td>{{registrosQuejasGo.observacion}}</td>
-								<td><button type="button" class="btn btn-default btn-xs"
-										ng-click="abrirModalModificarObs(registrosQuejasGo.id, registrosQuejasGo.observacion)"
-										data-toggle="modal" data-target="#editarModal" data-backdrop="static"
-										ng-disabled="loading" popover data-trigger="hover" data-placement="left"
-										data-html="true" data-selector="">
-										<i class="fa fa-pencil-square-o fa-2x aria-hidden=true"></i>
+								<td>
+									<button type="button" class="btn btn-info btn-xs" tooltip-placement="top" uib-tooltip="Editar novedad"
+										ng-click="abrirModalModificarObs(registrosQuejasGo.id, registrosQuejasGo.observacion)">
+										<i class="fa fa-edit"></i>
 									</button>
 								</td>
 							</tr>
@@ -193,7 +190,7 @@
 								<option value="Llamada equivocada">Llamada equivocada</option>
 								<option value="Llamada muda">Llamada muda</option>
 								<option value="Llamar de nuevo usuario">Llamar de nuevo usuario</option>
-								<option value="Monitoreo tecnico">Monitoreo técnico</option>
+								<option value="Monitoreo técnico">Monitoreo técnico</option>
 								<option value="Notas">Notas</option>
 								<option value="Reagenda">Reagenda</option>
 							</select>

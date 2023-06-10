@@ -56,7 +56,7 @@
               </li>
               <li>
                 <div class="btn-group">
-                  <button type="button" class="btn btn-success btn-xs"
+                  <button type="button" class="btn btn-default btn-xs" tooltip-placement="top" uib-tooltip="Buscar"
                     ng-click="buscarRegistrosCodigoIncompleto(RegistrosCodigoIncompleto)" ng-disabled="loading">
                     <i class="fa fa-search-plus" aria-hidden="true"> </i>
                   </button>
@@ -64,16 +64,16 @@
               </li>
               <li>&nbsp;</li>
               <li>
-                <button type="button" ng-show="galletainfo.perfil !== '8'" class="btn btn-primary btn-xs"
-                  title="Exportar Registros" ng-click="csvRegistros()" ng-disabled="loading" title="Exportar" tooltip
+                <button type="button" ng-show="galletainfo.perfil !== '8'" class="btn btn-info btn-xs"
+                tooltip-placement="top" uib-tooltip="Exportar registros" ng-click="csvRegistros()" ng-disabled="loading" title="Exportar" tooltip
                   data-placement="top">
                   <i class="fa fa-cloud-download" aria-hidden="true"> </i>
                 </button>
                 &nbsp;
               </li>
               <li>
-                <button type="button" class="btn btn-default btn-xs" ng-click="recargaPage()" title="Actualizar"
-                  data-toggle="tooltip" data-placement="top" ng-disabled="loading">
+                <button type="button" class="btn btn-default btn-xs" ng-click="recargaPage()" tooltip-placement="top" uib-tooltip="Actualizar"
+                  ng-disabled="loading">
                   <i class="fa fa-refresh" aria-hidden="true"></i>
                 </button>
               </li>
@@ -119,9 +119,7 @@
                 <td><span>{{data.fecha_creado}}</span></td>
                 <td><span>{{data.fecha_respuesta}}</span></td>
                 <td>
-                  <button type="button" class="btn btn-info btn-xs" ng-click="muestraNotas(data)" data-toggle="modal"
-                    data-target="#NotasModal" popover data-trigger="hover" data-placement="left" data-html="true"
-                    data-content="<code>Ver Detalles</code>">
+                  <button type="button" class="btn btn-info btn-xs" ng-click="muestraNotas(data)" tooltip-placement="top" uib-tooltip="Ver notas">
                     <i class="fa fa-rss" aria-hidden="true"> </i>
                   </button>
                 </td>

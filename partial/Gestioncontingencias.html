@@ -1,1302 +1,1420 @@
-<style>
-	.fileUpload {
-		position: relative;
-		overflow: hidden;
-		margin: 10px;
-	}
-
-	table,
-	th,
-	td {
-		font-size: 11px;
-	}
-
-	.fixed-panel-kpiuser {
-
-		max-height: 300px;
-		overflow-y: scroll;
-	}
-
-	.fileUpload input.upload {
-		position: absolute;
-		top: 0;
-		right: 0;
-		margin: 0;
-		padding: 0;
-		font-size: 30px;
-		cursor: pointer;
-		opacity: 0;
-		filter: alpha(opacity=0);
-	}
-
-	.flipswitch {
-		position: relative;
-		background: white;
-		margin: 0px 0 0;
-		padding: 0;
-		width: 42px;
-		height: 22px;
-		-webkit-appearance: initial;
-		border-radius: 3px;
-		-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-		outline: none;
-		font-size: inherit;
-		/*font-size: 65%;
-    font-size: 9px;
-    font-weight: bold;*/
-		font-family: Trebuchet, Arial, sans-serif;
-		cursor: pointer;
-		border: 1px solid #ddd;
-		z-index: 0;
-	}
-
-	.flipswitch:after {
-		position: absolute;
-		top: 5%;
-		display: block;
-		line-height: 17px;
-		width: 45%;
-		height: 90%;
-		background: #337ab7;
-		box-sizing: border-box;
-		text-align: center;
-		transition: all 0.3s ease-in 0s;
-		color: white;
-		border: #888 1px solid;
-		border-radius: 3px;
-		z-index: 0;
-	}
-
-	.flipswitch:after {
-		left: 2%;
-		content: "No";
-
-	}
-
-	.flipswitch:checked:after {
-		left: 53%;
-		content: "Si";
-		background: #00C8FF;
-
-	}
-
-	.resaltado15min {
-		background-color: #ADE2FF !important;
-	}
-
-	.label-xsmall {
-		vertical-align: super;
-		font-size: x-small;
-	}
-
-	.flex {
-		display: flex;
-		align-items: center;
-		justify-content: space-around;
-	}
-</style>
 <div class="container-fluid">
-	<div class="row">
-		<div class="col-md-12">
-			<div class="panel panel-default">
-				<div class="panel-heading nav navbar-default">
-					<ul class="nav nav-tabs">
-						<li class="active">
-							<a data-toggle="tab" href="/#gestion"> Gestión</a>
-						</li>
-						<li>
-							<a data-toggle="tab" href="/#Kpis"> Seguimiento y auditoría</a>
-						</li>
-					</ul>
-				</div>
-			</div>
-			<div class="tab-content">
-				<div id="gestion" class="tab-pane fade in active">
-					<div class="panel panel-default">
-						<div class="panel-heading nav navbar-default">
-							<ul class="nav nav-tabs">
-								<li class="active">
-									<a data-toggle="tab" href="/#home"> TV</a>
-								</li>
-								<li>
-									<a data-toggle="tab" href="/#internet"> Internet-Toip</a>
-								</li>
-								<li>
-									<a data-toggle="tab" href="/#portafolio"> Corregir Portafolio</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-					<div class="tab-content">
-						<!-- MODULO DE TV -->
-						<div id="home" class="tab-pane fade in active">
-							<div class="panel panel-default">
-								<div class="panel-heading nav navbar-default">
-									<ul class="nav navbar-nav navbar-left">
-										<b>
-											<i class="fa fa-television" aria-hidden="true"></i> TV</b>
-									</ul>
-									<ul class="nav navbar-nav navbar-right">
-										<b>
-											<button type="button" class="btn btn-default btn-xs"
-												ng-click="gestioncontingencias()" title="Actualizar"
-												data-toggle="tooltip" data-placement="top" ng-disabled="loading">
-												<i class="fa fa-refresh" aria-hidden="true"></i>
-											</button>
-										</b>&nbsp;
-									</ul>
-								</div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading nav navbar-default">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a data-toggle="tab" href="/#gestion"> Gestión</a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="/#Kpis"> Seguimiento y auditoría</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tab-content">
+                <div id="gestion" class="tab-pane fade in active">
+                    <div class="panel panel-default">
+                        <div class="panel-heading nav navbar-default">
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a data-toggle="tab" href="/#home"> TV</a>
+                                </li>
+                                <li>
+                                    <a data-toggle="tab" href="/#internet"> Internet-Toip</a>
+                                </li>
+                                <!-- <li>
+                                    <a data-toggle="tab" href="/#portafolio"> Corregir Portafolio</a>
+                                </li> -->
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="tab-content">
+                        <!-- MODULO DE TV -->
+                        <div id="home" class="tab-pane fade in active">
+                            <div class="panel panel-default">
+                                <div class="panel-heading nav navbar-default">
+                                    <ul class="nav navbar-nav navbar-left">
+                                        <b>
+                                            <i class="fa fa-television" aria-hidden="true"></i> TV</b>
+                                    </ul>
+                                    <ul class="nav navbar-nav navbar-right">
+                                        <b>
+                                            <button type="button" class="btn btn-default btn-xs"
+                                                ng-click="gestioncontingencias()" tooltip-placement="top"
+                                                uib-tooltip="Actualizar" data-toggle="tooltip" data-placement="top"
+                                                ng-disabled="loading">
+                                                <i class="fa fa-refresh" aria-hidden="true"></i>
+                                            </button>
+                                        </b>&nbsp;
+                                    </ul>
+                                </div>
 
-								<div ng-show="!haypedidoTV && contingenciesDataTV.length == 0">
-									<div class="jumbotron">
+                                <div ng-show="!haypedidoTV && contingenciesDataTV.length == 0">
+                                    <div class="jumbotron">
 
-										<h3>Gestión Contingencias</h3>
-
-
-										<h5>{{mensaje}}</h5>
-
-									</div>
-								</div>
-								<div ng-show="haypedidoTV || contingenciesDataTV.length > 0" class="table-responsive">
-									<table
-										class="table small table-striped table-hover table-condensed table-bordered animated bounceInRight">
-										<thead class="table-header">
-											<tr>
-												<th>Marcar</th>
-												<th>Login</th>
-												<th>Pedido</th>
-												<th>Mac Entra</th>
-												<th>Mac Sale</th>
-												<th>Paquetes</th>
-												<th>Perfil</th>
-												<th>Ciudad</th>
-												<th>Proceso</th>
-												<th>Acción</th>
-												<th>Fecha</th>
-												<th>Producto</th>
-												<th>Tipo equipo</th>
-												<th>Remitente</th>
-												<th>Tipificación</th>
-												<th>Observaciones</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr ng-repeat="data in contingenciasTV | orderBy : 'horagestion' : false track by $index "
-												ng-class="{'resaltado15min': data.horagestion <= quinceminutos[indice]}">
-												<td>
-													<div ng-show="data._id">
-														<input type="checkbox" ng-model="data.bloqueo" name="bloqueo"
-															id="bloqueo" ng-change="marcarEngestion(data)"
-															ng-show="data.bloqueo != 1">
-														<div class="loadingio-spinner-ellipsis-3nun7cb96ao"
-															ng-show="data.bloqueo == 1">
-															<div class="ldio-pettsxrv7wj">
-																<div></div>
-																<div></div>
-																<div></div>
-																<div></div>
-																<div></div>
-															</div>
-														</div>
-
-														<div ng-show="!data._id">
-															<input type="checkbox" ng-model="data.bloqueo"
-																name="bloqueo" id="bloqueo"
-																ng-change="marcarEngestion(data)">
-
-												</td>
-												<!-- En estas lineas se oculta el login gestión -->
-												<td ng-show="data.logincontingencia == galletainfo.LOGIN && !data._id">
-													<span
-														ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.logincontingencia == galletainfo.LOGIN}">{{data.logincontingencia}}</span>
-												</td>
-
-												<td
-													ng-show="data.logincontingencia != galletainfo.LOGIN && data.engestion == 1 && !data._id">
-													<span
-														ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.logincontingencia != galletainfo.LOGIN}">En
-														gestión</span>
-												</td>
-
-												<td
-													ng-show="data.logincontingencia != galletainfo.LOGIN && data.engestion != 1 && !data._id">
-													<span
-														ng-class="{'label label-primary label-xsmall': data.engestion != 1}"></span>
-												</td>
-												<td ng-show="data._id">
-												</td>
-												<!-- Fin ocultar el login gestión -->
-												<td>
-													<div class="flex">
-														<button type="button" class="btn btn-default btn-xs"
-															ng-click="CopyPortaPapeles(data.pedido)" tooltip
-															title="Copiar pedido" id=tv{{$index}}>
-															{{data.pedido}}
-														</button>&nbsp;&nbsp;
-														<!-- 														<button type="button" class="btn btn-default btn-xs sin_nada"
-																	ng-click="bb8(data.pedido)">
-																<i class="fa fa-plus" aria-hidden="true" ng-click="bb8(data.pedido)"></i></button> -->
-														<i class="fa fa-info-circle" aria-hidden="true"
-															ng-click="bb8(data.pedido)"></i>
-													</div>
-
-												</td>
-												<td ng-show="!data._id">{{data.macEntra}}</td>
-												<td ng-show="!data._id">{{data.macSale}}</td>
-												<td ng-show="data._id"><span
-														ng-repeat="mac in data.macIn">{{mac.name}}-</span></td>
-												<td ng-show="data._id"><span
-														ng-repeat="mac in data.macOut">{{mac.name}}-</span></td>
-												<td>{{data.paquetes}}</td>
-												<td>{{data.perfil}}</td>
-												<td>{{data.ciudad}}</td>
-												<td>{{data.proceso}}</td>
-												<td>{{data.accion}}</td>
-												<td>{{data.horagestion}}</td>
-												<td>{{data.producto}}</td>
-												<td>{{data.tipoEquipo}}</td>
-												<td>{{data.remite}}</td>
-												<td>
-													<select ng-model="data.tipificacion"
-														class="btn btn-default btn-xs grupo-select" name="tipificacion"
-														style="width:100px" ng-change="palancatv(data,$index)">
-														<option value="Ok">Ok</option>
-														<option value="Rechazado por posible fraude">Rechazado por
-															posible fraude</option>
-														<option value="Rechazado por mal ingreso">Rechazado por mal
-															ingreso</option>
-														<option value="Duplicado">Duplicado</option>
-														<option value="Error de despacho(faltó gestión)">Error de
-															despacho(faltó gestión)</option>
-														<option value="Reenvio Falla">Reenvió Falla</option>
-														<option value="error del sistema">Error del Sistema</option>
-														<option value="No uso SARA">No uso SARA</option>
-													</select>
-												</td>
-												<td>
-
-													<button type="button" class="btn btn-default btn-xs"
-														data-toggle="modal" data-backdrop="static" ng-disabled="loading"
-														popover data-placement="left" data-html="true"
-														title="Observaciones" data-selector=""
-														data-content="{{data.observacion}}">
-														<i class="fa fa-commenting" aria-hidden="true"></i>
-													</button>
-													<button ng-show="!data._id" type="button"
-														class="btn btn-default btn-xs" data-toggle="modal"
-														ng-click="guardarcontingencia(data)" data-backdrop="static"
-														tooltip title="Observaciones y guardar gestión"
-														data-placement="top" data-html="true" data-selector="">
-														<i class="fa fa-floppy-o" aria-hidden="true"> </i>
-													</button>
-													<div style="display: inline-block;" ng-show="!data._id">
-														<button type="button" class="btn btn-default btn-xs"
-															data-toggle="modal" data-backdrop="static"
-															ng-hide="data.alerta == 'FALSE'" tooltip
-															title="El pedido ya pasó por contingencias anteriormente, por favor validar!"
-															data-placement="top" data-html="true" data-selector="">
-															<i class="fa fa-exclamation" style="color:red"
-																aria-hidden="true"> </i>
-														</button>
-													</div>
-
-												</td>
-											</tr>
-
-										</tbody>
-									</table>
-								</div>
-								<!-- Loading Circle -->
-								<div class="loading-circle" ng-show="contingenciasTV.length == 0 && loadingData">
-									<div class="loadingio-spinner-ripple">
-										<div class="ldio">
-											<div></div>
-											<div></div>
-										</div>
-									</div>
-								</div>
-
-							</div>
-						</div>
-						<!-- MODULO DE INTERNET-ToIp -->
-						<div id="internet" class="tab-pane fade">
-							<div class="col-md-12">
-								<div class="row">
-									<div class="panel panel-default">
-										<div class="panel-heading nav navbar-default">
-											<ul class="nav navbar-nav navbar-left">
-												<b>
-													<i class="fa fa-phone-square" aria-hidden="true"></i>
-													Internet-Toip</b>
-											</ul>
-											<ul class="nav navbar-nav navbar-right">
-												<b>
-													<button type="button" class="btn btn-default btn-xs"
-														ng-click="gestioncontingencias()" title="Actualizar"
-														data-toggle="tooltip" data-placement="top"
-														ng-disabled="loading">
-														<i class="fa fa-refresh" aria-hidden="true"></i>
-													</button>
-												</b>&nbsp;
-											</ul>
-										</div>
-
-										<div ng-show="!haypedidoOtros && contingenciesDataInternetToIP.length == 0">
-											<div class="jumbotron">
-
-												<h3>Gestión Contingencias</h3>
+                                        <h3>Gestión Contingencias</h3>
 
 
-												<h5>{{mensajeotros}}</h5>
+                                        <h5>{{mensaje}}</h5>
 
-											</div>
-										</div>
-										<div ng-show="haypedidoOtros || contingenciesDataInternetToIP.length > 0" class="table-responsive">
-											<table
-												class="table small table-striped table-hover table-condensed table-bordered animated bounceInRight">
-												<thead class="table-header">
-													<tr>
-														<th>Marcar</th>
-														<th>Login</th>
-														<th>Pedido</th>
-														<th>Mac Entra</th>
-														<th>Mac Sale</th>
-														<th>Nro Línea</th>
-														<th>Perfíl</th>
-														<th>Ciudad</th>
-														<th>Proceso</th>
-														<th>Acción</th>
-														<td>Hora ingreso</td>
-														<th>Producto</th>
-														<th>Tipo equipo</th>
-														<th>Remitente</th>
-														<th>Tipificación</th>
-														<th>Observaciones</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr ng-repeat="data in contingenciasOTROS | orderBy : 'horagestion' : false track by $index"
-														ng-class="{'resaltado15min': data.horagestion <= quinceminutos[indice]}">
-														<td>
-															<div ng-show="data._id">
-																<input type="checkbox" ng-model="data.bloqueo"
-																	name="bloqueo" id="bloqueo"
-																	ng-change="marcarEngestion(data)"
-																	ng-show="data.bloqueo != 1">
-																<div class="loadingio-spinner-ellipsis-3nun7cb96ao"
-																	ng-show="data.bloqueo == 1">
-																	<div class="ldio-pettsxrv7wj">
-																		<div></div>
-																		<div></div>
-																		<div></div>
-																		<div></div>
-																		<div></div>
-																	</div>
-																</div>
+                                    </div>
+                                </div>
+                                <div ng-show="haypedidoTV || contingenciesDataTV.length > 0" class="table-responsive">
+                                    <table
+                                        class="table small table-striped table-hover table-condensed table-bordered animated bounceInRight">
+                                        <thead class="table-header">
+                                            <tr>
+                                                <th>Marcar</th>
+                                                <th>Login</th>
+                                                <th>Pedido</th>
+                                                <th>Mac Entra</th>
+                                                <th>Mac Sale</th>
+                                                <th>Paquetes</th>
+                                                <th>Perfil</th>
+                                                <th>Ciudad</th>
+                                                <th>Proceso</th>
+                                                <th>Acción</th>
+                                                <th>Fecha</th>
+                                                <th>Producto</th>
+                                                <th>Tipo equipo</th>
+                                                <th>Remitente</th>
+                                                <th>Tipificación</th>
+                                                <th>Observaciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="data in contingenciasTV | orderBy : 'horagestion' : false track by $index "
+                                                ng-class="{'resaltado15min': data.horagestion <= quinceminutos[indice]}">
+                                                <td>
+                                                    <div>
+                                                        <input type="checkbox" ng-model="data.bloqueo" name="bloqueo"
+                                                            id="bloqueo" ng-change="marcarEngestion(data)"
+                                                            ng-show="data.bloqueo != 1">
+                                                        <div class="loadingio-spinner-ellipsis-3nun7cb96ao"
+                                                            ng-show="data.bloqueo == 1">
+                                                            <div class="ldio-pettsxrv7wj">
+                                                                <div></div>
+                                                                <div></div>
+                                                                <div></div>
+                                                                <div></div>
+                                                                <div></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
-																<div ng-show="!data._id">
-																	<input type="checkbox" ng-model="data.bloqueo"
-																		name="bloqueo" id="bloqueo"
-																		ng-change="marcarEngestion(data)">
+                                                </td>
 
-														</td>
-														<!-- En estas lineas se oculta el login gestión -->
+                                                <td
+                                                    ng-show="data.logincontingencia != galletainfo.login && data.engestion == 1">
+                                                    <span
+                                                        ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.logincontingencia != galletainfo.login}">En
+                                                        gestión</span>
+                                                </td>
 
-														<td ng-show="data.logincontingencia == galletainfo.LOGIN"><span
-																ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.logincontingencia == galletainfo.LOGIN}">{{data.logincontingencia}}</span>
-														</td>
+                                                <td
+                                                    ng-show="data.logincontingencia == galletainfo.login && data.engestion == 1">
+                                                    <span
+                                                        ng-class="{'label label-primary label-xsmall': data.engestion == 1}">{{data.logincontingencia}}</span>
+                                                </td>
 
-														<td
-															ng-show="data.logincontingencia != galletainfo.LOGIN && data.engestion == 1">
-															<span
-																ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.logincontingencia != galletainfo.LOGIN}">En
-																gestión</span>
-														</td>
+                                                <td
+                                                    ng-show="data.logincontingencia != galletainfo.login && data.engestion != 1">
+                                                    <span></span>
+                                                </td>
 
-														<td
-															ng-show="data.logincontingencia != galletainfo.LOGIN && data.engestion != 1">
-															<span
-																ng-class="{'label label-primary label-xsmall': data.engestion != 1}"></span>
-														</td>
+                                                <!-- Fin ocultar el login gestión -->
+                                                <td class="icons_in_tables">
+                                                    <button type="button" class="btn btn-default btn-xs"
+                                                        ng-click="CopyPortaPapeles(data.pedido)" tooltip-placement="top"
+                                                        uib-tooltip="Copiar pedido" id=tv{{$index}}>
+                                                        {{data.pedido}}
+                                                    </button>
+                                                    <i class="fa fa-info-circle" aria-hidden="true"
+                                                        tooltip-placement="top" uib-tooltip="Datos bb8"
+                                                        ng-click="bb8(data.pedido)"></i>
+                                                </td>
+                                                <td ng-show="!data._id">{{data.macEntra}}</td>
+                                                <td ng-show="!data._id">{{data.macSale}}</td>
+                                                <td ng-show="data._id"><span
+                                                        ng-repeat="mac in data.macIn">{{mac.name}}-</span></td>
+                                                <td ng-show="data._id"><span
+                                                        ng-repeat="mac in data.macOut">{{mac.name}}-</span></td>
+                                                <td>{{data.paquetes}}</td>
+                                                <td>{{data.perfil}}</td>
+                                                <td>{{data.ciudad}}</td>
+                                                <td>{{data.proceso}}</td>
+                                                <td>{{data.accion}}</td>
+                                                <td>{{data.horagestion}}</td>
+                                                <td>{{data.producto}}</td>
+                                                <td>{{data.tipoEquipo}}</td>
+                                                <td>{{data.remite}}</td>
+                                                <td>
+                                                    <select ng-model="data.tipificacion"
+                                                        class="btn btn-default btn-xs grupo-select" name="tipificacion"
+                                                        style="width:100px" ng-change="palancatv(data,$index)">
+                                                        <option value="Ok">Ok</option>
+                                                        <option value="Rechazado por posible fraude">Rechazado por
+                                                            posible fraude
+                                                        </option>
+                                                        <option value="Rechazado por mal ingreso">Rechazado por mal
+                                                            ingreso
+                                                        </option>
+                                                        <option value="Duplicado">Duplicado</option>
+                                                        <option value="Error de despacho(faltó gestión)">Error de
+                                                            despacho(faltó gestión)
+                                                        </option>
+                                                        <option value="Reenvio Falla">Reenvió Falla</option>
+                                                        <option value="error del sistema">Error del Sistema</option>
+                                                        <option value="No uso SARA">No uso SARA</option>
+                                                    </select>
+                                                </td>
+                                                <td class="icons_in_tables">
 
-														<!-- Fin ocultar el login gestión -->
-														<td>
-															<button type="button" class="btn btn-default btn-xs"
-																ng-click="CopyPortaPapeles(data.pedido)" tooltip
-																title="Copiar pedido" id=i{{$index}}>{{data.pedido}}
-															</button>
-														</td>
-														<td ng-show="!data._id">{{data.macEntra}}</td>
-														<td ng-show="!data._id">{{data.macSale}}</td>
-														<td ng-show="data._id"><span
-																ng-repeat="mac in data.macIn">{{mac.name}}-</span></td>
-														<td ng-show="data._id"><span
-																ng-repeat="mac in data.macOut">{{mac.name}}-</span></td>
-														<td>
-															<button type="button" class="btn btn-default btn-xs"
-																ng-click="CopyPortaPapeles(data.paquetes)" tooltip
-																title="Copiar Nro Línea ToIP"
-																id=l{{$index}}>{{data.paquetes}}
-															</button>
-														</td>
-														<td>{{data.perfil}}</td>
-														<td>{{data.ciudad}}</td>
-														<td>{{data.proceso}}</td>
-														<td>{{data.accion}}</td>
-														<td>{{data.horagestion}}</td>
-														<td>{{data.producto}}</td>
-														<td>{{data.tipoEquipo}}</td>
-														<td>{{data.remite}}</td>
-														<td>
-															<select ng-model="data.tipificacion"
-																class="btn btn-default btn-xs grupo-select"
-																name="tipificacion" style="width:100px"
-																ng-change="palancaotro(data,$index)">
-																<option value="Ok">Ok</option>
-																<option value="Rechazado por posible fraude">Rechazado
-																	por posible fraude</option>
-																<option value="Rechazado por mal ingreso">Rechazado por
-																	mal ingreso</option>
-																<option value="Duplicado">Duplicado</option>
-																<option value="Error de despacho(faltó gestión)">Error
-																	de despacho(faltó gestión)</option>
-																<option value="Reenvio Falla">Reenvio Falla</option>
-																<option value="error del sistema">Error del Sistema
-																</option>
-																<option value="No uso SARA">No uso SARA</option>
-															</select>
-														</td>
-														<td>
+                                                    <button popover-placement="left" uib-popover="{{data.observacion}}"
+                                                        type="button" tooltip-placement="top"
+                                                        uib-tooltip="Observaciones" class="btn btn-default btn-xs">
+                                                        <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                    </button>
 
-															<button type="button" class="btn btn-default btn-xs"
-																data-toggle="modal" data-backdrop="static"
-																ng-disabled="loading" popover data-placement="left"
-																data-html="true" title="Observaciones" data-selector=""
-																data-content="{{data.observacion}}">
-																<i class="fa fa-commenting" aria-hidden="true"></i>
-															</button>
-															<button ng-show="!data._id" type="button"
-																class="btn btn-default btn-xs" data-toggle="modal"
-																ng-click="guardarcontingencia(data)"
-																data-backdrop="static" tooltip
-																title="Observaciones y guardar gestión"
-																data-placement="top" data-html="true" data-selector="">
-																<i class="fa fa-floppy-o" aria-hidden="true"> </i>
-															</button>
-															<div style="display: inline-block;" ng-show="!data._id">
-																<button type="button" class="btn btn-default btn-xs"
-																	data-toggle="modal" data-backdrop="static"
-																	ng-hide="data.alerta == 'FALSE'" tooltip
-																	title="El pedido ya pasó por contingencias anteriormente, por favor validar!"
-																	data-placement="top" data-html="true"
-																	data-selector="">
-																	<i class="fa fa-exclamation" style="color:red"
-																		aria-hidden="true"> </i>
-																</button>
-															</div>
+                                                    <!-- <button type="button" class="btn btn-default btn-xs"
+                                                        ng-click="muestraModalObservacion(data.observacion)">
 
-														</td>
-													</tr>
+                                                    </button> -->
+                                                    <button ng-show="!data._id" type="button" tooltip-placement="top"
+                                                        uib-tooltip="Observaciones y guardar gestión"
+                                                        class="btn btn-default btn-xs"
+                                                        ng-click="guardarcontingencia(data)">
+                                                        <i class="fa fa-floppy-o" aria-hidden="true"> </i>
+                                                    </button>
+                                                    <div style="display: inline-block;" ng-show="!data._id">
+                                                        <button type="button" class="btn btn-default btn-xs"
+                                                            data-toggle="modal" data-backdrop="static"
+                                                            ng-hide="data.alerta == 'FALSE'" tooltip-placement="top"
+                                                            uib-tooltip="El pedido ya pasó por contingencias anteriormente, por favor validar!">
+                                                            <i class="fa fa-exclamation" style="color:red"
+                                                                aria-hidden="true"> </i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
 
-												</tbody>
-											</table>
-										</div>
-
-										<div class="loading-circle"
-											ng-show="contingenciasOTROS.length == 0 && loadingData">
-											<div class="loadingio-spinner-ripple">
-												<div class="ldio">
-													<div></div>
-													<div></div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div id="portafolio" class="tab-pane fade">
-							<div class="col-md-12">
-								<div class="row">
-									<div class="panel panel-default">
-										<div class="panel-heading nav navbar-default">
-											<ul class="nav navbar-nav navbar-left">
-												<b><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Corregir
-													Inconsistencia Portafolio</b>
-											</ul>
-											<ul class="nav navbar-nav navbar-right">
-												<b>
-													<button type="button" class="btn btn-default btn-xs"
-														ng-click="gestioncontingencias()" title="Actualizar"
-														data-toggle="tooltip" data-placement="top"
-														ng-disabled="loading">
-														<i class="fa fa-refresh" aria-hidden="true"></i>
-													</button>
-												</b>&nbsp;
-											</ul>
-										</div>
-
-										<div ng-show="!haypedidoPortafolio">
-											<div class="jumbotron">
-
-												<h3>Gestión Prioritaria</h3>
-												<h5>{{mensajeotros}}</h5>
-
-											</div>
-										</div>
-										<div ng-show="haypedidoPortafolio" class="table-responsive">
-											<table
-												class="table table-striped table-hover table-condensed table-bordered animated bounceInRight">
-												<thead class="table-header">
-													<tr>
-														<th>Marcar</th>
-														<th>Login</th>
-														<th>Pedido</th>
-														<th>Mac Entra</th>
-														<th>Mac Sale</th>
-														<th>Ciudad</th>
-														<th>Proceso</th>
-														<th>Acción</th>
-														<td>Hora ingreso</td>
-														<th>Producto</th>
-														<th>Tipo equipo</th>
-														<th>Remitente</th>
-														<th>Tipificación</th>
-														<th>Observaciones</th>
-													</tr>
-												</thead>
-												<tbody>
-													<!-- DATA DE contingenciasPortafolio -->
-													<tr ng-repeat="data in contingenciasPortafolio track by $index"
-														ng-class="{'resaltado15min': data.horagestion <= quinceminutos[indice]}">
-														<td>
-
-															<input type="checkbox" ng-model="data.bloqueo"
-																name="bloqueo" id="bloqueo"
-																ng-change="marcarEnGestionPortafolio(data)">
-
-														</td>
-														<!-- En estas lineas se oculta el login gestión -->
-														<td
-															ng-show="data.loginContingenciaPortafolio == galletainfo.LOGIN">
-															<span
-																ng-class="{'label label-primary label-xsmall': data.enGestionPortafolio == 1, 'label label-primary label-xsmall': data.loginContingenciaPortafolio == galletainfo.LOGIN}">{{data.loginContingenciaPortafolio}}</span>
-														</td>
-
-														<td
-															ng-show="data.loginContingenciaPortafolio != galletainfo.LOGIN && data.enGestionPortafolio == 1">
-															<span
-																ng-class="{'label label-primary label-xsmall': data.enGestionPortafolio == 1, 'label label-primary label-xsmall': data.loginContingenciaPortafolio != galletainfo.LOGIN}">En
-																gestión</span>
-														</td>
-
-														<td
-															ng-show="data.loginContingenciaPortafolio != galletainfo.LOGIN && data.enGestionPortafolio != 1">
-															<span
-																ng-class="{'label label-primary label-xsmall': data.enGestionPortafolio != 1}"></span>
-														</td>
-														<!-- Fin de ocultar el login gestión -->
-														<td>
-															<button type="button" class="btn btn-default btn-xs"
-																ng-click="CopyPortaPapeles(data.pedido)" tooltip
-																title="Copiar pedido" id=p{{$index}}>{{data.pedido}}
-															</button>
-														</td>
-														<td>{{data.macEntra}}</td>
-														<td>{{data.macSale}}</td>
-														<td>{{data.ciudad}}</td>
-														<td>{{data.proceso}}</td>
-														<td>{{data.accion}}</td>
-														<td>{{data.horagestion}}</td>
-														<td>{{data.producto}}</td>
-														<td>{{data.tipoEquipo}}</td>
-														<td>{{data.remite}}</td>
-														<td>
-															<select ng-model="data.tipificacionPortafolio"
-																class="btn btn-default btn-xs grupo-select"
-																name="tipificacion" style="width:100px"
-																ng-change="palancacp(data,$index)">
-																<option value="Ok">Ok</option>
-																<option value="rechazado por posible fraude">Rechazado
-																	por posible fraude</option>
-																<option value="rechazado por mal ingreso">Rechazado por
-																	mal ingreso</option>
-																<option value="duplicado">Duplicado</option>
-																<option value="rechazado por falta de gestión">Rechazado
-																	por falta de gestión</option>
-																<option value="pendiente por solución externa">Pendiente
-																	por solución externa</option>
-																<option value="no aplica gestión">No Aplica Gestión
-																</option>
-															</select>
-														</td>
-														<td>
-
-															<button type="button" class="btn btn-default btn-xs"
-																data-toggle="modal" data-backdrop="static"
-																ng-disabled="loading" popover data-placement="left"
-																data-html="true" title="Observaciones" data-selector=""
-																data-content="{{data.observacion}}">
-																<i class="fa fa-commenting" aria-hidden="true"></i>
-															</button>
-															<button type="button" class="btn btn-default btn-xs"
-																data-toggle="modal"
-																ng-click="guardarContingenciaPortafolio(data)"
-																data-backdrop="static" tooltip
-																title="Observaciones y guardar gestión"
-																data-placement="top" data-html="true" data-selector="">
-																<i class="fa fa-floppy-o" aria-hidden="true"> </i>
-															</button>
-															<button type="button" class="btn btn-default btn-xs"
-																data-toggle="modal" data-backdrop="static"
-																ng-hide="data.alerta == 'FALSE'" tooltip
-																title="El pedido ya pasó por contingencias anteriormente, por favor validar!"
-																data-placement="top" data-html="true" data-selector="">
-																<i class="fa fa-exclamation" style="color:red"
-																	aria-hidden="true"> </i>
-															</button>
-
-														</td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
-
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- MODULO DE SEGUMIENTO -->
-				<div id="Kpis" class="tab-pane fade">
-
-					<h5>
-						<span class="label label-warning" ng-show="!sinPedido">{{mensajeBuscar}}</span>
-					</h5>
+                                        </tbody>
+                                    </table>
+                                </div>
 
 
-					<div class="panel panel-default" ng-show="sinPedido">
-						<div class="panel-heading nav navbar-default">
-							<table class="table table-striped table-hover table-condensed">
-								<thead class="table-header">
-									<tr>
-										<th>Pedido</th>
-										<th>Acción</th>
-										<th>Ciudad</th>
-										<th>Correo</th>
-										<th>Mac Entra</th>
-										<th>Mac Sale</th>
-										<th>Paquetes</th>
-										<th>Proceso</th>
-										<th>Producto</th>
-										<th>Contrato</th>
-										<th>Perfil</th>
-										<th>Hora ingreso</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr ng-repeat="data in databsucarPedido">
-										<td>{{data.pedido}}</td>
-										<td>{{data.accion}}</td>
-										<td>{{data.ciudad}}</td>
-										<td>{{data.correo}}</td>
-										<td>{{data.macEntra}}</td>
-										<td>{{data.macSale}}</td>
-										<td>{{data.paquetes}}</td>
-										<td>{{data.proceso}}</td>
-										<td>{{data.producto}}</td>
-										<td>{{data.contrato}}</td>
-										<td>{{data.perfil}}</td>
-										<td>{{data.horagestion}}</td>
-									</tr>
-								</tbody>
-								<tr>
-									<th colspan="11">
-										<br>
-									</th>
-								</tr>
-								<thead>
-									<tr>
-										<th>Login despacho</th>
-										<th>Login Contingencia</th>
-										<th>Login Conti Corregir Porta</th>
-										<th>Hora contingencia</th>
-										<th>Hora contingencia Corregir Porta</th>
-										<th>Tipo equipo</th>
-										<th>Tecnología</th>
-										<th>Remitente</th>
-										<th>Tipificación Contingencia</th>
-										<th>Tipificación Corregir Porta</th>
-										<th>Estado</th>
-										<th>Estado Corregir Porta</th>
-										<th>Observaciones</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr ng-repeat="data in databsucarPedido">
+                                <!-- Loading Circle -->
+                                <div class="loading-circle" ng-show="contingenciasTV.length == 0 && loadingData">
+                                    <div class="loadingio-spinner-ripple">
+                                        <div class="ldio">
+                                            <div></div>
+                                            <div></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- MODULO DE INTERNET-ToIp -->
+                        <div id="internet" class="tab-pane fade">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading nav navbar-default">
+                                            <ul class="nav navbar-nav navbar-left">
+                                                <b>
+                                                    <i class="fa fa-phone-square" aria-hidden="true"></i>
+                                                    Internet-Toip</b>
+                                            </ul>
+                                            <ul class="nav navbar-nav navbar-right">
+                                                <b>
+                                                    <button type="button" class="btn btn-default btn-xs"
+                                                        ng-click="gestioncontingencias()" title="Actualizar"
+                                                        data-toggle="tooltip" data-placement="top"
+                                                        ng-disabled="loading">
+                                                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                                                    </button>
+                                                </b>&nbsp;
+                                            </ul>
+                                        </div>
+
+                                        <div ng-show="!haypedidoOtros && contingenciesDataInternetToIP.length == 0">
+                                            <div class="jumbotron">
+
+                                                <h3>Gestión Contingencias</h3>
 
 
-										<td>{{data.logindepacho}}</td>
-										<td>{{data.logincontingencia}}</td>
-										<td>{{data.loginContingenciaPortafolio}}</td>
-										<td>{{data.horacontingencia}}</td>
-										<td>{{data.horaContingenciaPortafolio}}</td>
-										<td>{{data.tipoEquipo}}</td>
-										<td>{{data.tecnologia}}</td>
-										<td>{{data.remite}}</td>
-										<td>{{data.tipificacion}}</td>
-										<td>{{data.tipificacionPortafolio}}</td>
-										<td>{{data.acepta}}</td>
-										<td>{{data.aceptaPortafolio}}</td>
-										<td>
-											<!-- data-trigger="hover" para que el popover aparezca y desaparezca -->
-											<button type="button" class="btn btn-default btn-xs" data-toggle="modal"
-												data-backdrop="static" ng-disabled="loading" popover
-												data-placement="left" data-html="true" data-selector=""
-												title="Observacion ingreso" data-content="{{data.observacion}}">
-												<i class="fa fa-commenting" aria-hidden="true"></i>
-											</button>
-											<button type="button" class="btn btn-default btn-xs" data-toggle="modal"
-												data-backdrop="static" ng-disabled="loading" popover
-												title="Observacion gestión" data-placement="left" data-html="true"
-												data-selector="" data-content="{{data.observContingencia}}">
-												<i class="fa fa-commenting" aria-hidden="true"></i>
-											</button>
-											<button type="button" class="btn btn-default btn-xs" data-toggle="modal"
-												data-backdrop="static" ng-disabled="loading" popover
-												title="Observacion gestión Corregir Porta" data-placement="left"
-												data-html="true" data-selector=""
-												data-content="{{data.observContingenciaPortafolio}}">
-												<i class="fa fa-commenting" aria-hidden="true"></i>
-											</button>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
+                                                <h5>{{mensajeotros}}</h5>
 
-					<!-- CONTADOR POR ESTADO PENDIENTE-ACEPTA-RECHAZA PARA TV-INTERNET -->
-					<div class="col-md-20">
-						<div class="">
-							<div class="panel panel-default">
-								<div class="panel-heading nav navbar-default">
-									<b> Gestión mes</b>
-									<ul class="nav navbar-nav navbar-right">
-										<span class="badge ">{{estados[0].totalestados}}</span>&nbsp;&nbsp;
-									</ul>
-									<b>
-										<h5 class="subtitulo">Tv-Internet</h5>
-									</b>
-								</div>
-								<div class="panel-heading nav navbar-default">
-									<ul class="list-group small">
-										<span>
-											<a href="" ng-repeat="data in estados"
-												class="list-group-item animated slideInRight">{{data.estado}}:
-												<span class="badge ">{{data.total}}</span>
-											</a>
-										</span>
-									</ul>
-								</div>
-							</div>
-						</div>
+                                            </div>
+                                        </div>
+                                        <div ng-show="haypedidoOtros || contingenciesDataInternetToIP.length > 0"
+                                            class="table-responsive">
+                                            <table
+                                                class="table small table-striped table-hover table-condensed table-bordered animated bounceInRight">
+                                                <thead class="table-header">
+                                                    <tr>
+                                                        <th>Marcar</th>
+                                                        <th>Login</th>
+                                                        <th>Pedido</th>
+                                                        <th>Mac Entra</th>
+                                                        <th>Mac Sale</th>
+                                                        <th>Nro Línea</th>
+                                                        <th>Perfíl</th>
+                                                        <th>Ciudad</th>
+                                                        <th>Proceso</th>
+                                                        <th>Acción</th>
+                                                        <td>Hora ingreso</td>
+                                                        <th>Producto</th>
+                                                        <th>Tipo equipo</th>
+                                                        <th>Remitente</th>
+                                                        <th>Tipificación</th>
+                                                        <th>Observaciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="data in contingenciasOTROS | orderBy : 'horagestion' : false track by $index"
+                                                        ng-class="{'resaltado15min': data.horagestion <= quinceminutos[indice]}">
+                                                        <td>
+                                                            <div>
+                                                                <input type="checkbox" ng-model="data.bloqueo"
+                                                                    name="bloqueo" id="bloqueo"
+                                                                    ng-change="marcarEngestion(data)"
+                                                                    ng-show="data.bloqueo != 1">
+                                                                <div class="loadingio-spinner-ellipsis-3nun7cb96ao"
+                                                                    ng-show="data.bloqueo == 1">
+                                                                    <div class="ldio-pettsxrv7wj">
+                                                                        <div></div>
+                                                                        <div></div>
+                                                                        <div></div>
+                                                                        <div></div>
+                                                                        <div></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
 
-						<!-- CONTADOR POR ESTADO PENDIENTE-ACEPTA-RECHAZA PARA CORREGIR PORTAFOLIO -->
-						<div class="">
-							<div class="panel panel-default">
-								<div class="panel-heading nav navbar-default">
-									<b> Gestión mes</b>
-									<ul class="nav navbar-nav navbar-right">
-										<span class="badge ">{{estadosCP[0].totalestados}}</span>&nbsp;&nbsp;
-									</ul>
-									<b>
-										<h5 class="subtitulo">Corregir Portafolio</h5>
-									</b>
-								</div>
-								<div class="panel-heading nav navbar-default">
-									<ul class="list-group small">
-										<span>
-											<a href="" ng-repeat="data in estadosCP"
-												class="list-group-item animated slideInRight">{{data.estado}}:
-												<span class="badge ">{{data.total}}</span>
-											</a>
-										</span>
-									</ul>
-								</div>
-							</div>
-						</div>
-					</div>
+                                                        </td>
+                                                        <!-- En estas lineas se oculta el login gestión -->
 
-					<!-- CUERPO DE PEDIDOS QUE PASARON POR LA PAGINA DE SEGUIMIENTO -->
-					<div class="col-md-6">
-						<div class="row">
-							<div class="panel panel-default">
-								<div class="panel-heading nav navbar-default">
-									<ul class="nav navbar-nav navbar-left">
-										<b><i class="fa fa-list-alt" aria-hidden="true"></i> Ingresos</b>
-									</ul>
-									<ul class="nav navbar-nav navbar-right" ng-hide="formulario">
-										<li>
-											<input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs"
-												ng-model="buscarPedido" placeholder="Buscar Pedido">
-										</li>
-										<li>
-											<b>
-												<button type="button" class="btn btn-default btn-xs"
-													ng-click="buscarPedidoContingencia(buscarPedido)" title="Buscar"
-													data-toggle="tooltip" data-placement="left" ng-disabled="loading">
-													<i class="fa fa-search" aria-hidden="true"></i>
-												</button>
-											</b>&nbsp;
-										</li>
-									</ul>
-								</div>
-								<div class="panel-heading nav navbar-default">
-									<ul class="nav navbar-nav navbar-right">
-										<li>
-											<input type="text" name="fechaupdateInical" id="fechaupdateInical"
-												class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
-												ng-model="fechaupdateInical" placeholder="Fecha Inicial"
-												datetime-picker="" date-format="yyyy-MM-dd">
-											<i class="fa fa-calendar fa-fw"></i>
-										</li>
-										<li>
-											<input type="text" name="fechaupdateFinal" id="fechaupdateFinal"
-												class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
-												ng-model="fechaupdateFinal" placeholder="Fecha Final" datetime-picker=""
-												date-format="yyyy-MM-dd">
-											<i class="fa fa-calendar fa-fw"></i>
-										</li>
-										<li>
-											<b>
-												<button type="button" class="btn btn-default btn-xs"
-													ng-click="resumenContingencias(fechaupdateInical, fechaupdateFinal)"
-													title="Actualizar" data-toggle="tooltip" data-placement="left"
-													ng-disabled="loading">
-													<i class="fa fa-refresh" aria-hidden="true"></i>
-												</button>
-											</b>&nbsp;
-										</li>
-										<li>
-											<button type="button" class="btn btn-primary btn-xs"
-												title="Exportar Registros"
-												ng-click="descargarContingencias(fechaupdateInical, fechaupdateFinal)"
-												ng-disabled="loading" title="Exportar mes en curso" tooltip
-												data-placement="top">
-												<i class="fa fa-cloud-download" aria-hidden="true"> </i>
-											</button>
-										</li>&nbsp;&nbsp;&nbsp;
-									</ul>
-								</div>
-								<div class="panel panel-default panel-body">
-									<h6 class="subtitulo text-center"><strong>Datos de TV, Internet-ToIp</strong></h6>
-									<table class="table table-fixed table-bordered table-condensed">
-										<thead class="table-header">
-											<tr>
-												<th>Pedido</th>
-												<th>Login ingreso</th>
-												<th>Fecha ingreso</th>
-												<th>Login gestión</th>
-												<th>Fecha gestión</th>
-												<th>Estado</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr ng-repeat="data in dataresumenContingencias">
-												<td>{{data.pedido}}</td>
-												<td>{{data.logindepacho}}</td>
-												<td>{{data.horagestion}}</td>
-												<td>{{data.logincontingencia}}</td>
-												<td>{{data.horacontingencia}}</td>
-												<td>{{data.estado}}</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-								<!-- CONTADOR DE TV-iNTERNET -->
-								<div class="panel-footer clearfix">
-									<div class="">
-										<div class="col-md-21">
-											<h6 class="subtitulo2">Contador para TV</h6>
-											<ul class="nav navbar-nav navbar-left">
-												<li>
-													<span class="label label-success"> Aceptados:
-														{{Totaltotal_pedidos_aceptadosTV}}</span>&nbsp;&nbsp;&nbsp;
-												</li>
-												<li>
-													<span class="label label-warning"> Pendientes:
-														{{Totaltotal_pedidos_pendientesTV}}</span>&nbsp;&nbsp;&nbsp;
-												</li>
-												<li>
-													<span class="label label-danger"> Rechazados:
-														{{Totaltotal_pedidos_rechazadosTV}}</span>
-												</li>
-											</ul>
-										</div>
-										<div class="col-md-21">
-											<h6 class="subtitulo2">Contador para Internet-ToIp</h6>
-											<ul class="nav navbar-nav navbar-left">
-												<li>
-													<span class="label label-success"> Aceptados:
-														{{Totaltotal_pedidos_aceptadosInTo}}</span>&nbsp;&nbsp;&nbsp;
-												</li>
-												<li>
-													<span class="label label-warning"> Pendientes:
-														{{Totaltotal_pedidos_pendientesInTo}}</span>&nbsp;&nbsp;&nbsp;
-												</li>
-												<li>
-													<span class="label label-danger"> Rechazados:
-														{{Totaltotal_pedidos_rechazadosInTo}}</span>
-												</li>
-											</ul>
-										</div>
-									</div>
-									<div class="col-md-22">
-										<h6 class="subtitulo">Contador para General</h6>
-										<ul class="nav navbar-nav navbar-left">
-											<li>
-												<span class="label label-success"> Aceptados:
-													{{Totaltotal_pedidos_aceptados}}</span>&nbsp;&nbsp;&nbsp;
-											</li>
-											<li>
-												<span class="label label-warning"> Pendientes:
-													{{Totaltotal_pedidos_pendientes}}</span>&nbsp;&nbsp;&nbsp;
-											</li>
-											<li>
-												<span class="label label-danger"> Rechazados:
-													{{Totaltotal_pedidos_rechazados}}</span>
-											</li>
-										</ul>
-									</div>
-								</div>
-								<div class="panel panel-default panel-body">
-									<h6 class="subtitulo text-center"><strong>Datos de Corregir portafolio</strong></h6>
-									<table class="table table-fixed table-bordered table-condensed small">
-										<thead class="table-header">
-											<tr>
-												<th>Pedido</th>
-												<th>Login ingreso</th>
-												<th>Fecha ingreso</th>
-												<th>Login gestión</th>
-												<th>Fecha gestión</th>
-												<th>Estado</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr ng-repeat="data in dataresumenContingenciasCP">
-												<td class="filterable-cell tama">{{data.pedido}}</td>
-												<td class="filterable-cell">{{data.logindepacho}}</td>
-												<td class="filterable-cell">{{data.horagestion}}</td>
-												<td class="filterable-cell">{{data.loginContingenciaPortafolio}}</td>
-												<td class="filterable-cell">{{data.horaContingenciaPortafolio}}</td>
-												<td class="filterable-cell">{{data.estado}}</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-								<!-- CORREGIR PORTAFOLIO -->
-								<div class="panel-footer clearfix">
-									<h6 class="subtitulo">Contador para Corregir Portafolio</h6>
-									<ul class="nav navbar-nav navbar-left">
-										<li>
-											<span class="label label-success"> Aceptados:
-												{{Totaltotal_pedidos_aceptadosCP}}</span>&nbsp;&nbsp;&nbsp;
-										</li>
-										<li>
-											<span class="label label-warning"> Pendientes:
-												{{Totaltotal_pedidos_pendientesCP}}</span>&nbsp;&nbsp;&nbsp;
-										</li>
-										<li>
-											<span class="label label-danger"> Rechazados:
-												{{Totaltotal_pedidos_rechazadosCP}}</span>
-										</li>
-									</ul>
-								</div>
-							</div>
+                                                        <td
+                                                            ng-show="data.logincontingencia != galletainfo.login && data.engestion == 1">
+                                                            <span
+                                                                ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.logincontingencia != galletainfo.login}">En
+                                                                gestión</span>
+                                                        </td>
+
+                                                        <td
+                                                            ng-show="data.logincontingencia == galletainfo.login && data.engestion == 1">
+                                                            <span
+                                                                ng-class="{'label label-primary label-xsmall': data.engestion == 1}">{{data.logincontingencia}}</span>
+                                                        </td>
+
+                                                        <td
+                                                            ng-show="data.logincontingencia != galletainfo.login && data.engestion != 1">
+                                                            <span></span>
+                                                        </td>
 
 
-							<!-- INICIO RECURSOS QUE ESTAN GESTIONANDO CONTIGENCIAS -->
-							<div class="panel panel-default"
-								ng-show="(galletainfo.perfil == 1 || galletainfo.perfil == 11 )">
-								<div class="panel-footer clearfix">
-									<ul class="nav navbar-nav navbar-left">
-										<b><i class="fa fa-users" aria-hidden="true"></i> Recursos Gestionando
-											Contingencias:</b>
-									</ul>
-									<br>
-									<ul class="nav navbar-nav navbar-left">
-										<li>
-											<span class="label label-primary"> Televisión:
-												{{Total_Personas_GestionandoTV}}</span>&nbsp;&nbsp;&nbsp;
-										</li>
-										<li>
-											<span class="label label-primary"> Internet:
-												{{Total_Personas_GestionandoInternet}}</span>&nbsp;&nbsp;&nbsp;
-										</li>
-										<li>
-											<span class="label label-primary"> Corrección Portafolio:
-												{{Total_Personas_GestionandoCP}}</span>&nbsp;&nbsp;&nbsp;
-										</li>
-										<li>
-											<button type="button" class="btn btn-default btn-xs"
-												ng-show="galletainfo.perfil == 11"
-												ng-click="callModalCierreMasivoConti({})">Cierre Masivo</button>
+                                                        <!-- Fin ocultar el login gestión -->
+                                                        <td class="icons_in_tables">
+                                                            <button type="button" class="btn btn-default btn-xs"
+                                                                ng-click="CopyPortaPapeles(data.pedido)" tooltip-placement="top" uib-tooltip="Copiar pedido"
+                                                                id=i{{$index}}>{{data.pedido}}
+                                                            </button>
+                                                            <i class="fa fa-info-circle" aria-hidden="true" tooltip-placement="top" uib-tooltip="Datos bb8"
+                                                                ng-click="bb8(data.pedido)"></i>
+                                                        </td>
+                                                        <td ng-show="!data._id">{{data.macEntra}}</td>
+                                                        <td ng-show="!data._id">{{data.macSale}}</td>
+                                                        <td ng-show="data._id"><span
+                                                                ng-repeat="mac in data.macIn">{{mac.name}}-</span>
+                                                        </td>
+                                                        <td ng-show="data._id"><span
+                                                                ng-repeat="mac in data.macOut">{{mac.name}}-</span>
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-default btn-xs"
+                                                                ng-click="CopyPortaPapeles(data.paquetes)" tooltip
+                                                                title="Copiar Nro Línea ToIP"
+                                                                id=l{{$index}}>{{data.paquetes}}
+                                                            </button>
+                                                        </td>
+                                                        <td>{{data.perfil}}</td>
+                                                        <td>{{data.ciudad}}</td>
+                                                        <td>{{data.proceso}}</td>
+                                                        <td>{{data.accion}}</td>
+                                                        <td>{{data.horagestion}}</td>
+                                                        <td>{{data.producto}}</td>
+                                                        <td>{{data.tipoEquipo}}</td>
+                                                        <td>{{data.remite}}</td>
+                                                        <td>
+                                                            <select ng-model="data.tipificacion"
+                                                                class="btn btn-default btn-xs grupo-select"
+                                                                name="tipificacion" style="width:100px"
+                                                                ng-change="palancaotro(data,$index)">
+                                                                <option value="Ok">Ok</option>
+                                                                <option value="Rechazado por posible fraude">
+                                                                    Rechazado
+                                                                    por posible fraude
+                                                                </option>
+                                                                <option value="Rechazado por mal ingreso">
+                                                                    Rechazado por
+                                                                    mal ingreso
+                                                                </option>
+                                                                <option value="Duplicado">Duplicado</option>
+                                                                <option value="Error de despacho(faltó gestión)">
+                                                                    Error
+                                                                    de despacho(faltó gestión)
+                                                                </option>
+                                                                <option value="Reenvio Falla">Reenvio Falla
+                                                                </option>
+                                                                <option value="error del sistema">Error del
+                                                                    Sistema
+                                                                </option>
+                                                                <option value="No uso SARA">No uso SARA</option>
+                                                            </select>
+                                                        </td>
+                                                        <td class="icons_in_tables">
+                                                            <!-- <button type="button" class="btn btn-default btn-xs"
+                                                                ng-click="muestraModalObservacion(data.observacion)">
+                                                                <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                            </button> -->
+                                                            <button popover-placement="left"
+                                                                uib-popover="{{data.observacion}}" tooltip-placement="top" uib-tooltip="Observaciones"
+                                                                type="button"
+                                                                class="btn btn-default btn-xs">
+                                                                <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                            </button>
+                                                            <button ng-show="!data._id" type="button"
+                                                                class="btn btn-default btn-xs" data-toggle="modal"
+                                                                ng-click="guardarcontingencia(data)"
+                                                                data-backdrop="static" tooltip-placement="top" uib-tooltip="Observaciones y guardar gestión">
+                                                                <i class="fa fa-floppy-o" aria-hidden="true">
+                                                                </i>
+                                                            </button>
+                                                            <div style="display: inline-block;" ng-show="!data._id">
+                                                                <button type="button" class="btn btn-default btn-xs"
+                                                                tooltip-placement="top" uib-tooltip="El pedido ya pasó por contingencias anteriormente, por favor validar!"
+                                                                    data-toggle="modal" data-backdrop="static"
+                                                                    ng-hide="data.alerta == 'FALSE'" >
+                                                                    <i class="fa fa-exclamation" style="color:red"
+                                                                        aria-hidden="true">
+                                                                    </i>
+                                                                </button>
+                                                            </div>
 
-										</li>
-									</ul>
-								</div>
+                                                        </td>
+                                                    </tr>
 
-								<table class="table table-striped">
-									<tr>
-										<th>
-											<div class="panel panel-default panel-body">
-												<table class="table table-striped">
-													<thead>
-														<tr>
-															<th colspan="2">
-																<h5>
-																	<p class="text-center"><b>Contingencias de
-																			Televisión</b></p>
-																</h5>
-															</th>
-														</tr>
-														<tr>
-															<th>Login Analista</th>
-															<th>Cantidad Marcadas</th>
-														</tr>
-													</thead>
-													<tbody>
-														<tr ng-repeat="(key, data) in cantidadAnalistasTV">
-															<td class="filterable-cell"><i class="fa fa-user"
-																	aria-hidden="true"></i> {{key}}</td>
-															<td class="filterable-cell">{{data}}</td>
-														</tr>
-													</tbody>
-												</table>
-											</div>
-										</th>
-										<th>
-											<div class="panel panel-default panel-body">
-												<table class="table table-striped">
-													<thead>
-														<tr>
-															<th colspan="2">
-																<h5>
-																	<p class="text-center"><b>Contingencias de Internet
-																			+ ToIP</b></p>
-																</h5>
-															</th>
-														</tr>
-														<tr>
-															<th>Login Analista</th>
-															<th>Cantidad Marcadas</th>
-														</tr>
-													</thead>
-													<tbody>
-														<tr ng-repeat="(key, data) in cantidadAnalistasInt">
-															<td class="filterable-cell"><i class="fa fa-user"
-																	aria-hidden="true"></i> {{key}}</td>
-															<td class="filterable-cell">{{data}}</td>
-														</tr>
-													</tbody>
-												</table>
-											</div>
-										</th>
-									</tr>
-								</table>
-							</div>
-							<!-- FIN RECURSOS QUE ESTAN GESTIONANDO CONTIGENCIAS -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <div class="loading-circle"
+                                            ng-show="contingenciasOTROS.length == 0 && loadingData">
+                                            <div class="loadingio-spinner-ripple">
+                                                <div class="ldio">
+                                                    <div></div>
+                                                    <div></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <div id="portafolio" class="tab-pane fade">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading nav navbar-default">
+                                            <ul class="nav navbar-nav navbar-left">
+                                                <b><i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                                    Corregir
+                                                    Inconsistencia Portafolio</b>
+                                            </ul>
+                                            <ul class="nav navbar-nav navbar-right">
+                                                <b>
+                                                    <button type="button" class="btn btn-default btn-xs"
+                                                        ng-click="gestioncontingencias()" title="Actualizar"
+                                                        data-toggle="tooltip" data-placement="top"
+                                                        ng-disabled="loading">
+                                                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                                                    </button>
+                                                </b>&nbsp;
+                                            </ul>
+                                        </div>
+
+                                        <div ng-show="!haypedidoPortafolio">
+                                            <div class="jumbotron">
+
+                                                <h3>Gestión Prioritaria</h3>
+                                                <h5>{{mensajeotros}}</h5>
+
+                                            </div>
+                                        </div>
+                                        <div ng-show="haypedidoPortafolio" class="table-responsive">
+                                            <table
+                                                class="table small table-striped table-hover table-condensed table-bordered animated bounceInRight">
+                                                <thead class="table-header">
+                                                    <tr>
+                                                        <th>Marcar</th>
+                                                        <th>Login</th>
+                                                        <th>Pedido</th>
+                                                        <th>Mac Entra</th>
+                                                        <th>Mac Sale</th>
+                                                        <th>Ciudad</th>
+                                                        <th>Proceso</th>
+                                                        <th>Acción</th>
+                                                        <td>Hora ingreso</td>
+                                                        <th>Producto</th>
+                                                        <th>Tipo equipo</th>
+                                                        <th>Remitente</th>
+                                                        <th>Tipificación</th>
+                                                        <th>Observaciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <!-- DATA DE contingenciasPortafolio -
+                                                    <tr ng-repeat="data in contingenciasPortafolio track by $index"
+                                                        ng-class="{'resaltado15min': data.horagestion <= quinceminutos[indice]}">
+                                                        <td>
+
+                                                            <input type="checkbox" ng-model="data.bloqueo"
+                                                                name="bloqueo" id="bloqueo"
+                                                                ng-change="marcarEnGestionPortafolio(data)">
+
+                                                        </td>
+                                                        <!-- En estas lineas se oculta el login gestión 
+                                                        <td
+                                                            ng-show="data.loginContingenciaPortafolio == galletainfo.LOGIN">
+                                                            <span
+                                                                ng-class="{'label label-primary label-xsmall': data.enGestionPortafolio == 1, 'label label-primary label-xsmall': data.loginContingenciaPortafolio == galletainfo.LOGIN}">{{data.loginContingenciaPortafolio}}</span>
+                                                        </td>
+
+                                                        <td
+                                                            ng-show="data.loginContingenciaPortafolio != galletainfo.LOGIN && data.enGestionPortafolio == 1">
+                                                            <span
+                                                                ng-class="{'label label-primary label-xsmall': data.enGestionPortafolio == 1, 'label label-primary label-xsmall': data.loginContingenciaPortafolio != galletainfo.LOGIN}">En
+                                                                gestión</span>
+                                                        </td>
+
+                                                        <td
+                                                            ng-show="data.loginContingenciaPortafolio != galletainfo.LOGIN && data.enGestionPortafolio != 1">
+                                                            <span
+                                                                ng-class="{'label label-primary label-xsmall': data.enGestionPortafolio != 1}"></span>
+                                                        </td>
+                                                        <!-- Fin de ocultar el login gestión 
+                                                        <td>
+                                                            <button type="button" class="btn btn-default btn-xs"
+                                                                ng-click="CopyPortaPapeles(data.pedido)" tooltip
+                                                                title="Copiar pedido" id=p{{$index}}>{{data.pedido}}
+                                                            </button>
+                                                        </td>
+                                                        <td>{{data.macEntra}}</td>
+                                                        <td>{{data.macSale}}</td>
+                                                        <td>{{data.ciudad}}</td>
+                                                        <td>{{data.proceso}}</td>
+                                                        <td>{{data.accion}}</td>
+                                                        <td>{{data.horagestion}}</td>
+                                                        <td>{{data.producto}}</td>
+                                                        <td>{{data.tipoEquipo}}</td>
+                                                        <td>{{data.remite}}</td>
+                                                        <td>
+                                                            <select ng-model="data.tipificacionPortafolio"
+                                                                class="btn btn-default btn-xs grupo-select"
+                                                                name="tipificacion" style="width:100px"
+                                                                ng-change="palancacp(data,$index)">
+                                                                <option value="Ok">Ok</option>
+                                                                <option value="rechazado por posible fraude">
+                                                                    Rechazado
+                                                                    por posible fraude
+                                                                </option>
+                                                                <option value="rechazado por mal ingreso">
+                                                                    Rechazado por
+                                                                    mal ingreso
+                                                                </option>
+                                                                <option value="duplicado">Duplicado</option>
+                                                                <option value="rechazado por falta de gestión">
+                                                                    Rechazado
+                                                                    por falta de gestión
+                                                                </option>
+                                                                <option value="pendiente por solución externa">
+                                                                    Pendiente
+                                                                    por solución externa
+                                                                </option>
+                                                                <option value="no aplica gestión">No Aplica
+                                                                    Gestión
+                                                                </option>
+                                                            </select>
+                                                        </td>
+                                                        <td class="icons_in_tables">
+                                                            <!-- <button type="button" class="btn btn-default btn-xs"
+                                                                ng-click="muestraModalObservacion(data.observacion)">
+                                                                <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                            </button> 
+                                                            <button popover-placement="left"
+                                                                uib-popover="{{data.observacion}}"
+                                                                popover-title="Observaciones" type="button"
+                                                                class="btn btn-default btn-xs">
+                                                                <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-default btn-xs"
+                                                                data-toggle="modal"
+                                                                ng-click="guardarContingenciaPortafolio(data)"
+                                                                data-backdrop="static" tooltip
+                                                                title="Observaciones y guardar gestión"
+                                                                data-placement="top" data-html="true" data-selector="">
+                                                                <i class="fa fa-floppy-o" aria-hidden="true">
+                                                                </i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-default btn-xs"
+                                                                data-toggle="modal" data-backdrop="static"
+                                                                ng-hide="data.alerta == 'FALSE'" tooltip
+                                                                title="El pedido ya pasó por contingencias anteriormente, por favor validar!"
+                                                                data-placement="top" data-html="true" data-selector="">
+                                                                <i class="fa fa-exclamation" style="color:red"
+                                                                    aria-hidden="true"> </i>
+                                                            </button>
+
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+                <!-- MODULO DE SEGUMIENTO -->
+                <div id="Kpis" class="tab-pane fade">
+
+                    <h5>
+                        <span class="label label-warning" ng-show="!sinPedido">{{mensajeBuscar}}</span>
+                    </h5>
+
+                    <div class="panel panel-default" ng-show="dataPedido">
+                        <div class="panel-heading nav navbar-default">
+                            <table class="table small table-striped table-hover table-condensed table-bordered">
+                                <thead class="table-header">
+                                    <tr>
+                                        <th>Pedido</th>
+                                        <th>Acción</th>
+                                        <th>Ciudad</th>
+                                        <th>Correo</th>
+                                        <th>Mac Entra</th>
+                                        <th>Mac Sale</th>
+                                        <th>Paquetes</th>
+                                        <th>Proceso</th>
+                                        <th>Producto</th>
+                                        <th>Contrato</th>
+                                        <th>Perfil</th>
+                                        <th>Hora ingreso</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="data in databsucarPedido">
+                                        <td>
+                                            <button type="button" class="btn btn-default btn-xs"
+                                                ng-click="CopyPortaPapeles(data.pedido)" tooltip title="Copiar pedido"
+                                                id=p{{$index}}>{{data.pedido}}
+                                            </button>
+                                        </td>
+                                        <td>{{data.accion}}</td>
+                                        <td>{{data.ciudad}}</td>
+                                        <td>{{data.correo}}</td>
+                                        <td>{{data.macEntra}}</td>
+                                        <td>{{data.macSale}}</td>
+                                        <td>{{data.paquetes}}</td>
+                                        <td>{{data.proceso}}</td>
+                                        <td>{{data.producto}}</td>
+                                        <td>{{data.contrato}}</td>
+                                        <td>{{data.perfil}}</td>
+                                        <td>{{data.horagestion}}</td>
+                                    </tr>
+                                </tbody>
+                                <tr>
+                                    <th colspan="11">
+                                        <br>
+                                    </th>
+                                </tr>
+                                <thead class="table-header">
+                                    <tr>
+                                        <th>Login despacho</th>
+                                        <th>Login Contingencia</th>
+                                        <th>Login Conti Corregir Porta</th>
+                                        <th>Hora contingencia</th>
+                                        <th>Hora contingencia Corregir Porta</th>
+                                        <th>Tipo equipo</th>
+                                        <th>Tecnología</th>
+                                        <th>Remitente</th>
+                                        <th>Tipificación Contingencia</th>
+                                        <th>Tipificación Corregir Porta</th>
+                                        <th>Estado</th>
+                                        <th>Estado Corregir Porta</th>
+                                        <th>Observaciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="data in databsucarPedido">
 
 
+                                        <td>{{data.logindepacho}}</td>
+                                        <td>{{data.logincontingencia}}</td>
+                                        <td>{{data.loginContingenciaPortafolio}}</td>
+                                        <td>{{data.horacontingencia}}</td>
+                                        <td>{{data.horaContingenciaPortafolio}}</td>
+                                        <td>{{data.tipoEquipo}}</td>
+                                        <td>{{data.tecnologia}}</td>
+                                        <td>{{data.remite}}</td>
+                                        <td>{{data.tipificacion}}</td>
+                                        <td>{{data.tipificacionPortafolio}}</td>
+                                        <td>{{data.acepta}}</td>
+                                        <td>{{data.aceptaPortafolio}}</td>
+                                        <td>
+                                            <button popover-placement="left" uib-popover="{{data.observacion}}"
+                                                type="button" tooltip-placement="top" uib-tooltip="Observación ingreso"
+                                                class="btn btn-default btn-xs">
+                                                <i class="fa fa-commenting" aria-hidden="true"></i>
+                                            </button>
+                                            <!-- <button type="button" class="btn btn-default btn-xs" data-placement="left"
+                                                title="Observación ingreso"
+                                                ng-click="muestraModalObservacion(data.observacion)">
+                                                <i class="fa fa-commenting" aria-hidden="true"></i>
+                                            </button> -->
+                                            <button popover-placement="left" uib-popover="{{data.observContingencia}}"
+                                                type="button" tooltip-placement="top" uib-tooltip="Observación gestión"
+                                                class="btn btn-default btn-xs">
+                                                <i class="fa fa-commenting" aria-hidden="true"></i>
+                                            </button>
+                                            <!--  <button type="button" class="btn btn-default btn-xs" data-placement="left"
+                                                title="Observacion gestión"
+                                                ng-click="muestraModalObservacion(data.observContingencia)">
+                                                <i class="fa fa-commenting" aria-hidden="true"></i>
+                                            </button> -->
+                                            <button popover-placement="left"
+                                                uib-popover="{{data.observContingenciaPortafolio}}" type="button"
+                                                tooltip-placement="top"
+                                                uib-tooltip="Observación gestión Corregir Portafolio"
+                                                class="btn btn-default btn-xs">
+                                                <i class="fa fa-commenting" aria-hidden="true"></i>
+                                            </button>
+                                            <!-- <button type="button" class="btn btn-default btn-xs" data-placement="left"
+                                                title="Observacion gestión Corregir Porta"
+                                                ng-click="muestraModalObservacion(data.observContingenciaPortafolio)">
+                                                <i class="fa fa-commenting" aria-hidden="true"></i>
+                                            </button> -->
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
 
-						</div>
-					</div>
-					<!-- CONTADOR POR DIARIO GENERAL -->
-					<!-- CONTADOR POR DIARIO GENERAL PARA TV-INTERNET -->
-					<div class="col-md-2">
-						<div class="panel panel-default">
-							<div class="panel-heading nav navbar-default">
-								<b> Gestión x día</b>
-								<b>
-									<h5 class="subtitulo">Tv-Internet</h5>
-								</b>
-							</div>
-							<div class="panel-heading nav navbar-default">
-								<ul class="list-group small">
-									<span>
-										<a href="" ng-repeat="data in dia"
-											class="list-group-item animated slideInRight">{{data.fecha}}
-											<span class="badge ">{{data.total}}</span>
-										</a>
-									</span>
-								</ul>
-							</div>
-						</div>
-					</div>
+                    <div class="panel panel-default" ng-show="sinPedido">
+                        <div class="panel-heading nav navbar-default">
+                            <table class="table small table-striped table-hover table-condensed">
+                                <thead class="table-header">
+                                    <tr>
+                                        <th>Pedido</th>
+                                        <th>Acción</th>
+                                        <th>Ciudad</th>
+                                        <th>Correo</th>
+                                        <th>Mac Entra</th>
+                                        <th>Mac Sale</th>
+                                        <th>Paquetes</th>
+                                        <th>Proceso</th>
+                                        <th>Producto</th>
+                                        <th>Contrato</th>
+                                        <th>Perfil</th>
+                                        <th>Hora ingreso</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="data in databsucarPedido">
+                                        <td>
+                                            <button type="button" class="btn btn-default btn-xs"
+                                                ng-click="CopyPortaPapeles(data.pedido)" tooltip-placement="top"
+                                                uib-tooltip="Copiar pedido" id=p{{$index}}>{{data.pedido}}
+                                            </button>
+                                        </td>
+                                        <td>{{data.accion}}</td>
+                                        <td>{{data.ciudad}}</td>
+                                        <td>{{data.correo}}</td>
+                                        <td>{{data.macEntra}}</td>
+                                        <td>{{data.macSale}}</td>
+                                        <td>{{data.paquetes}}</td>
+                                        <td>{{data.proceso}}</td>
+                                        <td>{{data.producto}}</td>
+                                        <td>{{data.contrato}}</td>
+                                        <td>{{data.perfil}}</td>
+                                        <td>{{data.horagestion}}</td>
+                                    </tr>
+                                </tbody>
+                                <tr>
+                                    <th colspan="11">
+                                        <br>
+                                    </th>
+                                </tr>
+                                <thead>
+                                    <tr>
+                                        <th>Login despacho</th>
+                                        <th>Login Contingencia</th>
+                                        <th>Login Conti Corregir Porta</th>
+                                        <th>Hora contingencia</th>
+                                        <th>Hora contingencia Corregir Porta</th>
+                                        <th>Tipo equipo</th>
+                                        <th>Tecnología</th>
+                                        <th>Remitente</th>
+                                        <th>Tipificación Contingencia</th>
+                                        <th>Tipificación Corregir Porta</th>
+                                        <th>Estado</th>
+                                        <th>Estado Corregir Porta</th>
+                                        <th>Observaciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="data in databsucarPedido">
 
-					<!-- CONTADOR POR DIARIO GENERAL PARA CORREGIR PORTAFOLIO -->
-					<div class="col-md-2">
-						<div class="panel panel-default">
-							<div class="panel-heading nav navbar-default">
-								<b> Gestión x día</b>
-								<b>
-									<h5 class="subtitulo">Corregir Portafolio</h5>
-								</b>
-							</div>
-							<div class="panel-heading nav navbar-default">
-								<ul class="list-group small">
-									<span>
-										<a href="" ng-repeat="data in diaCP"
-											class="list-group-item animated slideInRight">{{data.fecha}}
-											<span class="badge ">{{data.total}}</span>
-										</a>
-									</span>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div id="editarModal" class="modal fade " role="dialog">
-		<div class="modal-dialog modal-md">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title">Observaciones contingencia para pedido {{gestioncontin.pedido}}</h4>
-				</div>
-				<div class="modal-body">
-					<textarea name="observaciones" id="observaciones" cols="78" rows="6"
-						ng-model="gestioncontin.observacionescontingencia"
-						placeholder="observaciones contingencia"></textarea>
-					<div class="generar-cr">
-						Generar CR
-						<label class="switch">
-							<input type="checkbox" ng-model="gestioncontin.generarcr">
-							<span class="slider round"></span>
-						</label>
-						<p>* Recuerde marcar generar cr si es necesario para actualizar los equipos.</p>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-success" data-dismiss="modal"
-						ng-click="guardarpedido(gestioncontin)" data-dismiss="modal">Guardar</button>
-					<button type="button" ng-disabled="contact_form.$invalid" class="btn btn-default"
-						data-dismiss="modal">Cerrar</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-	<!-- MODAL PARA CORREGIR PORTAFOLIO -->
-	<div id="editarModalPortafolio" class="modal fade " role="dialog">
-		<div class="modal-dialog modal-md">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title">Observaciones contingencia para pedido {{gestioncontinPortafilio.pedido}}</h4>
-				</div>
-				<div class="modal-body">
-					<textarea name="observaciones" id="observaciones" cols="78" rows="6"
-						ng-model="gestioncontinPortafilio.observContingenciaPortafolio"
-						placeholder="observaciones contingencia"></textarea>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-success" data-dismiss="modal"
-						ng-click="guardarpedidoPortafolio(gestioncontinPortafilio)" data-dismiss="modal">Guardar</button>
-					<button type="button" ng-disabled="contact_form.$invalid" class="btn btn-default"
-						data-dismiss="modal">Cerrar</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- MODAL -->
-	
-	<div id="modalbb8" class="modal fullscreen-modal fade" role="dialog">
-		<div class="modal-dialog modal-lg" style="width: 80%">
-	
-			<!-- Modal content-->
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title">Datos portafolio</h4>
-				</div>
-				<div class="modal-body">
-					<div class="row">
-						<div class="panel">
-							<div class="col-md-3">
-								<div class="panel panel-default">
-									<div class="panel-heading">
-										<b>Datos de clic <i class="fa fa-database" aria-hidden="true"></i></b>
-									</div>
-									<div class="panel-body">
-										<span class="recore"><b>Pedido: </b>{{UNEPedido}}</span><br>
-										<span class="recore"><b>Gis: </b>{{ID_GIS}}</span><br>
-										<span class="recore"><b>Estado: </b>{{Estado}}</span><br>
-										<span class="recore"><b>Categoría: </b>{{Categoria}}</span><br>
-										<span class="recore"><b>CRM: </b>{{CRM}}</span><br>
-										<span class="recore"><b>Ciudad: </b>{{UNEMunicipio}}</span><br>
-										<span class="recore"><b>Cliente: </b>{{UNENombreCliente}}</span><br>
-										<span class="recore"><b>Identificación: </b>{{UNEIdCliente}}</span>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-3" ng-if="bb8Internet">
-								<div class="panel panel-default">
-									<div class="panel-heading">
-										<b>Internet <i class="fa fa-internet-explorer" aria-hidden="true"></i></b>
-									</div>
-									<div class="panel-body">
-										<div ng-repeat="data1 in recorreinternet">
-											<span class="recore"><b>{{data1.VALUE_LABEL}}:
-												</b>{{data1.VALID_VALUE}}</span><br>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-3" ng-if="bb8Telefonia">
-								<div class="panel panel-default">
-									<div class="panel-heading">
-										<b>Telefonía <i class="fa fa-phone" aria-hidden="true"></i></b>
-									</div>
-									<div class="panel-body">
-	
-										<div ng-repeat="data2 in recorretelefonia">
-											<span class="recore"><b>{{data2.VALUE_LABEL}}:
-												</b>{{data2.VALID_VALUE}}</span><br>
-											<span class="recore"><b>{{data2.ITEM_ALIAS}}: </b>{{data2.LINEA}}</span><br>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-3" ng-if="bb8Television">
-								<div class="panel panel-default">
-									<div class="panel-heading">
-										<b>Television <i class="fa fa-television" aria-hidden="true"></i></b>
-									</div>
-									<div class="panel-body">
-										<div ng-repeat="data in recore">
-											<span class="recore"><b>{{data.VALUE_LABEL}}:
-												</b>{{data.VALID_VALUE}}</span><br>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-	<div ng-include="rutaCierreMasivoContin"></div>
+
+                                        <td>{{data.logindepacho}}</td>
+                                        <td>{{data.logincontingencia}}</td>
+                                        <td>{{data.loginContingenciaPortafolio}}</td>
+                                        <td>{{data.horacontingencia}}</td>
+                                        <td>{{data.horaContingenciaPortafolio}}</td>
+                                        <td>{{data.tipoEquipo}}</td>
+                                        <td>{{data.tecnologia}}</td>
+                                        <td>{{data.remite}}</td>
+                                        <td>{{data.tipificacion}}</td>
+                                        <td>{{data.tipificacionPortafolio}}</td>
+                                        <td>{{data.acepta}}</td>
+                                        <td>{{data.aceptaPortafolio}}</td>
+                                        <td class="icons_in_tables">
+                                            <button popover-placement="left" uib-popover="{{data.observacion}}"
+                                                popover-title="Observación ingreso" type="button"
+                                                class="btn btn-default btn-xs">
+                                                <i class="fa fa-commenting" aria-hidden="true"></i>
+                                            </button>
+                                            <!-- <button type="button" class="btn btn-default btn-xs" data-toggle="modal"
+                                                data-backdrop="static" ng-disabled="loading" popover
+                                                data-placement="left" data-html="true" data-selector=""
+                                                title="Observacion ingreso" data-content="{{data.observacion}}">
+                                                <i class="fa fa-commenting" aria-hidden="true"></i>
+                                            </button> -->
+                                            <button popover-placement="left" uib-popover="{{data.observContingencia}}"
+                                                popover-title="Observación gestión" type="button"
+                                                class="btn btn-default btn-xs">
+                                                <i class="fa fa-commenting" aria-hidden="true"></i>
+                                            </button>
+                                            <!-- <button type="button" class="btn btn-default btn-xs" data-toggle="modal"
+                                                data-backdrop="static" ng-disabled="loading" popover
+                                                title="Observacion gestión" data-placement="left" data-html="true"
+                                                data-selector="" data-content="{{data.observContingencia}}">
+                                                <i class="fa fa-commenting" aria-hidden="true"></i>
+                                            </button> -->
+                                            <button popover-placement="left"
+                                                uib-popover="{{data.observContingenciaPortafolio}}"
+                                                popover-title="Observación gestión Corregir Portafolio" type="button"
+                                                class="btn btn-default btn-xs">
+                                                <i class="fa fa-commenting" aria-hidden="true"></i>
+                                            </button>
+                                            <!-- <button type="button" class="btn btn-default btn-xs" data-toggle="modal"
+                                                data-backdrop="static" ng-disabled="loading" popover
+                                                title="Observacion gestión Corregir Porta" data-placement="left"
+                                                data-html="true" data-selector=""
+                                                data-content="{{data.observContingenciaPortafolio}}">
+                                                <i class="fa fa-commenting" aria-hidden="true"></i>
+                                            </button> -->
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- CONTADOR POR ESTADO PENDIENTE-ACEPTA-RECHAZA PARA TV-INTERNET -->
+                    <div class="col-md-2">
+                        <div class="">
+                            <div class="panel panel-default">
+                                <div class="panel-heading nav navbar-default">
+                                    <b> Gestión mes</b>
+                                    <ul class="nav navbar-nav navbar-right">
+                                        <span class="badge ">{{estados[0].totalestados}}</span>&nbsp;&nbsp;
+                                    </ul>
+                                    <b>
+                                        <h5 class="subtitulo">Tv-Internet</h5>
+                                    </b>
+                                </div>
+                                <div class="panel-heading nav navbar-default">
+                                    <ul class="list-group small">
+                                        <span>
+                                            <a href="" ng-repeat="data in estados"
+                                                class="list-group-item animated slideInRight">{{data.estado}}:
+                                                <span class="badge ">{{data.total}}</span>
+                                            </a>
+                                        </span>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CONTADOR POR ESTADO PENDIENTE-ACEPTA-RECHAZA PARA CORREGIR PORTAFOLIO -->
+                        <div class="">
+                            <div class="panel panel-default">
+                                <div class="panel-heading nav navbar-default">
+                                    <b> Gestión mes</b>
+                                    <ul class="nav navbar-nav navbar-right">
+                                        <span class="badge ">{{estadosCP[0].totalestados}}</span>&nbsp;&nbsp;
+                                    </ul>
+                                    <b>
+                                        <h5 class="subtitulo">Corregir Portafolio</h5>
+                                    </b>
+                                </div>
+                                <div class="panel-heading nav navbar-default">
+                                    <ul class="list-group small">
+                                        <span>
+                                            <a href="" ng-repeat="data in estadosCP"
+                                                class="list-group-item animated slideInRight">{{data.estado}}:
+                                                <span class="badge ">{{data.total}}</span>
+                                            </a>
+                                        </span>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CUERPO DE PEDIDOS QUE PASARON POR LA PAGINA DE SEGUIMIENTO -->
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="panel panel-default">
+                                <div class="panel-heading nav navbar-default">
+                                    <ul class="nav navbar-nav navbar-left">
+                                        <b><i class="fa fa-list-alt" aria-hidden="true"></i> Ingresos</b>
+                                    </ul>
+                                    <ul class="nav navbar-nav navbar-right" ng-hide="formulario">
+                                        <li>
+                                            <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs"
+                                                ng-model="buscarPedido" placeholder="Buscar Pedido">
+                                        </li>
+                                        <li>
+                                            <b>
+                                                <button type="button" class="btn btn-default btn-xs"
+                                                    ng-click="buscarPedidoContingencia(buscarPedido)" title="Buscar"
+                                                    data-toggle="tooltip" data-placement="left" ng-disabled="loading">
+                                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                                </button>
+                                            </b>&nbsp;
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="panel-heading nav navbar-default">
+                                    <ul class="nav navbar-nav navbar-right">
+                                        <li>
+                                            <input type="text" name="fechaupdateInical" id="fechaupdateInical"
+                                                class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                                ng-model="fecha.fechaupdateInical" placeholder="Fecha Inicial"
+                                                datetime-picker="" date-format="yyyy-MM-dd">
+                                            <i class="fa fa-calendar fa-fw"></i>
+                                        </li>
+                                        <li>
+                                            <input type="text" name="fechaupdateFinal" id="fechaupdateFinal"
+                                                class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                                ng-model="fecha.fechaupdateFinal" placeholder="Fecha Final"
+                                                datetime-picker="" date-format="yyyy-MM-dd">
+                                            <i class="fa fa-calendar fa-fw"></i>
+                                        </li>
+                                        <li>
+                                            <b>
+                                                <button type="button" class="btn btn-default btn-xs"
+                                                    ng-click="resumenContingencias()" title="Actualizar"
+                                                    data-toggle="tooltip" data-placement="left" ng-disabled="loading">
+                                                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                                                </button>
+                                            </b>&nbsp;
+                                        </li>
+                                        <li>
+                                            <button type="button" class="btn btn-info btn-xs" tooltip-placement="top"
+                                                uib-tooltip="Exportar Registros"
+                                                ng-click="descargarContingencias(fechaupdateInical, fechaupdateFinal)"
+                                                ng-disabled="loading">
+                                                <i class="fa fa-cloud-download" aria-hidden="true"> </i>
+                                            </button>
+                                        </li>&nbsp;&nbsp;&nbsp;
+                                    </ul>
+                                </div>
+                                <div class="panel panel-default panel-body">
+                                    <h6 class="subtitulo text-center">
+                                        <str>Datos de TV, Internet-ToIp <span
+                                                class="badge ng-binding">{{counter}}</span></strong>
+                                    </h6>
+                                    <table class="table small table-fixed table-bordered table-condensed">
+                                        <thead class="table-header">
+                                            <tr>
+                                                <th>Pedido</th>
+                                                <th>Login ingreso</th>
+                                                <th>Fecha ingreso</th>
+                                                <th>Login gestión</th>
+                                                <th>Fecha gestión</th>
+                                                <th>Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="data in dataresumenContingencias">
+                                                <td>
+                                                    <button type="button" class="btn btn-default btn-xs"
+                                                        ng-click="CopyPortaPapeles(data.pedido)" tooltip
+                                                        title="Copiar pedido" id=p{{$index}}>{{data.pedido}}
+                                                    </button>
+                                                </td>
+                                                <td>{{data.logindepacho}}</td>
+                                                <td>{{data.horagestion}}</td>
+                                                <td>{{data.logincontingencia}}</td>
+                                                <td>{{data.horacontingencia}}</td>
+                                                <td>{{data.estado}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="text-center">
+                                        <ul uib-pagination class="pagination-sm" total-items="totalItems"
+                                            ng-model="currentPage" ng-change="pageChanged()" items-per-page="pageSize"
+                                            max-size="5" boundary-links="true" rotate="true" previous-text="&#8672;"
+                                            next-text="&#8674;" first-text="Primero" last-text="Último">
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- CONTADOR DE TV-iNTERNET -->
+                                <div class="panel-footer clearfix">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <h6 class="subtitulo2 text-center"><b>Contador para TV</b></h6>
+                                            <ul class="nav navbar-nav navbar-left">
+                                                <li>
+                                                    <span class="label label-success"> Aceptados:
+                                                        {{Totaltotal_pedidos_aceptadosTV}}</span>&nbsp;&nbsp;&nbsp;
+                                                </li>
+                                                <li>
+                                                    <span class="label label-warning"> Pendientes:
+                                                        {{Totaltotal_pedidos_pendientesTV}}</span>&nbsp;&nbsp;&nbsp;
+                                                </li>
+                                                <li>
+                                                    <span class="label label-danger"> Rechazados:
+                                                        {{Totaltotal_pedidos_rechazadosTV}}</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <h6 class="subtitulo2 text-center"><b>Contador para
+                                                    Internet-ToIp</b></h6>
+                                            <ul class="nav navbar-nav navbar-left">
+                                                <li>
+                                                    <span class="label label-success"> Aceptados:
+                                                        {{Totaltotal_pedidos_aceptadosInTo}}</span>&nbsp;&nbsp;&nbsp;
+                                                </li>
+                                                <li>
+                                                    <span class="label label-warning"> Pendientes:
+                                                        {{Totaltotal_pedidos_pendientesInTo}}</span>&nbsp;&nbsp;&nbsp;
+                                                </li>
+                                                <li>
+                                                    <span class="label label-danger"> Rechazados:
+                                                        {{Totaltotal_pedidos_rechazadosInTo}}</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-4 text-center">
+                                            <h6 class="subtitulo"><b>Contador para General</b></h6>
+                                            <ul class="nav navbar-nav navbar-left">
+                                                <li>
+                                                    <span class="label label-success"> Aceptados:
+                                                        {{Totaltotal_pedidos_aceptadosInTo +
+                                                        Totaltotal_pedidos_aceptadosTV}}</span>&nbsp;&nbsp;&nbsp;
+                                                </li>
+                                                <li>
+                                                    <span class="label label-warning"> Pendientes:
+                                                        {{Totaltotal_pedidos_pendientesInTo +
+                                                        Totaltotal_pedidos_pendientesTV}}</span>&nbsp;&nbsp;&nbsp;
+                                                </li>
+                                                <li>
+                                                    <span class="label label-danger"> Rechazados:
+                                                        {{Totaltotal_pedidos_rechazadosInTo +
+                                                        Totaltotal_pedidos_rechazadosTV}}</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="panel panel-default panel-body">
+                                    <h6 class="subtitulo text-center"><strong>Datos de Corregir
+                                            portafolio</strong></h6>
+                                    <table class="table table-fixed table-bordered table-condensed small">
+                                        <thead class="table-header">
+                                            <tr>
+                                                <th>Pedido</th>
+                                                <th>Login ingreso</th>
+                                                <th>Fecha ingreso</th>
+                                                <th>Login gestión</th>
+                                                <th>Fecha gestión</th>
+                                                <th>Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="data in dataresumenContingenciasCP">
+                                                <td class="filterable-cell tama">
+                                                    <button type="button" class="btn btn-default btn-xs"
+                                                        ng-click="CopyPortaPapeles(data.pedido)" tooltip
+                                                        title="Copiar pedido" id=p{{$index}}>{{data.pedido}}
+                                                    </button>
+                                                </td>
+                                                <td class="filterable-cell">{{data.logindepacho}}</td>
+                                                <td class="filterable-cell">{{data.horagestion}}</td>
+                                                <td class="filterable-cell">{{data.loginContingenciaPortafolio}}
+                                                </td>
+                                                <td class="filterable-cell">{{data.horaContingenciaPortafolio}}
+                                                </td>
+                                                <td class="filterable-cell">{{data.estado}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- CORREGIR PORTAFOLIO -->
+                                <div class="panel-footer clearfix">
+                                    <div class="col-md-4 text-center">
+                                        <h6 class="subtitulo"><b>Contador para Corregir Portafolio</b></h6>
+                                        <ul class="nav navbar-nav navbar-left">
+                                            <li>
+                                                <span class="label label-success"> Aceptados:
+                                                    {{Totaltotal_pedidos_aceptadosCP}}</span>&nbsp;&nbsp;&nbsp;
+                                            </li>
+                                            <li>
+                                                <span class="label label-warning"> Pendientes:
+                                                    {{Totaltotal_pedidos_pendientesCP}}</span>&nbsp;&nbsp;&nbsp;
+                                            </li>
+                                            <li>
+                                                <span class="label label-danger"> Rechazados:
+                                                    {{Totaltotal_pedidos_rechazadosCP}}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- INICIO RECURSOS QUE ESTAN GESTIONANDO CONTIGENCIAS -->
+                            <div class="panel panel-default"
+                                ng-show="(galletainfo.perfil == 1 || galletainfo.perfil == 11 )">
+                                <div class="panel-footer clearfix">
+                                    <ul class="nav navbar-nav navbar-left">
+                                        <b><i class="fa fa-users" aria-hidden="true"></i> Recursos Gestionando
+                                            Contingencias:</b>
+                                    </ul>
+                                    <br>
+                                    <ul class="nav navbar-nav navbar-left">
+                                        <li>
+                                            <span class="label label-primary"> Televisión:
+                                                {{Total_Personas_GestionandoTV}}</span>&nbsp;&nbsp;&nbsp;
+                                        </li>
+                                        <li>
+                                            <span class="label label-primary"> Internet:
+                                                {{Total_Personas_GestionandoInternet}}</span>&nbsp;&nbsp;&nbsp;
+                                        </li>
+                                        <li>
+                                            <span class="label label-primary"> Corrección Portafolio:
+                                                {{Total_Personas_GestionandoCP}}</span>&nbsp;&nbsp;&nbsp;
+                                        </li>
+                                        <li>
+                                            <button type="button" class="btn btn-danger btn-xs"
+                                                ng-show="galletainfo.perfil == 11"
+                                                ng-click="callModalCierreMasivoConti({})">Cierre Masivo
+                                            </button>
+
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <table class="table table-striped">
+                                    <tr>
+                                        <th>
+                                            <div class="panel panel-default panel-body">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th colspan="2">
+                                                                <h5>
+                                                                    <p class="text-center"><b>Contingencias de
+                                                                            Televisión</b></p>
+                                                                </h5>
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Login Analista</th>
+                                                            <th>Cantidad Marcadas</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="(key, data) in cantidadAnalistasTV">
+                                                            <td class="filterable-cell"><i class="fa fa-user"
+                                                                    aria-hidden="true"></i> {{key}}
+                                                            </td>
+                                                            <td class="filterable-cell">{{data}}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="panel panel-default panel-body">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th colspan="2">
+                                                                <h5>
+                                                                    <p class="text-center"><b>Contingencias de
+                                                                            Internet
+                                                                            + ToIP</b></p>
+                                                                </h5>
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Login Analista</th>
+                                                            <th>Cantidad Marcadas</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="(key, data) in cantidadAnalistasInt">
+                                                            <td class="filterable-cell"><i class="fa fa-user"
+                                                                    aria-hidden="true"></i> {{key}}
+                                                            </td>
+                                                            <td class="filterable-cell">{{data}}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </table>
+                            </div>
+                            <!-- FIN RECURSOS QUE ESTAN GESTIONANDO CONTIGENCIAS -->
+
+
+                        </div>
+                    </div>
+                    <!-- CONTADOR POR DIARIO GENERAL -->
+                    <!-- CONTADOR POR DIARIO GENERAL PARA TV-INTERNET -->
+                    <div class="col-md-2">
+                        <div class="panel panel-default">
+                            <div class="panel-heading nav navbar-default">
+                                <b> Gestión x día</b>
+                                <b>
+                                    <h5 class="subtitulo">Tv-Internet</h5>
+                                </b>
+                            </div>
+                            <div class="panel-heading nav navbar-default">
+                                <ul class="list-group small">
+                                    <span>
+                                        <a href="" ng-repeat="data in dia"
+                                            class="list-group-item animated slideInRight">{{data.fecha}}
+                                            <span class="badge ">{{data.total}}</span>
+                                        </a>
+                                    </span>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CONTADOR POR DIARIO GENERAL PARA CORREGIR PORTAFOLIO -->
+                    <div class="col-md-2">
+                        <div class="panel panel-default">
+                            <div class="panel-heading nav navbar-default">
+                                <b> Gestión x día</b>
+                                <b>
+                                    <h5 class="subtitulo">Corregir Portafolio</h5>
+                                </b>
+                            </div>
+                            <div class="panel-heading nav navbar-default">
+                                <ul class="list-group small">
+                                    <span>
+                                        <a href="" ng-repeat="data in diaCP"
+                                            class="list-group-item animated slideInRight">{{data.fecha}}
+                                            <span class="badge ">{{data.total}}</span>
+                                        </a>
+                                    </span>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="editarModal" class="modal fade " role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Observaciones contingencia para pedido {{gestioncontin.pedido}}</h4>
+                </div>
+                <div class="modal-body">
+                    <textarea name="observaciones" id="observaciones" cols="78" rows="6"
+                        ng-model="gestioncontin.observacionescontingencia"
+                        placeholder="observaciones contingencia"></textarea>
+                    <div class="generar-cr">
+                        Generar CR
+                        <label class="switch">
+                            <input type="checkbox" ng-model="gestioncontin.generarcr">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>* Recuerde marcar generar cr si es necesario para actualizar los equipos.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal"
+                        ng-click="guardarpedido(gestioncontin)" data-dismiss="modal">Guardar
+                    </button>
+                    <button type="button" ng-disabled="contact_form.$invalid" class="btn btn-default"
+                        data-dismiss="modal">Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA CORREGIR PORTAFOLIO -->
+    <div id="editarModalPortafolio" class="modal fade " role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Observaciones contingencia para pedido
+                        {{gestioncontinPortafilio.pedido}}</h4>
+                </div>
+                <div class="modal-body">
+                    <textarea name="observaciones" id="observaciones" cols="78" rows="6"
+                        ng-model="gestioncontinPortafilio.observContingenciaPortafolio"
+                        placeholder="observaciones contingencia"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal"
+                        ng-click="guardarpedidoPortafolio(gestioncontinPortafilio)" data-dismiss="modal">Guardar
+                    </button>
+                    <button type="button" ng-disabled="contact_form.$invalid" class="btn btn-default"
+                        data-dismiss="modal">Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- MODAL -->
+
+    <div id="modalbb8" class="modal fullscreen-modal fade" role="dialog">
+        <div class="modal-dialog modal-lg" style="width: 80%">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Datos portafolio</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="panel">
+                            <div class="col-md-3">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <b>Datos de clic <i class="fa fa-database" aria-hidden="true"></i></b>
+                                    </div>
+                                    <div class="panel-body">
+                                        <span class="recore"><b>Pedido: </b>{{UNEPedido}}</span><br>
+                                        <span class="recore"><b>Gis: </b>{{ID_GIS}}</span><br>
+                                        <span class="recore"><b>Estado: </b>{{Estado}}</span><br>
+                                        <span class="recore"><b>Categoría: </b>{{Categoria}}</span><br>
+                                        <span class="recore"><b>CRM: </b>{{CRM}}</span><br>
+                                        <span class="recore"><b>Ciudad: </b>{{UNEMunicipio}}</span><br>
+                                        <span class="recore"><b>Cliente: </b>{{UNENombreCliente}}</span><br>
+                                        <span class="recore"><b>Identificación: </b>{{UNEIdCliente}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3" ng-if="bb8Internet">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <b>Internet <i class="fa fa-internet-explorer" aria-hidden="true"></i></b>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div ng-repeat="data1 in recorreinternet">
+                                            <span class="recore"><b>{{data1.VALUE_LABEL}}:
+                                                </b>{{data1.VALID_VALUE}}</span><br>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3" ng-if="bb8Telefonia">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <b>Telefonía <i class="fa fa-phone" aria-hidden="true"></i></b>
+                                    </div>
+                                    <div class="panel-body">
+
+                                        <div ng-repeat="data2 in recorretelefonia">
+                                            <span class="recore"><b>{{data2.VALUE_LABEL}}:
+                                                </b>{{data2.VALID_VALUE}}</span><br>
+                                            <span class="recore"><b>{{data2.ITEM_ALIAS}}:
+                                                </b>{{data2.LINEA}}</span><br>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3" ng-if="bb8Television">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <b>Television <i class="fa fa-television" aria-hidden="true"></i></b>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div ng-repeat="data in recore">
+                                            <span class="recore"><b>{{data.VALUE_LABEL}}:
+                                                </b>{{data.VALID_VALUE}}</span><br>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalObservaciones" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document" style="left: 20%;top: 30%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Observaciones</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{observacionContingencia}}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div ng-include="rutaCierreMasivoContin"></div>
 </div>
 <br><br><br>
-

@@ -222,6 +222,19 @@ class kpi
         $fecha = $data['fecha'];
         $today = date("Y-m-d");
 
+        if (!empty($data['tabla'])) {
+            $stmt = $this->_BD->prepare("INSERT INTO usuario_kpi (usuario, tabla) VALUES (:u, 'apoyo')");
+            $stmt->execute(array(':u' => $data['usuario']));
+            if ($stmt->rowCount() == 1) {
+                $response = array('state' => 1, 'msj' => 'Usuario agregado correctamente');
+            } else {
+                $response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno inténtalo nuevamente en unos minutos');
+            }
+            echo json_encode($response);
+            exit();
+        }
+
+
         $condicion = '';
         if (($estado == 'Acepta') && ($producto == 'Internet+Toip') && (!empty($fecha))) {
             $today = $fecha;
@@ -269,6 +282,12 @@ class kpi
             $condicion = " AND p.acepta = 'acepta' ";
         }
 
+        $stmt = $this->_BD->query("SELECT usuario FROM usuario_kpi WHERE tabla = 'apoyo'");
+        $stmt->execute();
+        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $usuarios_array = array_column($res, 'usuario');
+        $usuarios_cadena = "'" . implode("','", $usuarios_array) . "'";
+
         $stmt = $this->_BD->query("SELECT 
 		 C2.USUARIO 
 		, COUNT(*) AS CANTIDAD
@@ -295,7 +314,7 @@ class kpi
 				 p.pedido AS PEDIDO_ID, 
 				 p.logincontingencia AS USUARIO, DATE_FORMAT(p.horacontingencia, '%H') AS RANGO_PENDIENTE
 		FROM contingencias p
-		WHERE p.logincontingencia in ('jechavs','caro','jalvarga','alondono','karroyar','jbetanmo','larrublg', 'cramiceb','jromang','cvasquor','garcila','gdbetancur','jcordoba') $condicion AND p.horacontingencia BETWEEN '$today 00:00:00' AND '$today 23:59:59') C2
+		WHERE p.logincontingencia in ($usuarios_cadena) $condicion AND p.horacontingencia BETWEEN '$today 00:00:00' AND '$today 23:59:59') C2
 		GROUP BY C2.USUARIO ORDER BY CANTIDAD DESC");
 
         $stmt->execute();
@@ -315,6 +334,19 @@ class kpi
         $fecha = $data['fecha'];
         $today = date("Y-m-d");
 
+        if (!empty($data['tabla'])) {
+            $stmt = $this->_BD->prepare("INSERT INTO usuario_kpi (usuario, tabla) VALUES (:u, 'tiempo_completo')");
+            $stmt->execute(array(':u' => $data['usuario']));
+            if ($stmt->rowCount() == 1) {
+                $response = array('state' => 1, 'msj' => 'Usuario agregado correctamente');
+            } else {
+                $response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno inténtalo nuevamente en unos minutos');
+            }
+            echo json_encode($response);
+            exit();
+        }
+
+
         $condicion = '';
         if (($estado == 'Acepta') && ($producto == 'Internet+Toip') && (!empty($fecha))) {
             $today = $fecha;
@@ -339,15 +371,15 @@ class kpi
         } elseif (($estado == 'Acepta') && (!empty($fecha))) {
             $today = $fecha;
             $condicion = " AND p.acepta = 'Acepta' ";
-        }elseif (($estado == 'Todos') && ($producto == 'Internet+Toip') && (!empty($fecha))) {
+        } elseif (($estado == 'Todos') && ($producto == 'Internet+Toip') && (!empty($fecha))) {
             $today = $fecha;
             $condicion = " AND p.producto IN ('Internet+ToIP', 'Internet', 'ToIP') ";
-        }elseif (($estado == 'Todos') && ($producto == 'TV') && (!empty($fecha))) {
+        } elseif (($estado == 'Todos') && ($producto == 'TV') && (!empty($fecha))) {
             $condicion = " AND p.producto = 'TV' ";
         } elseif (($estado == 'Todos') && (!empty($fecha))) {
             $today = $fecha;
             $condicion = "";
-        }elseif ($estado == 'Todos') {
+        } elseif ($estado == 'Todos') {
             $condicion = "";
         } elseif ($estado == 'Acepta') {
             $condicion = " AND p.acepta = 'Acepta' ";
@@ -372,6 +404,11 @@ class kpi
             $condicion = " AND p.acepta = 'acepta' ";
         }
 
+        $stmt = $this->_BD->query("SELECT usuario FROM usuario_kpi WHERE tabla = 'tiempo_completo'");
+        $stmt->execute();
+        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $usuarios_array = array_column($res, 'usuario');
+        $usuarios_cadena = "'" . implode("','", $usuarios_array) . "'";
 
         $stmt = $this->_BD->query("SELECT 
 		 C2.USUARIO 
@@ -399,7 +436,7 @@ class kpi
 				 p.pedido AS PEDIDO_ID, 
 				 p.logincontingencia AS USUARIO, DATE_FORMAT(p.horacontingencia, '%H') AS RANGO_PENDIENTE
 		FROM contingencias p
-		WHERE p.logincontingencia in ('jricol','lgarzon','cbarrera','jaceveb','csepulve','jmiranda','jsanchza') $condicion AND p.horacontingencia BETWEEN '$today 00:00:00' AND '$today 23:59:59') C2
+		WHERE p.logincontingencia in ($usuarios_cadena) $condicion AND p.horacontingencia BETWEEN '$today 00:00:00' AND '$today 23:59:59') C2
 		GROUP BY C2.USUARIO ORDER BY CANTIDAD DESC");
 
         $stmt->execute();
@@ -420,6 +457,18 @@ class kpi
         $fecha = $data['fecha'];
         $today = date("Y-m-d");
 
+        if (!empty($data['tabla'])) {
+            $stmt = $this->_BD->prepare("INSERT INTO usuario_kpi (usuario, tabla) VALUES (:u, 'mmss')");
+            $stmt->execute(array(':u' => $data['usuario']));
+            if ($stmt->rowCount() == 1) {
+                $response = array('state' => 1, 'msj' => 'Usuario agregado correctamente');
+            } else {
+                $response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno inténtalo nuevamente en unos minutos');
+            }
+            echo json_encode($response);
+            exit();
+        }
+
         $condicion = '';
         if (($estado == 'Acepta') && ($producto == 'Internet+Toip') && (!empty($fecha))) {
             $today = $fecha;
@@ -467,6 +516,12 @@ class kpi
             $condicion = " AND p.acepta = 'acepta' ";
         }
 
+        $stmt = $this->_BD->query("SELECT usuario FROM usuario_kpi WHERE tabla = 'mmss'");
+        $stmt->execute();
+        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $usuarios_array = array_column($res, 'usuario');
+        $usuarios_cadena = "'" . implode("','", $usuarios_array) . "'";
+
         $stmt = $this->_BD->query("SELECT 
 		 C2.USUARIO 
 		, COUNT(*) AS CANTIDAD
@@ -492,7 +547,7 @@ class kpi
 		SELECT 
 				 p.pedido AS PEDIDO_ID, 
 				 p.logincontingencia AS USUARIO, DATE_FORMAT(p.horacontingencia, '%H') AS RANGO_PENDIENTE
-		FROM contingencias p WHERE p.logincontingencia in ('jbaenaa','sgarciar','nfmartinez','lfonnegr','agomezgm','sgiforon','cano') $condicion AND p.horacontingencia BETWEEN '$today 00:00:00' AND '$today 23:59:59') C2
+		FROM contingencias p WHERE p.logincontingencia in ($usuarios_cadena) $condicion AND p.horacontingencia BETWEEN '$today 00:00:00' AND '$today 23:59:59') C2
 		GROUP BY C2.USUARIO ORDER BY CANTIDAD DESC");
 
         $stmt->execute();
@@ -513,6 +568,18 @@ class kpi
         $fecha = $data['fecha'];
         $today = date("Y-m-d");
 
+        if (!empty($data['tabla'])) {
+            $stmt = $this->_BD->prepare("INSERT INTO usuario_kpi (usuario, tabla) VALUES (:u, 'emtelco')");
+            $stmt->execute(array(':u' => $data['usuario']));
+            if ($stmt->rowCount() == 1) {
+                $response = array('state' => 1, 'msj' => 'Usuario agregado correctamente');
+            } else {
+                $response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno inténtalo nuevamente en unos minutos');
+            }
+            echo json_encode($response);
+            exit();
+        }
+
         $condicion = '';
         if (($estado == 'Acepta') && (!empty($fecha))) {
             $today = $fecha;
@@ -529,6 +596,12 @@ class kpi
         } else {
             $condicion = " AND p.acepta = 'Acepta' ";
         }
+
+        $stmt = $this->_BD->query("SELECT usuario FROM usuario_kpi WHERE tabla = 'emtelco'");
+        $stmt->execute();
+        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $usuarios_array = array_column($res, 'usuario');
+        $usuarios_cadena = "'" . implode("','", $usuarios_array) . "'";
 
         $stmt = $this->_BD->query("SELECT 
 		C2.USUARIO
@@ -554,33 +627,7 @@ class kpi
 		SELECT 
 		p.pedido AS PEDIDO_ID, p.logincontingencia AS USUARIO, DATE_FORMAT(p.horacontingencia, '%H') AS RANGO_PENDIENTE
 		FROM contingencias p
-		WHERE 1=1 $condicion AND p.logincontingencia NOT IN (
-                                                            'jsanchza',
-                                                            'jmiranda',
-                                                            'csepulve',
-                                                            'caro',
-															'jalvarga',
-															'alondono',
-															'karroyar',
-															'jbetanmo',
-															'larrublg', 
-															'cramiceb',
-															'jromang',
-															'cvasquor',
-															'garcila',
-															'gdbetancur',
-															'jcordoba', 
-															'jricol',
-															'lgarzon',
-															'cbarrera',
-															'jaceveb',
-															'jechavs', 
-															'jbaenaa',
-															'sgarciar',
-															'nfmartinez',
-															'lfonnegr',
-															'agomezgm',
-															'')  AND p.horacontingencia BETWEEN '$today 00:00:00' AND '$today 23:59:59') C2
+		WHERE 1=1 $condicion AND p.logincontingencia NOT IN ($usuarios_cadena)  AND p.horacontingencia BETWEEN '$today 00:00:00' AND '$today 23:59:59') C2
 
 		GROUP BY C2.USUARIO ORDER BY CANTIDAD DESC");
 
@@ -591,6 +638,31 @@ class kpi
             $response = array('state' => 0, 'msj' => 'No se encontraron datos');
         }
 
+        echo json_encode($response);
+    }
+
+    public function quitarUsuarioKpi($data)
+    {
+        try {
+            $usuario = $data['usuario'];
+
+            if ($data['tabla'] == 'Tiempo completo') {
+                $tabla = 'tiempo_completo';
+            }else {
+                $tabla = $data['tabla'];
+            }
+
+            $stmt = $this->_BD->prepare("DELETE FROM usuario_kpi WHERE usuario = :id AND tabla = :tabla");
+            $stmt->execute(array(':id' => $usuario, ':tabla' => $tabla));
+            if ($stmt->rowCount() == 1) {
+                $response = array('state' => 1, 'msj' => 'Usuario retirado correctamente');
+            } else {
+                $response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno inténtalo nuevamente en unos minutos');
+            }
+        } catch (PDOException $th) {
+            var_dump($th->getMessage());
+        }
+        $this->_BD = '';
         echo json_encode($response);
     }
 }

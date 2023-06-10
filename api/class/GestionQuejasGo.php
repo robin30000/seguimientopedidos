@@ -58,7 +58,7 @@ class GestionQuejasGo
 			$stmt->execute();
 			$count = $stmt->rowCount();
 
-			$stmt =$this->_DB->query("SELECT * FROM quejasgo WHERE 1=1 AND en_gestion = 2 $condicion ORDER BY fecha LIMIT $offset, $pagesize");
+			$stmt =$this->_DB->query("SELECT * FROM quejasgo WHERE 1=1 AND en_gestion = 2 $condicion ORDER BY fecha DESC LIMIT $offset, $pagesize");
 			$stmt->execute();
 			if($stmt->rowCount()){
 				$response = array('state'=>1,'data'=>$stmt->fetchAll(PDO::FETCH_ASSOC), 'totalCount' => $count);

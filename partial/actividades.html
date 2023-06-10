@@ -31,9 +31,9 @@
                 <li>
                   <input style="width: 160px;" class="btn btn-default btn-xs" type="text" ng-model="pedido"
                     placeholder="Ingresar pedido" ng-disabled="infopedido==false" select-on-click capitalize />
-                  <button type="button" ng-hide="infopedido==false" class="btn btn-success btn-xs"
+                  <button type="button" ng-hide="infopedido==false" class="btn btn-info btn-xs" tooltip-placement="top" uib-tooltip="Buscar"
                     ng-click="BuscarPedido(pedido)">Buscar</button>
-                  &nbsp;&nbsp; <button type="button" class="btn btn-default btn-xs"
+                  &nbsp;&nbsp; <button type="button" class="btn btn-default btn-xs" tooltip-placement="top" uib-tooltip="Limpiar"
                     ng-click="limpiar()">Limpiar</button>&nbsp;&nbsp;
                 </li>
               </div>
@@ -68,10 +68,10 @@
               <li>
                 <div class="btn-group">
 
-                  <a type="button" class="btn btn-primary btn-xs" value="Ver Registros" href="#!/registros"> <span
+                  <a type="button" class="btn btn-info btn-xs" value="Ver Registros" href="#!/registros"> <span
                       class="fa fa-list" aria-hidden="true"></span> Ver Registros </a>
 
-                  <button type="button" class="btn btn-info btn-xs" ng-click="editarModal()" data-toggle="modal"
+                  <button type="button" class="btn btn-default btn-xs" ng-click="editarModal()" data-toggle="modal"
                     data-target="#editarModal" data-backdrop="static" ng-disabled="loading" ng-show="false" popover
                     data-trigger="hover" data-placement="left" data-html="true" data-selector="">
                     <i class="fa fa-pencil" aria-hidden="true"> </i> Editar Cuenta
@@ -3449,28 +3449,28 @@
                     <ul class="nav nav-pills">
                       <li>
                         <button type="button"
-                          ng-class="{'btn btn-info btn-xs' : TVdigital1 == true, 'btn btn-link btn-xs' : TVdigital1 == false}"
+                          ng-class="{'btn btn-default btn-xs' : TVdigital1 == true, 'btn btn-link btn-xs' : TVdigital1 == false}"
                           ng-click="selectProductocontingencia('TV digital 1')">
                           TV digital 1
                         </button>
                       </li>
                       <li>
                         <button type="button"
-                          ng-class="{'btn btn-info btn-xs' : TVdigital2 == true, 'btn btn-link btn-xs' : TVdigital2 == false}"
+                          ng-class="{'btn btn-default btn-xs' : TVdigital2 == true, 'btn btn-link btn-xs' : TVdigital2 == false}"
                           ng-click="selectProductocontingencia('TV digital 2')">
                           TV digital 2
                         </button>
                       </li>
                       <li>
                         <button type="button"
-                          ng-class="{'btn btn-info btn-xs' : TVdigital3 == true, 'btn btn-link btn-xs' : TVdigital3 == false}"
+                          ng-class="{'btn btn-default btn-xs' : TVdigital3 == true, 'btn btn-link btn-xs' : TVdigital3 == false}"
                           ng-click="selectProductocontingencia('TV digital 3')">
                           TV digital 3
                         </button>
                       </li>
                       <li>
                         <button type="button"
-                          ng-class="{'btn btn-info btn-xs' : TVdigital4 == true, 'btn btn-link btn-xs' : TVdigital4 == false}"
+                          ng-class="{'btn btn-default btn-xs' : TVdigital4 == true, 'btn btn-link btn-xs' : TVdigital4 == false}"
                           ng-click="selectProductocontingencia('TV digital 4')">
                           TV digital 4
                         </button>
@@ -3699,49 +3699,49 @@
                 <div class="panel-heading nav navbar-default">
                   <ul class="nav nav-pills">
                     <li><button type="button"
-                        ng-class="{'btn btn-info btn-xs' : Internet == true, 'btn btn-link btn-xs' : Internet == false}"
+                        ng-class="{'btn btn-default btn-xs' : Internet == true, 'btn btn-link btn-xs' : Internet == false}"
                         ng-click="selectProductocontingencia('Internet')">Internet</button></li>
                     <li><button type="button"
-                        ng-class="{'btn btn-info btn-xs' : ToIP == true, 'btn btn-link btn-xs' : ToIP == false}"
+                        ng-class="{'btn btn-default btn-xs' : ToIP == true, 'btn btn-link btn-xs' : ToIP == false}"
                         ng-click="selectProductocontingencia('ToIP')">ToIP</button></li>
                     <li>
                       <button type="button"
-                        ng-class="{'btn btn-info btn-xs' : TVdigital1 == true, 'btn btn-link btn-xs' : TVdigital1 == false}"
+                        ng-class="{'btn btn-default btn-xs' : TVdigital1 == true, 'btn btn-link btn-xs' : TVdigital1 == false}"
                         ng-click="selectProductocontingencia('TV digital 1')">
                         TV digital 1
                       </button>
                     </li>
                     <li>
                       <button type="button"
-                        ng-class="{'btn btn-info btn-xs' : TVdigital2 == true, 'btn btn-link btn-xs' : TVdigital2 == false}"
+                        ng-class="{'btn btn-default btn-xs' : TVdigital2 == true, 'btn btn-link btn-xs' : TVdigital2 == false}"
                         ng-click="selectProductocontingencia('TV digital 2')">
                         TV digital 2
                       </button>
                     </li>
                     <li>
                       <button type="button"
-                        ng-class="{'btn btn-info btn-xs' : TVdigital3 == true, 'btn btn-link btn-xs' : TVdigital3 == false}"
+                        ng-class="{'btn btn-default btn-xs' : TVdigital3 == true, 'btn btn-link btn-xs' : TVdigital3 == false}"
                         ng-click="selectProductocontingencia('TV digital 3')">
                         TV digital 3
                       </button>
                     </li>
                     <li>
                       <button type="button"
-                        ng-class="{'btn btn-info btn-xs' : TVdigital4 == true, 'btn btn-link btn-xs' : TVdigital4 == false}"
+                        ng-class="{'btn btn-default btn-xs' : TVdigital4 == true, 'btn btn-link btn-xs' : TVdigital4 == false}"
                         ng-click="selectProductocontingencia('TV digital 4')">
                         TV digital 4
                       </button>
                     </li>
                     <li>
                       <button type="button"
-                        ng-class="{'btn btn-info btn-xs' : TVdigital5 == true, 'btn btn-link btn-xs' : TVdigital5 == false}"
+                        ng-class="{'btn btn-default btn-xs' : TVdigital5 == true, 'btn btn-link btn-xs' : TVdigital5 == false}"
                         ng-click="selectProductocontingencia('TV digital 5')">
                         TV digital 5
                       </button>
                     </li>
                     <li>
                       <button type="button"
-                        ng-class="{'btn btn-info btn-xs' : TVdigital6 == true, 'btn btn-link btn-xs' : TVdigital6 == false}"
+                        ng-class="{'btn btn-default btn-xs' : TVdigital6 == true, 'btn btn-link btn-xs' : TVdigital6 == false}"
                         ng-click="selectProductocontingencia('TV digital 6')">
                         TV digital 6
                       </button>

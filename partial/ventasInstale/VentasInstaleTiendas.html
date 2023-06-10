@@ -40,7 +40,7 @@
               </ul>
               <ul class="nav navbar-nav navbar-right">
                 <li>
-                  <button type="button" class="btn btn-default btn-xs" ng-click="consolidadoZona()"
+                  <button type="button" class="btn btn-info btn-xs" ng-click="consolidadoZona()"
                     title="Consolidado por zona" data-toggle="tooltip" data-placement="top" ng-disabled="loading">
                     <i class="fa fa-bar-chart" aria-hidden="true"></i>
                   </button>
@@ -48,14 +48,14 @@
                   &nbsp;
                 </li>
                 <li>
-                  <button type="button" class="btn btn-default btn-xs" ng-click="observacionParaVenta()"
+                  <button type="button" class="btn btn-info btn-xs" ng-click="observacionParaVenta()"
                     title="Observacion para ventas" data-toggle="tooltip" data-placement="top" ng-disabled="loading">
                     <i class="fa fa-commenting" aria-hidden="true"></i>
                   </button>
                   &nbsp;
                 </li>
                 <li>
-                  <button type="button" class="btn btn-default btn-xs" ng-click="verObservaciones()"
+                  <button type="button" class="btn btn-info btn-xs" ng-click="verObservaciones()"
                     title="ver Observaciones" data-toggle="tooltip" data-placement="top" ng-disabled="loading">
                     <i class="fa fa-eye" aria-hidden="true"></i>
                   </button>
@@ -63,7 +63,7 @@
                 </li>
 
                 <li>
-                  <button type="button" class="btn btn-default btn-xs" ng-click="recargaVentas()" title="Actualizar"
+                  <button type="button" class="btn btn-info btn-xs" ng-click="recargaVentas()" title="Actualizar"
                     data-toggle="tooltip" data-placement="top" ng-disabled="loading">
                     <i class="fa fa-refresh" aria-hidden="true"></i>
                   </button>
@@ -185,7 +185,7 @@
                     <td class="text-center">{{data.categoria}}</td>
 
                     <td class="text-center">
-                      <button type="button" class="btn btn-default btn-xs" data-toggle="modal"
+                      <button type="button" class="btn btn-info btn-xs" data-toggle="modal"
                         ng-click="abreModal(data)" data-backdrop="static" tooltip title="guardar gestión"
                         data-placement="top" data-html="true" data-selector="">
                         <i class="fa fa-floppy-o" aria-hidden="true"> </i>
@@ -235,7 +235,7 @@
                     <i class="fa fa-search-plus" aria-hidden="true"></i>
                   </button>
 
-                  <button type="button" class="btn btn-primary btn-xs" title="Exportar Registros"
+                  <button type="button" class="btn btn-info btn-xs" title="Exportar Registros"
                     ng-click="csvVentaInstale()" ng-disabled="loading" title="Exportar" tooltip data-placement="top">
                     <i class="fa fa-cloud-download" aria-hidden="true"> </i>
                   </button>
@@ -244,7 +244,7 @@
                     <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs" ng-model="pedido"
                       placeholder="Buscar Pedido" autocomplete="off" />&nbsp;
 
-                    <button type="button" class="btn btn-default btn-xs" ng-click="detalleVentaPedido(pedido)"
+                    <button type="button" class="btn btn-info btn-xs" ng-click="detalleVentaPedido(pedido)"
                       title="Buscar" data-toggle="tooltip" data-placement="left" ng-disabled="loading">
                       <i class="fa fa-search" aria-hidden="true"></i>
                     </button> </b>&nbsp;
@@ -281,7 +281,7 @@
                     </th>
                     <th class="text-center" style="width: 5%">Tipificacion</th>
                     <th class="text-center" style="width: 5%">
-                      Detalle Tipificacion
+                      Detalle Tipificación
                     </th>
                     <th class="text-cente">Categoría</th>
                   </tr>
@@ -446,7 +446,7 @@
                 <td class="text-center">{{item.observacion}}</td>
                 <td class="text-center">{{item.hora}}</td>
                 <td class="text-center">
-                  <button type="button" class="btn btn-default btn-xs" ng-click="EliminaObservacion(item.id)"
+                  <button type="button" class="btn btn-info btn-xs" ng-click="EliminaObservacion(item.id)"
                     title="Eliminar" data-toggle="tooltip" data-placement="top" ng-disabled="loading">
                     <i class="fa fa-trash" aria-hidden="true"></i>
                   </button>
@@ -508,7 +508,7 @@
           </table>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">
+          <button type="button" class="btn btn-info" data-dismiss="modal">
             Cerrar
           </button>
         </div>
