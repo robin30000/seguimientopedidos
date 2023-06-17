@@ -14,8 +14,8 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#!/actividades"><img src="img/rsz_logonobg.png">
-                <a class="navbar-brand" href="#!/actividades">
+            <a class="navbar-brand" href="#/actividades"><img src="img/rsz_logonobg.png">
+                <a class="navbar-brand" href="#/actividades">
                     <font color="#00377d"><b>Seguimiento</font>
                     <font color="#00377d"> a Pedidos</font>
                 </a>
@@ -35,8 +35,9 @@
                     <ul class="dropdown-menu">
                         <li ng-repeat="subpage in m.n.sub">
                             <a ng-href="{{m.n.url[$index]}}">
-                            <i class="{{m.n.icon[$index]}}" aria-hidden="true"></i>&nbsp;{{subpage}}</a>
+                            <i class="{{m.n.icon[$index]}}" aria-hidden="true"></i>&nbsp;{{subpage}} </a>
                         </li>
+                        <!-- <li ng-if="$index == 9" role="separator" class="divider"></li> -->
                     </ul>
                 </li>
             </ul>
@@ -68,7 +69,7 @@
                         {{galletainfo.login}}
                     </span>&nbsp;&nbsp;
 
-                    <button type="button" class="btn btn-sm btn-info" ng-click="logout()">Salir <i
+                    <button type="button" class="btn btn-sm btn-info" ng-click="logout()" tooltip-placement="top" uib-tooltip="Salir">Salir <i
                             class="fa fa-sign-out" aria-hidden="true"></i></button>
                 </li>
             </ul>
@@ -91,6 +92,6 @@
         <div class="col-xs-9 text-right">
             <span>Gerencia Despacho y Alistamiento (2023)</span>
         </div>
-        <div class="col-xs-3"><img src="img/tigo.png" width="40px"></div>
+        <div class="col-xs-3"><img src="img/tigo.png" width="35px"></div>
     </div>
 </div>

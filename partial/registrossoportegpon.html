@@ -45,14 +45,14 @@
                 <div class="btn-group">
                   <button type="button" class="btn btn-default btn-xs" tooltip-placement="top" uib-tooltip="Buscar"
                     ng-click="buscarRegistrosSoporteGpon(RegistrosSoporteGpon)" ng-disabled="loading">
-                    <i class="fa fa-search-plus" aria-hidden="true"> </i>
+                    <i class="fa fa-search" aria-hidden="true"> </i>
                   </button>
                 </div>
                 &nbsp;
               </li>
 
               <li>
-                <button type="button" ng-show="galletainfo.PERFIL !== '8'" class="btn btn-info btn-xs"
+                <button type="button" ng-show="galletainfo.PERFIL !== '8'" class="btn btn-success btn-xs"
                 tooltip-placement="top" uib-tooltip="Exportar" ng-click="csvRegistros()" ng-disabled="loading">
                   <i class="fa fa-cloud-download" aria-hidden="true"> </i>
                 </button>
@@ -63,8 +63,8 @@
                   placeholder="Buscar Pedido" autocomplete="off" />&nbsp;
 
                 <button class="btn btn-default btn-xs" data-toggle="modal"
-                  data-target="#HistoricoModal" tooltip-placement="top" uib-tooltip="Buscar"
-                  ng-click="buscarhistoricoSoporteGpon(tarea)" >
+                  tooltip-placement="top" uib-tooltip="Buscar"
+                  ng-click="buscarhistoricoSoporteGpon(tarea)" ng-disabled="loading">
                   <i class="fa fa-search" aria-hidden="true"></i>
                 </button> </b>&nbsp;
             </ul>
@@ -84,12 +84,12 @@
                 <th>Datos cola</th>
                 <th>Doc Técnico</th>
                 <th>Nom Técnico</th>
-                <th>Telefono</th>
+                <th>Teléfono</th>
                 <th>Tipo equipo</th>
                 <th>Respuesta soporte</th>
-                <th>Tipificacion</th>
+                <th>Tipificación</th>
                 <th>Login</th>
-                <th>Fecha creacion</th>
+                <th>Fecha creación</th>
                 <th>Fecha respuesta</th>
                 <th>Fecha marca</th>
                 <th>Acción</th>

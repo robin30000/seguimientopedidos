@@ -14,12 +14,15 @@ class quejasGo
     {
 
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
-
+            //var_dump($data);exit();
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
             } else {
 
+                $condicion = "";
                 if (empty($data['datos']['fechaini'])) {
                     $fechaini = date('Y-m-d');
                     $fechafin = date('Y-m-d');
@@ -28,18 +31,22 @@ class quejasGo
                     $fechafin = $data['datos']['fechafin'];
                 }
 
-                $condicion = "AND fecha BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59'";
-                if (!empty($data['columnaBusqueda'])) {
-                    $columna = $data['columnaBusqueda'];
-                    $valor = $data['valorBusqueda'];
-                    $condicion = " AND '$columna' = '$valor' ";
-                }
+                $condicion = " AND fecha BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
 
-                $stmt = $this->_DB->query("select * from quejasgo
-								WHERE fecha BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59'");
+
+                if (!empty($data['datos']['columnaBusqueda'])) {
+                    $columnaBusqueda = $data['datos']['columnaBusqueda'];
+                    $valorBusqueda = $data['datos']['valorBusqueda'];
+                    $condicion .= " AND $columnaBusqueda = '$valorBusqueda' ";
+                }
+                //echo "SELECT * FROM quejasgo WHERE 1=1  $condicion";exit();
+
+                $stmt = $this->_DB->query("SELECT * FROM quejasgo WHERE 1=1  $condicion");
                 $stmt->execute();
 
                 $totalCount = $stmt->rowCount();
+
+
 
                 $pagenum = $data['page'];
                 $pagesize = $data['size'];
@@ -73,7 +80,9 @@ class quejasGo
 
     public function csvQuejasGo($data)
     {
-
+        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        session_set_cookie_params(3600);
+        session_start();
         try {
             $usuarioid = $data['datosLogin'];
             $usuarioid = $usuarioid['LOGIN'];
@@ -118,6 +127,8 @@ class quejasGo
     public function buscarTecnico($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
@@ -147,6 +158,8 @@ class quejasGo
     {
 
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $identificacion = $data['cedtecnico'];
             $nombre = $data['nombretecnico'];
@@ -193,46 +206,53 @@ class quejasGo
     {
 
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
-            $datos = $data['dataquejago'];
-            $duracion = $data['duracion'];
-            $login = $data['login'];
-            $asesor = $login['LOGIN'];
-            $pedido = $datos['pedido'];
-            $cliente = $datos['cliente'];
-            $cedtecnico = $datos['cedtecnico'];
-            $tecnico = $datos['tecnico'];
-            $accion = $datos['accion'];
-            $region = $datos['region'];
-            $idllamada = $datos['idllamada'];
-            $observacion = utf8_decode($datos['observacion']);
+            if (!$_SESSION) {
+                $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
+            } else {
+                $datos = $data['dataquejago'];
+                $duracion = $data['duracion'];
+                $login = $data['login'];
+                $asesor = $login['LOGIN'];
+                $pedido = $datos['pedido'];
+                $cliente = $datos['cliente'];
+                $cedtecnico = $datos['cedtecnico'];
+                $tecnico = $datos['tecnico'];
+                $accion = $datos['accion'];
+                $region = $datos['region'];
+                $idllamada = $datos['idllamada'];
+                $observacion = utf8_decode($datos['observacion']);
 
 
-            $stmt = $this->_DB->prepare("
+                $stmt = $this->_DB->prepare("
 					INSERT INTO quejasgo
 						(pedido, cliente, cedtecnico, tecnico, accion, asesor, fecha, duracion, region, idllamada, observacion)
 					VALUES
 						(:pedido, UPPER(TRIM(:cliente)), :cedtecnico, :tecnico, :accion, :asesor, NOW(), :duracion, :region, :idllamada, :observacion)
 				");
-            $stmt->execute([
-                ':pedido' => $pedido,
-                ':cliente' => $cliente,
-                ':cedtecnico' => $cedtecnico,
-                ':tecnico' => $tecnico,
-                ':accion' => $accion,
-                ':asesor' => $asesor,
-                ':duracion' => $duracion,
-                ':region' => $region,
-                ':idllamada' => $idllamada,
-                ':observacion' => $observacion,
-            ]);
+                $stmt->execute([
+                    ':pedido' => $pedido,
+                    ':cliente' => $cliente,
+                    ':cedtecnico' => $cedtecnico,
+                    ':tecnico' => $tecnico,
+                    ':accion' => $accion,
+                    ':asesor' => $asesor,
+                    ':duracion' => $duracion,
+                    ':region' => $region,
+                    ':idllamada' => $idllamada,
+                    ':observacion' => $observacion,
+                ]);
 
 
-            if ($stmt->rowCount()) {
-                $response = ['Queja guardada', 201];
-            } else {
-                $response = 0;
+                if ($stmt->rowCount()) {
+                    $response = ['Queja guardada', 201];
+                } else {
+                    $response = 0;
+                }
             }
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
@@ -243,20 +263,26 @@ class quejasGo
     public function ActualizarObserQuejasGo($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
-            $observaciones = $data['observacion'];
-            $observaciones = $observaciones['observacion'];
-            $idqueja = $data['idqueja'];
-
-
-            $stmt = $this->_DB->prepare("UPDATE quejasgo SET observacion = :observaciones where id = :idqueja");
-
-            $stmt->execute([':observaciones' => $observaciones, ':idqueja' => $idqueja]);
-
-            if ($stmt->rowCount()) {
-                $response = ['type' => 'success', 'msj' => 'Observacion actualizada'];
+            if (!$_SESSION) {
+                $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
             } else {
-                $response = ['type' => 'error', 'msj' => 'Ah ocurrido un error intentalo nuevamente'];
+                $observaciones = $data['observacion'];
+                $observaciones = $observaciones['observacion'];
+                $idqueja = $data['idqueja'];
+
+
+                $stmt = $this->_DB->prepare("UPDATE quejasgo SET observacion = :observaciones where id = :idqueja");
+
+                $stmt->execute([':observaciones' => $observaciones, ':idqueja' => $idqueja]);
+
+                if ($stmt->rowCount()) {
+                    $response = array('state' => 1, 'msj' => 'Observación actualizada');
+                } else {
+                    $response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno inténtalo nuevamente en unos minutos');
+                }
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -268,6 +294,8 @@ class quejasGo
     public function registrarQuejaGo($params)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $datos = $params['dataquejago'];
 

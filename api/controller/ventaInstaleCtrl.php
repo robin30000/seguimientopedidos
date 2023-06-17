@@ -22,12 +22,12 @@ if (isset($data['method'])) {
         case 'marcarEnGestionVentaInstale':
             require_once '../class/ventaInstale.php';
             $user = new ventaInstale();
-            $user->marcarEnGestionVentaInstale($data);
+            $user->marcarEnGestionVentaInstale($data['data']);
             break;
         case 'guardaVentaInstale':
             require_once '../class/ventaInstale.php';
             $user = new ventaInstale();
-            $user->guardaVentaInstale($data);
+            $user->guardaVentaInstale($data['data']);
             break;
         case 'detalleVentaRagoFecha':
             require_once '../class/ventaInstale.php';
@@ -47,7 +47,7 @@ if (isset($data['method'])) {
         case 'guardaObservacionParaVentaInstale':
             require_once '../class/ventaInstale.php';
             $user = new ventaInstale();
-            $user->guardaObservacionParaVentaInstale($data);
+            $user->guardaObservacionParaVentaInstale($data['data']);
             break;
         case 'observacionDetalleVentaModal':
             require_once '../class/ventaInstale.php';
@@ -57,7 +57,7 @@ if (isset($data['method'])) {
         case 'eliminaObservacion':
             require_once '../class/ventaInstale.php';
             $user = new ventaInstale();
-            $user->eliminaObservacion($data);
+            $user->eliminaObservacion($data['data']);
             break;
         case 'consolidadoZona':
             require_once '../class/ventaInstale.php';

@@ -12,6 +12,10 @@ class MenuPerfil
 
     public function getSubmenu()
     {
+        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        session_set_cookie_params(3600);
+        session_start();
+        session_start();
         try {
 
             $stmt = $this->_DB->prepare("SELECT
@@ -41,6 +45,9 @@ class MenuPerfil
 
     public function getMenu()
     {
+        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        session_set_cookie_params(3600);
+        session_start();
         try {
 
             $stmt = $this->_DB->prepare("SELECT * FROM menu");
@@ -61,6 +68,9 @@ class MenuPerfil
 
     public function getPerfil()
     {
+        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        session_set_cookie_params(3600);
+        session_start();
         try {
             $stmt = $this->_DB->prepare("SELECT * FROM perfiles");
             $stmt->execute();
@@ -79,6 +89,9 @@ class MenuPerfil
 
     public function verMenuPerfil($data)
     {
+        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        session_set_cookie_params(3600);
+        session_start();
         try {
             $stmt = $this->_DB->prepare("SELECT
                             submenu.id,
@@ -112,6 +125,9 @@ class MenuPerfil
 
     public function cambioMenu($data)
     {
+        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        session_set_cookie_params(3600);
+        session_start();
         try {
             $menu_id = $data['id'];
             $perfil = $data['perfil'];
@@ -145,6 +161,9 @@ class MenuPerfil
 
     public function cambiaEstadoSubmenu($data)
     {
+        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        session_set_cookie_params(3600);
+        session_start();
         try {
             $id = $data['id'];
             $estado = $data['estado'];
@@ -171,6 +190,9 @@ class MenuPerfil
 
     public function guardaNuevoSubmenu($data)
     {
+        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        session_set_cookie_params(3600);
+        session_start();
         try {
             $padre = $data['padre'];
             $nombre = $data['nombre'];
@@ -191,6 +213,9 @@ class MenuPerfil
 
     public function guardaPerfil($data)
     {
+        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        session_set_cookie_params(3600);
+        session_start();
         try {
             $stmt = $this->_DB->prepare("SELECT * FROM perfiles WHERE nombre = :nombre");
             $stmt->execute(array(':nombre' => $data['nombre']));

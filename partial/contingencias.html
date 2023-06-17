@@ -1,62 +1,3 @@
-<style>
-    .fileUpload {
-        position: relative;
-        overflow: hidden;
-        margin: 10px;
-    }
-
-    table,
-    th,
-    td {
-        font-size: 11px;
-    }
-
-    .fixed-panel1 {
-
-        max-height: 400px;
-        overflow-y: scroll;
-    }
-
-    .fileUpload input.upload {
-        position: absolute;
-        top: 0;
-        right: 0;
-        margin: 0;
-        padding: 0;
-        font-size: 30px;
-        cursor: pointer;
-        opacity: 0;
-        filter: alpha(opacity=0);
-    }
-
-    /*
-    Full screen Modal
-    */
-    .fullscreen-modal .modal-dialog {
-        margin: 0;
-        margin-right: auto;
-        margin-left: auto;
-        width: 100%;
-    }
-
-    @media (min-width: 768px) {
-        .fullscreen-modal .modal-dialog {
-            width: 750px;
-        }
-    }
-
-    @media (min-width: 992px) {
-        .fullscreen-modal .modal-dialog {
-            width: 970px;
-        }
-    }
-
-    @media (min-width: 1200px) {
-        .fullscreen-modal .modal-dialog {
-            width: 1170px;
-        }
-    }
-</style>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-9">
@@ -325,7 +266,7 @@
                                                 <option value="" disabled>Seleccione</option>
                                                 <option value="Plataforma NCA caída">Plataforma NCA caída</option>
                                                 <option value="Errores de sistemas">Errores de sistemas</option>
-                                                <option value="Error Tecnico/Despacho">Error Tecnico/Despacho</option>
+                                                <option value="Error Tecnico/Despacho">Error Técnico/Despacho</option>
                                                 <option value="Políticas erradas">Políticas erradas</option>
                                                 <option value="Envió registros">Envió registros</option>
                                             </select>
@@ -346,7 +287,7 @@
                                                 <option value="Plataforma SMNET caída">Plataforma SMNET caída</option>
                                                 <option value="Plataforma NCA caída">Plataforma NCA caída</option>
                                                 <option value="Errores de sistemas">Errores de sistemas</option>
-                                                <option value="Error Tecnico/Despacho">Error Tecnico/Despacho</option>
+                                                <option value="Error Técnico/Despacho">Error Técnico/Despacho</option>
                                                 <option value="Envió registros">Envió registros</option>
                                             </select>
                                         </li>
@@ -599,7 +540,7 @@
                                 <ul class="nav navbar-nav navbar-right">
                                     <li>
                                         <button type="button" ng-disabled="contact_form1.$invalid"
-                                            class="btn btn-primary btn-xs" ng-click="BuscarPedidoContingencia()">
+                                            class="btn btn-primary btn-xs" ng-click="BuscarPedidoContingencia()" id="guardaPedidoContingencia">
                                             <i class="fa fa-floppy-o" aria-hidden="true"> </i> Guardar
                                             gestión</button>&nbsp;&nbsp;
                                     </li>
@@ -811,8 +752,7 @@
                                             </td>
                                             <td class="icons_in_tables">
 
-                                                <button
-                                                    popover-placement="left" uib-popover="{{data.observacion}}"
+                                                <button popover-placement="left" uib-popover="{{data.observacion}}"
                                                     popover-title="Observación gestión" type="button"
                                                     class="btn btn-default btn-xs">
                                                     <i class="fa fa-commenting" aria-hidden="true"></i>
@@ -824,26 +764,26 @@
                                                     <i class="fa fa-commenting" aria-hidden="true"></i>
                                                 </button> -->
 
-                                                <button
-                                                    popover-placement="left" uib-popover="{{data.observContingencia}}"
+                                                <button popover-placement="left"
+                                                    uib-popover="{{data.observContingencia}}"
                                                     popover-title="Observación ingreso" type="button"
                                                     class="btn btn-default btn-xs">
                                                     <i class="fa fa-commenting" aria-hidden="true"></i>
                                                 </button>
-                                       
-                                               <!--  <button type="button" class="btn btn-default btn-xs"
+
+                                                <!--  <button type="button" class="btn btn-default btn-xs"
                                                     data-placement="left" title="Observacion ingreso"
                                                     ng-click="muestraModalObservacion(data.observContingencia)">
                                                     <i class="fa fa-commenting" aria-hidden="true"></i>
                                                 </button> -->
 
-                                                <button
-                                                    popover-placement="left" uib-popover="{{data.observContingenciaPortafolio}}"
-                                                    popover-title="Observación gestión Corregir Portafolio" type="button"
-                                                    class="btn btn-default btn-xs">
+                                                <button popover-placement="left"
+                                                    uib-popover="{{data.observContingenciaPortafolio}}"
+                                                    popover-title="Observación gestión Corregir Portafolio"
+                                                    type="button" class="btn btn-default btn-xs">
                                                     <i class="fa fa-commenting" aria-hidden="true"></i>
                                                 </button>
-                                       
+
                                                 <!-- <button type="button" class="btn btn-default btn-xs"
                                                     data-placement="left" title="Observacion gestión Corregir Porta"
                                                     ng-click="muestraModalObservacion(data.observContingenciaPortafolio)">
@@ -915,11 +855,11 @@
                                             </button>
 
                                             <button type="button" ng-click="CancelarContingencia(data)"
+                                            popover-placement="left"
+                                                uib-popover="Al presionar el botón se eliminará la contingencia, siempre y cuando ésta no haya iniciado gestión por parte del personal encargado"
+                                                popover-title="Cancelar Contingencia:"
                                                 ng-hide="data.engestion == '1'" class="btn btn-default btn-xs"
-                                                data-toggle="modal" data-backdrop="static" ng-disabled="loading" popover
-                                                data-trigger="hover" data-placement="top" data-html="true"
-                                                title="Cancelar Contingencia:" data-selector=""
-                                                data-content="Al presionar el botón se eliminará la contingencia, siempre y cuando ésta no haya iniciado gestión por parte del personal encargado">
+                                                 ng-disabled="loading" >
                                                 Cancelar
                                             </button>
                                         </a>
@@ -1032,8 +972,6 @@
         </div>
     </div>
 </div>
-</div>
-
 <br>
 <br>
 <br>

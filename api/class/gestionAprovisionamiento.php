@@ -14,6 +14,9 @@ class gestionAprovisionamiento
     public function updateEnGestionResponse()
     {
         try {
+
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
 
             if (!$_SESSION) {
@@ -53,23 +56,34 @@ class gestionAprovisionamiento
     public function updateEnGestion($data)
     {
         try {
-            $login = $data['login'];
-            $login = $login['LOGIN'];
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
+            session_start();
+            if (!$_SESSION) {
+                $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
+            } else {
+                $login = $_SESSION['login'];
+                $hoy = date("Y-m-d");
 
-            $hoy = date("Y-m-d");
-
-            $query = "SELECT  observContingencia, observContingenciaPortafolio
+                                /* $query = "SELECT  observContingencia, observContingenciaPortafolio
                     FROM contingencias
                     WHERE logindepacho = '$login'
-                    AND horagestion BETWEEN '$hoy 00:00:00' AND '$hoy 23:59:59'";
+                    AND horagestion BETWEEN '$hoy 00:00:00' AND '$hoy 23:59:59'"; */
+                    $query = "SELECT id, engestion, pedido, observContingencia, observContingenciaPortafolio,
+                    (case when acepta is null then 'Pendiente' else acepta end) acepta,
+                    (case when aceptaPortafolio is null then 'Pendiente' else aceptaPortafolio end) aceptaPortafolio
+                    FROM contingencias
+                    WHERE logindepacho = '$login'
+                    AND horagestion BETWEEN ('$hoy 00:00:00') AND ('$hoy 23:59:59')";
 
-            $stmt = $this->_DB->query($query);
+                $stmt = $this->_DB->query($query);
 
-            if ($stmt->rowCount() > 0) {
-                $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
-            } else {
-                $response = array('state' => 0, 'msj' => 'No se encontraron registros');
+                if ($stmt->rowCount() > 0) {
+                    $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
+                } else {
+                    $response = array('state' => 0, 'msj' => 'No se encontraron registros');
 
+                }
             }
         } catch (PDOException $th) {
             var_dump($th->getMessage());

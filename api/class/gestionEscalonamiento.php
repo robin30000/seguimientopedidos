@@ -1,6 +1,5 @@
 <?php
 require_once '../class/conection.php';
-
 class gestionEscalonamiento
 {
     private $_BD;
@@ -14,6 +13,8 @@ class gestionEscalonamiento
     {
 
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
 
             if (!$_SESSION) {
@@ -77,6 +78,8 @@ class gestionEscalonamiento
     {
 
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $stmt = $this->_BD->query("SELECT e.pedido,
                                                    e.tarea,
@@ -134,57 +137,29 @@ class gestionEscalonamiento
     {
 
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
+            session_start();
             $today = date("Y-m-d H:i:s");
 
-        $params = json_decode(file_get_contents('php://input'), true);
+            $params = json_decode(file_get_contents('php://input'), true);
 
-        $datosguardar = $data['datos'];
-        $login = $params['login'];
-        $login = $login['LOGIN'];
-        $pedido = $datosguardar['pedido'];
-        $gestion = $datosguardar['bloqueo'];
-        $producto = $datosguardar['producto'];
+            $datosguardar = $data['datos'];
+            $login = $params['login'];
+            $login = $login['LOGIN'];
+            $pedido = $datosguardar['pedido'];
+            $gestion = $datosguardar['bloqueo'];
+            $producto = $datosguardar['producto'];
 
-        if ($gestion == true) {
-            $gestion = 1;
-        } else {
-            $gestion = 0;
-        }
-
-        $query = "SELECT id, login_gestion " .
-            "FROM escalamiento_infraestructura where engestion = '1'  " .
-            "and pedido = '$pedido' and producto = '$producto' AND (observacion_respuesta IS NULL OR tipificacion = 'Escalamiento ok nivel 2 Prioridad') ORDER BY fecha_solicitud DESC";
-
-        $rst = $this->_BD->query($query);
-
-        if ($rst->rowCount() > 0) {
-
-            $resultado = array();
-
-            while ($row = $rst->fetchAll(PDO::FETCH_ASSOC)) {
-                $resultado[] = $row;
-                $login_gestion = $row['login_gestion'];
-                $id = $row['id'];
-            }
-            if ($login == $login_gestion) {
-
-                $sqlupdate = "UPDATE escalamiento_infraestructura SET engestion = '0', " .
-                    "login_gestion = '' " .
-                    " WHERE id='$id' ";
-
-                $this->_BD->query($sqlupdate);
-                $response = array('state' => 1, 'msj' => 'Pedido desbloqueado');
+            if ($gestion == true) {
+                $gestion = 1;
             } else {
-                $response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno intentalo nuevamente en unos minutos');
+                $gestion = 0;
             }
 
-        } else {
-
-            $query = ("	SELECT id
-						FROM escalamiento_infraestructura
-						WHERE pedido = '$pedido'
-						AND producto = '$producto' AND (observacion_respuesta IS NULL OR tipificacion = 'Escalamiento ok nivel 2 Prioridad') ORDER BY fecha_solicitud DESC						
-				");
+            $query = "SELECT id, login_gestion " .
+                "FROM escalamiento_infraestructura where engestion = '1'  " .
+                "and pedido = '$pedido' and producto = '$producto' AND (observacion_respuesta IS NULL OR tipificacion = 'Escalamiento ok nivel 2 Prioridad') ORDER BY fecha_solicitud DESC";
 
             $rst = $this->_BD->query($query);
 
@@ -194,16 +169,47 @@ class gestionEscalonamiento
 
                 while ($row = $rst->fetchAll(PDO::FETCH_ASSOC)) {
                     $resultado[] = $row;
+                    $login_gestion = $row['login_gestion'];
                     $id = $row['id'];
                 }
+                if ($login == $login_gestion) {
 
-                $sqlupdate = "UPDATE escalamiento_infraestructura SET engestion = '$gestion', login_gestion = '$login' " .
-                    " WHERE id='$id' ";
+                    $sqlupdate = "UPDATE escalamiento_infraestructura SET engestion = '0', " .
+                        "login_gestion = '' " .
+                        " WHERE id='$id' ";
 
-                $rstupdate = $this->_BD->query($sqlupdate);
-                $rstupdate->execute();
+                    $this->_BD->query($sqlupdate);
+                    $response = array('state' => 1, 'msj' => 'Pedido desbloqueado');
+                } else {
+                    $response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno intentalo nuevamente en unos minutos');
+                }
+
+            } else {
+
+                $query = ("	SELECT id
+						FROM escalamiento_infraestructura
+						WHERE pedido = '$pedido'
+						AND producto = '$producto' AND (observacion_respuesta IS NULL OR tipificacion = 'Escalamiento ok nivel 2 Prioridad') ORDER BY fecha_solicitud DESC						
+				");
+
+                $rst = $this->_BD->query($query);
+
+                if ($rst->rowCount() > 0) {
+
+                    $resultado = array();
+
+                    while ($row = $rst->fetchAll(PDO::FETCH_ASSOC)) {
+                        $resultado[] = $row;
+                        $id = $row['id'];
+                    }
+
+                    $sqlupdate = "UPDATE escalamiento_infraestructura SET engestion = '$gestion', login_gestion = '$login' " .
+                        " WHERE id='$id' ";
+
+                    $rstupdate = $this->_BD->query($sqlupdate);
+                    $rstupdate->execute();
+                }
             }
-        }
         } catch (\Throwable $th) {
             //throw $th;
         }

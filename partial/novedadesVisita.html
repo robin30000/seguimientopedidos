@@ -23,7 +23,7 @@
 						</button>
 						<button type="button"
 							ng-show="galletainfo.perfil == '11' || galletainfo.perfil == '1' || galletainfo.perfil == '3'"
-							class="btn btn-info btn-xs" tooltip-placement="top" uib-tooltip="Exportar registros novedades ng-click="csvNovedadesTecnicos()"
+							class="btn btn-success btn-xs" tooltip-placement="top" uib-tooltip="Exportar registros novedades" ng-click="csvNovedadesTecnicos()"
 							ng-disabled="loading">
 							<i class="fa fa-cloud-download" aria-hidden="true"> </i>
 						</button>
@@ -53,7 +53,7 @@
 								<th>Situación</th>
 								<th>Hora marca sitio</th>
 								<th>ID Llamada</th>
-								<th>Observación {{galletainfo.perfil}}</th>
+								<th>Observación</th>
 								<th ng-show="galletainfo.perfil == 1 || galletainfo.perfil == 11">
 									Observaciones CCO
 								</th>

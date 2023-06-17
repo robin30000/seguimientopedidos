@@ -2,6 +2,8 @@
 
 require_once '../class/conection.php';
 ini_set('display_errors', 0);
+/* ini_set('session.gc_maxlifetime', 3600); // 1 hour
+session_set_cookie_params(3600); */
 
 class Contingencia
 {
@@ -15,6 +17,9 @@ class Contingencia
     public function resumencontingencias($data)
     {
         try {
+
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
 
             $pagenum = $data['page'];
@@ -247,6 +252,9 @@ class Contingencia
     public function resultado($fechaIni, $fechaFin)
     {
         try {
+
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $stmt = $this->_DB->query("SELECT logindepacho, pedido, horagestion, logincontingencia, horacontingencia,
 		(CASE 
@@ -276,6 +284,9 @@ class Contingencia
     public function queryTv($fechaIni, $fechafin)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
+            session_start();
             $stmt = $this->_DB->query("SELECT logindepacho, pedido, horagestion, logincontingencia, horacontingencia,
 				(CASE
 					WHEN acepta IS NULL THEN 'Pendiente'
@@ -306,6 +317,8 @@ class Contingencia
     public function resultadoInTo($fechaIni, $fechaFin)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $stmt = $this->_DB->query("SELECT logindepacho, pedido, horagestion, logincontingencia, horacontingencia,
 							(CASE
@@ -336,6 +349,8 @@ class Contingencia
     public function resultadoCP($fechaIni, $fechaFin)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $stmt = $this->_DB->query("SELECT logindepacho, pedido, horagestion, loginContingenciaPortafolio, horaContingenciaPortafolio,
 							(CASE
@@ -366,6 +381,8 @@ class Contingencia
     public function querydiario($diaInicial, $diaFinal)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $stmt = $this->_DB->prepare("SELECT DATE_FORMAT(horagestion,'%Y-%m-%d') fecha, COUNT(*) total
 		FROM contingencias
@@ -393,6 +410,8 @@ class Contingencia
     public function resultadodiarioCP($diaInicial, $diaFinal)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $stmt = $this->_DB->prepare("SELECT date_format(horagestion,'%Y-%m-%d') fecha, COUNT(*) total
 		FROM contingencias
@@ -419,6 +438,8 @@ class Contingencia
     public function resultadoestadosMes($diaInicial, $diaFinal)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $stmt = $this->_DB->query("SELECT (CASE 
 		WHEN acepta IS NULL THEN 'Pendiente' 
@@ -454,7 +475,8 @@ class Contingencia
     public function datoscontingencias()
     {
         try {
-
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
@@ -498,7 +520,8 @@ class Contingencia
     public function registrosOffline($data)
     {
         try {
-
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
@@ -536,6 +559,8 @@ class Contingencia
     public function graficaDepartamento($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $mesenviado = $data;
 
@@ -601,6 +626,8 @@ class Contingencia
     public function marcaPortafolio($datosguardar)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $today = date("Y-m-d H:i:s");
             $login = $_SESSION['login'];
@@ -673,6 +700,8 @@ class Contingencia
     {
 
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
@@ -746,6 +775,8 @@ class Contingencia
     public function guardarescalamiento($datosguardar)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $login = $_SESSION['login'];
             $pedido = $datosguardar['pedido'];
@@ -817,6 +848,9 @@ class Contingencia
     public function cerrarMasivamenteContingencias($datosCierreMasivo)
     {
         try {
+
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
 
             $today = date("Y-m-d H:i:s");
@@ -901,7 +935,8 @@ class Contingencia
     public function guardarPedidoContingenciaPortafolio($datosguardar)
     {
         try {
-
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $login = $_SESSION['login'];
             $pedido = $datosguardar['pedido'];
@@ -964,6 +999,8 @@ class Contingencia
     {
 
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $mes = $data;
 
@@ -1057,6 +1094,8 @@ class Contingencia
     public function graficaAcumulados($datos)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $pregunta = $datos['pregunta'];
             $mesenviado = $datos['mes'];
@@ -1083,10 +1122,10 @@ class Contingencia
                 $semana = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
                 $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
             } /* else {
-           $nom_mes   = $mesenviado;
-           $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
-           $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
-       } */
+       $nom_mes   = $mesenviado;
+       $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
+       $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
+   } */
 
             $query = $this->_DB->prepare("select gen.respuesta,
                                                        count(gen.respuesta)                                                                                                                       total,
@@ -1248,6 +1287,8 @@ class Contingencia
     public function graficaAcumuladosrepa($datos)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $pregunta = $datos['pregunta'];
             $mesenviado = $datos['mes'];
@@ -1273,10 +1314,10 @@ class Contingencia
                 $semana = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
                 $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
             } /* else {
-           $nom_mes   = $mesenviado;
-           $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
-           $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
-       }
+       $nom_mes   = $mesenviado;
+       $semana    = "Semana " . date('W', mktime(0, 0, 0, $mes, $dia, $anio));
+       $diaSemana = date("w", mktime(0, 0, 0, $mes, $dia, $anio));
+   }
 */
             $query = $this->_DB->prepare("select gen.respuesta, count(gen.respuesta) total, 
                 round((count(gen.respuesta)/(select count(pregunta)  
@@ -1497,7 +1538,8 @@ class Contingencia
     public function marcarengestion($params)
     {
         try {
-
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha expirado', 'text' => 'Inicia session nuevamente para continuar'];
@@ -1532,7 +1574,7 @@ class Contingencia
                     if ($stmt->rowCount() == 1) {
                         $response = ['state' => 1, 'title' => 'Bloqueado', 'text' => 'El pedido se encuentra bloqueado'];
                     } else {
-                        $response = ['state' => 2, 'title' => 'Error', 'text' => 'Ha ocurrido un error interno intentalo nuevamente1'];
+                        $response = ['state' => 2, 'title' => 'Error', 'text' => 'Ha ocurrido un error interno intentalo nuevamente'];
                     }
                 } else {
                     $query = "SELECT id, logincontingencia FROM contingencias where engestion = 1 and finalizado is null and pedido = '$pedido' and producto = '$producto' ";
@@ -1545,8 +1587,8 @@ class Contingencia
 
                     if ($login == $logincontingencia) {
 
-                        $stmt = $this->_DB->prepare("UPDATE contingencias SET engestion = 0, logincontingencia = '', fechaClickMarca = :today WHERE id = :id");
-                        $stmt->execute([':today' => $today, ':id' => $id]);
+                        $stmt = $this->_DB->prepare("UPDATE contingencias SET engestion = 0, logincontingencia = '', fechaClickMarca = '' WHERE id = :id");
+                        $stmt->execute([':id' => $id]);
 
                         if ($stmt->rowCount() == 1) {
                             $response = ['state' => 1, 'title' => 'Desbloqueado', 'text' => 'El pedido se encuentra Desbloqueado'];
@@ -1569,6 +1611,8 @@ class Contingencia
     public function csvContingencias($params)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $fechaIni = $params['fechaIni'];
             $fechafin = $params['fechafin'];

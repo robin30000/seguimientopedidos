@@ -31,15 +31,15 @@ class modelUser
             ]);
 
             if ($stmt->rowCount() == 1) {
-                $response = ['type' => 'success', 'msj' => 'Usuario actualizado'];
+                $response = array('type' => 'success', 'msj' => 'Usuario actualizado');
             } else {
-                $response = ['type' => 'error', 'msj' => 'Ah ocurrido un error intentalo de nuevo'];
+                $response = array('type' => 'error', 'msj' => 'Ah ocurrido un error inténtalo de nuevo');
             }
 
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
-        $this->_BD = null;
+        $this->_DB = null;
         echo json_encode($response);
     }
 
@@ -69,9 +69,9 @@ class modelUser
             ]);
 
             if ($stmt->rowCount() == 1) {
-                $response = ['Pedido actualizado', 201];
+                $response = array('Pedido actualizado', 201);
             } else {
-                $response = ['Ah ocurrido un error intentalo de nuevo', 400];
+                $response = array('Ah ocurrido un error inténtalo de nuevo', 400);
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -119,7 +119,7 @@ class modelUser
             ]);
 
             if ($stmt->rowCount() == 1) {
-                $response = ['Usuario creado', 201];
+                $response = array('Usuario creado', 201);
             }
 
         } catch (PDOException $e) {
@@ -157,9 +157,9 @@ class modelUser
             ]);
 
             if ($stmt->rowCount() == 1) {
-                $response = ['Usuario creado', 201];
+                $response = array('Usuario creado', 201);
             } else {
-                $response = ['Ah ocurrido un error intentalo de nuevo'];
+                $response = array('Ah ocurrido un error inténtalo de nuevo');
             }
 
         } catch (PDOException $e) {
@@ -225,9 +225,9 @@ class modelUser
                 ]);
 
                 if ($stmt->rowCount() == 1) {
-                    $response = ['state' => 1, 'text' => 'Pedido guardado correctamente'];
+                    $response = array('state' => 1, 'text' => 'Pedido guardado correctamente');
                 } else {
-                    $response = ['state' => 0, 'text' => 'Ah ocurrido un error intentalo nuevamente'];
+                    $response = array('state' => 0, 'text' => 'Ah ocurrido un error inténtalo nuevamente');
                 }
             }
         } catch (PDOException $e) {
@@ -357,7 +357,7 @@ class modelUser
                         ':macEntra' => $macEntra,
                     ]);
                     if (!$stmt->rowCount()) {
-                        $response = ['state' => 0, 'text' => 'Ah ocurrido un error intentalo de nuevo'];
+                        $response = array('state' => 0, 'text' => 'Ah ocurrido un error intentalo de nuevo');
                     }
                 }
 
@@ -402,9 +402,9 @@ class modelUser
                         ':diagnostico'          => $diagnostico,
                     ]);
                     if ($stmt->rowCount() == 1) {
-                        $response = ['state' => 1, 'text' => 'Registro ingresado'];
+                        $response = array('state' => 1, 'text' => 'Registro ingresado');
                     } else {
-                        $response = ['state' => 0, 'text' => 'Ah ocurrido un error intentalo de nuevo'];
+                        $response = array('state' => 0, 'text' => 'Ah ocurrido un error intentalo de nuevo');
                     }
 
                 } else {
@@ -437,9 +437,9 @@ class modelUser
                     ]);
 
                     if ($stmt->rowCount() == 1) {
-                        $response = ['state' => 1, 'text' => 'Registro ingresado'];
+                        $response = array('state' => 1, 'text' => 'Registro ingresado');
                     } else {
-                        $response = ['state' => 0, 'text' => 'Ah ocurrido un error intentalo de nuevo'];
+                        $response = array('state' => 0, 'text' => 'Ah ocurrido un error intentalo de nuevo');
                     }
 
                 }
@@ -457,7 +457,7 @@ class modelUser
         try {
             session_start();
             if (!$_SESSION) {
-                $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
+                $response = array('state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar');
             } else {
                 $identificacion = $data['IDENTIFICACION'];
                 $nombre         = $data['NOMBRE'];
@@ -497,9 +497,9 @@ class modelUser
                     ]);
 
                     if ($stmt->rowCount() == 1) {
-                        $response = ['state' => 1, 'msj' => 'Usuario creado'];
+                        $response = array('state' => 1, 'msj' => 'Usuario creado');
                     } else {
-                        $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo nuevamente'];
+                        $response = array('state' => 0, 'msj' => 'Ah ocurrido un error intentalo nuevamente');
                     }
                 }
             }
@@ -577,9 +577,9 @@ class modelUser
                     ]);
 
                     if ($stmt->rowCount() == 1) {
-                        $response = ['state' => 1, 'msj' => 'Técnico creado'];
+                        $response = array('state' => 1, 'msj' => 'Técnico creado');
                     } else {
-                        $response = ['state' => 0, 'msj' => 'Ha ocurrido un error intentalo nuevamente'];
+                        $response = array('state' => 0, 'msj' => 'Ha ocurrido un error intentalo nuevamente');
                     }
                 }
             }
@@ -616,9 +616,9 @@ class modelUser
 
                     if ($stmt->rowCount()) {
                         $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                        $response = ['state' => 1, 'data' => $result, 'total' => 0, 'counter' => intval(0)];
+                        $response = array('state' => 1, 'data' => $result, 'total' => 0, 'counter' => intval(0));
                     } else {
-                        $response = ['state' => 0];
+                        $response = array('state' => 0);
                     }
 
                 } else {
@@ -662,9 +662,9 @@ class modelUser
 
                     if ($stmt->rowCount()) {
                         $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                        $response = ['state' => 1, 'data' => $result, 'total' => $total_pages, 'counter' => intval($totalCount)];
+                        $response = array('state' => 1, 'data' => $result, 'total' => $total_pages, 'counter' => intval($totalCount));
                     } else {
-                        $response = ['state' => 0];
+                        $response = array('state' => 0);
                     }
                 }
             }
@@ -683,12 +683,12 @@ class modelUser
         try {
             session_start();
             $stmt = $this->_DB->prepare("delete from usuarios where id = :id");
-            $stmt->execute([':id' => $data]);
+            $stmt->execute(array(':id' => $data));
 
             if ($stmt->rowCount() == 1) {
-                $response = ['Usuario eliminado', 201];
+                $response = array('Usuario eliminado', 201);
             } else {
-                $response = ['Ah ocurrido un erro intentalo nuevamente'];
+                $response = array('Ah ocurrido un erro intentalo nuevamente');
             }
 
         } catch (PDOException $e) {
@@ -706,12 +706,12 @@ class modelUser
         try {
             session_start();
             $stmt = $this->_DB->prepare("DELETE FROM  tecnicos WHERE id = :id");
-            $stmt->execute([':id' => $data]);
+            $stmt->execute(array(':id' => $data));
 
             if ($stmt->rowCount()) {
-                $response = ['type' => 'success', 'msg' => 'Técnico eliminado'];
+                $response = array('type' => 'success', 'msg' => 'Técnico eliminado');
             } else {
-                $response = ['type' => 'error', 'msg' => 'Ah ocurrido un error intentalo nuevamente'];
+                $response = array('type' => 'error', 'msg' => 'Ah ocurrido un error intentalo nuevamente');
             }
 
         } catch (PDOException $e) {
@@ -750,9 +750,9 @@ class modelUser
             ]);
 
             if ($stmt->rowCount() == 1) {
-                $response = ['type' => 'success', 'msg' => 'Usuario actualizado'];
+                $response = array('type' => 'success', 'msg' => 'Usuario actualizado');
             } else {
-                $response = ['type' => 'error', 'msg' => 'Ah ocurrido un error intentalo nuevamente'];
+                $response = array('type' => 'error', 'msg' => 'Ah ocurrido un error intentalo nuevamente');
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());

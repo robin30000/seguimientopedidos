@@ -23,13 +23,13 @@
               ng-hide="errorDatos==null"></i>
             {{errorDatos}}</span>
           <ul class="nav navbar-nav navbar-right">
-            <div class="btn-group" ng-show="galletainfo.PERFIL==1 || galletainfo.PERFIL==11">
+            <div class="btn-group" ng-show="galletainfo.perfil==1 || galletainfo.perfil==11">
               <div class="fileUpload btn btn-primary btn-xs">
                 <span class="glyphicon glyphicon-upload"></span> Seleccionar
                 Archivo
                 <input type="file" class="upload" file-model="myFile" style="width: 131px" />
               </div>
-              <button class="btn btn-success btn-xs" value="cargar" id="cargar" ng-click="uploadFile();"
+              <button class="btn btn-success btn-xs" value="cargar" id="cargarRegistros" ng-click="uploadFile(myFile);"
                 ng-disabled="loading">
                 <span class="glyphicon glyphicon-cloud-upload"></span> Cargar
               </button>
@@ -83,7 +83,7 @@
                 &nbsp;
               </li>
               <li>
-                <button type="button" ng-show="galletainfo.PERFIL !== '8'" class="btn btn-info btn-xs"
+                <button type="button" ng-show="galletainfo.perfil !== '8'" class="btn btn-success btn-xs"
                   ng-click="csvRegistros()" ng-disabled="loading" tooltip-placement="top"
                   uib-tooltip="Exportar registros">
                   <i class="fa fa-cloud-download" aria-hidden="true"> </i>
@@ -91,7 +91,7 @@
               </li>
               <li>&nbsp;</li>
               <li>
-                <button type="button" ng-show="galletainfo.PERFIL !== '8'" class="btn btn-info btn-xs"
+                <button type="button" ng-show="galletainfo.perfil !== '8'" class="btn btn-success btn-xs"
                   title="Exportar Registros Equipos" ng-click="csvtecnico()" ng-disabled="loading"
                   tooltip-placement="top" uib-tooltip="Exportar registros equipos" tooltip data-placement="top">
                   <i class="fa fa-cloud-download" aria-hidden="true"> </i>
@@ -104,7 +104,7 @@
           <table class="table small table-striped table-condensed table-bordered table-hovered">
             <thead class="table-header">
               <tr>
-                <th>Pedido11</th>
+                <th>Pedido</th>
                 <th>Técnico</th>
                 <th>Acción</th>
                 <th>Asesor</th>

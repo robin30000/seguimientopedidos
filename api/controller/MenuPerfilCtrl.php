@@ -49,7 +49,11 @@ if (isset($data['method'])) {
             $user = new MenuPerfil();
             $user->guardaPerfil($data['data']);
             break;
-
+        case 'quitarUsuarioKpi':
+            require_once '../class/MenuPerfil.php';
+            $user = new MenuPerfil();
+            $user->quitarUsuarioKpi($data['data']);
+            break;
         default:
             echo 'ninguna opción valida.';
             break;

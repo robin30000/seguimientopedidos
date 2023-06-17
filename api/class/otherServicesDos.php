@@ -6,8 +6,6 @@ ini_set('display_errors', 0);
 
 require '../../vendor/autoload.php';
 
-use PhpOffice\PhpSpreadsheet\{Spreadsheet, IOFactory};
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class otherServicesDos
 {
@@ -21,6 +19,8 @@ class otherServicesDos
     public function gestionBorrar($datosFinal)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $PedidoDespacho = $datosFinal['PedidoDespacho'];
 
@@ -54,6 +54,8 @@ class otherServicesDos
     public function desbloquear($datosFinal)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $PedidoDespacho = $datosFinal['PedidoDespacho'];
 
@@ -85,6 +87,8 @@ class otherServicesDos
     public function csvPreagen($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $usuarioid = $_SESSION['login'];
             $datos = $data['datos'];
@@ -474,13 +478,16 @@ class otherServicesDos
     public function csvContingencias($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
-            if (empty($data)) {
+
+            if (!empty($data)) {
+                $fechaIni = $data['fechaupdateInical'];
+                $fechafin = $data['fechaupdateFinal'];
+            } else {
                 $fechaIni = date('Y-m-d');
                 $fechafin = date('Y-m-d');
-            } else {
-                $fechaIni = $data['fechaIni'];
-                $fechafin = $data['fechafin'];
             }
 
 
@@ -494,8 +501,85 @@ class otherServicesDos
         AND C.accion IN ('Cambio de equipo', 'Contingencia', 'Refresh', 'Registros ToIP', 'Reenvio de registros')");
             $stmt->execute();
 
+            if ($stmt->rowCount() > 0) {
+
+                $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                $encabezados = array(
+                    'ACCION',
+                    'CIUDAD',
+                    'CORREO',
+                    'MAC_ENTRA',
+                    'MAC_SALE',
+                    'MOTIVO',
+                    'OBSERVACIONES',
+                    'PAQUETES',
+                    'PEDIDO',
+                    'PROCESO',
+                    'PRODUCTO',
+                    'REMITENTE',
+                    'TECNOLOGIA',
+                    'TIPO_EQUIPO',
+                    'UEN',
+                    'CONTRATO',
+                    'PERFIL',
+                    'LOGIN',
+                    'LOGIN_GESTION',
+                    'HORA_INGRESO',
+                    'HORA_GESTION',
+                    'OBSERVACIONES_GESTION',
+                    'ESTADO',
+                    'TIPIFICACION',
+                    'FECHA_CLICK_MARCA',
+                    'LOGIN_PORTAFOLIO',
+                    'HORA_GESTION_PORTAFOLIO',
+                    'TIPIFICACION_PORTAFOLIO',
+                    'OBSERVACIONES_GESTION_PORTAFOLIO',
+                    'GENERAR_CR'
+                );
+
+                $output = "<table style='border: 1px solid black;'>";
+                $output .= "<tr><th>" . implode("</th><th>", $encabezados) . "</th></tr>";
+
+                foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    $output .= '<tr>
+                                    <td>' . $row["accion"] . '</td>
+                                    <td>' . $row["ciudad"] . '</td>
+                                    <td>' . $row["correo"] . '</td>
+                                    <td>' . $row["macEntra"] . '</td>
+                                    <td>' . $row["macSale"] . '</td>
+                                    <td>' . $row["motivo"] . '</td>
+                                    <td>' . $row["observacion"] . '</td>
+                                    <td>' . $row["paquetes"] . '</td>
+                                    <td>' . $row["pedido"] . '</td>
+                                    <td>' . $row["proceso"] . '</td>
+                                    <td>' . $row["producto"] . '</td>
+                                    <td>' . $row["remite"] . '</td>
+                                    <td>' . $row["tecnologia"] . '</td>
+                                    <td>' . $row["tipoEquipo"] . '</td>
+                                    <td>' . $row["uen"] . '</td>
+                                    <td>' . $row["contrato"] . '</td>
+                                    <td>' . $row["perfil"] . '</td>
+                                    <td>' . $row["logindepacho"] . '</td>
+                                    <td>' . $row["logincontingencia"] . '</td>
+                                    <td>' . $row["horagestion"] . '</td>
+                                    <td>' . $row["horacontingencia"] . '</td>
+                                    <td>' . $row["observContingencia"] . '</td>
+                                    <td>' . $row["acepta"] . '</td>
+                                    <td>' . $row["tipificacion"] . '</td>
+                                    <td>' . $row["fechaClickMarca"] . '</td>
+                                    <td>' . $row["loginContingenciaPortafolio"] . '</td>
+                                    <td>' . $row["horaContingenciaPortafolio"] . '</td>
+                                    <td>' . $row["tipificacionPortafolio"] . '</td>
+                                    <td>' . $row["observContingenciaPortafolio"] . '</td>
+                                    <td>' . $row["generarcr"] . '</td>
+                                </tr>';
+                }
+                $output .= '</table>';
+            }
+
             if ($stmt->rowCount()) {
-                $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
+                $response = array('state' => 1, 'data' => $data);
             } else {
                 $response = array('state' => 0, 'msj' => 'No se encontraron datos');
             }
@@ -510,6 +594,8 @@ class otherServicesDos
     public function csvEstadosClick($datos)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $usuarioid = $_SESSION['login'];
             $fecha = $datos['fecha'];
@@ -604,6 +690,8 @@ class otherServicesDos
     public function CsvpeniInsta($regional)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $usuarioid = $_SESSION['login'];
 
@@ -771,6 +859,8 @@ class otherServicesDos
     public function CsvNpsSemana($semana)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $usuarioid = $_SESSION['login'];
 
@@ -856,6 +946,8 @@ class otherServicesDos
     public function buscarPedido($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
 
             /**
@@ -878,17 +970,49 @@ class otherServicesDos
     public function buscarPedidoSegui($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $pedido = $data['pedido'];
+            $producto = $data['producto'];
+            $remite = $data['remite'];
 
-            $stmt = $this->_DB->prepare("SELECT * FROM contingencias WHERE pedido= ':pedido' AND FINALIZADO IS NULL AND ACEPTA IS NULL AND TIPIFICACION IS NULL");
-            $stmt->execute([':pedido' => $pedido]);
+            $sqlpedido = ("SELECT * FROM registros WHERE pedido = '$pedido'");
+
+            $stmt = $this->_DB->prepare("SELECT * FROM registros WHERE pedido = :pedido");
+            $stmt->execute(array(':pedido' => $pedido));
 
             if ($stmt->rowCount() == 1) {
-                $response = ['No se guarda', 400];
+                $response = array('state' => 1, 'msj' => 'Pedido guardado');
             } else {
-                $response = ['Se guarda', 201];
+                $response = array('state' => 0, 'msj' => 'Pedido no guardado');
             }
+
+            /* /*ORGANIZAR ESTE QUERY PORQUE ESTA DEJANDO DUPLICAR PEDIDO
+                     $sqlpedidocontingencia = ("	SELECT * FROM contingencias
+                                                 WHERE acepta IS NOT NULL
+                                                 AND aceptaPortafolio IS NOT NULL
+                                                 AND pedido = '$pedido'
+                                             ");
+
+                     $rstContingencia = $this->connseguimiento->query($sqlpedidocontingencia);
+
+                     if ($rstContingencia->num_rows > 0) {
+
+                         $this->response($this->json("Aceptado o rechazado"), 201);
+
+                     } else {
+
+                         /*qurey que permite dejas subir la info realiza validadcion para no dejar duplicar pedidos en gestion
+                         $sqlpedidoproducto = ("	SELECT * FROM contingencias
+                                                 WHERE acepta is null
+                                                 AND aceptaPortafolio IS NULL
+                                                 AND pedido = '$pedido'
+                                                 AND producto = '$producto'
+                                                 AND accion IN('Contingencia','Cambio de equipo','Refresh','Crear Espacio','crear cliente','Registros ToIP','mesaOffline', 'Cambio EID')
+                                             ");
+
+                         $rstpedidoProducto = $this->connseguimiento->query($sqlpedidoproducto); */
 
 
         } catch (PDOException $e) {
@@ -902,6 +1026,9 @@ class otherServicesDos
     {
 
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
+            session_start();
             $usuarioid = $params['datosLogin'];
             $usuarioid = $usuarioid['LOGIN'];
             $datos = $params['datos'];
@@ -947,6 +1074,8 @@ class otherServicesDos
     public function expBrutal($datos)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $usuarioid = $_SESSION['login'];
 
@@ -1053,7 +1182,9 @@ class otherServicesDos
 
     public function Csvtecnico($params)
     {
-
+        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        session_set_cookie_params(3600);
+        session_start();
 
         try {
             $usuarioid = $params['datosLogin'];
@@ -1102,10 +1233,11 @@ class otherServicesDos
         echo json_encode($response);
     }
 
-    public function diferenciasClick(
-        $fecha
-    ) {
+    public function diferenciasClick($fecha)
+    {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $fechaanterior = date('Y-m-d', strtotime('-1 day', strtotime($fecha)));
 
@@ -1190,10 +1322,11 @@ class otherServicesDos
         echo json_encode($response);
     }
 
-    public function observacionAsesor(
-        $pedido
-    ) {
+    public function observacionAsesor($pedido)
+    {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $query = "SELECT ObservacionAsesor FROM BrutalForce where PedidoDespacho = :pedido";
             $stmt = $this->_DB->prepare($query);
@@ -1212,9 +1345,11 @@ class otherServicesDos
         echo json_encode($response);
     }
 
-    public
-        function contadorpedientesBF(
-    ) {
+    public function contadorpedientesBF()
+    {
+        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        session_set_cookie_params(3600);
+        session_start();
         try {
             $stmt = $this->_DB->query("SELECT (SELECT COUNT(PedidoDespacho)
                                                    FROM BrutalForce
@@ -1238,10 +1373,11 @@ class otherServicesDos
         echo json_encode($response);
     }
 
-    public
-        function seguimientoClick(
-        $fecha
-    ) {
+    public function seguimientoClick($fecha)
+    {
+        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        session_set_cookie_params(3600);
+        session_start();
         try {
             session_start();
             $mes = date("m", strtotime($fecha));
@@ -1531,10 +1667,11 @@ class otherServicesDos
         echo json_encode($response);
     }
 
-    public
-        function registrosComercial(
-        $data
-    ) {
+    public function registrosComercial($data)
+    {
+        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        session_set_cookie_params(3600);
+        session_start();
         try {
             session_start();
             $pagina = $data['page'];

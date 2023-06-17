@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "angular-ui-bootstrap": "^2.5.6"
+    "angular-ui-bootstrap": "^2.5.6",
+    "ng-file-saver": "^1.0.1"
   }
 }

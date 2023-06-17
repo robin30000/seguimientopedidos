@@ -14,6 +14,8 @@ class otrosServicios
     public function DepartamentosContratos($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $mesenviado = $data;
 
@@ -150,6 +152,8 @@ class otrosServicios
     public function insertData($datos)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $fecha = $datos['fecha'];
             $uen = $datos['uen'];
@@ -628,6 +632,8 @@ class otrosServicios
     public function getRegistrosCarga()
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $query = $this->_DB->query("select a.id, a.nombre_archivo, a.tipo, a.fecha_carga, a.login,(select  
                 CASE WHEN a.tipo = 'alarmados' THEN (select count(c.pedido_id) 
@@ -666,6 +672,8 @@ class otrosServicios
     public function getDemePedidoEncuesta()
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $query = $this->_DB->query("select max(fecha_instalacion) fecha from nps ");
 
@@ -728,6 +736,8 @@ class otrosServicios
     public function resumenSemanas($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $datos = $data['pregunta'];
             $pregunta = $datos['pregunta'];
@@ -1221,6 +1231,8 @@ class otrosServicios
     public function listadoTecnicos($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
@@ -1289,6 +1301,8 @@ class otrosServicios
     public function buscarPedidoContingencias($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];

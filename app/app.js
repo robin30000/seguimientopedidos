@@ -90,21 +90,21 @@ app.service("cargaRegistros", [
     "$q",
     function ($http, $cookieStore, $q) {
         this.uploadFileToUrl = function (file, uploadUrl, login) {
+            var deffered = $q.defer();
             var fd = new FormData();
             var user = login;
             file["user"] = user + "6666666";
 
             fd.append("user", user);
             fd.append("fileUpload", file);
-            var deffered = $q.defer();
-            $http
-                .post("services/cargaRegistros", fd, {
-                    withCredentials: false,
-                    transformRequest: angular.identity,
-                    headers: { "Content-Type": undefined },
-                    params: { user: user },
-                    responseType: "arraybuffer",
-                })
+
+            $http.post("api/class/subeArchivo.php", fd, {
+                withCredentials: false,
+                transformRequest: angular.identity,
+                headers: { "Content-Type": undefined },
+                params: { user: user },
+                //responseType: "arraybuffer",
+            })
                 .then(function (response) {
                     deffered.resolve(response);
                 })
@@ -141,8 +141,10 @@ app.factory("services", [
     "$timeout",
     function ($http, $q, $timeout) {
         var serviceBase = "services/";
+        //var serviceBase1 =
+        //    "http://10.100.88.2/seguimientopedidos/api/controller/";
         var serviceBase1 =
-            "http://netvm-ptctrl01a/seguimientopedidos/api/controller/";
+            "api/controller/";
         //var serviceBase1 = 'http://localhost/seguimientopedidos/api/controller/';
         var obj = {};
 
@@ -470,13 +472,11 @@ app.factory("services", [
             return $http.post(serviceBase1 + "otherServicesDosCtrl.php", data);
         };
 
-        obj.getexporteContingencias = function (fechaIni, fechafin) {
+        obj.getexporteContingencias = function (datos) {
             var data = {
                 method: "csvContingencias",
-                data: {
-                    fechaIni: fechaIni,
-                    fechafin: fechafin,
-                },
+                data: datos,
+                responseType: 'blob'
             };
             return $http.post(serviceBase1 + "otherServicesDosCtrl.php", data);
         };
@@ -2105,6 +2105,25 @@ app.factory("services", [
         obj.guardaPerfil = function (datos) {
             data = { method: 'guardaPerfil', data: datos }
             return $http.post(serviceBase1 + 'MenuPerfilCtrl.php', data);
+        }
+
+        /**
+         * Validaciones app
+         */
+
+        obj.estadoActualValidacionApp = function () {
+            let data = {
+                method: 'estadoActualValidacionApp'
+            }
+            return $http.post(serviceBase1 + 'validacionesAppCtrl.php', data);
+        }
+
+        obj.cambiaValidacionApp = function (datos) {
+            let data = {
+                method: 'cambiaValidacionApp',
+                data: datos
+            }
+            return $http.post(serviceBase1 + 'validacionesAppCtrl.php', data);
         }
 
         return obj;
@@ -3904,7 +3923,37 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
             $scope.datoscambioEquipo = 0
         ).then(
             function (data) {
-                $route.reload();
+                if (data.data.state == 99) {
+                    swal({
+                        type: "error",
+                        title: data.data.title,
+                        text: data.data.msg,
+                        timer: 4000,
+                    }).then(function () {
+                        $cookies.remove("usuarioseguimiento");
+                        $location.path("/");
+                        $rootScope.galletainfo = undefined;
+                        $rootScope.permiso = false;
+                        $route.reload();
+                    });
+                } else if (data.data.state == 1) {
+                    swal({
+                        type: "success",
+                        title: 'Bien',
+                        text: data.data.msj,
+                        timer: 4000,
+                    }).then(() => {
+                        $route.reload();
+                    })
+                } else if (data.data.state == 0) {
+                    swal({
+                        type: "error",
+                        title: 'Oppss...',
+                        text: data.data.msj,
+                        timer: 4000,
+                    })
+                }
+
             },
             function errorCallback(response) {
                 console.log(response);
@@ -4076,39 +4125,24 @@ app.controller(
         };
 
         $scope.exportarRegistros = () => {
-            services.exportEscalamientos().then((res) => {
-                var data = res.data[0];
-                var array = typeof data != "object" ? JSON.parse(data) : data;
-                var str = "";
-                var column = `ID|| Pedido|| Tarea|| Tecnico|| ID Tecnico|| Fecha Solicitud|| Fecha Gestion|| Fecha Respuesta|| Login Gestion|| En Gestion|| Proceso|| Producto|| Motivo|| Area|| Region|| Tipo Tarea|| Tecnologia|| CRM|| Departamento|| Prueba SMNET|| Foto?|| Marcacion TAP|| Direccion TAP|| Valor TAP|| Informacion Adicional|| MAC Real CPE|| Correa Marcacion|| Observacion|| Respuesta|| ID Terreno|| Tipificacion|| Estado|| ANS \r\n`;
-                str += column;
-                for (var i = 0; i < array.length; i++) {
-                    var line = "";
-                    for (var index in array[i]) {
-                        if (line != "") line += "||";
-                        line += array[i][index];
+            services.exportEscalamientos()
+                .then(function (data) {
+                    if (data.data.state == 1) {
+                        var wb = XLSX.utils.book_new();
+                        var ws = XLSX.utils.json_to_sheet(data.data.data);
+                        XLSX.utils.book_append_sheet(wb, ws, 'nivedades_tecnico');
+                        XLSX.writeFile(wb, 'Novedades_tecnico_' + tiempo + '.xlsx');
+                    } else {
+                        Swal({
+                            type: 'error',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
                     }
-
-                    str += line + "\r\n";
-                }
-                var dateCsv = new Date();
-                var yearCsv = dateCsv.getFullYear();
-                var monthCsv =
-                    dateCsv.getMonth() + 1 <= 9
-                        ? "0" + (dateCsv.getMonth() + 1)
-                        : dateCsv.getMonth() + 1;
-                var dayCsv =
-                    dateCsv.getDate() <= 9 ? "0" + dateCsv.getDate() : dateCsv.getDate();
-                var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
-
-                var blob = new Blob([str]);
-                var elementToClick = window.document.createElement("a");
-                elementToClick.href = window.URL.createObjectURL(blob, {
-                    type: "text/csv",
-                });
-                elementToClick.download = "Escalamientos-" + fullDateCsv + ".csv";
-                elementToClick.click();
-            });
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
         };
 
         $scope.mostrarModalConcatenacion = (data) => {
@@ -4356,8 +4390,20 @@ app.controller(
         $scope,
         $http,
         $rootScope,
-        services
+        services,
+        $cookies, $location
     ) {
+
+        var tiempo = new Date().getTime();
+        var date1 = new Date();
+        var year = date1.getFullYear();
+        var month =
+            date1.getMonth() + 1 <= 9
+                ? "0" + (date1.getMonth() + 1)
+                : date1.getMonth() + 1;
+        var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
+
+        tiempo = year + "-" + month + "-" + day;
 
         $scope.novedadesVisitasTecnicos = {};
         $scope.Registros = {};
@@ -4720,25 +4766,48 @@ app.controller(
             services
                 .guardarNovedadesTecnico(registrosTenicos, $rootScope.galletainfo)
                 .then(
-                    function (respuesta) {
-                        if (respuesta.status == "201") {
+                    function (data) {
+                        if (data.data.state == 99) {
+                            swal({
+                                type: "error",
+                                title: data.data.title,
+                                text: data.data.text,
+                                timer: 4000,
+                            }).then(function () {
+                                $cookies.remove("usuarioseguimiento");
+                                $location.path("/");
+                                $rootScope.galletainfo = undefined;
+                                $rootScope.permiso = false;
+                                $route.reload();
+                            });
+                        } else if (data.data.state == 1) {
+                            Swal({
+                                type: 'success',
+                                title: 'Bien',
+                                text: data.data.text,
+                                timer: 4000
+                            }).then(() => {
+                                $route.reload();
+                            })
+                        } else if (data.data.state == 0) {
+                            Swal({
+                                type: 'error',
+                                title: 'Ops...',
+                                text: data.data.text,
+                                timer: 4000
+                            })
+                        }
+                        /* if (respuesta.status == "201") {
                             Swal("Tu Novedad fue Guardada!", "Bien Hecho");
                         }
 
                         $("#modalNovedadVisita").modal("hide");
                         $scope.novedadesVisitasSel = {};
 
-                        frmNovedadVisita.autoValidateFormOptions.resetForm();
+                        frmNovedadVisita.autoValidateFormOptions.resetForm(); */
                     },
                     function errorCallback(response) {
-                        if (response.status == "400") {
-                            Swal({
-                                type: "error",
-                                title: "Oops...",
-                                text: "El formulario no se guardó",
-                                footer: "¡Intenta de nuevo o reporta con el administrador!",
-                            });
-                        }
+                        console.log(response);
                     }
                 );
             $scope.RegistrosTecnicos(registrosTenicos);
@@ -4756,49 +4825,23 @@ app.controller(
             } else {
                 services
                     .expCsvNovedadesTecnico($scope.Registros, $rootScope.galletainfo)
-                    .then(
-                        function (datos) {
-                            if (datos.data.state != 1) {
-                                Swal({
-                                    type: 'error',
-                                    text: datos.data.msj,
-                                    timer: 4000
-                                })
-                            } else {
-                                var data = datos.data.data;
-                                var array = typeof data != 'object' ? JSON.parse(data) : data;
-                                var str = '';
-                                var column = `Fecha|| Despachador|| Municipio|| Region|| Proceso|| Hora marca en sitio|| Tipo de Novedad|| Pedido|| Cedula del Tecnico|| Nombre del Tecnico|| Contrato|| Situacion|| Motivo|| Submotivo|| Observaciones|| Observacion CCO|| ID Llamada \r\n`;
-                                str += column;
-                                for (var i = 0; i < array.length; i++) {
-                                    var line = '';
-                                    for (var index in array[i]) {
-                                        if (line != '') line += '||'
-                                        line += array[i][index];
-                                    }
-
-                                    str += line + '\r\n';
-                                }
-                                var dateCsv = new Date();
-                                var yearCsv = dateCsv.getFullYear();
-                                var monthCsv = (dateCsv.getMonth() + 1 <= 9) ? '0' + (dateCsv.getMonth() + 1) : (dateCsv.getMonth() + 1);
-                                var dayCsv = (dateCsv.getDate() <= 9) ? '0' + dateCsv.getDate() : dateCsv.getDate();
-                                var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
-
-
-                                var blob = new Blob([str]);
-                                var elementToClick = window.document.createElement("a");
-                                elementToClick.href = window.URL.createObjectURL(blob, { type: 'text/csv' });
-                                elementToClick.download = "novedadades-tecnico-" + fullDateCsv + ".csv";
-                                elementToClick.click();
-                            }
-
-                        },
-
-                        function errorCallback(response) {
-                            console.log(response);
+                    .then(function (data) {
+                        if (data.data.state == 1) {
+                            var wb = XLSX.utils.book_new();
+                            var ws = XLSX.utils.json_to_sheet(data.data.data);
+                            XLSX.utils.book_append_sheet(wb, ws, 'nivedades_tecnico');
+                            XLSX.writeFile(wb, 'Novedades_tecnico_' + tiempo + '.xlsx');
+                        } else {
+                            Swal({
+                                type: 'error',
+                                text: data.data.msj,
+                                timer: 4000
+                            })
                         }
-                    );
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
             }
         };
 
@@ -4809,7 +4852,7 @@ app.controller(
 
 app.controller(
     "contrasenasClickCtrl",
-    function ($scope, $rootScope, $location, services) {
+    function ($scope, $rootScope, $location, services, $route, $cookies) {
         $scope.listaTecnicos = {};
         $scope.tecnico = null;
         $scope.concepto = null;
@@ -4863,22 +4906,38 @@ app.controller(
                 data = { page: $scope.currentPage, size: $scope.pageSize };
             }
             services.listadoTecnicos(data).then(
-                function (data) {
-                    $scope.listaTecnicos = data.data.data;
-                    $scope.cantidad = data.data.data.length;
-                    $scope.counter = data.data.counter;
+                (data) => {
+                    if (data.data.state == 99) {
+                        swal({
+                            type: "error",
+                            title: data.data.title,
+                            text: data.data.text,
+                            timer: 4000,
+                        }).then(function () {
+                            $cookies.remove("usuarioseguimiento");
+                            $location.path("/");
+                            $rootScope.galletainfo = undefined;
+                            $rootScope.permiso = false;
+                            $route.reload();
+                        });
+                    } else {
+                        $scope.listaTecnicos = data.data.data;
+                        $scope.cantidad = data.data.data.length;
+                        $scope.counter = data.data.counter;
 
-                    $scope.totalItems = data.data.counter;
-                    $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
-                    $scope.endItem = $scope.currentPage * $scope.pageSize;
-                    if ($scope.endItem > data.data.counter) {
-                        $scope.endItem = data.data.counter;
+                        $scope.totalItems = data.data.counter;
+                        $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                        $scope.endItem = $scope.currentPage * $scope.pageSize;
+                        if ($scope.endItem > data.data.counter) {
+                            $scope.endItem = data.data.counter;
+                        }
                     }
-                },
-                function errorCallback(response) {
-                    $scope.errorDatos = concepto + " " + tecnico + " no existe.";
-                }
-            );
+
+                })
+                .catch((response) => {
+                    console.log(response);;
+                })
+
         }
 
         $scope.buscarTec = function (param, dato) {
@@ -4973,8 +5032,21 @@ app.controller(
         $scope,
         $rootScope,
         $timeout,
-        services
+        services,
+        $route,
+        $cookies, $location
     ) {
+
+        var tiempo = new Date().getTime();
+        var date1 = new Date();
+        var year = date1.getFullYear();
+        var month =
+            date1.getMonth() + 1 <= 9
+                ? "0" + (date1.getMonth() + 1)
+                : date1.getMonth() + 1;
+        var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
+
+        tiempo = year + "-" + month + "-" + day;
 
         $scope.listaQuejasGo = {};
         $scope.Registros = {};
@@ -5012,7 +5084,7 @@ app.controller(
                 $scope.totalItems = 0;
                 $scope.pageSize = 15;
                 $scope.searchText = '';
-                data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
+                data = { 'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros }
             }
 
             services.extraeQuejasGoDia(data).then(
@@ -5039,11 +5111,11 @@ app.controller(
         };
 
         $scope.pageChanged = function () {
-            data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
+            data = { 'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros }
             LoadQuejasGo(data);
         }
         $scope.pageSizeChanged = function () {
-            data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
+            data = { 'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros }
             $scope.currentPage = 1;
             LoadQuejasGo(data);
         }
@@ -5163,25 +5235,47 @@ app.controller(
                 .guardarQuejaGo(quejasGoSel, $scope.counter, $rootScope.galletainfo)
                 .then(
                     function (respuesta) {
-                        if (respuesta.status == "201") {
-                            Swal("La Queja fue Guardada!", "Bien Hecho");
-                        }
-                        $scope.infoTecnico = false;
+                        if (respuesta.data.state == 99) {
+                            swal({
+                                type: "error",
+                                title: data.data.title,
+                                text: data.data.text,
+                                timer: 4000,
+                            }).then(function () {
+                                $cookies.remove("usuarioseguimiento");
+                                $location.path("/");
+                                $rootScope.galletainfo = undefined;
+                                $rootScope.permiso = false;
+                                $route.reload();
+                            });
+                        } else if (respuesta.data.state == 1) {
+                            $("#modalQuejasGo").modal("hide");
+                            //$scope.infoTecnico = false;
+                            //$scope.quejasGoSel = {};
+                            //frmGenereacionTT.autoValidateFormOptions.resetForm();
+                            Swal({
+                                type: "success",
+                                title: "Bien",
+                                text: "Datos guardados correctamente",
+                                timer: 4000
+                            }).then(() => {
+                                setTimeout(() => {
+                                    $route.reload();
+                                }, 500);
 
-                        $("#modalQuejasGo").modal("hide");
-                        $scope.quejasGoSel = {};
+                            })
 
-                        frmGenereacionTT.autoValidateFormOptions.resetForm();
-                    },
-                    function errorCallback(response) {
-                        if (response.status == "400") {
+                        } else {
                             Swal({
                                 type: "error",
                                 title: "Oops...",
                                 text: "No fue posible guardar la queja!",
-                                footer: "¡Reporta con el administrador!",
+                                timer: 4000
                             });
                         }
+                    },
+                    function errorCallback(response) {
+                        console.log(response);
                     }
                 );
 
@@ -5213,49 +5307,24 @@ app.controller(
                     timer: 4000
                 })
             } else {
-                services.expCsvQuejasGo($scope.Registros, $rootScope.galletainfo).then(
-                    function (datos) {
-                        if (datos.data.state != 1) {
+                services.expCsvQuejasGo($scope.Registros, $rootScope.galletainfo)
+                    .then(function (data) {
+                        if (data.data.state == 1) {
+                            var wb = XLSX.utils.book_new();
+                            var ws = XLSX.utils.json_to_sheet(data.data.data);
+                            XLSX.utils.book_append_sheet(wb, ws, 'QuejasGo');
+                            XLSX.writeFile(wb, 'QuejasGo_' + tiempo + '.xlsx');
+                        } else {
                             Swal({
                                 type: 'error',
-                                text: datos.data.msj,
+                                text: data.data.msj,
                                 timer: 4000
                             })
-                        } else {
-                            var data = datos.data.data;
-                            var array = typeof data != 'object' ? JSON.parse(data) : data;
-                            var str = '';
-                            var column = `CONSECUTIVO|| PEDIDO|| CLIENTE|| CEDULA_TECNICO|| TECNICO|| ACCION|| ASESOR|| FECHA|| DURACION|| CIUDAD|| ID_LLAMADA|| OBSERVACIONES \r\n`;
-                            str += column;
-                            for (var i = 0; i < array.length; i++) {
-                                var line = '';
-                                for (var index in array[i]) {
-                                    if (line != '') line += '||'
-                                    line += array[i][index];
-                                }
-
-                                str += line + '\r\n';
-                            }
-                            var dateCsv = new Date();
-                            var yearCsv = dateCsv.getFullYear();
-                            var monthCsv = (dateCsv.getMonth() + 1 <= 9) ? '0' + (dateCsv.getMonth() + 1) : (dateCsv.getMonth() + 1);
-                            var dayCsv = (dateCsv.getDate() <= 9) ? '0' + dateCsv.getDate() : dateCsv.getDate();
-                            var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
-
-
-                            var blob = new Blob([str]);
-                            var elementToClick = window.document.createElement("a");
-                            elementToClick.href = window.URL.createObjectURL(blob, { type: 'text/csv' });
-                            elementToClick.download = "csv-quejasgo-" + fullDateCsv + ".csv";
-                            elementToClick.click();
                         }
-
-                    },
-
-                    function errorCallback(response) {
-                        console.log(response);
-                    }
-                );
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
             }
         };
 
@@ -5272,26 +5341,45 @@ app.controller(
             id
         ) {
             services.modiObserQuejasGo(quejasGoSel, idqueja).then(
-                function (respuesta) {
-                    if (respuesta.status == "201") {
-                        Swal("Las observaciones fueron modificadas!", "Bien Hecho");
-                    }
-                    $scope.LoadQuejasGo($scope.datapendientes.currentPage);
-
-                    $("#modObserQuejasGo").modal("hide");
-                    $scope.quejasGoSel = {};
-
-                    frmModObserQuejasGo.autoValidateFormOptions.resetForm();
-                },
-                function errorCallback(response) {
-                    if (response.status == "400") {
+                function (data) {
+                    if (data.data.state == 99) {
+                        swal({
+                            type: "error",
+                            title: data.data.title,
+                            text: data.data.text,
+                            timer: 4000,
+                        }).then(function () {
+                            $cookies.remove("usuarioseguimiento");
+                            $location.path("/");
+                            $rootScope.galletainfo = undefined;
+                            $rootScope.permiso = false;
+                            $route.reload();
+                        });
+                    } else if (data.data.state == 1) {
+                        $("#modObserQuejasGo").modal("hide");
+                        $scope.quejasGoSel = {};
+                        Swal({
+                            type: "success",
+                            title: "Bien",
+                            text: data.data.msj,
+                            timer: 4000
+                        }).then(() => {
+                            setTimeout(() => {
+                                $route.reload();
+                            }, 500);
+                        })
+                    } else if (data.data.state == 0) {
                         Swal({
                             type: "error",
                             title: "Oops...",
-                            text: "No fue posible actualizar las observaciones!",
-                            footer: "¡Reporta con el administrador!",
+                            text: data.data.msj,
+                            timer: 4000
                         });
                     }
+
+                },
+                function errorCallback(response) {
+                    console.log(response);
                 }
             );
         };
@@ -5299,7 +5387,16 @@ app.controller(
 );
 
 app.controller('quejasGoCtrl2', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services, cargaRegistros) {
+    var tiempo = new Date().getTime();
+    var date1 = new Date();
+    var year = date1.getFullYear();
+    var month =
+        date1.getMonth() + 1 <= 9
+            ? "0" + (date1.getMonth() + 1)
+            : date1.getMonth() + 1;
+    var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
 
+    tiempo = year + "-" + month + "-" + day;
     init();
 
     function init() {
@@ -5511,10 +5608,7 @@ app.controller('quejasGoCtrl2', function ($scope, $http, $rootScope, $location, 
     }
 
     $scope.csvQuejaGo = (data) => {
-        var fechaini = new Date(data.fechaini);
-        var fechafin = new Date(data.fechafin);
-        var diffMs = (fechafin - fechaini);
-        var diffDays = Math.round(diffMs / 86400000);
+
 
         if (data == '' || data == undefined) {
             Swal({
@@ -5523,7 +5617,15 @@ app.controller('quejasGoCtrl2', function ($scope, $http, $rootScope, $location, 
                 text: 'Seleccione un rango de fecha valido',
                 timer: 4000
             })
-        } else if (data.fechaini == '' || data.fechaini == undefined) {
+            return;
+        }
+
+        var fechaini = new Date(data.fechaini);
+        var fechafin = new Date(data.fechafin);
+        var diffMs = (fechafin - fechaini);
+        var diffDays = Math.round(diffMs / 86400000);
+
+        if (data.fechaini == '' || data.fechaini == undefined) {
             Swal({
                 type: 'error',
                 title: 'Oops...',
@@ -5546,42 +5648,24 @@ app.controller('quejasGoCtrl2', function ($scope, $http, $rootScope, $location, 
             })
         } else {
             data = { 'page': $scope.currentPage, 'size': $scope.pageSize, 'fecha': data }
-            services.csvQuejaGo(data).then(
-                function (datos) {
-                    var data = datos.data.data;
-                    var array = typeof data != 'object' ? JSON.parse(data) : data;
-                    var str = '';
-
-                    var column = `pedido|| cliente|| cedtecnico|| tecnico|| asesor|| region|| observacion|| fecha_marca|| fecha_gestion|| observacion_gestion|| movil_cliente|| doc_cliente|| direccion|| gestion_asesor \r\n`;
-                    str += column;
-                    for (var i = 0; i < array.length; i++) {
-                        var line = '';
-                        for (var index in array[i]) {
-                            if (line != '') line += '||'
-                            line += array[i][index];
-                        }
-
-                        str += line + '\r\n';
+            services.csvQuejaGo(data)
+                .then(function (data) {
+                    if (data.data.state == 1) {
+                        var wb = XLSX.utils.book_new();
+                        var ws = XLSX.utils.json_to_sheet(data.data.data);
+                        XLSX.utils.book_append_sheet(wb, ws, 'GestionQuejasGo');
+                        XLSX.writeFile(wb, 'GestionQuejasGo_' + tiempo + '.xlsx'); // Descarga el a
+                    } else {
+                        Swal({
+                            type: 'error',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
                     }
-                    var dateCsv = new Date();
-                    var yearCsv = dateCsv.getFullYear();
-                    var monthCsv = (dateCsv.getMonth() + 1 <= 9) ? '0' + (dateCsv.getMonth() + 1) : (dateCsv.getMonth() + 1);
-                    var dayCsv = (dateCsv.getDate() <= 9) ? '0' + dateCsv.getDate() : dateCsv.getDate();
-                    var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
-
-
-                    var blob = new Blob([str]);
-                    var elementToClick = window.document.createElement("a");
-                    elementToClick.href = window.URL.createObjectURL(blob, { type: 'text/csv' });
-                    elementToClick.download = "csvGestionQuejasGo-" + fullDateCsv + ".csv";
-                    elementToClick.click();
-                },
-
-                function errorCallback(response) {
-                    $scope.errorDatos = "No hay datos.";
-                    $scope.csvPend = false;
-                }
-            )
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
         }
     }
 
@@ -5693,7 +5777,7 @@ app.controller("saraCtrl", function ($scope, $http, $rootScope, services) {
 
 app.controller(
     "registrosCtrl",
-    function ($scope, $rootScope, services, cargaRegistros, $route) {
+    function ($scope, $rootScope, services, cargaRegistros, $route, $cookies, $location) {
         $scope.listaRegistros = {};
         $scope.Registros = {};
         $scope.listadoAcciones = {};
@@ -5727,13 +5811,13 @@ app.controller(
         BuscarRegistros();
 
         $scope.pageChanged = function () {
-            data = { page: $scope.currentPage, size: $scope.pageSize, fecha: $scope.Registros };
+            data = { page: $scope.currentPage, size: $scope.pageSize, param: $scope.Registros };
             console.log(data);
             BuscarRegistros(data);
         };
         $scope.pageSizeChanged = function () {
             console.log(data);
-            data = { page: $scope.currentPage, size: $scope.pageSize, fecha: $scope.Registros };
+            data = { page: $scope.currentPage, size: $scope.pageSize, param: $scope.Registros };
             $scope.currentPage = 1;
             BuscarRegistros(data);
         };
@@ -5744,24 +5828,39 @@ app.controller(
                 $scope.totalItems = 0;
                 $scope.pageSize = 15;
                 $scope.searchText = "";
-                data = { page: $scope.currentPage, size: $scope.pageSize };
+                data = { page: $scope.currentPage, size: $scope.pageSize, param: $scope.Registros };
             }
             services.registros(data).then(
                 function (data) {
-                    $scope.listaRegistros = data.data.data;
-                    $scope.cantidad = data.data.data.length;
-                    $scope.counter = data.data.counter;
+                    if (data.data.state == 99) {
+                        swal({
+                            type: "error",
+                            title: data.data.title,
+                            text: data.data.text,
+                            timer: 4000,
+                        }).then(function () {
+                            $cookies.remove("usuarioseguimiento");
+                            $location.path("/");
+                            $rootScope.galletainfo = undefined;
+                            $rootScope.permiso = false;
+                            $route.reload();
+                        });
+                    } else {
+                        $scope.listaRegistros = data.data.data;
+                        $scope.cantidad = data.data.data.length;
+                        $scope.counter = data.data.counter;
 
-                    $scope.totalItems = data.data.counter;
-                    $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
-                    $scope.endItem = $scope.currentPage * $scope.pageSize;
-                    if ($scope.endItem > data.data.counter) {
-                        $scope.endItem = data.data.counter;
+                        $scope.totalItems = data.data.counter;
+                        $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                        $scope.endItem = $scope.currentPage * $scope.pageSize;
+                        if ($scope.endItem > data.data.counter) {
+                            $scope.endItem = data.data.counter;
+                        }
                     }
-                },
 
-                function errorCallback(response) {
-                    console.log(response);
+                    function errorCallback(response) {
+                        console.log(response);
+                    }
                 }
             );
         }
@@ -5885,49 +5984,24 @@ app.controller(
                     timer: 4000
                 })
             } else {
-                services.expCsvRegistros($scope.Registros, $rootScope.galletainfo).then(
-                    function (datos) {
-                        if (datos.data.state != 1) {
+                services.expCsvRegistros($scope.Registros, $rootScope.galletainfo)
+                    .then(function (data) {
+                        if (data.data.state == 1) {
+                            var wb = XLSX.utils.book_new();
+                            var ws = XLSX.utils.json_to_sheet(data.data.data);
+                            XLSX.utils.book_append_sheet(wb, ws, 'registros');
+                            XLSX.writeFile(wb, 'registros_' + tiempo + '.xlsx'); // Descarga el a
+                        } else {
                             Swal({
                                 type: 'error',
-                                text: datos.data.msj,
+                                text: data.data.msj,
                                 timer: 4000
                             })
-                        } else {
-                            var data = datos.data.data;
-                            var array = typeof data != 'object' ? JSON.parse(data) : data;
-                            var str = '';
-                            var column = `PEDIDO||ID_TECNICO|| EMPRESA|| LOGIN_ASESOR|| DESPACHO|| OBSERVACIONES|| ACCION|| SUB_ACCION|| FECHA|| PROCESO|| PRODUCTO|| DURACION_LLAMADA|| IDLLAMADA|| PRUEBA_INTEGRADA|| PRUEBASMNET|| UNESOURCESYSTEM|| PENDIENTE|| DIAGNOSTICO \r\n`;
-                            str += column;
-                            for (var i = 0; i < array.length; i++) {
-                                var line = '';
-                                for (var index in array[i]) {
-                                    if (line != '') line += '||'
-                                    line += array[i][index];
-                                }
-
-                                str += line + '\r\n';
-                            }
-                            var dateCsv = new Date();
-                            var yearCsv = dateCsv.getFullYear();
-                            var monthCsv = (dateCsv.getMonth() + 1 <= 9) ? '0' + (dateCsv.getMonth() + 1) : (dateCsv.getMonth() + 1);
-                            var dayCsv = (dateCsv.getDate() <= 9) ? '0' + dateCsv.getDate() : dateCsv.getDate();
-                            var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
-
-
-                            var blob = new Blob([str]);
-                            var elementToClick = window.document.createElement("a");
-                            elementToClick.href = window.URL.createObjectURL(blob, { type: 'text/csv' });
-                            elementToClick.download = "csv-registros-" + fullDateCsv + ".csv";
-                            elementToClick.click();
                         }
-
-                    },
-
-                    function errorCallback(response) {
-                        console.log(response);
-                    }
-                );
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
             }
         };
 
@@ -5948,64 +6022,70 @@ app.controller(
                     text: "La fecha final no puede ser menor que la inicial",
                 });
             } else {
-                services.expCsvtecnico($scope.Registros, $rootScope.galletainfo).then(
-                    function (datos) {
-                        if (datos.data.state != 1) {
+                services.expCsvtecnico($scope.Registros, $rootScope.galletainfo)
+                    .then(function (data) {
+                        if (data.data.state == 1) {
+                            var wb = XLSX.utils.book_new();
+                            var ws = XLSX.utils.json_to_sheet(data.data.data);
+                            XLSX.utils.book_append_sheet(wb, ws, 'registros-equipos');
+                            XLSX.writeFile(wb, 'registros-equipos_' + tiempo + '.xlsx'); // Descarga el a
+                        } else {
                             Swal({
                                 type: 'error',
-                                text: datos.data.msj,
+                                text: data.data.msj,
                                 timer: 4000
                             })
-                        } else {
-                            var data = datos.data.data;
-                            var array = typeof data != 'object' ? JSON.parse(data) : data;
-                            var str = '';
-                            var column = `PEDIDO|| TECNICO|| NOMBRE_TECNICO|| CIUDAD|| EMPRESA|| TIPO_PENDIENTE|| DIA|| MES|| ANO|| PRODUCTO|| MOTIVO|| MAC_SALE|| MAC_ENTRA|| PROCESO' \r\n`;
-                            str += column;
-                            for (var i = 0; i < array.length; i++) {
-                                var line = '';
-                                for (var index in array[i]) {
-                                    if (line != '') line += '||'
-                                    line += array[i][index];
-                                }
-
-                                str += line + '\r\n';
-                            }
-                            var dateCsv = new Date();
-                            var yearCsv = dateCsv.getFullYear();
-                            var monthCsv = (dateCsv.getMonth() + 1 <= 9) ? '0' + (dateCsv.getMonth() + 1) : (dateCsv.getMonth() + 1);
-                            var dayCsv = (dateCsv.getDate() <= 9) ? '0' + dateCsv.getDate() : dateCsv.getDate();
-                            var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
-
-
-                            var blob = new Blob([str]);
-                            var elementToClick = window.document.createElement("a");
-                            elementToClick.href = window.URL.createObjectURL(blob, { type: 'text/csv' });
-                            elementToClick.download = "csv-registros-equipos" + fullDateCsv + ".csv";
-                            elementToClick.click();
                         }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
 
-                    },
-
-                    function errorCallback(response) {
-                        console.log(response);
-                    }
-                );
             }
         };
 
-        $scope.uploadFile = function () {
+        $scope.uploadFile = function (data) {
+            $("#cargarRegistros").attr("disabled", true);
+            if (!data) {
+                Swal({
+                    type: 'error',
+                    text: 'Seleccione el archivo',
+                    timer: 4000,
+                })
+                $("#cargarRegistros").attr("disabled", false);
+                return;
+            }
+
             $scope.carga_ok = true;
-            var file = $scope.myFile;
+            var file = data;
             $scope.user = $rootScope.galletainfo.LOGIN;
             $scope.name = "";
             $scope.delete_ok = false;
 
-            var uploadUrl = "services/cargaRegistros";
-            cargaRegistros.uploadFileToUrl(file, uploadUrl, $scope.user);
-            $scope.msg = "Se cargo el archivo: " + file.name;
-
-            Swal("El Archivo fue cargado correctamente!", "Bien Hecho");
+            var uploadUrl = "api/class/subeArchivo.php";
+            cargaRegistros.uploadFileToUrl(file, uploadUrl).then((data) => {
+                console.log(data);
+                if (data.data.state == 1) {
+                    Swal({
+                        type: 'success',
+                        title: 'Bien',
+                        text: data.data.msj,
+                        timer: 4000
+                    }).then(() => {
+                        $route.reload();
+                    })
+                } else {
+                    Swal({
+                        type: 'error',
+                        title: 'Ops...',
+                        text: data.data.msj,
+                        timer: 4000
+                    })
+                }
+            })
+                .catch((error) => {
+                    console.log(error);
+                })
         };
     }
 );
@@ -6834,6 +6914,16 @@ app.controller("GestionNivelacionCtrl", [
         $scope.nivelacion = {};
         i18nService.setCurrentLang("es");
         $scope.userLog = $rootScope.galletainfo.login;
+        var tiempo = new Date().getTime();
+        var date1 = new Date();
+        var year = date1.getFullYear();
+        var month =
+            date1.getMonth() + 1 <= 9
+                ? "0" + (date1.getMonth() + 1)
+                : date1.getMonth() + 1;
+        var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
+
+        tiempo = year + "-" + month + "-" + day;
         init();
 
         function init() {
@@ -7559,48 +7649,24 @@ app.controller("GestionNivelacionCtrl", [
                     text: "La fecha final no puede ser menor que la inicial",
                 });
             } else {
-                services.csvNivelacion($scope.Registros).then(
-                    function (datos) {
-                        var data = datos.data[0];
-                        var array = typeof data != "object" ? JSON.parse(data) : data;
-                        var str = "";
-                        var column = `ticket_id|| fecha_ingreso|| fecha_gestion|| fecha_respuesta|| nombre_tecnico|| cc_tecnico|| pedido|| proceso|| motivo|| submotivo|| zona|| subzona|| nombre_nuevo_tecnico|| cc_nuevo_tecnico|| creado_por|| gestiona_por||observaciones|| se_realiza_nivelacion \r\n`;
-                        str += column;
-                        for (var i = 0; i < array.length; i++) {
-                            var line = "";
-                            for (var index in array[i]) {
-                                if (line != "") line += "||";
-                                line += array[i][index];
-                            }
-
-                            str += line + "\r\n";
-                        }
-                        var dateCsv = new Date();
-                        var yearCsv = dateCsv.getFullYear();
-                        var monthCsv =
-                            dateCsv.getMonth() + 1 <= 9
-                                ? "0" + (dateCsv.getMonth() + 1)
-                                : dateCsv.getMonth() + 1;
-                        var dayCsv =
-                            dateCsv.getDate() <= 9
-                                ? "0" + dateCsv.getDate()
-                                : dateCsv.getDate();
-                        var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
-
-                        var blob = new Blob([str]);
-                        var elementToClick = window.document.createElement("a");
-                        elementToClick.href = window.URL.createObjectURL(blob, {
-                            type: "text/csv",
-                        });
-                        elementToClick.download = "csvNivelacion-" + fullDateCsv + ".csv";
-                        elementToClick.click();
-                    },
-
-                    function errorCallback(response) {
-                        $scope.errorDatos = "No hay datos.";
-                        $scope.csvPend = false;
+                services.csvNivelacion($scope.Registros).then((data) => {
+                    if (data.data.state == 1) {
+                        var wb = XLSX.utils.book_new();
+                        var ws = XLSX.utils.json_to_sheet(data.data.data);
+                        XLSX.utils.book_append_sheet(wb, ws, 'nivelacion');
+                        XLSX.writeFile(wb, 'Nivelacion_' + tiempo + '.xlsx');
+                    } else {
+                        Swal({
+                            type: 'error',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
                     }
-                );
+                })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+
             }
         };
 
@@ -7612,7 +7678,7 @@ app.controller("GestionNivelacionCtrl", [
 
 app.controller(
     "contingenciasCtrl",
-    function ($scope, $rootScope, $timeout, services) {
+    function ($scope, $rootScope, $timeout, services, $route, $cookies, $location) {
         $scope.contingencias = {};
         $scope.pedidoexiste = false;
         $scope.pedidoguardado = false;
@@ -7631,23 +7697,10 @@ app.controller(
                 )
                 .then(
                     function (data) {
-                        console.log(data);
                         $scope.GuardarContingencia($scope.contingencias);
-                        $scope.contingencias = {};
                     },
                     function errorCallback(response) {
-                        $scope.pedidoexiste = true;
-                        $scope.pedidoguardado = false;
-
-                        if (response.status == "401") {
-                            $scope.mensaje =
-                                "El pedido con el producto: " +
-                                $scope.contingencias.producto +
-                                ", se encuentra pendiente, no es posible gestionar nuevamente.";
-                        } else {
-                            $scope.mensaje =
-                                "El pedido se encuentra sin gestión, no es posible guardar.";
-                        }
+                        console.log(response);
                     }
                 );
         };
@@ -7713,6 +7766,7 @@ app.controller(
                     if (data.data.state != 1) {
                         console.log(data);
                     } else {
+                        console.log(data);
                         $scope.haypedido = true;
                         $scope.pedidosEngestion = data.data.data;
 
@@ -7755,6 +7809,8 @@ app.controller(
         };
 
         $scope.GuardarContingencia = function (contingencias) {
+            $("#guardaPedidoContingencia").attr("disabled", true);
+
             $scope.pedidoguardado = true;
             $scope.pedidoexiste = false;
             $scope.mensaje = "Pedido guardado con exito.";
@@ -7791,7 +7847,36 @@ app.controller(
             services
                 .guardarContingencia(contingencias, $rootScope.galletainfo)
                 .then(function (data) {
-                    console.log("guardarContingencia: ", services.guardarContingencia);
+                    if (data.data.state === 99) {
+                        swal({
+                            type: "error",
+                            title: data.data.title,
+                            text: data.data.text,
+                            timer: 4000,
+                        }).then(function () {
+                            $cookies.remove("usuarioseguimiento");
+                            $location.path("/");
+                            $rootScope.galletainfo = undefined;
+                            $rootScope.permiso = false;
+                            $route.reload();
+                        });
+                    } else if (data.data.state == 1) {
+                        Swal({
+                            type: "success",
+                            title: "Bien",
+                            text: data.data.msj,
+                            timer: 4000
+                        }).then(() => {
+                            $route.reload();
+                        })
+                    } else if (data.data.state == 0) {
+                        Swal({
+                            type: "error",
+                            title: "Opss...",
+                            text: data.data.msj,
+                            timer: 4000
+                        });
+                    }
                 });
 
             $scope.updateEnGestion();
@@ -7861,7 +7946,9 @@ app.controller(
         $rootScope,
         services,
         $http,
-        $route
+        $route,
+        $cookies,
+        $location
     ) {
         $scope.rutaCierreMasivoContin =
             "partial/modals/cierreMasivoContingencias.html";
@@ -8006,118 +8093,134 @@ app.controller(
             services
                 .datosgestioncontingencias()
                 .then(function (data) {
-                    $scope.loadingData = false;
+                    if (data.data.state == 99) {
+                        swal({
+                            type: "error",
+                            title: data.data.title,
+                            text: data.data.text,
+                            timer: 4000,
+                        }).then(function () {
+                            $cookies.remove("usuarioseguimiento");
+                            $location.path("/");
+                            $rootScope.galletainfo = undefined;
+                            $rootScope.permiso = false;
+                            $route.reload();
+                        });
+                    } else {
+                        $scope.loadingData = false;
 
-                    $scope.contingenciasTV = $scope.contingenciesDataTV.concat(
-                        data.data.data[0]
-                    );
-                    $scope.contingenciasOTROS =
-                        $scope.contingenciesDataInternetToIP.concat(data.data.data[1]);
-
-                    $scope.contingenciasPortafolio = data.data.data[2];
-
-                    var TV = $scope.contingenciasTV.map((doc) => doc.horagestion);
-                    var OTROS = $scope.contingenciasOTROS.map((doc) => doc.horagestion);
-                    var CPORTAFOLIO = $scope.contingenciasPortafolio.map(
-                        (doc) => doc.horagestion
-                    );
-
-                    function js_yyyy_mm_dd_hh_mm_ss() {
-                        now = new Date();
-                        year = "" + now.getFullYear();
-                        month = "" + (now.getMonth() + 1);
-                        if (month.length == 1) {
-                            month = "0" + month;
-                        }
-                        day = "" + now.getDate();
-                        if (day.length == 1) {
-                            day = "0" + day;
-                        }
-                        hour = "" + now.getHours();
-                        if (hour.length == 1) {
-                            hour = "0" + hour;
-                        }
-                        minute = "" + now.getMinutes();
-                        if (minute.length == 1) {
-                            minute = "0" + minute;
-                        }
-                        second = "" + now.getSeconds();
-                        if (second.length == 1) {
-                            second = "0" + second;
-                        }
-                        return (
-                            year +
-                            "-" +
-                            month +
-                            "-" +
-                            day +
-                            " " +
-                            hour +
-                            ":" +
-                            minute +
-                            ":" +
-                            second
+                        $scope.contingenciasTV = $scope.contingenciesDataTV.concat(
+                            data.data.data[0]
                         );
-                    }
+                        $scope.contingenciasOTROS =
+                            $scope.contingenciesDataInternetToIP.concat(data.data.data[1]);
 
-                    $scope.hora_sistema = js_yyyy_mm_dd_hh_mm_ss();
+                        $scope.contingenciasPortafolio = data.data.data[2];
 
-                    TV.forEach(function (valor, indice) {
-                        $scope.diferencia =
-                            new Date(js_yyyy_mm_dd_hh_mm_ss()) - new Date(TV[indice]);
+                        var TV = $scope.contingenciasTV.map((doc) => doc.horagestion);
+                        var OTROS = $scope.contingenciasOTROS.map((doc) => doc.horagestion);
+                        var CPORTAFOLIO = $scope.contingenciasPortafolio.map(
+                            (doc) => doc.horagestion
+                        );
 
-                        if ($scope.diferencia > 900000) {
-                            $scope.indice = indice;
-                            $scope.quinceminutos = new Array();
-                            $scope.quinceminutos[$scope.indice] = TV[$scope.indice];
+                        function js_yyyy_mm_dd_hh_mm_ss() {
+                            now = new Date();
+                            year = "" + now.getFullYear();
+                            month = "" + (now.getMonth() + 1);
+                            if (month.length == 1) {
+                                month = "0" + month;
+                            }
+                            day = "" + now.getDate();
+                            if (day.length == 1) {
+                                day = "0" + day;
+                            }
+                            hour = "" + now.getHours();
+                            if (hour.length == 1) {
+                                hour = "0" + hour;
+                            }
+                            minute = "" + now.getMinutes();
+                            if (minute.length == 1) {
+                                minute = "0" + minute;
+                            }
+                            second = "" + now.getSeconds();
+                            if (second.length == 1) {
+                                second = "0" + second;
+                            }
+                            return (
+                                year +
+                                "-" +
+                                month +
+                                "-" +
+                                day +
+                                " " +
+                                hour +
+                                ":" +
+                                minute +
+                                ":" +
+                                second
+                            );
                         }
-                    });
 
-                    OTROS.forEach(function (valor, indice) {
-                        $scope.diferencia =
-                            new Date(js_yyyy_mm_dd_hh_mm_ss()) - new Date(OTROS[indice]);
+                        $scope.hora_sistema = js_yyyy_mm_dd_hh_mm_ss();
 
-                        if ($scope.diferencia > 900000) {
-                            $scope.indice = indice;
-                            $scope.quinceminutos = new Array();
-                            $scope.quinceminutos[$scope.indice] = OTROS[$scope.indice];
+                        TV.forEach(function (valor, indice) {
+                            $scope.diferencia =
+                                new Date(js_yyyy_mm_dd_hh_mm_ss()) - new Date(TV[indice]);
+
+                            if ($scope.diferencia > 900000) {
+                                $scope.indice = indice;
+                                $scope.quinceminutos = new Array();
+                                $scope.quinceminutos[$scope.indice] = TV[$scope.indice];
+                            }
+                        });
+
+                        OTROS.forEach(function (valor, indice) {
+                            $scope.diferencia =
+                                new Date(js_yyyy_mm_dd_hh_mm_ss()) - new Date(OTROS[indice]);
+
+                            if ($scope.diferencia > 900000) {
+                                $scope.indice = indice;
+                                $scope.quinceminutos = new Array();
+                                $scope.quinceminutos[$scope.indice] = OTROS[$scope.indice];
+                            }
+                        });
+
+                        CPORTAFOLIO.forEach(function (valor, indice) {
+                            $scope.diferencia =
+                                new Date(js_yyyy_mm_dd_hh_mm_ss()) -
+                                new Date(CPORTAFOLIO[indice]);
+
+                            if ($scope.diferencia > 900000) {
+                                $scope.indice = indice;
+                                $scope.quinceminutos = new Array();
+                                $scope.quinceminutos[$scope.indice] = CPORTAFOLIO[$scope.indice];
+                            }
+                        });
+
+                        if ($scope.contingenciasTV.length !== 0) {
+                            $scope.haypedidoTV = true;
+                        } else {
+                            $scope.haypedidoTV = false;
+                            $scope.mensaje = "No hay pedidos para gestionar!!!";
                         }
-                    });
 
-                    CPORTAFOLIO.forEach(function (valor, indice) {
-                        $scope.diferencia =
-                            new Date(js_yyyy_mm_dd_hh_mm_ss()) -
-                            new Date(CPORTAFOLIO[indice]);
-
-                        if ($scope.diferencia > 900000) {
-                            $scope.indice = indice;
-                            $scope.quinceminutos = new Array();
-                            $scope.quinceminutos[$scope.indice] = CPORTAFOLIO[$scope.indice];
+                        if ($scope.contingenciasOTROS.length !== 0) {
+                            $scope.haypedidoOtros = true;
+                        } else {
+                            $scope.haypedidoOtros = false;
+                            $scope.mensajeotros = "No hay pedidos para gestionar!!!";
                         }
-                    });
 
-                    if ($scope.contingenciasTV.length !== 0) {
-                        $scope.haypedidoTV = true;
-                    } else {
-                        $scope.haypedidoTV = false;
-                        $scope.mensaje = "No hay pedidos para gestionar!!!";
+                        if ($scope.contingenciasPortafolio.length !== 0) {
+                            $scope.haypedidoPortafolio = true;
+                        } else {
+                            $scope.haypedidoPortafolio = false;
+                            $scope.mensajeotros = "No hay pedidos prioritarios!!!";
+                        }
+
+                        return data.data;
                     }
 
-                    if ($scope.contingenciasOTROS.length !== 0) {
-                        $scope.haypedidoOtros = true;
-                    } else {
-                        $scope.haypedidoOtros = false;
-                        $scope.mensajeotros = "No hay pedidos para gestionar!!!";
-                    }
-
-                    if ($scope.contingenciasPortafolio.length !== 0) {
-                        $scope.haypedidoPortafolio = true;
-                    } else {
-                        $scope.haypedidoPortafolio = false;
-                        $scope.mensajeotros = "No hay pedidos prioritarios!!!";
-                    }
-
-                    return data.data;
                 })
                 .catch(function (err) {
                     console.log(err);
@@ -8394,8 +8497,6 @@ app.controller(
                                 title: 'Ops...',
                                 text: data.data.text,
                                 timer: 4000,
-                            }).then(function () {
-                                $route.reload();
                             })
                         } else if (data.data.state == 1) {
                             swal({
@@ -8404,12 +8505,12 @@ app.controller(
                                 text: data.data.text,
                                 timer: 4000,
                             }).then(function () {
-                                $route.reload();
+                                $scope.gestioncontingencias();
                             })
                         }
                     })
                     .catch((err) => alert(err));
-                $scope.gestioncontingencias();
+                //$scope.gestioncontingencias();
             }
         };
 
@@ -8445,8 +8546,8 @@ app.controller(
                             title: data.data.title,
                             text: data.data.text,
                             timer: 4000,
-                        }).then(function () {
-                            $route.reload();
+                        }).then(() => {
+                            $scope.gestioncontingencias();
                         })
                     } else if (data.data.state == 1) {
                         swal({
@@ -8454,8 +8555,8 @@ app.controller(
                             title: data.data.title,
                             text: data.data.text,
                             timer: 4000,
-                        }).then(function () {
-                            $route.reload();
+                        }).then(() => {
+                            $scope.gestioncontingencias();
                         })
                     }
 
@@ -8768,57 +8869,27 @@ app.controller(
             );
         };
 
-        $scope.descargarContingencias = function (fechaInicial, fechafinal) {
+        $scope.descargarContingencias = function (data) {
             services
-                .getexporteContingencias(
-                    fechaInicial,
-                    fechafinal,
-                    $rootScope.galletainfo
-                )
-                .then(
-                    function (datos) {
-                        console.log(datos);
-                        if (datos.data.state != 1) {
-                            Swal({
-                                type: 'error',
-                                text: datos.datos.msj,
-                                timer: 4000
-                            })
-                        } else {
-                            var data = datos.data.data;
-                            var array = typeof data != 'object' ? JSON.parse(data) : data;
-                            var str = '';
-                            var column = `ACCION|| CIUDAD|| CORREO|| MAC_ENTRA|| MAC_SALE || MOTIVO ||OBSERVACIONES ||PAQUETES ||PEDIDO ||PROCESO ||PRODUCTO ||REMITENTE ||TECNOLOGIA ||TIPO_EQUIPO ||UEN || CONTRATO || PERFIL ||LOGIN ||LOGIN_GESTION ||HORA_INGRESO ||HORA_GESTION ||OBSERVACIONES_GESTION|| ESTADO|| TIPIFICACION|| FECHACLICKMARCA|| LOGIN_PORTAFILO|| HORA_GESTION_PORTAFOLIO|| TIPIFICACION_PORTAFOLIO|| OBSERVACIONES_GESTION_PORTAFOLIO|| GENERAR_CR' \r\n`;
-                            str += column;
-                            for (var i = 0; i < array.length; i++) {
-                                var line = '';
-                                for (var index in array[i]) {
-                                    if (line != '') line += '||'
-                                    line += array[i][index];
-                                }
-
-                                str += line + '\r\n';
-                            }
-                            var dateCsv = new Date();
-                            var yearCsv = dateCsv.getFullYear();
-                            var monthCsv = (dateCsv.getMonth() + 1 <= 9) ? '0' + (dateCsv.getMonth() + 1) : (dateCsv.getMonth() + 1);
-                            var dayCsv = (dateCsv.getDate() <= 9) ? '0' + dateCsv.getDate() : dateCsv.getDate();
-                            var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
-
-
-                            var blob = new Blob([str]);
-                            var elementToClick = window.document.createElement("a");
-                            elementToClick.href = window.URL.createObjectURL(blob, { type: 'text/csv' });
-                            elementToClick.download = "Contingencias-" + fullDateCsv + ".csv";
-                            elementToClick.click();
-                        }
-
-                    },
-
-                    function errorCallback(response) {
-                        console.log(response);
+                .getexporteContingencias(data)
+                .then(function (data) {
+                    if (data.data.state == 1) {
+                        var wb = XLSX.utils.book_new();
+                        var ws = XLSX.utils.json_to_sheet(data.data.data);
+                        XLSX.utils.book_append_sheet(wb, ws, 'contingencias');
+                        XLSX.writeFile(wb, 'Contingencias_' + tiempo + '.xlsx'); // Descarga el a
+                    } else {
+                        Swal({
+                            type: 'error',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
                     }
-                );
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+
         };
 
         $scope.callModalCierreMasivoConti = function () {
@@ -9062,7 +9133,7 @@ app.controller("pendientesBrutalCtrl", function ($scope, $uibModal, services) {
 
 app.controller(
     "GestionsoportegponCtrl",
-    function ($scope, $rootScope, services, $route, $sce) {
+    function ($scope, $rootScope, services, $route, $sce, $cookies, $location) {
         $scope.isSoporteGponFromField = false;
         $scope.isSoporteGponFromIntranet = false;
         $scope.isLoadingData = true;
@@ -9100,50 +9171,46 @@ app.controller(
         };
 
         $scope.contadorGpon = () => {
-            let datacount = $scope.datacount;
-            let data = $scope.datacount;
+            let counter = $scope.datacount;
+            console.log(counter);
+            let x = [];
             let finalizado = $scope.finalizado;
             let devuelto = $scope.devuelto;
             let incompleto = $scope.incompleto;
             let sinrespuesta = $scope.sinrespuesta;
-            $scope.contadorGpon = $sce.trustAsHtml('<div class="modal-body">' +
-                '<table class="table table-striped">' +
+            var tabla = '<table class="table table-striped small">' +
                 '<thead>' +
                 '<tr>' +
                 '<th>Login Analista</th>' +
                 '<th>Cantidad Marcadas</th>' +
                 '</tr>' +
                 '</thead>' +
-                '<tbody>' +
-                '<tr ng-repeat="data in datacount">' +
-                '<td class="filterable-cell">' +
-                '<i class="fa fa-user" aria-hidden="true"></i>' + data.login + '</td>' +
-                '<td class="filterable-cell">' + data.Conteo + '</td>' +
-                '</tr>' +
-                '</tbody>' +
+                '<tbody>';
+
+            for (var i = 0; i < counter.length; i++) {
+                tabla += '<tr>' +
+                    '<td class="filterable-cell"><i class="fa fa-user" aria-hidden="true"></i>  ' + counter[i]['login'] + '</td>' +
+                    '<td class="filterable-cell">  ' + counter[i]['Conteo'] + '</td>' +
+                    '</tr>';
+            }
+            tabla += '</tbody>' +
                 '</table>' +
-                '<div class="row">' +
-                '<h5 class="subtitulo2" style="text-align: center">' +
-                '<b>Detalles hoy</b>' +
-                '</h5>' +
-                '<ul>' +
+                '<div style="text-align: center"><b>Detalles hoy</b></div>' +
+                '<ul style="list-style: none;">' +
                 '<li>' +
-                '<span class="label label-success">Finalizados:' + finalizado + '</span>' +
+                '<span class="label label-success">Finalizados: ' + finalizado + '</span>' +
                 '</li>' +
                 '<li>' +
-                '<span class="label label-warning">Devueltos al técnico:' + devuelto + '</span>' +
-                '</li>' +
-                '</ul>' +
-                '<ul>' +
-                '<li>' +
-                '<span class="label label-danger">Incompletos:' + incompleto + '</span>' +
+                '<span class="label label-warning">Devueltos al técnico: ' + devuelto + '</span>' +
                 '</li>' +
                 '<li>' +
-                '<span class="label label-info">Sin respuesta:' + sinrespuesta + '</span>' +
+                '<span class="label label-danger">Incompletos: ' + incompleto + '</span>' +
                 '</li>' +
-                '</ul>' +
-                '</div>' +
-                '</div>');
+                '<li>' +
+                '<span class="label label-info">Sin respuesta: ' + sinrespuesta + '</span>' +
+                '</li>' +
+                '</ul>';
+            $scope.contadorGpon = $sce.trustAsHtml(tabla);
         }
 
 
@@ -9169,15 +9236,27 @@ app.controller(
             services
                 .marcarEngestionGpon(data, $rootScope.galletainfo)
                 .then(function (data) {
-
-                    if (data.data.state == 1) {
+                    if (data.data.state == 99) {
+                        swal({
+                            type: "error",
+                            title: data.data.title,
+                            text: data.data.msg,
+                            timer: 4000,
+                        }).then(function () {
+                            $cookies.remove("usuarioseguimiento");
+                            $location.path("/");
+                            $rootScope.galletainfo = undefined;
+                            $rootScope.permiso = false;
+                            $route.reload();
+                        });
+                    } else if (data.data.state == 1) {
                         swal({
                             title: "muy Bien",
                             type: "success",
                             text: data.data.msj,
                             timer: 4000,
                         }).then(function () {
-                            $route.reload();
+                            $scope.listarsoportegpon();
                         })
                     } else if (data.data.state == 0) {
                         swal({
@@ -9185,8 +9264,6 @@ app.controller(
                             type: "info",
                             text: data.data.msj,
                             timer: 4000,
-                        }).then(function () {
-                            $route.reload();
                         })
                     }
                 })
@@ -9305,7 +9382,7 @@ app.controller(
 
 app.controller(
     "registrossoportegponCtrl",
-    function ($scope, $rootScope, services) {
+    function ($scope, $rootScope, services, $cookies, $location) {
         $scope.listaRegistros = {};
         $scope.RegistrosSoporteGpon = {};
         $scope.soportegpon = {};
@@ -9398,15 +9475,30 @@ app.controller(
             }
             services.registrossoportegpon(data).then(
                 function (data) {
-                    $scope.listaRegistros = data.data.data;
-                    $scope.cantidad = data.data.data.length;
-                    $scope.counter = data.data.counter;
+                    if (data.data.state == 99) {
+                        swal({
+                            type: "error",
+                            title: data.data.title,
+                            text: data.data.msg,
+                            timer: 4000,
+                        }).then(function () {
+                            $cookies.remove("usuarioseguimiento");
+                            $location.path("/");
+                            $rootScope.galletainfo = undefined;
+                            $rootScope.permiso = false;
+                            $route.reload();
+                        });
+                    } else {
+                        $scope.listaRegistros = data.data.data;
+                        $scope.cantidad = data.data.data.length;
+                        $scope.counter = data.data.counter;
 
-                    $scope.totalItems = data.data.counter;
-                    $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
-                    $scope.endItem = $scope.currentPage * $scope.pageSize;
-                    if ($scope.endItem > data.data.counter) {
-                        $scope.endItem = data.data.counter;
+                        $scope.totalItems = data.data.counter;
+                        $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                        $scope.endItem = $scope.currentPage * $scope.pageSize;
+                        if ($scope.endItem > data.data.counter) {
+                            $scope.endItem = data.data.counter;
+                        }
                     }
                 },
 
@@ -9417,7 +9509,15 @@ app.controller(
         }
 
         $scope.buscarhistoricoSoporteGpon = function (param) {
-            if (param) {
+            if (!param) {
+                Swal({
+                    type: 'error',
+                    title: 'Opss...',
+                    text: 'Ingrese el pedido a buscar',
+                    timer: 4000
+                })
+                return;
+            } else {
                 data = {
                     page: $scope.currentPage,
                     size: $scope.pageSize,
@@ -9442,13 +9542,6 @@ app.controller(
                 function failed(data) {
                     console.log(data);
                 }
-            } else {
-                Swal({
-                    type: "error",
-                    title: "Oops...",
-                    text: "Ingrese el pedido a consultar",
-                    timer: 4000,
-                });
             }
         };
 
@@ -9493,50 +9586,25 @@ app.controller(
                         $scope.RegistrosSoporteGpon,
                         $rootScope.galletainfo
                     )
-                    .then(
-                        function (datos) {
-                            if (datos.data.state != 1) {
-                                Swal({
-                                    type: 'error',
-                                    title: 'Opsss...',
-                                    text: datos.data.msj,
-                                    timer: 4000
-                                })
-                            } else {
-                                var data = datos.data.data;
-                                var array = typeof data != 'object' ? JSON.parse(data) : data;
-                                var str = '';
-                                var column = `TAREA|| ARPON|| NAP|| HILO|| PORT_INTERNET_1|| PORT_INTERNET_2|| PORT_INTERNET_3|| PORT_INTERNET_4|| PORT_TELEVISION_1|| PORT_TELEVISION_2|| PORT_TELEVISION_3|| PORT_TELEVISION_4|| NUMERO_CONTACTO|| NOMBRE_CONTACTO|| UNEPEDIDO|| TASKTYPECATEGORY|| UNEMUNICIPIO|| UNEPRODUCTOS|| DATOSCOLA|| ENGINEER_ID|| ENGINEER_NAME|| MOBILE_PHONE|| SERIAL|| MAC|| TIPO_EQUIPO|| VELOCIDAD_NAVEGACION|| USER_ID_FIREBASE|| REQUEST_ID_FIREBASE|| USER_IDENTIFICATION_FIREBASE|| STATUS_SOPORTE|| FECHA_SOLICITUD_FIREBASE|| FECHA_CREADO|| RESPUESTA_SOPORTE|| TIPIFICACION|| OBSERVACION|| OBSERVACION TERRENO|| LOGIN|| FECHA_RESPUESTA|| FECHA_MARCA \r\n`;
-                                str += column;
-                                for (var i = 0; i < array.length; i++) {
-                                    var line = '';
-                                    for (var index in array[i]) {
-                                        if (line != '') line += '||'
-                                        line += array[i][index];
-                                    }
-
-                                    str += line + '\r\n';
-                                }
-                                var dateCsv = new Date();
-                                var yearCsv = dateCsv.getFullYear();
-                                var monthCsv = (dateCsv.getMonth() + 1 <= 9) ? '0' + (dateCsv.getMonth() + 1) : (dateCsv.getMonth() + 1);
-                                var dayCsv = (dateCsv.getDate() <= 9) ? '0' + dateCsv.getDate() : dateCsv.getDate();
-                                var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
-
-
-                                var blob = new Blob([str]);
-                                var elementToClick = window.document.createElement("a");
-                                elementToClick.href = window.URL.createObjectURL(blob, { type: 'text/csv' });
-                                elementToClick.download = "csv-registros-soportegpon" + fullDateCsv + ".csv";
-                                elementToClick.click();
-                            }
-
-                        },
-
-                        function errorCallback(response) {
-                            console.log(response);
+                    .then((data) => {
+                        if (data.data.state == 1) {
+                            var wb = XLSX.utils.book_new();
+                            var ws = XLSX.utils.json_to_sheet(data.data.data);
+                            XLSX.utils.book_append_sheet(wb, ws, 'soporte_gpon');
+                            XLSX.writeFile(wb, 'Soporte_gpon_' + tiempo + '.xlsx'); // Descarga el a
+                        } else {
+                            Swal({
+                                type: 'error',
+                                text: data.data.msj,
+                                timer: 4000
+                            })
                         }
-                    );
+                    })
+
+                    .catch((response) => {
+                        console.log(response);
+                    })
+
             }
         };
     }
@@ -9689,7 +9757,6 @@ app.controller(
                 .registroscodigoincompleto(data)
                 .then(
                     function (data) {
-                        console.log(data);
                         $scope.listaRegistros = data.data.data;
                         $scope.cantidad = data.data.totalItems;
                         $scope.counter = data.data.total_pages;
@@ -9806,48 +9873,23 @@ app.controller(
                         $scope.RegistrosCodigoIncompleto,
                         $rootScope.galletainfo
                     )
-                    .then(
-                        function (datos) {
-                            var data = datos.data[0];
-                            var array = typeof data != "object" ? JSON.parse(data) : data;
-                            var str = "";
-                            var column = `ID_CODIGO_INCOMPLETO|| TAREA|| NUMERO_CONTACTO|| NOMBRE_CONTACTO|| UNEPEDIDO|| TASKTYPECATEGORY|| UNEMUNICIPIO|| UNEPRODUCTOS|| ENGINEER_ID|| ENGINEER_NAME|| MOBILE_PHONE|| STATUS_SOPORTE|| FECHA_SOLICITUD_FIREBASE|| FECHA_CREADO|| RESPUESTA_GESTION|| OBSERVACION|| LOGIN|| FECHA_RESPUESTA \r\n`;
-                            str += column;
-                            for (var i = 0; i < array.length; i++) {
-                                var line = "";
-                                for (var index in array[i]) {
-                                    if (line != "") line += "||";
-                                    line += array[i][index];
-                                }
-
-                                str += line + "\r\n";
-                            }
-                            var dateCsv = new Date();
-                            var yearCsv = dateCsv.getFullYear();
-                            var monthCsv =
-                                dateCsv.getMonth() + 1 <= 9
-                                    ? "0" + (dateCsv.getMonth() + 1)
-                                    : dateCsv.getMonth() + 1;
-                            var dayCsv =
-                                dateCsv.getDate() <= 9
-                                    ? "0" + dateCsv.getDate()
-                                    : dateCsv.getDate();
-                            var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
-
-                            var blob = new Blob([str]);
-                            var elementToClick = window.document.createElement("a");
-                            elementToClick.href = window.URL.createObjectURL(blob, {
-                                type: "text/csv",
-                            });
-                            elementToClick.download =
-                                "RegistrosCodigoIncompleto-" + fullDateCsv + ".csv";
-                            elementToClick.click();
-                        },
-                        function errorCallback(response) {
-                            $scope.errorDatos = "No hay datos.";
-                            $scope.csvPend = false;
+                    .then((data) => {
+                        if (data.data.state == 1) {
+                            var wb = XLSX.utils.book_new();
+                            var ws = XLSX.utils.json_to_sheet(data.data.data);
+                            XLSX.utils.book_append_sheet(wb, ws, 'codigo_incompleto');
+                            XLSX.writeFile(wb, 'Codigo_incompleto_' + tiempo + '.xlsx'); // Descarga el a
+                        } else {
+                            Swal({
+                                type: 'error',
+                                text: data.data.msj,
+                                timer: 4000
+                            })
                         }
-                    );
+                    })
+                    .catch((error) => {
+                        console.log(console.error());
+                    })
             }
         };
     }
@@ -11146,7 +11188,19 @@ app.controller('ModalInstanceUsuarioKpiCtrl', function ($uibModalInstance, items
 
 app.controller(
     "gestionVentasInstaleTiendasCtrl",
-    function ($scope, $http, $rootScope, $route, services) {
+    function ($scope, $http, $rootScope, $route, services, $cookies, $location) {
+
+        var tiempo = new Date().getTime();
+        var date1 = new Date();
+        var year = date1.getFullYear();
+        var month =
+            date1.getMonth() + 1 <= 9
+                ? "0" + (date1.getMonth() + 1)
+                : date1.getMonth() + 1;
+        var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
+
+        tiempo = year + "-" + month + "-" + day;
+
         $scope.ventaIstale = {};
         init();
 
@@ -11217,9 +11271,7 @@ app.controller(
                         title: "Oops...",
                         text: data.data.msj,
                         timer: 4000,
-                    }).then(function () {
-                        $route.reload();
-                    });
+                    })
                 }
             });
         };
@@ -11330,49 +11382,24 @@ app.controller(
                     timer: 4000,
                 });
             } else {
-                services.csvVentaInstale($scope.ventaIstale).then(
-                    function (datos) {
-                        console.log(datos);
-                        var data = datos.data.data;
-                        var array = typeof data != "object" ? JSON.parse(data) : data;
-                        var str = "";
-                        var column = `pedido|| documento_cliente|| numero_contacto_cliente|| login_solicitud|| login_gestion|| regional|| tipificacion|| obs_tipificacion|| observacion_solicitud|| observacion_gestion|| jornada_atencion|| fecha_atencion||fecha_ingreso ||fecha_gestion|| documento_tecnico|| nombre_tecnico|| categoria  \r\n`;
-                        str += column;
-                        for (var i = 0; i < array.length; i++) {
-                            var line = "";
-                            for (var index in array[i]) {
-                                if (line != "") line += "||";
-                                line += array[i][index];
-                            }
-
-                            str += line + "\r\n";
+                services.csvVentaInstale($scope.ventaIstale)
+                    .then((data) => {
+                        if (data.data.state == 1) {
+                            var wb = XLSX.utils.book_new();
+                            var ws = XLSX.utils.json_to_sheet(data.data.data);
+                            XLSX.utils.book_append_sheet(wb, ws, 'venta_instale');
+                            XLSX.writeFile(wb, 'Venta_instale_' + tiempo + '.xlsx');
+                        } else {
+                            Swal({
+                                type: 'error',
+                                text: data.data.msj,
+                                timer: 4000
+                            })
                         }
-                        var dateCsv = new Date();
-                        var yearCsv = dateCsv.getFullYear();
-                        var monthCsv =
-                            dateCsv.getMonth() + 1 <= 9
-                                ? "0" + (dateCsv.getMonth() + 1)
-                                : dateCsv.getMonth() + 1;
-                        var dayCsv =
-                            dateCsv.getDate() <= 9
-                                ? "0" + dateCsv.getDate()
-                                : dateCsv.getDate();
-                        var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
-
-                        var blob = new Blob([str]);
-                        var elementToClick = window.document.createElement("a");
-                        elementToClick.href = window.URL.createObjectURL(blob, {
-                            type: "text/csv",
-                        });
-                        elementToClick.download = "csvVentaInstale-" + fullDateCsv + ".csv";
-                        elementToClick.click();
-                    },
-
-                    function errorCallback(response) {
-                        $scope.errorDatos = "No hay datos.";
-                        $scope.csvPend = false;
-                    }
-                );
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
             }
         };
 
@@ -11551,8 +11578,20 @@ app.controller(
                     } else {
                         data.observacion_seguimiento = obs.observacion_gestion;
                         services.guardaVentaInstale(data).then(function (data) {
-                            console.log(data);
-                            if (data.data.state == 1) {
+                            if (data.data.state == 99) {
+                                swal({
+                                    type: "error",
+                                    title: data.data.title,
+                                    text: data.data.msg,
+                                    timer: 4000,
+                                }).then(function () {
+                                    $cookies.remove("usuarioseguimiento");
+                                    $location.path("/");
+                                    $rootScope.galletainfo = undefined;
+                                    $rootScope.permiso = false;
+                                    $route.reload();
+                                });
+                            }else if (data.data.state == 1) {
                                 setTimeout(() => {
                                     $("#modalVentaInstale").modal("hide");
                                 }, 500);
@@ -11581,6 +11620,43 @@ app.controller(
 
     }
 );
+
+app.controller('validacionesAppCtrl', function ($scope, $http, $rootScope, $route, services) {
+
+    estadoActual();
+
+    function estadoActual() {
+        services.estadoActualValidacionApp().then(function (data) {
+            $scope.contingenciaSara = data.data.data[0].valida;
+            $scope.contingenciaEquipo = data.data.data[1].valida;
+            $scope.gponInfraestructura = data.data.data[2].valida;
+        })
+    }
+
+    $scope.cambiaEstado = function (data, value) {
+        data = { 'tipo': data, 'valor': value }
+        services.cambiaValidacionApp(data).then(function (response) {
+            if (response.data.state == 1) {
+                Swal({
+                    type: 'success',
+                    text: response.data.msj,
+                    timer: 4000
+                }).then(function () {
+                    $route.reload();
+                })
+            } else {
+                Swal({
+                    type: 'error',
+                    text: response.data.msj,
+                    timer: 4000
+                }).then(function () {
+                    $route.reload();
+                })
+            }
+        })
+    }
+})
+
 
 app.controller(
     'MenuPerfilCtrl',
@@ -11736,7 +11812,7 @@ app.controller(
 
         $scope.cambiaEstadoSubmenu = (id, estado) => {
             Swal({
-                title: "Está seguro?",
+                title: "Está seguro que quiere cambiar el estado de este menu?",
                 text: "Algunos datos pueden perderse.",
                 type: "warning",
                 showCancelButton: true,
@@ -12107,11 +12183,18 @@ app.config([
                 authorize: true,
             })
 
+            .when('/validaciones-app', {
+                title: 'Validaciones App',
+                templateUrl: 'partial/validaciones-app.html',
+                controller: 'validacionesAppCtrl',
+                authorize: true
+            })
+
             .otherwise({
                 redirectTo: "/",
             });
 
-        /* $locationProvider.html5Mode(true);  */
+        //$locationProvider.html5Mode(true);
 
         $locationProvider
             .html5Mode({

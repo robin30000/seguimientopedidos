@@ -1,0 +1,15 @@
+<div class="cuerpoModal">
+  <h3>Agregar un nuevo submenu</h3>
+
+  <form>
+    <div class="form-group">
+      <label for="nombre">Nombre Perfil</label>
+      <input type="text" class="form-control" id="nombre" ng-model="submenu.nombre">
+    </div>
+
+    <div class="form-group">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="$ctrl.cancel()">Cancelar</button>
+      <button type="button" class="btn btn-primary" ng-click="$ctrl.guardaPerfil()">Guardar</button>
+    </div>
+  </form>
+</div>

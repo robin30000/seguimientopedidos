@@ -27,6 +27,7 @@
                     <i class="fa fa-refresh" aria-hidden="true"></i>
                   </button>
                 </li>
+                &nbsp;&nbsp;
               </ul>
             </div>
 
@@ -162,10 +163,10 @@
 
                   <button type="button" class="btn btn-default btn-xs" ng-click="registrosQuejasGo(quejago)"
                     ng-disabled="loading" tooltip-placement="top" uib-tooltip="Buscar">
-                    <i class="fa fa-search-plus" aria-hidden="true"></i>
+                    <i class="fa fa-search" aria-hidden="true"></i>
                   </button>
 
-                  <button type="button" class="btn btn-info btn-xs" title="Exportar Registros"
+                  <button type="button" class="btn btn-success btn-xs" title="Exportar Registros"
                     ng-click="csvQuejaGo(quejago)" ng-disabled="loading" tooltip-placement="top" uib-tooltip="Exportar">
                     <i class="fa fa-cloud-download" aria-hidden="true"> </i>
                   </button>
@@ -175,16 +176,17 @@
                       placeholder="Buscar numero SS" autocomplete="off" />&nbsp;
 
                     <button type="button" class="btn btn-default btn-xs" ng-click="detallePedidoQuejaGo(pedido)"
-                      title="Buscar" data-toggle="tooltip" data-placement="left" ng-disabled="loading">
+                    tooltip-placement="top" uib-tooltip="Buscar" ng-disabled="loading">
                       <i class="fa fa-search" aria-hidden="true"></i>
                     </button> </b>&nbsp;
                 </li>
                 <li>
-                  <button type="button" class="btn btn-info btn-xs" ng-click="recargaPage()" tooltip-placement="top"
+                  <button type="button" class="btn btn-default btn-xs" ng-click="recargaPage()" tooltip-placement="top"
                     uib-tooltip="Actualizar" ng-disabled="loading">
                     <i class="fa fa-refresh" aria-hidden="true"></i>
                   </button>
                 </li>
+                &nbsp;&nbsp;
               </ul>
             </div>
 

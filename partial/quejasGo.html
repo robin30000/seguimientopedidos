@@ -18,7 +18,10 @@
 				<div class="panel-heading nav navbar-default">
 					<div class="col-lg-12 col-xs-10">
 						<ul class="nav navbar-nav navbar-right">
+							<li>Registros:<span class="badge badge-default">{{totalItems}}</li>
+								&nbsp;</span>
 							<b>Buscar:</b>
+							&nbsp;&nbsp;
 							<select class="btn btn-default btn-xs grupo-select" name="producto"
 								ng-model="Registros.columnaBusqueda">
 								<option value="" disabled>Seleccione</option>
@@ -42,15 +45,15 @@
 							<i class="fa fa-calendar fa-fw"></i>
 							<button type="button" class="btn btn-default btn-xs" ng-click="validarDatos(Registros)"
 								ng-disabled="loading" tooltip-placement="top" uib-tooltip="Buscar">
-								<i class="fa fa-search-plus" aria-hidden="true"></i>
+								<i class="fa fa-search" aria-hidden="true"></i>
 							</button>
 							<button type="button" ng-show="galletainfo.perfil == 13 || galletainfo.perfil == 1"
-								class="btn btn-info btn-xs" tooltip-placement="top" uib-tooltip="Exportar"
+								class="btn btn-success btn-xs" tooltip-placement="top" uib-tooltip="Exportar"
 								ng-click="csvQuejasGo(Registros)" ng-disabled="loading">
 								<i class="fa fa-cloud-download" aria-hidden="true"> </i>
 							</button>
 
-							<button type="button" ng-show="galletainfo.PERFIL !== '8'" class="btn btn-info btn-xs"
+							<button type="button" ng-show="galletainfo.PERFIL !== '8'" class="btn btn-success btn-xs"
 								tooltip-placement="top" uib-tooltip="Exportar" ng-click="csvQuejasGo()"
 								ng-disabled="loading" title="Exportar" tooltip data-placement="top">
 								<i class="fa fa-cloud-download" aria-hidden="true"> </i>

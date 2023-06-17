@@ -35,15 +35,15 @@
                     placeholder="Buscar..." tooltip data-placement="bottom" ng-disabled="loading" select-on-click
                     capitalize />
                   <button type="button" class="btn btn-success btn-xs" ng-click="buscarUsuario(concepto, usuario)"
-                    ng-disabled="loading" tooltip title="Buscar">
+                    ng-disabled="loading" tooltip-placement="top" uib-tooltip="Buscar">
                     <i class="fa fa-search-plus" aria-hidden="true"> </i>
                   </button>
 
                   &nbsp;
                 </div>
                 <button type="button" class="btn btn-default btn-xs" ng-click="crearModal()" data-toggle="modal"
-                  data-target="#crearModal" data-backdrop="static" ng-disabled="loading" tooltip title="Agregar usuario"
-                  data-placement="top" data-html="true" data-selector=""><i class="fa fa-user-plus" aria-hidden="true">
+                  data-target="#crearModal" data-backdrop="static" ng-disabled="loading"
+                  tooltip-placement="top" uib-tooltip="Crear usuario"><i class="fa fa-user-plus" aria-hidden="true">
                   </i>
                 </button>
               </li>
@@ -78,13 +78,13 @@
                   </button> -->
 
                   <button type="button" class="btn btn-info btn-xs" ng-click="editarModal(data)" data-toggle="modal"
-                    data-target="#editarModal" data-backdrop="static" ng-disabled="loading">
+                    data-target="#editarModal" data-backdrop="static" ng-disabled="loading" tooltip-placement="top" uib-tooltip="Editar usuario">
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                   </button>
-                  <button type="button" class="btn btn-info btn-xs" ng-click="editarModal(data)" data-toggle="modal"
+                  <!-- <button type="button" class="btn btn-info btn-xs" ng-click="editarModal(data)" data-toggle="modal"
                     data-target="#eliminaUsuario" data-backdrop="static" ng-disabled="loading">
                     <i class="fa fa-trash" aria-hidden="true"></i>
-                  </button>
+                  </button> -->
                 </td>
               </tr>
             </tbody>

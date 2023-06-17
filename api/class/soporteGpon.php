@@ -1,5 +1,6 @@
 <?php
 require_once '../class/conection.php';
+
 class soporteGpon
 {
 
@@ -13,6 +14,8 @@ class soporteGpon
     public function getSoporteGponByTask($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $task = $data;
 
@@ -75,6 +78,8 @@ class soporteGpon
     public function validarLlenadoSoporteGpon($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $stmt = $this->_DB->prepare("SELECT id_soporte, tarea, unepedido FROM soporte_gpon WHERE tarea = :task ORDER BY fecha_creado DESC LIMIT 1;");
             $stmt->execute([
@@ -96,6 +101,8 @@ class soporteGpon
     {
 
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $task = $params['task'];
             $arpon = $params['arpon'];
@@ -241,7 +248,9 @@ class soporteGpon
 
     public function getListaPendientesSoporteGpon()
     {
-
+        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        session_set_cookie_params(3600);
+        session_start();
         $hoy = date("Y-m-d");
 
         /*LOGICA QUE LLEVA LA INFORMACION A TV, INTERNET-ToIp Y CORREGIR PORTAFOLIO*/
@@ -276,6 +285,8 @@ class soporteGpon
     {
 
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
@@ -343,6 +354,8 @@ class soporteGpon
     {
 
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
@@ -436,6 +449,8 @@ class soporteGpon
     {
 
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $usuarioid = $_SESSION['login'];
             $datos = $params['datos'];
@@ -474,45 +489,56 @@ class soporteGpon
     public function marcarEngestionGpon($params)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
-            $login = $_SESSION['login'];
-            $today = date("Y-m-d H:i:s");
 
-            $datosguardar = $params['datos'];
-            $id_soporte = $datosguardar['id_soporte'];
-            $status_soporte = $datosguardar['status_soporte'];
-
-            if ($status_soporte == '2') {
-                $gestion = 1;
+            if (!$_SESSION) {
+                $response = ['state' => 99, 'title' => 'Su session ha expirado', 'text' => 'Inicia session nuevamente para continuar'];
             } else {
-                $gestion = 0;
-            }
+                $login = $_SESSION['login'];
+                $today = date("Y-m-d H:i:s");
 
-            $rst = $this->_DB->query("SELECT id_soporte, login FROM soporte_gpon WHERE id_soporte = '$id_soporte' AND status_soporte = '2' AND login IS NOT NULL");
-            $rst->rowCount();
-            if ($rst->rowCount() == 1) {
-                $row = $rst->fetchAll(PDO::FETCH_ASSOC);
-                $loginsoportegpon = $row[0]['login'];
-                $id = $row[0]['id_soporte'];
+                $datosguardar = $params['datos'];
+                $id_soporte = $datosguardar['id_soporte'];
+                $status_soporte = $datosguardar['status_soporte'];
 
-                if ($login == $loginsoportegpon) {
-                    $this->_DB->query("UPDATE soporte_gpon SET status_soporte = '0', login = NULL, fecha_marca = '' WHERE id_soporte ='$id'");
-                    $response = ['state' => 1, 'msj' => 'El pedido se encuentra desbloqueado'];
+                if ($status_soporte == '2') {
+                    $gestion = 1;
                 } else {
-                    $response = ['state' => 0, 'msj' => 'El pedido se encuentra en gestión por otro asesor'];
+                    $gestion = 0;
                 }
-            } else {
 
-                $rst = $this->_DB->query("SELECT id_soporte, login FROM soporte_gpon WHERE id_soporte = '$id_soporte' AND status_soporte = '0' AND login IS NULL");
+                $rst = $this->_DB->query("SELECT id_soporte, login FROM soporte_gpon WHERE id_soporte = '$id_soporte' AND status_soporte = 2");
                 $rst->execute();
                 if ($rst->rowCount() == 1) {
+                    //echo 1;exit();
                     $row = $rst->fetchAll(PDO::FETCH_ASSOC);
+                    $loginsoportegpon = $row[0]['login'];
                     $id = $row[0]['id_soporte'];
-                    //echo "UPDATE soporte_gpon SET status_soporte = 2, login = '$login', fecha_marca = '$today' WHERE id_soporte = '$id'";exit();
-                    $sqlupdate = $this->_DB->query("UPDATE soporte_gpon SET status_soporte = '2', login = '$login', fecha_marca = '$today' WHERE id_soporte = '$id'");
-                    $sqlupdate->execute();
 
-                    $response = ['state' => 1, 'msj' => 'El pedido se encuentra bloqueado'];
+                    //echo $loginsoportegpon.''.$login;exit();
+
+                    if ($login == $loginsoportegpon) {
+                        $stmt = $this->_DB->query("UPDATE soporte_gpon SET status_soporte = 0, login = NULL, fecha_marca = '' WHERE id_soporte ='$id'");
+                        $stmt->execute();
+                        $response = ['state' => 1, 'msj' => 'El pedido se encuentra desbloqueado'];
+                    } else {
+                        $response = ['state' => 0, 'msj' => 'El pedido se encuentra en gestión por otro asesor'];
+                    }
+                } else {
+
+                    $rst = $this->_DB->query("SELECT id_soporte, login FROM soporte_gpon WHERE id_soporte = '$id_soporte' AND status_soporte = 0");
+                    $rst->execute();
+                    if ($rst->rowCount() == 1) {
+                        $row = $rst->fetchAll(PDO::FETCH_ASSOC);
+                        $id = $row[0]['id_soporte'];
+                        //echo "UPDATE soporte_gpon SET status_soporte = 2, login = '$login', fecha_marca = '$today' WHERE id_soporte = '$id'";exit();
+                        $sqlupdate = $this->_DB->query("UPDATE soporte_gpon SET status_soporte = 2, login = '$login', fecha_marca = '$today' WHERE id_soporte = '$id'");
+                        $sqlupdate->execute();
+
+                        $response = ['state' => 1, 'msj' => 'El pedido se encuentra bloqueado'];
+                    }
                 }
             }
         } catch (PDOException $e) {
@@ -525,6 +551,8 @@ class soporteGpon
     public function BuscarSoporteGpon($pedido)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $pedido = $pedido['pedido'];
             if (!$_SESSION) {

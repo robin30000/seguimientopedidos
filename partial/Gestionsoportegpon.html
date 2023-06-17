@@ -23,19 +23,22 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
               <b>
-                <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-backdrop="static" ng-click="contadorGpon()"
+                <!-- <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-backdrop="static" ng-click="contadorGpon()"
                 tooltip-placement="top" uib-tooltip="Contador"
-                  data-target="#infomodal" data-placement="top" data-html="true"> Contador</button>
-                  <!-- <button type="button" class="btn btn-info btn-xs" data-backdrop="static" ng-click="contadorGpon()"
-                tooltip-placement="top" uib-tooltip="Contador"  popover-placement="left" uib-popover-html="contadorGpon">Contador</button> -->
+                  data-target="#infomodal" data-placement="top" data-html="true"> Contador</button> -->
+                <button type="button" class="btn btn-info btn-xs" data-backdrop="static" ng-click="contadorGpon()"
+                   popover-placement="bottom" popover-title="Contador"
+                  uib-popover-html="contadorGpon">Contador</button>
+
+&nbsp;&nbsp;&nbsp;&nbsp;
               </b>
 
               <b>
-                <button type="button" class="btn btn-default btn-xs" ng-click="listarsoportegpon()" tooltip-placement="top"
-                uib-tooltip="Actualizar" ng-disabled="loading">
+                <button type="button" class="btn btn-default btn-xs" ng-click="listarsoportegpon()"
+                  tooltip-placement="top" uib-tooltip="Actualizar" ng-disabled="loading">
                   <i class="fa fa-refresh" aria-hidden="true"></i>
                 </button>
-              </b>&nbsp;
+              </b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </ul>
           </div>
           <div class="">
@@ -156,7 +159,7 @@
                       </button>
                     </td>
                     <td class="text-center">
-                      <select ng-model="data.tipificaciones" class="btn btn-default btn-xs grupo-select" multiple 
+                      <select ng-model="data.tipificaciones" class="btn btn-default btn-xs grupo-select" multiple
                         ui-select2="groupSetup" name="tipificaciones" id="tipificaciones{{data.id_soporte}}">
                         <option value="Actualizar Infra">
                           Actualizar Infra
@@ -196,8 +199,7 @@
                     </td>
                     <td>
                       <button type="button" class="btn btn-info btn-xs" tooltip-placement="top"
-                      uib-tooltip="Gestionar soporte gpon"
-                        ng-click="gestionarSoporteGpon(data.id_soporte)">
+                        uib-tooltip="Gestionar soporte gpon" ng-click="gestionarSoporteGpon(data.id_soporte)">
                         <i class="fa fa-edit" aria-hidden="true"></i>
                       </button>
                     </td>

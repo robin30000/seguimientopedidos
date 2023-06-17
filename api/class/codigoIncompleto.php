@@ -1,6 +1,7 @@
 <?php
 require_once '../class/conection.php';
 
+
 class codigoIncompleto
 {
     private $_DB;
@@ -14,6 +15,8 @@ class codigoIncompleto
     {
 
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
@@ -61,7 +64,7 @@ class codigoIncompleto
                 $stmt->execute();
 
                 if ($stmt->rowCount()) {
-                    $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     $response = ['state' => 1, 'data' => $result, 'total' => $total_pages, 'counter' => intval($totalCount)];
                 } else {
                     $response = ['Error', 400];
@@ -77,15 +80,17 @@ class codigoIncompleto
     public function gestionarCodigoIncompleto($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
             } else {
 
                 $id_codigo_incompleto = $data['id_codigo_incompleto'];
-                $tipificacion         = $data['tipificacion'];
-                $observacion          = $data['observacion'];
-                $fecha_respuesta      = date('Y-m-d H:i:s');
+                $tipificacion = $data['tipificacion'];
+                $observacion = $data['observacion'];
+                $fecha_respuesta = date('Y-m-d H:i:s');
 
                 $stmt = $this->_DB->prepare("UPDATE gestion_codigo_incompleto
                                             SET status_soporte    = 1,
@@ -95,10 +100,10 @@ class codigoIncompleto
                                                 fecha_respuesta   = :fecha_respuesta
                                             WHERE id_codigo_incompleto = :id_codigo_incompleto");
                 $stmt->execute([
-                    ':tipificacion'         => $tipificacion,
-                    ':observacion'          => $observacion,
-                    ':login'                => $_SESSION['login'],
-                    ':fecha_respuesta'      => $fecha_respuesta,
+                    ':tipificacion' => $tipificacion,
+                    ':observacion' => $observacion,
+                    ':login' => $_SESSION['login'],
+                    ':fecha_respuesta' => $fecha_respuesta,
                     ':id_codigo_incompleto' => $id_codigo_incompleto,
                 ]);
 
@@ -118,6 +123,8 @@ class codigoIncompleto
     public function registroscodigoincompleto($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
 
             if (empty($data['data']['fechaini'])) {
@@ -128,13 +135,13 @@ class codigoIncompleto
                 $fechafin = $data['data']['fechafin'];
             }
             $condicion = '';
-            if (!empty( $data['tarea'])) {
+            if (!empty($data['tarea'])) {
                 $tarea = $data['tarea'];
                 $condicion = " AND tarea = '$tarea' ";
             }
 
 
-            $stmt = $this->_DB->query("SELECT * FROM gestion_codigo_incompleto WHERE 1=1 $condicion AND fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59'");
+            $stmt = $this->_DB->query("SELECT * FROM gestion_codigo_incompleto WHERE 1=1 $condicion AND status_soporte = 1 AND fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59'");
             $stmt->execute();
             $totalItems = $stmt->rowCount();
 
@@ -170,7 +177,7 @@ class codigoIncompleto
                                         END AS codigo
                                     FROM
                                         gestion_codigo_incompleto
-                                    WHERE fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' $condicion
+                                    WHERE 1=1 AND status_soporte = 1 AND fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' $condicion
                                     ORDER BY fecha_creado DESC
                                     LIMIT $offset, $pagesize");
 
@@ -195,7 +202,8 @@ class codigoIncompleto
     {
 
         try {
-
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $usuarioid = $_SESSION['login'];
 
@@ -214,10 +222,10 @@ class codigoIncompleto
 
             $resQuery = $this->_DB->query($query);
             if ($resQuery->rowCount()) {
-                $result   = $resQuery->fetchAll(PDO::FETCH_ASSOC);
-                $response = [$result, 201];
+                $result = $resQuery->fetchAll(PDO::FETCH_ASSOC);
+                $response = array('state' => 1, 'data' => $result);
             } else {
-                $response = ['', 203];
+                $response = array('state' => 1, 'msj' => 'No se encontraron registros');
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());

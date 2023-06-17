@@ -14,6 +14,8 @@ class user
     {
 
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $stmt = $this->_DB->prepare("update usuarios
                                                 set nombre         = :nombre,
@@ -23,11 +25,11 @@ class user
                                                     perfil         = :perfil
                                                 where id = :id");
             $stmt->execute([
-                ':nombre'         => $data['nombre'],
+                ':nombre' => $data['nombre'],
                 ':identificacion' => $data['identificacion'],
-                ':login'          => $data['usuarioid'],
-                ':password'       => $data['password'],
-                ':perfil'         => $data['perfil'],
+                ':login' => $data['usuarioid'],
+                ':password' => $data['password'],
+                ':perfil' => $data['perfil'],
             ]);
 
             if ($stmt->rowCount() == 1) {
@@ -45,13 +47,15 @@ class user
     public function editarRegistro($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
-            $user           = $_SESSION['login'];
-            $datos          = $data['datosEdicion'];
-            $accion         = $datos['accion'];
+            $user = $_SESSION['login'];
+            $datos = $data['datosEdicion'];
+            $accion = $datos['accion'];
             $tipo_pendiente = $datos['tipo_pendiente'];
-            $observaciones  = $datos['observaciones'];
-            $id             = $datos['id'];
+            $observaciones = $datos['observaciones'];
+            $id = $datos['id'];
 
             $stmt = $this->_DB->prepare("update registros
                                                 set asesor         = :user,
@@ -60,11 +64,11 @@ class user
                                                     observaciones  = :observaciones
                                                 where id = :id");
             $stmt->execute([
-                ':user'           => $user,
-                ':accion'         => $accion,
+                ':user' => $user,
+                ':accion' => $accion,
                 ':tipo_pendiente' => $tipo_pendiente,
-                ':observaciones'  => $observaciones,
-                ':id'             => $id,
+                ':observaciones' => $observaciones,
+                ':id' => $id,
             ]);
 
             if ($stmt->rowCount() == 1) {
@@ -84,15 +88,17 @@ class user
     {
 
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
-            $user          = $_SESSION['login'];
-            $crearpedido   = $data['datospedidoComercial'];
-            $ciudad        = $crearpedido['CIUDAD'];
-            $estado        = $crearpedido['ESTADO'];
-            $gestion       = $crearpedido['GESTION'];
+            $user = $_SESSION['login'];
+            $crearpedido = $data['datospedidoComercial'];
+            $ciudad = $crearpedido['CIUDAD'];
+            $estado = $crearpedido['ESTADO'];
+            $gestion = $crearpedido['GESTION'];
             $observaciones = $crearpedido['OBSERVACIONES'];
             $pedido_actual = $crearpedido['PEDIDO_ACTUAL'];
-            $pedido_nuevo  = $crearpedido['PEDIDO_NUEVO'];
+            $pedido_nuevo = $crearpedido['PEDIDO_NUEVO'];
             $clasificacion = $crearpedido['CLASIFICACION'];
 
             $stmt = $this->_DB->prepare("INSERT INTO registros_comercial (LOGIN_ASESOR,
@@ -107,13 +113,13 @@ class user
                                                         :gestion, :clasificacion, :estado, :observaciones)");
 
             $stmt->execute([
-                ':user'          => $user,
+                ':user' => $user,
                 ':pedido_actual' => $pedido_actual,
-                ':pedido_nuevo'  => $pedido_nuevo,
-                ':ciudad'        => $ciudad,
-                ':gestion'       => $gestion,
+                ':pedido_nuevo' => $pedido_nuevo,
+                ':ciudad' => $ciudad,
+                ':gestion' => $gestion,
                 ':clasificacion' => $clasificacion,
-                ':estado'        => $estado,
+                ':estado' => $estado,
                 ':observaciones' => $observaciones,
             ]);
 
@@ -131,13 +137,15 @@ class user
     {
 
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
-            $login       = $_SESSION['login'];
-            $user        = $login['LOGIN'];
-            $planNPS     = $data;
+            $login = $_SESSION['login'];
+            $user = $login['LOGIN'];
+            $planNPS = $data;
             $responsable = $planNPS['responsable'];
-            $regional    = $planNPS['regional'];
-            $plan        = $planNPS['plan'];
+            $regional = $planNPS['regional'];
+            $plan = $planNPS['plan'];
 
             $stmt = $this->_DB->prepare("INSERT INTO npsPlanTrabajo (responsable,
                                                 regional,
@@ -148,9 +156,9 @@ class user
                                                         :user)");
             $stmt->execute([
                 ':responsable' => $responsable,
-                ':regional'    => $regional,
-                ':plan'        => $plan,
-                ':user'        => $user,
+                ':regional' => $regional,
+                ':plan' => $plan,
+                ':user' => $user,
             ]);
 
             if ($stmt->rowCount() == 1) {
@@ -170,6 +178,8 @@ class user
     {
         try {
 
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
@@ -186,14 +196,14 @@ class user
             } elseif (!isset($data['OBSERVACIONES']) || $data['OBSERVACIONES'] == '') {
                 $response = ['state' => 0, 'text' => 'El proceso es requerido'];
             } else {
-                $user          = $_SESSION['login'];
-                $login_asesor  = $data['LOGIN_ASESOR'];
-                $pedido        = $data['PEDIDO'];
-                $proceso       = $data['PROCESO'];
-                $producto      = $data['PRODUCTO'];
-                $accion        = $data['ACCION'];
-                $actividad     = $data['ACTIVIDAD'];
-                $actividad2    = $data['ACTIVIDAD2'] ?? "";
+                $user = $_SESSION['login'];
+                $login_asesor = $data['LOGIN_ASESOR'];
+                $pedido = $data['PEDIDO'];
+                $proceso = $data['PROCESO'];
+                $producto = $data['PRODUCTO'];
+                $accion = $data['ACCION'];
+                $actividad = $data['ACTIVIDAD'];
+                $actividad2 = $data['ACTIVIDAD2'] ?? "";
                 $observaciones = $data['OBSERVACIONES'];
                 $observaciones = str_replace("\n", "/", $observaciones);
 
@@ -208,14 +218,14 @@ class user
                                                         :proceso,
                                                         :producto, :accion, :actividad, :actividad2, :observaciones)");
                 $stmt->execute([
-                    ':user'          => $user,
-                    ':login_asesor'  => $login_asesor,
-                    ':pedido'        => $pedido,
-                    ':proceso'       => $proceso,
-                    ':producto'      => $producto,
-                    ':accion'        => $accion,
-                    ':actividad'     => $actividad,
-                    ':actividad2'    => $actividad2,
+                    ':user' => $user,
+                    ':login_asesor' => $login_asesor,
+                    ':pedido' => $pedido,
+                    ':proceso' => $proceso,
+                    ':producto' => $producto,
+                    ':accion' => $accion,
+                    ':actividad' => $actividad,
+                    ':actividad2' => $actividad2,
                     ':observaciones' => $observaciones,
                 ]);
 
@@ -237,16 +247,16 @@ class user
     {
         try {
 
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
             } else {
-
-                session_start();
-                $idcambioequipo   = $params['idcambioequipo'];
+                $idcambioequipo = $params['idcambioequipo'];
                 $duracion_llamada = $params['duracion_llamada'];
-                $crearpedido      = $params['datospedido'];
-                $user             = $_SESSION['login'];
+                $crearpedido = $params['datospedido'];
+                $user = $_SESSION['login'];
                 /* $plantilla = $params['plantilla'];
                 $datosClick = $params['datosClick'];
                 $id_llamada = $crearpedido['id_llamada'];
@@ -271,34 +281,34 @@ class user
                 $tipointeraccion = $crearpedido['interaccion'];
                 $diagnostico = $crearpedido['diagnostico']; */
 
-                $plantilla       = (isset($params['plantilla'])) ? $params['plantilla'] : '';
-                $datosClick      = (isset($params['datosClick'])) ? $params['datosClick'] : '';
-                $id_llamada      = (isset($crearpedido['id_llamada'])) ? $crearpedido['id_llamada'] : '';
-                $proceso         = (isset($crearpedido['proceso'])) ? $crearpedido['proceso'] : '';
-                $accion          = (isset($crearpedido['accion'])) ? $crearpedido['accion'] : '';
-                $subaccion       = (isset($crearpedido['subAccion'])) ? $crearpedido['subAccion'] : '';
-                $observaciones   = (isset($crearpedido['observaciones'])) ? $crearpedido['observaciones'] : '';
-                $cod_familiar    = (isset($crearpedido['cod_familiar'])) ? $crearpedido['cod_familiar'] : '';
-                $prueba_integra  = (isset($crearpedido['prueba_integra'])) ? $crearpedido['prueba_integra'] : '';
-                $telefonia_tdm   = (isset($crearpedido['telefonia_tdm'])) ? $crearpedido['telefonia_tdm'] : '';
-                $telev_hfc       = (isset($crearpedido['telev_hfc'])) ? $crearpedido['telev_hfc'] : '';
-                $iptv            = (isset($crearpedido['iptv'])) ? $crearpedido['iptv'] : '';
-                $internet        = (isset($crearpedido['internet'])) ? $crearpedido['internet'] : '';
-                $toip            = (isset($crearpedido['toip'])) ? $crearpedido['toip'] : '';
-                $smartPlay       = (isset($crearpedido['smartPlay'])) ? $crearpedido['smartPlay'] : '';
-                $observaciones   = (isset($crearpedido['observaciones'])) ? $crearpedido['observaciones'] : '';
-                $observaciones   = str_replace("\n", "/", $observaciones);
-                $observaciones   = str_replace("'", " ", $observaciones);
-                $pruebaSMNET     = (isset($crearpedido['pruebaSMNET'])) ? $crearpedido['pruebaSMNET'] : '';
+                $plantilla = (isset($params['plantilla'])) ? $params['plantilla'] : '';
+                $datosClick = (isset($params['datosClick'])) ? $params['datosClick'] : '';
+                $id_llamada = (isset($crearpedido['id_llamada'])) ? $crearpedido['id_llamada'] : '';
+                $proceso = (isset($crearpedido['proceso'])) ? $crearpedido['proceso'] : '';
+                $accion = (isset($crearpedido['accion'])) ? $crearpedido['accion'] : '';
+                $subaccion = (isset($crearpedido['subAccion'])) ? $crearpedido['subAccion'] : '';
+                $observaciones = (isset($crearpedido['observaciones'])) ? $crearpedido['observaciones'] : '';
+                $cod_familiar = (isset($crearpedido['cod_familiar'])) ? $crearpedido['cod_familiar'] : '';
+                $prueba_integra = (isset($crearpedido['prueba_integra'])) ? $crearpedido['prueba_integra'] : '';
+                $telefonia_tdm = (isset($crearpedido['telefonia_tdm'])) ? $crearpedido['telefonia_tdm'] : '';
+                $telev_hfc = (isset($crearpedido['telev_hfc'])) ? $crearpedido['telev_hfc'] : '';
+                $iptv = (isset($crearpedido['iptv'])) ? $crearpedido['iptv'] : '';
+                $internet = (isset($crearpedido['internet'])) ? $crearpedido['internet'] : '';
+                $toip = (isset($crearpedido['toip'])) ? $crearpedido['toip'] : '';
+                $smartPlay = (isset($crearpedido['smartPlay'])) ? $crearpedido['smartPlay'] : '';
+                $observaciones = (isset($crearpedido['observaciones'])) ? $crearpedido['observaciones'] : '';
+                $observaciones = str_replace("\n", "/", $observaciones);
+                $observaciones = str_replace("'", " ", $observaciones);
+                $pruebaSMNET = (isset($crearpedido['pruebaSMNET'])) ? $crearpedido['pruebaSMNET'] : '';
                 $UNESourceSystem = (isset($crearpedido['UNESourceSystem'])) ? $crearpedido['UNESourceSystem'] : '';
-                $codigo          = (isset($crearpedido['pendiente'])) ? $crearpedido['pendiente'] : '';
+                $codigo = (isset($crearpedido['pendiente'])) ? $crearpedido['pendiente'] : '';
                 $tipointeraccion = (isset($crearpedido['interaccion'])) ? $crearpedido['interaccion'] : '';
-                $diagnostico     = (isset($crearpedido['diagnostico'])) ? $crearpedido['diagnostico'] : '';
+                $diagnostico = (isset($crearpedido['diagnostico'])) ? $crearpedido['diagnostico'] : '';
 
                 $clienteContestaLlamada = (isset($crearpedido['clienteContestaLlamada'])) ? $crearpedido['clienteContestaLlamada'] : '';
-                $razonNoInstalacion     = (isset($crearpedido['razonNoInstalacion'])) ? $crearpedido['razonNoInstalacion'] : '';
-                $tecnicoVivienda        = (isset($crearpedido['tecnicoVivienda'])) ? $crearpedido['tecnicoVivienda'] : '';
-                $conocimientoAgenda     = (isset($crearpedido['conocimientoAgenda'])) ? $crearpedido['conocimientoAgenda'] : '';
+                $razonNoInstalacion = (isset($crearpedido['razonNoInstalacion'])) ? $crearpedido['razonNoInstalacion'] : '';
+                $tecnicoVivienda = (isset($crearpedido['tecnicoVivienda'])) ? $crearpedido['tecnicoVivienda'] : '';
+                $conocimientoAgenda = (isset($crearpedido['conocimientoAgenda'])) ? $crearpedido['conocimientoAgenda'] : '';
 
                 if ($clienteContestaLlamada != '') {
                     $observaciones = '¿Técnico esta en la vivienda?: ' . $tecnicoVivienda . '||¿Tenia conocimiento de la agenda?: ' . $conocimientoAgenda . '||¿cliente contesta la llamada?: ' . $clienteContestaLlamada . '||¿Nos podría indicar por que no se puede instalar los servicios?: ' . $razonNoInstalacion . '||' . $observaciones;
@@ -310,10 +320,10 @@ class user
 
                 if ($datosClick['pEDIDO_UNE'] == "" || $datosClick['pEDIDO_UNE'] == "TIMEOUT") {
 
-                    $tecnico              = $crearpedido['tecnico'];
-                    $despacho             = $crearpedido['CIUDAD'];
-                    $producto             = $crearpedido['producto'];
-                    $pedido               = $params['pedido'];
+                    $tecnico = $crearpedido['tecnico'];
+                    $despacho = $crearpedido['CIUDAD'];
+                    $producto = $crearpedido['producto'];
+                    $pedido = $params['pedido'];
                     $nombre_de_la_empresa = $params['empresa'];
                 } else {
                     if ($datosClick['uNEProvisioner'] == "EMT") {
@@ -326,9 +336,9 @@ class user
                         $nombre_de_la_empresa = $datosClick['uNEProvisioner'];
                     }
                     $producto = $datosClick['uNETecnologias'];
-                    $tecnico  = $datosClick['engineerID'];
+                    $tecnico = $datosClick['engineerID'];
                     $despacho = $datosClick['uNEMunicipio'];
-                    $pedido   = $datosClick['pEDIDO_UNE'];
+                    $pedido = $datosClick['pEDIDO_UNE'];
                 }
 
                 if (
@@ -338,20 +348,20 @@ class user
                     ($proceso == 'Reparaciones' && $accion == 'Aprovisionar') ||
                     ($proceso == 'Reparaciones' && $accion == 'Contingencia')
                 ) {
-                    $patron        = [",", ", "];
+                    $patron = [",", ", "];
                     $patronreplace = ["|", "|"];
-                    $macEntra      = str_replace($patron, $patronreplace, trim(strtoupper($crearpedido['macEntra'])));
-                    $macSale       = str_replace($patron, $patronreplace, trim(strtoupper($crearpedido['macSale'])));
+                    $macEntra = str_replace($patron, $patronreplace, trim(strtoupper($crearpedido['macEntra'])));
+                    $macSale = str_replace($patron, $patronreplace, trim(strtoupper($crearpedido['macSale'])));
 
                     $stmt = $this->_DB->prepare("INSERT INTO cambio_equipos (pedido, hfc_equipo_sale, hfc_equipo_entra)
                                                     VALUES (:pedido, :macSale, :macEntra)");
                     $stmt->execute([
-                        ':pedido'   => $pedido,
-                        ':macSale'  => $macSale,
+                        ':pedido' => $pedido,
+                        ':macSale' => $macSale,
                         ':macEntra' => $macEntra,
                     ]);
                     if (!$stmt->rowCount()) {
-                        $response = ['state' => 0, 'text' => 'Ah ocurrido un error intentalo de nuevo'];
+                        $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo de nuevo'];
                     }
                 }
 
@@ -368,37 +378,37 @@ class user
                                 :UNESourceSystem, :codigo, :diagnostico)");
 
                     $stmt->execute([
-                        ':pedido'               => $pedido,
-                        ':tecnico'              => $tecnico,
+                        ':pedido' => $pedido,
+                        ':tecnico' => $tecnico,
                         ':nombre_de_la_empresa' => $nombre_de_la_empresa,
-                        ':user'                 => $user,
-                        ':observaciones'        => $observaciones,
-                        ':accion'               => $accion,
-                        ':subaccion'            => $subaccion,
-                        ':proceso'              => $proceso,
-                        ':producto'             => $producto,
-                        ':duracion_llamada'     => $duracion_llamada,
-                        ':id_llamada'           => $id_llamada,
-                        ':prueba_integra'       => $prueba_integra,
-                        ':cod_familiar'         => $cod_familiar,
-                        ':smartPlay'            => $smartPlay,
-                        ':toip'                 => $toip,
-                        ':internet'             => $internet,
-                        ':iptv'                 => $iptv,
-                        ':telev_hfc'            => $telev_hfc,
-                        ':telefonia_tdm'        => $telefonia_tdm,
-                        ':plantilla'            => $plantilla,
-                        ':despacho'             => $despacho,
-                        ':idcambioequipo'       => $idcambioequipo,
-                        ':pruebaSMNET'          => $pruebaSMNET,
-                        ':UNESourceSystem'      => $UNESourceSystem,
-                        ':codigo'               => $codigo,
-                        ':diagnostico'          => $diagnostico,
+                        ':user' => $user,
+                        ':observaciones' => $observaciones,
+                        ':accion' => $accion,
+                        ':subaccion' => $subaccion,
+                        ':proceso' => $proceso,
+                        ':producto' => $producto,
+                        ':duracion_llamada' => $duracion_llamada,
+                        ':id_llamada' => $id_llamada,
+                        ':prueba_integra' => $prueba_integra,
+                        ':cod_familiar' => $cod_familiar,
+                        ':smartPlay' => $smartPlay,
+                        ':toip' => $toip,
+                        ':internet' => $internet,
+                        ':iptv' => $iptv,
+                        ':telev_hfc' => $telev_hfc,
+                        ':telefonia_tdm' => $telefonia_tdm,
+                        ':plantilla' => $plantilla,
+                        ':despacho' => $despacho,
+                        ':idcambioequipo' => $idcambioequipo,
+                        ':pruebaSMNET' => $pruebaSMNET,
+                        ':UNESourceSystem' => $UNESourceSystem,
+                        ':codigo' => $codigo,
+                        ':diagnostico' => $diagnostico,
                     ]);
                     if ($stmt->rowCount() == 1) {
-                        $response = ['state' => 1, 'text' => 'Registro ingresado'];
+                        $response = ['state' => 1, 'msj' => 'Registro ingresado'];
                     } else {
-                        $response = ['state' => 0, 'text' => 'Ah ocurrido un error intentalo de nuevo'];
+                        $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo de nuevo'];
                     }
                 } else {
 
@@ -410,29 +420,29 @@ class user
                                 :UNESourceSystem, :codigo, :diagnostico)");
 
                     $stmt->execute([
-                        ':pedido'               => $pedido,
-                        ':tecnico'              => $tecnico,
+                        ':pedido' => $pedido,
+                        ':tecnico' => $tecnico,
                         ':nombre_de_la_empresa' => $nombre_de_la_empresa,
-                        ':user'                 => $user,
-                        ':observaciones'        => $observaciones,
-                        ':accion'               => $accion,
-                        ':subaccion'            => $subaccion,
-                        ':proceso'              => $proceso,
-                        ':producto'             => $producto,
-                        ':duracion_llamada'     => $duracion_llamada,
-                        ':id_llamada'           => $id_llamada,
-                        ':plantilla'            => $plantilla,
-                        ':despacho'             => $despacho,
-                        ':pruebaSMNET'          => $pruebaSMNET,
-                        ':UNESourceSystem'      => $UNESourceSystem,
-                        ':codigo'               => $codigo,
-                        ':diagnostico'          => $diagnostico,
+                        ':user' => $user,
+                        ':observaciones' => $observaciones,
+                        ':accion' => $accion,
+                        ':subaccion' => $subaccion,
+                        ':proceso' => $proceso,
+                        ':producto' => $producto,
+                        ':duracion_llamada' => $duracion_llamada,
+                        ':id_llamada' => $id_llamada,
+                        ':plantilla' => $plantilla,
+                        ':despacho' => $despacho,
+                        ':pruebaSMNET' => $pruebaSMNET,
+                        ':UNESourceSystem' => $UNESourceSystem,
+                        ':codigo' => $codigo,
+                        ':diagnostico' => $diagnostico,
                     ]);
 
                     if ($stmt->rowCount() == 1) {
-                        $response = ['state' => 1, 'text' => 'Registro ingresado'];
+                        $response = ['state' => 1, 'msj' => 'Registro ingresado'];
                     } else {
-                        $response = ['state' => 0, 'text' => 'Ah ocurrido un error intentalo de nuevo'];
+                        $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo de nuevo'];
                     }
                 }
             }
@@ -446,15 +456,17 @@ class user
     public function creaUsuario($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
             } else {
                 $identificacion = $data['IDENTIFICACION'];
-                $nombre         = $data['NOMBRE'];
-                $loginUser      = $data['LOGIN'];
-                $perfil         = $data['PERFIL'];
-                $password       = $data['PASSWORD'];
+                $nombre = $data['NOMBRE'];
+                $loginUser = $data['LOGIN'];
+                $perfil = $data['PERFIL'];
+                $password = $data['PASSWORD'];
 
                 if (!isset($nombre) || $nombre == '') {
                     $response = ['state' => 0, 'msj' => 'El nombre es requerido'];
@@ -478,12 +490,12 @@ class user
                     $stmt = $this->_DB->prepare("insert into usuarios (login, nombre, password, identificacion, perfil, gestion)
                                                 values (:loginUser, :nombre, :password, :identificacion, :perfil, :gestion)");
                     $stmt->execute([
-                        ':loginUser'      => $loginUser,
-                        ':nombre'         => $nombre,
-                        ':password'       => $password,
+                        ':loginUser' => $loginUser,
+                        ':nombre' => $nombre,
+                        ':password' => $password,
                         ':identificacion' => $identificacion,
-                        ':perfil'         => $perfil,
-                        ':gestion'        => '',
+                        ':perfil' => $perfil,
+                        ':gestion' => '',
 
                     ]);
 
@@ -505,6 +517,8 @@ class user
     {
         try {
 
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
 
             if (!$_SESSION) {
@@ -535,9 +549,9 @@ class user
                     $response = ['state' => 0, 'msj' => 'Ingrese el nombre'];
                 } else {
 
-                    $UDC      = substr($datos['IDENTIFICACION'], -4);
-                    $pass     = 'Colombia' . $UDC . '--++';
-                    $pass     = md5($pass);
+                    $UDC = substr($datos['IDENTIFICACION'], -4);
+                    $pass = 'Colombia' . $UDC . '--++';
+                    $pass = md5($pass);
                     $contrato = match ($datos['empresa']) {
                         "1" => 'UNE',
                         "0" => 'SIN EMPRESA',
@@ -557,14 +571,14 @@ class user
 
                     $stmt->execute([
                         ':identificacion' => $datos['IDENTIFICACION'],
-                        ':nombre'         => $datos['NOMBRE'],
-                        ':ciudad'         => $datos['CIUDAD'],
-                        ':celular'        => $datos['CELULAR'],
-                        ':empresa'        => $datos['empresa'],
-                        ':login_click'    => $datos['LOGIN'],
-                        ':pass'           => $pass,
-                        ':region'         => $datos['REGION'],
-                        ':contrato'       => $contrato,
+                        ':nombre' => $datos['NOMBRE'],
+                        ':ciudad' => $datos['CIUDAD'],
+                        ':celular' => $datos['CELULAR'],
+                        ':empresa' => $datos['empresa'],
+                        ':login_click' => $datos['LOGIN'],
+                        ':pass' => $pass,
+                        ':region' => $datos['REGION'],
+                        ':contrato' => $contrato,
                     ]);
 
                     if ($stmt->rowCount() == 1) {
@@ -585,6 +599,8 @@ class user
     {
 
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
@@ -600,7 +616,7 @@ class user
                     $search = $data['search'];
                 }
 
-                
+
 
                 $parametro = '';
                 if ($data['concepto'] == 'nombre') {
@@ -609,7 +625,8 @@ class user
                 } else if ($data['concepto'] == 'login') {
                     $usuario = $data['usuario'];
                     $parametro = " and a.login LIKE '%$usuario%'";
-                };
+                }
+                ;
 
                 $stmt = $this->_DB->prepare("SELECT * FROM usuarios");
                 $stmt->execute();
@@ -624,11 +641,12 @@ class user
                                                        a.password AS PASSWORD
                                                 FROM usuarios a
                                                 where 1 = 1
-                                                    $parametro LIMIT $offset, $pagesize");;
+                                                    $parametro LIMIT $offset, $pagesize");
+                ;
 
 
                 if ($stmt->rowCount()) {
-                    $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     $response = ['state' => 1, 'data' => $result, 'counter' => $counter];
                 } else {
                     $response = ['state' => 0];
@@ -642,11 +660,11 @@ class user
         echo json_encode($response);
     }
 
-    public
-    function borrarUsuario(
-        $data
-    ) {
+    public function borrarUsuario($data)
+    {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $stmt = $this->_DB->prepare("delete from usuarios where id = :id");
             $stmt->execute([':id' => $data]);
@@ -664,11 +682,11 @@ class user
         echo json_encode($response);
     }
 
-    public
-    function borrarTecnico(
-        $data
-    ) {
+    public function borrarTecnico($data)
+    {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $stmt = $this->_DB->prepare("DELETE FROM  tecnicos WHERE id = :id");
             $stmt->execute([':id' => $data]);
@@ -685,18 +703,18 @@ class user
         echo json_encode($response);
     }
 
-    public
-    function editarTecnico(
-        $login
-    ) {
+    public function editarTecnico($login)
+    {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $identificacion = $login['IDENTIFICACION'];
-            $nombre         = $login['NOMBRE'];
-            $ciudad         = $login['CIUDAD'];
-            $celular        = $login['CELULAR'];
-            $empresa        = $login['empresa'];
-            $id             = $login['ID'];
+            $nombre = $login['NOMBRE'];
+            $ciudad = $login['CIUDAD'];
+            $celular = $login['CELULAR'];
+            $empresa = $login['empresa'];
+            $id = $login['ID'];
 
             $stmt = $this->_DB->prepare("update tecnicos
                                                 set nombre         = :nombre,
@@ -706,11 +724,11 @@ class user
                                                     empresa        = :empresa
                                                 where id = :id");
             $stmt->execute([
-                ':nombre'         => $nombre,
+                ':nombre' => $nombre,
                 ':identificacion' => $identificacion,
-                ':ciudad'         => $ciudad,
-                ':celular'        => $celular,
-                ':empresa'        => $empresa,
+                ':ciudad' => $ciudad,
+                ':celular' => $celular,
+                ':empresa' => $empresa,
             ]);
 
             if ($stmt->rowCount() == 1) {

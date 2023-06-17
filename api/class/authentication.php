@@ -4,6 +4,7 @@ require_once '../class/conection.php';
 //error_reporting(E_ALL);
 //ini_set('display_errors', 1);
 
+
 class authentication
 {
     private $_DB;
@@ -36,7 +37,7 @@ class authentication
                 $menu = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $menus = [];
                 foreach ($menu as $key => $value) {
-                                                    $stmt = $this->_DB->prepare("SELECT
+                    $stmt = $this->_DB->prepare("SELECT
                                                                                     nombre AS sub,
                                                                                     url,
                                                                                     icon
@@ -62,6 +63,8 @@ class authentication
                 $response = array('state' => 1, 'data' => $resLogin);
 
                 session_destroy();
+                ini_set('session.gc_maxlifetime', 3600); // 1 hour
+                session_set_cookie_params(3600);
                 session_start();
 
                 $_SESSION["logueado"] = true;

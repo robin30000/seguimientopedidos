@@ -14,6 +14,8 @@ class otrosServiciosDos
     public function listadoEstadosClick($datos)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $fecha        = $datos['fecha'];
             $uen          = $datos['uen'];
@@ -79,6 +81,8 @@ class otrosServiciosDos
     public function GuardarPedidoPendiInsta($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $today        = date("Y") . "-" . date("m") . "-" . date("d");
             $usuarioid    = $_SESSION['login'];
@@ -130,6 +134,8 @@ class otrosServiciosDos
     public function Accionesoffline($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $producto = $data;
 
@@ -156,6 +162,8 @@ class otrosServiciosDos
     public function acciones($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $stmt = $this->_DB->prepare("SELECT DISTINCT ACCION
                                                 FROM procesos
@@ -178,6 +186,8 @@ class otrosServiciosDos
     public function Codigos($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $proceso         = $data['proceso'];
             $UNESourceSystem = $data['UNESourceSystem'];
@@ -206,6 +216,8 @@ class otrosServiciosDos
     public function Diagnosticos($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $producto = $data['producto'];
 

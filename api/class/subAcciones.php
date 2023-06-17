@@ -1,6 +1,5 @@
 <?php
 require_once '../class/conection.php';
-
 class subAcciones
 {
 
@@ -14,6 +13,8 @@ class subAcciones
     public function subacciones($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $proceso = $data['proceso'];
             $accion = $data['accion'];

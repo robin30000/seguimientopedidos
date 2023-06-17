@@ -1,7 +1,7 @@
 <?php
 require_once '../class/conection.php';
-ini_set('error_reporting', E_ALL);
-ini_set('display_errors', 1);
+/* ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1); */
 
 class otherServices
 {
@@ -15,33 +15,35 @@ class otherServices
     public function insertarCambioEquipo($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
-            $datos      = $data->datoscambio;
+            $datos = $data->datoscambio;
             $tecnologia = $data->tecnologia;
-            $pedido     = $data->pedido;
+            $pedido = $data->pedido;
             //HFC-DTH
             $cuentaDomiciliaria = $datos['cuenta'];
-            $IdCuenta           = $datos['IdCuenta'];
+            $IdCuenta = $datos['IdCuenta'];
             //todos
             $motivo = $datos['motivoCambio'];
             //DTH
-            $chipSale   = $datos['chipSale'];
-            $chipEntra  = $datos['chipEntra'];
+            $chipSale = $datos['chipSale'];
+            $chipEntra = $datos['chipEntra'];
             $SmartEntra = $datos['SmartEntra'];
-            $SmartSale  = $datos['SmartSale'];
+            $SmartSale = $datos['SmartSale'];
             //HFC
-            $servicioHFC    = $datos['servicio'];
+            $servicioHFC = $datos['servicio'];
             $equipoEntraHFC = $datos['equipoEntra'];
-            $macEntraHFC    = $datos['macEntra'];
-            $equipoSaleHFC  = $datos['equipoSale'];
-            $macSaleHFC     = $datos['macSale'];
+            $macEntraHFC = $datos['macEntra'];
+            $equipoSaleHFC = $datos['equipoSale'];
+            $macSaleHFC = $datos['macSale'];
             //ADSL
-            $Serialsale  = $datos['Serialsale'];
+            $Serialsale = $datos['Serialsale'];
             $Serialentra = $datos['Serialentra'];
-            $Marcasale   = $datos['Marcasale'];
-            $Marcaentra  = $datos['Marcaentra'];
-            $Refsale     = $datos['Refsale'];
-            $Refentra    = $datos['Refentra'];
+            $Marcasale = $datos['Marcasale'];
+            $Marcaentra = $datos['Marcaentra'];
+            $Refsale = $datos['Refsale'];
+            $Refentra = $datos['Refentra'];
 
             //    echo "pedido: ".$pedido;
 
@@ -52,15 +54,15 @@ class otherServices
                                                     values (:pedido, :cuentaDomiciliaria, :IdCuenta, :motivo, :tecnologia, :chipSale,
                                                             :chipEntra, :SmartSale, :SmartEntra)");
                 $stmt->execute([
-                    ':pedido'             => $pedido,
+                    ':pedido' => $pedido,
                     ':cuentaDomiciliaria' => $cuentaDomiciliaria,
-                    ':IdCuenta'           => $IdCuenta,
-                    ':motivo'             => $motivo,
-                    ':tecnologia'         => $tecnologia,
-                    ':chipSale'           => $chipSale,
-                    ':chipEntra'          => $chipEntra,
-                    ':SmartSale'          => $SmartSale,
-                    ':SmartEntra'         => $SmartEntra,
+                    ':IdCuenta' => $IdCuenta,
+                    ':motivo' => $motivo,
+                    ':tecnologia' => $tecnologia,
+                    ':chipSale' => $chipSale,
+                    ':chipEntra' => $chipEntra,
+                    ':SmartSale' => $SmartSale,
+                    ':SmartEntra' => $SmartEntra,
 
                 ]);
                 if ($stmt->rowCount() == 1) {
@@ -75,16 +77,16 @@ class otherServices
                                                             :equipoEntraHFC, :macEntraHFC, :macSaleHFC)");
 
                 $stmt->execute([
-                    ':pedido'             => $pedido,
+                    ':pedido' => $pedido,
                     ':cuentaDomiciliaria' => $cuentaDomiciliaria,
-                    ':IdCuenta'           => $IdCuenta,
-                    ':servicioHFC'        => $servicioHFC,
-                    ':motivo'             => $motivo,
-                    ':tecnologia'         => $tecnologia,
-                    ':equipoSaleHFC'      => $equipoSaleHFC,
-                    ':equipoEntraHFC'     => $equipoEntraHFC,
-                    ':macEntraHFC'        => $macEntraHFC,
-                    ':macSaleHFC'         => $macSaleHFC,
+                    ':IdCuenta' => $IdCuenta,
+                    ':servicioHFC' => $servicioHFC,
+                    ':motivo' => $motivo,
+                    ':tecnologia' => $tecnologia,
+                    ':equipoSaleHFC' => $equipoSaleHFC,
+                    ':equipoEntraHFC' => $equipoEntraHFC,
+                    ':macEntraHFC' => $macEntraHFC,
+                    ':macSaleHFC' => $macSaleHFC,
                 ]);
 
                 if ($stmt->rowCount() == 1) {
@@ -101,15 +103,15 @@ class otherServices
                                                             :Serialentra, :Marcaentra, :Marcasale, :Refentra, :Refsale)");
 
                 $stmt->execute([
-                    ':pedido'      => $pedido,
-                    ':motivo'      => $motivo,
-                    ':tecnologia'  => $tecnologia,
-                    ':Serialsale'  => $Serialsale,
+                    ':pedido' => $pedido,
+                    ':motivo' => $motivo,
+                    ':tecnologia' => $tecnologia,
+                    ':Serialsale' => $Serialsale,
                     ':Serialentra' => $Serialentra,
-                    ':Marcaentra'  => $Marcaentra,
-                    ':Marcasale'   => $Marcasale,
-                    ':Refentra'    => $Refentra,
-                    ':Refsale'     => $Refsale,
+                    ':Marcaentra' => $Marcaentra,
+                    ':Marcasale' => $Marcasale,
+                    ':Refentra' => $Refentra,
+                    ':Refsale' => $Refsale,
                 ]);
 
                 if ($stmt->rowCount() == 1) {
@@ -121,7 +123,7 @@ class otherServices
             }
 
             $lastInsert = $this->_DB->lastInsertId();
-            $response   = $response['lastInsert'] = $lastInsert;
+            $response = $response['lastInsert'] = $lastInsert;
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
@@ -132,28 +134,30 @@ class otherServices
     public function GuardarPedidoEncuesta($params)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $info_encuesta = $params->infoPedidoEncuesta;
-            $info_gestion  = $params->gestionDolores;
-            $duracion      = $params->counter;
-            $fechaInicial  = $params->fechaInicial;
-            $fechaFinal    = $params->fechaFinal;
-            $login         = $_SESSION['login'];
+            $info_gestion = $params->gestionDolores;
+            $duracion = $params->counter;
+            $fechaInicial = $params->fechaInicial;
+            $fechaFinal = $params->fechaFinal;
+            $login = $_SESSION['login'];
 
-            $codigo        = utf8_decode($info_gestion['codigo']);
-            $resultado     = utf8_decode($info_gestion['resultado']);
-            $intentos      = $info_gestion['intentos'];
+            $codigo = utf8_decode($info_gestion['codigo']);
+            $resultado = utf8_decode($info_gestion['resultado']);
+            $intentos = $info_gestion['intentos'];
             $observaciones = utf8_decode($info_gestion['observaciones']);
 
-            $telefono          = $info_encuesta['telefono'];
-            $cedula            = $info_encuesta['cedula'];
-            $detalle           = $info_encuesta['detalle'];
+            $telefono = $info_encuesta['telefono'];
+            $cedula = $info_encuesta['cedula'];
+            $detalle = $info_encuesta['detalle'];
             $fecha_instalacion = $info_encuesta['fecha_instalacion'];
-            $departamento      = utf8_decode($info_encuesta['departamento']);
-            $municipio         = utf8_decode($info_encuesta['municipio']);
-            $contratista       = $info_encuesta['contratista'];
-            $Interfaz          = $info_encuesta['Interfaz'];
-            $semana            = $info_encuesta['semana'];
+            $departamento = utf8_decode($info_encuesta['departamento']);
+            $municipio = utf8_decode($info_encuesta['municipio']);
+            $contratista = $info_encuesta['contratista'];
+            $Interfaz = $info_encuesta['Interfaz'];
+            $semana = $info_encuesta['semana'];
 
             if ($resultado == "ERROR SELECCIÓN DE RESPUESTA" || $resultado == "CLIENTE NO BRINDA INFORMACIÓN") {
                 $agrupador = "Error selección rspuesta";
@@ -172,23 +176,23 @@ class otherServices
                                                         :departamento, :municipio, :contratista, :Interfaz, :observaciones, :codigo, 
                                                         :resultado, :fechaInicial, :fechaFinal, :duracion, :login, :semana, :agrupador)");
             $stmt->execute([
-                ':$detalle'           => $detalle,
-                ':$cedula'            => $cedula,
-                ':$telefono'          => $telefono,
+                ':$detalle' => $detalle,
+                ':$cedula' => $cedula,
+                ':$telefono' => $telefono,
                 ':$fecha_instalacion' => $fecha_instalacion,
-                ':$departamento'      => $departamento,
-                ':$municipio'         => $municipio,
-                ':$contratista'       => $contratista,
-                ':$Interfaz'          => $Interfaz,
-                ':$observaciones'     => $observaciones,
-                ':$codigo'            => $codigo,
-                ':$resultado'         => $resultado,
-                ':$fechaInicial'      => $fechaInicial,
-                ':$fechaFinal'        => $fechaFinal,
-                ':$duracion'          => $duracion,
-                ':$login'             => $login,
-                ':$semana'            => $semana,
-                ':$agrupador'         => $agrupador,
+                ':$departamento' => $departamento,
+                ':$municipio' => $municipio,
+                ':$contratista' => $contratista,
+                ':$Interfaz' => $Interfaz,
+                ':$observaciones' => $observaciones,
+                ':$codigo' => $codigo,
+                ':$resultado' => $resultado,
+                ':$fechaInicial' => $fechaInicial,
+                ':$fechaFinal' => $fechaFinal,
+                ':$duracion' => $duracion,
+                ':$login' => $login,
+                ':$semana' => $semana,
+                ':$agrupador' => $agrupador,
             ]);
 
             if ($stmt->rowCount() == 1) {
@@ -207,22 +211,24 @@ class otherServices
     public function gestiodespachoBrutal($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
-            $infogestion   = $data->datosguardar;
-            $pedido        = $infogestion['pedido'];
-            $accion        = utf8_decode($infogestion['accion']);
-            $correo        = $infogestion['correo'];
+            $infogestion = $data->datosguardar;
+            $pedido = $infogestion['pedido'];
+            $accion = utf8_decode($infogestion['accion']);
+            $correo = $infogestion['correo'];
             $observaciones = utf8_decode($infogestion['observaciones']);
-            $cedula        = $infogestion['cedula'];
-            $tecnico       = utf8_decode($infogestion['tecnico']);
-            $celular       = $infogestion['celular'];
-            $zona          = utf8_decode($infogestion['zona']);
-            $idLlamada     = $infogestion['idLlamada'];
-            $supervisor    = utf8_decode($infogestion['supervisor']);
-            $tipoTrans     = utf8_decode($infogestion['tipoTrans']);
-            $numSAPEIni    = utf8_decode($infogestion['numSAPEIni']);
-            $numSAPEFin    = utf8_decode($infogestion['numSAPEFin']);
-            $prioridad     = $infogestion['prioridad'];
+            $cedula = $infogestion['cedula'];
+            $tecnico = utf8_decode($infogestion['tecnico']);
+            $celular = $infogestion['celular'];
+            $zona = utf8_decode($infogestion['zona']);
+            $idLlamada = $infogestion['idLlamada'];
+            $supervisor = utf8_decode($infogestion['supervisor']);
+            $tipoTrans = utf8_decode($infogestion['tipoTrans']);
+            $numSAPEIni = utf8_decode($infogestion['numSAPEIni']);
+            $numSAPEFin = utf8_decode($infogestion['numSAPEFin']);
+            $prioridad = $infogestion['prioridad'];
 
             if ($infogestion['accion'] !== "Gestión AAA") {
                 $numSAPEIni = "";
@@ -239,28 +245,28 @@ class otherServices
             } else {
                 if ($login == 'lmontcre') {
                     $accion = $accion . "__Valle";
-                    $stmt   = $this->_DB->prepare("INSERT INTO BrutalForce(PedidoDespacho, AccionDespacho, CorreoDespacho, ObservacionesDespacho,
+                    $stmt = $this->_DB->prepare("INSERT INTO BrutalForce(PedidoDespacho, AccionDespacho, CorreoDespacho, ObservacionesDespacho,
                                                             LoginDespacho, gestionAsesor, zona, tipoTransaccion, idLlamada, supervisor,
                                                             celular, tecnico, cedula, numSAPEIni, numSAPEFin, prioridad)
                                                         values (:pedido, :accion, :correo, :observaciones, :login, '1',
                                                                 :zona, :tipoTrans, :idLlamada, :supervisor, :celular,
                                                                 :tecnico, :cedula, :numSAPEIni, :numSAPEFin, :prioridad)");
                     $stmt->execute([
-                        ':pedido'        => $pedido,
-                        ':accion'        => $accion,
-                        ':correo'        => $correo,
+                        ':pedido' => $pedido,
+                        ':accion' => $accion,
+                        ':correo' => $correo,
                         ':observaciones' => $observaciones,
-                        ':login'         => $login,
-                        ':zona'          => $zona,
-                        ':tipoTrans'     => $tipoTrans,
-                        ':idLlamada'     => $idLlamada,
-                        ':supervisor'    => $supervisor,
-                        ':celular'       => $celular,
-                        ':tecnico'       => $tecnico,
-                        ':cedula'        => $cedula,
-                        ':numSAPEIni'    => $numSAPEIni,
-                        ':numSAPEFin'    => $numSAPEFin,
-                        ':prioridad'     => $prioridad,
+                        ':login' => $login,
+                        ':zona' => $zona,
+                        ':tipoTrans' => $tipoTrans,
+                        ':idLlamada' => $idLlamada,
+                        ':supervisor' => $supervisor,
+                        ':celular' => $celular,
+                        ':tecnico' => $tecnico,
+                        ':cedula' => $cedula,
+                        ':numSAPEIni' => $numSAPEIni,
+                        ':numSAPEFin' => $numSAPEFin,
+                        ':prioridad' => $prioridad,
                     ]);
                     if ($stmt->rowCount() == 1) {
                         $response = ['Datos guardados correctamente', 201];
@@ -281,6 +287,8 @@ class otherServices
     public function gestionFinal()
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $stmt = $this->_DB->query("SELECT PedidoDespacho,
                                                        AccionDespacho,
@@ -307,11 +315,11 @@ class otherServices
             $hora = date("H");
 
             if ($hora >= 10) {
-                $hoy            = date("Y-m-d");
-                $nuevafecha     = strtotime('-1 day', strtotime($hoy));
-                $nuevafecha     = date('Y-m-j', $nuevafecha);
-                $horaIni        = " 00:00:00";
-                $horaFin        = " 23:59:59";
+                $hoy = date("Y-m-d");
+                $nuevafecha = strtotime('-1 day', strtotime($hoy));
+                $nuevafecha = date('Y-m-j', $nuevafecha);
+                $horaIni = " 00:00:00";
+                $horaFin = " 23:59:59";
                 $diaAnteriorIni = $nuevafecha . $horaIni;
                 $diaAnteriorFin = $nuevafecha . $horaFin;
 
@@ -328,7 +336,7 @@ class otherServices
                 ]);
 
                 if ($stmt2->rowCount()) {
-                    $idGestion       = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+                    $idGestion = $stmt2->fetchAll(PDO::FETCH_ASSOC);
                     $idgestionAsesor = $idGestion['idGestion'];
 
                     $stmtUpdate = $this->_DB->prepare("UPDATE BrutalForce
@@ -364,7 +372,7 @@ class otherServices
 
             if ($queryAsesores->rowCount()) {
                 $resultadoAsesores = $queryAsesores->fetchAll(PDO::FETCH_ASSOC);
-                $response          = [$result, $resultadoAsesores, 201];
+                $response = [$result, $resultadoAsesores, 201];
             } else {
                 $response = ['No se encontraron registros', 400];
             }
@@ -379,6 +387,8 @@ class otherServices
     public function DashBoard()
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $queryEnGestion = $this->_DB->query("SELECT PedidoDespacho,
                                                                Asesor,
@@ -398,7 +408,7 @@ class otherServices
             $queryEnGestion->execute();
 
             if ($queryEnGestion->rowCount()) {
-                $resul     = $queryEnGestion->fetchAll(PDO::FETCH_ASSOC);
+                $resul = $queryEnGestion->fetchAll(PDO::FETCH_ASSOC);
                 $enGestion = $resul['AccionDespacho'];
             }
 
@@ -417,7 +427,7 @@ class otherServices
             $querySin_gestion->execute();
 
             if ($querySin_gestion->rowCount()) {
-                $resul       = $querySin_gestion->fetchAll(PDO::FETCH_ASSOC);
+                $resul = $querySin_gestion->fetchAll(PDO::FETCH_ASSOC);
                 $Sin_gestion = $resul['AccionDespacho'];
             }
 
@@ -445,7 +455,7 @@ class otherServices
             $queryEscalados->execute();
 
             if ($queryEscalados->rowCount()) {
-                $resul     = $queryEscalados->fetchAll(PDO::FETCH_ASSOC);
+                $resul = $queryEscalados->fetchAll(PDO::FETCH_ASSOC);
                 $Escalados = $resul['AccionDespacho'];
             }
 
@@ -468,7 +478,7 @@ class otherServices
             $queryPendiente_analisis->execute();
 
             if ($queryPendiente_analisis->rowCount()) {
-                $resul              = $queryPendiente_analisis->fetchAll(PDO::FETCH_ASSOC);
+                $resul = $queryPendiente_analisis->fetchAll(PDO::FETCH_ASSOC);
                 $Pendiente_analisis = $resul['AccionDespacho'];
             }
 
@@ -498,7 +508,7 @@ class otherServices
             $escaladosCalidad->execute();
 
             if ($escaladosCalidad->rowCount()) {
-                $resul            = $escaladosCalidad->fetchAll(PDO::FETCH_ASSOC);
+                $resul = $escaladosCalidad->fetchAll(PDO::FETCH_ASSOC);
                 $EscaladosCalidad = $resul;
             }
 
@@ -522,7 +532,7 @@ class otherServices
             $queryEnGestionCalidad->execute();
 
             if ($queryEnGestionCalidad->rowCount()) {
-                $resul            = $queryEnGestionCalidad->fetchAll(PDO::FETCH_ASSOC);
+                $resul = $queryEnGestionCalidad->fetchAll(PDO::FETCH_ASSOC);
                 $enGestionCalidad = $resul;
             }
 
@@ -556,7 +566,7 @@ class otherServices
             $queryAsesoresCalidad->execute();
 
             if ($queryAsesoresCalidad->rowCount()) {
-                $resul                    = $queryAsesoresCalidad->fetchAll(PDO::FETCH_ASSOC);
+                $resul = $queryAsesoresCalidad->fetchAll(PDO::FETCH_ASSOC);
                 $resultadoAsesoresCalidad = $resul;
             }
 
@@ -574,31 +584,33 @@ class otherServices
     {
 
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $fechagestionAsesor = date('Y-m-d H:i:s');
 
-            $infogestion   = $data->datosguardar;
+            $infogestion = $data->datosguardar;
             $datosDespacho = $data->datosDespacho;
 
-            $idGestion             = $datosDespacho['PedidoDespacho'];
-            $PedidoDespacho        = $datosDespacho['PedidoDespacho'];
-            $AccionDespacho        = $datosDespacho['AccionDespacho'];
-            $CorreoDespacho        = $datosDespacho['CorreoDespacho'];
+            $idGestion = $datosDespacho['PedidoDespacho'];
+            $PedidoDespacho = $datosDespacho['PedidoDespacho'];
+            $AccionDespacho = $datosDespacho['AccionDespacho'];
+            $CorreoDespacho = $datosDespacho['CorreoDespacho'];
             $ObservacionesDespacho = $datosDespacho['ObservacionesDespacho'];
-            $FechaGestionDespacho  = $datosDespacho['FechaGestionDespacho'];
-            $tipoTransaccion       = $datosDespacho['tipoTransaccion'];
-            $zona                  = utf8_decode($datosDespacho['zona']);
-            $LoginDespacho         = $datosDespacho['LoginDespacho'];
+            $FechaGestionDespacho = $datosDespacho['FechaGestionDespacho'];
+            $tipoTransaccion = $datosDespacho['tipoTransaccion'];
+            $zona = utf8_decode($datosDespacho['zona']);
+            $LoginDespacho = $datosDespacho['LoginDespacho'];
 
             $causaActividad = utf8_decode($infogestion['causaActividad']);
-            $estado         = utf8_decode($infogestion['estado']);
-            $pedidoNuevo    = $infogestion['pedidoNuevo'];
-            $fechaClick     = $infogestion['fechaClick'];
-            $numeroOferta   = $infogestion['numeroOferta'];
-            $actividad      = utf8_decode($infogestion['actividad']);
-            $canal          = utf8_decode($infogestion['canal']);
-            $incidente      = $infogestion['incidente'];
-            $observaciones  = utf8_decode($infogestion['observaciones']);
+            $estado = utf8_decode($infogestion['estado']);
+            $pedidoNuevo = $infogestion['pedidoNuevo'];
+            $fechaClick = $infogestion['fechaClick'];
+            $numeroOferta = $infogestion['numeroOferta'];
+            $actividad = utf8_decode($infogestion['actividad']);
+            $canal = utf8_decode($infogestion['canal']);
+            $incidente = $infogestion['incidente'];
+            $observaciones = utf8_decode($infogestion['observaciones']);
 
             $login = $_SESSION['login'];
 
@@ -607,7 +619,7 @@ class otherServices
 
             if ($stmt->rowCount()) {
                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $id     = $result['idgestion'];
+                $id = $result['idgestion'];
 
                 $stmt = $this->_DB->prepare("UPDATE BrutalForce
                                                     SET gestionAsesor         = '2',
@@ -625,17 +637,17 @@ class otherServices
                                                         estadoFinalPedido     = 'Pendiente'
                                                     WHERE idgestion = :id ");
                 $stmt->execute([
-                    ':login'              => $login,
-                    ':causaActividad'     => $causaActividad,
-                    ':canal'              => $canal,
-                    ':pedidoNuevo'        => $pedidoNuevo,
-                    ':numeroOferta'       => $numeroOferta,
-                    ':estado'             => $estado,
-                    ':incidente'          => $incidente,
-                    ':actividad'          => $actividad,
-                    ':observaciones'      => $observaciones,
+                    ':login' => $login,
+                    ':causaActividad' => $causaActividad,
+                    ':canal' => $canal,
+                    ':pedidoNuevo' => $pedidoNuevo,
+                    ':numeroOferta' => $numeroOferta,
+                    ':estado' => $estado,
+                    ':incidente' => $incidente,
+                    ':actividad' => $actividad,
+                    ':observaciones' => $observaciones,
                     ':fechagestionAsesor' => $fechagestionAsesor,
-                    ':id'                 => $id,
+                    ':id' => $id,
                 ]);
                 if ($stmt->rowCount()) {
                     $response = ['Datos actualizados', 201];
@@ -656,156 +668,161 @@ class otherServices
     public function savecontingencia($datosguardar)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
-            $pedido   = $datosguardar['pedido'];
-            $producto = $datosguardar['producto'];
-            $existe   = 0;
-            $stmt     = $this->_DB->prepare("SELECT * FROM contingencias WHERE pedido= :pedido AND producto =:producto AND FINALIZADO IS NULL AND ACEPTA IS NULL AND TIPIFICACION IS NULL AND ACEPTAPORTAFOLIO IS NULL");
-            $stmt->execute([':pedido' => $pedido, ':producto' => $producto]);
-
-            if ($stmt->rowCount()) {
-                $existe = 1;
-            }
-
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
-            } elseif (!isset($datosguardar['pedido']) || $datosguardar['pedido'] == '') {
-                $response = ['state' => 0, 'msj' => 'El pedido es requerido'];
-            } elseif (!isset($datosguardar['producto']) || $datosguardar['producto'] == '') {
-                $response = ['state' => 0, 'msj' => 'El producto es requerido'];
-            } elseif (!isset($datosguardar['uen']) || $datosguardar['uen'] == '') {
-                $response = ['state' => 0, 'msj' => 'El campo uen es requerido'];
-            } elseif (!isset($datosguardar['proceso']) || $datosguardar['proceso'] == '') {
-                $response = ['state' => 0, 'msj' => 'El campo proceso es requerido'];
-            } elseif (!isset($datosguardar['tecnologia']) || $datosguardar['tecnologia'] == '') {
-                $response = ['state' => 0, 'msj' => 'El campo tecnologia es requerido'];
-            } elseif (!isset($datosguardar['accion']) || $datosguardar['accion'] == '') {
-                $response = ['state' => 0, 'msj' => 'El campo accion es requerido'];
-            } /*elseif (!isset($datosguardar['motivo']) || $datosguardar['motivo'] == '') {
-                $response = ['state' => 0, 'msj' => 'El campo motivo es requerido'];
-            } */ /*elseif (!isset($datosguardar['tipoEquipo']) || $datosguardar['tipoEquipo'] == '') {
-                $response = ['state' => 0, 'msj' => 'El campo tipo de equipo es requerido'];
-            }*/ elseif (!isset($datosguardar['ciudad']) || $datosguardar['ciudad'] == '') {
-                $response = ['state' => 0, 'msj' => 'El campo ciudad es requerido'];
-            } /*elseif (!isset($datosguardar['macEntra']) || $datosguardar['macEntra'] == '') {
-                $response = ['state' => 0, 'msj' => 'El campo mac que entra es requerido'];
-            }*/ /*elseif (!isset($datosguardar['macSale']) || $datosguardar['macSale'] == '') {
-                $response = ['state' => 0, 'msj' => 'El campo  mac que sale es requerido'];
-            }*/ /*elseif (!isset($datosguardar['paquetes']) || $datosguardar['paquetes'] == '') {
-                $response = ['state' => 0, 'msj' => 'Debe ingresar al menos un paquete'];
-            }*/ elseif (!isset($datosguardar['remite']) || $datosguardar['remite'] == '') {
-                $response = ['state' => 0, 'msj' => 'El campo remitente es requerido'];
-            } elseif (!isset($datosguardar['observacion']) || $datosguardar['observacion'] == '') {
-                $response = ['state' => 0, 'msj' => 'Ingrese observaciones'];
-            } elseif ($existe) {
-                $response = ['state' => 0, 'msj' => 'Ya se encuentra en el sistema una pedido con este concecutivo sin gestionarse'];
             } else {
-                $login        = $_SESSION['login'];
-                $estadoActual = (isset($datosguardar['estado'])) ? $datosguardar['estado'] : '';
-                $accion       = (isset($datosguardar['accion'])) ? $datosguardar['accion'] : '';
-                $ciudad       = (isset($datosguardar['ciudad'])) ? $datosguardar['ciudad'] : '';
-                $correo       = (isset($datosguardar['correo'])) ? $datosguardar['correo'] : '';
-                $macEntra     = (isset($datosguardar['macEntra'])) ? $datosguardar['macEntra'] : '';
-                $macSale      = (isset($datosguardar['macSale'])) ? $datosguardar['macSale'] : '';
-                $motivo       = (isset($datosguardar['motivo'])) ? $datosguardar['motivo'] : '';
-                $observacion  = (isset($datosguardar['observacion'])) ? $datosguardar['observacion'] : '';
-                $pedido       = (isset($datosguardar['pedido'])) ? $datosguardar['pedido'] : '';
-                $proceso      = (isset($datosguardar['proceso'])) ? $datosguardar['proceso'] : '';
-                $remite       = (isset($datosguardar['remite'])) ? $datosguardar['remite'] : '';
-                $producto     = (isset($datosguardar['producto'])) ? $datosguardar['producto'] : '';
-                $tecnologia   = (isset($datosguardar['tecnologia'])) ? $datosguardar['tecnologia'] : '';
-                $tipoEquipo   = (isset($datosguardar['tipoEquipo'])) ? $datosguardar['tipoEquipo'] : '';
-                $uen          = (isset($datosguardar['uen'])) ? $datosguardar['uen'] : '';
-                $contrato     = (isset($datosguardar['contrato'])) ? $datosguardar['contrato'] : '';
-                $perfil       = (isset($datosguardar['perfil'])) ? $datosguardar['perfil'] : '';
-                $paquetes     = (isset($datosguardar['paquetes'])) ? $datosguardar['paquetes'] : '';
-                $paqueteconca = (isset($datosguardar['$paqueteconca'])) ? $datosguardar['$paqueteconca'] : '';
+                $pedido = $datosguardar['pedido'];
+                $producto = $datosguardar['producto'];
+                $existe = 0;
+                $stmt = $this->_DB->prepare("SELECT * FROM contingencias WHERE pedido= :pedido AND producto =:producto AND FINALIZADO IS NULL AND ACEPTA IS NULL AND TIPIFICACION IS NULL AND ACEPTAPORTAFOLIO IS NULL");
+                $stmt->execute([':pedido' => $pedido, ':producto' => $producto]);
+
+                if ($stmt->rowCount()) {
+                    $existe = 1;
+                }
+
+                if (!$_SESSION) {
+                    $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
+                } elseif (!isset($datosguardar['pedido']) || $datosguardar['pedido'] == '') {
+                    $response = ['state' => 0, 'msj' => 'El pedido es requerido'];
+                } elseif (!isset($datosguardar['producto']) || $datosguardar['producto'] == '') {
+                    $response = ['state' => 0, 'msj' => 'El producto es requerido'];
+                } elseif (!isset($datosguardar['uen']) || $datosguardar['uen'] == '') {
+                    $response = ['state' => 0, 'msj' => 'El campo uen es requerido'];
+                } elseif (!isset($datosguardar['proceso']) || $datosguardar['proceso'] == '') {
+                    $response = ['state' => 0, 'msj' => 'El campo proceso es requerido'];
+                } elseif (!isset($datosguardar['tecnologia']) || $datosguardar['tecnologia'] == '') {
+                    $response = ['state' => 0, 'msj' => 'El campo tecnologia es requerido'];
+                } elseif (!isset($datosguardar['accion']) || $datosguardar['accion'] == '') {
+                    $response = ['state' => 0, 'msj' => 'El campo accion es requerido'];
+                } /*elseif (!isset($datosguardar['motivo']) || $datosguardar['motivo'] == '') {
+                   $response = ['state' => 0, 'msj' => 'El campo motivo es requerido'];
+               } *//*elseif (!isset($datosguardar['tipoEquipo']) || $datosguardar['tipoEquipo'] == '') {
+              $response = ['state' => 0, 'msj' => 'El campo tipo de equipo es requerido'];
+          }*/elseif (!isset($datosguardar['ciudad']) || $datosguardar['ciudad'] == '') {
+                    $response = ['state' => 0, 'msj' => 'El campo ciudad es requerido'];
+                } /*elseif (!isset($datosguardar['macEntra']) || $datosguardar['macEntra'] == '') {
+                   $response = ['state' => 0, 'msj' => 'El campo mac que entra es requerido'];
+               }*//*elseif (!isset($datosguardar['macSale']) || $datosguardar['macSale'] == '') {
+               $response = ['state' => 0, 'msj' => 'El campo  mac que sale es requerido'];
+           }*//*elseif (!isset($datosguardar['paquetes']) || $datosguardar['paquetes'] == '') {
+           $response = ['state' => 0, 'msj' => 'Debe ingresar al menos un paquete'];
+       }*/elseif (!isset($datosguardar['remite']) || $datosguardar['remite'] == '') {
+                    $response = ['state' => 0, 'msj' => 'El campo remitente es requerido'];
+                } elseif (!isset($datosguardar['observacion']) || $datosguardar['observacion'] == '') {
+                    $response = ['state' => 0, 'msj' => 'Ingrese observaciones'];
+                } elseif ($existe) {
+                    $response = ['state' => 0, 'msj' => 'Ya se encuentra en el sistema una pedido con este concecutivo sin gestionarse'];
+                } else {
+                    $login = $_SESSION['login'];
+                    $estadoActual = (isset($datosguardar['estado'])) ? $datosguardar['estado'] : '';
+                    $accion = (isset($datosguardar['accion'])) ? $datosguardar['accion'] : '';
+                    $ciudad = (isset($datosguardar['ciudad'])) ? $datosguardar['ciudad'] : '';
+                    $correo = (isset($datosguardar['correo'])) ? $datosguardar['correo'] : '';
+                    $macEntra = (isset($datosguardar['macEntra'])) ? $datosguardar['macEntra'] : '';
+                    $macSale = (isset($datosguardar['macSale'])) ? $datosguardar['macSale'] : '';
+                    $motivo = (isset($datosguardar['motivo'])) ? $datosguardar['motivo'] : '';
+                    $observacion = (isset($datosguardar['observacion'])) ? $datosguardar['observacion'] : '';
+                    $pedido = (isset($datosguardar['pedido'])) ? $datosguardar['pedido'] : '';
+                    $proceso = (isset($datosguardar['proceso'])) ? $datosguardar['proceso'] : '';
+                    $remite = (isset($datosguardar['remite'])) ? $datosguardar['remite'] : '';
+                    $producto = (isset($datosguardar['producto'])) ? $datosguardar['producto'] : '';
+                    $tecnologia = (isset($datosguardar['tecnologia'])) ? $datosguardar['tecnologia'] : '';
+                    $tipoEquipo = (isset($datosguardar['tipoEquipo'])) ? $datosguardar['tipoEquipo'] : '';
+                    $uen = (isset($datosguardar['uen'])) ? $datosguardar['uen'] : '';
+                    $contrato = (isset($datosguardar['contrato'])) ? $datosguardar['contrato'] : '';
+                    $perfil = (isset($datosguardar['perfil'])) ? $datosguardar['perfil'] : '';
+                    $paquetes = (isset($datosguardar['paquetes'])) ? $datosguardar['paquetes'] : '';
+                    $paqueteconca = (isset($datosguardar['$paqueteconca'])) ? $datosguardar['$paqueteconca'] : '';
 
 
-                if ($paquetes != '') {
-                    $tam          = count($paquetes);
-                    $paqueteconca = "";
-                    for ($i = 0; $i < $tam; $i++) {
-                        $paqueteconca = $paqueteconca . $paquetes[$i] . "/";
+                    if ($paquetes != '') {
+                        $tam = count($paquetes);
+                        $paqueteconca = "";
+                        for ($i = 0; $i < $tam; $i++) {
+                            $paqueteconca = $paqueteconca . $paquetes[$i] . "/";
+                        }
                     }
-                }
 
-                /*CUANDO SE SELECCIONE SEGUN EL PRODUCTO GUARDE EN EL CAMPO DE GRUPO*/
-                if ($producto == "TV" && $accion == "Corregir portafolio") {
-                    $grupo = "PORTAFOLIO";
-                } elseif ($producto == "Internet" && $accion == "Corregir portafolio") {
-                    $grupo = "PORTAFOLIO";
-                } elseif ($producto == "ToIP" && $accion == "Corregir portafolio") {
-                    $grupo = "PORTAFOLIO";
-                } elseif ($producto == "Internet+ToIP" && $accion == "Corregir portafolio" || $producto == "Internet+ToIP" && $accion == "OC Telefonia") {
-                    $grupo = "PORTAFOLIO";
-                } elseif ($producto == "TV" && $accion == "mesaOffline") {
-                    $grupo = "PORTAFOLIO";
-                } elseif ($producto == "Internet" && $accion == "mesaOffline") {
-                    $grupo = "PORTAFOLIO";
-                } elseif ($producto == "ToIP" && $accion == "mesaOffline" || $producto == "ToIP" && $accion == "OC Telefonia") {
-                    $grupo = "PORTAFOLIO";
-                } elseif ($producto == "Internet+ToIP" && $accion == "mesaOffline") {
-                    $grupo = "PORTAFOLIO";
-                } elseif ($producto == "TV") {
-                    $grupo = "TV";
-                } elseif ($producto == "Internet") {
-                    $grupo = "INTER";
-                } elseif ($producto == "ToIP") {
-                    $grupo        = "INTER";
-                    $paqueteconca = $datosguardar['linea'];
-                } elseif ($producto == "Internet+ToIP") {
-                    $grupo        = "INTER";
-                    $paqueteconca = $datosguardar['linea'];
-                }
+                    /*CUANDO SE SELECCIONE SEGUN EL PRODUCTO GUARDE EN EL CAMPO DE GRUPO*/
+                    if ($producto == "TV" && $accion == "Corregir portafolio") {
+                        $grupo = "PORTAFOLIO";
+                    } elseif ($producto == "Internet" && $accion == "Corregir portafolio") {
+                        $grupo = "PORTAFOLIO";
+                    } elseif ($producto == "ToIP" && $accion == "Corregir portafolio") {
+                        $grupo = "PORTAFOLIO";
+                    } elseif ($producto == "Internet+ToIP" && $accion == "Corregir portafolio" || $producto == "Internet+ToIP" && $accion == "OC Telefonia") {
+                        $grupo = "PORTAFOLIO";
+                    } elseif ($producto == "TV" && $accion == "mesaOffline") {
+                        $grupo = "PORTAFOLIO";
+                    } elseif ($producto == "Internet" && $accion == "mesaOffline") {
+                        $grupo = "PORTAFOLIO";
+                    } elseif ($producto == "ToIP" && $accion == "mesaOffline" || $producto == "ToIP" && $accion == "OC Telefonia") {
+                        $grupo = "PORTAFOLIO";
+                    } elseif ($producto == "Internet+ToIP" && $accion == "mesaOffline") {
+                        $grupo = "PORTAFOLIO";
+                    } elseif ($producto == "TV") {
+                        $grupo = "TV";
+                    } elseif ($producto == "Internet") {
+                        $grupo = "INTER";
+                    } elseif ($producto == "ToIP") {
+                        $grupo = "INTER";
+                        $paqueteconca = $datosguardar['linea'];
+                    } elseif ($producto == "Internet+ToIP") {
+                        $grupo = "INTER";
+                        $paqueteconca = $datosguardar['linea'];
+                    }
 
 
-                $isFieldContingency = isset($datosguardar['_id']);
+                    $isFieldContingency = isset($datosguardar['_id']);
 
-                if ($isFieldContingency) {
-                    $idTerreno               = $datosguardar['_id'];
-                    $horaGestionTerreno      = $datosguardar['fecha'];
-                    $nuevaHoraGestionTerreno = date('Y-m-d H:i:s', strtotime($horaGestionTerreno));
+                    if ($isFieldContingency) {
+                        $idTerreno = $datosguardar['_id'];
+                        $horaGestionTerreno = $datosguardar['fecha'];
+                        $nuevaHoraGestionTerreno = date('Y-m-d H:i:s', strtotime($horaGestionTerreno));
 
-                    $stmt = $this->_DB->prepare("INSERT INTO contingencias (accion, ciudad, correo, macEntra, macSale, motivo,
+                        $stmt = $this->_DB->prepare("INSERT INTO contingencias (accion, ciudad, correo, macEntra, macSale, motivo,
                                                        observacion, paquetes, pedido, proceso, producto,
                                                        remite, tecnologia, tipoEquipo, uen, contrato, perfil, grupo, logindepacho, id_terreno, horagestion, engestion)
                                                     values (:accion, :ciudad, :correo, :macEntra, :macSale, :motivo,
                                                             :observacion, :paqueteconca, :pedido, :proceso, :producto,
                                                             :remite, :tecnologia, :tipoEquipo, :uen, :contrato, :perfil, :grupo, :login, :idTerreno, :nuevaHoraGestionTerreno,0)");
-                    $stmt->execute([
-                        ':accion'                  => $accion,
-                        ':ciudad'                  => $ciudad,
-                        ':correo'                  => $correo,
-                        ':macEntra'                => $macEntra,
-                        ':macSale'                 => $macSale,
-                        ':motivo'                  => $motivo,
-                        ':observacion'             => $observacion,
-                        ':paqueteconca'            => $paqueteconca,
-                        ':pedido'                  => $pedido,
-                        ':proceso'                 => $proceso,
-                        ':producto'                => $producto,
-                        ':remite'                  => $remite,
-                        ':tecnologia'              => $tecnologia,
-                        ':tipoEquipo'              => $tipoEquipo,
-                        ':uen'                     => $uen,
-                        ':contrato'                => $contrato,
-                        ':perfil'                  => $perfil,
-                        ':grupo'                   => $grupo,
-                        ':login'                   => $login,
-                        ':idTerreno'               => $idTerreno,
-                        ':nuevaHoraGestionTerreno' => $nuevaHoraGestionTerreno,
-                    ]);
+                        $stmt->execute([
+                            ':accion' => $accion,
+                            ':ciudad' => $ciudad,
+                            ':correo' => $correo,
+                            ':macEntra' => $macEntra,
+                            ':macSale' => $macSale,
+                            ':motivo' => $motivo,
+                            ':observacion' => $observacion,
+                            ':paqueteconca' => $paqueteconca,
+                            ':pedido' => $pedido,
+                            ':proceso' => $proceso,
+                            ':producto' => $producto,
+                            ':remite' => $remite,
+                            ':tecnologia' => $tecnologia,
+                            ':tipoEquipo' => $tipoEquipo,
+                            ':uen' => $uen,
+                            ':contrato' => $contrato,
+                            ':perfil' => $perfil,
+                            ':grupo' => $grupo,
+                            ':login' => $login,
+                            ':idTerreno' => $idTerreno,
+                            ':nuevaHoraGestionTerreno' => $nuevaHoraGestionTerreno,
+                        ]);
 
-                    if ($stmt->rowCount() == 1) {
-                        $response = ['state' => 1, 'msj' => 'Datos ingresados correctamente'];
+                        if ($stmt->rowCount() == 1) {
+                            $response = ['state' => 1, 'msj' => 'Datos ingresados correctamente'];
+                        } else {
+                            $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo nuevamente'];
+                        }
                     } else {
-                        $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo nuevamente'];
-                    }
-                } else {
-                    $idTerreno = null;
+                        $idTerreno = null;
 
-                    $stmt = $this->_DB->prepare("INSERT INTO contingencias (accion, ciudad, correo, macEntra, macSale, motivo,
+                        $stmt = $this->_DB->prepare("INSERT INTO contingencias (accion, ciudad, correo, macEntra, macSale, motivo,
                                                        observacion, paquetes, pedido, proceso, producto,
                                                        remite, tecnologia, tipoEquipo, uen, contrato, perfil, grupo, logindepacho, id_terreno, engestion)
                                                     values (:accion, :ciudad, :correo, :macEntra, :macSale, :motivo,
@@ -813,34 +830,35 @@ class otherServices
                                                             :remite, :tecnologia, :tipoEquipo, :uen, :contrato, :perfil, :grupo, :login, :idTerreno, 0)");
 
 
-                    if ($accion !== "" || $correo !== "" || $pedido !== "" || $proceso !== "") {
-                        $stmt->execute([
-                            ':accion'       => $accion,
-                            ':ciudad'       => $ciudad,
-                            ':correo'       => $correo,
-                            ':macEntra'     => $macEntra,
-                            ':macSale'      => $macSale,
-                            ':motivo'       => $motivo,
-                            ':observacion'  => $observacion,
-                            ':paqueteconca' => $paqueteconca,
-                            ':pedido'       => $pedido,
-                            ':proceso'      => $proceso,
-                            ':producto'     => $producto,
-                            ':remite'       => $remite,
-                            ':tecnologia'   => $tecnologia,
-                            ':tipoEquipo'   => $tipoEquipo,
-                            ':uen'          => $uen,
-                            ':contrato'     => $contrato,
-                            ':perfil'       => $perfil,
-                            ':grupo'        => $grupo,
-                            ':login'        => $login,
-                            ':idTerreno'    => $idTerreno,
-                        ]);
+                        if ($accion !== "" || $correo !== "" || $pedido !== "" || $proceso !== "") {
+                            $stmt->execute([
+                                ':accion' => $accion,
+                                ':ciudad' => $ciudad,
+                                ':correo' => $correo,
+                                ':macEntra' => $macEntra,
+                                ':macSale' => $macSale,
+                                ':motivo' => $motivo,
+                                ':observacion' => $observacion,
+                                ':paqueteconca' => $paqueteconca,
+                                ':pedido' => $pedido,
+                                ':proceso' => $proceso,
+                                ':producto' => $producto,
+                                ':remite' => $remite,
+                                ':tecnologia' => $tecnologia,
+                                ':tipoEquipo' => $tipoEquipo,
+                                ':uen' => $uen,
+                                ':contrato' => $contrato,
+                                ':perfil' => $perfil,
+                                ':grupo' => $grupo,
+                                ':login' => $login,
+                                ':idTerreno' => $idTerreno,
+                            ]);
 
-                        if ($stmt->rowCount() == 1) {
-                            $response = ['state' => 1, 'msj' => 'Datos ingresados correctamente'];
-                        } else {
-                            $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo nuevamente'];
+                            if ($stmt->rowCount() == 1) {
+                                $response = ['state' => 1, 'msj' => 'Datos ingresados correctamente'];
+                            } else {
+                                $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo nuevamente'];
+                            }
                         }
                     }
                 }
@@ -856,15 +874,17 @@ class otherServices
     {
 
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
-            $datoscancelar        = $data;
-            $login                = $_SESSION['login'];
-            $pedido               = $datoscancelar['pedido'];
-            $id                   = $datoscancelar['id'];
+            $datoscancelar = $data;
+            $login = $_SESSION['login'];
+            $pedido = $datoscancelar['pedido'];
+            $id = $datoscancelar['id'];
             $observacionesconting = 'Cancelado por Despachador';
-            $acepta               = 'Rechaza';
-            $tipificacion         = 'Cancelado por Despachador';
-            $horacontingencia     = date("Y-m-d H:i:s");
+            $acepta = 'Rechaza';
+            $tipificacion = 'Cancelado por Despachador';
+            $horacontingencia = date("Y-m-d H:i:s");
 
             $stmt = $this->_DB->prepare("SELECT id FROM contingencias WHERE pedido = :pedido AND engestion IS NULL OR pedido = :pedido AND engestion = '0'");
             $stmt->execute([':pedido' => $pedido]);
@@ -881,12 +901,12 @@ class otherServices
                                                             fechaClickMarca = :horacontingencia
                                                         WHERE id = :id");
                 $update->execute([
-                    ':horacontingencia'     => $horacontingencia,
+                    ':horacontingencia' => $horacontingencia,
                     ':observacionesconting' => $observacionesconting,
-                    ':tipificacion'         => $tipificacion,
-                    ':acepta'               => $acepta,
-                    ':login'                => $login,
-                    ':id'                   => $id,
+                    ':tipificacion' => $tipificacion,
+                    ':acepta' => $acepta,
+                    ':login' => $login,
+                    ':id' => $id,
                 ]);
 
                 if ($update->rowCount() == 1) {
@@ -907,13 +927,15 @@ class otherServices
     public function guardarEscalar($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $gestionescalado = $data;
 
-            $estadoActual   = utf8_decode($gestionescalado['estado']);
+            $estadoActual = utf8_decode($gestionescalado['estado']);
             $PedidoDespacho = utf8_decode($gestionescalado['PedidoDespacho']);
-            $fechaClick     = $gestionescalado['fechaclick'];
-            $observaciones  = utf8_decode($gestionescalado['ObservacionAsesor']);
+            $fechaClick = $gestionescalado['fechaclick'];
+            $observaciones = utf8_decode($gestionescalado['ObservacionAsesor']);
 
             if (preg_match("/^20\d{2}(-|\/)((0[1-9])|(1[0-2]))(-|\/)((0[1-9])|([1-2][0-9])|(3[0-1]))(T|\s)(([0-1][0-9])|(2[0-3])):([0-5][0-9]):([0-5][0-9])$/", $fechaClick)) {
                 $fechaClick = "";
@@ -925,20 +947,20 @@ class otherServices
             $stmt->execute([':PedidoDespacho' => $PedidoDespacho]);
 
             if ($stmt->rowCount()) {
-                $result         = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $id             = $result['idgestion'];
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $id = $result['idgestion'];
                 $estadoAnterior = $result['estado'];
-                $estadoActual   = $estadoAnterior . "/" . $estadoActual;
-                $update         = $this->_DB->prepare("UPDATE BrutalForce
+                $estadoActual = $estadoAnterior . "/" . $estadoActual;
+                $update = $this->_DB->prepare("UPDATE BrutalForce
                                                                 SET estado            = :estadoActual,
                                                                     ObservacionAsesor = :observaciones,
                                                                     fechaClick        = :fechaClick
                                                                 WHERE idgestion = :id");
                 $update->execute([
-                    ':$estadoActual'  => $estadoActual,
+                    ':$estadoActual' => $estadoActual,
                     ':$observaciones' => $observaciones,
-                    ':$fechaClick'    => $fechaClick,
-                    ':$id'            => $id,
+                    ':$fechaClick' => $fechaClick,
+                    ':$id' => $id,
                 ]);
 
                 if ($update->rowCount()) {
@@ -960,12 +982,14 @@ class otherServices
     public function gestionAsesorFinal($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $datosFinal = $data;
 
-            $PedidoDespacho       = $datosFinal['PedidoDespacho'];
-            $PedidoNuevo          = $datosFinal['pedidoNuevo'];
-            $estadoFinalPedido    = utf8_decode($datosFinal['estadoFinalPedido']);
+            $PedidoDespacho = $datosFinal['PedidoDespacho'];
+            $PedidoNuevo = $datosFinal['pedidoNuevo'];
+            $estadoFinalPedido = utf8_decode($datosFinal['estadoFinalPedido']);
             $ObservacionesFinales = utf8_decode($datosFinal['ObservacionesFinales']);
 
             $stmt = $this->_DB->prepare("select idgestion id from BrutalForce where PedidoDespacho = :PedidoDespacho");
@@ -973,7 +997,7 @@ class otherServices
 
             if ($stmt->rowCount()) {
                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $id     = $result['id'];
+                $id = $result['id'];
 
                 $update = $this->_DB->prepare("UPDATE BrutalForce
                                                         SET gestionAsesor='3',
@@ -983,9 +1007,9 @@ class otherServices
                                                         WHERE idgestion = :id");
                 $update->execute([
                     ':$ObservacionesFinales' => $ObservacionesFinales,
-                    ':$estadoFinalPedido'    => $estadoFinalPedido,
-                    ':$PedidoNuevo'          => $PedidoNuevo,
-                    ':$id'                   => $id,
+                    ':$estadoFinalPedido' => $estadoFinalPedido,
+                    ':$PedidoNuevo' => $PedidoNuevo,
+                    ':$id' => $id,
                 ]);
 
                 if ($update->rowCount() == 1) {
@@ -1008,6 +1032,8 @@ class otherServices
     public function gestionPendientes()
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $login = $_SESSION['login'];
 
@@ -1033,7 +1059,7 @@ class otherServices
             }
 
             if ($stmt->rowCount() || $counter !== 0) {
-                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $response = [$result['estado'], $counter, 201];
             } else {
                 $response = ['Ah ocurrido un error intentalo nuevamente', 400];
@@ -1050,9 +1076,11 @@ class otherServices
     {
 
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
-            $login  = $_SESSION['login'];
-            $datos  = $data;
+            $login = $_SESSION['login'];
+            $datos = $data;
             $estado = $datos['estado'];
 
             $stmt = $this->_DB->prepare("select PedidoDespacho
@@ -1060,12 +1088,12 @@ class otherServices
                                                 where Asesor = :login
                                                   and estado = :estado");
             $stmt->execute([
-                ':login'  => $login,
+                ':login' => $login,
                 ':estado' => $estado,
             ]);
 
             if ($stmt->rowCount()) {
-                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $response = [$result, 201];
             } else {
                 $response = ['No se encontraron datos', 400];

@@ -1,6 +1,5 @@
 <?php
 require_once '../class/conection.php';
-
 class novedadesTecnico
 {
     private $_DB;
@@ -14,6 +13,8 @@ class novedadesTecnico
     {
         try {
 
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
 
             if (!$_SESSION) {
@@ -68,6 +69,8 @@ class novedadesTecnico
     {
 
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
@@ -145,9 +148,9 @@ class novedadesTecnico
                     ]);
 
                     if ($stmt->rowCount() == 1) {
-                        $response = ['state' => 1, 'text' => 'Pedido actualizado'];
+                        $response = ['state' => 1, 'text' => 'Tu Novedad fue Guardada!'];
                     } else {
-                        $response = ['state' => 0, 'text' => 'Ha ocurrido un error intentalo nuevamente'];
+                        $response = ['state' => 0, 'text' => 'Ha ocurrido un error inténtalo nuevamente'];
                     }
                 } elseif ($tiponovedad == 'Cumplimiento de Agenda' and $region <> null) {
 
@@ -177,11 +180,11 @@ class novedadesTecnico
                     ]);
 
                     if ($stmt->rowCount() == 1) {
-                        $response = ['state' => 1, 'text' => 'Pedido actualizado'];
+                        $response = ['state' => 1, 'text' => 'Tu Novedad fue Guardada!'];
                     } else {
-                        $response = ['state' => 0, 'text' => 'Ha ocurrido un error intentalo nuevamente'];
+                        $response = ['state' => 0, 'text' => 'Ha ocurrido un error inténtalo nuevamente'];
                     }
-                } elseif ($tiponovedad == 'Triangulo de Produccion' and $cedulaTecnico == null) {
+                } elseif ($tiponovedad == 'Triangulo de Producción' and $cedulaTecnico == null) {
 
                     $stmt = $this->_DB->prepare("INSERT INTO NovedadesVisitas
             (fecha, usuario, tiponovedad, pedido, contracto, cedulaTecnico, nombreTecnico, proceso, region, municipio, situacion, horamarcaensitio, observaciones, idllamada, motivo, submotivo)
@@ -207,9 +210,9 @@ class novedadesTecnico
                     ]);
 
                     if ($stmt->rowCount() == 1) {
-                        $response = ['state' => 1, 'text' => 'Pedido actualizado'];
+                        $response = ['state' => 1, 'text' => 'Tu Novedad fue Guardada!'];
                     } else {
-                        $response = ['state' => 0, 'text' => 'Ha ocurrido un error intentalo nuevamente'];
+                        $response = ['state' => 0, 'text' => 'Ha ocurrido un error inténtalo nuevamente'];
                     }
                 } elseif ($tiponovedad == 'Triangulo de Produccion' and $region <> null) {
 
@@ -237,9 +240,9 @@ class novedadesTecnico
                     ]);
 
                     if ($stmt->rowCount() == 1) {
-                        $response = ['state' => 1, 'text' => 'Pedido actualizado'];
+                        $response = ['state' => 1, 'text' => 'Tu Novedad fue Guardada!'];
                     } else {
-                        $response = ['state' => 0, 'text' => 'Ha ocurrido un error intentalo nuevamente'];
+                        $response = ['state' => 0, 'text' => 'Ha ocurrido un error inténtalo nuevamente'];
                     }
                 }
             }
@@ -254,6 +257,8 @@ class novedadesTecnico
     public function updateNovedadesTecnico($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
@@ -282,6 +287,8 @@ class novedadesTecnico
     public function csvNovedadesTecnico($data)
     {
 
+        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        session_set_cookie_params(3600);
         session_start();
         $usuarioid = $_SESSION['login'];
         if (empty($data['fechaini']) && empty($data['fechafin'])) {
@@ -331,6 +338,8 @@ class novedadesTecnico
     public function Regiones()
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $stmt = $this->_DB->query("SELECT region FROM regiones ORDER BY region");
             $stmt->execute();
@@ -350,6 +359,8 @@ class novedadesTecnico
     {
 
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $stmt = $this->_DB->prepare("SELECT municipio
                                             FROM municipios m
@@ -374,6 +385,8 @@ class novedadesTecnico
     public function SituacionNovedadesVisitas()
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $stmt = $this->_DB->query("SELECT situacion
 					FROM SituacionNovedadesVisitas
@@ -395,6 +408,8 @@ class novedadesTecnico
     public function DetalleNovedadesVisitas($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $stmt = $this->_DB->prepare("SELECT dnv.detalle
 					FROM DetalleNovedadesVisitas dnv
@@ -418,6 +433,8 @@ class novedadesTecnico
 
     public function BFobservaciones()
     {
+        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        session_set_cookie_params(3600);
         session_start();
         $login = $_SESSION['login'];
         $hoy = date("Y-m-d");
@@ -445,6 +462,8 @@ class novedadesTecnico
 
         try {
 
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
 
             if (!$_SESSION) {
@@ -473,6 +492,8 @@ class novedadesTecnico
     public function editarPwdTecnicos($data)
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $datos = $data['datosEdicion'];
             $cedula = $datos['cedula'];
@@ -496,6 +517,8 @@ class novedadesTecnico
     public function csvContrasenasTecnicos()
     {
         try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
             session_start();
             $usuarioid = $_SESSION['login'];
             $filename = "ContrasenasTecnicosClick" . "_" . $usuarioid . ".csv";

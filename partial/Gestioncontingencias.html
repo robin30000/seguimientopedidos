@@ -320,10 +320,12 @@
                                                         <!-- Fin ocultar el login gestión -->
                                                         <td class="icons_in_tables">
                                                             <button type="button" class="btn btn-default btn-xs"
-                                                                ng-click="CopyPortaPapeles(data.pedido)" tooltip-placement="top" uib-tooltip="Copiar pedido"
+                                                                ng-click="CopyPortaPapeles(data.pedido)"
+                                                                tooltip-placement="top" uib-tooltip="Copiar pedido"
                                                                 id=i{{$index}}>{{data.pedido}}
                                                             </button>
-                                                            <i class="fa fa-info-circle" aria-hidden="true" tooltip-placement="top" uib-tooltip="Datos bb8"
+                                                            <i class="fa fa-info-circle" aria-hidden="true"
+                                                                tooltip-placement="top" uib-tooltip="Datos bb8"
                                                                 ng-click="bb8(data.pedido)"></i>
                                                         </td>
                                                         <td ng-show="!data._id">{{data.macEntra}}</td>
@@ -382,23 +384,25 @@
                                                                 <i class="fa fa-commenting" aria-hidden="true"></i>
                                                             </button> -->
                                                             <button popover-placement="left"
-                                                                uib-popover="{{data.observacion}}" tooltip-placement="top" uib-tooltip="Observaciones"
-                                                                type="button"
-                                                                class="btn btn-default btn-xs">
+                                                                uib-popover="{{data.observacion}}"
+                                                                tooltip-placement="top" uib-tooltip="Observaciones"
+                                                                type="button" class="btn btn-default btn-xs">
                                                                 <i class="fa fa-commenting" aria-hidden="true"></i>
                                                             </button>
                                                             <button ng-show="!data._id" type="button"
                                                                 class="btn btn-default btn-xs" data-toggle="modal"
                                                                 ng-click="guardarcontingencia(data)"
-                                                                data-backdrop="static" tooltip-placement="top" uib-tooltip="Observaciones y guardar gestión">
+                                                                data-backdrop="static" tooltip-placement="top"
+                                                                uib-tooltip="Observaciones y guardar gestión">
                                                                 <i class="fa fa-floppy-o" aria-hidden="true">
                                                                 </i>
                                                             </button>
                                                             <div style="display: inline-block;" ng-show="!data._id">
                                                                 <button type="button" class="btn btn-default btn-xs"
-                                                                tooltip-placement="top" uib-tooltip="El pedido ya pasó por contingencias anteriormente, por favor validar!"
+                                                                    tooltip-placement="top"
+                                                                    uib-tooltip="El pedido ya pasó por contingencias anteriormente, por favor validar!"
                                                                     data-toggle="modal" data-backdrop="static"
-                                                                    ng-hide="data.alerta == 'FALSE'" >
+                                                                    ng-hide="data.alerta == 'FALSE'">
                                                                     <i class="fa fa-exclamation" style="color:red"
                                                                         aria-hidden="true">
                                                                     </i>
@@ -933,17 +937,16 @@
                                         <li>
                                             <b>
                                                 <button type="button" class="btn btn-default btn-xs"
-                                                    ng-click="resumenContingencias()" title="Actualizar"
-                                                    data-toggle="tooltip" data-placement="left" ng-disabled="loading">
+                                                    ng-click="resumenContingencias()"  tooltip-placement="top"
+                                                    uib-tooltip="Actualizar" ng-disabled="loading">
                                                     <i class="fa fa-refresh" aria-hidden="true"></i>
                                                 </button>
                                             </b>&nbsp;
                                         </li>
                                         <li>
-                                            <button type="button" class="btn btn-info btn-xs" tooltip-placement="top"
+                                            <button type="button" class="btn btn-success btn-xs" tooltip-placement="top"
                                                 uib-tooltip="Exportar Registros"
-                                                ng-click="descargarContingencias(fechaupdateInical, fechaupdateFinal)"
-                                                ng-disabled="loading">
+                                                ng-click="descargarContingencias(fecha)" ng-disabled="loading">
                                                 <i class="fa fa-cloud-download" aria-hidden="true"> </i>
                                             </button>
                                         </li>&nbsp;&nbsp;&nbsp;

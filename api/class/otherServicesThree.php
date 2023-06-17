@@ -1,6 +1,7 @@
 <?php
 require_once '../model/modelOtherServicesThree.php';
-
+ini_set('session.gc_maxlifetime', 3600); // 1 hour
+session_set_cookie_params(3600);
 class otherServicesThree
 {
     public $_model;

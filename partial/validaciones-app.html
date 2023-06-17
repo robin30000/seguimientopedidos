@@ -1,60 +1,4 @@
 <style>
-    .fileUpload {
-        position: relative;
-        overflow: hidden;
-        /*margin: 10px;*/
-    }
-
-    table, th, td {
-        font-size: 11px;
-    }
-
-    .fixed-panel1 {
-
-        max-height: 400px;
-        overflow-y: scroll;
-    }
-
-    .fileUpload input.upload {
-        position: absolute;
-        top: 0;
-        right: 0;
-        margin: 0;
-        padding: 0;
-        font-size: 30px;
-        cursor: pointer;
-        opacity: 0;
-        filter: alpha(opacity=0);
-    }
-
-    /*
-    Full screen Modal
-    */
-    .fullscreen-modal .modal-dialog {
-        margin: 0;
-        margin-right: auto;
-        margin-left: auto;
-        width: 100%;
-    }
-
-    @media (min-width: 768px) {
-        .fullscreen-modal .modal-dialog {
-            width: 750px;
-        }
-    }
-
-    @media (min-width: 992px) {
-        .fullscreen-modal .modal-dialog {
-            width: 970px;
-        }
-    }
-
-    @media (min-width: 1200px) {
-        .fullscreen-modal .modal-dialog {
-            width: 1170px;
-        }
-    }
-
     .font {
         font-size: 14px;
     }
@@ -65,18 +9,18 @@
         font-weight: bolder;
     }
 
-    .sinTop{
+    .sinTop {
         vertical-align: center;
     }
 
-    .head{
+    .head {
         background-color: #337ab7;
         color: #f0f0f0;
     }
-    .middle{
+
+    .middle {
         vertical-align: middle !important;
     }
-
 </style>
 <div class="container-fluid">
     <div class="row">
@@ -87,31 +31,54 @@
                 </div>
                 <div class="panel-body">
                     <div class="row">
-                    <div class="col-md-4 col-md-offset-4">
-                        <div class="table table-bordered table-hover">
-                            <table class="table">
-                                <tr class="head">
-                                    <th>Validacion</th>
-                                    <th>Sara</th>
-                                    <th>Equipos</th>
-                                    <th>Infraestructura</th>
-                                </tr>
+                        <div class="page-header">
+                            <div class="col-md-12 text-center">
+                                <h3>Activa / inactiva validaciones <small>Estas corresponden a las
+                                        validaciones de contingencias(cable modem) y soporte gpon de la app
+                                        móvil</small></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-3">
+
+                            <table class="table table table-bordered table-hover">
+                                <thead class="table-header">
+                                    <tr>
+                                        <th>Validación</th>
+                                        <th>Sara</th>
+                                        <th>Equipos</th>
+                                        <th>Infraestructura</th>
+                                    </tr>
+                                </thead>
+
                                 <tbody>
                                     <tr>
                                         <td class="middle"><span>Contingencias</span> </td>
-                                        <td class="middle"><input type="checkbox" class="switch_1" ng-model="contingenciaSara" ng-checked="contingenciaSara == 'activa'" ng-click="cambiaEstado('contingenciaSara',contingenciaSara)"></td>
-                                        <td class="middle"><input type="checkbox" class="switch_1" ng-model="contingenciaEquipo" ng-checked="contingenciaEquipo == 'activa'" ng-click="cambiaEstado('contingenciaEquipo',contingenciaEquipo)"></td>
+                                        <td class="middle"><input type="checkbox" class="switch_1"
+                                                ng-model="contingenciaSara" ng-checked="contingenciaSara == 'activa'"
+                                                ng-click="cambiaEstado('contingenciaSara',contingenciaSara)"></td>
+                                        <td class="middle"><input type="checkbox" class="switch_1"
+                                                ng-model="contingenciaEquipo"
+                                                ng-checked="contingenciaEquipo == 'activa'"
+                                                ng-click="cambiaEstado('contingenciaEquipo',contingenciaEquipo)">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td class="middle"><span>Soporte Gpon</span></td>
                                         <td class="middle"></td>
                                         <td class="middle"></td>
-                                        <td class="middle"><input type="checkbox" class="switch_1" ng-model="gponInfraestructura" ng-checked="gponInfraestructura == 'activa'" ng-click="cambiaEstado('gponInfraestructura',gponInfraestructura)"></td>
+                                        <td class="middle"><input type="checkbox" class="switch_1"
+                                                ng-model="gponInfraestructura"
+                                                ng-checked="gponInfraestructura == 'activa'"
+                                                ng-click="cambiaEstado('gponInfraestructura',gponInfraestructura)">
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
+
                         </div>
-                    </div>
 
                         <!--<div class="switch_box box_1">
                             <input type="checkbox" class="switch_1">
@@ -124,4 +91,3 @@
         </div>
     </div>
 </div>
-

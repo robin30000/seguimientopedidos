@@ -1,6 +1,7 @@
 <?php
 require_once '../model/modelTurnos.php';
-
+ini_set('session.gc_maxlifetime', 3600); // 1 hour
+session_set_cookie_params(3600);
 class turnos
 {
     public $_model;
