@@ -237,13 +237,15 @@
 
 						<div class="form-group">
 							<label>Región:</label>
-							<select type="text" class="form-control" name="region" ng-model="novedadesVisitasSel.region"
+							<!-- <select type="text" class="form-control" name="region" ng-model="novedadesVisitasSel.region"
 								ng-change="calcularAcciones()" required>
-								<option value="" disabled>Seleccione</option>
+								<option value="" disabled>Seleccione {{d.region}}</option>
 								<option ng-repeat="d in listadoRegiones" value="{{d.region}}">
 									{{d.region}}
 								</option>
-							</select>
+							</select> -->
+							<input type="text" class="form-control" placeholder="region"
+								ng-model="novedadesVisitasSel.region" />
 						</div>
 
 						<div class="form-group" ng-show="infopedido==false">

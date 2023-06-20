@@ -15,7 +15,6 @@ class MenuPerfil
         ini_set('session.gc_maxlifetime', 3600); // 1 hour
         session_set_cookie_params(3600);
         session_start();
-        session_start();
         try {
 
             $stmt = $this->_DB->prepare("SELECT

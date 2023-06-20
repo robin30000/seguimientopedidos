@@ -144,17 +144,17 @@ class otherServices
             $fechaFinal = $params->fechaFinal;
             $login = $_SESSION['login'];
 
-            $codigo = utf8_decode($info_gestion['codigo']);
-            $resultado = utf8_decode($info_gestion['resultado']);
+            $codigo = $info_gestion['codigo'];
+            $resultado = $info_gestion['resultado'];
             $intentos = $info_gestion['intentos'];
-            $observaciones = utf8_decode($info_gestion['observaciones']);
+            $observaciones =$info_gestion['observaciones'];
 
             $telefono = $info_encuesta['telefono'];
             $cedula = $info_encuesta['cedula'];
             $detalle = $info_encuesta['detalle'];
             $fecha_instalacion = $info_encuesta['fecha_instalacion'];
-            $departamento = utf8_decode($info_encuesta['departamento']);
-            $municipio = utf8_decode($info_encuesta['municipio']);
+            $departamento = $info_encuesta['departamento'];
+            $municipio = $info_encuesta['municipio'];
             $contratista = $info_encuesta['contratista'];
             $Interfaz = $info_encuesta['Interfaz'];
             $semana = $info_encuesta['semana'];
@@ -167,7 +167,7 @@ class otherServices
                 $agrupador = "Vendedor";
             }
 
-            $agrupador = utf8_decode($agrupador);
+            $agrupador = $agrupador;
 
             $stmt = $this->_DB->prepare("INSERT INTO doloresClientes (pedido, cedula, telefono, fecha_instalacion,
                                                  departamento, municipio, contratista, Interfaz, observaciones, codigo, resultado,
@@ -216,18 +216,18 @@ class otherServices
             session_start();
             $infogestion = $data->datosguardar;
             $pedido = $infogestion['pedido'];
-            $accion = utf8_decode($infogestion['accion']);
+            $accion = $infogestion['accion'];
             $correo = $infogestion['correo'];
-            $observaciones = utf8_decode($infogestion['observaciones']);
+            $observaciones = $infogestion['observaciones'];
             $cedula = $infogestion['cedula'];
-            $tecnico = utf8_decode($infogestion['tecnico']);
+            $tecnico = $infogestion['tecnico'];
             $celular = $infogestion['celular'];
-            $zona = utf8_decode($infogestion['zona']);
+            $zona = $infogestion['zona'];
             $idLlamada = $infogestion['idLlamada'];
-            $supervisor = utf8_decode($infogestion['supervisor']);
-            $tipoTrans = utf8_decode($infogestion['tipoTrans']);
-            $numSAPEIni = utf8_decode($infogestion['numSAPEIni']);
-            $numSAPEFin = utf8_decode($infogestion['numSAPEFin']);
+            $supervisor = $infogestion['supervisor'];
+            $tipoTrans = $infogestion['tipoTrans'];
+            $numSAPEIni = $infogestion['numSAPEIni'];
+            $numSAPEFin = $infogestion['numSAPEFin'];
             $prioridad = $infogestion['prioridad'];
 
             if ($infogestion['accion'] !== "Gestión AAA") {
@@ -599,18 +599,18 @@ class otherServices
             $ObservacionesDespacho = $datosDespacho['ObservacionesDespacho'];
             $FechaGestionDespacho = $datosDespacho['FechaGestionDespacho'];
             $tipoTransaccion = $datosDespacho['tipoTransaccion'];
-            $zona = utf8_decode($datosDespacho['zona']);
+            $zona = $datosDespacho['zona'];
             $LoginDespacho = $datosDespacho['LoginDespacho'];
 
-            $causaActividad = utf8_decode($infogestion['causaActividad']);
-            $estado = utf8_decode($infogestion['estado']);
+            $causaActividad = $infogestion['causaActividad'];
+            $estado = $infogestion['estado'];
             $pedidoNuevo = $infogestion['pedidoNuevo'];
             $fechaClick = $infogestion['fechaClick'];
             $numeroOferta = $infogestion['numeroOferta'];
-            $actividad = utf8_decode($infogestion['actividad']);
-            $canal = utf8_decode($infogestion['canal']);
+            $actividad = $infogestion['actividad'];
+            $canal = $infogestion['canal'];
             $incidente = $infogestion['incidente'];
-            $observaciones = utf8_decode($infogestion['observaciones']);
+            $observaciones = $infogestion['observaciones'];
 
             $login = $_SESSION['login'];
 
@@ -932,10 +932,10 @@ class otherServices
             session_start();
             $gestionescalado = $data;
 
-            $estadoActual = utf8_decode($gestionescalado['estado']);
-            $PedidoDespacho = utf8_decode($gestionescalado['PedidoDespacho']);
+            $estadoActual = $gestionescalado['estado'];
+            $PedidoDespacho = $gestionescalado['PedidoDespacho'];
             $fechaClick = $gestionescalado['fechaclick'];
-            $observaciones = utf8_decode($gestionescalado['ObservacionAsesor']);
+            $observaciones = $gestionescalado['ObservacionAsesor'];
 
             if (preg_match("/^20\d{2}(-|\/)((0[1-9])|(1[0-2]))(-|\/)((0[1-9])|([1-2][0-9])|(3[0-1]))(T|\s)(([0-1][0-9])|(2[0-3])):([0-5][0-9]):([0-5][0-9])$/", $fechaClick)) {
                 $fechaClick = "";
@@ -989,8 +989,8 @@ class otherServices
 
             $PedidoDespacho = $datosFinal['PedidoDespacho'];
             $PedidoNuevo = $datosFinal['pedidoNuevo'];
-            $estadoFinalPedido = utf8_decode($datosFinal['estadoFinalPedido']);
-            $ObservacionesFinales = utf8_decode($datosFinal['ObservacionesFinales']);
+            $estadoFinalPedido = $datosFinal['estadoFinalPedido'];
+            $ObservacionesFinales = $datosFinal['ObservacionesFinales'];
 
             $stmt = $this->_DB->prepare("select idgestion id from BrutalForce where PedidoDespacho = :PedidoDespacho");
             $stmt->execute([':PedidoDespacho' => $PedidoDespacho]);

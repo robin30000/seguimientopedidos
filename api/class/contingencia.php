@@ -709,10 +709,10 @@ class Contingencia
                 $login = $_SESSION['login'];
                 $pedido = (isset($datosguardar['pedido'])) ? $datosguardar['pedido'] : '';
                 $producto = (isset($datosguardar['producto'])) ? $datosguardar['producto'] : '';
-                $observacionesconting = (isset($datosguardar['observacionescontingencia'])) ? utf8_decode($datosguardar['observacionescontingencia']) : '';
+                $observacionesconting = (isset($datosguardar['observacionescontingencia'])) ? $datosguardar['observacionescontingencia'] : '';
                 $ingresoClick = (isset($datosguardar['ingresoClick'])) ? $datosguardar['ingresoClick'] : '';
-                $tipificacion = (isset($datosguardar['tipificacion'])) ? utf8_decode($datosguardar['tipificacion']) : '';
-                $generarCr = (isset($datosguardar['generarcr'])) ? $datosguardar['generarcr'] : '';
+                $tipificacion = (isset($datosguardar['tipificacion'])) ? $datosguardar['tipificacion'] : '';
+                $generarCr = (isset($datosguardar['generarcr'])) ? $datosguardar['generarcr'] : 0;
                 $horacontingencia = date("Y-m-d H:i:s");
 
                 if ($tipificacion == 'Ok') {
@@ -781,8 +781,8 @@ class Contingencia
             $login = $_SESSION['login'];
             $pedido = $datosguardar['pedido'];
             $producto = $datosguardar['producto'];
-            $observacionesescalamiento = utf8_decode($datosguardar['observacionesescalamiento']);
-            $tipificacion = utf8_decode($datosguardar['tipificacion']);
+            $observacionesescalamiento = $datosguardar['observacionesescalamiento'];
+            $tipificacion = $datosguardar['tipificacion'];
             $horaescalamiento = date("Y-m-d H:i:s");
 
             $stmt = $this->_DB->prepare("SELECT id
@@ -941,9 +941,9 @@ class Contingencia
             $login = $_SESSION['login'];
             $pedido = $datosguardar['pedido'];
             $producto = $datosguardar['producto'];
-            $observContingenciaPortafolio = utf8_decode($datosguardar['observContingenciaPortafolio']);
+            $observContingenciaPortafolio = $datosguardar['observContingenciaPortafolio'];
             $ingresoClick = $datosguardar['ingresoClick'];
-            $tipificacionPortafolio = utf8_decode($datosguardar['tipificacionPortafolio']);
+            $tipificacionPortafolio = $datosguardar['tipificacionPortafolio'];
             $horaContingenciaPortafolio = date("Y-m-d H:i:s");
 
             /*ORGANIZAR LO QUE SE RECHAZA DESDE CORREGIR PORTAFOLIO*/

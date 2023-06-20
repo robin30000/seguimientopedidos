@@ -223,7 +223,7 @@ class quejasGo
                 $accion = $datos['accion'];
                 $region = $datos['region'];
                 $idllamada = $datos['idllamada'];
-                $observacion = utf8_decode($datos['observacion']);
+                $observacion = $datos['observacion'];
 
 
                 $stmt = $this->_DB->prepare("

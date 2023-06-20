@@ -16,17 +16,22 @@ class GestionQuejasGo
 			ini_set('session.gc_maxlifetime', 3600); // 1 hour
 			session_set_cookie_params(3600);
 			session_start();
-			$query = "SELECT *
+			//var_dump($data);exit();
+			if (!$_SESSION) {
+				$response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
+			} else {
+				$query = "SELECT *
 					FROM quejasgo
 					WHERE 1=1 and en_gestion != 2 ORDER BY fecha DESC";
 
 
-			$stmt = $this->_DB->query($query);
+				$stmt = $this->_DB->query($query);
 
-			if ($stmt->rowCount() > 0) {
-				$response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
-			} else {
-				$response = array('state' => 0, 'msj' => "No se encontraron registros");
+				if ($stmt->rowCount() > 0) {
+					$response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
+				} else {
+					$response = array('state' => 0, 'msj' => "No se encontraron registros");
+				}
 			}
 
 		} catch (PDOException $th) {
@@ -166,46 +171,46 @@ class GestionQuejasGo
 			}
 
 			/* $tipificacion = $data['tipificacion'];
-							  $obs_tipificacion = $data['obs_tipificacion'];
-							  $id = $data['id'];
-							  $login_gestion = $data['login_gestion'];
-							  $observacion_seguimiento = $data['observacion_seguimiento'];
+									   $obs_tipificacion = $data['obs_tipificacion'];
+									   $id = $data['id'];
+									   $login_gestion = $data['login_gestion'];
+									   $observacion_seguimiento = $data['observacion_seguimiento'];
 
-							  $stmt = $this->_DB->prepare("SELECT login_gestion FROM ventasInstaleTiendas WHERE id = :id");
-							  $stmt->execute(array(':id' => $id));
-							  if ($stmt->rowCount() == 1) {
-								  $resLogin = $stmt->fetchAll(PDO::FETCH_ASSOC);
-								  $rlogin = $resLogin[0]['login_gestion'];
+									   $stmt = $this->_DB->prepare("SELECT login_gestion FROM ventasInstaleTiendas WHERE id = :id");
+									   $stmt->execute(array(':id' => $id));
+									   if ($stmt->rowCount() == 1) {
+										   $resLogin = $stmt->fetchAll(PDO::FETCH_ASSOC);
+										   $rlogin = $resLogin[0]['login_gestion'];
 
-								  if ($rlogin != $login_gestion) {
-									  $res = array('state' => 0, 'msj' => 'El pedido se encuentra en gestion por otro agente');
-								  } else {
-									  $stmt = $this->_DB->prepare("UPDATE ventasInstaleTiendas SET tipificacion = :tipificacion, 
-																									  obs_tipificacion = :obs_tipificacion, 
-																									  login_gestion = :login_gestion, 
-																									  fecha_gestion = :fecha_gestion,
-																									  observacion_gestion = :observacion_gestion,
-																									  en_gestion = 2
-																  WHERE id = :id");
-									  $stmt->execute(
-										  array(
-											  ':id' => $id,
-											  ':tipificacion' => $tipificacion,
-											  ':obs_tipificacion' => $obs_tipificacion,
-											  ':login_gestion' => $login_gestion,
-											  ':fecha_gestion' => date('Y-m-d H:i:s'),
-											  ':observacion_gestion' => $observacion_seguimiento
-										  )
-									  );
-									  if ($stmt->rowCount() == 1) {
-										  $res = array('state' => 1, 'msj' => 'La solicitud fue guardada correctamente');
-									  } else {
-										  $res = array('state' => 0, 'msj' => 'Ha ocurrido un error interno intentalo nuevamente en unos minutos.');
-									  }
-								  }
-							  } else {
-								  $res = array('state' => 0, 'msj' => 'No se encontró un agente con el pedido en gestion');
-							  } */
+										   if ($rlogin != $login_gestion) {
+											   $res = array('state' => 0, 'msj' => 'El pedido se encuentra en gestion por otro agente');
+										   } else {
+											   $stmt = $this->_DB->prepare("UPDATE ventasInstaleTiendas SET tipificacion = :tipificacion, 
+																											   obs_tipificacion = :obs_tipificacion, 
+																											   login_gestion = :login_gestion, 
+																											   fecha_gestion = :fecha_gestion,
+																											   observacion_gestion = :observacion_gestion,
+																											   en_gestion = 2
+																		   WHERE id = :id");
+											   $stmt->execute(
+												   array(
+													   ':id' => $id,
+													   ':tipificacion' => $tipificacion,
+													   ':obs_tipificacion' => $obs_tipificacion,
+													   ':login_gestion' => $login_gestion,
+													   ':fecha_gestion' => date('Y-m-d H:i:s'),
+													   ':observacion_gestion' => $observacion_seguimiento
+												   )
+											   );
+											   if ($stmt->rowCount() == 1) {
+												   $res = array('state' => 1, 'msj' => 'La solicitud fue guardada correctamente');
+											   } else {
+												   $res = array('state' => 0, 'msj' => 'Ha ocurrido un error interno intentalo nuevamente en unos minutos.');
+											   }
+										   }
+									   } else {
+										   $res = array('state' => 0, 'msj' => 'No se encontró un agente con el pedido en gestion');
+									   } */
 
 		} catch (PDOException $th) {
 			var_dump($th->getMessage());

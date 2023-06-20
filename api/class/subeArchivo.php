@@ -5,8 +5,8 @@ header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
 header('Access-Control-Max-Age: 1000');
 header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token , Authorization');
 ini_set('memory_limit', '1024M');
-/* error_reporting(E_ALL);
-ini_set('display_errors', 1); */
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 //require_once "../Phpexcel/Classes/PHPExcel/IOFactory.php";
 require_once "../Phpexcel/Classes/PHPExcel/IOFactory.php";
 require_once "../Phpexcel/Classes/PHPExcel.php";
@@ -44,45 +44,40 @@ $uploadOk = 1;
           }
       }*/
 
-move_uploaded_file($_FILES["fileUpload"]["tmp_name"], $target_file);
 
-$tname1 = basename($_FILES["fileUpload"]["name"]);
+// Crear un Objeto PHPExcel
+$objReader = PHPExcel_IOFactory::createReaderForFile($target_file);
+$objReader->setReadDataOnly(true);
+$objPHPExcel = $objReader->load($target_file);
 
-if ($type == 'application/vnd.ms-excel') {
-    // Extension excel 97
-    $ext = 'xls';
-} elseif ($type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-    // Extension excel 2007 y 2010
-    $ext = 'xlsx';
-} else {
-    // Extension no valida
-    echo -1;
-    exit();
-}
+// Obtener la hoja activa
+$hoja_activa = $objPHPExcel->getActiveSheet();
 
-$xlsx = 'Excel2007';
-$xls = 'Excel5';
-
-$objPHPExcel2 = PHPExcel_IOFactory::load($target_file);
-$Total_Sheet = $objPHPExcel2->getSheetCount();
-$Sheet = $objPHPExcel2->getSheet(0)->toArray(null, true, true, true);
-//var_dump($Sheet);exit();
-foreach ($Sheet as $key => $value) {
-    if ($key == 1) {
-        continue;
+// Obtener el número de filas y columnas
+$num_filas = $hoja_activa->getHighestRow();
+$num_columnas = PHPExcel_Cell::columnIndexFromString($hoja_activa->getHighestColumn());
+//echo $num_filas;exit();
+// Recorrer las filas y guardar los datos en la base de datos
+$counter = 0;
+for ($i = 2; $i <= $num_filas; $i++) {
+    $valores = array();
+    for ($j = 0; $j < $num_columnas; $j++) {
+        $celda = $hoja_activa->getCellByColumnAndRow($j, $i);
+        $valor = $celda->getValue();
+        $valores[] = $valor;
     }
 
-    $pedido = trim($value['A']);
-    $id_tecnico = trim($value['B']);
-    $empresa = trim($value['C']);
-    $despacho = trim($value['D']);
-    $observaciones = trim($value['E']);
-    $accion = trim($value['F']);
-    $sub_accion = trim($value['G']);
-    $proceso = trim($value['H']);
+    $pedido = trim($valores[0]);
+    $id_tecnico = trim($valores[1]);
+    $empresa = trim($valores[2]);
+    $despacho = trim($valores[3]);
+    $observaciones = trim($valores[4]);
+    $accion = trim($valores[5]);
+    $sub_accion = trim($valores[6]);
+    $proceso = trim($valores[7]);
 
     if ($pedido == '') {
-        $data = array('state' => 0, 'msj' => 'El archivo tiene campos vacíos (pedido)' . $pedido . ' ' . $id_tecnico, ' ' . $despacho);
+        $data = array('state' => 0, 'msj' => 'El archivo tiene campos vacíos (pedido)' . $key . ' ' . $id_tecnico, ' ' . $despacho);
         echo json_encode($data);
         exit();
     } elseif ($id_tecnico == '') {
@@ -114,15 +109,15 @@ foreach ($Sheet as $key => $value) {
         echo json_encode($data);
         exit();
     } else {
-        $counter = 0;
-
-
+/* echo "SELECT * FROM registros WHERE pedido = '$pedido' AND id_tecnico = '$id_tecnico' AND empresa = '$empresa' AND asesor = 'CARGAMASIVA' AND
+despacho = '$despacho' AND observaciones = '$observaciones' AND accion = '$accion' AND tipo_pendiente = '$sub_accion' AND proceso = '$proceso'";exit(); */
         $stmt = $con->prepare("SELECT * FROM registros WHERE pedido = '$pedido' AND id_tecnico = '$id_tecnico' AND empresa = '$empresa' AND asesor = 'CARGAMASIVA' AND
          despacho = '$despacho' AND observaciones = '$observaciones' AND accion = '$accion' AND tipo_pendiente = '$sub_accion' AND proceso = '$proceso'");
         $stmt->execute();
 
-        if ($stmt->rowCount()) {
-            $response = array('state' => 1, 'msj' => 'Estos datos ya existen en la base de datos');
+        if ($stmt->rowCount() == 1) {
+            $response = array('state' => 0, 'msj' => 'Estos datos ya existen en la base de datos ' . $pedido . ' observaciones' . $observaciones);
+            echo json_encode($response);
             exit();
         } else {
             $sql = "INSERT INTO registros " .
@@ -134,11 +129,10 @@ foreach ($Sheet as $key => $value) {
                 "'$sub_accion', NOW(),'$proceso'); ";
 
             $rst = $con->query($sql);
-
-            $counter++;
+            if ($rst->rowCount()) {
+                $counter++;
+            }
         }
-
-
     }
 }
 

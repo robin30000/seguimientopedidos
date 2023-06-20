@@ -85,9 +85,9 @@ class kpi
     public function contigenciaAgente($data)
     {
 
-        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        /* ini_set('session.gc_maxlifetime', 3600); // 1 hour
         session_set_cookie_params(3600);
-        session_start();
+        session_start(); */
         $today = date("Y-m-d");
         $estado = $data['estado'];
         $producto = $data['producto'];
@@ -155,9 +155,7 @@ class kpi
     public function contigenciaHoraAgente($data)
     {
 
-        ini_set('session.gc_maxlifetime', 3600); // 1 hour
-        session_set_cookie_params(3600);
-        session_start();
+
         $estado = $data['estado'];
         $producto = $data['producto'];
         $fecha = $data['fecha'];
@@ -228,9 +226,9 @@ class kpi
     public function contigenciaHoraAgenteApoyo($data)
     {
 
-        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        /* ini_set('session.gc_maxlifetime', 3600); // 1 hour
         session_set_cookie_params(3600);
-        session_start();
+        session_start(); */
         $estado = $data['estado'];
         $producto = $data['producto'];
         $fecha = $data['fecha'];
@@ -343,9 +341,9 @@ class kpi
 
     public function contigenciaHoraAgenteTiempoCompleto($data)
     {
-        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        /* ini_set('session.gc_maxlifetime', 3600); // 1 hour
         session_set_cookie_params(3600);
-        session_start();
+        session_start(); */
         $estado = $data['estado'];
         $producto = $data['producto'];
         $fecha = $data['fecha'];
@@ -469,9 +467,9 @@ class kpi
     public function contigenciaHoraAgenteMmss($data)
     {
 
-        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        /* ini_set('session.gc_maxlifetime', 3600); // 1 hour
         session_set_cookie_params(3600);
-        session_start();
+        session_start(); */
         $estado = $data['estado'];
         $producto = $data['producto'];
         $fecha = $data['fecha'];
@@ -582,9 +580,9 @@ class kpi
 
     public function AgenteEmtelco($data)
     {
-        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        /* ini_set('session.gc_maxlifetime', 3600); // 1 hour
         session_set_cookie_params(3600);
-        session_start();
+        session_start(); */
         $data = json_decode(file_get_contents('php://input'), true);
         $estado = $data['estado'];
         $producto = $data['producto'];
@@ -666,9 +664,9 @@ class kpi
 
     public function quitarUsuarioKpi($data)
     {
-        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        /* ini_set('session.gc_maxlifetime', 3600); // 1 hour
         session_set_cookie_params(3600);
-        session_start();
+        session_start(); */
         try {
             $usuario = $data['usuario'];
 

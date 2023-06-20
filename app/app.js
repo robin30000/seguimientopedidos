@@ -4391,7 +4391,7 @@ app.controller(
         $http,
         $rootScope,
         services,
-        $cookies, $location
+        $cookies, $location, $route
     ) {
 
         var tiempo = new Date().getTime();
@@ -4604,7 +4604,9 @@ app.controller(
                         timer: 4000
                     })
                 } else {
+
                     $scope.listadoRegiones = data.data.data;
+                    console.log($scope.listadoRegiones);
                     $scope.listadoMunicipios = {};
                 }
 
@@ -4710,6 +4712,9 @@ app.controller(
                                 $scope.myWelcome.engineer_Type;
                             $scope.novedadesVisitasSel.municipio2 =
                                 $scope.myWelcome.uNEMunicipio;
+
+                            $scope.novedadesVisitasSel.region =
+                                $scope.myWelcome.uNEUen;
                         }
                         return data.data;
                     },
@@ -4743,6 +4748,8 @@ app.controller(
                                         $scope.myWelcome.engineer_Type;
                                     $scope.novedadesVisitasSel.municipio2 =
                                         $scope.myWelcome.uNEMunicipio;
+                                    $scope.novedadesVisitasSel.region =
+                                        $scope.myWelcome.uNEUen;
                                 }
                                 return data.data;
                             },
@@ -4781,13 +4788,17 @@ app.controller(
                                 $route.reload();
                             });
                         } else if (data.data.state == 1) {
+                            $("#modalNovedadVisita").modal("hide");
                             Swal({
                                 type: 'success',
                                 title: 'Bien',
                                 text: data.data.text,
                                 timer: 4000
                             }).then(() => {
-                                $route.reload();
+                                setTimeout(() => {
+                                    $route.reload();
+                                }, 500);
+
                             })
                         } else if (data.data.state == 0) {
                             Swal({
@@ -5089,19 +5100,34 @@ app.controller(
 
             services.extraeQuejasGoDia(data).then(
                 function (data) {
-                    console.log(data.data.counter);
-                    $scope.listaQuejasGo = data.data.data;
-                    $scope.cantidad = data.data.length;
-                    $scope.counterpag = data.data.counter;
+                    if (data.data.state == 99) {
+                        swal({
+                            type: "error",
+                            title: data.data.title,
+                            text: data.data.text,
+                            timer: 4000,
+                        }).then(function () {
+                            $cookies.remove("usuarioseguimiento");
+                            $location.path("/");
+                            $rootScope.galletainfo = undefined;
+                            $rootScope.permiso = false;
+                            $route.reload();
+                        });
+                    } else if (data.data.state == 1) {
+                        $scope.listaQuejasGo = data.data.data;
+                        $scope.cantidad = data.data.length;
+                        $scope.counterpag = data.data.counter;
 
-                    $scope.counter = data.data.counter;
+                        $scope.counter = data.data.counter;
 
-                    $scope.totalItems = data.data.counter;
-                    $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
-                    $scope.endItem = $scope.currentPage * $scope.pageSize;
-                    if ($scope.endItem > data.data.counter) {
-                        $scope.endItem = data.data.counter;
+                        $scope.totalItems = data.data.counter;
+                        $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                        $scope.endItem = $scope.currentPage * $scope.pageSize;
+                        if ($scope.endItem > data.data.counter) {
+                            $scope.endItem = data.data.counter;
+                        }
                     }
+
                 },
 
                 function errorCallback(response) {
@@ -5171,11 +5197,9 @@ app.controller(
             services.traerTecnico(cedula).then(
                 function (data) {
                     if (data.data.state != 1) {
-                        Swal({
-                            type: 'error',
-                            text: data.data.msj,
-                            timer: 4000
-                        })
+                        $scope.ciudadesQuejasGo();
+                        $('#crearTecnicoQuejasGo').modal('show');
+                        $scope.infoTecnico = false;
                     } else {
                         $scope.Tecnico = data.data.data;
                         $scope.quejasGoSel.tecnico = $scope.Tecnico[0].nombre;
@@ -5409,7 +5433,23 @@ app.controller('quejasGoCtrl2', function ($scope, $http, $rootScope, $location, 
 
         services.datosQuejasGo().then(
             function (data) {
-                $scope.listaQuejasGo = data.data.data;
+                if (data.data.state == 99) {
+                    swal({
+                        type: "error",
+                        title: data.data.title,
+                        text: data.data.text,
+                        timer: 4000,
+                    }).then(function () {
+                        $cookies.remove("usuarioseguimiento");
+                        $location.path("/");
+                        $rootScope.galletainfo = undefined;
+                        $rootScope.permiso = false;
+                        $route.reload();
+                    });
+                } else if (data.data.state == 1) {
+                    $scope.listaQuejasGo = data.data.data;
+                }
+
             },
 
             function errorCallback(response) {
@@ -5696,7 +5736,7 @@ app.controller("saraCtrl", function ($scope, $http, $rootScope, services) {
 
     $scope.buscarDataSara = function (datos) {
         var tareaSara = datos.tarea;
-        $scope.urlServicio = "http://10.100.66.254:8080/SARA/Buscar1/" + tareaSara;
+        $scope.urlServicio = "http://10.100.66.254:8080/SARA/Buscar/" + tareaSara;
 
         $http.get($scope.urlServicio, { timeout: 8000 }).then(
             function (data) {
@@ -8510,7 +8550,7 @@ app.controller(
                         }
                     })
                     .catch((err) => alert(err));
-                //$scope.gestioncontingencias();
+                $scope.gestioncontingencias();
             }
         };
 
@@ -11591,7 +11631,7 @@ app.controller(
                                     $rootScope.permiso = false;
                                     $route.reload();
                                 });
-                            }else if (data.data.state == 1) {
+                            } else if (data.data.state == 1) {
                                 setTimeout(() => {
                                     $("#modalVentaInstale").modal("hide");
                                 }, 500);

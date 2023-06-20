@@ -669,8 +669,8 @@ class otherServicesDos
 
                 fputcsv($fp, $columnas);
                 while ($row = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
-                    $row['observacion'] = utf8_decode($row['observacion']);
-                    $row['observaciones'] = utf8_decode($row['observaciones']);
+                    $row['observacion'] = $row['observacion'];
+                    $row['observaciones'] = $row['observaciones'];
                     fputcsv($fp, $row);
                 }
 
@@ -1032,8 +1032,8 @@ class otherServicesDos
             $usuarioid = $params['datosLogin'];
             $usuarioid = $usuarioid['LOGIN'];
             $datos = $params['datos'];
-            $fechaini = $datos['fechaini'];
-            $fechafin = $datos['fechafin'];
+            $fechaini = $params['fechaini'];
+            $fechafin = $params['fechafin'];
             $concepto = $datos['concepto'];
             $buscar = $datos['buscar'];
 

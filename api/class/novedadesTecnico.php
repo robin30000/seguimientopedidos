@@ -78,36 +78,22 @@ class novedadesTecnico
 
                 $login = $_SESSION['login'];
 
-
-                //$login  = $login['LOGIN'];
-                /* $key = $datos['id'];
-                $contracto = $datos['contracto'];
-                $cedulaTecnico = $datos['cedulaTecnico'];
-                $nombreTecnico = utf8_decode($datos['nombreTecnico']);
-                $region = $datos['region'];
-                $municipio = utf8_decode($datos['municipio']);
-                $situacion = $datos['situacion'];
-                $detalle = $datos['detalle'];
-                $observaciones = utf8_decode($datos['observaciones']);
-                $tiponovedad = utf8_decode($datos['tiponovedad']);
-                $pedido = $datos['pedido'];
-                $proceso = $datos['proceso']; */
                 $key = (isset($data['id'])) ? $data['id'] : '';
                 $contracto = (isset($data['contracto'])) ? $data['contracto'] : '';
-                $cedulaTecnico = (isset($data['cedulaTecnico'])) ? $data['cedulaTecnico'] : '';
-                $nombreTecnico = (isset($data['nombreTecnico'])) ? utf8_decode($data['nombreTecnico']) : '';
+                $cedulaTecnico = (isset($data['cedulaTecnico2'])) ? $data['cedulaTecnico2'] : '';
+                $nombreTecnico = (isset($data['nombreTecnico'])) ? $data['nombreTecnico'] : '';
                 $region = (isset($data['region'])) ? $data['region'] : '';
-                $municipio = (isset($data['municipio'])) ? utf8_decode($data['municipio']) : '';
+                $municipio = (isset($data['municipio'])) ? $data['municipio'] : '';
                 $situacion = (isset($data['situacion'])) ? $data['situacion'] : '';
                 $detalle = (isset($data['detalle'])) ? $data['detalle'] : '';
-                $observaciones = (isset($data['observaciones'])) ? utf8_decode($data['observaciones']) : '';
-                $tiponovedad = (isset($data['tiponovedad'])) ? utf8_decode($data['tiponovedad']) : '';
+                $observaciones = (isset($data['observaciones'])) ? $data['observaciones'] : '';
+                $tiponovedad = (isset($data['tiponovedad'])) ? $data['tiponovedad'] : '';
                 $pedido = (isset($data['pedido'])) ? $data['pedido'] : '';
                 $proceso = (isset($data['proceso'])) ? $data['proceso'] : '';
-                $situaciontriangulo = (isset($data['situaciontriangulo'])) ? utf8_decode($data['situaciontriangulo']) : '';
-                $motivo = (isset($data['motivotriangulo'])) ? utf8_decode($data['motivotriangulo']) : '';
+                $situaciontriangulo = (isset($data['situaciontriangulo'])) ? $data['situaciontriangulo'] : '';
+                $motivo = (isset($data['motivotriangulo'])) ? $data['motivotriangulo'] : '';
                 if (isset($data['submotivotriangulo'])) {
-                    $submotivo = utf8_decode($data['submotivotriangulo']);
+                    $submotivo = $data['submotivotriangulo'];
                 } else {
                     $submotivo = "";
                 }
@@ -116,18 +102,15 @@ class novedadesTecnico
 
                 $contrato2 = $data['contrato2'];
                 $cedulaTecnico2 = $data['cedulaTecnico2'];
-                $nombreTecnico2 = utf8_decode($data['nombreTecnico2']);
+                $nombreTecnico2 = $data['nombreTecnico2'];
                 $proceso2 = $data['proceso2'];
-                $municipio2 = utf8_decode($data['municipio2']);
+                $municipio2 = $data['municipio2'];
 
 
                 if ($tiponovedad == 'Cumplimiento de Agenda' and $cedulaTecnico == null) {
 
-                    $stmt = $this->_DB->prepare("INSERT INTO NovedadesVisitas
-            (fecha, usuario, tiponovedad, pedido, contracto, cedulaTecnico, nombreTecnico, proceso, region, municipio, situacion, horamarcaensitio, detalle, observaciones, idllamada, motivo,
-             submotivo)
-            VALUES (NOW(), :login, :tiponovedad, :pedido, UPPER(:contrato2), TRIM(:cedulaTecnico2), TRIM(:nombreTecnico2), TRIM(:proceso2), LOWER(:region), LOWER(:municipio2),
-                    LOWER(:situaciontriangulo), :horamarcasitio, LOWER(:detalle), LOWER(TRIM(:observaciones)), TRIM(:idllamada), :motivo, :submotivo)");
+                    $stmt = $this->_DB->prepare("INSERT INTO NovedadesVisitas (fecha, usuario, tiponovedad, pedido, contracto, cedulaTecnico, nombreTecnico, proceso, region, municipio, situacion, horamarcaensitio, detalle, observaciones, idllamada, motivo, submotivo)
+                    VALUES (NOW(), :login, :tiponovedad, :pedido, UPPER(:contrato2), TRIM(:cedulaTecnico2), TRIM(:nombreTecnico2), TRIM(:proceso2), LOWER(:region), LOWER(:municipio2), LOWER(:situaciontriangulo), :horamarcasitio, LOWER(:detalle), LOWER(TRIM(:observaciones)), TRIM(:idllamada), :motivo, :submotivo)");
                     $stmt->execute([
                         ':login' => $login,
                         ':tiponovedad' => $tiponovedad,
@@ -155,21 +138,19 @@ class novedadesTecnico
                 } elseif ($tiponovedad == 'Cumplimiento de Agenda' and $region <> null) {
 
                     $stmt = $this->_DB->prepare("INSERT INTO NovedadesVisitas
-            (fecha, usuario, tiponovedad, pedido, contracto, cedulaTecnico, nombreTecnico, proceso, region, municipio, situacion, horamarcaensitio, detalle, observaciones, idllamada, motivo,
-             submotivo)
-            VALUES (NOW(), :login, :tiponovedad, :pedido, :contracto, TRIM(:cedulaTecnico), UPPER(TRIM(:nombreTecnico)), TRIM(:proceso), LOWER(:region), LOWER(:municipio),
-                    LOWER(:situaciontriangulo), :horamarcasitio, LOWER(:detalle), LOWER(TRIM(:observaciones)), TRIM(:idllamada), :motivo, :submotivo)");
+                    (fecha, usuario, tiponovedad, pedido, contracto, cedulaTecnico, nombreTecnico, proceso, region, municipio, situacion, horamarcaensitio, detalle, observaciones, idllamada, motivo, submotivo)
+                    VALUES (NOW(), :login, :tiponovedad, :pedido, :contracto, TRIM(:cedulaTecnico), UPPER(TRIM(:nombreTecnico)), TRIM(:proceso), LOWER(:region), LOWER(:municipio), LOWER(:situaciontriangulo), :horamarcasitio, LOWER(:detalle), LOWER(TRIM(:observaciones)), TRIM(:idllamada), :motivo, :submotivo)");
 
                     $stmt->execute([
                         ':login' => $login,
                         ':tiponovedad' => $tiponovedad,
                         ':pedido' => $pedido,
-                        ':contracto' => $contracto,
-                        ':cedulaTecnico' => $cedulaTecnico,
-                        ':nombreTecnico' => $nombreTecnico,
-                        ':proceso' => $proceso,
+                        ':contracto' => $contrato2,
+                        ':cedulaTecnico' => $cedulaTecnico2,
+                        ':nombreTecnico' => $nombreTecnico2,
+                        ':proceso' => $proceso2,
                         ':region' => $region,
-                        ':municipio' => $municipio,
+                        ':municipio' => $municipio2,
                         ':situaciontriangulo' => $situaciontriangulo,
                         ':horamarcasitio' => $horamarcasitio,
                         ':detalle' => $detalle,
@@ -186,10 +167,8 @@ class novedadesTecnico
                     }
                 } elseif ($tiponovedad == 'Triangulo de Producción' and $cedulaTecnico == null) {
 
-                    $stmt = $this->_DB->prepare("INSERT INTO NovedadesVisitas
-            (fecha, usuario, tiponovedad, pedido, contracto, cedulaTecnico, nombreTecnico, proceso, region, municipio, situacion, horamarcaensitio, observaciones, idllamada, motivo, submotivo)
-            VALUES (NOW(), :login, :tiponovedad, :pedido, UPPER(:contrato2), TRIM(:cedulaTecnico2), TRIM(:nombreTecnico2), LOWER(:proceso2), LOWER(:region), LOWER(:municipio2),
-                    LOWER(:situaciontriangulo), :horamarcasitio, LOWER(TRIM(:observaciones)), TRIM(:idllamada), :motivo, :submotivo)");
+                    $stmt = $this->_DB->prepare("INSERT INTO NovedadesVisitas (fecha, usuario, tiponovedad, pedido, contracto, cedulaTecnico, nombreTecnico, proceso, region, municipio, situacion, horamarcaensitio, observaciones, idllamada, motivo, submotivo)
+                    VALUES (NOW(), :login, :tiponovedad, :pedido, UPPER(:contrato2), TRIM(:cedulaTecnico2), TRIM(:nombreTecnico2), LOWER(:proceso2), LOWER(:region), LOWER(:municipio2), LOWER(:situaciontriangulo), :horamarcasitio, LOWER(TRIM(:observaciones)), TRIM(:idllamada), :motivo, :submotivo)");
 
                     $stmt->execute([
                         ':login' => $login,
@@ -215,22 +194,22 @@ class novedadesTecnico
                         $response = ['state' => 0, 'text' => 'Ha ocurrido un error inténtalo nuevamente'];
                     }
                 } elseif ($tiponovedad == 'Triangulo de Produccion' and $region <> null) {
+                    
+                    $sql = "INSERT INTO NovedadesVisitas (fecha, usuario, tiponovedad, pedido, contracto, cedulaTecnico, nombreTecnico, proceso, region, municipio, situacion, horamarcaensitio, observaciones, idllamada, motivo, submotivo)
+                    VALUES (NOW(), :login, :tiponovedad, :pedido, :contracto, TRIM(:cedulaTecnico), UPPER(TRIM(:nombreTecnico)), TRIM(:proceso), LOWER(:region), LOWER(:municipio), LOWER(:situaciontriangulo), :horamarcasitio, LOWER(TRIM(:observaciones)), TRIM(:idllamada), :motivo, :submotivo)";
 
-                    $stmt = $this->_DB->prepare("INSERT INTO NovedadesVisitas
-            (fecha, usuario, tiponovedad, pedido, contracto, cedulaTecnico, nombreTecnico, proceso, region, municipio, situacion, horamarcaensitio, observaciones, idllamada, motivo, submotivo)
-            VALUES (NOW(), '$login', '$tiponovedad', '$pedido', '$contracto', TRIM($cedulaTecnico), UPPER(TRIM('$nombreTecnico')), TRIM('$proceso'), LOWER('$region'), LOWER('$municipio'),
-                    LOWER('$situaciontriangulo'), '$horamarcasitio', LOWER(TRIM('$observaciones')), TRIM('$idllamada'), '$motivo', '$submotivo')");
+                    $stmt = $this->_DB->prepare($sql);
 
                     $stmt->execute([
                         ':login' => $login,
                         ':tiponovedad' => $tiponovedad,
                         ':pedido' => $pedido,
-                        ':contracto' => $contracto,
-                        ':cedulaTecnico' => $cedulaTecnico,
-                        ':nombreTecnico' => $nombreTecnico,
-                        ':proceso' => $proceso,
+                        ':contracto' => $contrato2,
+                        ':cedulaTecnico' => $cedulaTecnico2,
+                        ':nombreTecnico' => $nombreTecnico2,
+                        ':proceso' => $proceso2,
                         ':region' => $region,
-                        ':municipio' => $municipio,
+                        ':municipio' => $municipio2,
                         ':situaciontriangulo' => $situaciontriangulo,
                         ':horamarcasitio' => $horamarcasitio,
                         ':observaciones' => $observaciones,
@@ -362,11 +341,11 @@ class novedadesTecnico
             ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
             session_start();
-            $stmt = $this->_DB->prepare("SELECT municipio
+            $stmt = $this->_DB->prepare("SELECT m.municipio
                                             FROM municipios m
                                             INNER JOIN regiones r ON m.codigoRg=r.codigoRg
-                                            WHERE region = ?
-                                            ORDER BY municipio");
+                                            WHERE r.region = ?
+                                            ORDER BY m.municipio");
             $stmt->bindParam(1, $data, PDO::PARAM_STR);
             $stmt->execute();
 
