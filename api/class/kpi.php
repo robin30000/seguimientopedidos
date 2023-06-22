@@ -44,34 +44,14 @@ class kpi
         $today = date("Y-m-d");
         $fecha_anterior = date("Y-m-d", strtotime($today . "- 15 days"));
 
-        $stmt = $this->_BD->query("SELECT
-											DATE_FORMAT(horagestion, '%Y-%m-%e') AS Fecha,
-											SUM(
-												CASE
-												WHEN producto = 'TV' THEN
-													1
-												ELSE
-													0
-												END
-											) AS 'TV',
-											SUM(
-												CASE
-												WHEN producto IN ('Internet', 'Internet+ToIP', 'ToIP') THEN
-													1
-												ELSE
-													0
-												END
-											) AS 'Internet',
-											acepta
-										FROM
-											contingencias
-										WHERE
-											horagestion BETWEEN '$fecha_anterior 00:00:00'
-										AND '$today 23:59:59' $condicion
-										GROUP BY
-											Fecha
-										ORDER BY
-											horagestion");
+        $stmt = $this->_BD->query("SELECT DATE_FORMAT(horagestion, '%Y-%m-%e') AS Fecha, 
+        SUM(CASE WHEN producto = 'TV' THEN 1 ELSE 0 END ) AS 'TV',
+        SUM(CASE WHEN producto IN ('Internet', 'Internet+ToIP', 'ToIP') THEN 1 ELSE 0 END ) AS 'Internet',
+        acepta
+        FROM contingencias
+        WHERE horagestion BETWEEN '$fecha_anterior 00:00:00' AND '$today 23:59:59' $condicion
+        GROUP BY Fecha
+        ORDER BY Fecha;");
         $stmt->execute();
         if ($stmt->rowCount()) {
             $response = array('state' => 1, 'type' => 'chart-bar', 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
@@ -111,37 +91,13 @@ class kpi
         }
 
 
-        $stmt = $this->_BD->query("SELECT
-										c.logincontingencia agente,
-										u.empresa,
-										c.acepta,
-										SUM(
-											CASE
-											WHEN producto = 'TV' THEN
-												1
-											ELSE
-												0
-											END
-										) AS 'TV',
-										SUM(
-											CASE
-											WHEN producto IN ('Internet', 'Internet+ToIP','ToIP') THEN
-												1
-											ELSE
-												0
-											END
-										) AS 'Internet'
-									FROM
-										contingencias c
-									INNER JOIN usuarios u ON u.login = c.logincontingencia
-									WHERE
-										c.horagestion BETWEEN '$today 00:00:00'
-									AND '$today 23:59:59'
-									$condicion
-									GROUP BY
-										c.logincontingencia,
-										c.acepta
-									order by Internet DESC");
+        $stmt = $this->_BD->query("SELECT c.logincontingencia agente, u.empresa, c.acepta,
+        SUM(CASE WHEN producto = 'TV' THEN 1 ELSE 0 END) AS 'TV',
+        SUM(CASE WHEN producto IN ('Internet', 'Internet+ToIP','ToIP') THEN 1 ELSE 0 END ) AS 'Internet'
+        FROM contingencias c
+        INNER JOIN usuarios u ON u.login = c.logincontingencia
+        WHERE c.horagestion BETWEEN '$today 00:00:00' AND '$today 23:59:59' $condicion
+        GROUP BY agente, u.empresa, c.acepta ORDER by Internet DESC;");
         $stmt->execute();
         if ($stmt->rowCount()) {
             $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
@@ -210,7 +166,8 @@ class kpi
 				CASE WHEN (p.producto = 'Internet+ToIP' OR p.producto = 'Internet' OR p.producto = 'ToIP') THEN 'Internet+Toip' WHEN p.producto = 'TV' THEN 'TV' END AS prod
 		FROM contingencias p
 		WHERE 1=1 $condicion AND p.horacontingencia BETWEEN '$today 00:00:00' AND '$today 23:59:59') C2
-		GROUP BY C2.USUARIO ORDER BY CANTIDAD DESC");
+		GROUP BY C2.USUARIO, producto
+        ORDER BY CANTIDAD DESC");
 
 
         $stmt->execute();

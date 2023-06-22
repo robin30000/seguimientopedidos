@@ -5,8 +5,8 @@ header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
 header('Access-Control-Max-Age: 1000');
 header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token , Authorization');
 ini_set('memory_limit', '1024M');
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+/* error_reporting(E_ALL);
+ini_set('display_errors', 1); */
 //require_once "../Phpexcel/Classes/PHPExcel/IOFactory.php";
 require_once "../Phpexcel/Classes/PHPExcel/IOFactory.php";
 require_once "../Phpexcel/Classes/PHPExcel.php";
@@ -20,29 +20,7 @@ session_start();
 
 $target_dir = "../../uploads/";
 $target_file = $target_dir . basename($_FILES["fileUpload"]["name"]);
-//$name     = $_FILES['fileUpload']['name'];
-$tname = $_FILES['fileUpload']['tmp_name'];
-$type = $_FILES['fileUpload']['type'];
-
-//$login   = $this->_request['user'];
-$fecha = date("Y-m-d H:i:s");
-$tname1 = basename($_FILES["fileUpload"]["name"]);
-$guardar = "";
-
-//$target_file = basename($_FILES["fileUpload"]["name"]);
-$uploadOk = 1;
-// Check if $uploadOk is set to 0 by an error
-/*if ($uploadOk == 0) {
-          echo "<script>alert('El archivo no se ha subido intentalo de nuevo)')</script>";
-          die();
-          // if everything is ok, try to upload file
-      } else {
-          if (move_uploaded_file($_FILES["fileUpload"]["tmp_name"], $target_file)) {
-              $c = 1;
-          } else {
-              $c = 0;
-          }
-      }*/
+move_uploaded_file($_FILES["fileUpload"]["tmp_name"], $target_file);
 
 
 // Crear un Objeto PHPExcel
@@ -59,6 +37,7 @@ $num_columnas = PHPExcel_Cell::columnIndexFromString($hoja_activa->getHighestCol
 //echo $num_filas;exit();
 // Recorrer las filas y guardar los datos en la base de datos
 $counter = 0;
+$fecha = date('Y-m-d');
 for ($i = 2; $i <= $num_filas; $i++) {
     $valores = array();
     for ($j = 0; $j < $num_columnas; $j++) {
@@ -77,7 +56,7 @@ for ($i = 2; $i <= $num_filas; $i++) {
     $proceso = trim($valores[7]);
 
     if ($pedido == '') {
-        $data = array('state' => 0, 'msj' => 'El archivo tiene campos vacíos (pedido)' . $key . ' ' . $id_tecnico, ' ' . $despacho);
+        $data = array('state' => 0, 'msj' => 'El archivo tiene campos vacíos (pedido)' . $pedido . ' ' . $id_tecnico, ' ' . $despacho);
         echo json_encode($data);
         exit();
     } elseif ($id_tecnico == '') {
@@ -109,16 +88,18 @@ for ($i = 2; $i <= $num_filas; $i++) {
         echo json_encode($data);
         exit();
     } else {
-/* echo "SELECT * FROM registros WHERE pedido = '$pedido' AND id_tecnico = '$id_tecnico' AND empresa = '$empresa' AND asesor = 'CARGAMASIVA' AND
-despacho = '$despacho' AND observaciones = '$observaciones' AND accion = '$accion' AND tipo_pendiente = '$sub_accion' AND proceso = '$proceso'";exit(); */
+        /*          echo "SELECT * FROM registros WHERE pedido = '$pedido' AND id_tecnico = '$id_tecnico' AND empresa = '$empresa' AND asesor = 'CARGAMASIVA' AND
+                despacho = '$despacho' AND observaciones = '$observaciones' AND accion = '$accion' AND tipo_pendiente = '$sub_accion' AND proceso = '$proceso'";exit();  */
         $stmt = $con->prepare("SELECT * FROM registros WHERE pedido = '$pedido' AND id_tecnico = '$id_tecnico' AND empresa = '$empresa' AND asesor = 'CARGAMASIVA' AND
-         despacho = '$despacho' AND observaciones = '$observaciones' AND accion = '$accion' AND tipo_pendiente = '$sub_accion' AND proceso = '$proceso'");
+         despacho = '$despacho' AND observaciones = '$observaciones' AND accion = '$accion' AND tipo_pendiente = '$sub_accion' AND proceso = '$proceso' 
+         AND fecha BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59'");
         $stmt->execute();
 
         if ($stmt->rowCount() == 1) {
-            $response = array('state' => 0, 'msj' => 'Estos datos ya existen en la base de datos ' . $pedido . ' observaciones' . $observaciones);
+            $counter--;
+            /* $response = array('state' => 0, 'msj' => 'Estos datos ya existen en la base de datos ' . $pedido . ' observaciones' . $observaciones);
             echo json_encode($response);
-            exit();
+            exit(); */
         } else {
             $sql = "INSERT INTO registros " .
                 "(pedido, id_tecnico, empresa, asesor, despacho, observaciones, " .
@@ -137,7 +118,7 @@ despacho = '$despacho' AND observaciones = '$observaciones' AND accion = '$accio
 }
 
 if ($counter) {
-    $response = array('state' => 1, 'msj' => 'Datos guardados correctamente');
+    $response = array('state' => 1, 'msj' => 'Datos guardados correctamente, se ingresaron ' . $counter . ' registros');
 } else {
     $response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno inténtalo nuevamente en unos minutos');
 }

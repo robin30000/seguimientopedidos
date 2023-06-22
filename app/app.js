@@ -17,7 +17,7 @@ var app = angular.module("seguimientopedidos", [
     "ui.grid.exporter",
     "ui.grid.autoResize",
     "chart.js",
-    "angular.filter",
+     "angular.filter",
     "ui.bootstrap",
     "ui.select2"
 ]);
@@ -2126,6 +2126,15 @@ app.factory("services", [
             return $http.post(serviceBase1 + 'validacionesAppCtrl.php', data);
         }
 
+        obj.checkSession = function () {
+            let data = {
+                method: 'checkSession',
+            }
+            return $http.post(serviceBase1 + 'authenticationCtrl.php', data);
+        }
+
+
+
         return obj;
     },
 ]);
@@ -2200,7 +2209,10 @@ app.controller("loginCtrl", function ($scope, $rootScope, $location, $cookies, s
                 $location.path("/actividades");
                 $cookies.put("usuarioseguimiento", JSON.stringify(data.data.data));
 
+                //console.log($cookies.get("usuarioseguimiento"));
+
                 var galleta = JSON.parse($cookies.get("usuarioseguimiento"));
+                //var galleta = $cookies.get("usuarioseguimiento");
                 $rootScope.galletainfo = galleta;
                 $rootScope.permiso = true;
             }
@@ -4425,8 +4437,9 @@ app.controller(
                 .novedadesTecnicoService(data)
                 .then(
                     function (data) {
+                        console.log(data);
                         $scope.novedadesVisitasTecnicos = data.data.data;
-                        $scope.cantidad = data.data.data.length;
+                        $scope.cantidad = $scope.novedadesVisitasTecnicos.length;
                         $scope.counter = data.data.contador;
 
                         $scope.totalItems = data.data.counter;
@@ -4606,7 +4619,6 @@ app.controller(
                 } else {
 
                     $scope.listadoRegiones = data.data.data;
-                    console.log($scope.listadoRegiones);
                     $scope.listadoMunicipios = {};
                 }
 
@@ -5872,6 +5884,7 @@ app.controller(
             }
             services.registros(data).then(
                 function (data) {
+                    console.log(data);
                     if (data.data.state == 99) {
                         swal({
                             type: "error",
@@ -5887,7 +5900,7 @@ app.controller(
                         });
                     } else {
                         $scope.listaRegistros = data.data.data;
-                        $scope.cantidad = data.data.data.length;
+                        $scope.cantidad = data.data.length;
                         $scope.counter = data.data.counter;
 
                         $scope.totalItems = data.data.counter;
@@ -8759,6 +8772,7 @@ app.controller(
             }
             services.getresumenContingencias(data).then(
                 function (data) {
+                    console.log(data);
                     $scope.dataresumenContingencias = data.data[0];
                     $scope.dataresumenContingenciasTV = data.data[6];
                     $scope.dataresumenContingenciasInTo = data.data[7];
@@ -9422,7 +9436,7 @@ app.controller(
 
 app.controller(
     "registrossoportegponCtrl",
-    function ($scope, $rootScope, services, $cookies, $location) {
+    function ($scope, $rootScope, services, $cookies, $location, $route) {
         $scope.listaRegistros = {};
         $scope.RegistrosSoporteGpon = {};
         $scope.soportegpon = {};
@@ -9530,7 +9544,7 @@ app.controller(
                         });
                     } else {
                         $scope.listaRegistros = data.data.data;
-                        $scope.cantidad = data.data.data.length;
+                        $scope.cantidad = data.data.length;
                         $scope.counter = data.data.counter;
 
                         $scope.totalItems = data.data.counter;
@@ -11251,6 +11265,7 @@ app.controller(
 
         function data() {
             services.datosVentas().then(function (data) {
+                console.log(data);
                 $scope.dataVentas = data.data.data;
             });
         }
@@ -12029,221 +12044,370 @@ app.config([
         $httpProvider.interceptors.push("LoadingInterceptor");
     },
 ]);
-
-app.config([
-    "$routeProvider",
-    "$locationProvider",
-    function ($routeProvider, $locationProvider) {
-        $routeProvider
-            .when("/", {
-                title: "Login",
-                templateUrl: "partial/login.html",
-                controller: "loginCtrl",
-            })
-
-            .when("/actividades", {
-                title: "Documentación de Pedidos",
-                templateUrl: "partial/actividades.html",
-                controller: "actividadesCtrl",
-                authorize: true,
-            })
-
-            .when("/registros", {
-                title: "Registros",
-                templateUrl: "partial/registros.html",
-                controller: "registrosCtrl",
-                authorize: true,
-            })
-
-            .when("/registrossoportegpon", {
-                title: "Registros Soporte GPON",
-                templateUrl: "partial/registrossoportegpon.html",
-                controller: "registrossoportegponCtrl",
-                authorize: true,
-            })
-
-            .when("/registroscodigoincompleto", {
-                title: "Registros Codigo incompleto",
-                templateUrl: "partial/registroscodigoincompleto.html",
-                controller: "registroscodigoincompletoCtrl",
-                authorize: true,
-            })
-
-            .when("/usuarios", {
-                title: "Usuarios",
-                templateUrl: "partial/usuarios.html",
-                controller: "usuariosCtrl",
-                authorize: true,
-            })
-
-            .when("/tecnicos", {
-                title: "Tecnicos",
-                templateUrl: "partial/tecnicos.html",
-                controller: "tecnicosCtrl",
-                authorize: true,
-            })
-
-            .when("/listadoAlarmas", {
-                title: "Alarmas",
-                templateUrl: "partial/listadoAlarmas.html",
-                controller: "AlarmasCtrl",
-                authorize: true,
-            })
-
-            .when("/mesaoffline/mesaoffline", {
-                title: "Mesa Offline",
-                templateUrl: "partial/mesaoffline/mesaoffline.html",
-                controller: "mesaofflineCtrl",
-                authorize: true,
-            })
-
-            .when("/mesaoffline/registrosOffline", {
-                title: "Registros Offline",
-                templateUrl: "partial/mesaoffline/registrosOffline.html",
-                controller: "registrosOfflineCtrl",
-                authorize: true,
-            })
-
-            .when("/brutalForce", {
-                title: "Brutal Force",
-                templateUrl: "partial/brutalForce.html",
-                controller: "brutalForceCtrl",
-                authorize: true,
-            })
-
-            .when("/contingencias", {
-                title: "Contingencias aprovisionamiento",
-                templateUrl: "partial/contingencias.html",
-                controller: "contingenciasCtrl",
-                authorize: true,
-            })
-            .when("/nivelacion", {
-                title: "Gestión Nivelación",
-                templateUrl: "partial/nivelacion.html",
-                controller: "nivelacionCtrl",
-                authorize: true,
-            })
-
-            .when("/GestionNivelacion", {
-                title: "Gestión Nivelación",
-                templateUrl: "partial/GestionNivelacion.html",
-                controller: "GestionNivelacionCtrl",
-                authorize: true,
-            })
-
-            .when("/Gestioncontingencias", {
-                title: "Gestión Contingencias",
-                templateUrl: "partial/Gestioncontingencias.html",
-                controller: "GestioncontingenciasCtrl",
-                authorize: true,
-            })
-
-            .when("/gestionsoportegpon", {
-                title: "Gestión Soporte Gpon",
-                templateUrl: "partial/Gestionsoportegpon.html",
-                controller: "GestionsoportegponCtrl",
-                authorize: true,
-            })
-
-            .when("/gestioncodigoincompleto", {
-                title: "Registros Código Incompleto",
-                templateUrl: "partial/Gestioncodigoincompleto.html",
-                controller: "GestioncodigoincompletoCtrl",
-                authorize: true,
-            })
-
-            .when("/premisasInfraestructuras", {
-                title: "Premisas Infraestructuras",
-                templateUrl: "partial/premisasInfraestructuras.html",
-                controller: "premisasInfraestructurasCtrl",
-                authorize: true,
-            })
-
-            .when("/novedadesVisita", {
-                title: "Novedades Visita",
-                templateUrl: "partial/novedadesVisita.html",
-                controller: "novedadesVisitaCtrl",
-                authorize: true,
-            })
-
-            .when("/contrasenaClick", {
-                title: "Contraseñas ClickSoftware",
-                templateUrl: "partial/contrasenaClick.html",
-                controller: "contrasenasClickCtrl",
-                authorize: true,
-            })
-
-            .when("/turnos", {
-                title: "Gestión turnos",
-                templateUrl: "partial/turnos.html",
-                controller: "turnosCtrl",
-                authorize: true,
-            })
-
-            .when("/quejasGo", {
-                title: "Quejas Gestión Operativa",
-                templateUrl: "partial/quejasGo.html",
-                controller: "quejasGoCtrl",
-                authorize: true,
-            })
+app.config(routesConfig).run(runConfig);
 
 
-            .when("/gestion-quejasGo", {
-                title: "Gestión QuejasGo",
-                templateUrl: "partial/gestionQuejasGo.html",
-                controller: "quejasGoCtrl2",
-                authorize: true,
-            })
 
-            .when("/consultaSara", {
-                title: "Consulta SARA",
-                templateUrl: "partial/consultaSara.html",
-                controller: "saraCtrl",
-                authorize: true,
-            })
+function routesConfig($routeProvider, $locationProvider, $compileProvider) {
+    $locationProvider.html5Mode(true).hashPrefix('!');
+    $compileProvider.aHrefSanitizationWhitelist(/^\s*(whatsapp|http|itms):/);
+    $routeProvider
+        .when("/", {
+            title: "Login",
+            templateUrl: "partial/login.html",
+            controller: "loginCtrl",
+        })
 
-            .when("/KPI-Contingencia", {
-                title: "KPI Contingecia",
-                templateUrl: "partial/graficos-contingecia.html",
-                controller: "GraficosContingeciaCtrl",
-                authorize: true,
-            })
+        .when("/actividades", {
+            title: "Documentación de Pedidos",
+            templateUrl: "partial/actividades.html",
+            controller: "actividadesCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
 
-            .when("/gestion-ventas-instaleTiendas", {
-                title: "Gestion Ventas Instale",
-                templateUrl: "partial/ventasInstale/VentasInstaleTiendas.html",
-                controller: "gestionVentasInstaleTiendasCtrl",
-                authorize: true,
-            })
+        .when("/registros", {
+            title: "Registros",
+            templateUrl: "partial/registros.html",
+            controller: "registrosCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
 
-            .when("/perfil-menu", {
-                title: "Administracion menu - perfiles",
-                templateUrl: "partial/menu-perfil.html",
-                controller: "MenuPerfilCtrl",
-                authorize: true,
-            })
+        .when("/registrossoportegpon", {
+            title: "Registros Soporte GPON",
+            templateUrl: "partial/registrossoportegpon.html",
+            controller: "registrossoportegponCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
 
-            .when('/validaciones-app', {
-                title: 'Validaciones App',
-                templateUrl: 'partial/validaciones-app.html',
-                controller: 'validacionesAppCtrl',
-                authorize: true
-            })
+        .when("/registroscodigoincompleto", {
+            title: "Registros Codigo incompleto",
+            templateUrl: "partial/registroscodigoincompleto.html",
+            controller: "registroscodigoincompletoCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
 
-            .otherwise({
-                redirectTo: "/",
+        .when("/usuarios", {
+            title: "Usuarios",
+            templateUrl: "partial/usuarios.html",
+            controller: "usuariosCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/tecnicos", {
+            title: "Tecnicos",
+            templateUrl: "partial/tecnicos.html",
+            controller: "tecnicosCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/listadoAlarmas", {
+            title: "Alarmas",
+            templateUrl: "partial/listadoAlarmas.html",
+            controller: "AlarmasCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/mesaoffline/mesaoffline", {
+            title: "Mesa Offline",
+            templateUrl: "partial/mesaoffline/mesaoffline.html",
+            controller: "mesaofflineCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/mesaoffline/registrosOffline", {
+            title: "Registros Offline",
+            templateUrl: "partial/mesaoffline/registrosOffline.html",
+            controller: "registrosOfflineCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/brutalForce", {
+            title: "Brutal Force",
+            templateUrl: "partial/brutalForce.html",
+            controller: "brutalForceCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/contingencias", {
+            title: "Contingencias aprovisionamiento",
+            templateUrl: "partial/contingencias.html",
+            controller: "contingenciasCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+        .when("/nivelacion", {
+            title: "Gestión Nivelación",
+            templateUrl: "partial/nivelacion.html",
+            controller: "nivelacionCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/GestionNivelacion", {
+            title: "Gestión Nivelación",
+            templateUrl: "partial/GestionNivelacion.html",
+            controller: "GestionNivelacionCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/Gestioncontingencias", {
+            title: "Gestión Contingencias",
+            templateUrl: "partial/Gestioncontingencias.html",
+            controller: "GestioncontingenciasCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/gestionsoportegpon", {
+            title: "Gestión Soporte Gpon",
+            templateUrl: "partial/Gestionsoportegpon.html",
+            controller: "GestionsoportegponCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/gestioncodigoincompleto", {
+            title: "Registros Código Incompleto",
+            templateUrl: "partial/Gestioncodigoincompleto.html",
+            controller: "GestioncodigoincompletoCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/premisasInfraestructuras", {
+            title: "Premisas Infraestructuras",
+            templateUrl: "partial/premisasInfraestructuras.html",
+            controller: "premisasInfraestructurasCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/novedadesVisita", {
+            title: "Novedades Visita",
+            templateUrl: "partial/novedadesVisita.html",
+            controller: "novedadesVisitaCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/contrasenaClick", {
+            title: "Contraseñas ClickSoftware",
+            templateUrl: "partial/contrasenaClick.html",
+            controller: "contrasenasClickCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/turnos", {
+            title: "Gestión turnos",
+            templateUrl: "partial/turnos.html",
+            controller: "turnosCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/quejasGo", {
+            title: "Quejas Gestión Operativa",
+            templateUrl: "partial/quejasGo.html",
+            controller: "quejasGoCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+
+        .when("/gestion-quejasGo", {
+            title: "Gestión QuejasGo",
+            templateUrl: "partial/gestionQuejasGo.html",
+            controller: "quejasGoCtrl2",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/consultaSara", {
+            title: "Consulta SARA",
+            templateUrl: "partial/consultaSara.html",
+            controller: "saraCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/KPI-Contingencia", {
+            title: "KPI Contingecia",
+            templateUrl: "partial/graficos-contingecia.html",
+            controller: "GraficosContingeciaCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/gestion-ventas-instaleTiendas", {
+            title: "Gestion Ventas Instale",
+            templateUrl: "partial/ventasInstale/VentasInstaleTiendas.html",
+            controller: "gestionVentasInstaleTiendasCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/perfil-menu", {
+            title: "Administracion menu - perfiles",
+            templateUrl: "partial/menu-perfil.html",
+            controller: "MenuPerfilCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when('/validaciones-app', {
+            title: 'Validaciones App',
+            templateUrl: 'partial/validaciones-app.html',
+            controller: 'validacionesAppCtrl',
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            },
+        })
+
+        .otherwise({
+            redirectTo: "/",
+        });
+
+     /*$locationProvider
+        .html5Mode({
+            enabled: false,
+            requireBase: true,
+        })
+        .hashPrefix([""]);*/
+}
+
+
+function loadUserData($rootScope, $q, $route, $location, services, $cookies) {
+    return services.checkSession().then(complete, failed);
+
+    function complete(data) {
+        if (!data.data.login) {
+            swal({
+                type: "error",
+                title: 'Su session ha caducado',
+                text: 'Inicia session nuevamente para continuar',
+                timer: 4000,
+            }).then(function () {
+                $cookies.remove("usuarioseguimiento");
+                $location.path("/");
+                $rootScope.galletainfo = undefined;
+                $rootScope.permiso = false;
+                $route.reload();
             });
+        }
+         var today = new Date();
+        $rootScope.year = today.getFullYear();
+        $rootScope.nombre = data.data.nombre;
+        $rootScope.login = data.data.login;
+        $rootScope.perfil = data.data.perfil;
+        $rootScope.identificacion = data.data.identificacion;
+        $rootScope.menu = data.data.menu;
+        $rootScope.authenticated = true;
+        $rootScope.permiso = true;
 
-        //$locationProvider.html5Mode(true);
+        $cookies.put("usuarioseguimiento", JSON.stringify(data.data));
+        var galleta = JSON.parse($cookies.get("usuarioseguimiento"));
+        $rootScope.galletainfo = galleta;
 
-        $locationProvider
-            .html5Mode({
-                enabled: false,
-                requireBase: true,
-            })
-            .hashPrefix([""]);
-    },
-]);
+        return data;
+    }
+
+    function failed(reason) {
+        $rootScope.authenticated = false;
+        if ($route.current.loginRequired) {
+            var error = {
+                status: 401,
+                message: "Unauthorized"
+            };
+            return $q.reject(error);
+        }
+    }
+}
+
+function runConfig($rootScope, $location) {
+    $rootScope.$on('$routeChangeStart', function (e, curr, prev) {
+
+    });
+    $rootScope.$on('$routeChangeSuccess', function (e, curr, prev) {
+        //console.log(e, curr, prev, ' routeChangeSuccess');
+        $rootScope.title = curr.$$route.title;
+        $rootScope.tituloPagina =
+            "Seguimiento a pedidos - " + curr.$$route.title;
+    });
+    $rootScope.$on('$routeChangeError', function (arg1, arg2, arg3, arg4) {
+
+        if (arg4.status == 404) {
+            $location.url('/');
+        }
+        if (arg4.status == 401) {
+            $location.url('/');
+        }
+    });
+}
 
 app.run(function ($rootScope, services, i18nService) {
     i18nService.setCurrentLang("es");
@@ -12286,21 +12450,6 @@ app.run([
     "$cookies",
     "services",
     function ($location, $rootScope, $route, $cookies, services) {
-        $rootScope.$on("$routeChangeStart", function (evt, to, from) {
-            if ($cookies.get("usuarioseguimiento") == undefined) {
-                $location.path("/");
-            }
-        });
-
-        $rootScope.$on("$routeChangeSuccess", function (event, current, previous) {
-            $rootScope.title = current.$$route.title;
-            $rootScope.tituloPagina =
-                "Seguimiento a pedidos - " + current.$$route.title;
-        });
-
-        $rootScope.$on("$routeChangeError", function (evt, to, from, error) {
-        });
-
         $rootScope.executeCopy = function executeCopy(text) {
             var input = document.createElement("textarea");
             document.body.appendChild(input);
@@ -12651,6 +12800,7 @@ app.run([
             { id: 'Internet+Toip', concepto: 'Internet+Toip' },
             { id: 'TV', concepto: 'TV' }
         ];
+
         $rootScope.estadoGrafico = [
             { id: 'Acepta', concepto: 'Acepta' },
             { id: 'Rechaza', concepto: 'Rechaza' }

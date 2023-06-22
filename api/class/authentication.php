@@ -63,8 +63,8 @@ class authentication
                 $response = array('state' => 1, 'data' => $resLogin);
 
                 session_destroy();
-                ini_set('session.gc_maxlifetime', 3600); // 1 hour
-                session_set_cookie_params(3600);
+                ini_set('session.gc_maxlifetime', 60*60*24); // 1 day
+                session_set_cookie_params(60*60*24);
                 session_start();
 
                 $_SESSION["logueado"] = true;
@@ -169,5 +169,75 @@ class authentication
             $response = ['Error', 400];
         }
         echo json_encode($response);
+    }
+
+    private function getMenu($perfil)
+    {
+        try {
+            $stmt = $this->_DB->prepare("SELECT id, nombre FROM  menu");
+            $stmt->execute();
+            $menu = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $menus = [];
+            foreach ($menu as $key => $value) {
+                $stmt = $this->_DB->prepare("SELECT
+                                                    nombre AS sub,
+                                                    url,
+                                                    icon
+                                                FROM
+                                                    submenu
+                                                INNER JOIN submenu_perfil ON submenu.id = submenu_perfil.submenu_id
+                                                WHERE
+                                                    menu_id = :menu
+                                                AND submenu_perfil.perfil_id = :id
+                                                AND estado = 'Activo' ORDER BY sub");
+                $stmt->execute(array(':menu' => $value['id'], ':id' => $perfil));
+                $sub = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $menus[$key]['tittle'] = $value['nombre'];
+                for ($i = 0; $i < count($sub); $i++) {
+                    $menus[$key]['n']['sub'][$i] = $sub[$i]['sub'];
+                    $menus[$key]['n']['url'][$i] = $sub[$i]['url'];
+                    $menus[$key]['n']['icon'][$i] = $sub[$i]['icon'];
+                }
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+        return $menus;
+    }
+
+    private function getActualSession()
+    {
+        if (!isset($_SESSION)) {
+            session_start();
+        }
+        $sess = array();
+        if (isset($_SESSION['login'])) {
+            $sess["logueado"] = $_SESSION["logueado"];
+            $sess['timeOnline'] = $_SESSION["timeOnline"];
+            $sess['online'] = $_SESSION["online"];
+            $sess["login"] = $_SESSION["login"];
+            $sess['id'] = $_SESSION["id"];
+            $sess['token_session'] = $_SESSION["token_session"];
+            $sess['fecha_ingreso'] = $_SESSION["fecha_ingreso"];
+            $sess['perfil'] = $_SESSION["perfil"];
+            $sess['menu'] = $this->getMenu($_SESSION["perfil"]);
+        } else {
+            $sess["logueado"] = '';
+            $sess['timeOnline'] = '';
+            $sess['online'] = '';
+            $sess["login"] = '';
+            $sess['id'] = '';
+            $sess['token_session'] = '';
+            $sess['fecha_ingreso'] = '';
+            $sess['perfil'] = '';
+            $sess['menu'] = '';
+        }
+        return $sess;
+    }
+
+    public function checkSession()
+    {
+        $session = $this->getActualSession();
+        echo json_encode($session);
     }
 }

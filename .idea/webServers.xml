@@ -3,14 +3,14 @@
   <component name="WebServers">
     <option name="servers">
       <webServer id="07435471-e37d-41c9-9dff-6671777dd78f" name="seguimientos-dev">
-        <fileTransfer rootFolder="/var/www/html/seguimientopedidos-dev" accessType="SFTP" host="10.100.88.230" port="22" sshConfigId="e9973dfa-302c-4b15-8209-871176870e0d" sshConfig="pwebspd220323@10.100.88.230:22 password">
+        <fileTransfer rootFolder="/var/www/html/seguimientopedidos-dev" accessType="SFTP" host="10.100.88.2" port="22" sshConfigId="e9973dfa-302c-4b15-8209-871176870e0d" sshConfig="pwebspd220323@10.100.88.2:22 password">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
         </fileTransfer>
       </webServer>
       <webServer id="fa5982cc-cbcb-481e-ae89-46f240b649b1" name="seguimientos-app">
-        <fileTransfer rootFolder="/var/www/html/seguimientopedidos" accessType="SFTP" host="10.100.88.230" port="22" sshConfigId="e9973dfa-302c-4b15-8209-871176870e0d" sshConfig="pwebspd220323@10.100.88.230:22 password">
+        <fileTransfer rootFolder="/var/www/html/seguimientopedidos" accessType="SFTP" host="10.100.88.2" port="22" sshConfigId="e9973dfa-302c-4b15-8209-871176870e0d" sshConfig="pwebspd220323@10.100.88.2:22 password">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>

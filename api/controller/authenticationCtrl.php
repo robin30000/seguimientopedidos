@@ -19,6 +19,11 @@ if (isset($data->method)) {
             $user = new authentication();
             $user->updatesalida();
             break;
+        case 'checkSession':
+            require_once '../class/authentication.php';
+            $user = new authentication();
+            $user->checkSession();
+            break;
 
         default:
             echo 'ninguna opción valida.';

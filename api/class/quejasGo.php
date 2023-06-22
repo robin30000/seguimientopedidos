@@ -87,8 +87,8 @@ class quejasGo
             $usuarioid = $data['datosLogin'];
             $usuarioid = $usuarioid['LOGIN'];
             $datos = $data['datos'];
-            $fechaini = $datos['fechaini'];
-            $fechafin = $datos['fechafin'];
+            $fechaini = $data['fechaini'];
+            $fechafin = $data['fechafin'];
             $columnaBusqueda = $datos['columnaBusqueda'];
             $valorBusqueda = $datos['valorBusqueda'];
 

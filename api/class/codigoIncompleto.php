@@ -15,8 +15,8 @@ class codigoIncompleto
     {
 
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
+            ini_set('session.gc_maxlifetime', 60*60*24); // 1 day
+            session_set_cookie_params(60*60*24);
             session_start();
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
@@ -80,8 +80,8 @@ class codigoIncompleto
     public function gestionarCodigoIncompleto($data)
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
+            ini_set('session.gc_maxlifetime', 60*60*24); // 1 day
+            session_set_cookie_params(60*60*24);
             session_start();
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
@@ -123,8 +123,8 @@ class codigoIncompleto
     public function registroscodigoincompleto($data)
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
+            ini_set('session.gc_maxlifetime', 60*60*24); // 1 day
+            session_set_cookie_params(60*60*24);
             session_start();
 
             if (empty($data['data']['fechaini'])) {
@@ -202,8 +202,8 @@ class codigoIncompleto
     {
 
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
+            ini_set('session.gc_maxlifetime', 60*60*24); // 1 day
+            session_set_cookie_params(60*60*24);
             session_start();
             $usuarioid = $_SESSION['login'];
 
