@@ -28,10 +28,10 @@ if (isset($data['method'])) {
             $user->buscarTecnico($data['data']);
             break;
 
-        case 'crearTecnicoQuejasGo':
+        case 'creaTecnicoQuejasGo':
             require_once '../class/quejasGo.php';
             $user = new quejasGo();
-            $user->crearTecnicoQuejasGo($data['crearTecnicoquejasGoSel']);
+            $user->creaTecnicoQuejasGo($data['data']);
             break;
         case 'ciudadesQGo':
             require_once '../class/quejasGo.php';

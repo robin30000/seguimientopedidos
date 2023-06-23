@@ -38,16 +38,16 @@ class authentication
                 $menus = [];
                 foreach ($menu as $key => $value) {
                     $stmt = $this->_DB->prepare("SELECT
-                                                                                    nombre AS sub,
-                                                                                    url,
-                                                                                    icon
-                                                                                FROM
-                                                                                    submenu
-                                                                                INNER JOIN submenu_perfil ON submenu.id = submenu_perfil.submenu_id
-                                                                                WHERE
-                                                                                    menu_id = :menu
-                                                                                AND submenu_perfil.perfil_id = :id
-                                                                                AND estado = 'Activo' ORDER BY sub");
+                                                    nombre AS sub,
+                                                    url,
+                                                    icon
+                                                FROM
+                                                    submenu
+                                                INNER JOIN submenu_perfil ON submenu.id = submenu_perfil.submenu_id
+                                                WHERE
+                                                    menu_id = :menu
+                                                AND submenu_perfil.perfil_id = :id
+                                                AND estado = 'Activo' ORDER BY sub");
                     $stmt->execute(array(':menu' => $value['id'], ':id' => $resLogin->perfil));
                     $sub = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     $menus[$key]['tittle'] = $value['nombre'];
@@ -55,7 +55,6 @@ class authentication
                         $menus[$key]['n']['sub'][$i] = $sub[$i]['sub'];
                         $menus[$key]['n']['url'][$i] = $sub[$i]['url'];
                         $menus[$key]['n']['icon'][$i] = $sub[$i]['icon'];
-                        //$people[$i]['salt']
                     }
                 }
 
@@ -63,8 +62,8 @@ class authentication
                 $response = array('state' => 1, 'data' => $resLogin);
 
                 session_destroy();
-                ini_set('session.gc_maxlifetime', 60*60*24); // 1 day
-                session_set_cookie_params(60*60*24);
+                ini_set('session.gc_maxlifetime', 3600); // 1 hour
+                session_set_cookie_params(3600);
                 session_start();
 
                 $_SESSION["logueado"] = true;
@@ -75,6 +74,7 @@ class authentication
                 $_SESSION['token_session'] = uniqid();
                 $_SESSION['fecha_ingreso'] = date('Y-m-d H:i:s');
                 $_SESSION['perfil'] = $resLogin->perfil;
+                $_SESSION['menu'] = $menus;
 
                 $stmtIngreso = $this->_DB->prepare("SELECT id
                                                          , fecha_ingreso

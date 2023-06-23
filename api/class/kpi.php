@@ -17,25 +17,21 @@ class kpi
     public function contigenciaDiario($data)
     {
 
-        ini_set('session.gc_maxlifetime', 3600); // 1 hour
-        session_set_cookie_params(3600);
-        session_start();
         $estado = $data['estado'];
         $producto = $data['producto'];
 
         $condicion = '';
-
-        if (($estado == 'Acepta') && ($producto[0] == 'Internet+Toip') && ($producto[1] == 'TV')) {
-            $condicion = " AND  acepta = 'acepta' ";
-        } elseif (($estado == 'Rechaza') && ($producto[0] == 'Internet+Toip') && ($producto[1] == 'TV')) {
-            $condicion = " AND  acepta = 'Rechaza' ";
-        } elseif (($estado == 'Acepta') && ($producto[0] == 'Internet+Toip')) {
+        if (($estado == 'Acepta') && ($producto == 'Todos')) {
+            $condicion = " AND  acepta = 'acepta' AND  producto IN ('TV', 'Internet', 'Internet+ToIP', 'ToIP') ";
+        } elseif (($estado == 'Rechaza') && ($producto == 'Todos')) {
+            $condicion = " AND  acepta = 'Rechaza' AND  producto IN ('TV', 'Internet', 'Internet+ToIP', 'ToIP') ";
+        } elseif (($estado == 'Acepta') && ($producto == 'Internet+Toip')) {
             $condicion = " AND  acepta = 'acepta' AND producto IN ('Internet', 'Internet+ToIP', 'ToIP')";
-        } elseif (($estado == 'Acepta') && ($producto[0] == 'TV')) {
+        } elseif (($estado == 'Acepta') && ($producto == 'TV')) {
             $condicion = " AND  acepta = 'acepta' AND producto = 'TV'";
-        } elseif (($estado == 'Rechaza') && ($producto[0] == 'Internet+Toip')) {
+        } elseif (($estado == 'Rechaza') && ($producto == 'Internet+Toip')) {
             $condicion = " AND  acepta = 'Rechaza' AND producto IN ('Internet', 'Internet+ToIP', 'ToIP')";
-        } elseif (($estado == 'Rechaza') && ($producto[0] == 'TV')) {
+        } elseif (($estado == 'Rechaza') && ($producto == 'TV')) {
             $condicion = " AND  acepta = 'Rechaza' AND producto = 'TV'";
         } else {
             $condicion = " AND  acepta = 'acepta' ";
@@ -74,18 +70,18 @@ class kpi
 
         $condicion = '';
 
-        if (($estado == 'Acepta') && ($producto[0] == 'Internet+Toip') && ($producto[1] == 'TV')) {
-            $condicion = " AND  acepta = 'acepta' ";
-        } elseif (($estado == 'Rechaza') && ($producto[0] == 'Internet+Toip') && ($producto[1] == 'TV')) {
-            $condicion = " AND  acepta = 'Rechaza' ";
-        } elseif (($estado == 'Acepta') && ($producto[0] == 'Internet+Toip')) {
-            $condicion = " AND  acepta = 'acepta' AND producto IN ('Internet', 'Internet+ToIP', 'ToIP')";
-        } elseif (($estado == 'Acepta') && ($producto[0] == 'TV')) {
-            $condicion = " AND  acepta = 'acepta' AND producto = 'TV'";
-        } elseif (($estado == 'Rechaza') && ($producto[0] == 'Internet+Toip')) {
-            $condicion = " AND  acepta = 'Rechaza' AND producto IN ('Internet', 'Internet+ToIP', 'ToIP')";
-        } elseif (($estado == 'Rechaza') && ($producto[0] == 'TV')) {
-            $condicion = " AND  acepta = 'Rechaza' AND producto = 'TV'";
+        if (($estado == 'Acepta') && ($producto == 'Internet+Toip')) {
+            $condicion = " AND  acepta = 'acepta' AND producto IN ('Internet', 'Internet+ToIP', 'ToIP') ";
+        } elseif (($estado == 'Acepta') && ($producto == 'TV')) {
+            $condicion = " AND  acepta = 'acepta' AND producto = 'TV' ";
+        } elseif (($estado == 'Acepta') && ($producto == 'Todos')) {
+            $condicion = " AND  acepta = 'acepta' AND  producto IN ('TV', 'Internet', 'Internet+ToIP', 'ToIP') ";
+        } elseif (($estado == 'Rechaza') && ($producto == 'Internet+Toip')) {
+            $condicion = " AND  acepta = 'Rechaza' AND producto IN ('Internet', 'Internet+ToIP', 'ToIP') ";
+        } elseif (($estado == 'Rechaza') && ($producto == 'TV')) {
+            $condicion = " AND  acepta = 'Rechaza' AND producto = 'TV' ";
+        } elseif (($estado == 'Rechaza') && ($producto == 'Todos')) {
+            $condicion = " AND  acepta = 'Rechaza' AND  producto IN ('TV', 'Internet', 'Internet+ToIP', 'ToIP') ";
         } else {
             $condicion = " AND  acepta = 'acepta' ";
         }
@@ -192,13 +188,22 @@ class kpi
         $today = date("Y-m-d");
 
         if (!empty($data['tabla'])) {
-            $stmt = $this->_BD->prepare("INSERT INTO usuario_kpi (usuario, tabla) VALUES (:u, 'apoyo')");
+
+            $stmt = $this->_BD->prepare("SELECT * from usuarios WHERE login = :u");
             $stmt->execute(array(':u' => $data['usuario']));
             if ($stmt->rowCount() == 1) {
-                $response = array('state' => 1, 'msj' => 'Usuario agregado correctamente');
+                $stmt = $this->_BD->prepare("INSERT INTO usuario_kpi (usuario, tabla) VALUES (:u, 'apoyo')");
+                $stmt->execute(array(':u' => $data['usuario']));
+                if ($stmt->rowCount() == 1) {
+                    $response = array('state' => 1, 'msj' => 'Usuario agregado correctamente');
+                } else {
+                    $response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno inténtalo nuevamente en unos minutos');
+                }
+
             } else {
-                $response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno inténtalo nuevamente en unos minutos');
+                $response = array('state' => 0, 'msj' => 'El usuario ingresado no se encuentra registrado');
             }
+
             echo json_encode($response);
             exit();
         }
@@ -307,12 +312,20 @@ class kpi
         $today = date("Y-m-d");
 
         if (!empty($data['tabla'])) {
-            $stmt = $this->_BD->prepare("INSERT INTO usuario_kpi (usuario, tabla) VALUES (:u, 'tiempo_completo')");
+
+            $stmt = $this->_BD->prepare("SELECT * from usuarios WHERE login = :u");
             $stmt->execute(array(':u' => $data['usuario']));
             if ($stmt->rowCount() == 1) {
-                $response = array('state' => 1, 'msj' => 'Usuario agregado correctamente');
+                $stmt = $this->_BD->prepare("INSERT INTO usuario_kpi (usuario, tabla) VALUES (:u, 'tiempo_completo')");
+                $stmt->execute(array(':u' => $data['usuario']));
+                if ($stmt->rowCount() == 1) {
+                    $response = array('state' => 1, 'msj' => 'Usuario agregado correctamente');
+                } else {
+                    $response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno inténtalo nuevamente en unos minutos');
+                }
+
             } else {
-                $response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno inténtalo nuevamente en unos minutos');
+                $response = array('state' => 0, 'msj' => 'El usuario ingresado no se encuentra registrado');
             }
             echo json_encode($response);
             exit();
@@ -433,12 +446,19 @@ class kpi
         $today = date("Y-m-d");
 
         if (!empty($data['tabla'])) {
-            $stmt = $this->_BD->prepare("INSERT INTO usuario_kpi (usuario, tabla) VALUES (:u, 'mmss')");
+            $stmt = $this->_BD->prepare("SELECT * from usuarios WHERE login = :u");
             $stmt->execute(array(':u' => $data['usuario']));
             if ($stmt->rowCount() == 1) {
-                $response = array('state' => 1, 'msj' => 'Usuario agregado correctamente');
+                $stmt = $this->_BD->prepare("INSERT INTO usuario_kpi (usuario, tabla) VALUES (:u, 'mmss')");
+                $stmt->execute(array(':u' => $data['usuario']));
+                if ($stmt->rowCount() == 1) {
+                    $response = array('state' => 1, 'msj' => 'Usuario agregado correctamente');
+                } else {
+                    $response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno inténtalo nuevamente en unos minutos');
+                }
+
             } else {
-                $response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno inténtalo nuevamente en unos minutos');
+                $response = array('state' => 0, 'msj' => 'El usuario ingresado no se encuentra registrado');
             }
             echo json_encode($response);
             exit();
@@ -547,12 +567,19 @@ class kpi
         $today = date("Y-m-d");
 
         if (!empty($data['tabla'])) {
-            $stmt = $this->_BD->prepare("INSERT INTO usuario_kpi (usuario, tabla) VALUES (:u, 'emtelco')");
+            $stmt = $this->_BD->prepare("SELECT * from usuarios WHERE login = :u");
             $stmt->execute(array(':u' => $data['usuario']));
             if ($stmt->rowCount() == 1) {
-                $response = array('state' => 1, 'msj' => 'Usuario agregado correctamente');
+                $stmt = $this->_BD->prepare("INSERT INTO usuario_kpi (usuario, tabla) VALUES (:u, 'emtelco')");
+                $stmt->execute(array(':u' => $data['usuario']));
+                if ($stmt->rowCount() == 1) {
+                    $response = array('state' => 1, 'msj' => 'Usuario agregado correctamente');
+                } else {
+                    $response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno inténtalo nuevamente en unos minutos');
+                }
+
             } else {
-                $response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno inténtalo nuevamente en unos minutos');
+                $response = array('state' => 0, 'msj' => 'El usuario ingresado no se encuentra registrado');
             }
             echo json_encode($response);
             exit();

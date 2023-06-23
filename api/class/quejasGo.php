@@ -154,13 +154,14 @@ class quejasGo
         echo json_encode($response);
     }
 
-    public function crearTecnicoQuejasGo($data)
+    public function creaTecnicoQuejasGo($data)
     {
 
         try {
             ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
             session_start();
+
             $identificacion = $data['cedtecnico'];
             $nombre = $data['nombretecnico'];
             $ciudad = $data['region'];
@@ -174,7 +175,11 @@ class quejasGo
                 ':celular' => $celular,
                 ':empresa' => $empresa,
             ]);
-            $response = ['Usuario creado', 201];
+           if ($stmt->rowCount() == 1){
+               $response = array('state' => 1, 'msj' => 'Técnico creado correctamente');
+           }else{
+               $response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno intentalo nuevamente en unos minutos');
+           }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }

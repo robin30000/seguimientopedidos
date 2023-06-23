@@ -13,13 +13,13 @@ class novedadesTecnico
     {
         try {
 
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /* ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
             session_start();
 
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
-            } else {
+            } else { */
 
                 if (empty($data['data']['fechaini']) && empty($data['data']['fechafin'])) {
                     $fechaini = date('Y-m-d');
@@ -42,8 +42,7 @@ class novedadesTecnico
                 $search = $data['search'];
                 $total_pages = ceil($counter / $data['size']);
 
-
-                $stmt = $this->_DB->query("SELECT id, cedulaTecnico, nombreTecnico, contracto, proceso, pedido, tiponovedad, municipio, situacion, 
+                $stmt = $this->_DB->prepare("SELECT id, cedulaTecnico, nombreTecnico, contracto, proceso, pedido, tiponovedad, municipio, situacion, 
                                 horamarcaensitio, observaciones, idllamada, observacionCCO
 						FROM NovedadesVisitas
 							WHERE 1=1
@@ -57,7 +56,7 @@ class novedadesTecnico
                 } else {
                     $response = ['state' => 0];
                 }
-            }
+            /* } */
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }

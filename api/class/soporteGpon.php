@@ -520,7 +520,7 @@ class soporteGpon
                     //echo $loginsoportegpon.''.$login;exit();
 
                     if ($login == $loginsoportegpon) {
-                        $stmt = $this->_DB->query("UPDATE soporte_gpon SET status_soporte = 0, login = NULL, fecha_marca = NULL WHERE id_soporte ='$id'");
+                        $stmt = $this->_DB->query("UPDATE soporte_gpon SET status_soporte = 0, login = NULL, fecha_marca = '' WHERE id_soporte ='$id'");
                         $stmt->execute();
                         $response = ['state' => 1, 'msj' => 'El pedido se encuentra desbloqueado'];
                     } else {

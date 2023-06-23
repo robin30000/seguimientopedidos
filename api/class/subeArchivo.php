@@ -56,7 +56,7 @@ for ($i = 2; $i <= $num_filas; $i++) {
     $proceso = trim($valores[7]);
 
     if ($pedido == '') {
-        $data = array('state' => 0, 'msj' => 'El archivo tiene campos vacíos (pedido)' . $pedido . ' ' . $id_tecnico, ' ' . $despacho);
+        $data = array('state' => 0, 'msj' => 'El archivo tiene campos vacíos (pedido)' . $key . ' ' . $id_tecnico, ' ' . $despacho);
         echo json_encode($data);
         exit();
     } elseif ($id_tecnico == '') {

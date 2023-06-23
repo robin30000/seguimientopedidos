@@ -17,7 +17,7 @@ var app = angular.module("seguimientopedidos", [
     "ui.grid.exporter",
     "ui.grid.autoResize",
     "chart.js",
-     "angular.filter",
+    "angular.filter",
     "ui.bootstrap",
     "ui.select2"
 ]);
@@ -5231,19 +5231,27 @@ app.controller(
         ) {
             services.creaTecnicoQuejasGo(crearTecnicoquejasGoSel).then(
                 function (data) {
-                    Swal("El técnico fue Creado!", "Bien Hecho");
-                    $scope.LoadQuejasGo($scope.datapendientes.currentPage);
-                    $("#crearTecnicoQuejasGo").modal("hide");
-                    frmCrearTecnicoQuejasGo.autoValidateFormOptions.resetForm();
-                    return data.data;
+                    if (data.data.state == 1) {
+                        $("#crearTecnicoQuejasGo").modal("hide");
+                        frmCrearTecnicoQuejasGo.autoValidateFormOptions.resetForm();
+                        Swal({
+                            type: 'success',
+                            title: 'Bien',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    } else {
+                        Swal({
+                            type: 'success',
+                            title: 'Bien',
+                            text: 'data.data.msj',
+                            timer: 4000
+                        })
+                    }
                 },
 
                 function errorCallback(response) {
-                    Swal({
-                        type: "error",
-                        title: "Oops...",
-                        text: "Debe seleccionar un rango de fecha!",
-                    });
+                    console.log(response)
                 }
             );
         };
@@ -7731,7 +7739,7 @@ app.controller("GestionNivelacionCtrl", [
 
 app.controller(
     "contingenciasCtrl",
-    function ($scope, $rootScope, $timeout, services, $route, $cookies, $location) {
+    function ($scope, $rootScope, $timeout, services, $route, $cookies, $location, $http) {
         $scope.contingencias = {};
         $scope.pedidoexiste = false;
         $scope.pedidoguardado = false;
@@ -7740,6 +7748,145 @@ app.controller(
         $scope.equiposEntran.push({});
         $scope.equiposSalen = [];
         $scope.equiposSalen.push({});
+
+
+        $scope.producto = [
+            { id: "TV", producto: "TV" },
+            { id: "Internet", producto: "Internet" },
+            { id: "ToIP", producto: "ToIP" },
+            { id: "Internet+ToIP", producto: "Internet+ToIP" }
+        ]
+
+        $scope.buscarPedidoAprovisionamiento = (pedido) => {
+            if (!pedido) {
+                Swal({
+                    type: 'error',
+                    title: 'Error',
+                    text: 'Ingrese el pedido',
+                    timer: 4000
+                })
+                return;
+            }
+
+            /* function actividades(pedido) {
+
+                $scope.sininfopedido = true;
+                $scope.url = "http://" + $scope.ipServer + ":8080/HCHV/Buscar/" + pedido;
+                $http.get($scope.url, { timeout: 2000 })
+                    .then(function (data) {
+                        $scope.myWelcome = data.data;
+                        $scope.equipos = $scope.myWelcome.Equipos;
+                        if ($scope.myWelcome.pEDIDO_UNE == null) {
+                            $scope.infopedido = false;
+                            $scope.errorconexion1 = false;
+                            $scope.myWelcome = {};
+                        } else if ($scope.myWelcome.engineerID == null) {
+                            $scope.infopedido = false;
+                            $scope.errorconexion1 = false;
+                            $scope.myWelcome = {};
+                        } else if ($scope.myWelcome.pEDIDO_UNE == "TIMEOUT") {
+                            $scope.infopedido = false;
+                            $scope.errorconexion1 = true;
+                            $scope.myWelcome = {};
+                            $scope.errorconexion = "No hay conexión con Click, ingrese datos manualmente";
+                        } else {
+                            $scope.infopedido = true;
+                            $scope.gestionmanual.tecnico = $scope.myWelcome.engineerID;
+                            $scope.gestionmanual.CIUDAD = $scope.myWelcome.uNEMunicipio.toUpperCase();
+                            $scope.BuscarTecnico();
+                        }
+
+                        return data.data;
+                    },
+
+                        function (err) {
+                            $scope.ipServer = "10.100.66.254";
+                            $scope.url = "http://" + $scope.ipServer + ":8080/HCHV/Buscar/" + pedido;
+                            $http.get($scope.url, { timeout: 2000 })
+                                .then(function (data) {
+                                    $scope.myWelcome = data.data;
+                                    if ($scope.myWelcome.pEDIDO_UNE == null) {
+                                        $scope.infopedido = false;
+                                        $scope.errorconexion1 = false;
+                                        $scope.myWelcome = {};
+                                    } else if ($scope.myWelcome.pEDIDO_UNE == "TIMEOUT") {
+                                        $scope.infopedido = false;
+                                        $scope.errorconexion1 = true;
+                                        $scope.myWelcome = {};
+                                        $scope.errorconexion = "No hay conexión con Click, ingrese datos manualmente";
+                                    } else {
+                                        $scope.infopedido = true;
+                                        $scope.gestionmanual.tecnico = $scope.myWelcome.engineerID;
+                                        $scope.gestionmanual.CIUDAD = $scope.myWelcome.uNEMunicipio.toUpperCase();
+                                        $scope.BuscarTecnico();
+                                    }
+                                    ;
+                                    return data.data;
+                                }, function (err) {
+                                    console.log("ERROR DE CONEXION: NO PUEDO ALCANZAR EL SERVIDOR!!!");
+                                    $scope.infopedido = false;
+                                    $scope.errorconexion1 = true;
+                                    $scope.myWelcome = {};
+                                    $scope.errorconexion = "No hay conexión con Web Service, ingrese datos manualmente";
+                                });
+                        },
+                        function errorCallback(response) {
+                            console.log("ERRORRRR");
+                        }
+                    );
+            } */
+
+            $scope.consulta = {};
+            $scope.url = "http://10.100.66.254:8080/BB8/contingencias/Buscar/";
+
+            Promise.all([
+                $http.get($scope.url + "GetClick/" + pedido, { timeout: 4000 }),
+                $http.get($scope.url + "GetPlanBaMSS/" + pedido, { timeout: 4000 }),
+                $http.get($scope.url + "GetPlanTOMSS/" + pedido, { timeout: 4000 }),
+                $http.get($scope.url + "GetPlanTVMSS/" + pedido, { timeout: 4000 }),
+                $http.get("http://10.100.66.254:8080/HCHV/Buscar/" + pedido, { timeout: 4000 })
+            ]).then(function (responses) {
+                $scope.consulta.click = responses[0].data;
+                $scope.consulta.bb8plan = responses[1].data;
+                $scope.consulta.bb8Telefonia = responses[2].data;
+                $scope.consulta.bb8Television = responses[3].data;
+                $scope.consulta.actividades = responses[4].data;
+                console.log($scope.consulta);
+
+                if ($scope.consulta.click[0].EQProducto === 'Telefonía') {
+                    $scope.consulta.click[0].EQProducto = "ToIP";
+                }
+
+                if ($scope.consulta.actividades.uNETecnologias == 'HFC-HFC') {
+                    $scope.consulta.actividades.uNETecnologias = 'HFC';
+                }
+
+                if ($scope.consulta.actividades.uNEProductos == 'Internet-Telefonía') {
+                    $scope.consulta.actividades.uNEProductos = 'Internet+ToIP';
+                }else if ($scope.consulta.actividades.uNEProductos == 'Televisión Hogares') {
+                    $scope.consulta.actividades.uNEProductos = 'TV';
+                }
+
+                if ($scope.consulta.actividades.Type == 'Install') {
+                    $scope.consulta.actividades.Type = 'Instalación'
+                } else {
+                    $scope.consulta.actividades.Type = 'Reparación'
+                }
+
+                if ($scope.consulta.actividades.uNEDepartamento == 'Bogotá D.C.') {
+                    $scope.consulta.actividades.uNEDepartamento = 'BOGOTA'
+                }
+
+                $scope.contingencias.producto = $scope.consulta.actividades.uNEProductos;
+                $scope.contingencias.tecnologia = $scope.consulta.actividades.uNETecnologias;
+                $scope.contingencias.proceso = $scope.consulta.actividades.Type;
+                $scope.contingencias.ciudad = $scope.consulta.actividades.uNEDepartamento;
+                $scope.contingencias.uen = $scope.consulta.actividades.uNEUENcalculada
+
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
 
         $scope.BuscarPedidoContingencia = function () {
             services
@@ -12332,12 +12479,12 @@ function routesConfig($routeProvider, $locationProvider, $compileProvider) {
             redirectTo: "/",
         });
 
-     /*$locationProvider
-        .html5Mode({
-            enabled: false,
-            requireBase: true,
-        })
-        .hashPrefix([""]);*/
+    /*$locationProvider
+       .html5Mode({
+           enabled: false,
+           requireBase: true,
+       })
+       .hashPrefix([""]);*/
 }
 
 
@@ -12359,7 +12506,7 @@ function loadUserData($rootScope, $q, $route, $location, services, $cookies) {
                 $route.reload();
             });
         }
-         var today = new Date();
+        var today = new Date();
         $rootScope.year = today.getFullYear();
         $rootScope.nombre = data.data.nombre;
         $rootScope.login = data.data.login;
@@ -12798,7 +12945,8 @@ app.run([
 
         $rootScope.productoGrafico = [
             { id: 'Internet+Toip', concepto: 'Internet+Toip' },
-            { id: 'TV', concepto: 'TV' }
+            { id: 'TV', concepto: 'TV' },
+            { id: 'Todos', concepto: 'Todos' }
         ];
 
         $rootScope.estadoGrafico = [

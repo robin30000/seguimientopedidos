@@ -13,12 +13,7 @@ class GestionQuejasGo
 	public function datosQuejasGo()
 	{
 		try {
-			//ini_set('memory_limit', '264M');
 
-			//ini_set('memory_limit', '256M');
-			error_reporting(E_ALL);
-			ini_set('display_errors', 1);
-			//ini_set('memory_limit', '1024M');
 			ini_set('session.gc_maxlifetime', 3600); // 1 hour
 			session_set_cookie_params(3600);
 			session_start();

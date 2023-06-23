@@ -18,9 +18,9 @@
                 <div class="col-sm-4">
                   <div class="form-floating">
                     <label for="estado20">Estado</label>
-                    <select class="form-select form-control" name="estado20" id="estado20" ng-model="estado20"
+                    <select class="form-control input-sm" name="estado20" id="estado20" ng-model="estado20"
                       data-placeholder="Seleccione estado...">
-                      <option value="">Seleccione</option>
+                      <option value="" selected>Seleccione</option>
                       <option value="Acepta">Acepta</option>
                       <option value="Rechaza">Rechaza</option>
                     </select>
@@ -30,11 +30,12 @@
                   <div class="form-floating">
                     <label for="producto20">Producto</label>
 
-                    <select multiple class="form-select form-control" ui-select2="groupSetup" name="producto20"
+                    <select class="form-control input-sm" name="producto20"
                       id="producto20" ng-model="producto20" data-placeholder="Seleccione los producto...">
-                      <option ng-repeat="group1 in productoGrafico" value="{{group1.id}}">
-                        {{group1.concepto}}
-                      </option>
+                      <option value="" selected>Seleccione</option>
+                      <option value="Internet+Toip">Internet+Toip</option>
+                      <option value="TV">TV</option>
+                      <option value="Todos">Todos</option>
                     </select>
                   </div>
                 </div>
@@ -62,10 +63,9 @@
                 <div class="col-sm-4">
                   <div class="form-floating">
                     <label for="estadoDia">Estado</label>
-
-                    <select class="form-select form-control" name="estadoDia" id="estadoDia" ng-model="estadoDia"
+                    <select class="input-sm form-control" name="estadoDia" id="estadoDia" ng-model="estadoDia"
                       data-placeholder="Seleccione estado...">
-                      <option value="">Seleccione</option>
+                      <option value="" selected>Seleccione</option>
                       <option value="Acepta">Acepta</option>
                       <option value="Rechaza">Rechaza</option>
                     </select>
@@ -75,11 +75,12 @@
                 <div class="col-sm-4">
                   <div class="form-floating">
                     <label for="productoDia">Producto</label>
-                    <select multiple class="form-select form-control" ui-select2="groupSetup" name="productoDia"
-                      id="productoDia" ng-model="productoDia" data-placeholder="Seleccione los producto...">
-                      <option ng-repeat="group1 in productoGrafico" value="{{group1.id}}">
-                        {{group1.concepto}}
-                      </option>
+                    <select class="form-control input-sm" name="productoDia"
+                      id="productoDia" ng-model="productoDia"  data-placeholder="Seleccione los producto...">
+                      <option value="" selected>Seleccione</option>
+                      <option value="Internet+Toip">Internet+Toip</option>
+                      <option value="TV">TV</option>
+                      <option value="Todos">Todos</option>
                     </select>
                   </div>
                 </div>

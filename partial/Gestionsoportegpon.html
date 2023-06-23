@@ -27,9 +27,10 @@
                 tooltip-placement="top" uib-tooltip="Contador"
                   data-target="#infomodal" data-placement="top" data-html="true"> Contador</button> -->
                 <button type="button" class="btn btn-info btn-xs" data-backdrop="static" ng-click="contadorGpon()"
-                  popover-placement="bottom" popover-title="Contador" uib-popover-html="contadorGpon">Contador</button>
+                   popover-placement="bottom" popover-title="Contador"
+                  uib-popover-html="contadorGpon">Contador</button>
 
-                &nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;
               </b>
 
               <b>
@@ -160,25 +161,30 @@
                     <td class="text-center">
                       <select ng-model="data.tipificaciones" class="btn btn-default btn-xs grupo-select" multiple
                         ui-select2="groupSetup" name="tipificaciones" id="tipificaciones{{data.id_soporte}}">
-                        <option value="Actualizar Infra">Actualizar Infra</option>
-                        <option value="Estabilizar Pon">Estabilizar Pon</option>
-                        <option value="Configurar VLAN">Configurar VLAN</option>
+                        <option value="Actualizar Infra">
+                          Actualizar Infra
+                        </option>
+                        <option value="Estabilizar Pon">
+                          Estabilizar Pon
+                        </option>
+                        <option value="Configurar VLAN">
+                          Configurar VLAN
+                        </option>
                         <option value="Aprovisionar">Aprovisionar</option>
                         <option value="Cam_Eq">Cam_Eq</option>
                         <option value="Contingencia">Contingencia</option>
                         <option value="Red ocupada">Red ocupada</option>
                         <option value="Puertos Lan">Puertos Lan</option>
                         <option value="Cierre CBAPON">Cierre CBAPON</option>
-                        <option value="Validación general">Validación general</option>
+                        <option value="Validacion general">
+                          Validación general
+                        </option>
                         <option value="Nap Trocado">Nap Trocado</option>
                         <option value="Cod_Comp">Cod_Comp</option>
-                        <option value="Reenvió Registros">Reenvió Registros</option>
-                        <option value="IP navegación">IP navegación</option>
-                        <option value="No navega la velocidad contratada">No navega la velocidad contratada</option>
-                        <option value="Pendiente por cobertura">Pendiente por cobertura</option>
-                        <option value="Crear CR">Crear CR</option>
-                        <option value="Solicitud innecesaria">Solicitud innecesaria</option>
-                        <option value="Validación de parámetros">Validación de parámetros</option>
+                        <option value="Reenvió Registros">
+                          Reenvió Registros
+                        </option>
+                        <option value="IP navegacion">IP navegación</option>
                       </select>
                     </td>
                     <td>{{data.fecha_solicitud_firebase}}</td>

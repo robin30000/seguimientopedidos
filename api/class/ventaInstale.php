@@ -13,11 +13,9 @@ class ventaInstale
 
 	public function datosVentas()
 	{
-		ini_set('session.gc_maxlifetime', 3600); // 1 hour
-        session_set_cookie_params(3600);
-        session_start();
+
 		try {
-			$stmt = $this->_BD->query("SELECT * FROM ventasInstaleTiendas where en_gestion != 2");
+			$stmt = $this->_BD->prepare("SELECT * FROM ventasInstaleTiendas where en_gestion != 2");
 			$stmt->execute();
 			if ($stmt->rowCount()) {
 				$response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
@@ -68,34 +66,30 @@ class ventaInstale
 
 			//var_dump($data);exit();
 			session_start();
-            if (!$_SESSION) {
-                $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
-            } else {
-                $login_gestion = $_SESSION['login'];
+			$login_gestion = $_SESSION['login'];
 
-                //$login_gestion = $data['login_gestion'];
-                $id = $data['data']['id'];
+			//$login_gestion = $data['login_gestion'];
+			$id = $data['data']['id'];
 
-                $stmt = $this->_BD->prepare("SELECT en_gestion, pedido, login_gestion FROM ventasInstaleTiendas WHERE id = :id");
-                $stmt->execute(array(':id' => $id));
-                $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                //echo $response[0]['en_gestion'];exit();
-                if ($response[0]['en_gestion'] == 0) {
-                    $stmt = $this->_BD->prepare("UPDATE ventasInstaleTiendas SET en_gestion = 1, login_gestion = :login_gestion WHERE id = :id");
-                    $stmt->execute(array(':id' => $id, ':login_gestion' => $login_gestion));
-                    if ($stmt->rowCount() == 1) {
-                        $res = array('state' => 1, 'msj' => 'Pedido ' . $response[0]['pedido'] . ' Ahora esta Bloqueado');
-                    }
-                } elseif (($response[0]['en_gestion'] == 1) && ($response[0]['login_gestion'] == $login_gestion)) {
-                    $stmt = $this->_BD->prepare("UPDATE ventasInstaleTiendas SET en_gestion = 0, login_gestion = '' WHERE id = :id");
-                    $stmt->execute(array(':id' => $id));
-                    if ($stmt->rowCount() == 1) {
-                        $res = array('state' => 1, 'msj' => 'Pedido ' . $response[0]['pedido'] . ' Ahora esta Desbloqueado');
-                    }
-                } else {
-                    $res = array('state' => 0, 'msj' => 'El pedido ' . $response[0]['pedido'] . ' se encuentra en gestion por otro agente');
-                }
-            }
+			$stmt = $this->_BD->prepare("SELECT en_gestion, pedido, login_gestion FROM ventasInstaleTiendas WHERE id = :id");
+			$stmt->execute(array(':id' => $id));
+			$response = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			//echo $response[0]['en_gestion'];exit();
+			if ($response[0]['en_gestion'] == 0) {
+				$stmt = $this->_BD->prepare("UPDATE ventasInstaleTiendas SET en_gestion = 1, login_gestion = :login_gestion WHERE id = :id");
+				$stmt->execute(array(':id' => $id, ':login_gestion' => $login_gestion));
+				if ($stmt->rowCount() == 1) {
+					$res = array('state' => 1, 'msj' => 'Pedido ' . $response[0]['pedido'] . ' Ahora esta Bloqueado');
+				}
+			} elseif (($response[0]['en_gestion'] == 1) && ($response[0]['login_gestion'] == $login_gestion)) {
+				$stmt = $this->_BD->prepare("UPDATE ventasInstaleTiendas SET en_gestion = 0, login_gestion = '' WHERE id = :id");
+				$stmt->execute(array(':id' => $id));
+				if ($stmt->rowCount() == 1) {
+					$res = array('state' => 1, 'msj' => 'Pedido ' . $response[0]['pedido'] . ' Ahora esta Desbloqueado');
+				}
+			} else {
+				$res = array('state' => 0, 'msj' => 'El pedido ' . $response[0]['pedido'] . ' se encuentra en gestion por otro agente');
+			}
 		} catch (PDOException $th) {
 			var_dump($th->getMessage());
 		}
