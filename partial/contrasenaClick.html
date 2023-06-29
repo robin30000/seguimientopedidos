@@ -34,7 +34,7 @@
                   </button>
                 </div>
               </li>
-              <li>
+              <li ng-show="galletainfo.perfil == '11'">
                 &nbsp;
                 <button type="button" class="btn btn-info btn-xs" ng-click="tecnicos()" ng-disabled="loading" tooltip-placement="top" uib-tooltip="Actualizar técnicos">
                   Actualizar técnicos
@@ -54,7 +54,7 @@
             <table class="table small table-condensed table-hover table-bordered">
               <thead class="table-header">
                 <tr>
-                  <th>Id</th>
+                  <!-- <th>Id</th> -->
                   <th>Identificación</th>
                   <th>Nombre</th>
                   <th>Ciudad</th>
@@ -67,7 +67,7 @@
               </thead>
               <tbody>
                 <tr ng-repeat="data in listaTecnicos">
-                  <td>{{data.ID}}</td>
+                  <!-- <td>{{data.ID}}</td> -->
                   <td>{{data.IDENTIFICACION}}</td>
                   <td>{{data.NOMBRE}}</td>
                   <td>{{data.CIUDAD}}</td>

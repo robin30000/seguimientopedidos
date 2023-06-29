@@ -1,12 +1,3 @@
-<style>
-  .pantalla_unica {
-    max-height: 250px;
-    overflow-y: scroll;
-  }
-
-  .mi-activo:hover {}
-</style>
-
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-12">
@@ -31,10 +22,10 @@
                 <li>
                   <input style="width: 160px;" class="btn btn-default btn-xs" type="text" ng-model="pedido"
                     placeholder="Ingresar pedido" ng-disabled="infopedido==false" select-on-click capitalize />
-                  <button type="button" ng-hide="infopedido==false" class="btn btn-info btn-xs" tooltip-placement="top" uib-tooltip="Buscar"
-                    ng-click="BuscarPedido(pedido)">Buscar</button>
-                  &nbsp;&nbsp; <button type="button" class="btn btn-default btn-xs" tooltip-placement="top" uib-tooltip="Limpiar"
-                    ng-click="limpiar()">Limpiar</button>&nbsp;&nbsp;
+                  <button type="button" ng-hide="infopedido==false" class="btn btn-info btn-xs" tooltip-placement="top"
+                    uib-tooltip="Buscar" ng-click="BuscarPedido(pedido)">Buscar</button>
+                  &nbsp;&nbsp; <button type="button" class="btn btn-default btn-xs" tooltip-placement="top"
+                    uib-tooltip="Limpiar" ng-click="limpiar()">Limpiar</button>&nbsp;&nbsp;
                 </li>
               </div>
             </ul>
@@ -68,7 +59,7 @@
               <li>
                 <div class="btn-group">
 
-                  <a type="button" class="btn btn-default btn-xs" value="Ver Registros" href="#/registros"> <span
+                  <a type="button" class="btn btn-default btn-xs" value="Ver Registros" href="registros"> <span
                       class="fa fa-list" aria-hidden="true" ng-disabled="loading"></span> Ver Registros </a>
 
                   <button type="button" class="btn btn-default btn-xs" ng-click="editarModal()" data-toggle="modal"
@@ -88,13 +79,180 @@
             <div class="jumbotron text-center">
               <h3>Gestión Pedidos Despacho y Alistamiento</h3>
             </div>
+
           </div>
 
+          <uib-accordion ng-show="inicio">
+            <div uib-accordion-group class="panel-default" is-open="status.open">
+              <uib-accordion-heading>
+                {{status.open ? 'Ver menos' : 'Ver mas'}} <i class="pull-right glyphicon"
+                  ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+              </uib-accordion-heading>
+              <div class="container-fluid">
+                <div class="row">
+
+                  <div class="col-sm-3">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">Información General</div>
+                      <div class="panel-body">
+                        <b>Pedido</b> {{myWelcome.pEDIDO_UNE}} <br>
+                        <b>Tarea</b> {{myWelcome.tAREA_ID}}<br>
+                        <b>Marcación</b> {{myWelcome.uNEMarked}}<br>
+                        <b>Fecha cita</b> {{myWelcome.uNEFechaCita}}<br>
+                        <b>Hora cita</b> {{myWelcome.uNEHoraCita}}<br>
+                        <b>Duración tarea</b> {{(myWelcome.Duration)/60}} Min<br>
+                        <b>Estado</b> {{myWelcome.Estado}}<br>
+                        <b>Valor cliente</b> {{myWelcome.UNESegmento}}<br>
+                        <b>Observación despacho</b> {{myWelcome.UNEObservation}}<br>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">Información Cliente</div>
+                      <div class="panel-body">
+                        <b>Nombre Cliente:</b> {{myWelcome.uNENombreCliente}}<br />
+                        <b>Cédula Cliente:</b> {{myWelcome.uNEIdCliente}}<br />
+                        <b>Tel Contacto:</b> {{myWelcome.uNETelefonoContacto}}<br />
+                        <b>Cel Contacto:</b> {{myWelcome.uNECelularContacto}}<br />
+                        <b>Nombre Contacto:</b> {{myWelcome.uNENombreContacto}}<br />
+                        <b>UEN:</b> {{myWelcome.uNEUENcalculada}}<br />
+                        <b>Departamento:</b> {{myWelcome.uNEDepartamento}}<br />
+                        <b>Municipio:</b> {{myWelcome.uNEMunicipio}}<br />
+                        <b>Dirección:</b> {{myWelcome.uNEDireccion}}<br />
+                        <b>Microzona:</b> {{myWelcome.distrito}}<br />
+                        <b>Código hogar:</b> {{myWelcome.UNECodigoHogar}}<br />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">Información Técnico</div>
+                      <div class="panel-body">
+                        <b>Nombre técnico:</b> {{myWelcome.engineerName}}<br />
+                        <b>Cédula técnico:</b> {{myWelcome.engineerID}}<br />
+                        <b>Tipo técnico:</b> {{myWelcome.engineer_Type}}<br />
+                        <b>Contrato técnico:</b> {{myWelcome.uNEProvisioner}}<br />
+                        <b>Login:</b> {{myWelcome.login_enginner}}<br />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">Sara</div>
+                      <div class="panel-body">
+                        <b>Fecha Ticket:</b> {{dataSara.SolicitudesSara[indiceSara].FechaSolicitud}}<br>
+                        <b>Fecha Modificación:</b> {{dataSara.SolicitudesSara[indiceSara].FechaModificado}}<br>
+                        <b>Ticket Sara:</b> {{dataSara.SolicitudesSara[indiceSara].TipoSolicitud}}<br>
+                        <b>Valor:</b> {{dataSara.SolicitudesSara[indiceSara].Cantidad}}<br>
+                        <b>Estado Tarea:</b> {{dataSara.Estado}}<br>
+                        <b>Técnico:</b> {{dataSara.Tecnico}}<br>
+                        <b>Tiempo en Sara:</b> {{dataSara.SolicitudesSara[indiceSara].TiempoRespuesta}} <br>
+                        <b>Respuesta Sara:</b> {{dataSara.SolicitudesSara[indiceSara].Description}}
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+                <br>
+                <div class="row">
+
+                  <div class="col-sm-6">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">Información Servicio</div>
+                      <div class="panel-body ">
+
+                        <span class="recore"><b>Gis: </b>{{ID_GIS}}</span><br>
+                        <span class="recore"><b>Categoria: </b>{{CRM}}</span><br>
+                        <span class="recore"><b>Tipo: </b>{{Categoria}}</span><br>
+                        <span class="recore"><b>Sistema: </b>{{Sistema}}</span><br>
+
+
+                        <div class="row">
+                          <div class="col-sm-4">
+                            <h4 class="page-header">Internet</h4>
+                            <div>
+                              <span class="recore"><b>ID Servicio:
+                                </b>{{IDServicioInternet}}</span><br>
+                              <span class="recore"><b>Velocidad:
+                                </b>{{Velocidad}}</span><br>
+                              <span class="recore"><b>NAT:
+                                </b>{{NAT}}</span><br>
+                            </div>
+                          </div>
+
+                          <div class="col-sm-4">
+                            <h4 class="page-header">Telefonía</h4>
+                            <div>
+                              <span class="recore"><b>ID Servicio:
+                                </b>{{IDServicioTele}}</span><br>
+                              <span class="recore"><b>Linea:
+                                </b>{{Linea}}</span><br>
+                              <span class="recore"><b>Plataforma:
+                                </b>{{Plataforma}}</span><br>
+                            </div>
+                          </div>
+
+                          <div class="col-sm-4">
+                            <h4 class="page-header">Television</h4>
+                            <div>
+                              <span class="recore"><b>ID Servicio:
+                                </b>{{IDServicioTV}}</span><br>
+                              <span class="recore"><b>Product ID:
+                                </b>{{productIdTV}}</span><br>
+                              <span class="recore"><b>Paquetes:
+                                </b>{{paquete1}} | {{paquete}}</span><br>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">Infraestructura</div>
+                      <div class="panel-body ">
+                        <b>Tecnología:</b> {{myWelcome.uNETecnologias}}<br />
+                        <b>Infraestructura:</b> {{myWelcome.Infraestructura1}}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">Equipos</div>
+                      <div class="panel-body ">
+                        <b>Tipo equipo:</b> {{myWelcome.Type}}<br />
+                        <hr>
+                        <div ng-repeat="data1 in equipos">
+                          <span ng-if="data1.SerialNo"><b>Serial:</b> {{data1.SerialNo}}</span> <br
+                            ng-if="data1.SerialNo" />
+                          <span ng-if="data1.MAC"><b>Mac:</b> {{data1.MAC}}</span>
+                          <hr ng-if="data1.SerialNo && data1.MAC">
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </uib-accordion>
+
+
+
+
           <div class="container-fluid" ng-show="infopedido==true && sininfopedido != false">
-            <div class="row">
+            <!-- <div class="row">
 
               <div class="col-sm-3">
-                <div class="panel panel-default mi-hover">
+                <div class="panel panel-default">
                   <div class="panel-heading">Información General</div>
                   <div class="panel-body">
                     <b>Pedido</b> {{myWelcome.pEDIDO_UNE}} <br>
@@ -111,7 +269,7 @@
               </div>
 
               <div class="col-sm-3">
-                <div class="panel panel-default mi-hover">
+                <div class="panel panel-default">
                   <div class="panel-heading">Información Cliente</div>
                   <div class="panel-body">
                     <b>Nombre Cliente:</b> {{myWelcome.uNENombreCliente}}<br />
@@ -130,7 +288,7 @@
               </div>
 
               <div class="col-sm-3">
-                <div class="panel panel-default mi-hover">
+                <div class="panel panel-default">
                   <div class="panel-heading">Información Técnico</div>
                   <div class="panel-body">
                     <b>Nombre técnico:</b> {{myWelcome.engineerName}}<br />
@@ -143,7 +301,7 @@
               </div>
 
               <div class="col-sm-3">
-                <div class="panel panel-default mi-hover">
+                <div class="panel panel-default">
                   <div class="panel-heading">Sara</div>
                   <div class="panel-body">
                     <b>Fecha Ticket:</b> {{dataSara.SolicitudesSara[indiceSara].FechaSolicitud}}<br>
@@ -163,9 +321,9 @@
             <div class="row">
 
               <div class="col-sm-6">
-                <div class="panel panel-default mi-hover">
+                <div class="panel panel-default">
                   <div class="panel-heading">Información Servicio</div>
-                  <div class="panel-body pantalla_unica">
+                  <div class="panel-body ">
 
                     <span class="recore"><b>Gis: </b>{{ID_GIS}}</span><br>
                     <span class="recore"><b>Categoria: </b>{{CRM}}</span><br>
@@ -216,9 +374,9 @@
               </div>
 
               <div class="col-sm-3">
-                <div class="panel panel-default mi-hover">
+                <div class="panel panel-default">
                   <div class="panel-heading">Infraestructura</div>
-                  <div class="panel-body pantalla_unica">
+                  <div class="panel-body ">
                     <b>Tecnología:</b> {{myWelcome.uNETecnologias}}<br />
                     <b>Infraestructura:</b> {{myWelcome.Infraestructura1}}
                   </div>
@@ -226,9 +384,9 @@
               </div>
 
               <div class="col-sm-3">
-                <div class="panel panel-default mi-hover">
+                <div class="panel panel-default">
                   <div class="panel-heading">Equipos</div>
-                  <div class="panel-body pantalla_unica">
+                  <div class="panel-body ">
                     <b>Tipo equipo:</b> {{myWelcome.Type}}<br />
                     <hr>
                     <div ng-repeat="data1 in equipos">
@@ -242,7 +400,7 @@
                 </div>
               </div>
 
-            </div>
+            </div> -->
 
             <div class="row text-center">
               <h4 class="page-header">Campos para el asesor</h4>
@@ -337,7 +495,7 @@
                         </select>
                       </li>
 
-                      <li class="list-group-item small" ng-show="gestionmanual.accion == 'Finalizado' ||
+                      <li class="list-group-item small" ng-show="(gestionmanual.accion == 'Finalizado' ||
                                 gestionmanual.accion == 'Enrutar' && gestionmanual.proceso != 'Mesa Infraestructura' ||
                                 gestionmanual.accion == 'Soporte tecnico' ||
                                 gestionmanual.accion == 'Enrutar/Pendiente Edatel' ||
@@ -350,7 +508,7 @@
                                 gestionmanual.accion == 'Cerrar' ||
                                 gestionmanual.accion == 'Validacion Parametros' ||
                                 gestionmanual.accion == 'Soporte GPON' ||
-                                gestionmanual.accion == 'Codigo_Incompleto'">
+                                gestionmanual.accion == 'Codigo_Incompleto') && (listadoSubAcciones.length > 0)">
                         <b>Sub Acción:</b>
                         <br />
                         <select class="btn btn-default btn-xs grupo-select" name="subAccion" style="width: 200px;"
@@ -515,7 +673,7 @@
                   <div class="panel-body">
                     <textarea name="observaciones" id="observaciones" rows="9" cols="40"
                       ng-model="gestionmanual.observaciones" class="form-control"></textarea><br>
-                    <button type="button" class="btn btn-primary" ng-click="guardarPedido()">Guardar</button>
+                    <button type="button" class="btn btn-primary" ng-click="guardarPedido()">Guardar..</button>
                   </div>
                 </div>
               </div>
@@ -671,7 +829,7 @@
 																				gestionmanual.accion == 'Cerrar' ||
 																				gestionmanual.accion == 'Validacion Parametros' ||
 																				gestionmanual.accion == 'Soporte GPON'">
-                              <b>Sub Acción:</b><br />
+                              <b>Sub Acción1:</b><br />
                               <select class="btn btn-default btn-xs grupo-select" name="subAccion"
                                 ng-model="gestionmanual.subAccion" ng-change="mostrarModal()" style="width: 200px;">
                                 <option value="" disabled>--Seleccione--</option>
@@ -750,7 +908,7 @@
                 </div>
                 <div class="panel-heading nav navbar-default">
                   <button type="button" ng-disabled="contact_form1.$invalid" class="btn btn-primary btn-xs pull-right"
-                    ng-click="guardarPedido()">Guardar</button>
+                    ng-click="guardarPedido()">Guardar.</button>
                 </div>
               </div>
             </div>

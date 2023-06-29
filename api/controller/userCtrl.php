@@ -64,10 +64,15 @@ if (isset($data['method'])) {
             $user = new user();
             $user->borrarTecnico($data['data']);
             break;
-            case 'editarTecnico':
+        case 'editarTecnico':
             require_once '../class/user.php';
             $user = new user();
             $user->editarTecnico($data['data']);
+            break;
+        case 'acualizaTecnicos':
+            require_once '../class/user.php';
+            $user = new user();
+            $user->acualizaTecnicos($data['data']);
             break;
 
 

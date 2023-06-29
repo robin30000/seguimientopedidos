@@ -1,6 +1,7 @@
 <?php
 require_once '../class/conection.php';
-
+/* error_reporting(E_ALL);
+ini_set('display_errors', 1); */
 class user
 {
     private $_DB;
@@ -35,7 +36,7 @@ class user
             if ($stmt->rowCount() == 1) {
                 $response = ['type' => 'success', 'msj' => 'Usuario actualizado'];
             } else {
-                $response = ['type' => 'error', 'msj' => 'Ah ocurrido un error intentalo de nuevo'];
+                $response = ['type' => 'error', 'msj' => 'Ah ocurrido un error inténtalo de nuevo en unos minutos'];
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -74,7 +75,7 @@ class user
             if ($stmt->rowCount() == 1) {
                 $response = array('state' => 1, 'msj' => 'Pedido actualizado correctamente.');
             } else {
-                $response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno intentalo nuevamente en unos minutos');
+                $response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno inténtalo nuevamente en unos minutos');
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -164,7 +165,7 @@ class user
             if ($stmt->rowCount() == 1) {
                 $response = ['Usuario creado', 201];
             } else {
-                $response = ['Ah ocurrido un error intentalo de nuevo'];
+                $response = ['Ah ocurrido un error inténtalo de nuevo en unos minutos'];
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -257,29 +258,6 @@ class user
                 $duracion_llamada = $params['duracion_llamada'];
                 $crearpedido = $params['datospedido'];
                 $user = $_SESSION['login'];
-                /* $plantilla = $params['plantilla'];
-                $datosClick = $params['datosClick'];
-                $id_llamada = $crearpedido['id_llamada'];
-                $proceso = $crearpedido['proceso'];
-                $accion = $crearpedido['accion'];
-                $subaccion = $crearpedido['subAccion'];
-                $observaciones = $crearpedido['observaciones'];
-                $cod_familiar = $crearpedido['cod_familiar'];
-                $prueba_integra = $crearpedido['prueba_integra'];
-                $telefonia_tdm = $crearpedido['telefonia_tdm'];
-                $telev_hfc = $crearpedido['telev_hfc'];
-                $iptv = $crearpedido['iptv'];
-                $internet = $crearpedido['internet'];
-                $toip = $crearpedido['toip'];
-                $smartPlay = $crearpedido['smartPlay'];
-                $observaciones = $crearpedido['observaciones'];
-                $observaciones = str_replace("\n", "/", $observaciones);
-                $observaciones = str_replace("'", " ", $observaciones);
-                $pruebaSMNET = $crearpedido['pruebaSMNET'];
-                $UNESourceSystem = $crearpedido['UNESourceSystem'];
-                $codigo = $crearpedido['pendiente'];
-                $tipointeraccion = $crearpedido['interaccion'];
-                $diagnostico = $crearpedido['diagnostico']; */
 
                 $plantilla = (isset($params['plantilla'])) ? $params['plantilla'] : '';
                 $datosClick = (isset($params['datosClick'])) ? $params['datosClick'] : '';
@@ -616,8 +594,6 @@ class user
                     $search = $data['search'];
                 }
 
-
-
                 $parametro = '';
                 if ($data['concepto'] == 'nombre') {
                     $usuario = $data['usuario'];
@@ -626,8 +602,7 @@ class user
                     $usuario = $data['usuario'];
                     $parametro = " and a.login LIKE '%$usuario%'";
                 }
-                ;
-
+                
                 $stmt = $this->_DB->prepare("SELECT * FROM usuarios");
                 $stmt->execute();
                 $counter = $stmt->rowCount();
@@ -642,8 +617,6 @@ class user
                                                 FROM usuarios a
                                                 where 1 = 1
                                                     $parametro LIMIT $offset, $pagesize");
-                ;
-
 
                 if ($stmt->rowCount()) {
                     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -740,6 +713,289 @@ class user
             var_dump($e->getMessage());
         }
         $this->_DB = null;
+        echo json_encode($response);
+    }
+    public function acualizaTecnicos($data)
+    {
+        try {
+
+            $datos = $data;
+            $total = count($data);
+
+            if ($total) {
+                $this->_DB->query("SET SESSION sql_mode = ''");
+                $this->_DB->query("SET SESSION sql_mode = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'");
+                $stmt = $this->_DB->query("DELETE from tecnicos where 1 = 1");
+                $stmt->execute();
+                //$this->_DB->query("ALTER TABLE tecnicos_copy AUTO_INCREMENT = 1");
+            }
+
+
+            $error = 0;
+
+            for ($i = 0; $i < $total; $i++) {
+
+                $UDC = substr($datos[$i]['ID'], -4);
+                $pass = 'Colombia' . $UDC . '--++';
+                $passM = md5($pass);
+
+                switch (strtoupper($datos[$i]['contrato'])) {
+                    case "ENERGIA INTEGRAL ANDINA";
+                        $empresa = 4;
+                        break;
+                    case "UNE";
+                        $empresa = 1;
+                        break;
+                    case "SIN EMPRESA";
+                        $empresa = 0;
+                        break;
+                    case "REDES Y EDIFICACIONES";
+                        $empresa = 3;
+                        break;
+                    case "EAGLE";
+                        $empresa = 6;
+                        break;
+                    case "SERVTEK";
+                        $empresa = 7;
+                        break;
+                    case "FURTELCOM";
+                        $empresa = 8;
+                        break;
+                    case "EMTELCO";
+                        $empresa = 9;
+                        break;
+                    case "CONAVANCES";
+                        $empresa = 10;
+                        break;
+                    case "TECHCOM";
+                        $empresa = 11;
+                        break;
+                }
+
+                $stmt = $this->_DB->prepare("SELECT password FROM cuentasTecnicos where cedula = :identificacion");
+                $stmt->execute(array(':identificacion' => $datos[$i]['ID']));
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                $stmt = $this->_DB->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+                $stmt->execute(
+                    array(
+                        ':identificacion' => $datos[$i]['ID'],
+                        ':nombre' => $datos[$i]['nombre'],
+                        ':ciudad' => $datos[$i]['ciudad'],
+                        ':celular' => $datos[$i]['MobilePhone'],
+                        ':empresa' => $empresa,
+                        ':login_click' => $datos[$i]['login'],
+                        ':pass' => $passM,
+                        ':region' => $datos[$i]['region'],
+                        ':contrato' => $datos[$i]['contrato'],
+                        ':password_click' => $result[0]['password'],
+                        ':pass_apk' => $pass
+                    )
+                );
+
+                if (!$stmt->rowCount()) {
+                    $error = 1;
+                }
+            }
+
+            $passC = md5('Colombia1973--++');
+
+            $stmt = $this->_DB->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+            $stmt->execute(
+                array(
+                    ':identificacion' => '71221973',
+                    ':nombre' => 'CARLOS JULIO RAMIREZ',
+                    ':ciudad' => 'Medellin',
+                    ':celular' => '300000000',
+                    ':empresa' => 9,
+                    ':login_click' => 'cramiceb',
+                    ':pass' => $passC,
+                    ':region' => 'Antioquia',
+                    ':contrato' => 'Emtelco',
+                    ':password_click' => '',
+                    ':pass_apk' => 'Colombia1973--++'
+                )
+            );
+
+            $passC = md5('Colombia5040--++');
+
+            $stmt = $this->_DB->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+            $stmt->execute(
+                array(
+                    ':identificacion' => '71735040',
+                    ':nombre' => 'DUVAN GOMEZ',
+                    ':ciudad' => 'Medellin',
+                    ':celular' => '300000000',
+                    ':empresa' => 9,
+                    ':login_click' => 'dgomezca',
+                    ':pass' => $passC,
+                    ':region' => 'Antioquia',
+                    ':contrato' => 'Emtelco',
+                    ':password_click' => '',
+                    ':pass_apk' => 'Colombia5040--++'
+                )
+            );
+
+
+            $passC = md5('Colombia9483--++');
+
+            $stmt = $this->_DB->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+            $stmt->execute(
+                array(
+                    ':identificacion' => '72269483',
+                    ':nombre' => 'David Andrés Torres Covaleda',
+                    ':ciudad' => 'Medellin',
+                    ':celular' => '300000000',
+                    ':empresa' => 9,
+                    ':login_click' => 'dtorreco',
+                    ':pass' => $passC,
+                    ':region' => 'Antioquia',
+                    ':contrato' => 'Emtelco',
+                    ':password_click' => '',
+                    ':pass_apk' => 'Colombia9483--++'
+                )
+            );
+
+
+            $passC = md5('Colombia3810--++');
+
+            $stmt = $this->_DB->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+            $stmt->execute(
+                array(
+                    ':identificacion' => '1129533810',
+                    ':nombre' => 'Zeus Andrés Lara Blanco',
+                    ':ciudad' => 'Medellin',
+                    ':celular' => '300000000',
+                    ':empresa' => 9,
+                    ':login_click' => 'zlarabl',
+                    ':pass' => $passC,
+                    ':region' => 'Antioquia',
+                    ':contrato' => 'Emtelco',
+                    ':password_click' => '',
+                    ':pass_apk' => 'Colombia3810--++'
+                )
+            );
+
+
+            $passC = md5('Colombia7634--++');
+
+            $stmt = $this->_DB->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+            $stmt->execute(
+                array(
+                    ':identificacion' => '1143137634',
+                    ':nombre' => 'Robinson Damian Padilla Berdugo',
+                    ':ciudad' => 'Medellin',
+                    ':celular' => '300000000',
+                    ':empresa' => 9,
+                    ':login_click' => 'rpadilbe',
+                    ':pass' => $passC,
+                    ':region' => 'Antioquia',
+                    ':contrato' => 'Emtelco',
+                    ':password_click' => '',
+                    ':pass_apk' => 'Colombia7634--++'
+                )
+            );
+
+
+            $passC = md5('Colombia0469--++');
+
+            $stmt = $this->_DB->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+            $stmt->execute(
+                array(
+                    ':identificacion' => '1047380469',
+                    ':nombre' => 'Edison Andres Torres Lobo',
+                    ':ciudad' => 'Medellin',
+                    ':celular' => '300000000',
+                    ':empresa' => 9,
+                    ':login_click' => 'etorrelo',
+                    ':pass' => $passC,
+                    ':region' => 'Antioquia',
+                    ':contrato' => 'Emtelco',
+                    ':password_click' => '',
+                    ':pass_apk' => 'Colombia0469--++'
+                )
+            );
+
+
+            $passC = md5('Colombia4707--++');
+
+            $stmt = $this->_DB->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+            $stmt->execute(
+                array(
+                    ':identificacion' => '73184707',
+                    ':nombre' => 'Antero Enrique Perea Reyes',
+                    ':ciudad' => 'Medellin',
+                    ':celular' => '300000000',
+                    ':empresa' => 9,
+                    ':login_click' => 'epereare',
+                    ':pass' => $passC,
+                    ':region' => 'Antioquia',
+                    ':contrato' => 'Emtelco',
+                    ':password_click' => '',
+                    ':pass_apk' => 'Colombia4707--++'
+                )
+            );
+
+
+            /*		$passC= md5('Colombia4549--++');
+
+                    $stmt = $this->_conbd->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                        values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+                    $stmt->execute(array(
+                        ':identificacion' => '15174549',
+                        ':nombre'         => 'Luis Hernan Carpio Tellez',
+                        ':ciudad'         => 'Medellin',
+                        ':celular'        => '300000000',
+                        ':empresa'        => 9,
+                        ':login_click'    => 'lcarpite',
+                        ':pass'           => $passC,
+                        ':region'         => 'Antioquia',
+                        ':contrato'       => 'Emtelco',
+                        ':password_click' => '',
+                        ':pass_apk'       => 'Colombia4549--++'
+                    ));*/
+
+
+
+
+            if ($error == 0) {
+                $stmt = $this->_DB->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+                $stmt->execute(
+                    array(
+                        ':identificacion' => '12345678',
+                        ':nombre' => 'test',
+                        ':ciudad' => 'Medellin',
+                        ':celular' => '300000000',
+                        ':empresa' => 9,
+                        ':login_click' => 'pruebas202301',
+                        ':pass' => 'Colombia8912--++',
+                        ':region' => 'Antioquia',
+                        ':contrato' => 'Emtelco',
+                        ':password_click' => '',
+                        ':pass_apk' => 'Colombia1973--++'
+                    )
+                );
+
+                $response = array('state' => 1, 'msj' => 'Técnicos acualizados correctamente');
+            } else {
+                $response = array('state' => 0, 'msj' => 'Ah ocurrido un error inténtalo nuevamente en unos minutos');
+                $stmt = $this->_DB->query("DELETE from tecnicos where 1 = 1");
+                $stmt->execute();
+            }
+
+        } catch (PDOException $th) {
+            var_dump($th->getMessage());
+        }
+        $this->_DB = '';
         echo json_encode($response);
     }
 }

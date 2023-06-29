@@ -1250,18 +1250,18 @@ class otrosServicios
                     $condicion = " AND '$variable' = '$param' ";
                     switch ($variable) {
                         case 'identificacion':
-                            $condicion = " AND '$variable' = '$param' ";
+                            $condicion = " AND identificacion = '$param' ";
                             break;
                         case 'ciudad':
                             $condicion = " AND ciudad = '$param' ";
                             break;
-                        case 'celuar':
+                        case 'celular':
                             $condicion = " AND celular = '$param' ";
                             break;
                         case 'nombre':
                             $condicion = " AND nombre = '$param' ";
                             break;
-                            case 'login':
+                        case 'login':
                             $condicion = " AND login_click = '$param' ";
                             break;
 

@@ -2133,6 +2133,32 @@ app.factory("services", [
             return $http.post(serviceBase1 + 'authenticationCtrl.php', data);
         }
 
+        obj.windowsBridge = function (datos) {
+            let data = {
+                method: 'Puente',
+                data: datos
+            }
+            return $http.post(serviceBase1 + 'PuenteCtrl.php', data);
+        }
+
+        /**
+         * registroEquipos
+         */
+
+        obj.registroEquipos = function () {
+            let data = {
+                method: 'registroEquipos'
+            }
+            return $http.post(serviceBase1 + 'registroEquiposCtrl.php', data);
+        }
+
+        obj.acualizaTecnicos = function (datos) {
+            let data = {
+                method: 'acualizaTecnicos',
+                data : datos
+            }
+            return $http.post(serviceBase1 + 'userCtrl.php',data);
+        };
 
 
         return obj;
@@ -2244,6 +2270,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
     $scope.verplantilla = false;
     $scope.ipServer = "10.100.66.254";
     var timer;
+    $scope.inicio = 0;
 
     $scope.usuarios = function (editarUser) {
         $scope.update = false;
@@ -2407,11 +2434,9 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
 
         $scope.listadocodigos = {};
         services.getCodigos($scope.gestionmanual.proceso, $scope.gestionmanual.UNESourceSystem).then(function (data) {
-            $scope.listadocodigos = data.data.data;
+            $scope.listadocodigos = data.data[0];
         }, function errorCallback(response) {
-            if (response.status == "200") {
-
-            }
+            console.log(response);
         });
     }
 
@@ -3742,11 +3767,11 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
                 $scope.minutosTranscurridos = 0;
                 $scope.segundosTranscurridos = 0;
 
-                Swal({
+                /* Swal({
                     type: 'error',
                     title: 'Oops...',
                     text: 'Aún no se hace la solicitud a SARA',
-                })
+                }) */
             }
 
             $scope.indiceSara = (Object.keys($scope.dataSara.SolicitudesSara).length) - 1;
@@ -3778,6 +3803,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
             })
             return;
         }
+        $scope.inicio = 1;
         bb8(pedido);
         actividades(pedido);
         buscarDataSara(pedido);
@@ -3837,6 +3863,8 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
 
     $scope.guardarPedido = function () {
 
+
+
         if ($scope.gestionmanual.interaccion == "" || $scope.gestionmanual.interaccion == undefined) {
             Swal({
                 type: 'info',
@@ -3844,55 +3872,87 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
                 text: 'Debe seleccionar el tipo de interacción.',
                 timer: 4000
             })
-        } else if (($scope.gestionmanual.interaccion == "llamada" && $scope.gestionmanual.id_llamada == "") || ($scope.gestionmanual.interaccion == "llamada" && $scope.gestionmanual.id_llamada == undefined)) {
+            return;
+        }
+
+        if (($scope.gestionmanual.interaccion == "llamada" && $scope.gestionmanual.id_llamada == "") || ($scope.gestionmanual.interaccion == "llamada" && $scope.gestionmanual.id_llamada == undefined)) {
             Swal({
                 type: 'info',
                 title: 'Opsss....',
                 text: 'Por favor ingresar el ID de llamada.',
                 timer: 4000
             })
-        } else if ($scope.gestionmanual.interaccion == "llamada" && $scope.gestionmanual.id_llamada.length > 40) {
+            return;
+        }
+
+        if ($scope.gestionmanual.interaccion == "llamada" && $scope.gestionmanual.id_llamada.length > 40) {
             Swal({
                 type: 'info',
                 title: 'Opsss....',
                 text: 'Por favor ingrese un Id de Llamada válido.',
                 timer: 4000
             })
-        } else if ($scope.gestionmanual.tecnico == "" || $scope.gestionmanual.tecnico == undefined) {
+            return;
+        }
+
+        if ($scope.gestionmanual.tecnico == "" || $scope.gestionmanual.tecnico == undefined) {
             Swal({
                 type: 'info',
                 title: 'Opsss....',
                 text: 'Por favor ingresar el tecnico.',
                 timer: 4000
             })
-        } else if ($scope.gestionmanual.producto == "" || $scope.gestionmanual.producto == undefined) {
+            return;
+        }
+
+        if ($scope.gestionmanual.producto == "" || $scope.gestionmanual.producto == undefined) {
             Swal({
                 type: 'info',
                 title: 'Opsss....',
                 text: 'Por favor ingresar un producto.',
                 timer: 4000
             })
-        } else if ($scope.gestionmanual.proceso == "" || $scope.gestionmanual.proceso == undefined) {
+            return;
+        }
+
+        if ($scope.gestionmanual.proceso == "" || $scope.gestionmanual.proceso == undefined) {
             Swal({
                 type: 'info',
                 title: 'Opsss....',
                 text: 'Por favor ingresar el proceso.',
                 timer: 4000
             })
-        } else if ($scope.gestionmanual.accion == "" || $scope.gestionmanual.accion == undefined) {
+            return;
+        }
+
+        if ($scope.gestionmanual.accion == "" || $scope.gestionmanual.accion == undefined) {
             Swal({
                 type: 'info',
                 title: 'Opsss....',
                 text: 'Por favor ingresar una accion.',
                 timer: 4000
             })
-        } else if ($scope.gestionmanual.accion == "Soporte GPON" && ($scope.gestionmanual.subAccion == "" || $scope.gestionmanual.subAccion == undefined)) {
+            return;
+        }
+
+        if ($scope.gestionmanual.accion == "Soporte GPON" && ($scope.gestionmanual.subAccion == "" || $scope.gestionmanual.subAccion == undefined)) {
             Swal({
                 type: 'info',
                 title: 'Opsss....',
                 text: 'Por favor ingresar una subaccion.',
                 timer: 4000
             })
+            return;
+        }
+
+        if ($scope.gestionmanual.observaciones == "" || $scope.gestionmanual.observaciones == undefined) {
+            Swal({
+                type: 'info',
+                title: 'Opsss....',
+                text: 'Debes documentar bien ingresa observaciones.',
+                timer: 4000
+            })
+            return;
         }
 
         //se quita validaciones requerimiento por carlos 3-04-2023
@@ -4892,14 +4952,26 @@ app.controller(
 
                 services.acualizaTecnicos(autocompleteData).then(
                     function (data) {
-                        $scope.loading = 0;
-                        Swal({
-                            type: "success",
-                            text: "Tecnicos acualizados correctamente.",
-                            timer: 4000,
-                        }).then(function () {
-                            $location.reload();
-                        });
+                        if(data.data.state == 1){
+                            Swal({
+                                type: "success",
+                                title: 'Bien',
+                                text: data.data.msj,
+                                timer: 4000,
+                            }).then(function () {
+                                $route.reload();
+                            });
+                        }else{
+                            Swal({
+                                type: "error",
+                                title: 'Ops..',
+                                text: data.data.msj,
+                                timer: 4000,
+                            }).then(function () {
+                                $route.reload();
+                            });
+                        }
+                        
                     },
                     function errorCallback(error) {
                         console.log(error);
@@ -4911,11 +4983,11 @@ app.controller(
         };
 
         $scope.pageChanged = function () {
-            data = { page: $scope.currentPage, size: $scope.pageSize };
+            data = { page: $scope.currentPage, size: $scope.pageSize, buscar: $scope.concepto, variable: $scope.tecnico};
             buscarTecnico(data);
         };
         $scope.pageSizeChanged = function () {
-            data = { page: $scope.currentPage, size: $scope.pageSize };
+            data = { page: $scope.currentPage, size: $scope.pageSize, buscar: $scope.concepto, variable: $scope.tecnico};
             $scope.currentPage = 1;
             buscarTecnico(data);
         };
@@ -4926,7 +4998,7 @@ app.controller(
                 $scope.totalItems = 0;
                 $scope.pageSize = 15;
                 $scope.searchText = "";
-                data = { page: $scope.currentPage, size: $scope.pageSize };
+                data = { page: $scope.currentPage, size: $scope.pageSize, buscar: $scope.concepto, variable: $scope.tecnico };
             }
             services.listadoTecnicos(data).then(
                 (data) => {
@@ -7863,7 +7935,7 @@ app.controller(
 
                 if ($scope.consulta.actividades.uNEProductos == 'Internet-Telefonía') {
                     $scope.consulta.actividades.uNEProductos = 'Internet+ToIP';
-                }else if ($scope.consulta.actividades.uNEProductos == 'Televisión Hogares') {
+                } else if ($scope.consulta.actividades.uNEProductos == 'Televisión Hogares') {
                     $scope.consulta.actividades.uNEProductos = 'TV';
                 }
 
@@ -8174,8 +8246,8 @@ app.controller(
             $scope.bb8Telefonia = 0;
             $scope.bb8Television = 0;
 
-            $scope.url =
-                "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetClick/" + pedido;
+            $scope.url = services.windowsBridge("BB8/contingencias/Buscar/GetClick/" + pedido);
+            //"http://10.100.66.254:8080/BB8/contingencias/Buscar/GetClick/" + pedido;
             $http
                 .get($scope.url, { timeout: 4000 })
                 .then(function (data) {
@@ -8190,9 +8262,9 @@ app.controller(
                     $scope.ID_GIS = $scope.clic.UNECodigoDireccionServicio;
                     $scope.Estado = $scope.clic.Estado;
                     $scope.CRM = $scope.clic.TTC;
-                    $scope.url =
-                        "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanBaMSS/" +
-                        pedido;
+                    $scope.url = services.windowsBridge("BB8/contingencias/Buscar/GetPlanBaMSS/" + pedido);
+                    // "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanBaMSS/" +
+                    // pedido;
                     $http
                         .get($scope.url, { timeout: 4000 })
                         .then(function (data) {
@@ -8200,9 +8272,10 @@ app.controller(
                                 $scope.bb8Internet = 1;
                                 $scope.recorreinternet = data.data;
                             } else {
-                                $scope.url =
-                                    "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanBaMSS/" +
-                                    $scope.clic.UNECodigoDireccionServicio;
+                                $scope.url = services.windowsBridge("BB8/contingencias/Buscar/GetPlanBaMSS/" + $scope.clic.UNECodigoDireccionServicio);
+
+                                // "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanBaMSS/" +
+                                //$scope.clic.UNECodigoDireccionServicio;
                                 $http.get($scope.url, { timeout: 4000 }).then(function (data) {
                                     if (data.data.length > 0) {
                                         $scope.bb8Internet = 1;
@@ -8210,9 +8283,9 @@ app.controller(
                                     }
                                 });
                             }
-                            $scope.url =
-                                "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTOMSS/" +
-                                pedido;
+                            $scope.url = services.windowsBridge("BB8/contingencias/Buscar/GetPlanTOMSS/" + pedido);
+                            //  "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTOMSS/" +
+                            // pedido;
                             $http
                                 .get($scope.url, { timeout: 4000 })
                                 .then(function (data) {
@@ -8220,9 +8293,9 @@ app.controller(
                                         $scope.bb8Telefonia = 1;
                                         $scope.recorretelefonia = data.data;
                                     } else {
-                                        $scope.url =
-                                            "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTOMSS/" +
-                                            $scope.clic.UNECodigoDireccionServicio;
+                                        $scope.url = services.windowsBridge("BB8/contingencias/Buscar/GetPlanTOMSS/" + $scope.clic.UNECodigoDireccionServicio);
+                                        // "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTOMSS/" +
+                                        //$scope.clic.UNECodigoDireccionServicio;
                                         $http
                                             .get($scope.url, { timeout: 4000 })
                                             .then(function (data) {
@@ -8232,9 +8305,10 @@ app.controller(
                                                 }
                                             });
                                     }
-                                    $scope.url =
-                                        "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTVMSS/" +
-                                        pedido;
+                                    $scope.url = services.windowsBridge("BB8/contingencias/Buscar/GetPlanTVMSS/" +
+                                        pedido);
+                                    // "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTVMSS/" +
+                                    // pedido;
                                     $http
                                         .get($scope.url, { timeout: 4000 })
                                         .then(function (data) {
@@ -8242,9 +8316,10 @@ app.controller(
                                                 $scope.bb8Television = 1;
                                                 $scope.recore = data.data;
                                             } else {
-                                                $scope.url =
-                                                    "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTVMSS/" +
-                                                    $scope.clic.UNECodigoDireccionServicio;
+                                                $scope.url = services.windowsBridge("BB8/contingencias/Buscar/GetPlanTVMSS/" +
+                                                    $scope.clic.UNECodigoDireccionServicio);
+                                                //   "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTVMSS/" +
+                                                //   $scope.clic.UNECodigoDireccionServicio;
                                                 $http
                                                     .get($scope.url, { timeout: 4000 })
                                                     .then(function (data) {
@@ -8453,9 +8528,10 @@ app.controller(
         $scope.autocompletarContingencia = async (data) => {
             var contingencia = {};
             try {
-                var autocompleteQuery = await fetch(
-                    "http://10.100.66.254:8080/HCHV_DEV/BuscarB/" + data.references
-                );
+                var autocompleteQuery = await services.windowsBridge("HCHV_DEV/BuscarB/" + data.references);
+                //fetch(
+                //    "http://10.100.66.254:8080/HCHV_DEV/BuscarB/" + data.references
+                //);
                 var autocompleteData = await autocompleteQuery.json();
                 var equiposIn = "";
                 var equiposOut = "";
@@ -10165,32 +10241,35 @@ app.controller("brutalForceCtrl", function ($scope, $rootScope, services) {
                 function (data) {
                     $scope.respuesta = data.data[0][0];
                     if (pedido != "") {
-                        fetch(`http://10.100.66.254:8080/HCHV/Buscar/${pedido}`)
-                            .then((data) => data.json())
-                            .then((response) => {
-                                if (response) {
-                                    if (
-                                        response.taskType.indexOf("Cambio_Domicilio") !== -1 ||
-                                        response.uNERutaTrabajo.indexOf("NUEVO CON TRASLADO") !== -1
-                                    ) {
-                                        swal({
-                                            title: "El pedido corresponde a la categoría priorizada",
-                                            type: "success",
-                                            position: "top-end",
-                                            showConfirmButton: false,
-                                            timer: 3000,
-                                        });
-                                    } else {
-                                        swal({
-                                            title:
-                                                "Tu pedido no corresponde a la categoría priorizada:",
-                                            html: "<div>Solo se reciben solicitudes de traslado</div>",
-                                            type: "warning",
-                                        });
-                                        window.location = "actividades";
-                                    }
+                        services.windowsBridge(`HCHV/Buscar/${pedido}`).then((data) => data.json()).then((response) => {
+
+
+                            // fetch(`http://10.100.66.254:8080/HCHV/Buscar/${pedido}`)
+                            //     .then((data) => data.json())
+                            //    .then((response) => {
+                            if (response) {
+                                if (
+                                    response.taskType.indexOf("Cambio_Domicilio") !== -1 ||
+                                    response.uNERutaTrabajo.indexOf("NUEVO CON TRASLADO") !== -1
+                                ) {
+                                    swal({
+                                        title: "El pedido corresponde a la categoría priorizada",
+                                        type: "success",
+                                        position: "top-end",
+                                        showConfirmButton: false,
+                                        timer: 3000,
+                                    });
+                                } else {
+                                    swal({
+                                        title:
+                                            "Tu pedido no corresponde a la categoría priorizada:",
+                                        html: "<div>Solo se reciben solicitudes de traslado</div>",
+                                        type: "warning",
+                                    });
+                                    window.location = "actividades";
                                 }
-                            })
+                            }
+                        })
                             .catch((err) => {
                                 console.warn(err);
                             });
@@ -10208,13 +10287,14 @@ app.controller("brutalForceCtrl", function ($scope, $rootScope, services) {
                             cancelButtonText: "Cancelar",
                             showLoaderOnConfirm: true,
                             preConfirm: (pedido) => {
-                                return fetch(`http://10.100.66.254:8080/HCHV/Buscar/${pedido}`)
-                                    .then((response) => {
-                                        if (!response.ok) {
-                                            throw new Error(response.statusText);
-                                        }
-                                        return response.json();
-                                    })
+                                services.windowsBridge(`HCHV/Buscar/${pedido}`).then((response) => {
+                                    //return fetch(`http://10.100.66.254:8080/HCHV/Buscar/${pedido}`)
+                                    //.then((response) => {
+                                    if (!response.ok) {
+                                        throw new Error(response.statusText);
+                                    }
+                                    return response.json();
+                                })
                                     .catch((error) => {
                                         Swal.showValidationMessage(`Petición Fallida: ${error}`);
                                     });
@@ -10291,9 +10371,10 @@ app.controller("brutalForceCtrl", function ($scope, $rootScope, services) {
         var countFilterEx = null;
 
         try {
-            var prioridadBFQuery = await fetch(
-                `http://10.100.66.254:8080/HCHV/Buscar/${pedido}`
-            );
+            var prioridadBFQuery = await services.windowsBridge(`HCHV/Buscar/${pedido}`);
+            /* var prioridadBFQuery = await fetch(
+                 `http://10.100.66.254:8080/HCHV/Buscar/${pedido}`
+             );*/
             var prioridadBF = await prioridadBFQuery.json();
             countFilterEx = filtersEx.indexOf(prioridadBF.uNEUENcalculada);
             if (countFilterEx != -1) {
@@ -11859,6 +11940,138 @@ app.controller('validacionesAppCtrl', function ($scope, $http, $rootScope, $rout
     }
 })
 
+app.controller('registroEquipoCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services, cargaRegistros) {
+    var tiempo = new Date().getTime();
+    var date1 = new Date();
+    var year = date1.getFullYear();
+    var month =
+        date1.getMonth() + 1 <= 9
+            ? "0" + (date1.getMonth() + 1)
+            : date1.getMonth() + 1;
+    var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
+
+    tiempo = year + "-" + month + "-" + day;
+    init();
+
+    function init() {
+        registroEquipos();
+    }
+
+    $scope.puente = () => {
+        /* $scope.url =
+            "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetClick/" + pedido; */
+        let data = {datos: 'BB8/contingencias/Buscar/GetClick/1-65084222455618'}
+        services.windowsBridge(data)
+        .then((data) => {
+            console.log(data, 'datos - puente');
+        })
+        
+        .catch(() => {
+
+        })
+    }
+
+    function registroEquipos() {
+
+        services.registroEquipos().then(
+            function (data) {
+                console.log(data);
+                if (data.data.state == 1) {
+                    $scope.registroEquipos = data.data.data;
+                }
+
+            },
+
+            function errorCallback(response) {
+                console.log(response);
+            });
+    }
+
+    $scope.currentPage = 1;
+    $scope.totalItems = 0;
+    $scope.pageSize = 10;
+    $scope.searchText = '';
+
+
+    $scope.pageChanged = function () {
+        data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
+        dataQuejasGoTerminado(data);
+    }
+    $scope.pageSizeChanged = function () {
+        data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
+        dataQuejasGoTerminado(data);
+    }
+
+    $scope.recargaPage = function () {
+        $scope.quejago = {};
+        $scope.pedido = '';
+        init();
+    }
+
+
+    $scope.csvQuejaGo = (data) => {
+
+
+        if (data == '' || data == undefined) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Seleccione un rango de fecha valido',
+                timer: 4000
+            })
+            return;
+        }
+
+        var fechaini = new Date(data.fechaini);
+        var fechafin = new Date(data.fechafin);
+        var diffMs = (fechafin - fechaini);
+        var diffDays = Math.round(diffMs / 86400000);
+
+        if (data.fechaini == '' || data.fechaini == undefined) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'La fecha inicial es requerida',
+                timer: 4000
+            })
+        } else if (data.fechafin == '' || data.fechafin == undefined) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'La fecha final es requerida',
+                timer: 4000
+            })
+        } else if (data.fechaini > data.fechafin) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'La fecha final no puede ser menor a la inicial',
+                timer: 4000
+            })
+        } else {
+            data = { 'page': $scope.currentPage, 'size': $scope.pageSize, 'fecha': data }
+            services.csvQuejaGo(data)
+                .then(function (data) {
+                    if (data.data.state == 1) {
+                        var wb = XLSX.utils.book_new();
+                        var ws = XLSX.utils.json_to_sheet(data.data.data);
+                        XLSX.utils.book_append_sheet(wb, ws, 'GestionQuejasGo');
+                        XLSX.writeFile(wb, 'GestionQuejasGo_' + tiempo + '.xlsx'); // Descarga el a
+                    } else {
+                        Swal({
+                            type: 'error',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        }
+    }
+
+});
 
 app.controller(
     'MenuPerfilCtrl',
@@ -12475,6 +12688,16 @@ function routesConfig($routeProvider, $locationProvider, $compileProvider) {
             },
         })
 
+        .when('/registro-equipos', {
+            title: 'Registro equipos',
+            templateUrl: 'partial/registro_equipo.html',
+            controller: 'registroEquipoCtrl',
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            },
+        })
+
         .otherwise({
             redirectTo: "/",
         });
@@ -12486,6 +12709,9 @@ function routesConfig($routeProvider, $locationProvider, $compileProvider) {
        })
        .hashPrefix([""]);*/
 }
+
+// crear function valida email
+
 
 
 function loadUserData($rootScope, $q, $route, $location, services, $cookies) {
@@ -12823,7 +13049,7 @@ app.run([
             { ID: "nombre", CONCEPTO: "Nombre" },
             { ID: "identificacion", CONCEPTO: "Cedula" },
             { ID: "ciudad", CONCEPTO: "Ciudad" },
-            { ID: "celuar", CONCEPTO: "Celuar" },
+            { ID: "celular", CONCEPTO: "celular" },
             { ID: 'login', CONCEPTO: 'login' }
         ];
 
