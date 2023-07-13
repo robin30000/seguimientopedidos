@@ -1034,8 +1034,8 @@ class otherServicesDos
             $datos = $params['datos'];
             $fechaini = $params['fechaini'];
             $fechafin = $params['fechafin'];
-            $concepto = $datos['concepto'];
-            $buscar = $datos['buscar'];
+            $concepto = $params['concepto'];
+            $buscar = $params['buscar'];
 
             if ($fechaini == "" && $fechafin == "") {
                 $fechaini = date("Y") . "-" . date("m") . "-" . date("d");
@@ -1045,7 +1045,7 @@ class otherServicesDos
             if ($concepto == "" || $buscar == "") {
                 $parametros = "";
             } else {
-                $parametros = "and $concepto = '$buscar'";
+                $parametros = "and a.$concepto = '$buscar'";
             }
 
             $query = "select a.pedido,a.id_tecnico, 

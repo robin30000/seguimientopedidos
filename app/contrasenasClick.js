@@ -1,0 +1,190 @@
+(function () {
+    "use strict";
+    angular.module("seguimientopedidos").controller("contrasenasClickCtrl", contrasenasClickCtrl);
+    contrasenasClickCtrl.$inject = ["$scope", "$rootScope", "$location", "services", "$route", "$cookies"];
+    function contrasenasClickCtrl($scope, $rootScope, $location, services, $route, $cookies) {
+        $scope.listaTecnicos = {};
+        $scope.tecnico = null;
+        $scope.concepto = null;
+        $scope.crearTecnico = {};
+        buscarTecnico();
+
+        $scope.tecnicos = async () => {
+            try {
+                $scope.loading = 1;
+                var autocompleteQuery = await fetch(
+                    "http://10.100.66.254:8080/HCHV_DEV/tecnicos/s"
+                );
+                var autocompleteData = await autocompleteQuery.json();
+
+                services.acualizaTecnicos(autocompleteData).then(
+                    function (data) {
+                        if (data.data.state == 1) {
+                            Swal({
+                                type: "success",
+                                title: 'Bien',
+                                text: data.data.msj,
+                                timer: 4000,
+                            }).then(function () {
+                                $route.reload();
+                            });
+                        } else {
+                            Swal({
+                                type: "info",
+                                title: 'Ops..',
+                                text: data.data.msj,
+                                timer: 4000,
+                            }).then(function () {
+                                $route.reload();
+                            });
+                        }
+
+                    },
+                    function errorCallback(error) {
+                        console.log(error);
+                    }
+                );
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        $scope.pageChanged = function () {
+            data = {page: $scope.currentPage, size: $scope.pageSize, buscar: $scope.concepto, variable: $scope.tecnico};
+            buscarTecnico(data);
+        };
+        $scope.pageSizeChanged = function () {
+            data = {page: $scope.currentPage, size: $scope.pageSize, buscar: $scope.concepto, variable: $scope.tecnico};
+            $scope.currentPage = 1;
+            buscarTecnico(data);
+        };
+
+        function buscarTecnico(data) {
+            if (data === "" || data === undefined) {
+                $scope.currentPage = 1;
+                $scope.totalItems = 0;
+                $scope.pageSize = 15;
+                $scope.searchText = "";
+                data = {page: $scope.currentPage, size: $scope.pageSize, buscar: $scope.concepto, variable: $scope.tecnico};
+            }
+            services.listadoTecnicos(data).then(
+                (data) => {
+                    if (data.data.state == 99) {
+                        swal({
+                            type: "error",
+                            title: data.data.title,
+                            text: data.data.text,
+                            timer: 4000,
+                        }).then(function () {
+                            $cookies.remove("usuarioseguimiento");
+                            $location.path("/");
+                            $rootScope.galletainfo = undefined;
+                            $rootScope.permiso = false;
+                            $route.reload();
+                        });
+                    } else {
+                        $scope.listaTecnicos = data.data.data;
+                        $scope.cantidad = data.data.data.length;
+                        $scope.counter = data.data.counter;
+
+                        $scope.totalItems = data.data.counter;
+                        $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                        $scope.endItem = $scope.currentPage * $scope.pageSize;
+                        if ($scope.endItem > data.data.counter) {
+                            $scope.endItem = data.data.counter;
+                        }
+                    }
+
+                })
+                .catch((response) => {
+                    console.log(response);
+                    ;
+                })
+
+        }
+
+        $scope.buscarTec = function (param, dato) {
+            console.log(param);
+            if (param == undefined) {
+                Swal({
+                    type: "info",
+                    title: "Oops...",
+                    text: "seleccione parametro a buscar",
+                    timer: 4000,
+                });
+            } else if (dato == undefined) {
+                Swal({
+                    type: "info",
+                    title: "Oops...",
+                    text: "Ingrese el valor a buscar",
+                    timer: 4000,
+                });
+            } else {
+                data = {
+                    page: $scope.currentPage,
+                    size: $scope.pageSize,
+                    buscar: param,
+                    variable: dato
+                };
+                buscarTecnico(data);
+            }
+        };
+
+        $scope.createTecnico = function () {
+            var id_tecnico = "";
+            $scope.errorDatos = null;
+            $scope.respuestaupdate = null;
+            $scope.respuestadelete = null;
+            services.creaTecnico($scope.crearTecnico, id_tecnico).then(
+                function (data) {
+                    $scope.respuestaupdate = "Técnico creado.";
+                    return data.data;
+                },
+                function errorCallback(response) {
+                    console.log(response);
+                }
+            );
+        };
+
+        $scope.editarModal = function (datos) {
+            $rootScope.datos = datos;
+            $scope.idTecnico = datos.ID;
+            $scope.TecnicoNom = datos.NOMBRE;
+            $scope.UsuarioLog = datos.LOGIN;
+            $rootScope.TituloModal = "Editar Técnico con el ID:";
+        };
+
+        $scope.edittecnico = function (datos) {
+            $scope.errorDatos = null;
+            $scope.respuestaupdate = null;
+            $scope.respuestadelete = null;
+            services.editarTecnico(datos).then(
+                function (data) {
+                    $scope.respuestaupdate =
+                        "Técnico " + datos.NOMBRE + " actualizado exitosamente";
+
+                    return data.data;
+                },
+                function errorCallback(response) {
+                }
+            );
+        };
+
+        $scope.borrarTecnico = function (id) {
+            $scope.idBorrar = id;
+            $scope.Tecnico = {};
+            $scope.errorDatos = null;
+            $scope.respuestaupdate = null;
+            $scope.respuestadelete = null;
+            services.deleteTecnico($scope.idBorrar).then(
+                function (data) {
+                    $scope.respuestadelete =
+                        "Técnico " + $rootScope.datos.NOMBRE + " eliminado exitosamente";
+                },
+                function errorCallback(response) {
+                    $scope.errorDatos = "No se borro";
+                }
+            );
+        };
+    }
+})();

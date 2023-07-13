@@ -7,8 +7,6 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token , Autho
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-
-
 if (isset($data['method'])) {
     switch ($data['method']) {
         case 'Puente':

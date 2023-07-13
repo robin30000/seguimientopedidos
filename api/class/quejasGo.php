@@ -175,11 +175,11 @@ class quejasGo
                 ':celular' => $celular,
                 ':empresa' => $empresa,
             ]);
-           if ($stmt->rowCount() == 1){
-               $response = array('state' => 1, 'msj' => 'Técnico creado correctamente');
-           }else{
-               $response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno intentalo nuevamente en unos minutos');
-           }
+            if ($stmt->rowCount() == 1) {
+                $response = array('state' => 1, 'msj' => 'Técnico creado correctamente');
+            } else {
+                $response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno intentalo nuevamente en unos minutos');
+            }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
@@ -299,14 +299,16 @@ class quejasGo
     public function registrarQuejaGo($params)
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            //session_start();
+             ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
-            session_start();
+            session_start(); 
             $datos = $params['dataquejago'];
 
-            if (!$_SESSION) {
-                $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
-            } elseif (!isset($params['duracion']) || $params['duracion'] == '') {
+            /*             if (!$_SESSION) {
+                            $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar']; */
+
+            if (!isset($params['duracion']) || $params['duracion'] == '') {
                 $response = ['state' => 0, 'text' => 'El campo duración es requerido'];
             } elseif (!isset($datos['pedido']) || $datos['pedido'] == '') {
                 $response = ['state' => 0, 'text' => 'El campo pedido es requerido'];
@@ -355,7 +357,7 @@ class quejasGo
                 if ($stmt->rowCount() == 1) {
                     $response = ['state' => 1, 'text' => 'Datos guardados correctamente'];
                 } else {
-                    $response = ['state' => 0, 'text' => 'Ha ocurrido un error intento intentalo nuevamente'];
+                    $response = ['state' => 0, 'text' => 'Ha ocurrido un error intento inténtalo nuevamente'];
                 }
             }
         } catch (PDOException $e) {

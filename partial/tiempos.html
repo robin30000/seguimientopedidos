@@ -1,0 +1,323 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <b><i class="fa fa-bars" aria-hidden="true"></i> Tiempo en cola</b>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <span class="text-center"><b>Conteo contingencias por dia (últimos 15 días)</b></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-floating">
+                                        <label for="estado20">Estado</label>
+                                        <select class="form-control input-sm" name="estado20" id="estado20" ng-model="estado20"
+                                                data-placeholder="Seleccione estado...">
+                                            <option value="" selected>Seleccione</option>
+                                            <option value="Acepta">Acepta</option>
+                                            <option value="Rechaza">Rechaza</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-floating">
+                                        <label for="producto20">Producto</label>
+
+                                        <select class="form-control input-sm" name="producto20"
+                                                id="producto20" ng-model="producto20" data-placeholder="Seleccione los producto...">
+                                            <option value="" selected>Seleccione</option>
+                                            <option value="Internet+Toip">Internet+Toip</option>
+                                            <option value="TV">TV</option>
+                                            <option value="Todos">Todos</option>
+                                            <!-- <option ng-repeat="group1 in productoGrafico" value="{{group1.id}}">
+                                              {{group1.concepto}}
+                                            </option> -->
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <button type="button" class="btn btn-info btn-sm" ng-click="cunsultaproducto20()" tooltip-placement="top" uib-tooltip="Consultar"
+                                            style="margin-top: 25px">
+                                        Consultar
+                                    </button>
+                                </div>
+                            </div>
+                            <br/>
+                            <canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-series="series"
+                                    chart-colors="colors">
+                            </canvas>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <span class="text-center"><b>Conteo contingencias por agente (Dia actual)</b></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-floating">
+                                        <label for="estadoDia">Estado</label>
+                                        <select class="input-sm form-control" name="estadoDia" id="estadoDia" ng-model="estadoDia"
+                                                data-placeholder="Seleccione estado...">
+                                            <option value="" selected>Seleccione</option>
+                                            <option value="Acepta">Acepta</option>
+                                            <option value="Rechaza">Rechaza</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="form-floating">
+                                        <label for="productoDia">Producto</label>
+                                        <select class="form-control input-sm" name="productoDia"
+                                                id="productoDia" ng-model="productoDia" data-placeholder="Seleccione los producto...">
+                                            <option value="" selected>Seleccione</option>
+                                            <option value="Internet+Toip">Internet+Toip</option>
+                                            <option value="TV">TV</option>
+                                            <option value="Todos">Todos</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-3 mt-5">
+                                    <button type="button" class="btn btn-info btn-sm" ng-click="consultaproducto()" tooltip-placement="top" uib-tooltip="Consultar"
+                                            style="margin-top: 25px">
+                                        Consultar
+                                    </button>
+                                </div>
+                            </div>
+                            <br/>
+                            <canvas id="bar1" class="chart chart-bar" chart-data="data1" chart-labels="labels1" chart-colors="colors1"
+                                    chart-series="series1">
+                            </canvas>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <b><i class="fa fa-bars" aria-hidden="true"></i> Tiempo atención</b>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <span class="text-center"><b>Conteo contingencias por dia (últimos 15 días)</b></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-floating">
+                                        <label for="estado20">Estado</label>
+                                        <select class="form-control input-sm" name="estado20" id="estado20" ng-model="estado20"
+                                                data-placeholder="Seleccione estado...">
+                                            <option value="" selected>Seleccione</option>
+                                            <option value="Acepta">Acepta</option>
+                                            <option value="Rechaza">Rechaza</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-floating">
+                                        <label for="producto20">Producto</label>
+
+                                        <select class="form-control input-sm" name="producto20"
+                                                id="producto20" ng-model="producto20" data-placeholder="Seleccione los producto...">
+                                            <option value="" selected>Seleccione</option>
+                                            <option value="Internet+Toip">Internet+Toip</option>
+                                            <option value="TV">TV</option>
+                                            <option value="Todos">Todos</option>
+                                            <!-- <option ng-repeat="group1 in productoGrafico" value="{{group1.id}}">
+                                              {{group1.concepto}}
+                                            </option> -->
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <button type="button" class="btn btn-info btn-sm" ng-click="cunsultaproducto20()" tooltip-placement="top" uib-tooltip="Consultar"
+                                            style="margin-top: 25px">
+                                        Consultar
+                                    </button>
+                                </div>
+                            </div>
+                            <br/>
+                            <canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-series="series"
+                                    chart-colors="colors">
+                            </canvas>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <span class="text-center"><b>Conteo contingencias por agente (Dia actual)</b></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-floating">
+                                        <label for="estadoDia">Estado</label>
+                                        <select class="input-sm form-control" name="estadoDia" id="estadoDia" ng-model="estadoDia"
+                                                data-placeholder="Seleccione estado...">
+                                            <option value="" selected>Seleccione</option>
+                                            <option value="Acepta">Acepta</option>
+                                            <option value="Rechaza">Rechaza</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="form-floating">
+                                        <label for="productoDia">Producto</label>
+                                        <select class="form-control input-sm" name="productoDia"
+                                                id="productoDia" ng-model="productoDia" data-placeholder="Seleccione los producto...">
+                                            <option value="" selected>Seleccione</option>
+                                            <option value="Internet+Toip">Internet+Toip</option>
+                                            <option value="TV">TV</option>
+                                            <option value="Todos">Todos</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-3 mt-5">
+                                    <button type="button" class="btn btn-info btn-sm" ng-click="consultaproducto()" tooltip-placement="top" uib-tooltip="Consultar"
+                                            style="margin-top: 25px">
+                                        Consultar
+                                    </button>
+                                </div>
+                            </div>
+                            <br/>
+                            <canvas id="bar1" class="chart chart-bar" chart-data="data1" chart-labels="labels1" chart-colors="colors1"
+                                    chart-series="series1">
+                            </canvas>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <b><i class="fa fa-bars" aria-hidden="true"></i> Tiempo sistema</b>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <span class="text-center"><b>Conteo contingencias por dia (últimos 15 días)</b></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-floating">
+                                        <label for="estado20">Estado</label>
+                                        <select class="form-control input-sm" name="estado20" id="estado20" ng-model="estado20"
+                                                data-placeholder="Seleccione estado...">
+                                            <option value="" selected>Seleccione</option>
+                                            <option value="Acepta">Acepta</option>
+                                            <option value="Rechaza">Rechaza</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-floating">
+                                        <label for="producto20">Producto</label>
+
+                                        <select class="form-control input-sm" name="producto20"
+                                                id="producto20" ng-model="producto20" data-placeholder="Seleccione los producto...">
+                                            <option value="" selected>Seleccione</option>
+                                            <option value="Internet+Toip">Internet+Toip</option>
+                                            <option value="TV">TV</option>
+                                            <option value="Todos">Todos</option>
+                                            <!-- <option ng-repeat="group1 in productoGrafico" value="{{group1.id}}">
+                                              {{group1.concepto}}
+                                            </option> -->
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <button type="button" class="btn btn-info btn-sm" ng-click="cunsultaproducto20()" tooltip-placement="top" uib-tooltip="Consultar"
+                                            style="margin-top: 25px">
+                                        Consultar
+                                    </button>
+                                </div>
+                            </div>
+                            <br/>
+                            <canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-series="series"
+                                    chart-colors="colors">
+                            </canvas>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <span class="text-center"><b>Conteo contingencias por agente (Dia actual)</b></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-floating">
+                                        <label for="estadoDia">Estado</label>
+                                        <select class="input-sm form-control" name="estadoDia" id="estadoDia" ng-model="estadoDia"
+                                                data-placeholder="Seleccione estado...">
+                                            <option value="" selected>Seleccione</option>
+                                            <option value="Acepta">Acepta</option>
+                                            <option value="Rechaza">Rechaza</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="form-floating">
+                                        <label for="productoDia">Producto</label>
+                                        <select class="form-control input-sm" name="productoDia"
+                                                id="productoDia" ng-model="productoDia" data-placeholder="Seleccione los producto...">
+                                            <option value="" selected>Seleccione</option>
+                                            <option value="Internet+Toip">Internet+Toip</option>
+                                            <option value="TV">TV</option>
+                                            <option value="Todos">Todos</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-3 mt-5">
+                                    <button type="button" class="btn btn-info btn-sm" ng-click="consultaproducto()" tooltip-placement="top" uib-tooltip="Consultar"
+                                            style="margin-top: 25px">
+                                        Consultar
+                                    </button>
+                                </div>
+                            </div>
+                            <br/>
+                            <canvas id="bar1" class="chart chart-bar" chart-data="data1" chart-labels="labels1" chart-colors="colors1"
+                                    chart-series="series1">
+                            </canvas>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br><br><br>

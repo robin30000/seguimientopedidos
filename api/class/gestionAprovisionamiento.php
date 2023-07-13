@@ -15,13 +15,13 @@ class gestionAprovisionamiento
     {
         try {
 
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
             session_start();
 
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
-            } else {
+            } else {*/
 
                 $hoy = date('Y-m-d');
 
@@ -43,7 +43,7 @@ class gestionAprovisionamiento
                 } else {
                     $response = array('state' => 0, 'msj' => 'No se encontraron registros');
                 }
-            }
+           /* }*/
 
         } catch (PDOException $e) {
             var_dump($e->getMessage());

@@ -14,9 +14,9 @@ class formaAsesores
     public function ciudades()
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
-            session_start();
+            session_start();*/
             $ciudades = $this->_DB->query("SELECT DISTINCT ciudad  FROM ciudades ");
             $ciudades->execute();
 
@@ -38,9 +38,9 @@ class formaAsesores
     public function rst()
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
-            session_start();
+            session_start();*/
             $stmt = $this->_DB->query("SELECT DISTINCT lower(`DEPARTAMENTO`), lower(`CIUDAD`) 
                                        FROM ciudades 
                                       ORDER BY CIUDAD");
@@ -62,9 +62,9 @@ class formaAsesores
     public function rstdep()
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
-            session_start();
+            session_start();*/
             $stmt = $this->_DB->query("SELECT DISTINCT DEPARTAMENTO 
                                        FROM ciudades 
                                        ORDER BY DEPARTAMENTO ASC");
@@ -88,9 +88,9 @@ class formaAsesores
     public function regionesTip()
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
-            session_start();
+            session_start();*/
             $stmt = $this->_DB->query("SELECT DISTINCT region
                                       FROM regiones 
                                       ORDER BY region ASC");
@@ -111,9 +111,9 @@ class formaAsesores
     public function procesos()
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
-            session_start();
+            session_start();*/
             /* if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
             } else { */
@@ -142,12 +142,12 @@ class formaAsesores
 
         try {
             //var_dump($data);Exit();
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
             session_start();
             if (!$_SESSION) {
                 $response = array('state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar');
-            } else {
+            } else {*/
 
                 $pagenum = $data['page'];
                 $pagesize = $data['size'];
@@ -193,7 +193,7 @@ class formaAsesores
                 } else {
                     $response = array('state' => 0);
                 }
-            }
+            /*}*/
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
@@ -204,9 +204,9 @@ class formaAsesores
     public function registroscsv($data)
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
-            session_start();
+            session_start();*/
             if (!empty($data['sort'])) {
                 $sort = $data['sort'];
                 $fechaini = $sort['fechaini']; //CORRECCION DE VALIDACION DE FECHA

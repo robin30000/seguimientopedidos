@@ -560,7 +560,7 @@ class kpi
         /* ini_set('session.gc_maxlifetime', 3600); // 1 hour
         session_set_cookie_params(3600);
         session_start(); */
-        $data = json_decode(file_get_contents('php://input'), true);
+        //$data = json_decode(file_get_contents('php://input'), true);
         $estado = $data['estado'];
         $producto = $data['producto'];
         $fecha = $data['fecha'];

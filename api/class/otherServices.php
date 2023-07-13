@@ -15,9 +15,9 @@ class otherServices
     public function insertarCambioEquipo($data)
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
-            session_start();
+            session_start();*/
             $datos = $data->datoscambio;
             $tecnologia = $data->tecnologia;
             $pedido = $data->pedido;
@@ -287,9 +287,9 @@ class otherServices
     public function gestionFinal()
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
-            session_start();
+            session_start();*/
             $stmt = $this->_DB->query("SELECT PedidoDespacho,
                                                        AccionDespacho,
                                                        CorreoDespacho,
@@ -387,9 +387,9 @@ class otherServices
     public function DashBoard()
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
-            session_start();
+            session_start();*/
             $queryEnGestion = $this->_DB->query("SELECT PedidoDespacho,
                                                                Asesor,
                                                                AccionDespacho,
@@ -684,9 +684,7 @@ class otherServices
                     $existe = 1;
                 }
 
-                if (!$_SESSION) {
-                    $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
-                } elseif (!isset($datosguardar['pedido']) || $datosguardar['pedido'] == '') {
+                if (!isset($datosguardar['pedido']) || $datosguardar['pedido'] == '') {
                     $response = ['state' => 0, 'msj' => 'El pedido es requerido'];
                 } elseif (!isset($datosguardar['producto']) || $datosguardar['producto'] == '') {
                     $response = ['state' => 0, 'msj' => 'El producto es requerido'];
@@ -927,9 +925,9 @@ class otherServices
     public function guardarEscalar($data)
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
-            session_start();
+            session_start();*/
             $gestionescalado = $data;
 
             $estadoActual = $gestionescalado['estado'];
@@ -982,9 +980,9 @@ class otherServices
     public function gestionAsesorFinal($data)
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+           /* ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
-            session_start();
+            session_start();*/
             $datosFinal = $data;
 
             $PedidoDespacho = $datosFinal['PedidoDespacho'];

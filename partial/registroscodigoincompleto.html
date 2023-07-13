@@ -32,14 +32,15 @@
               <li>
                 <input style="width: 130px" type="text" name="fechaini" id="fechaini"
                   class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
-                  ng-model="RegistrosCodigoIncompleto.fechaini" placeholder="Fecha Inicial" datetime-picker="" date-only autocomplete="off"
-                  date-format="yyyy-MM-dd" />
+                  ng-model="RegistrosCodigoIncompleto.fechaini" placeholder="Fecha Inicial" datetime-picker="" date-only
+                  autocomplete="off" date-format="yyyy-MM-dd" />
                 <i class="fa fa-calendar fa-fw"></i>
               </li>
               <li>
                 <input style="width: 130px" placeholder="Fecha Final" type="text" name="fechafin" id="fechafin"
                   class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
-                  ng-model="RegistrosCodigoIncompleto.fechafin" datetime-picker="" date-only autocomplete="off" date-format="yyyy-MM-dd" />
+                  ng-model="RegistrosCodigoIncompleto.fechafin" datetime-picker="" date-only autocomplete="off"
+                  date-format="yyyy-MM-dd" />
                 <i class="fa fa-calendar fa-fw"></i>
               </li>
               <li>
@@ -51,8 +52,8 @@
                 &nbsp;
               </li>
               <li>
-                <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs" ng-model="tarea" placeholder="Buscar tarea"
-                  autocomplete="off">&nbsp;
+                <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs" ng-model="tarea"
+                  placeholder="Buscar tarea" autocomplete="off">&nbsp;
 
                 <button type="button" class="btn btn-default btn-xs" ng-click="Buscartarea(tarea)"
                   tooltip-placement="top" uib-tooltip="Buscar tarea" ng-disabled="loading">
@@ -116,9 +117,13 @@
                 <td><span>{{data.fecha_creado}}</span></td>
                 <td><span>{{data.fecha_respuesta}}</span></td>
                 <td>
-                  <button type="button" class="btn btn-info btn-xs" ng-click="muestraNotas(data)"
+                  <!-- <button type="button" class="btn btn-info btn-xs" ng-click="muestraNotas(data)"
                     tooltip-placement="top" uib-tooltip="Ver notas">
                     <i class="fa fa-rss" aria-hidden="true"> </i>
+                  </button> -->
+                  <button popover-placement="left" uib-popover="{{data.observacion}}" type="button"
+                    tooltip-placement="top" uib-tooltip="Observaciones" class="btn btn-default btn-xs">
+                    <i class="fa fa-commenting" aria-hidden="true"></i>
                   </button>
                 </td>
               </tr>

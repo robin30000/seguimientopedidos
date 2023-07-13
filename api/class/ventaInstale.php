@@ -13,9 +13,11 @@ class ventaInstale
 
 	public function datosVentas()
 	{
-
+		/*ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        session_set_cookie_params(3600);
+        session_start();*/
 		try {
-			$stmt = $this->_BD->prepare("SELECT * FROM ventasInstaleTiendas where en_gestion != 2");
+			$stmt = $this->_BD->query("SELECT * FROM ventasInstaleTiendas where en_gestion != 2");
 			$stmt->execute();
 			if ($stmt->rowCount()) {
 				$response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
@@ -30,9 +32,9 @@ class ventaInstale
 	}
 	public function datosVentasTerminado($data)
 	{
-		ini_set('session.gc_maxlifetime', 3600); // 1 hour
+		/*ini_set('session.gc_maxlifetime', 3600); // 1 hour
         session_set_cookie_params(3600);
-        session_start();
+        session_start();*/
 		try {
 
 			$pagenum = $data['page'];
@@ -59,37 +61,41 @@ class ventaInstale
 	}
 	public function marcarEnGestionVentaInstale($data)
 	{
-		ini_set('session.gc_maxlifetime', 3600); // 1 hour
+		/*ini_set('session.gc_maxlifetime', 3600); // 1 hour
         session_set_cookie_params(3600);
-        session_start();
+        session_start();*/
 		try {
 
 			//var_dump($data);exit();
 			session_start();
-			$login_gestion = $_SESSION['login'];
+            if (!$_SESSION) {
+                $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
+            } else {
+                $login_gestion = $_SESSION['login'];
 
-			//$login_gestion = $data['login_gestion'];
-			$id = $data['data']['id'];
+                //$login_gestion = $data['login_gestion'];
+                $id = $data['data']['id'];
 
-			$stmt = $this->_BD->prepare("SELECT en_gestion, pedido, login_gestion FROM ventasInstaleTiendas WHERE id = :id");
-			$stmt->execute(array(':id' => $id));
-			$response = $stmt->fetchAll(PDO::FETCH_ASSOC);
-			//echo $response[0]['en_gestion'];exit();
-			if ($response[0]['en_gestion'] == 0) {
-				$stmt = $this->_BD->prepare("UPDATE ventasInstaleTiendas SET en_gestion = 1, login_gestion = :login_gestion WHERE id = :id");
-				$stmt->execute(array(':id' => $id, ':login_gestion' => $login_gestion));
-				if ($stmt->rowCount() == 1) {
-					$res = array('state' => 1, 'msj' => 'Pedido ' . $response[0]['pedido'] . ' Ahora esta Bloqueado');
-				}
-			} elseif (($response[0]['en_gestion'] == 1) && ($response[0]['login_gestion'] == $login_gestion)) {
-				$stmt = $this->_BD->prepare("UPDATE ventasInstaleTiendas SET en_gestion = 0, login_gestion = '' WHERE id = :id");
-				$stmt->execute(array(':id' => $id));
-				if ($stmt->rowCount() == 1) {
-					$res = array('state' => 1, 'msj' => 'Pedido ' . $response[0]['pedido'] . ' Ahora esta Desbloqueado');
-				}
-			} else {
-				$res = array('state' => 0, 'msj' => 'El pedido ' . $response[0]['pedido'] . ' se encuentra en gestion por otro agente');
-			}
+                $stmt = $this->_BD->prepare("SELECT en_gestion, pedido, login_gestion FROM ventasInstaleTiendas WHERE id = :id");
+                $stmt->execute(array(':id' => $id));
+                $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                //echo $response[0]['en_gestion'];exit();
+                if ($response[0]['en_gestion'] == 0) {
+                    $stmt = $this->_BD->prepare("UPDATE ventasInstaleTiendas SET en_gestion = 1, login_gestion = :login_gestion WHERE id = :id");
+                    $stmt->execute(array(':id' => $id, ':login_gestion' => $login_gestion));
+                    if ($stmt->rowCount() == 1) {
+                        $res = array('state' => 1, 'msj' => 'Pedido ' . $response[0]['pedido'] . ' Ahora esta Bloqueado');
+                    }
+                } elseif (($response[0]['en_gestion'] == 1) && ($response[0]['login_gestion'] == $login_gestion)) {
+                    $stmt = $this->_BD->prepare("UPDATE ventasInstaleTiendas SET en_gestion = 0, login_gestion = '' WHERE id = :id");
+                    $stmt->execute(array(':id' => $id));
+                    if ($stmt->rowCount() == 1) {
+                        $res = array('state' => 1, 'msj' => 'Pedido ' . $response[0]['pedido'] . ' Ahora esta Desbloqueado');
+                    }
+                } else {
+                    $res = array('state' => 0, 'msj' => 'El pedido ' . $response[0]['pedido'] . ' se encuentra en gestion por otro agente');
+                }
+            }
 		} catch (PDOException $th) {
 			var_dump($th->getMessage());
 		}
@@ -162,9 +168,9 @@ class ventaInstale
 
 	public function detallePedidoVenta($data)
 	{
-		ini_set('session.gc_maxlifetime', 3600); // 1 hour
+		/*ini_set('session.gc_maxlifetime', 3600); // 1 hour
         session_set_cookie_params(3600);
-        session_start();
+        session_start();*/
 		try {
 
 			$stmt = $this->_BD->prepare("SELECT * FROM ventasInstaleTiendas WHERE pedido = :pedido");
@@ -183,9 +189,9 @@ class ventaInstale
 
 	public function detalleVentaRagoFecha($data)
 	{
-		ini_set('session.gc_maxlifetime', 3600); // 1 hour
+		/*ini_set('session.gc_maxlifetime', 3600); // 1 hour
         session_set_cookie_params(3600);
-        session_start();
+        session_start();*/
 		try {
 
 			$fechaIni = $data['fechaini'];
@@ -245,9 +251,9 @@ class ventaInstale
 	}
 	public function csvVentaInstale($data)
 	{
-		ini_set('session.gc_maxlifetime', 3600); // 1 hour
+		/*ini_set('session.gc_maxlifetime', 3600); // 1 hour
         session_set_cookie_params(3600);
-        session_start();
+        session_start();*/
 		try {
 
 			//var_dump($data['data']);exit();
@@ -338,24 +344,30 @@ class ventaInstale
 		ini_set('session.gc_maxlifetime', 3600); // 1 hour
         session_set_cookie_params(3600);
         session_start();
+
 		try {
 			$data = json_decode(file_get_contents('php://input'), true);
-			$usuario = $data['usuario'];
-			$observacion = $data['observacion']['observacion_gestion'];
+			$usuario = $_SESSION['login'];
+			$observacion = $data['data'];
+			$observacion = $observacion['data']['observacion'];
+			$observacion = $observacion['observacion_gestion'];
 
-			if (empty($usuario)) {
+			$fecha = date('Y-m-d H:i:s');
+
+
+			/* if (empty($usuario)) {
 				$response = array('state' => 0, 'msj' => 'No se encontro un usuario logueado inicia session nuevamente para continuar');
 			} elseif (empty($observacion)) {
 				$response = array('state' => 0, 'msj' => 'Debes ingresar una observacion');
-			} else {
-				$stmt = $this->_BD->prepare("INSERT INTO observacion_venta_instale_despacho(login,observacion) values(:login,:observacion)");
-				$stmt->execute(array(':login' => $usuario, ':observacion' => $observacion));
+			} else { */
+				$stmt = $this->_BD->prepare("INSERT INTO observacion_venta_instale_despacho(login,observacion, hora) values(:login,:observacion,:hora)");
+				$stmt->execute(array(':login' => $usuario, ':observacion' => $observacion, ':hora' => $fecha));
 				if ($stmt->rowCount() == 1) {
-					$response = array('state' => 1, 'msj' => 'La Observacion se guardo correctamente.');
+					$response = array('state' => 1, 'msj' => 'La Observación se guardo correctamente.');
 				} else {
-					$response = array('state' => 0, 'msj' => 'Ha Ocurrido un error interno intentalo nuevamente en unos minutos.');
+					$response = array('state' => 0, 'msj' => 'Ha Ocurrido un error interno inténtalo nuevamente en unos minutos.');
 				}
-			}
+			/* } */
 
 		} catch (PDOException $th) {
 			var_dump($th->getMessage());
@@ -366,9 +378,9 @@ class ventaInstale
 	}
 	public function observacionDetalleVentaModal()
 	{
-		ini_set('session.gc_maxlifetime', 3600); // 1 hour
+		/*ini_set('session.gc_maxlifetime', 3600); // 1 hour
         session_set_cookie_params(3600);
-        session_start();
+        session_start();*/
 		$hora = date('Y-m-d');
 		try {
 			$stmt = $this->_BD->query("SELECT * FROM observacion_venta_instale_despacho WHERE hora BETWEEN '$hora 00:00:00' and '$hora 23:59:59'");
@@ -386,17 +398,40 @@ class ventaInstale
 	}
 	public function eliminaObservacion($data)
 	{
-		ini_set('session.gc_maxlifetime', 3600); // 1 hour
+		/*ini_set('session.gc_maxlifetime', 3600); // 1 hour
         session_set_cookie_params(3600);
-        session_start();
+        session_start();*/
 		try {
-			$data = json_decode(file_get_contents('php://input'), true);
+
+/*
+			$this->_BD->query("SET SESSION sql_mode = ''");
+
+			// Tu consulta SQL
+			$sql = "SELECT * FROM observacion_venta_instale_despacho WHERE datetime_column = :datetime";
+
+			// Preparar la declaración
+			$stmt = $this->_BD->prepare($sql);
+
+			// Vincula el valor de datetime al parámetro
+			$stmt->bindParam(':datetime', $datetime);
+
+			// Ejecuta la consulta
+			$stmt->execute();
+
+
+			$result = $stmt->fetchAll(PDO::FETCH_ASSOC); */
+
+
+			//$data = json_decode(file_get_contents('php://input'), true);
+			$this->_BD->query("SET SESSION sql_mode = ''");
+			$this->_BD->query("SET SESSION sql_mode = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'");
+
 			$stmt = $this->_BD->prepare("DELETE FROM observacion_venta_instale_despacho WHERE id = :id");
-			$stmt->execute(array(':id' => $data));
+			$stmt->execute(array(':id' =>$data['data']));
 			if ($stmt->rowCount() == 1) {
-				$response = array('state' => 1, 'msj' => 'Observacion eliminada');
+				$response = array('state' => 1, 'msj' => 'Observación eliminada');
 			} else {
-				$response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno intentalo nuevamente en unos minutos');
+				$response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno inténtalo nuevamente en unos minutos');
 			}
 
 		} catch (PDOException $th) {
@@ -408,9 +443,9 @@ class ventaInstale
 
 	public function consolidadoZona()
 	{
-		ini_set('session.gc_maxlifetime', 3600); // 1 hour
+		/*ini_set('session.gc_maxlifetime', 3600); // 1 hour
         session_set_cookie_params(3600);
-        session_start();
+        session_start();*/
 		$hoy = date('Y-m-d');
 		try {
 			$stmt = $this->_BD->prepare("SELECT

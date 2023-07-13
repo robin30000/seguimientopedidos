@@ -15,9 +15,9 @@ class Modelauthentication
 
     public function loginUser($usuarioid, $password)
     {
-        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
         session_set_cookie_params(3600);
-        session_start();
+        session_start();*/
         $res = '';
         try {
             $stmt = $this->_DB->prepare("SELECT id, login, nombre, identificacion, perfil, password FROM usuarios WHERE login = ? AND password = ?");
@@ -41,9 +41,9 @@ class Modelauthentication
 
     public function getIngresosalida($today, $usuarioid, $fecha)
     {
-        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
         session_set_cookie_params(3600);
-        session_start();
+        session_start();*/
         try {
             $todayStart = $today . ' 00:00:00';
             $todayEnd   = $today . ' 23:59:59';
@@ -79,9 +79,9 @@ class Modelauthentication
 
     public function createingresosalida($usuarioid, $fecha, $usuarioIp, $usuarioPc, $aplicacion)
     {
-        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
         session_set_cookie_params(3600);
-        session_start();
+        session_start();*/
         //echo $usuarioid . $fecha . $usuarioIp . $usuarioPc . $aplicacion;
 
         //CRAMICEB 2022-11-27 12:54:30 10.183.120.43 10.183.120.43 Seguimiento
@@ -111,9 +111,9 @@ class Modelauthentication
 
     public function updateingreso($idd)
     {
-        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
         session_set_cookie_params(3600);
-        session_start();
+        session_start();*/
         try {
             $stmt = $this->_DB->prepare("UPDATE registro_ingresoSeguimiento SET status = 'logged in', ingresos = ingresos+1 WHERE id = ?");
             $stmt->bindParam(1, $idd, PDO::PARAM_STR);
@@ -135,9 +135,9 @@ class Modelauthentication
     public function updatesalida($idd, $fecha, $total_dia, $hora, $minutos, $segundos, $totalminutos)
     {
 
-        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
         session_set_cookie_params(3600);
-        session_start();
+        session_start();*/
         try {
             $stmt = $this->_DB->prepare("UPDATE registro_ingresoSeguimiento SET status = 'logged off', fecha_salida = ?,salidas = salidas+1, total_dia = ?, hora = ?, minutos = ?, segundos = ?, total_factura = ? WHERE id = ?");
             $stmt->bindParam(1, $fecha, PDO::PARAM_STR);

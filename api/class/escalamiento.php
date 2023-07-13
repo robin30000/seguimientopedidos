@@ -15,9 +15,9 @@ class escalamiento
     {
 
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();
+            /*ini_set('session.gc_maxlifetime', 60*60*24); // 1 day
+            session_set_cookie_params(60*60*24);
+            session_start();*/
             $pagina   = $data['page'];
             $datos    = $data['datos'];
             $fechaini = $datos['fechaini'];
@@ -78,9 +78,9 @@ class escalamiento
     public function GrupoCola()
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();
+            /*ini_set('session.gc_maxlifetime', 60*60*24); // 1 day
+            session_set_cookie_params(60*60*24);
+            session_start();*/
             $stmt = $this->_DB->query("SELECT nota FROM Notas WHERE nota <> 'mal codigo' ORDER BY nota");
             $stmt->execute();
 
@@ -102,9 +102,9 @@ class escalamiento
     public function gestionEscalimiento()
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();
+            /*ini_set('session.gc_maxlifetime', 60*60*24); // 1 day
+            session_set_cookie_params(60*60*24);
+            session_start();*/
             $stmt = $this->_DB->query("SELECT g.gestion FROM Gestiones g");
 
             $stmt->execute();
@@ -129,9 +129,9 @@ class escalamiento
     {
 
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();
+            /*ini_set('session.gc_maxlifetime', 60*60*24); // 1 day
+            session_set_cookie_params(60*60*24);
+            session_start();*/
             $stmt = $this->_DB->prepare("SELECT o.observacion
                                                 FROM Gestiones g
                                                          INNER JOIN GestionesObservaciones go ON g.codGestion = go.codGestion
@@ -157,9 +157,9 @@ class escalamiento
     public function notasEscalamiento($data)
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();
+            /*ini_set('session.gc_maxlifetime', 60*60*24); // 1 day
+            session_set_cookie_params(60*60*24);
+            session_start();*/
             $stmt = $this->_DB->prepare("SELECT n.nota
                                                 FROM Gestiones g
                                                          INNER JOIN GestionesObservaciones go ON g.codGestion = go.codGestion
@@ -185,9 +185,9 @@ class escalamiento
     public function infoEscalamiento($params)
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();
+            /*ini_set('session.gc_maxlifetime', 60*60*24); // 1 day
+            session_set_cookie_params(60*60*24);
+            session_start();*/
             $datos = $params['datosEdicion'];
 
             $pedido            = $datos['pedido'];
@@ -323,8 +323,8 @@ class escalamiento
     public function csvEscalamientoExp($params)
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
+            ini_set('session.gc_maxlifetime', 60*60*24); // 1 day
+            session_set_cookie_params(60*60*24);
             session_start();
             $usuarioid = $_SESSION['login'];
             $datos     = $params['datos'];
@@ -380,8 +380,8 @@ class escalamiento
     public function saveescalamiento($params)
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
+            ini_set('session.gc_maxlifetime', 60*60*24); // 1 day
+            session_set_cookie_params(60*60*24);
             session_start();
             $datosguardar          = $params['datosguardar'];
             $login                 = $_SESSION['login'];
@@ -477,9 +477,9 @@ class escalamiento
     {
 
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();
+            /*ini_set('session.gc_maxlifetime', 60*60*24); // 1 day
+            session_set_cookie_params(60*60*24);
+            session_start();*/
             $stmt = $this->_DB->query("SELECT * FROM escalamiento_infraestructura ORDER BY fecha_solicitud");
             $stmt->execute();
 

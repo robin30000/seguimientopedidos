@@ -1,5 +1,6 @@
 <?php
 require_once '../class/conection.php';
+
 class novedadesTecnico
 {
     private $_DB;
@@ -13,50 +14,51 @@ class novedadesTecnico
     {
         try {
 
-            /* ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
             session_start();
 
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
-            } else { */
+            } else {*/
 
-                if (empty($data['data']['fechaini']) && empty($data['data']['fechafin'])) {
-                    $fechaini = date('Y-m-d');
-                    $fechafin = date('Y-m-d');
-                } else {
-                    $fechaini = $data['data']['fechaini'];
-                    $fechafin = $data['data']['fechafin'];
-                }
+            if (empty($data['data']['fechaini']) && empty($data['data']['fechafin'])) {
+                $fechaini = date('Y-m-d');
+                $fechafin = date('Y-m-d');
+            } else {
+                $fechaini = $data['data']['fechaini'];
+                $fechafin = $data['data']['fechafin'];
+            }
 
 
-                $stmt = $this->_DB->query("select * from NovedadesVisitas
+            $stmt = $this->_DB->query("select * from NovedadesVisitas
 								WHERE 1=1
 								AND fecha BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59'");
-                $stmt->execute();
-                $counter = $stmt->rowCount();
+            $stmt->execute();
+            $counter = $stmt->rowCount();
 
-                $pagenum = $data['page'];
-                $pagesize = $data['size'];
-                $offset = ($pagenum - 1) * $pagesize;
-                $search = $data['search'];
-                $total_pages = ceil($counter / $data['size']);
+            $pagenum     = $data['page'];
+            $pagesize    = $data['size'];
+            $offset      = ($pagenum - 1) * $pagesize;
+            $search      = $data['search'];
+            $total_pages = ceil($counter / $data['size']);
 
-                $stmt = $this->_DB->prepare("SELECT id, cedulaTecnico, nombreTecnico, contracto, proceso, pedido, tiponovedad, municipio, situacion, 
+
+            $stmt = $this->_DB->query("SELECT id, cedulaTecnico, nombreTecnico, contracto, proceso, pedido, tiponovedad, municipio, situacion, 
                                 horamarcaensitio, observaciones, idllamada, observacionCCO
 						FROM NovedadesVisitas
 							WHERE 1=1
 							AND fecha BETWEEN ('$fechaini 00:00:00') AND ('$fechafin 23:59:59')
 							ORDER BY fecha DESC
 							limit $offset, $pagesize");
-                $stmt->execute();
-                if ($stmt->rowCount()) {
-                    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    $response = ['state' => 1, 'data' => $result, 'total' => $total_pages, 'counter' => $counter];
-                } else {
-                    $response = ['state' => 0];
-                }
-            /* } */
+            $stmt->execute();
+            if ($stmt->rowCount()) {
+                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = ['state' => 1, 'data' => $result, 'total' => $total_pages, 'counter' => $counter];
+            } else {
+                $response = ['state' => 0];
+            }
+            /* }*/
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
@@ -77,33 +79,33 @@ class novedadesTecnico
 
                 $login = $_SESSION['login'];
 
-                $key = (isset($data['id'])) ? $data['id'] : '';
-                $contracto = (isset($data['contracto'])) ? $data['contracto'] : '';
-                $cedulaTecnico = (isset($data['cedulaTecnico2'])) ? $data['cedulaTecnico2'] : '';
-                $nombreTecnico = (isset($data['nombreTecnico'])) ? $data['nombreTecnico'] : '';
-                $region = (isset($data['region'])) ? $data['region'] : '';
-                $municipio = (isset($data['municipio'])) ? $data['municipio'] : '';
-                $situacion = (isset($data['situacion'])) ? $data['situacion'] : '';
-                $detalle = (isset($data['detalle'])) ? $data['detalle'] : '';
-                $observaciones = (isset($data['observaciones'])) ? $data['observaciones'] : '';
-                $tiponovedad = (isset($data['tiponovedad'])) ? $data['tiponovedad'] : '';
-                $pedido = (isset($data['pedido'])) ? $data['pedido'] : '';
-                $proceso = (isset($data['proceso'])) ? $data['proceso'] : '';
+                $key                = (isset($data['id'])) ? $data['id'] : '';
+                $contracto          = (isset($data['contracto'])) ? $data['contracto'] : '';
+                $cedulaTecnico      = (isset($data['cedulaTecnico2'])) ? $data['cedulaTecnico2'] : '';
+                $nombreTecnico      = (isset($data['nombreTecnico'])) ? $data['nombreTecnico'] : '';
+                $region             = (isset($data['region'])) ? $data['region'] : '';
+                $municipio          = (isset($data['municipio'])) ? $data['municipio'] : '';
+                $situacion          = (isset($data['situacion'])) ? $data['situacion'] : '';
+                $detalle            = (isset($data['detalle'])) ? $data['detalle'] : '';
+                $observaciones      = (isset($data['observaciones'])) ? $data['observaciones'] : '';
+                $tiponovedad        = (isset($data['tiponovedad'])) ? $data['tiponovedad'] : '';
+                $pedido             = (isset($data['pedido'])) ? $data['pedido'] : '';
+                $proceso            = (isset($data['proceso'])) ? $data['proceso'] : '';
                 $situaciontriangulo = (isset($data['situaciontriangulo'])) ? $data['situaciontriangulo'] : '';
-                $motivo = (isset($data['motivotriangulo'])) ? $data['motivotriangulo'] : '';
+                $motivo             = (isset($data['motivotriangulo'])) ? $data['motivotriangulo'] : '';
                 if (isset($data['submotivotriangulo'])) {
                     $submotivo = $data['submotivotriangulo'];
                 } else {
                     $submotivo = "";
                 }
                 $horamarcasitio = date('h:i A', strtotime($data['horamarcaensitio']));
-                $idllamada = $data['idLlamada'];
+                $idllamada      = $data['idLlamada'];
 
-                $contrato2 = $data['contrato2'];
+                $contrato2      = $data['contrato2'];
                 $cedulaTecnico2 = $data['cedulaTecnico2'];
                 $nombreTecnico2 = $data['nombreTecnico2'];
-                $proceso2 = $data['proceso2'];
-                $municipio2 = $data['municipio2'];
+                $proceso2       = $data['proceso2'];
+                $municipio2     = $data['municipio2'];
 
 
                 if ($tiponovedad == 'Cumplimiento de Agenda' and $cedulaTecnico == null) {
@@ -111,22 +113,22 @@ class novedadesTecnico
                     $stmt = $this->_DB->prepare("INSERT INTO NovedadesVisitas (fecha, usuario, tiponovedad, pedido, contracto, cedulaTecnico, nombreTecnico, proceso, region, municipio, situacion, horamarcaensitio, detalle, observaciones, idllamada, motivo, submotivo)
                     VALUES (NOW(), :login, :tiponovedad, :pedido, UPPER(:contrato2), TRIM(:cedulaTecnico2), TRIM(:nombreTecnico2), TRIM(:proceso2), LOWER(:region), LOWER(:municipio2), LOWER(:situaciontriangulo), :horamarcasitio, LOWER(:detalle), LOWER(TRIM(:observaciones)), TRIM(:idllamada), :motivo, :submotivo)");
                     $stmt->execute([
-                        ':login' => $login,
-                        ':tiponovedad' => $tiponovedad,
-                        ':pedido' => $pedido,
-                        ':contrato2' => $contrato2,
-                        ':cedulaTecnico2' => $cedulaTecnico2,
-                        ':nombreTecnico2' => $nombreTecnico2,
-                        ':proceso2' => $proceso2,
-                        ':region' => $region,
-                        ':municipio2' => $municipio2,
+                        ':login'              => $login,
+                        ':tiponovedad'        => $tiponovedad,
+                        ':pedido'             => $pedido,
+                        ':contrato2'          => $contrato2,
+                        ':cedulaTecnico2'     => $cedulaTecnico2,
+                        ':nombreTecnico2'     => $nombreTecnico2,
+                        ':proceso2'           => $proceso2,
+                        ':region'             => $region,
+                        ':municipio2'         => $municipio2,
                         ':situaciontriangulo' => $situaciontriangulo,
-                        ':horamarcasitio' => $horamarcasitio,
-                        ':detalle' => $detalle,
-                        ':observaciones' => $observaciones,
-                        ':idllamada' => $idllamada,
-                        ':motivo' => $motivo,
-                        ':submotivo' => $submotivo,
+                        ':horamarcasitio'     => $horamarcasitio,
+                        ':detalle'            => $detalle,
+                        ':observaciones'      => $observaciones,
+                        ':idllamada'          => $idllamada,
+                        ':motivo'             => $motivo,
+                        ':submotivo'          => $submotivo,
                     ]);
 
                     if ($stmt->rowCount() == 1) {
@@ -141,22 +143,22 @@ class novedadesTecnico
                     VALUES (NOW(), :login, :tiponovedad, :pedido, :contracto, TRIM(:cedulaTecnico), UPPER(TRIM(:nombreTecnico)), TRIM(:proceso), LOWER(:region), LOWER(:municipio), LOWER(:situaciontriangulo), :horamarcasitio, LOWER(:detalle), LOWER(TRIM(:observaciones)), TRIM(:idllamada), :motivo, :submotivo)");
 
                     $stmt->execute([
-                        ':login' => $login,
-                        ':tiponovedad' => $tiponovedad,
-                        ':pedido' => $pedido,
-                        ':contracto' => $contrato2,
-                        ':cedulaTecnico' => $cedulaTecnico2,
-                        ':nombreTecnico' => $nombreTecnico2,
-                        ':proceso' => $proceso2,
-                        ':region' => $region,
-                        ':municipio' => $municipio2,
+                        ':login'              => $login,
+                        ':tiponovedad'        => $tiponovedad,
+                        ':pedido'             => $pedido,
+                        ':contracto'          => $contrato2,
+                        ':cedulaTecnico'      => $cedulaTecnico2,
+                        ':nombreTecnico'      => $nombreTecnico2,
+                        ':proceso'            => $proceso2,
+                        ':region'             => $region,
+                        ':municipio'          => $municipio2,
                         ':situaciontriangulo' => $situaciontriangulo,
-                        ':horamarcasitio' => $horamarcasitio,
-                        ':detalle' => $detalle,
-                        ':observaciones' => $observaciones,
-                        ':idllamada' => $idllamada,
-                        ':motivo' => $motivo,
-                        ':submotivo' => $submotivo,
+                        ':horamarcasitio'     => $horamarcasitio,
+                        ':detalle'            => $detalle,
+                        ':observaciones'      => $observaciones,
+                        ':idllamada'          => $idllamada,
+                        ':motivo'             => $motivo,
+                        ':submotivo'          => $submotivo,
                     ]);
 
                     if ($stmt->rowCount() == 1) {
@@ -170,21 +172,21 @@ class novedadesTecnico
                     VALUES (NOW(), :login, :tiponovedad, :pedido, UPPER(:contrato2), TRIM(:cedulaTecnico2), TRIM(:nombreTecnico2), LOWER(:proceso2), LOWER(:region), LOWER(:municipio2), LOWER(:situaciontriangulo), :horamarcasitio, LOWER(TRIM(:observaciones)), TRIM(:idllamada), :motivo, :submotivo)");
 
                     $stmt->execute([
-                        ':login' => $login,
-                        ':tiponovedad' => $tiponovedad,
-                        ':pedido' => $pedido,
-                        ':contrato2' => $contrato2,
-                        ':cedulaTecnico2' => $cedulaTecnico2,
-                        ':nombreTecnico2' => $nombreTecnico2,
-                        ':proceso2' => $proceso2,
-                        ':region' => $region,
-                        ':municipio2' => $municipio2,
+                        ':login'              => $login,
+                        ':tiponovedad'        => $tiponovedad,
+                        ':pedido'             => $pedido,
+                        ':contrato2'          => $contrato2,
+                        ':cedulaTecnico2'     => $cedulaTecnico2,
+                        ':nombreTecnico2'     => $nombreTecnico2,
+                        ':proceso2'           => $proceso2,
+                        ':region'             => $region,
+                        ':municipio2'         => $municipio2,
                         ':situaciontriangulo' => $situaciontriangulo,
-                        ':horamarcasitio' => $horamarcasitio,
-                        ':observaciones' => $observaciones,
-                        ':idllamada' => $idllamada,
-                        ':motivo' => $motivo,
-                        ':submotivo' => $submotivo,
+                        ':horamarcasitio'     => $horamarcasitio,
+                        ':observaciones'      => $observaciones,
+                        ':idllamada'          => $idllamada,
+                        ':motivo'             => $motivo,
+                        ':submotivo'          => $submotivo,
                     ]);
 
                     if ($stmt->rowCount() == 1) {
@@ -193,28 +195,28 @@ class novedadesTecnico
                         $response = ['state' => 0, 'text' => 'Ha ocurrido un error inténtalo nuevamente'];
                     }
                 } elseif ($tiponovedad == 'Triangulo de Produccion' and $region <> null) {
-                    
+
                     $sql = "INSERT INTO NovedadesVisitas (fecha, usuario, tiponovedad, pedido, contracto, cedulaTecnico, nombreTecnico, proceso, region, municipio, situacion, horamarcaensitio, observaciones, idllamada, motivo, submotivo)
                     VALUES (NOW(), :login, :tiponovedad, :pedido, :contracto, TRIM(:cedulaTecnico), UPPER(TRIM(:nombreTecnico)), TRIM(:proceso), LOWER(:region), LOWER(:municipio), LOWER(:situaciontriangulo), :horamarcasitio, LOWER(TRIM(:observaciones)), TRIM(:idllamada), :motivo, :submotivo)";
 
                     $stmt = $this->_DB->prepare($sql);
 
                     $stmt->execute([
-                        ':login' => $login,
-                        ':tiponovedad' => $tiponovedad,
-                        ':pedido' => $pedido,
-                        ':contracto' => $contrato2,
-                        ':cedulaTecnico' => $cedulaTecnico2,
-                        ':nombreTecnico' => $nombreTecnico2,
-                        ':proceso' => $proceso2,
-                        ':region' => $region,
-                        ':municipio' => $municipio2,
+                        ':login'              => $login,
+                        ':tiponovedad'        => $tiponovedad,
+                        ':pedido'             => $pedido,
+                        ':contracto'          => $contrato2,
+                        ':cedulaTecnico'      => $cedulaTecnico2,
+                        ':nombreTecnico'      => $nombreTecnico2,
+                        ':proceso'            => $proceso2,
+                        ':region'             => $region,
+                        ':municipio'          => $municipio2,
                         ':situaciontriangulo' => $situaciontriangulo,
-                        ':horamarcasitio' => $horamarcasitio,
-                        ':observaciones' => $observaciones,
-                        ':idllamada' => $idllamada,
-                        ':motivo' => $motivo,
-                        ':submotivo' => $submotivo,
+                        ':horamarcasitio'     => $horamarcasitio,
+                        ':observaciones'      => $observaciones,
+                        ':idllamada'          => $idllamada,
+                        ':motivo'             => $motivo,
+                        ':submotivo'          => $submotivo,
                     ]);
 
                     if ($stmt->rowCount() == 1) {
@@ -235,16 +237,18 @@ class novedadesTecnico
     public function updateNovedadesTecnico($data)
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
-            session_start();
-            if (!$_SESSION) {
+            session_start();*/
+            /*if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
-            } elseif (!isset($data['observacionCCO']) || $data['observacionCCO'] == '') {
+            } else*/
+
+            if (!isset($data['observacionCCO']) || $data['observacionCCO'] == '') {
                 $response = ['state' => 0, 'text' => 'Ingrese observaciones'];
             } else {
                 $observacionCCO = $data['observacionCCO'];
-                $pedido = $data['pedido'];
+                $pedido         = $data['pedido'];
 
                 $stmt = $this->_DB->prepare("UPDATE NovedadesVisitas SET observacionCCO = :observacionCCO WHERE pedido = :pedido");
                 $stmt->execute([':observacionCCO' => $observacionCCO, ':pedido' => $pedido]);
@@ -265,10 +269,10 @@ class novedadesTecnico
     public function csvNovedadesTecnico($data)
     {
 
-        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+       /* ini_set('session.gc_maxlifetime', 3600); // 1 hour
         session_set_cookie_params(3600);
         session_start();
-        $usuarioid = $_SESSION['login'];
+        $usuarioid = $_SESSION['login'];*/
         if (empty($data['fechaini']) && empty($data['fechafin'])) {
             $fechaini = date('Y-m-d');
             $fechafin = date('Y-m-d');
@@ -301,9 +305,9 @@ class novedadesTecnico
             $stmt->execute();
 
             if ($stmt->rowCount()) {
-                $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'counter' => $stmt->rowCount());
+                $response = ['state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'counter' => $stmt->rowCount()];
             } else {
-                $response = array('state' => 0, 'msj' => 'No se encontraron registros');
+                $response = ['state' => 0, 'msj' => 'No se encontraron registros'];
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -316,15 +320,15 @@ class novedadesTecnico
     public function Regiones()
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+           /* ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
-            session_start();
+            session_start();*/
             $stmt = $this->_DB->query("SELECT region FROM regiones ORDER BY region");
             $stmt->execute();
             if ($stmt->rowCount()) {
-                $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
+                $response = ['state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = array('state' => 0, 'msj' => 'No se encontraron registros');
+                $response = ['state' => 0, 'msj' => 'No se encontraron registros'];
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -337,9 +341,9 @@ class novedadesTecnico
     {
 
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
-            session_start();
+            session_start();*/
             $stmt = $this->_DB->prepare("SELECT m.municipio
                                             FROM municipios m
                                             INNER JOIN regiones r ON m.codigoRg=r.codigoRg
@@ -349,9 +353,9 @@ class novedadesTecnico
             $stmt->execute();
 
             if ($stmt->rowCount()) {
-                $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::PARAM_STR));
+                $response = ['state' => 1, 'data' => $stmt->fetchAll(PDO::PARAM_STR)];
             } else {
-                $response = array('state' => 0, 'msj' => 'No se encontraron registros');
+                $response = ['state' => 0, 'msj' => 'No se encontraron registros'];
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -363,18 +367,18 @@ class novedadesTecnico
     public function SituacionNovedadesVisitas()
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
-            session_start();
+            session_start();*/
             $stmt = $this->_DB->query("SELECT situacion
 					FROM SituacionNovedadesVisitas
 					ORDER BY situacion");
 
             if ($stmt->rowCount()) {
 
-                $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
+                $response = ['state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = array('state' => 0, 'msj' => 'No se encontraron registros');
+                $response = ['state' => 0, 'msj' => 'No se encontraron registros'];
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -386,9 +390,9 @@ class novedadesTecnico
     public function DetalleNovedadesVisitas($data)
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
-            session_start();
+            session_start();*/
             $stmt = $this->_DB->prepare("SELECT dnv.detalle
 					FROM DetalleNovedadesVisitas dnv
 					INNER JOIN SituacionNovedadesVisitas snv ON dnv.situacionId=snv.situacionId
@@ -398,9 +402,9 @@ class novedadesTecnico
             $stmt->execute();
 
             if ($stmt->rowCount()) {
-                $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
+                $response = ['state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = array('state' => 0, 'msj' => 'No se encontraron registrosn');
+                $response = ['state' => 0, 'msj' => 'No se encontraron registrosn'];
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -415,7 +419,7 @@ class novedadesTecnico
         session_set_cookie_params(3600);
         session_start();
         $login = $_SESSION['login'];
-        $hoy = date("Y-m-d");
+        $hoy   = date("Y-m-d");
         try {
             $stmt = $this->_DB->prepare("SELECT PedidoDespacho, observacionAsesor, pedidobloqueado, gestionAsesor, estado, AccionDespacho
 						FROM BrutalForce
@@ -440,15 +444,15 @@ class novedadesTecnico
 
         try {
 
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
             session_start();
 
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
-            } else {
-                $concepto = $data['concepto'];
-                $buscar = $data['buscar'];
+            } else {*/
+                $concepto  = $data['concepto'];
+                $buscar    = $data['buscar'];
                 $parametro = " and $concepto = '$buscar'";
 
                 $stmt = $this->_DB->query("SELECT c.cedula, c.login, c.nombre, c.password, c.expiraCuenta, c.expirapsw FROM cuentasTecnicos c where 1=1 $parametro");
@@ -459,7 +463,7 @@ class novedadesTecnico
                 } else {
                     $response = ['state' => 0];
                 }
-            }
+            /*}*/
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
@@ -470,12 +474,12 @@ class novedadesTecnico
     public function editarPwdTecnicos($data)
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
-            session_start();
-            $datos = $data['datosEdicion'];
+            session_start();*/
+            $datos  = $data['datosEdicion'];
             $cedula = $datos['cedula'];
-            $pwd = $datos['newpwd'];
+            $pwd    = $datos['newpwd'];
 
             $stmt = $this->_DB->prepare("update cuentasTecnicos set password = :password where cedula = :cedula");
             $stmt->execute([':password' => $pwd, ':cedula' => $cedula]);
@@ -495,18 +499,18 @@ class novedadesTecnico
     public function csvContrasenasTecnicos()
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
-            session_start();
+            session_start();*/
             $usuarioid = $_SESSION['login'];
-            $filename = "ContrasenasTecnicosClick" . "_" . $usuarioid . ".csv";
+            $filename  = "ContrasenasTecnicosClick" . "_.csv";
 
             $stmt = $this->_DB->query("SELECT c.cedula, c.login, c.nombre, c.password, c.expiraCuenta, c.expirapsw
 						FROM cuentasTecnicos c");
             $stmt->execute();
 
             if ($stmt->rowCount()) {
-                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $response = [$result, 201];
             } else {
                 $response = ['', 400];

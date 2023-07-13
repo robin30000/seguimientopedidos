@@ -5,20 +5,45 @@
       <div class="panel panel-default">
         <div class="panel-heading nav navbar-default">
           <ul class="nav navbar-nav navbar-left">
-            <b>Registro equipos <button type="button" class="btn btn-default btn-xs" ng-click="puente()" tooltip-placement="top"
-              uib-tooltip="Actualizar" ng-disabled="loading">
-              puente
-            </button></b>
+            <b>Registro equipos</b>
           </ul>
           <ul class="nav navbar-nav navbar-right">
+            <li>
+              <input style="width: 130px" type="text" name="fechaini" id="fechaini"
+                class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="registroEq.fechaini"
+                placeholder="Fecha Inicial" datetime-picker="" date-only autocomplete="off" date-format="yyyy-MM-dd"
+                autocomplete="off" />
+              <i class="fa fa-calendar fa-fw"></i>
+              <input style="width: 130px" type="text" name="fechafin" id="fechafin"
+                class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="registroEq.fechafin"
+                placeholder="Fecha Final" datetime-picker="" date-only autocomplete="off" date-format="yyyy-MM-dd"
+                autocomplete="off" />
+              <i class="fa fa-calendar fa-fw"></i>
+
+              <button type="button" class="btn btn-default btn-xs" ng-click="registrosEq(registroEq)"
+                ng-disabled="loading" tooltip-placement="top" uib-tooltip="Buscar">
+                <i class="fa fa-search" aria-hidden="true"></i>
+              </button>
+
+              <button type="button" class="btn btn-success btn-xs" title="Exportar Registros"
+                ng-click="csvRegistroEquipos(registroEq)" ng-disabled="loading" tooltip-placement="top" uib-tooltip="Exportar">
+                <i class="fa fa-cloud-download" aria-hidden="true"> </i>
+              </button>
+
+              <b>
+                <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs" ng-model="pedido"
+                  placeholder="Buscar pedido" autocomplete="off" />&nbsp;
+
+                <button type="button" class="btn btn-default btn-xs" ng-click="buscarPedido(pedido)"
+                tooltip-placement="top" uib-tooltip="Buscar" ng-disabled="loading">
+                  <i class="fa fa-search" aria-hidden="true"></i>
+                </button> </b>&nbsp;
+            </li>
             <li>
               <button type="button" class="btn btn-default btn-xs" ng-click="recargaPage()" tooltip-placement="top"
                 uib-tooltip="Actualizar" ng-disabled="loading">
                 <i class="fa fa-refresh" aria-hidden="true"></i>
               </button>
-
-
-              
             </li>
             &nbsp;&nbsp;
           </ul>
@@ -32,8 +57,12 @@
                 <th class="text-center" style="width: 5%">Nom. técnico</th>
                 <th class="text-center" style="width: 5%">Documento técnico</th>
                 <th class="text-center" style="width: 5%">Fecha Ingreso</th>
+                <th class="text-center" style="width: 15%">Nom. cliente</th>
+                <th class="text-center" style="width: 15%">Dir. cliente</th>
+                <th class="text-center" style="width: 5%">Municipio</th>
+                <th class="text-center" style="width: 5%">Gis</th>
                 <th class="text-center" style="width: 8%">Equipos (mac-entra)</th>
-                <th class="text-center" style="width: 8%">Observación técnico</th>
+                <th class="text-center" style="width: 5%">Obs. técnico</th>
               </tr>
             </thead>
             <tbody>
@@ -43,13 +72,28 @@
                 <td class="text-center">{{data.tecnico}}</td>
                 <td class="text-center">{{data.cc_tecnico}}</td>
                 <td class="text-center">{{data.fecha_ingreso}}</td>
+                <td class="text-center">{{data.cliente}}</td>
+                <td class="text-center">{{data.direccion}}</td>
+                <td class="text-center">{{data.municipio}}</td>
+                <td class="text-center">{{data.gis}}</td>
                 <td class="text-center">{{data.mac_entra}}</td>
-                <td class="text-center">{{data.observacion}}</td>
+                <td class="text-center">
+                  <button popover-placement="left" uib-popover="{{data.observacion}}" tooltip-placement="top"
+                    uib-tooltip="Observación asesor" type="button" class="btn btn-default btn-xs">
+                    <i class="fa fa-commenting" aria-hidden="true"></i>
+                  </button>
+                </td>
 
               </tr>
             </tbody>
           </table>
         </div>
+        <div class="text-center">
+					<ul uib-pagination class="pagination-sm" total-items="totalItems" ng-model="currentPage"
+						ng-change="pageChanged()" items-per-page="pageSize" max-size="5" boundary-links="true"
+						rotate="true" previous-text="&#8672;" next-text="&#8674;" first-text="Primero"
+						last-text="Último"></ul>
+				</div>
       </div>
     </div>
 

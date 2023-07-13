@@ -13,7 +13,12 @@ if (isset($data['method'])) {
         case 'registroEquipos':
             require_once '../class/registroEquipos.php';
             $user = new registroEquipos();
-            $user->registroEquipos();
+            $user->registroEquipos($data['data']);
+            break;
+        case 'csvRegistroEquipos':
+            require_once '../class/registroEquipos.php';
+            $user = new registroEquipos();
+            $user->csvRegistroEquipos($data['data']);
             break;
 
         default:

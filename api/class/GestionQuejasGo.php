@@ -13,14 +13,19 @@ class GestionQuejasGo
 	public function datosQuejasGo()
 	{
 		try {
+			//ini_set('memory_limit', '264M');
 
-			ini_set('session.gc_maxlifetime', 3600); // 1 hour
-			session_set_cookie_params(3600);
-			session_start();
+			//ini_set('memory_limit', '256M');
+			//error_reporting(E_ALL);
+			//ini_set('display_errors', 1);
+			//ini_set('memory_limit', '1024M');
+			//ini_set('session.gc_maxlifetime', 3600); // 1 hour
+			//session_set_cookie_params(3600);
+			//session_start();
 			//var_dump($data);exit();
-			if (!$_SESSION) {
+			/*if (!$_SESSION) {
 				$response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
-			} else {
+			} else {*/
 				/* $query = "SELECT *
 								FROM quejasgo
 								WHERE 1=1 and en_gestion != 2 ORDER BY fecha DESC"; */
@@ -38,7 +43,7 @@ class GestionQuejasGo
 				} else {
 					$response = array('state' => 0, 'msj' => "No se encontraron registros");
 				}
-			}
+			/*}*/
 
 		} catch (PDOException $th) {
 			var_dump($th->getMessage());
@@ -50,9 +55,9 @@ class GestionQuejasGo
 	public function datosQuejasGoTerminado($data)
 	{
 		try {
-			ini_set('session.gc_maxlifetime', 3600); // 1 hour
+			/*ini_set('session.gc_maxlifetime', 3600); // 1 hour
 			session_set_cookie_params(3600);
-			session_start();
+			session_start();*/
 			$pagenum = $data['page'];
 			$pagesize = $data['size'];
 			$offset = ($pagenum - 1) * $pagesize;
@@ -114,7 +119,7 @@ class GestionQuejasGo
 						$res = array('state' => 1, 'msj' => 'Pedido ' . $response[0]['pedido'] . ' Ahora esta Bloqueado');
 					}
 				} elseif (($response[0]['en_gestion'] == 1) && ($response[0]['asesor'] == $login_gestion)) {
-					$stmt = $this->_DB->prepare("UPDATE quejasgo SET en_gestion = 0, asesor = '', fecha_marca = '' WHERE id = :id");
+					$stmt = $this->_DB->prepare("UPDATE quejasgo SET en_gestion = 0, asesor = '' WHERE id = :id");
 					$stmt->execute(array(':id' => $id));
 					if ($stmt->rowCount() == 1) {
 						$res = array('state' => 1, 'msj' => 'Pedido ' . $response[0]['pedido'] . ' Ahora esta Desbloqueado');
@@ -133,14 +138,15 @@ class GestionQuejasGo
 	public function guardaGestionQuejasGo($data)
 	{
 		try {
-			ini_set('session.gc_maxlifetime', 3600); // 1 hour
+			/*ini_set('session.gc_maxlifetime', 3600); // 1 hour
 			session_set_cookie_params(3600);
-			session_start();
+			session_start();*/
 			$accion = $data['accion'];
 			$gestion = $data['gestion'];
 			$id = $data['id'];
-			$login_gestion = $_SESSION['login'];
+			$login_gestion = $data['login_gestion'];
 			$observacion_seguimiento = $data['observacion_seguimiento'];
+			$tiempo = $data['tiempo'];
 
 			$stmt = $this->_DB->prepare("SELECT asesor FROM quejasgo WHERE id = :id");
 			$stmt->execute(array(':id' => $id));
@@ -149,13 +155,14 @@ class GestionQuejasGo
 				$rlogin = $resLogin[0]['asesor'];
 
 				if ($rlogin != $login_gestion) {
-					$res = array('state' => 0, 'msj' => 'El pedido se encuentra en gestion por otro agente');
+					$res = array('state' => 0, 'msj' => 'El pedido se encuentra en gestión por otro agente');
 				} else {
 					$stmt = $this->_DB->prepare("UPDATE quejasgo SET accion = :accion, 
 													                                gestion_asesor = :gestion, 
 													                                fecha_gestion = :fecha_gestion,
 													                                observacion_gestion = :observacion_gestion,
-													                                en_gestion = 2
+													                                en_gestion = 2,
+													                                duracion =  :tiempo
 										        WHERE id = :id");
 					$stmt->execute(
 						array(
@@ -163,7 +170,8 @@ class GestionQuejasGo
 							':accion' => $accion,
 							':gestion' => $gestion,
 							':fecha_gestion' => date('Y-m-d H:i:s'),
-							':observacion_gestion' => $observacion_seguimiento
+							':observacion_gestion' => $observacion_seguimiento,
+							':tiempo' => $tiempo
 						)
 					);
 					if ($stmt->rowCount() == 1) {
@@ -191,9 +199,9 @@ class GestionQuejasGo
 															 if ($rlogin != $login_gestion) {
 																 $res = array('state' => 0, 'msj' => 'El pedido se encuentra en gestion por otro agente');
 															 } else {
-																 $stmt = $this->_DB->prepare("UPDATE ventasInstaleTiendas SET tipificacion = :tipificacion, 
-																																 obs_tipificacion = :obs_tipificacion, 
-																																 login_gestion = :login_gestion, 
+																 $stmt = $this->_DB->prepare("UPDATE ventasInstaleTiendas SET tipificacion = :tipificacion,
+																																 obs_tipificacion = :obs_tipificacion,
+																																 login_gestion = :login_gestion,
 																																 fecha_gestion = :fecha_gestion,
 																																 observacion_gestion = :observacion_gestion,
 																																 en_gestion = 2
@@ -228,9 +236,9 @@ class GestionQuejasGo
 	public function csvQuejaGo($data)
 	{
 		try {
-			ini_set('session.gc_maxlifetime', 3600); // 1 hour
+			/*ini_set('session.gc_maxlifetime', 3600); // 1 hour
 			session_set_cookie_params(3600);
-			session_start();
+			session_start();*/
 			$pagenum = $data['page'];
 			$pagesize = $data['size'];
 			$offset = ($pagenum - 1) * $pagesize;
@@ -277,6 +285,3 @@ class GestionQuejasGo
 		echo json_encode($response);
 	}
 }
-
-
-?>

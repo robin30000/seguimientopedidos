@@ -13,13 +13,13 @@ class gestionEscalonamiento
     {
 
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
             session_start();
 
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
-            } else {
+            } else {*/
 
                 /*LOGICA QUE LLEVA LA INFORMACION A TV, INTERNET-ToIp Y CORREGIR PORTAFOLIO*/
                 $stmt = $this->_BD->query("SELECT e.pedido,
@@ -65,7 +65,7 @@ class gestionEscalonamiento
                 } else {
                     $response = array('state' => 1, 'msj' => 'No se encontraron registros');
                 }
-            }
+           /* }*/
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
@@ -78,9 +78,9 @@ class gestionEscalonamiento
     {
 
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
-            session_start();
+            session_start();*/
             $stmt = $this->_BD->query("SELECT e.pedido,
                                                    e.tarea,
                                                    e.tecnico,
@@ -137,9 +137,9 @@ class gestionEscalonamiento
     {
 
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
-            session_start();
+            session_start();*/
             $today = date("Y-m-d H:i:s");
 
             $params = json_decode(file_get_contents('php://input'), true);

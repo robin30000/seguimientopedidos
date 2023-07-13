@@ -1,0 +1,23 @@
+angular.module("seguimientopedidos", [
+    "ngRoute",
+    "ngCookies",
+    "ng-fusioncharts",
+    "ngAnimate",
+    "ngTouch",
+    "ui.bootstrap",
+    "angularjs-datetime-picker",
+    "angularFileUpload",
+    "ui",
+    "jcs-autoValidate",
+    "ui.grid",
+    "ui.grid.pagination",
+    "ui.grid.selection",
+    "ui.grid.edit",
+    "ui.grid.cellNav",
+    "ui.grid.exporter",
+    "ui.grid.autoResize",
+    "chart.js",
+    "angular.filter",
+    "ui.bootstrap",
+    "ui.select2"
+]);

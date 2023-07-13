@@ -16,7 +16,7 @@
                     <div class="row">
 
                         <div class="col-sm-4">
-                            <h4>Submenus <button type="button" class="btn btn-info btn-xs" tooltip-placement="top"
+                            <h4>Submenus <button type="button" class="btn btn-default btn-xs" tooltip-placement="top"
                                     uib-tooltip="Agregar nuevo submenu" ng-click="AgregarSubmenu()">
                                     <i class="fa fa-plus" aria-hidden="true"> </i>
                                 </button></h4>
@@ -36,7 +36,7 @@
                                         <td>{{m.padre}}</td>
 
                                         <td class="icons_in_tables">
-                                            <button type="button" class="btn btn-info btn-xs" title="Cambiar estado"
+                                            <button type="button" class="btn btn-default btn-xs" title="Cambiar estado"
                                                 tooltip-placement="top" uib-tooltip="Cambiar estado"
                                                 ng-click="cambiaEstadoSubmenu(m.id,m.estado)">
                                                 <i class="fa fa-edit" aria-hidden="true"> </i>
@@ -47,7 +47,7 @@
                             </table>
                         </div>
                         <div class="col-sm-3">
-                            <h4>Perfiles <button type="button" class="btn btn-info btn-xs" tooltip-placement="top"
+                            <h4>Perfiles <button type="button" class="btn btn-default btn-xs" tooltip-placement="top"
                                     uib-tooltip="Agregar perfil" ng-click="AgregarPerfil()">
                                     <i class="fa fa-plus" aria-hidden="true"> </i>
                                 </button></h4>
@@ -64,7 +64,7 @@
                                         <td>{{m.perfil}}</td>
                                         <td>{{m.nombre}}</td>
                                         <td class="icons_in_tables">
-                                            <button type="button" class="btn btn-info btn-xs"
+                                            <button type="button" class="btn btn-default btn-xs"
                                                 ng-click="showPerfilMenu(m.perfil, m.nombre)" tooltip-placement="top"
                                                 uib-tooltip="Ver mas">
                                                 <i class="fa fa-eye" aria-hidden="true"> </i>
@@ -89,7 +89,7 @@
                                         <td>{{m.nombre}}</td>
                                         <td>{{m.estado}}</td>
                                         <td style="display: flex;gap: 3px;">
-                                            <button type="button" class="btn btn-info btn-xs" tooltip-placement="top"
+                                            <button type="button" class="btn btn-default btn-xs" tooltip-placement="top"
                                                 uib-tooltip="Activa inactiva - menu">
                                                 <i class="fa fa-edit" aria-hidden="true"> </i>
                                             </button>

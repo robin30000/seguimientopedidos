@@ -44,16 +44,16 @@ app.service("fileUpload", [
                 $http.post("services/cargar_datos", fd, {
                     withCredentials: false,
                     transformRequest: angular.identity,
-                    headers: { "Content-Type": undefined },
-                    params: { user: user, tipocarga: tipocarga },
+                    headers: {"Content-Type": undefined},
+                    params: {user: user, tipocarga: tipocarga},
                     responseType: "arraybuffer",
                 });
             } else {
                 $http.post("services/cargar_datosNPS", fd, {
                     withCredentials: false,
                     transformRequest: angular.identity,
-                    headers: { "Content-Type": undefined },
-                    params: { user: user },
+                    headers: {"Content-Type": undefined},
+                    params: {user: user},
                     responseType: "arraybuffer",
                 });
             }
@@ -76,8 +76,8 @@ app.service("fileUploadrepa", [
             $http.post("services/cargar_datosNPSreparacion", fd, {
                 withCredentials: false,
                 transformRequest: angular.identity,
-                headers: { "Content-Type": undefined },
-                params: { user: user },
+                headers: {"Content-Type": undefined},
+                params: {user: user},
                 responseType: "arraybuffer",
             });
         };
@@ -101,8 +101,8 @@ app.service("cargaRegistros", [
             $http.post("api/class/subeArchivo.php", fd, {
                 withCredentials: false,
                 transformRequest: angular.identity,
-                headers: { "Content-Type": undefined },
-                params: { user: user },
+                headers: {"Content-Type": undefined},
+                params: {user: user},
                 //responseType: "arraybuffer",
             })
                 .then(function (response) {
@@ -911,12 +911,13 @@ app.factory("services", [
             return $http.post(serviceBase1 + "quejasGoCtrl.php", data);
         };
 
-        obj.guardarQuejaGo = function (dataquejago, duracion) {
+        obj.guardarQuejaGo = function (dataquejago, duracion, login) {
             var data = {
                 method: "registrarQuejaGo",
                 data: {
                     dataquejago: dataquejago,
                     duracion: duracion,
+                    login: login
                 },
             };
             return $http.post(serviceBase1 + "quejasGoCtrl.php", data);
@@ -1043,7 +1044,7 @@ app.factory("services", [
         obj.marcarengestion = function (datos, login) {
             var data = {
                 method: "marcarengestion",
-                data: { datos, login },
+                data: {datos, login},
             };
             return $http.post(serviceBase1 + "contingenciaCtrl.php", data);
         };
@@ -1068,6 +1069,7 @@ app.factory("services", [
             var data = {
                 method: "guardarpedidocontingencia",
                 data: datos,
+
             };
             return $http.post(serviceBase1 + "contingenciaCtrl.php", data);
         };
@@ -1586,7 +1588,7 @@ app.factory("services", [
         obj.BuscarSoporteGpon = function (pedido) {
             var data = {
                 method: "BuscarSoporteGpon",
-                data: { pedido: pedido },
+                data: {pedido: pedido},
             };
             return $http.post(serviceBase1 + "soporteGponCtrl.php", data);
         };
@@ -1917,13 +1919,13 @@ app.factory("services", [
         };
 
         obj.contigenciaHoraAgenteEmtelco = function (datos) {
-            var data = { method: 'AgenteEmtelco', data: datos }
+            var data = {method: 'AgenteEmtelco', data: datos}
             return $http.post(serviceBase1 + 'kpiCtrl.php', data);
 
         }
 
         obj.quitarUsuarioKpi = function (datos) {
-            var data = { method: 'quitarUsuarioKpi', data: datos }
+            var data = {method: 'quitarUsuarioKpi', data: datos}
             return $http.post(serviceBase1 + 'kpiCtrl.php', data);
 
         }
@@ -2034,32 +2036,32 @@ app.factory("services", [
          */
 
         obj.datosQuejasGo = function () {
-            data = { method: 'datosQuejasGo' }
+            data = {method: 'datosQuejasGo'}
             return $http.post(serviceBase1 + 'gestionQuejasGoCtrl.php', data);
         }
 
         obj.datosQuejasGoTerminado = function (datos) {
-            data = { method: 'datosQuejasGoTerminado', data: datos }
+            data = {method: 'datosQuejasGoTerminado', data: datos}
             return $http.post(serviceBase1 + 'gestionQuejasGoCtrl.php', data);
         }
 
         obj.marcarEnGestionQuejasGo = function (datos) {
-            data = { method: 'marcarEnGestionQuejasGo', data: datos }
+            data = {method: 'marcarEnGestionQuejasGo', data: datos}
             return $http.post(serviceBase1 + 'gestionQuejasGoCtrl.php', data);
         }
 
         obj.guardaGestionQuejasGo = function (datos) {
-            data = { method: 'guardaGestionQuejasGo', data: datos }
+            data = {method: 'guardaGestionQuejasGo', data: datos}
             return $http.post(serviceBase1 + 'gestionQuejasGoCtrl.php', data);
         }
 
         obj.detalleNumeroQuejaGo = function (datos) {
-            data = { method: 'detalleNumeroQuejaGo', data: datos }
+            data = {method: 'detalleNumeroQuejaGo', data: datos}
             return $http.post(serviceBase1 + 'gestionQuejasGoCtrl.php', data);
         }
 
         obj.csvQuejaGo = function (datos) {
-            data = { method: 'csvQuejaGo', data: datos }
+            data = {method: 'csvQuejaGo', data: datos}
             return $http.post(serviceBase1 + 'gestionQuejasGoCtrl.php', data);
         }
 
@@ -2068,42 +2070,42 @@ app.factory("services", [
          */
 
         obj.getMenu = function (datos) {
-            data = { method: 'getMenu' }
+            data = {method: 'getMenu'}
             return $http.post(serviceBase1 + 'MenuPerfilCtrl.php', data);
         }
 
         obj.getSubmenu = function (datos) {
-            data = { method: 'getSubmenu' }
+            data = {method: 'getSubmenu'}
             return $http.post(serviceBase1 + 'MenuPerfilCtrl.php', data);
         }
 
         obj.getPerfil = function (datos) {
-            data = { method: 'getPerfil' }
+            data = {method: 'getPerfil'}
             return $http.post(serviceBase1 + 'MenuPerfilCtrl.php', data);
         }
 
         obj.verMenuPerfil = function (datos) {
-            data = { method: 'verMenuPerfil', data: datos }
+            data = {method: 'verMenuPerfil', data: datos}
             return $http.post(serviceBase1 + 'MenuPerfilCtrl.php', data);
         }
 
         obj.cambioMenu = function (datos) {
-            data = { method: 'cambioMenu', data: datos }
+            data = {method: 'cambioMenu', data: datos}
             return $http.post(serviceBase1 + 'MenuPerfilCtrl.php', data);
         }
 
         obj.cambiaEstadoSubmenu = function (datos) {
-            data = { method: 'cambiaEstadoSubmenu', data: datos }
+            data = {method: 'cambiaEstadoSubmenu', data: datos}
             return $http.post(serviceBase1 + 'MenuPerfilCtrl.php', data);
         }
 
         obj.guardaNuevoSubmenu = function (datos) {
-            data = { method: 'guardaNuevoSubmenu', data: datos }
+            data = {method: 'guardaNuevoSubmenu', data: datos}
             return $http.post(serviceBase1 + 'MenuPerfilCtrl.php', data);
         }
 
         obj.guardaPerfil = function (datos) {
-            data = { method: 'guardaPerfil', data: datos }
+            data = {method: 'guardaPerfil', data: datos}
             return $http.post(serviceBase1 + 'MenuPerfilCtrl.php', data);
         }
 
@@ -2125,6 +2127,50 @@ app.factory("services", [
             }
             return $http.post(serviceBase1 + 'validacionesAppCtrl.php', data);
         }
+
+        obj.checkSession = function () {
+            let data = {
+                method: 'checkSession',
+            }
+            return $http.post(serviceBase1 + 'authenticationCtrl.php', data);
+        }
+
+        obj.windowsBridge = function (datos) {
+            let data = {
+                method: 'Puente',
+                data: datos
+            }
+            return $http.post(serviceBase1 + 'PuenteCtrl.php', data);
+        }
+
+        /**
+         * registroEquipos
+         */
+
+        obj.registroEquipos = function (datos) {
+            let data = {
+                method: 'registroEquipos',
+                data: datos
+            }
+            return $http.post(serviceBase1 + 'registroEquiposCtrl.php', data);
+        }
+
+        obj.csvRegistroEquipos = function (datos) {
+            let data = {
+                method: 'csvRegistroEquipos',
+                data: datos
+            }
+            return $http.post(serviceBase1 + 'registroEquiposCtrl.php', data);
+        }
+
+        obj.acualizaTecnicos = function (datos) {
+            let data = {
+                method: 'acualizaTecnicos',
+                data: datos
+            }
+            return $http.post(serviceBase1 + 'userCtrl.php', data);
+        };
+
 
         return obj;
     },
@@ -2200,7 +2246,10 @@ app.controller("loginCtrl", function ($scope, $rootScope, $location, $cookies, s
                 $location.path("/actividades");
                 $cookies.put("usuarioseguimiento", JSON.stringify(data.data.data));
 
+                //console.log($cookies.get("usuarioseguimiento"));
+
                 var galleta = JSON.parse($cookies.get("usuarioseguimiento"));
+                //var galleta = $cookies.get("usuarioseguimiento");
                 $rootScope.galletainfo = galleta;
                 $rootScope.permiso = true;
             }
@@ -2212,7 +2261,8 @@ app.controller("loginCtrl", function ($scope, $rootScope, $location, $cookies, s
     };
 });
 
-app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services) {
+app.controller('actividadesCtrl',
+    function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services) {
     $scope.iniciaGestion = true;
     $scope.plantillaReparaciones = 0;
     $scope.selectSubAccion = false;
@@ -2232,6 +2282,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
     $scope.verplantilla = false;
     $scope.ipServer = "10.100.66.254";
     var timer;
+    $scope.inicio = 0;
 
     $scope.usuarios = function (editarUser) {
         $scope.update = false;
@@ -2259,8 +2310,8 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
     $scope.editarModal = function () {
         $scope.errorDatos = null;
         $scope.Tecnico = {};
-        $scope.idUsuario = $rootScope.galletainfo.ID;
-        $scope.UsuarioNom = $rootScope.galletainfo.NOMBRE;
+        $scope.idUsuario = $rootScope.galletainfo.id;
+        $scope.UsuarioNom = $rootScope.galletainfo.nombre;
         $scope.TituloModal = "Editar Usuario con el ID:";
     }
 
@@ -2310,71 +2361,71 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         if ($scope.gestionmanual.proceso == "Plan rescate" && ($scope.gestionmanual.accion == "Pendiente" || $scope.gestionmanual.accion == "Incompleto")) {
             $scope.validarsubaccion = true;
             $scope.listadoSubAcciones = [
-                { ID: '1011 - Fuera de cobertura', SUBACCION: '1011 - Fuera de cobertura' },
-                { ID: '1019 - Mala asesoria', SUBACCION: '1019 - Mala asesoria' },
-                { ID: '1020 - Incumplimiento contratista', SUBACCION: '1020 - Incumplimiento contratista' },
-                { ID: '1021 - Imposibilidad técnica', SUBACCION: '1021 - Imposibilidad técnica' },
-                { ID: '1022 - Tap copado', SUBACCION: '1022 - Tap copado' },
-                { ID: '1025 - Cliente no desea', SUBACCION: '1025 - Cliente no desea' },
-                { ID: '1026 - Casa sola', SUBACCION: '1026 - Casa sola' },
-                { ID: '1028 - Aplazada por cliente', SUBACCION: '1028 - Aplazada por cliente' },
-                { ID: '1209 - Zona de invasión', SUBACCION: '1209 - Zona de invasión' },
-                { ID: '1217 - Equipo no engancha', SUBACCION: '1217 - Equipo no engancha' },
-                { ID: '1505 - Dirección errada', SUBACCION: '1505 - Dirección errada' },
-                { ID: '1506 - Cliente solicitó otro producto', SUBACCION: '1506 - Cliente solicitó otro producto' },
-                { ID: '1508 - Ductos obstruídos', SUBACCION: '1508 - Ductos obstruídos' },
-                { ID: '1510 - Cliente no contactado', SUBACCION: '1510 - Cliente no contactado' },
-                { ID: '2898 - Requiere visita supervisor ETP', SUBACCION: '2898 - Requiere visita supervisor ETP' },
-                { ID: '2899 - Aplazada por lluvia', SUBACCION: '2899 - Aplazada por lluvia' },
-                { ID: '8383 - Problemas plataformas', SUBACCION: '8383 - Problemas plataformas' },
-                { ID: 'O-01 - Red pendiente en edificios y urbanizaciones', SUBACCION: 'O-01 - Red pendiente en edificios y urbanizaciones' },
-                { ID: 'O-02 - Pendiente cliente no autoriza', SUBACCION: 'O-02 - Pendiente cliente no autoriza' },
-                { ID: 'O-06 - Gestión de instalaciones', SUBACCION: 'O-06 - Gestión de instalaciones' },
-                { ID: 'O-09 - Pendiente por porteria madera', SUBACCION: 'O-09 - Pendiente por porteria madera' },
-                { ID: 'O-11 - Pend tiene línea con otro operador', SUBACCION: 'O-11 - Pend tiene línea con otro operador' },
-                { ID: 'O-13 - Red pendiente en exteriores', SUBACCION: 'O-13 - Red pendiente en exteriores' },
-                { ID: 'O-14 - Ped solicitud repetida', SUBACCION: 'O-14 - Ped solicitud repetida' },
-                { ID: 'O-15 - Pendiente por mala asignación', SUBACCION: 'O-15 - Pendiente por mala asignación' },
-                { ID: 'O-20 - Pendi inconsistencias infraestructura', SUBACCION: 'O-20 - Pendi inconsistencias infraestructura' },
-                { ID: 'O-40 - Pendiente x orden público y/o factores climát', SUBACCION: 'O-40 - Pendiente x orden público y/o factores climát' },
-                { ID: 'O-48 - Red mal estado', SUBACCION: 'O-48 - Red mal estado' },
-                { ID: 'O-49 - No desea el servicio', SUBACCION: 'O-49 - No desea el servicio' },
-                { ID: 'O-50 - Cliente ilocalizado', SUBACCION: 'O-50 - Cliente ilocalizado' },
-                { ID: 'O-51 - Pend tiene línea con otro operador', SUBACCION: 'O-51 - Pend tiene línea con otro operador' },
-                { ID: 'O-53 - Inconsistencia información', SUBACCION: 'O-53 - Inconsistencia información' },
-                { ID: 'O-69 - Pen cliente no contactado', SUBACCION: 'O-69 - Pen cliente no contactado' },
-                { ID: 'O-85 - Red externa pendiente', SUBACCION: 'O-85 - Red externa pendiente' },
-                { ID: 'O-86 - Pendiente por nodo xdsl', SUBACCION: 'O-86 - Pendiente por nodo xdsl' },
-                { ID: 'O-100 - Pendiente solución con proyecto', SUBACCION: 'O-100 - Pendiente solución con proyecto' },
-                { ID: 'O-101 - Renumerar o reconfigurar oferta', SUBACCION: 'O-101 - Renumerar o reconfigurar oferta' },
-                { ID: 'O-103 - Pendiente por autorización de terceros', SUBACCION: 'O-103 - Pendiente por autorización de terceros' },
-                { ID: 'O-112 - Pendiente por reparación de red', SUBACCION: 'O-112 - Pendiente por reparación de red' },
-                { ID: 'OT-C01 - Cliente no autoriza', SUBACCION: 'OT-C01 - Cliente no autoriza' },
-                { ID: 'OT-C04 - Orden público', SUBACCION: 'OT-C04 - Orden público' },
-                { ID: 'OT-C08 - Reconfigurar pedido', SUBACCION: 'OT-C08 - Reconfigurar pedido' },
-                { ID: 'OT-C10 - Validar condición instalación', SUBACCION: 'OT-C10 - Validar condición instalación' },
-                { ID: 'OT-C12 - Reconfigurar motivo técnico', SUBACCION: 'OT-C12 - Reconfigurar motivo técnico' },
-                { ID: 'OT-C14 - Orden del suscriptor', SUBACCION: 'OT-C14 - Orden del suscriptor' },
-                { ID: 'OT-C17 - Autorización de terceros', SUBACCION: 'OT-C17 - Autorización de terceros' },
-                { ID: 'OT-C19 - Factores climáticos', SUBACCION: 'OT-C19 - Factores climáticos' },
-                { ID: 'OT-T01 - Red pendiente edif y urb', SUBACCION: 'OT-T01 - Red pendiente edif y urb' },
-                { ID: 'OT-T04 - Red externa', SUBACCION: 'OT-T04 - Red externa' },
-                { ID: 'OT-T05 - Mala asignación', SUBACCION: 'OT-T05 - Mala asignación' },
-                { ID: 'OT-T10 - Reparación de red externa', SUBACCION: 'OT-T10 - Reparación de red externa' },
-                { ID: 'P-CRM - Reagendado', SUBACCION: 'P-CRM - Reagendado' },
-                { ID: 'O-08 - Pendiente por orden del suscriptor', SUBACCION: 'O-08 - Pendiente por orden del suscriptor' },
-                { ID: 'O-23 - Pendiente no contestan', SUBACCION: 'O-23 - Pendiente no contestan' },
-                { ID: 'OT-C02 - Cliente ilocalizado', SUBACCION: 'OT-C02 - Cliente ilocalizado' },
-                { ID: 'OT-C06 - Inconsistencia información', SUBACCION: 'OT-C06 - Inconsistencia información' },
-                { ID: 'OT-T02 - Gestión de instalaciones', SUBACCION: 'OT-T02 - Gestión de instalaciones' },
-                { ID: 'O-34 - Pendiente por factores climáticos', SUBACCION: 'O-34 - Pendiente por factores climáticos' },
-                { ID: 'OT-C15 - Por agendar', SUBACCION: 'OT-C15 - Por agendar' },
-                { ID: 'OT-T19 - Plataforma caída', SUBACCION: 'OT-T19 - Plataforma caída' },
-                { ID: '1014 - Poste averiado', SUBACCION: '1014 - Poste averiado' },
-                { ID: 'O-24 - Pendi postería', SUBACCION: 'O-24 - Pendi postería' },
-                { ID: 'OT-C05 - Gestión fraudes instalaciones', SUBACCION: 'OT-C05 - Gestión fraudes instalaciones' },
-                { ID: 'OT-C11 - Cancelar motivo técnico', SUBACCION: 'OT-C11 - Cancelar motivo técnico' },
-                { ID: 'OT-T17 - Solución con proyecto', SUBACCION: 'OT-T17 - Solución con proyecto' }
+                {ID: '1011 - Fuera de cobertura', SUBACCION: '1011 - Fuera de cobertura'},
+                {ID: '1019 - Mala asesoria', SUBACCION: '1019 - Mala asesoria'},
+                {ID: '1020 - Incumplimiento contratista', SUBACCION: '1020 - Incumplimiento contratista'},
+                {ID: '1021 - Imposibilidad técnica', SUBACCION: '1021 - Imposibilidad técnica'},
+                {ID: '1022 - Tap copado', SUBACCION: '1022 - Tap copado'},
+                {ID: '1025 - Cliente no desea', SUBACCION: '1025 - Cliente no desea'},
+                {ID: '1026 - Casa sola', SUBACCION: '1026 - Casa sola'},
+                {ID: '1028 - Aplazada por cliente', SUBACCION: '1028 - Aplazada por cliente'},
+                {ID: '1209 - Zona de invasión', SUBACCION: '1209 - Zona de invasión'},
+                {ID: '1217 - Equipo no engancha', SUBACCION: '1217 - Equipo no engancha'},
+                {ID: '1505 - Dirección errada', SUBACCION: '1505 - Dirección errada'},
+                {ID: '1506 - Cliente solicitó otro producto', SUBACCION: '1506 - Cliente solicitó otro producto'},
+                {ID: '1508 - Ductos obstruídos', SUBACCION: '1508 - Ductos obstruídos'},
+                {ID: '1510 - Cliente no contactado', SUBACCION: '1510 - Cliente no contactado'},
+                {ID: '2898 - Requiere visita supervisor ETP', SUBACCION: '2898 - Requiere visita supervisor ETP'},
+                {ID: '2899 - Aplazada por lluvia', SUBACCION: '2899 - Aplazada por lluvia'},
+                {ID: '8383 - Problemas plataformas', SUBACCION: '8383 - Problemas plataformas'},
+                {ID: 'O-01 - Red pendiente en edificios y urbanizaciones', SUBACCION: 'O-01 - Red pendiente en edificios y urbanizaciones'},
+                {ID: 'O-02 - Pendiente cliente no autoriza', SUBACCION: 'O-02 - Pendiente cliente no autoriza'},
+                {ID: 'O-06 - Gestión de instalaciones', SUBACCION: 'O-06 - Gestión de instalaciones'},
+                {ID: 'O-09 - Pendiente por porteria madera', SUBACCION: 'O-09 - Pendiente por porteria madera'},
+                {ID: 'O-11 - Pend tiene línea con otro operador', SUBACCION: 'O-11 - Pend tiene línea con otro operador'},
+                {ID: 'O-13 - Red pendiente en exteriores', SUBACCION: 'O-13 - Red pendiente en exteriores'},
+                {ID: 'O-14 - Ped solicitud repetida', SUBACCION: 'O-14 - Ped solicitud repetida'},
+                {ID: 'O-15 - Pendiente por mala asignación', SUBACCION: 'O-15 - Pendiente por mala asignación'},
+                {ID: 'O-20 - Pendi inconsistencias infraestructura', SUBACCION: 'O-20 - Pendi inconsistencias infraestructura'},
+                {ID: 'O-40 - Pendiente x orden público y/o factores climát', SUBACCION: 'O-40 - Pendiente x orden público y/o factores climát'},
+                {ID: 'O-48 - Red mal estado', SUBACCION: 'O-48 - Red mal estado'},
+                {ID: 'O-49 - No desea el servicio', SUBACCION: 'O-49 - No desea el servicio'},
+                {ID: 'O-50 - Cliente ilocalizado', SUBACCION: 'O-50 - Cliente ilocalizado'},
+                {ID: 'O-51 - Pend tiene línea con otro operador', SUBACCION: 'O-51 - Pend tiene línea con otro operador'},
+                {ID: 'O-53 - Inconsistencia información', SUBACCION: 'O-53 - Inconsistencia información'},
+                {ID: 'O-69 - Pen cliente no contactado', SUBACCION: 'O-69 - Pen cliente no contactado'},
+                {ID: 'O-85 - Red externa pendiente', SUBACCION: 'O-85 - Red externa pendiente'},
+                {ID: 'O-86 - Pendiente por nodo xdsl', SUBACCION: 'O-86 - Pendiente por nodo xdsl'},
+                {ID: 'O-100 - Pendiente solución con proyecto', SUBACCION: 'O-100 - Pendiente solución con proyecto'},
+                {ID: 'O-101 - Renumerar o reconfigurar oferta', SUBACCION: 'O-101 - Renumerar o reconfigurar oferta'},
+                {ID: 'O-103 - Pendiente por autorización de terceros', SUBACCION: 'O-103 - Pendiente por autorización de terceros'},
+                {ID: 'O-112 - Pendiente por reparación de red', SUBACCION: 'O-112 - Pendiente por reparación de red'},
+                {ID: 'OT-C01 - Cliente no autoriza', SUBACCION: 'OT-C01 - Cliente no autoriza'},
+                {ID: 'OT-C04 - Orden público', SUBACCION: 'OT-C04 - Orden público'},
+                {ID: 'OT-C08 - Reconfigurar pedido', SUBACCION: 'OT-C08 - Reconfigurar pedido'},
+                {ID: 'OT-C10 - Validar condición instalación', SUBACCION: 'OT-C10 - Validar condición instalación'},
+                {ID: 'OT-C12 - Reconfigurar motivo técnico', SUBACCION: 'OT-C12 - Reconfigurar motivo técnico'},
+                {ID: 'OT-C14 - Orden del suscriptor', SUBACCION: 'OT-C14 - Orden del suscriptor'},
+                {ID: 'OT-C17 - Autorización de terceros', SUBACCION: 'OT-C17 - Autorización de terceros'},
+                {ID: 'OT-C19 - Factores climáticos', SUBACCION: 'OT-C19 - Factores climáticos'},
+                {ID: 'OT-T01 - Red pendiente edif y urb', SUBACCION: 'OT-T01 - Red pendiente edif y urb'},
+                {ID: 'OT-T04 - Red externa', SUBACCION: 'OT-T04 - Red externa'},
+                {ID: 'OT-T05 - Mala asignación', SUBACCION: 'OT-T05 - Mala asignación'},
+                {ID: 'OT-T10 - Reparación de red externa', SUBACCION: 'OT-T10 - Reparación de red externa'},
+                {ID: 'P-CRM - Reagendado', SUBACCION: 'P-CRM - Reagendado'},
+                {ID: 'O-08 - Pendiente por orden del suscriptor', SUBACCION: 'O-08 - Pendiente por orden del suscriptor'},
+                {ID: 'O-23 - Pendiente no contestan', SUBACCION: 'O-23 - Pendiente no contestan'},
+                {ID: 'OT-C02 - Cliente ilocalizado', SUBACCION: 'OT-C02 - Cliente ilocalizado'},
+                {ID: 'OT-C06 - Inconsistencia información', SUBACCION: 'OT-C06 - Inconsistencia información'},
+                {ID: 'OT-T02 - Gestión de instalaciones', SUBACCION: 'OT-T02 - Gestión de instalaciones'},
+                {ID: 'O-34 - Pendiente por factores climáticos', SUBACCION: 'O-34 - Pendiente por factores climáticos'},
+                {ID: 'OT-C15 - Por agendar', SUBACCION: 'OT-C15 - Por agendar'},
+                {ID: 'OT-T19 - Plataforma caída', SUBACCION: 'OT-T19 - Plataforma caída'},
+                {ID: '1014 - Poste averiado', SUBACCION: '1014 - Poste averiado'},
+                {ID: 'O-24 - Pendi postería', SUBACCION: 'O-24 - Pendi postería'},
+                {ID: 'OT-C05 - Gestión fraudes instalaciones', SUBACCION: 'OT-C05 - Gestión fraudes instalaciones'},
+                {ID: 'OT-C11 - Cancelar motivo técnico', SUBACCION: 'OT-C11 - Cancelar motivo técnico'},
+                {ID: 'OT-T17 - Solución con proyecto', SUBACCION: 'OT-T17 - Solución con proyecto'}
             ];
         } else {
             services.getSubAcciones($scope.gestionmanual.proceso, $scope.gestionmanual.accion).then(function (data) {
@@ -2395,11 +2446,9 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
 
         $scope.listadocodigos = {};
         services.getCodigos($scope.gestionmanual.proceso, $scope.gestionmanual.UNESourceSystem).then(function (data) {
-            $scope.listadocodigos = data.data.data;
+            $scope.listadocodigos = data.data[0];
         }, function errorCallback(response) {
-            if (response.status == "200") {
-
-            }
+            console.log(response);
         });
     }
 
@@ -2448,7 +2497,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         }
 
         if ($scope.gestionmanual.accion == "Registrar materiales") {
-            $scope.materiales = [{ id: '1', tipoCable: 'No uso', inicio: '', fin: '' }];
+            $scope.materiales = [{id: '1', tipoCable: 'No uso', inicio: '', fin: ''}];
             $('#Registrarmateriales').modal('show');
             $scope.OpenModal = "Registrarmateriales";
         }
@@ -2572,7 +2621,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
 
     $scope.addNuevoMaterial = function () {
         var newItemNo = $scope.materiales.length + 1;
-        $scope.materiales.push({ 'id': +newItemNo, tipoCable: 'No uso' });
+        $scope.materiales.push({'id': +newItemNo, tipoCable: 'No uso'});
     }
 
     $scope.addEquipoRecoger = function () {
@@ -3442,10 +3491,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         $scope.bb8Telefonia = 0;
         $scope.bb8Television = 0;
 
-        $scope.url =
-            "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetClick/" + pedido;
-        $http
-            .get($scope.url, { timeout: 4000 })
+        services.windowsBridge("BB8/contingencias/Buscar/GetClick/" + pedido)
             .then(function (data) {
                 $scope.clic = data.data[0];
                 $scope.UNEPedido = $scope.clic.UNEPedido;
@@ -3462,11 +3508,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
                 console.log($scope.clic.Duration);
                 $scope.Duration = parseInt($scope.clic.Duration);
                 $scope.Duration = ($scope.Duration / 60);
-                $scope.url =
-                    "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanBaMSS/" +
-                    pedido;
-                $http
-                    .get($scope.url, { timeout: 4000 })
+                services.windowsBridge("BB8/contingencias/Buscar/GetPlanBaMSS/" + pedido)
                     .then(function (data) {
                         console.log(data, " internet ");
                         if (data.data.length > 0) {
@@ -3484,32 +3526,26 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
                             }
 
                         } else {
-                            $scope.url =
-                                "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanBaMSS/" +
-                                $scope.clic.UNECodigoDireccionServicio;
-                            $http.get($scope.url, { timeout: 4000 }).then(function (data) {
-                                console.log(data, " internet2 ");
-                                if (data.data.length > 0) {
-                                    $scope.NAT = 'SI';
-                                    $scope.bb8Internet = 1;
-                                    $scope.recorreinternet = data.data;
+                            services.windowsBridge("BB8/contingencias/Buscar/GetPlanBaMSS/" + $scope.clic.UNECodigoDireccionServicio)
+                                .then(function (data) {
+                                    console.log(data, " internet2 ");
+                                    if (data.data.length > 0) {
+                                        $scope.NAT = 'SI';
+                                        $scope.bb8Internet = 1;
+                                        $scope.recorreinternet = data.data;
 
-                                    for (let i = 0; i < $scope.recorreinternet.length; i++) {
-                                        if ($scope.recorreinternet[i].VALUE_LABEL == 'Qty') {
-                                            $scope.Velocidad = $scope.recorreinternet[i].VALID_VALUE;
-                                        }
-                                        if ($scope.recorreinternet[i].VALUE_LABEL == 'IdServicio') {
-                                            $scope.IDServicioInternet = $scope.recorreinternet[i].VALID_VALUE;
+                                        for (let i = 0; i < $scope.recorreinternet.length; i++) {
+                                            if ($scope.recorreinternet[i].VALUE_LABEL == 'Qty') {
+                                                $scope.Velocidad = $scope.recorreinternet[i].VALID_VALUE;
+                                            }
+                                            if ($scope.recorreinternet[i].VALUE_LABEL == 'IdServicio') {
+                                                $scope.IDServicioInternet = $scope.recorreinternet[i].VALID_VALUE;
+                                            }
                                         }
                                     }
-                                }
-                            });
+                                });
                         }
-                        $scope.url =
-                            "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTOMSS/" +
-                            pedido;
-                        $http
-                            .get($scope.url, { timeout: 4000 })
+                        services.windowsBridge("BB8/contingencias/Buscar/GetPlanTOMSS/" + pedido)
                             .then(function (data) {
                                 console.log(data, " telefonia");
                                 if (data.data.length > 0) {
@@ -3525,11 +3561,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
                                         }
                                     }
                                 } else {
-                                    $scope.url =
-                                        "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTOMSS/" +
-                                        $scope.clic.UNECodigoDireccionServicio;
-                                    $http
-                                        .get($scope.url, { timeout: 4000 })
+                                    services.windowsBridge("BB8/contingencias/Buscar/GetPlanTOMSS/" + $scope.clic.UNECodigoDireccionServicio)
                                         .then(function (data) {
                                             console.log(data, " telefonia2");
                                             if (data.data.length > 0) {
@@ -3547,11 +3579,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
                                             }
                                         });
                                 }
-                                $scope.url =
-                                    "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTVMSS/" +
-                                    pedido;
-                                $http
-                                    .get($scope.url, { timeout: 4000 })
+                                services.windowsBridge("BB8/contingencias/Buscar/GetPlanTVMSS/" + pedido)
                                     .then(function (data) {
                                         console.log(data, " tv");
                                         if (data.data.length > 0) {
@@ -3571,11 +3599,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
 
                                             }
                                         } else {
-                                            $scope.url =
-                                                "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTVMSS/" +
-                                                $scope.clic.UNECodigoDireccionServicio;
-                                            $http
-                                                .get($scope.url, { timeout: 4000 })
+                                            services.windowsBridge("BB8/contingencias/Buscar/GetPlanTVMSS/" + $scope.clic.UNECodigoDireccionServicio)
                                                 .then(function (data) {
                                                     console.log(data, " tv2");
                                                     if (data.data.length > 0) {
@@ -3597,7 +3621,6 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
                                                     }
                                                 });
                                         }
-                                        $("#modalbb8").modal("show");
                                     })
                                     .catch(function (error) {
                                         console.log(error);
@@ -3648,67 +3671,33 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         } else {
 
             $scope.sininfopedido = true;
-            $scope.url = "http://" + $scope.ipServer + ":8080/HCHV/Buscar/" + pedido;
-            $http.get($scope.url, { timeout: 2000 })
+            services.windowsBridge("HCHV/Buscar/" + pedido)
                 .then(function (data) {
-                    $scope.myWelcome = data.data;
-                    $scope.equipos = $scope.myWelcome.Equipos;
-                    if ($scope.myWelcome.pEDIDO_UNE == null) {
-                        $scope.infopedido = false;
-                        $scope.errorconexion1 = false;
-                        $scope.myWelcome = {};
-                    } else if ($scope.myWelcome.engineerID == null) {
-                        $scope.infopedido = false;
-                        $scope.errorconexion1 = false;
-                        $scope.myWelcome = {};
-                    } else if ($scope.myWelcome.pEDIDO_UNE == "TIMEOUT") {
-                        $scope.infopedido = false;
-                        $scope.errorconexion1 = true;
-                        $scope.myWelcome = {};
-                        $scope.errorconexion = "No hay conexión con Click, ingrese datos manualmente";
-                    } else {
-                        $scope.infopedido = true;
-                        $scope.gestionmanual.tecnico = $scope.myWelcome.engineerID;
-                        $scope.gestionmanual.CIUDAD = $scope.myWelcome.uNEMunicipio.toUpperCase();
-                        $scope.BuscarTecnico();
-                    }
-
-                    return data.data;
-                },
+                        $scope.myWelcome = data.data;
+                        $scope.equipos = $scope.myWelcome.Equipos;
+                        if ($scope.myWelcome.pEDIDO_UNE == null) {
+                            $scope.infopedido = false;
+                            $scope.errorconexion1 = false;
+                            $scope.myWelcome = {};
+                        } else if ($scope.myWelcome.engineerID == null) {
+                            $scope.infopedido = false;
+                            $scope.errorconexion1 = false;
+                            $scope.myWelcome = {};
+                        } else if ($scope.myWelcome.pEDIDO_UNE == "TIMEOUT") {
+                            $scope.infopedido = false;
+                            $scope.errorconexion1 = true;
+                            $scope.myWelcome = {};
+                            $scope.errorconexion = "No hay conexión con Click, ingrese datos manualmente";
+                        } else {
+                            $scope.infopedido = true;
+                            $scope.gestionmanual.tecnico = $scope.myWelcome.engineerID;
+                            $scope.gestionmanual.CIUDAD = $scope.myWelcome.uNEMunicipio.toUpperCase();
+                            $scope.BuscarTecnico();
+                        }
+                    },
 
                     function (err) {
-                        $scope.ipServer = "10.100.66.254";
-                        $scope.url = "http://" + $scope.ipServer + ":8080/HCHV/Buscar/" + pedido;
-                        $http.get($scope.url, { timeout: 2000 })
-                            .then(function (data) {
-                                $scope.myWelcome = data.data;
-                                if ($scope.myWelcome.pEDIDO_UNE == null) {
-                                    $scope.infopedido = false;
-                                    $scope.errorconexion1 = false;
-                                    $scope.myWelcome = {};
-                                } else if ($scope.myWelcome.pEDIDO_UNE == "TIMEOUT") {
-                                    $scope.infopedido = false;
-                                    $scope.errorconexion1 = true;
-                                    $scope.myWelcome = {};
-                                    $scope.errorconexion = "No hay conexión con Click, ingrese datos manualmente";
-                                } else {
-                                    $scope.infopedido = true;
-                                    $scope.gestionmanual.tecnico = $scope.myWelcome.engineerID;
-                                    $scope.gestionmanual.CIUDAD = $scope.myWelcome.uNEMunicipio.toUpperCase();
-                                    $scope.BuscarTecnico();
-                                }
-                                ;
-                                return data.data;
-                            }, function (err) {
-                                console.log("ERROR DE CONEXION: NO PUEDO ALCANZAR EL SERVIDOR!!!");
-                                $scope.infopedido = false;
-                                $scope.errorconexion1 = true;
-                                $scope.myWelcome = {};
-                                $scope.errorconexion = "No hay conexión con Web Service, ingrese datos manualmente";
-                            });
-                    },
-                    function errorCallback(response) {
-                        console.log("ERRORRRR");
+                        console.log(err)
                     }
                 );
         }
@@ -3716,45 +3705,30 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
     }
 
     function buscarDataSara(pedido) {
+        services.windowsBridge("SARA/Buscar/" + pedido)
+            .then(function (data) {
+                    $scope.dataSara = data.data;
 
-        var tareaSara = pedido;
-        $scope.urlServicio = "http://10.100.66.254:8080/SARA/Buscar/" + tareaSara;
+                    if ($scope.dataSara.Error == "No hay datos para mostrar") {
 
-        $http.get($scope.urlServicio, { timeout: 8000 }).then(function (data) {
-            console.log(data, 'sara');
-            $scope.dataSara = data.data;
+                        $scope.horasTranscurridas = 0;
+                        $scope.minutosTranscurridos = 0;
+                        $scope.segundosTranscurridos = 0;
 
-            if ($scope.dataSara.Error == "No hay datos para mostrar") {
+                    }
 
-                $scope.horasTranscurridas = 0;
-                $scope.minutosTranscurridos = 0;
-                $scope.segundosTranscurridos = 0;
+                    $scope.indiceSara = (Object.keys($scope.dataSara.SolicitudesSara).length) - 1;
+                    var tiempoSara = $scope.dataSara.SolicitudesSara[$scope.indiceSara].TiempoRespuesta;
+                    $scope.horasTranscurridas = tiempoSara.substr(0, 2);
+                    $scope.minutosTranscurridos = tiempoSara.substr(3, 2);
+                    $scope.segundosTranscurridos = tiempoSara.substr(6, 2);
+                    return data.data;
+                },
 
-                Swal({
-                    type: 'error',
-                    title: 'Oops...',
-                    text: 'Aún no se hace la solicitud a SARA',
-                })
-            }
-
-            $scope.indiceSara = (Object.keys($scope.dataSara.SolicitudesSara).length) - 1;
-            var tiempoSara = $scope.dataSara.SolicitudesSara[$scope.indiceSara].TiempoRespuesta;
-            $scope.horasTranscurridas = tiempoSara.substr(0, 2);
-            $scope.minutosTranscurridos = tiempoSara.substr(3, 2);
-            $scope.segundosTranscurridos = tiempoSara.substr(6, 2);
-            return data.data;
-        },
-
-            function (Error) {
-
-                Swal({
-                    type: 'error',
-                    title: 'Oops...',
-                    text: 'Se presentan problemas con el Web Service, reporta con el administrador',
-                })
-            });
+                function (Error) {
+                    console.log(errro);
+                });
     }
-
 
     $scope.BuscarPedido = function (pedido) {
         if (!pedido) {
@@ -3766,6 +3740,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
             })
             return;
         }
+        $scope.inicio = 1;
         bb8(pedido);
         actividades(pedido);
         buscarDataSara(pedido);
@@ -3780,7 +3755,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
         if ($scope.gestionmanual.tecnico == undefined || $scope.gestionmanual.tecnico == "") {
             return;
         }
-        data = { 'buscar': 'identificacion', 'variable': $scope.gestionmanual.tecnico, 'page': 1, 'size': 15 }
+        data = {'buscar': 'identificacion', 'variable': $scope.gestionmanual.tecnico, 'page': 1, 'size': 15}
 
         services.listadoTecnicos(data).then(
             function (data) {
@@ -3825,6 +3800,7 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
 
     $scope.guardarPedido = function () {
 
+
         if ($scope.gestionmanual.interaccion == "" || $scope.gestionmanual.interaccion == undefined) {
             Swal({
                 type: 'info',
@@ -3832,55 +3808,87 @@ app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location
                 text: 'Debe seleccionar el tipo de interacción.',
                 timer: 4000
             })
-        } else if (($scope.gestionmanual.interaccion == "llamada" && $scope.gestionmanual.id_llamada == "") || ($scope.gestionmanual.interaccion == "llamada" && $scope.gestionmanual.id_llamada == undefined)) {
+            return;
+        }
+
+        if (($scope.gestionmanual.interaccion == "llamada" && $scope.gestionmanual.id_llamada == "") || ($scope.gestionmanual.interaccion == "llamada" && $scope.gestionmanual.id_llamada == undefined)) {
             Swal({
                 type: 'info',
                 title: 'Opsss....',
                 text: 'Por favor ingresar el ID de llamada.',
                 timer: 4000
             })
-        } else if ($scope.gestionmanual.interaccion == "llamada" && $scope.gestionmanual.id_llamada.length > 40) {
+            return;
+        }
+
+        if ($scope.gestionmanual.interaccion == "llamada" && $scope.gestionmanual.id_llamada.length > 40) {
             Swal({
                 type: 'info',
                 title: 'Opsss....',
                 text: 'Por favor ingrese un Id de Llamada válido.',
                 timer: 4000
             })
-        } else if ($scope.gestionmanual.tecnico == "" || $scope.gestionmanual.tecnico == undefined) {
+            return;
+        }
+
+        if ($scope.gestionmanual.tecnico == "" || $scope.gestionmanual.tecnico == undefined) {
             Swal({
                 type: 'info',
                 title: 'Opsss....',
                 text: 'Por favor ingresar el tecnico.',
                 timer: 4000
             })
-        } else if ($scope.gestionmanual.producto == "" || $scope.gestionmanual.producto == undefined) {
+            return;
+        }
+
+        if ($scope.gestionmanual.producto == "" || $scope.gestionmanual.producto == undefined) {
             Swal({
                 type: 'info',
                 title: 'Opsss....',
                 text: 'Por favor ingresar un producto.',
                 timer: 4000
             })
-        } else if ($scope.gestionmanual.proceso == "" || $scope.gestionmanual.proceso == undefined) {
+            return;
+        }
+
+        if ($scope.gestionmanual.proceso == "" || $scope.gestionmanual.proceso == undefined) {
             Swal({
                 type: 'info',
                 title: 'Opsss....',
                 text: 'Por favor ingresar el proceso.',
                 timer: 4000
             })
-        } else if ($scope.gestionmanual.accion == "" || $scope.gestionmanual.accion == undefined) {
+            return;
+        }
+
+        if ($scope.gestionmanual.accion == "" || $scope.gestionmanual.accion == undefined) {
             Swal({
                 type: 'info',
                 title: 'Opsss....',
                 text: 'Por favor ingresar una accion.',
                 timer: 4000
             })
-        } else if ($scope.gestionmanual.accion == "Soporte GPON" && ($scope.gestionmanual.subAccion == "" || $scope.gestionmanual.subAccion == undefined)) {
+            return;
+        }
+
+        if ($scope.gestionmanual.accion == "Soporte GPON" && ($scope.gestionmanual.subAccion == "" || $scope.gestionmanual.subAccion == undefined)) {
             Swal({
                 type: 'info',
                 title: 'Opsss....',
                 text: 'Por favor ingresar una subaccion.',
                 timer: 4000
             })
+            return;
+        }
+
+        if ($scope.gestionmanual.observaciones == "" || $scope.gestionmanual.observaciones == undefined) {
+            Swal({
+                type: 'info',
+                title: 'Opsss....',
+                text: 'Debes documentar bien ingresa observaciones.',
+                timer: 4000
+            })
+            return;
         }
 
         //se quita validaciones requerimiento por carlos 3-04-2023
@@ -4281,8 +4289,8 @@ app.controller(
                         {
                             method: "PUT",
                             mode: "cors",
-                            body: JSON.stringify({ infraestructure_ID: data._id }),
-                            headers: { "Content-type": "application/json;charset=UTF-8" },
+                            body: JSON.stringify({infraestructure_ID: data._id}),
+                            headers: {"Content-type": "application/json;charset=UTF-8"},
                         }
                     );
 
@@ -4330,8 +4338,8 @@ app.controller(
                         var currentTimeDate = new Date().toLocaleString();
                         var statusInfraestructure =
                             data.tipificacion == "Escalamiento realizado ok" ||
-                                data.tipificacion == "Escalamiento ok nivel 2" ||
-                                data.tipificacion == "Escalamiento ok nivel 2 Prioridad"
+                            data.tipificacion == "Escalamiento ok nivel 2" ||
+                            data.tipificacion == "Escalamiento ok nivel 2 Prioridad"
                                 ? "Aprobado"
                                 : "Rechazado";
 
@@ -4345,7 +4353,7 @@ app.controller(
                                     infraestructure_Status: statusInfraestructure,
                                     dateAswered: currentTimeDate,
                                 }),
-                                headers: { "Content-type": "application/json;charset=UTF-8" },
+                                headers: {"Content-type": "application/json;charset=UTF-8"},
                             }
                         );
 
@@ -4419,14 +4427,15 @@ app.controller(
                 $scope.totalItems = 0;
                 $scope.pageSize = 15;
                 $scope.searchText = '';
-                data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
+                data = {'page': $scope.currentPage, 'size': $scope.pageSize}
             }
             services
                 .novedadesTecnicoService(data)
                 .then(
                     function (data) {
+                        console.log(data);
                         $scope.novedadesVisitasTecnicos = data.data.data;
-                        $scope.cantidad = data.data.data.length;
+                        $scope.cantidad = $scope.novedadesVisitasTecnicos.length;
                         $scope.counter = data.data.contador;
 
                         $scope.totalItems = data.data.counter;
@@ -4443,13 +4452,13 @@ app.controller(
         }
 
         $scope.pageChanged = function () {
-            data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize}
             console.log(data)
             novedadesVisitas(data);
         }
         $scope.pageSizeChanged = function () {
             console.log(data)
-            data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize}
             $scope.currentPage = 1;
             novedadesVisitas(data);
         }
@@ -4460,10 +4469,10 @@ app.controller(
                 $scope.totalItems = 0;
                 $scope.pageSize = 15;
                 $scope.searchText = "";
-                data = { page: $scope.currentPage, size: $scope.pageSize };
+                data = {page: $scope.currentPage, size: $scope.pageSize};
             }
 
-            data = { page: $scope.currentPage, size: $scope.pageSize, data };
+            data = {page: $scope.currentPage, size: $scope.pageSize, data};
             novedadesVisitas(data);
         }
 
@@ -4606,7 +4615,6 @@ app.controller(
                 } else {
 
                     $scope.listadoRegiones = data.data.data;
-                    console.log($scope.listadoRegiones);
                     $scope.listadoMunicipios = {};
                 }
 
@@ -4687,7 +4695,7 @@ app.controller(
                 $scope.sininfopedido = true;
                 $scope.url =
                     "http://" + $scope.ipServer + ":8080/HCHV/Buscar/" + pedido;
-                $http.get($scope.url, { timeout: 2000 }).then(
+                $http.get($scope.url, {timeout: 2000}).then(
                     function (data) {
                         $scope.myWelcome = data.data;
                         if ($scope.myWelcome.pEDIDO_UNE == null) {
@@ -4723,7 +4731,7 @@ app.controller(
 
                         $scope.url =
                             "http://" + $scope.ipServer + ":8080/HCHV/Buscar/" + pedido;
-                        $http.get($scope.url, { timeout: 2000 }).then(
+                        $http.get($scope.url, {timeout: 2000}).then(
                             function (data) {
                                 $scope.myWelcome = data.data;
                                 if ($scope.myWelcome.pEDIDO_UNE == null) {
@@ -4880,14 +4888,26 @@ app.controller(
 
                 services.acualizaTecnicos(autocompleteData).then(
                     function (data) {
-                        $scope.loading = 0;
-                        Swal({
-                            type: "success",
-                            text: "Tecnicos acualizados correctamente.",
-                            timer: 4000,
-                        }).then(function () {
-                            $location.reload();
-                        });
+                        if (data.data.state == 1) {
+                            Swal({
+                                type: "success",
+                                title: 'Bien',
+                                text: data.data.msj,
+                                timer: 4000,
+                            }).then(function () {
+                                $route.reload();
+                            });
+                        } else {
+                            Swal({
+                                type: "info",
+                                title: 'Ops..',
+                                text: data.data.msj,
+                                timer: 4000,
+                            }).then(function () {
+                                $route.reload();
+                            });
+                        }
+
                     },
                     function errorCallback(error) {
                         console.log(error);
@@ -4899,11 +4919,11 @@ app.controller(
         };
 
         $scope.pageChanged = function () {
-            data = { page: $scope.currentPage, size: $scope.pageSize };
+            data = {page: $scope.currentPage, size: $scope.pageSize, buscar: $scope.concepto, variable: $scope.tecnico};
             buscarTecnico(data);
         };
         $scope.pageSizeChanged = function () {
-            data = { page: $scope.currentPage, size: $scope.pageSize };
+            data = {page: $scope.currentPage, size: $scope.pageSize, buscar: $scope.concepto, variable: $scope.tecnico};
             $scope.currentPage = 1;
             buscarTecnico(data);
         };
@@ -4914,7 +4934,7 @@ app.controller(
                 $scope.totalItems = 0;
                 $scope.pageSize = 15;
                 $scope.searchText = "";
-                data = { page: $scope.currentPage, size: $scope.pageSize };
+                data = {page: $scope.currentPage, size: $scope.pageSize, buscar: $scope.concepto, variable: $scope.tecnico};
             }
             services.listadoTecnicos(data).then(
                 (data) => {
@@ -4946,7 +4966,8 @@ app.controller(
 
                 })
                 .catch((response) => {
-                    console.log(response);;
+                    console.log(response);
+                    ;
                 })
 
         }
@@ -5045,7 +5066,7 @@ app.controller(
         $timeout,
         services,
         $route,
-        $cookies, $location
+        $cookies, $location, $interval
     ) {
 
         var tiempo = new Date().getTime();
@@ -5089,13 +5110,38 @@ app.controller(
 
         LoadQuejasGo();
 
+        function iniciarTiempo() {
+            var segundos = 0;
+            var minutos = 0;
+            var horas = 0;
+            //var tiempo = 0;
+
+            $interval(function () {
+                segundos++;
+                if (segundos === 60) {
+                    segundos = 0;
+                    minutos++;
+                }
+                if (minutos === 60) {
+                    minutos = 0;
+                    horas++;
+                }
+
+                $scope.tiempo = pad(horas) + ":" + pad(minutos) + ":" + pad(segundos);
+            }, 1000);
+        };
+
+        function pad(numero) {
+            return numero < 10 ? "0" + numero : numero;
+        }
+
         function LoadQuejasGo(data) {
             if (data === '' || data === undefined) {
                 $scope.currentPage = 1;
                 $scope.totalItems = 0;
                 $scope.pageSize = 15;
                 $scope.searchText = '';
-                data = { 'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros }
+                data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
             }
 
             services.extraeQuejasGoDia(data).then(
@@ -5137,18 +5183,18 @@ app.controller(
         };
 
         $scope.pageChanged = function () {
-            data = { 'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros }
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
             LoadQuejasGo(data);
         }
         $scope.pageSizeChanged = function () {
-            data = { 'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros }
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
             $scope.currentPage = 1;
             LoadQuejasGo(data);
         }
 
 
         $scope.mostraModal = function () {
-            $scope.counter = 0;
+            /*$scope.counter = 0;
 
             $scope.startCounter = function () {
                 if (timer === null) {
@@ -5159,7 +5205,9 @@ app.controller(
                 $scope.counter++;
                 timer = $timeout(updateCounter, 1000);
             };
-            updateCounter();
+            updateCounter();*/
+
+            iniciarTiempo();
 
             $scope.quejasGoSel.observacion = "";
 
@@ -5219,25 +5267,33 @@ app.controller(
         ) {
             services.creaTecnicoQuejasGo(crearTecnicoquejasGoSel).then(
                 function (data) {
-                    Swal("El técnico fue Creado!", "Bien Hecho");
-                    $scope.LoadQuejasGo($scope.datapendientes.currentPage);
-                    $("#crearTecnicoQuejasGo").modal("hide");
-                    frmCrearTecnicoQuejasGo.autoValidateFormOptions.resetForm();
-                    return data.data;
+                    if (data.data.state == 1) {
+                        $("#crearTecnicoQuejasGo").modal("hide");
+                        frmCrearTecnicoQuejasGo.autoValidateFormOptions.resetForm();
+                        Swal({
+                            type: 'success',
+                            title: 'Bien',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    } else {
+                        Swal({
+                            type: 'success',
+                            title: 'Bien',
+                            text: 'data.data.msj',
+                            timer: 4000
+                        })
+                    }
                 },
 
                 function errorCallback(response) {
-                    Swal({
-                        type: "error",
-                        title: "Oops...",
-                        text: "Debe seleccionar un rango de fecha!",
-                    });
+                    console.log(response)
                 }
             );
         };
 
         $scope.guardar = function (quejasGoSel, frmQuejasGo) {
-            $timeout.cancel(timer);
+            /*$timeout.cancel(timer);
             timer = null;
 
             var hours = Math.floor($scope.counter / 3600),
@@ -5253,13 +5309,13 @@ app.controller(
             if (seconds < 10) {
                 seconds = "0" + seconds;
             }
-            $scope.counter = hours + ":" + minutes + ":" + seconds;
+            $scope.counter = hours + ":" + minutes + ":" + seconds;*/
 
             services
-                .guardarQuejaGo(quejasGoSel, $scope.counter, $rootScope.galletainfo)
+                .guardarQuejaGo(quejasGoSel, $scope.tiempo, $rootScope.galletainfo.login)
                 .then(
                     function (respuesta) {
-                        if (respuesta.data.state == 99) {
+                        /* if (respuesta.data.state == 99) {
                             swal({
                                 type: "error",
                                 title: data.data.title,
@@ -5272,7 +5328,9 @@ app.controller(
                                 $rootScope.permiso = false;
                                 $route.reload();
                             });
-                        } else if (respuesta.data.state == 1) {
+                        } else  */
+
+                        if (respuesta.data.state == 1) {
                             $("#modalQuejasGo").modal("hide");
                             //$scope.infoTecnico = false;
                             //$scope.quejasGoSel = {};
@@ -5410,7 +5468,7 @@ app.controller(
     }
 );
 
-app.controller('quejasGoCtrl2', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services, cargaRegistros) {
+app.controller('quejasGoCtrl2', function ($interval, $scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services, cargaRegistros) {
     var tiempo = new Date().getTime();
     var date1 = new Date();
     var year = date1.getFullYear();
@@ -5469,7 +5527,7 @@ app.controller('quejasGoCtrl2', function ($scope, $http, $rootScope, $location, 
             $scope.totalItems = 0;
             $scope.pageSize = 10;
             $scope.searchText = '';
-            data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize}
         }
 
         services.datosQuejasGoTerminado(data).then(function (data) {
@@ -5487,17 +5545,43 @@ app.controller('quejasGoCtrl2', function ($scope, $http, $rootScope, $location, 
     }
 
     $scope.pageChanged = function () {
-        data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
+        data = {'page': $scope.currentPage, 'size': $scope.pageSize}
         dataQuejasGoTerminado(data);
     }
     $scope.pageSizeChanged = function () {
-        data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
+        data = {'page': $scope.currentPage, 'size': $scope.pageSize}
         dataQuejasGoTerminado(data);
     }
 
+    function iniciarTiempo() {
+        var segundos = 0;
+        var minutos = 0;
+        var horas = 0;
+        //var tiempo = 0;
+
+        $interval(function () {
+            segundos++;
+            if (segundos === 60) {
+                segundos = 0;
+                minutos++;
+            }
+            if (minutos === 60) {
+                minutos = 0;
+                horas++;
+            }
+
+            $scope.tiempo = pad(horas) + ":" + pad(minutos) + ":" + pad(segundos);
+        }, 1000);
+        console.log($scope.tiempo)
+    };
+
+    function pad(numero) {
+        return numero < 10 ? "0" + numero : numero;
+    }
+
     $scope.marcarEngestion = function (id) {
-        console.log(id);
-        data = { 'id': id, 'login_gestion': $rootScope.galletainfo.LOGIN }
+
+        data = {'id': id, 'login_gestion': $rootScope.galletainfo.login}
         services.marcarEnGestionQuejasGo(data).then(function (data) {
             if (data.data.state == 1) {
                 Swal({
@@ -5506,7 +5590,9 @@ app.controller('quejasGoCtrl2', function ($scope, $http, $rootScope, $location, 
                     text: data.data.msj,
                     timer: 4000
                 }).then(function () {
-                    $route.reload();
+                    //$route.reload();
+                    dataQueja();
+                    iniciarTiempo();
                 })
             } else {
                 Swal({
@@ -5544,7 +5630,7 @@ app.controller('quejasGoCtrl2', function ($scope, $http, $rootScope, $location, 
                 timer: 4000
             })
         } else {
-            data = { 'accion': data.accion, 'gestion': data.gestion, 'id': data.id, 'login_gestion': $rootScope.galletainfo.LOGIN }
+            data = {'accion': data.accion, 'gestion': data.gestion, 'id': data.id, 'login_gestion': $rootScope.galletainfo.login}
             $('#modalQuejasGo').modal('show');
 
             $scope.guardaSolicitudQuejasGo = function (obs) {
@@ -5556,9 +5642,10 @@ app.controller('quejasGoCtrl2', function ($scope, $http, $rootScope, $location, 
                         timer: 4000
                     })
                 } else {
-                    data.observacion_seguimiento = obs.observacion_gestion
+                    data.observacion_seguimiento = obs.observacion_gestion;
+                    data.tiempo = $scope.tiempo;
+                    console.log('Robin ', data, ' ', $scope.tiempo);
                     services.guardaGestionQuejasGo(data).then(function (data) {
-                        console.log(data)
                         if (data.data.state == 1) {
                             setTimeout(() => {
                                 $('#modalQuejasGo').modal('hide');
@@ -5607,7 +5694,7 @@ app.controller('quejasGoCtrl2', function ($scope, $http, $rootScope, $location, 
                 timer: 4000
             })
         } else {
-            data = { 'page': $scope.currentPage, 'size': $scope.pageSize, 'pedido': pedido }
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'pedido': pedido}
             dataQuejasGoTerminado(data);
         }
     }
@@ -5642,7 +5729,7 @@ app.controller('quejasGoCtrl2', function ($scope, $http, $rootScope, $location, 
                 timer: 4000
             })
         } else {
-            data = { 'page': $scope.currentPage, 'size': $scope.pageSize, 'fecha': data }
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'fecha': data}
             dataQuejasGoTerminado(data);
         }
     }
@@ -5687,7 +5774,7 @@ app.controller('quejasGoCtrl2', function ($scope, $http, $rootScope, $location, 
                 timer: 4000
             })
         } else {
-            data = { 'page': $scope.currentPage, 'size': $scope.pageSize, 'fecha': data }
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'fecha': data}
             services.csvQuejaGo(data)
                 .then(function (data) {
                     if (data.data.state == 1) {
@@ -5735,84 +5822,60 @@ app.controller("saraCtrl", function ($scope, $http, $rootScope, services) {
     $scope.segundosTranscurridos = 0;
 
     $scope.buscarDataSara = function (datos) {
-        var tareaSara = datos.tarea;
-        $scope.urlServicio = "http://10.100.66.254:8080/SARA/Buscar/" + tareaSara;
+        services.windowsBridge("SARA/Buscar/" + tareaSara)
+            .then(
+                function (data) {
+                    $scope.dataSara = data.data;
 
-        $http.get($scope.urlServicio, { timeout: 8000 }).then(
-            function (data) {
-                $scope.dataSara = data.data;
+                    if ($scope.dataSara.Error == "No hay datos para mostrar") {
+                        $scope.horasTranscurridas = 0;
+                        $scope.minutosTranscurridos = 0;
+                        $scope.segundosTranscurridos = 0;
 
-                if ($scope.dataSara.Error == "No hay datos para mostrar") {
-                    $scope.horasTranscurridas = 0;
-                    $scope.minutosTranscurridos = 0;
-                    $scope.segundosTranscurridos = 0;
+                        /*Swal({
+                            type: "error",
+                            title: "Oops...",
+                            text: "Aún no se hace la solicitud a SARA",
+                        });*/
+                    }
 
-                    Swal({
-                        type: "error",
-                        title: "Oops...",
-                        text: "Aún no se hace la solicitud a SARA",
-                    });
+                    $scope.indiceSara =
+                        Object.keys($scope.dataSara.SolicitudesSara).length - 1;
+                    var tiempoSara =
+                        $scope.dataSara.SolicitudesSara[$scope.indiceSara].TiempoRespuesta;
+                    $scope.horasTranscurridas = tiempoSara.substr(0, 2);
+                    $scope.minutosTranscurridos = tiempoSara.substr(3, 2);
+                    $scope.segundosTranscurridos = tiempoSara.substr(6, 2);
+                    return data.data;
+                },
+
+                function (Error) {
+                    console.log(Error)
                 }
-
-                $scope.indiceSara =
-                    Object.keys($scope.dataSara.SolicitudesSara).length - 1;
-                var tiempoSara =
-                    $scope.dataSara.SolicitudesSara[$scope.indiceSara].TiempoRespuesta;
-                $scope.horasTranscurridas = tiempoSara.substr(0, 2);
-                $scope.minutosTranscurridos = tiempoSara.substr(3, 2);
-                $scope.segundosTranscurridos = tiempoSara.substr(6, 2);
-                return data.data;
-            },
-
-            function (Error) {
-                Swal({
-                    type: "error",
-                    title: "Oops...",
-                    text: "Se presentan problemas con el Web Service, reporta con el administrador",
-                });
-            }
-        );
+            );
     };
 
     $scope.csvexportarRRHH = function () {
-        services
-            .getexpcsvRRHH($rootScope.galletainfo)
-            .then((response) => {
-                var data = response.data;
-                var array = typeof data != "object" ? JSON.parse(data) : data;
-                var str = "";
-                var column =
-                    "Cedula|| Login|| Nombre|| Telefono|| Region|| Distrito|| Tipo Tecnico|| Contratista|| Latitud|| Longitud|| Calendario|| No Disponibilidad|| Fecha Registro \r\n";
-                str += column;
-                for (var i = 0; i < array.length; i++) {
-                    var line = "";
-                    for (var index in array[i]) {
-                        if (line != "") line += "||";
-                        line += array[i][index];
-                    }
-
-                    str += line + "\r\n";
+        services.windowsBridge("api/exportrrhh")
+            .then(function (data) {
+                console.log(data)
+                if (data){
+                    var wb = XLSX.utils.book_new();
+                    var ws = XLSX.utils.json_to_sheet(data);
+                    XLSX.utils.book_append_sheet(wb, ws, 'exportrrhh');
+                    XLSX.writeFile(wb, 'exportrrhh_' + '.xlsx');
+                } else {
+                    Swal({
+                        type: 'error',
+                        text: 'No se encontraron registros',
+                        timer: 4000
+                    })
                 }
-                var dateCsv = new Date();
-                var yearCsv = dateCsv.getFullYear();
-                var monthCsv =
-                    dateCsv.getMonth() + 1 <= 9
-                        ? "0" + (dateCsv.getMonth() + 1)
-                        : dateCsv.getMonth() + 1;
-                var dayCsv =
-                    dateCsv.getDate() <= 9 ? "0" + dateCsv.getDate() : dateCsv.getDate();
-                var fullDateCsv = yearCsv + "-" + monthCsv + "-" + dayCsv;
-
-                var blob = new Blob([str]);
-                var elementToClick = window.document.createElement("a");
-                elementToClick.href = window.URL.createObjectURL(blob, {
-                    type: "text/csv",
-                });
-                elementToClick.download = "Disponibilidad-" + fullDateCsv + ".csv";
-                elementToClick.click();
             })
-            .catch((error) => console.log(error));
-    };
+            .catch((error) => {
+                console.log(error);
+            })
+    }
 });
 
 app.controller(
@@ -5851,13 +5914,13 @@ app.controller(
         BuscarRegistros();
 
         $scope.pageChanged = function () {
-            data = { page: $scope.currentPage, size: $scope.pageSize, param: $scope.Registros };
+            data = {page: $scope.currentPage, size: $scope.pageSize, param: $scope.Registros};
             console.log(data);
             BuscarRegistros(data);
         };
         $scope.pageSizeChanged = function () {
             console.log(data);
-            data = { page: $scope.currentPage, size: $scope.pageSize, param: $scope.Registros };
+            data = {page: $scope.currentPage, size: $scope.pageSize, param: $scope.Registros};
             $scope.currentPage = 1;
             BuscarRegistros(data);
         };
@@ -5868,10 +5931,11 @@ app.controller(
                 $scope.totalItems = 0;
                 $scope.pageSize = 15;
                 $scope.searchText = "";
-                data = { page: $scope.currentPage, size: $scope.pageSize, param: $scope.Registros };
+                data = {page: $scope.currentPage, size: $scope.pageSize, param: $scope.Registros};
             }
             services.registros(data).then(
                 function (data) {
+                    console.log(data);
                     if (data.data.state == 99) {
                         swal({
                             type: "error",
@@ -5887,7 +5951,7 @@ app.controller(
                         });
                     } else {
                         $scope.listaRegistros = data.data.data;
-                        $scope.cantidad = data.data.data.length;
+                        $scope.cantidad = data.data.length;
                         $scope.counter = data.data.counter;
 
                         $scope.totalItems = data.data.counter;
@@ -6135,13 +6199,13 @@ app.controller("registrosOfflineCtrl", function ($scope, services) {
     RegistrosOffline();
 
     $scope.pageChanged = function () {
-        data = { page: $scope.currentPage, size: $scope.pageSize };
+        data = {page: $scope.currentPage, size: $scope.pageSize};
         console.log(data);
         RegistrosOffline(data);
     };
     $scope.pageSizeChanged = function () {
         console.log(data);
-        data = { page: $scope.currentPage, size: $scope.pageSize };
+        data = {page: $scope.currentPage, size: $scope.pageSize};
         $scope.currentPage = 1;
         RegistrosOffline(data);
     };
@@ -6152,7 +6216,7 @@ app.controller("registrosOfflineCtrl", function ($scope, services) {
             $scope.totalItems = 0;
             $scope.pageSize = 8;
             $scope.searchText = "";
-            data = { page: $scope.currentPage, size: $scope.pageSize };
+            data = {page: $scope.currentPage, size: $scope.pageSize};
         }
         services.registrosOffline(data).then(
             function (data) {
@@ -6204,8 +6268,8 @@ app.controller(
             if ($scope.offline.ACTIVIDAD == "Patinaje") {
                 $scope.validaractividad = true;
                 $scope.actividades2 = [
-                    { ID: "Asesor reiterativo", ACTIVIDAD2: "Asesor reiterativo" },
-                    { ID: "Asesor AHT alto", ACTIVIDAD2: "Asesor AHT alto" },
+                    {ID: "Asesor reiterativo", ACTIVIDAD2: "Asesor reiterativo"},
+                    {ID: "Asesor AHT alto", ACTIVIDAD2: "Asesor AHT alto"},
                     {
                         ID: "Requiere intervencion - Supervisor",
                         ACTIVIDAD2: "Requiere intervencion - Supervisor",
@@ -6420,7 +6484,7 @@ app.controller(
                 $scope.url =
                     "http://10.100.66.254:8080/HCHV_DEV/BuscarC/" +
                     $scope.nivelacion.ticket;
-                $http.get($scope.url, { timeout: 2000 }).then(
+                $http.get($scope.url, {timeout: 2000}).then(
                     function (data) {
                         if (data.data.state != 0) {
                             Swal({
@@ -6569,7 +6633,7 @@ app.controller(
                                                 "http://10.100.66.254:8080/HCHV_DEV/BuscarF/" +
                                                 $scope.nivelacion.ticket;
                                             $http
-                                                .get($scope.url, { timeout: 2000 })
+                                                .get($scope.url, {timeout: 2000})
                                                 .then(function (data) {
                                                     if (data.data.state == 1) {
                                                         Swal({
@@ -6716,7 +6780,7 @@ app.controller(
                                                 "http://10.100.66.254:8080/HCHV_DEV/BuscarF/" +
                                                 $scope.nivelacion.ticket;
                                             $http
-                                                .get($scope.url, { timeout: 2000 })
+                                                .get($scope.url, {timeout: 2000})
                                                 .then(function (data) {
                                                     if (data.data.state == 1) {
                                                         Swal({
@@ -7014,7 +7078,7 @@ app.controller("GestionNivelacionCtrl", [
                 {
                     name: "Fecha ingreso",
                     field: "fecha_ingreso",
-                    cellStyle: { "text-align": "center" },
+                    cellStyle: {"text-align": "center"},
                     minWidth: 70,
                     width: "10%",
                     enableCellEdit: false,
@@ -7030,7 +7094,7 @@ app.controller("GestionNivelacionCtrl", [
                 {
                     name: "Proceso",
                     field: "proceso",
-                    cellStyle: { "text-align": "center" },
+                    cellStyle: {"text-align": "center"},
                     minWidth: 70,
                     width: "10%",
                     enableCellEdit: false,
@@ -7041,7 +7105,7 @@ app.controller("GestionNivelacionCtrl", [
                 {
                     name: "Zona",
                     field: "zona",
-                    cellStyle: { "text-align": "center" },
+                    cellStyle: {"text-align": "center"},
                     minWidth: 80,
                     width: "8%",
                     enableCellEdit: false,
@@ -7049,7 +7113,7 @@ app.controller("GestionNivelacionCtrl", [
                 {
                     name: "Sub zona",
                     field: "zubzona",
-                    cellStyle: { "text-align": "center" },
+                    cellStyle: {"text-align": "center"},
                     minWidth: 70,
                     width: "8%",
                     enableCellEdit: false,
@@ -7057,14 +7121,14 @@ app.controller("GestionNivelacionCtrl", [
                 {
                     name: "Nombre técnico",
                     field: "nombre_tecnico",
-                    cellStyle: { "text-align": "center" },
+                    cellStyle: {"text-align": "center"},
                     width: "11%",
                     enableCellEdit: false,
                 },
                 {
                     name: "cc técnico",
                     field: "cc_tecnico",
-                    cellStyle: { "text-align": "center" },
+                    cellStyle: {"text-align": "center"},
                     minWidth: 70,
                     width: "6%",
                     cellFilter: 'currency:"":0',
@@ -7073,7 +7137,7 @@ app.controller("GestionNivelacionCtrl", [
                 {
                     name: "Tipo solicitud",
                     field: "solicitud",
-                    cellStyle: { "text-align": "center" },
+                    cellStyle: {"text-align": "center"},
                     width: "6%",
                     enableCellEdit: false,
                     cellTooltip: function (row, col) {
@@ -7083,28 +7147,28 @@ app.controller("GestionNivelacionCtrl", [
                 {
                     name: "Motivo",
                     field: "motivo",
-                    cellStyle: { "text-align": "center" },
+                    cellStyle: {"text-align": "center"},
                     width: "9%",
                     enableCellEdit: false,
                 },
                 {
                     name: "Submotivo",
                     field: "submotivo",
-                    cellStyle: { "text-align": "center" },
+                    cellStyle: {"text-align": "center"},
                     width: "6%",
                     enableCellEdit: false,
                 },
                 {
                     name: "N. nuevo técnico",
                     field: "nombre_nuevo_tecnico",
-                    cellStyle: { "text-align": "center" },
+                    cellStyle: {"text-align": "center"},
                     width: "11%",
                     enableCellEdit: false,
                 },
                 {
                     name: "c. n. técnico",
                     field: "cc_nuevo_tecnico",
-                    cellStyle: { "text-align": "center" },
+                    cellStyle: {"text-align": "center"},
                     minWidth: 70,
                     width: "6%",
                     suppressSizeToFit: true,
@@ -7133,7 +7197,7 @@ app.controller("GestionNivelacionCtrl", [
                     width: "3%",
                     enableFiltering: false,
                     enableCellEdit: false,
-                    cellStyle: { "text-align": "center" },
+                    cellStyle: {"text-align": "center"},
                 },
                 {
                     name: "Acc.",
@@ -7718,7 +7782,7 @@ app.controller("GestionNivelacionCtrl", [
 
 app.controller(
     "contingenciasCtrl",
-    function ($scope, $rootScope, $timeout, services, $route, $cookies, $location) {
+    function ($scope, $rootScope, $timeout, services, $route, $cookies, $location, $http) {
         $scope.contingencias = {};
         $scope.pedidoexiste = false;
         $scope.pedidoguardado = false;
@@ -7727,6 +7791,145 @@ app.controller(
         $scope.equiposEntran.push({});
         $scope.equiposSalen = [];
         $scope.equiposSalen.push({});
+
+
+        $scope.producto = [
+            {id: "TV", producto: "TV"},
+            {id: "Internet", producto: "Internet"},
+            {id: "ToIP", producto: "ToIP"},
+            {id: "Internet+ToIP", producto: "Internet+ToIP"}
+        ]
+
+        $scope.buscarPedidoAprovisionamiento = (pedido) => {
+            if (!pedido) {
+                Swal({
+                    type: 'error',
+                    title: 'Error',
+                    text: 'Ingrese el pedido',
+                    timer: 4000
+                })
+                return;
+            }
+
+            /* function actividades(pedido) {
+
+                $scope.sininfopedido = true;
+                $scope.url = "http://" + $scope.ipServer + ":8080/HCHV/Buscar/" + pedido;
+                $http.get($scope.url, { timeout: 2000 })
+                    .then(function (data) {
+                        $scope.myWelcome = data.data;
+                        $scope.equipos = $scope.myWelcome.Equipos;
+                        if ($scope.myWelcome.pEDIDO_UNE == null) {
+                            $scope.infopedido = false;
+                            $scope.errorconexion1 = false;
+                            $scope.myWelcome = {};
+                        } else if ($scope.myWelcome.engineerID == null) {
+                            $scope.infopedido = false;
+                            $scope.errorconexion1 = false;
+                            $scope.myWelcome = {};
+                        } else if ($scope.myWelcome.pEDIDO_UNE == "TIMEOUT") {
+                            $scope.infopedido = false;
+                            $scope.errorconexion1 = true;
+                            $scope.myWelcome = {};
+                            $scope.errorconexion = "No hay conexión con Click, ingrese datos manualmente";
+                        } else {
+                            $scope.infopedido = true;
+                            $scope.gestionmanual.tecnico = $scope.myWelcome.engineerID;
+                            $scope.gestionmanual.CIUDAD = $scope.myWelcome.uNEMunicipio.toUpperCase();
+                            $scope.BuscarTecnico();
+                        }
+
+                        return data.data;
+                    },
+
+                        function (err) {
+                            $scope.ipServer = "10.100.66.254";
+                            $scope.url = "http://" + $scope.ipServer + ":8080/HCHV/Buscar/" + pedido;
+                            $http.get($scope.url, { timeout: 2000 })
+                                .then(function (data) {
+                                    $scope.myWelcome = data.data;
+                                    if ($scope.myWelcome.pEDIDO_UNE == null) {
+                                        $scope.infopedido = false;
+                                        $scope.errorconexion1 = false;
+                                        $scope.myWelcome = {};
+                                    } else if ($scope.myWelcome.pEDIDO_UNE == "TIMEOUT") {
+                                        $scope.infopedido = false;
+                                        $scope.errorconexion1 = true;
+                                        $scope.myWelcome = {};
+                                        $scope.errorconexion = "No hay conexión con Click, ingrese datos manualmente";
+                                    } else {
+                                        $scope.infopedido = true;
+                                        $scope.gestionmanual.tecnico = $scope.myWelcome.engineerID;
+                                        $scope.gestionmanual.CIUDAD = $scope.myWelcome.uNEMunicipio.toUpperCase();
+                                        $scope.BuscarTecnico();
+                                    }
+                                    ;
+                                    return data.data;
+                                }, function (err) {
+                                    console.log("ERROR DE CONEXION: NO PUEDO ALCANZAR EL SERVIDOR!!!");
+                                    $scope.infopedido = false;
+                                    $scope.errorconexion1 = true;
+                                    $scope.myWelcome = {};
+                                    $scope.errorconexion = "No hay conexión con Web Service, ingrese datos manualmente";
+                                });
+                        },
+                        function errorCallback(response) {
+                            console.log("ERRORRRR");
+                        }
+                    );
+            } */
+
+            $scope.consulta = {};
+            $scope.url = "http://10.100.66.254:8080/BB8/contingencias/Buscar/";
+
+            Promise.all([
+                $http.get($scope.url + "GetClick/" + pedido, {timeout: 4000}),
+                $http.get($scope.url + "GetPlanBaMSS/" + pedido, {timeout: 4000}),
+                $http.get($scope.url + "GetPlanTOMSS/" + pedido, {timeout: 4000}),
+                $http.get($scope.url + "GetPlanTVMSS/" + pedido, {timeout: 4000}),
+                $http.get("http://10.100.66.254:8080/HCHV/Buscar/" + pedido, {timeout: 4000})
+            ]).then(function (responses) {
+                $scope.consulta.click = responses[0].data;
+                $scope.consulta.bb8plan = responses[1].data;
+                $scope.consulta.bb8Telefonia = responses[2].data;
+                $scope.consulta.bb8Television = responses[3].data;
+                $scope.consulta.actividades = responses[4].data;
+                console.log($scope.consulta);
+
+                if ($scope.consulta.click[0].EQProducto === 'Telefonía') {
+                    $scope.consulta.click[0].EQProducto = "ToIP";
+                }
+
+                if ($scope.consulta.actividades.uNETecnologias == 'HFC-HFC') {
+                    $scope.consulta.actividades.uNETecnologias = 'HFC';
+                }
+
+                if ($scope.consulta.actividades.uNEProductos == 'Internet-Telefonía') {
+                    $scope.consulta.actividades.uNEProductos = 'Internet+ToIP';
+                } else if ($scope.consulta.actividades.uNEProductos == 'Televisión Hogares') {
+                    $scope.consulta.actividades.uNEProductos = 'TV';
+                }
+
+                if ($scope.consulta.actividades.Type == 'Install') {
+                    $scope.consulta.actividades.Type = 'Instalación'
+                } else {
+                    $scope.consulta.actividades.Type = 'Reparación'
+                }
+
+                if ($scope.consulta.actividades.uNEDepartamento == 'Bogotá D.C.') {
+                    $scope.consulta.actividades.uNEDepartamento = 'BOGOTA'
+                }
+
+                $scope.contingencias.producto = $scope.consulta.actividades.uNEProductos;
+                $scope.contingencias.tecnologia = $scope.consulta.actividades.uNETecnologias;
+                $scope.contingencias.proceso = $scope.consulta.actividades.Type;
+                $scope.contingencias.ciudad = $scope.consulta.actividades.uNEDepartamento;
+                $scope.contingencias.uen = $scope.consulta.actividades.uNEUENcalculada
+
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
 
         $scope.BuscarPedidoContingencia = function () {
             services
@@ -8014,10 +8217,9 @@ app.controller(
             $scope.bb8Telefonia = 0;
             $scope.bb8Television = 0;
 
-            $scope.url =
-                "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetClick/" + pedido;
-            $http
-                .get($scope.url, { timeout: 4000 })
+            services.windowsBridge("BB8/contingencias/Buscar/GetClick/" + pedido)
+                //"http://10.100.66.254:8080/BB8/contingencias/Buscar/GetClick/" + pedido;
+
                 .then(function (data) {
                     $scope.clic = data.data[0];
                     $scope.UNEPedido = $scope.clic.UNEPedido;
@@ -8030,41 +8232,30 @@ app.controller(
                     $scope.ID_GIS = $scope.clic.UNECodigoDireccionServicio;
                     $scope.Estado = $scope.clic.Estado;
                     $scope.CRM = $scope.clic.TTC;
-                    $scope.url =
-                        "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanBaMSS/" +
-                        pedido;
-                    $http
-                        .get($scope.url, { timeout: 4000 })
+                    services.windowsBridge("BB8/contingencias/Buscar/GetPlanBaMSS/" + pedido)
+                        // "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanBaMSS/" +
+                        // pedido;
+
                         .then(function (data) {
                             if (data.data.length > 0) {
                                 $scope.bb8Internet = 1;
                                 $scope.recorreinternet = data.data;
                             } else {
-                                $scope.url =
-                                    "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanBaMSS/" +
-                                    $scope.clic.UNECodigoDireccionServicio;
-                                $http.get($scope.url, { timeout: 4000 }).then(function (data) {
-                                    if (data.data.length > 0) {
-                                        $scope.bb8Internet = 1;
-                                        $scope.recorreinternet = data.data;
-                                    }
-                                });
+                                services.windowsBridge("BB8/contingencias/Buscar/GetPlanBaMSS/" + $scope.clic.UNECodigoDireccionServicio)
+                                    .then(function (data) {
+                                        if (data.data.length > 0) {
+                                            $scope.bb8Internet = 1;
+                                            $scope.recorreinternet = data.data;
+                                        }
+                                    });
                             }
-                            $scope.url =
-                                "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTOMSS/" +
-                                pedido;
-                            $http
-                                .get($scope.url, { timeout: 4000 })
+                            $scope.url = services.windowsBridge("BB8/contingencias/Buscar/GetPlanTOMSS/" + pedido)
                                 .then(function (data) {
                                     if (data.data.length > 0) {
                                         $scope.bb8Telefonia = 1;
                                         $scope.recorretelefonia = data.data;
                                     } else {
-                                        $scope.url =
-                                            "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTOMSS/" +
-                                            $scope.clic.UNECodigoDireccionServicio;
-                                        $http
-                                            .get($scope.url, { timeout: 4000 })
+                                        services.windowsBridge("BB8/contingencias/Buscar/GetPlanTOMSS/" + $scope.clic.UNECodigoDireccionServicio)
                                             .then(function (data) {
                                                 if (data.data.length > 0) {
                                                     $scope.bb8Telefonia = 1;
@@ -8072,21 +8263,14 @@ app.controller(
                                                 }
                                             });
                                     }
-                                    $scope.url =
-                                        "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTVMSS/" +
-                                        pedido;
-                                    $http
-                                        .get($scope.url, { timeout: 4000 })
+                                    $scope.url = services.windowsBridge("BB8/contingencias/Buscar/GetPlanTVMSS/" + pedido)
                                         .then(function (data) {
                                             if (data.data.length > 0) {
                                                 $scope.bb8Television = 1;
                                                 $scope.recore = data.data;
                                             } else {
-                                                $scope.url =
-                                                    "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanTVMSS/" +
-                                                    $scope.clic.UNECodigoDireccionServicio;
-                                                $http
-                                                    .get($scope.url, { timeout: 4000 })
+                                                $scope.url = services.windowsBridge("BB8/contingencias/Buscar/GetPlanTVMSS/" +
+                                                    $scope.clic.UNECodigoDireccionServicio)
                                                     .then(function (data) {
                                                         if (data.data.length > 0) {
                                                             $scope.bb8Television = 1;
@@ -8293,9 +8477,10 @@ app.controller(
         $scope.autocompletarContingencia = async (data) => {
             var contingencia = {};
             try {
-                var autocompleteQuery = await fetch(
-                    "http://10.100.66.254:8080/HCHV_DEV/BuscarB/" + data.references
-                );
+                var autocompleteQuery = await services.windowsBridge("HCHV_DEV/BuscarB/" + data.references);
+                //fetch(
+                //    "http://10.100.66.254:8080/HCHV_DEV/BuscarB/" + data.references
+                //);
                 var autocompleteData = await autocompleteQuery.json();
                 var equiposIn = "";
                 var equiposOut = "";
@@ -8461,7 +8646,7 @@ app.controller(
                     var queryUpdateStatus = await database
                         .collection("contingencies")
                         .doc(data._id)
-                        .update({ status: 1 });
+                        .update({status: 1});
                     var querySaveContingency = await services.guardarContingencia(
                         contingencia,
                         $rootScope.galletainfo
@@ -8515,8 +8700,9 @@ app.controller(
                     text: "Debes documentar claramente la razon de la contingencia (minimo 30 caracteres)",
                 });
             } else {
+                data.login = $rootScope.galletainfo.login
                 services
-                    .editarregistrocontingencia(data, $rootScope.galletainfo)
+                    .editarregistrocontingencia(data)
                     .then(function (data) {
                         if (data.data.state === 99) {
                             swal({
@@ -8741,11 +8927,11 @@ app.controller(
         };
 
         $scope.pageChanged = function () {
-            data = { page: $scope.currentPage, size: $scope.pageSize, fecha: $scope.resumen };
+            data = {page: $scope.currentPage, size: $scope.pageSize, fecha: $scope.resumen};
             resumenContingencias(data);
         };
         $scope.pageSizeChanged = function () {
-            data = { page: $scope.currentPage, size: $scope.pageSize, fecha: $scope.resumen };
+            data = {page: $scope.currentPage, size: $scope.pageSize, fecha: $scope.resumen};
             resumenContingencias(data);
         };
 
@@ -8755,10 +8941,11 @@ app.controller(
                 $scope.totalItems = 0;
                 $scope.pageSize = 15;
                 $scope.searchText = "";
-                data = { page: $scope.currentPage, size: $scope.pageSize, fecha: $scope.fecha };
+                data = {page: $scope.currentPage, size: $scope.pageSize, fecha: $scope.fecha};
             }
             services.getresumenContingencias(data).then(
                 function (data) {
+                    console.log(data);
                     $scope.dataresumenContingencias = data.data[0];
                     $scope.dataresumenContingenciasTV = data.data[6];
                     $scope.dataresumenContingenciasInTo = data.data[7];
@@ -9319,7 +9506,7 @@ app.controller(
             let tipificacion = $("#tipificacion" + id_soporte).val();
             let tipificaciones = $("#tipificaciones" + id_soporte).val();
 
-            const { value: observacion } = await Swal({
+            const {value: observacion} = await Swal({
                 title: "Gestión Soporte GPON",
                 input: "textarea",
                 inputPlaceholder: "Gestion...",
@@ -9438,11 +9625,11 @@ app.controller(
         BuscarRegistrosSoporteGpon();
 
         $scope.pageChanged = function () {
-            data = { page: $scope.currentPage, size: $scope.pageSize, data: $scope.RegistrosSoporteGpon };
+            data = {page: $scope.currentPage, size: $scope.pageSize, data: $scope.RegistrosSoporteGpon};
             BuscarRegistrosSoporteGpon(data);
         };
         $scope.pageSizeChanged = function () {
-            data = { page: $scope.currentPage, size: $scope.pageSize, data: $scope.RegistrosSoporteGpon };
+            data = {page: $scope.currentPage, size: $scope.pageSize, data: $scope.RegistrosSoporteGpon};
             $scope.currentPage = 1;
             BuscarRegistrosSoporteGpon(data);
         };
@@ -9499,7 +9686,7 @@ app.controller(
                     timer: 4000,
                 });
             } else {
-                data = { page: $scope.currentPage, size: $scope.pageSize, data: data };
+                data = {page: $scope.currentPage, size: $scope.pageSize, data: data};
                 BuscarRegistrosSoporteGpon(data);
             }
         };
@@ -9511,7 +9698,7 @@ app.controller(
                 $scope.totalItems = 0;
                 $scope.pageSize = 10;
                 $scope.searchText = "";
-                data = { page: $scope.currentPage, size: $scope.pageSize };
+                data = {page: $scope.currentPage, size: $scope.pageSize};
             }
             services.registrossoportegpon(data).then(
                 function (data) {
@@ -9530,7 +9717,7 @@ app.controller(
                         });
                     } else {
                         $scope.listaRegistros = data.data.data;
-                        $scope.cantidad = data.data.data.length;
+                        $scope.cantidad = data.data.length;
                         $scope.counter = data.data.counter;
 
                         $scope.totalItems = data.data.counter;
@@ -9666,7 +9853,7 @@ app.controller(
                 $scope.totalItems = 0;
                 $scope.pageSize = 15;
                 $scope.searchText = '';
-                data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
+                data = {'page': $scope.currentPage, 'size': $scope.pageSize}
             }
             services
                 .getListaCodigoIncompleto(data)
@@ -9689,13 +9876,13 @@ app.controller(
         };
 
         $scope.pageChanged = function () {
-            data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize}
             console.log(data)
             listarcodigoincompleto(data);
         }
         $scope.pageSizeChanged = function () {
             console.log(data)
-            data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize}
             $scope.currentPage = 1;
             listarcodigoincompleto(data);
         }
@@ -9703,7 +9890,7 @@ app.controller(
         $scope.gestionarCodigoIncompleto = async (id_codigo_incompleto) => {
             let tipificacion = $("#tipificacion" + id_codigo_incompleto).val();
 
-            const { value: observacion } = await Swal({
+            const {value: observacion} = await Swal({
                 title: "Gestión Código Incompleto",
                 input: "textarea",
                 inputPlaceholder: "Gestion...",
@@ -9791,7 +9978,7 @@ app.controller(
                 $scope.totalItems = 0;
                 $scope.pageSize = 15;
                 $scope.searchText = '';
-                data = { 'page': $scope.currentPage, 'size': $scope.pageSize }
+                data = {'page': $scope.currentPage, 'size': $scope.pageSize}
             }
             services
                 .registroscodigoincompleto(data)
@@ -9846,19 +10033,19 @@ app.controller(
                 });
                 return
             }
-            data = { 'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.RegistrosCodigoIncompleto, 'tarea': tarea }
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.RegistrosCodigoIncompleto, 'tarea': tarea}
             BuscarRegistrosCodigoIncompleto(data);
         }
 
 
         $scope.pageChanged = function (tarea) {
-            data = { 'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.RegistrosCodigoIncompleto }
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.RegistrosCodigoIncompleto}
             console.log(data)
             BuscarRegistrosCodigoIncompleto(data);
         }
         $scope.pageSizeChanged = function () {
             console.log(data)
-            data = { 'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.RegistrosCodigoIncompleto }
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.RegistrosCodigoIncompleto}
             $scope.currentPage = 1;
             BuscarRegistrosCodigoIncompleto(data);
         }
@@ -9890,7 +10077,7 @@ app.controller(
                     type: "error",
                 });
             } else {
-                data = { 'page': $scope.currentPage, 'size': $scope.pageSize, data: param }
+                data = {'page': $scope.currentPage, 'size': $scope.pageSize, data: param}
                 BuscarRegistrosCodigoIncompleto(data)
             }
 
@@ -10004,32 +10191,35 @@ app.controller("brutalForceCtrl", function ($scope, $rootScope, services) {
                 function (data) {
                     $scope.respuesta = data.data[0][0];
                     if (pedido != "") {
-                        fetch(`http://10.100.66.254:8080/HCHV/Buscar/${pedido}`)
-                            .then((data) => data.json())
-                            .then((response) => {
-                                if (response) {
-                                    if (
-                                        response.taskType.indexOf("Cambio_Domicilio") !== -1 ||
-                                        response.uNERutaTrabajo.indexOf("NUEVO CON TRASLADO") !== -1
-                                    ) {
-                                        swal({
-                                            title: "El pedido corresponde a la categoría priorizada",
-                                            type: "success",
-                                            position: "top-end",
-                                            showConfirmButton: false,
-                                            timer: 3000,
-                                        });
-                                    } else {
-                                        swal({
-                                            title:
-                                                "Tu pedido no corresponde a la categoría priorizada:",
-                                            html: "<div>Solo se reciben solicitudes de traslado</div>",
-                                            type: "warning",
-                                        });
-                                        window.location = "actividades";
-                                    }
+                        services.windowsBridge(`HCHV/Buscar/${pedido}`).then((data) => data.json()).then((response) => {
+
+
+                            // fetch(`http://10.100.66.254:8080/HCHV/Buscar/${pedido}`)
+                            //     .then((data) => data.json())
+                            //    .then((response) => {
+                            if (response) {
+                                if (
+                                    response.taskType.indexOf("Cambio_Domicilio") !== -1 ||
+                                    response.uNERutaTrabajo.indexOf("NUEVO CON TRASLADO") !== -1
+                                ) {
+                                    swal({
+                                        title: "El pedido corresponde a la categoría priorizada",
+                                        type: "success",
+                                        position: "top-end",
+                                        showConfirmButton: false,
+                                        timer: 3000,
+                                    });
+                                } else {
+                                    swal({
+                                        title:
+                                            "Tu pedido no corresponde a la categoría priorizada:",
+                                        html: "<div>Solo se reciben solicitudes de traslado</div>",
+                                        type: "warning",
+                                    });
+                                    window.location = "actividades";
                                 }
-                            })
+                            }
+                        })
                             .catch((err) => {
                                 console.warn(err);
                             });
@@ -10047,13 +10237,14 @@ app.controller("brutalForceCtrl", function ($scope, $rootScope, services) {
                             cancelButtonText: "Cancelar",
                             showLoaderOnConfirm: true,
                             preConfirm: (pedido) => {
-                                return fetch(`http://10.100.66.254:8080/HCHV/Buscar/${pedido}`)
-                                    .then((response) => {
-                                        if (!response.ok) {
-                                            throw new Error(response.statusText);
-                                        }
-                                        return response.json();
-                                    })
+                                services.windowsBridge(`HCHV/Buscar/${pedido}`).then((response) => {
+                                    //return fetch(`http://10.100.66.254:8080/HCHV/Buscar/${pedido}`)
+                                    //.then((response) => {
+                                    if (!response.ok) {
+                                        throw new Error(response.statusText);
+                                    }
+                                    return response.json();
+                                })
                                     .catch((error) => {
                                         Swal.showValidationMessage(`Petición Fallida: ${error}`);
                                     });
@@ -10130,9 +10321,10 @@ app.controller("brutalForceCtrl", function ($scope, $rootScope, services) {
         var countFilterEx = null;
 
         try {
-            var prioridadBFQuery = await fetch(
-                `http://10.100.66.254:8080/HCHV/Buscar/${pedido}`
-            );
+            var prioridadBFQuery = await services.windowsBridge(`HCHV/Buscar/${pedido}`);
+            /* var prioridadBFQuery = await fetch(
+                 `http://10.100.66.254:8080/HCHV/Buscar/${pedido}`
+             );*/
             var prioridadBF = await prioridadBFQuery.json();
             countFilterEx = filtersEx.indexOf(prioridadBF.uNEUENcalculada);
             if (countFilterEx != -1) {
@@ -10242,7 +10434,7 @@ app.controller("usuariosCtrl", function ($scope, $rootScope, services) {
             $scope.totalItems = 0;
             $scope.pageSize = 15;
             $scope.searchText = "";
-            data = { page: $scope.currentPage, size: $scope.pageSize };
+            data = {page: $scope.currentPage, size: $scope.pageSize};
         }
         services.listadoUsuarios(data).then(
             function (data) {
@@ -10264,18 +10456,18 @@ app.controller("usuariosCtrl", function ($scope, $rootScope, services) {
     }
 
     $scope.pageChanged = function () {
-        data = { page: $scope.currentPage, size: $scope.pageSize };
+        data = {page: $scope.currentPage, size: $scope.pageSize};
         listadoUsuarios(data);
     };
     $scope.pageSizeChanged = function () {
         console.log(data);
-        data = { page: $scope.currentPage, size: $scope.pageSize };
+        data = {page: $scope.currentPage, size: $scope.pageSize};
         $scope.currentPage = 1;
         listadoUsuarios(data);
     };
 
     $scope.buscarUsuario = function (concepto, usuario) {
-        data = { concepto: concepto, usuario: usuario };
+        data = {concepto: concepto, usuario: usuario};
         listadoUsuarios(data);
     };
 
@@ -10461,10 +10653,10 @@ app.controller("turnosCtrl", function ($scope, $rootScope, services) {
     };
 
     $scope.statuses = [
-        { value: "Turno", novedades: "Turno" },
-        { value: "Vacaciones", novedades: "Vacaciones" },
-        { value: "Licencia", novedades: "Licencia" },
-        { value: "Incapacidad", novedades: "Incapacidad" },
+        {value: "Turno", novedades: "Turno"},
+        {value: "Vacaciones", novedades: "Vacaciones"},
+        {value: "Licencia", novedades: "Licencia"},
+        {value: "Incapacidad", novedades: "Incapacidad"},
     ];
 
     $scope.removeNuevaNovedad = function () {
@@ -10844,7 +11036,7 @@ app.controller(
         }
 
         $scope.consultaTablaApoyo = function (fechaApoyo, estado, producto) {
-            data = { fecha: fechaApoyo, estado: estado, producto: producto };
+            data = {fecha: fechaApoyo, estado: estado, producto: producto};
             contigenciaHoraAgenteApoyo(data);
         };
 
@@ -10905,7 +11097,7 @@ app.controller(
         }
 
         $scope.consultaTablaTiempo = function (fechaTiempo, estado, producto) {
-            data = { fecha: fechaTiempo, estado: estado, producto: producto };
+            data = {fecha: fechaTiempo, estado: estado, producto: producto};
             contigenciaHoraAgenteTiempoCompleto(data);
         };
 
@@ -10966,7 +11158,7 @@ app.controller(
         }
 
         function contigenciaHoraAgenteEmtelco(data) {
-            data = { 'estado': $scope.estadoTabla, 'producto': $scope.productoTabla, 'fecha': $scope.fecha_gestion }
+            data = {'estado': $scope.estadoTabla, 'producto': $scope.productoTabla, 'fecha': $scope.fecha_gestion}
             services.contigenciaHoraAgenteEmtelco(data).then(function (data) {
                 $scope.emtelco = data.data.data;
                 $scope.totalesEm = 0;
@@ -11014,23 +11206,23 @@ app.controller(
         }
 
         $scope.mmssConsulta = function (fechamms, estado, producto) {
-            data = { fecha: fechamms, estado: estado, producto: producto };
+            data = {fecha: fechamms, estado: estado, producto: producto};
             contigenciaHoraAgenteMmss(data);
         };
 
         $scope.consultaproducto = function () {
-            data = { estado: $scope.estadoDia, producto: $scope.productoDia };
+            data = {estado: $scope.estadoDia, producto: $scope.productoDia};
             consultaContingenciaAgente(data);
         };
 
         $scope.cunsultaproducto20 = function () {
             console.log($scope.estado20, $scope.producto20);
-            let data = { estado: $scope.estado20, producto: $scope.producto20 };
+            let data = {estado: $scope.estado20, producto: $scope.producto20};
             consultaContingenciaDiario(data);
         };
 
         $scope.ModificarUsuarioTiempoCompleto = (data, tabla) => {
-            $scope.datos = { data: data, tabla: tabla }
+            $scope.datos = {data: data, tabla: tabla}
             var modalInstance = $uibModal.open({
                 ariaLabelledBy: 'modal-title',
                 ariaDescribedBy: 'modal-body',
@@ -11076,7 +11268,7 @@ app.controller('ModalInstanceUsuarioKpiCtrl', function ($uibModalInstance, items
                 array.push(data);
                 $ctrl.usuarios = array;
                 $ctrl.nuevoUsuario = ''; */
-        let datos = { usuario: data, tabla: tabla };
+        let datos = {usuario: data, tabla: tabla};
         if (tabla == "Tiempo completo") {
             services.contigenciaHoraAgenteTiempoCompleto(datos)
                 .then((data) => {
@@ -11189,7 +11381,7 @@ app.controller('ModalInstanceUsuarioKpiCtrl', function ($uibModalInstance, items
             allowOutsideClick: () => !Swal.isLoading(),
         }).then((result) => {
             if (result.value) {
-                let data = { usuario: user, tabla: tabla }
+                let data = {usuario: user, tabla: tabla}
                 services.quitarUsuarioKpi(data)
                     .then((data) => {
                         if (data.data.state == 1) {
@@ -11251,6 +11443,7 @@ app.controller(
 
         function data() {
             services.datosVentas().then(function (data) {
+                console.log(data);
                 $scope.dataVentas = data.data.data;
             });
         }
@@ -11266,7 +11459,7 @@ app.controller(
                 $scope.totalItems = 0;
                 $scope.pageSize = 15;
                 $scope.searchText = "";
-                data = { page: $scope.currentPage, size: $scope.pageSize };
+                data = {page: $scope.currentPage, size: $scope.pageSize};
             }
             services.datosVentasInstaleTerminado(data).then(function (data) {
                 $scope.dataVentasTerminado = data.data.data;
@@ -11282,19 +11475,19 @@ app.controller(
         }
 
         $scope.pageChanged = function () {
-            data = { page: $scope.currentPage, size: $scope.pageSize };
+            data = {page: $scope.currentPage, size: $scope.pageSize};
             console.log(data);
             dataVentaTerminado(data);
         };
         $scope.pageSizeChanged = function () {
             console.log(data);
-            data = { page: $scope.currentPage, size: $scope.pageSize };
+            data = {page: $scope.currentPage, size: $scope.pageSize};
             $scope.currentPage = 1;
             dataVentaTerminado(data);
         };
 
         $scope.marcarEngestion = function (id) {
-            data = { id: id, login_gestion: $rootScope.galletainfo.LOGIN };
+            data = {id: id, login_gestion: $rootScope.galletainfo.LOGIN};
             services.marcarEnGestionVentaInstale(data).then(function (data) {
                 if (data.data.state == 1) {
                     Swal({
@@ -11329,7 +11522,7 @@ app.controller(
                     timer: 4000,
                 });
             } else {
-                data = { pedido: pedido };
+                data = {pedido: pedido};
                 services.detallePedidoVenta(data).then((data) => {
                     if (data.data.state == 1) {
                         $scope.detallePedidoVenta = data.data.data;
@@ -11456,7 +11649,7 @@ app.controller(
                     timer: 4000,
                 });
             } else {
-                data = { observacion: data, usuario: $rootScope.galletainfo.LOGIN };
+                data = {observacion: data, usuario: $rootScope.galletainfo.LOGIN};
                 services.guardaObservacionParaVentaInstale(data).then(function (data) {
                     console.log(data.state);
                     if (data.data.state != 1) {
@@ -11674,7 +11867,7 @@ app.controller('validacionesAppCtrl', function ($scope, $http, $rootScope, $rout
     }
 
     $scope.cambiaEstado = function (data, value) {
-        data = { 'tipo': data, 'valor': value }
+        data = {'tipo': data, 'valor': value}
         services.cambiaValidacionApp(data).then(function (response) {
             if (response.data.state == 1) {
                 Swal({
@@ -11697,6 +11890,173 @@ app.controller('validacionesAppCtrl', function ($scope, $http, $rootScope, $rout
     }
 })
 
+app.controller('registroEquipoCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services, cargaRegistros) {
+    var tiempo = new Date().getTime();
+    var date1 = new Date();
+    var year = date1.getFullYear();
+    var month =
+        date1.getMonth() + 1 <= 9
+            ? "0" + (date1.getMonth() + 1)
+            : date1.getMonth() + 1;
+    var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
+
+    tiempo = year + "-" + month + "-" + day;
+    init();
+
+    function init() {
+        registroEquipos();
+    }
+
+
+    function registroEquipos(data) {
+
+        if (data === '' || data === undefined) {
+            $scope.currentPage = 1;
+            $scope.totalItems = 0;
+            $scope.pageSize = 15;
+            $scope.searchText = '';
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
+        }
+
+        services.registroEquipos(data).then(
+            function (data) {
+                console.log(data)
+                if (data.data.state == 1) {
+                    $scope.registroEquipos = data.data.data;
+
+                    $scope.cantidad = data.data.length;
+                    $scope.counterpag = data.data.counter;
+
+                    $scope.counter = data.data.counter;
+
+                    $scope.totalItems = data.data.counter;
+                    $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                    $scope.endItem = $scope.currentPage * $scope.pageSize;
+                    if ($scope.endItem > data.data.counter) {
+                        $scope.endItem = data.data.counter;
+                    }
+                }
+
+            },
+
+            function errorCallback(response) {
+                console.log(response);
+            });
+    }
+
+
+    $scope.pageChanged = function () {
+        data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
+        registroEquipos(data);
+    }
+    $scope.pageSizeChanged = function () {
+        data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
+        registroEquipos(data);
+    }
+
+    $scope.recargaPage = function () {
+        init();
+    }
+
+    $scope.buscarPedido = (data) => {
+        if (!data) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Ingresa el pedido',
+                timer: 4000
+            })
+            return;
+        }
+        data = {
+            page: $scope.currentPage,
+            size: $scope.pageSize,
+            buscar: data
+        };
+        registroEquipos(data);
+    }
+
+    $scope.registrosEq = (data) => {
+        if (!data) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Ingresa un rango de fecha',
+                timer: 4000
+            })
+            return;
+        }
+        data = {
+            page: $scope.currentPage,
+            size: $scope.pageSize,
+            fecha: data
+        };
+        registroEquipos(data);
+    }
+
+    $scope.csvRegistroEquipos = (data) => {
+
+
+        if (data == '' || data == undefined) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Seleccione un rango de fecha valido',
+                timer: 4000
+            })
+            return;
+        }
+
+        var fechaini = new Date(data.fechaini);
+        var fechafin = new Date(data.fechafin);
+        var diffMs = (fechafin - fechaini);
+        var diffDays = Math.round(diffMs / 86400000);
+
+        if (data.fechaini == '' || data.fechaini == undefined) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'La fecha inicial es requerida',
+                timer: 4000
+            })
+        } else if (data.fechafin == '' || data.fechafin == undefined) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'La fecha final es requerida',
+                timer: 4000
+            })
+        } else if (data.fechaini > data.fechafin) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'La fecha final no puede ser menor a la inicial',
+                timer: 4000
+            })
+        } else {
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'fecha': data}
+            services.csvRegistroEquipos(data)
+                .then(function (data) {
+                    if (data.data.state == 1) {
+                        var wb = XLSX.utils.book_new();
+                        var ws = XLSX.utils.json_to_sheet(data.data.data);
+                        XLSX.utils.book_append_sheet(wb, ws, 'RegistroEquipos');
+                        XLSX.writeFile(wb, 'registro_quipos_' + tiempo + '.xlsx'); // Descarga el a
+                    } else {
+                        Swal({
+                            type: 'error',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        }
+    }
+
+});
 
 app.controller(
     'MenuPerfilCtrl',
@@ -11785,7 +12145,7 @@ app.controller(
                 allowOutsideClick: () => !Swal.isLoading(),
             }).then((result) => {
                 if (result.value) {
-                    let data = { id: id, perfil: perfil, estado: estado }
+                    let data = {id: id, perfil: perfil, estado: estado}
                     services.cambioMenu(data)
                         .then((data) => {
                             if (data.data.state == 1) {
@@ -11862,7 +12222,7 @@ app.controller(
                 allowOutsideClick: () => !Swal.isLoading(),
             }).then((result) => {
                 if (result.value) {
-                    let data = { id: id, estado: estado }
+                    let data = {id: id, estado: estado}
                     services.cambiaEstadoSubmenu(data)
                         .then((data) => {
                             if (data.data.state == 1) {
@@ -12029,221 +12389,381 @@ app.config([
         $httpProvider.interceptors.push("LoadingInterceptor");
     },
 ]);
-
-app.config([
-    "$routeProvider",
-    "$locationProvider",
-    function ($routeProvider, $locationProvider) {
-        $routeProvider
-            .when("/", {
-                title: "Login",
-                templateUrl: "partial/login.html",
-                controller: "loginCtrl",
-            })
-
-            .when("/actividades", {
-                title: "Documentación de Pedidos",
-                templateUrl: "partial/actividades.html",
-                controller: "actividadesCtrl",
-                authorize: true,
-            })
-
-            .when("/registros", {
-                title: "Registros",
-                templateUrl: "partial/registros.html",
-                controller: "registrosCtrl",
-                authorize: true,
-            })
-
-            .when("/registrossoportegpon", {
-                title: "Registros Soporte GPON",
-                templateUrl: "partial/registrossoportegpon.html",
-                controller: "registrossoportegponCtrl",
-                authorize: true,
-            })
-
-            .when("/registroscodigoincompleto", {
-                title: "Registros Codigo incompleto",
-                templateUrl: "partial/registroscodigoincompleto.html",
-                controller: "registroscodigoincompletoCtrl",
-                authorize: true,
-            })
-
-            .when("/usuarios", {
-                title: "Usuarios",
-                templateUrl: "partial/usuarios.html",
-                controller: "usuariosCtrl",
-                authorize: true,
-            })
-
-            .when("/tecnicos", {
-                title: "Tecnicos",
-                templateUrl: "partial/tecnicos.html",
-                controller: "tecnicosCtrl",
-                authorize: true,
-            })
-
-            .when("/listadoAlarmas", {
-                title: "Alarmas",
-                templateUrl: "partial/listadoAlarmas.html",
-                controller: "AlarmasCtrl",
-                authorize: true,
-            })
-
-            .when("/mesaoffline/mesaoffline", {
-                title: "Mesa Offline",
-                templateUrl: "partial/mesaoffline/mesaoffline.html",
-                controller: "mesaofflineCtrl",
-                authorize: true,
-            })
-
-            .when("/mesaoffline/registrosOffline", {
-                title: "Registros Offline",
-                templateUrl: "partial/mesaoffline/registrosOffline.html",
-                controller: "registrosOfflineCtrl",
-                authorize: true,
-            })
-
-            .when("/brutalForce", {
-                title: "Brutal Force",
-                templateUrl: "partial/brutalForce.html",
-                controller: "brutalForceCtrl",
-                authorize: true,
-            })
-
-            .when("/contingencias", {
-                title: "Contingencias aprovisionamiento",
-                templateUrl: "partial/contingencias.html",
-                controller: "contingenciasCtrl",
-                authorize: true,
-            })
-            .when("/nivelacion", {
-                title: "Gestión Nivelación",
-                templateUrl: "partial/nivelacion.html",
-                controller: "nivelacionCtrl",
-                authorize: true,
-            })
-
-            .when("/GestionNivelacion", {
-                title: "Gestión Nivelación",
-                templateUrl: "partial/GestionNivelacion.html",
-                controller: "GestionNivelacionCtrl",
-                authorize: true,
-            })
-
-            .when("/Gestioncontingencias", {
-                title: "Gestión Contingencias",
-                templateUrl: "partial/Gestioncontingencias.html",
-                controller: "GestioncontingenciasCtrl",
-                authorize: true,
-            })
-
-            .when("/gestionsoportegpon", {
-                title: "Gestión Soporte Gpon",
-                templateUrl: "partial/Gestionsoportegpon.html",
-                controller: "GestionsoportegponCtrl",
-                authorize: true,
-            })
-
-            .when("/gestioncodigoincompleto", {
-                title: "Registros Código Incompleto",
-                templateUrl: "partial/Gestioncodigoincompleto.html",
-                controller: "GestioncodigoincompletoCtrl",
-                authorize: true,
-            })
-
-            .when("/premisasInfraestructuras", {
-                title: "Premisas Infraestructuras",
-                templateUrl: "partial/premisasInfraestructuras.html",
-                controller: "premisasInfraestructurasCtrl",
-                authorize: true,
-            })
-
-            .when("/novedadesVisita", {
-                title: "Novedades Visita",
-                templateUrl: "partial/novedadesVisita.html",
-                controller: "novedadesVisitaCtrl",
-                authorize: true,
-            })
-
-            .when("/contrasenaClick", {
-                title: "Contraseñas ClickSoftware",
-                templateUrl: "partial/contrasenaClick.html",
-                controller: "contrasenasClickCtrl",
-                authorize: true,
-            })
-
-            .when("/turnos", {
-                title: "Gestión turnos",
-                templateUrl: "partial/turnos.html",
-                controller: "turnosCtrl",
-                authorize: true,
-            })
-
-            .when("/quejasGo", {
-                title: "Quejas Gestión Operativa",
-                templateUrl: "partial/quejasGo.html",
-                controller: "quejasGoCtrl",
-                authorize: true,
-            })
+app.config(routesConfig).run(runConfig);
 
 
-            .when("/gestion-quejasGo", {
-                title: "Gestión QuejasGo",
-                templateUrl: "partial/gestionQuejasGo.html",
-                controller: "quejasGoCtrl2",
-                authorize: true,
-            })
+function routesConfig($routeProvider, $locationProvider, $compileProvider) {
+    $locationProvider.html5Mode(true).hashPrefix('!');
+    $compileProvider.aHrefSanitizationWhitelist(/^\s*(whatsapp|http|https|itms):/);
+    $routeProvider
+        .when("/", {
+            title: "Login",
+            templateUrl: "partial/login.html",
+            controller: "loginCtrl",
+        })
 
-            .when("/consultaSara", {
-                title: "Consulta SARA",
-                templateUrl: "partial/consultaSara.html",
-                controller: "saraCtrl",
-                authorize: true,
-            })
+        .when("/actividades", {
+            title: "Documentación de Pedidos",
+            templateUrl: "partial/actividades.html",
+            controller: "actividadesCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
 
-            .when("/KPI-Contingencia", {
-                title: "KPI Contingecia",
-                templateUrl: "partial/graficos-contingecia.html",
-                controller: "GraficosContingeciaCtrl",
-                authorize: true,
-            })
+        .when("/registros", {
+            title: "Registros",
+            templateUrl: "partial/registros.html",
+            controller: "registrosCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
 
-            .when("/gestion-ventas-instaleTiendas", {
-                title: "Gestion Ventas Instale",
-                templateUrl: "partial/ventasInstale/VentasInstaleTiendas.html",
-                controller: "gestionVentasInstaleTiendasCtrl",
-                authorize: true,
-            })
+        .when("/registrossoportegpon", {
+            title: "Registros Soporte GPON",
+            templateUrl: "partial/registrossoportegpon.html",
+            controller: "registrossoportegponCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
 
-            .when("/perfil-menu", {
-                title: "Administracion menu - perfiles",
-                templateUrl: "partial/menu-perfil.html",
-                controller: "MenuPerfilCtrl",
-                authorize: true,
-            })
+        .when("/registroscodigoincompleto", {
+            title: "Registros Codigo incompleto",
+            templateUrl: "partial/registroscodigoincompleto.html",
+            controller: "registroscodigoincompletoCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
 
-            .when('/validaciones-app', {
-                title: 'Validaciones App',
-                templateUrl: 'partial/validaciones-app.html',
-                controller: 'validacionesAppCtrl',
-                authorize: true
-            })
+        .when("/usuarios", {
+            title: "Usuarios",
+            templateUrl: "partial/usuarios.html",
+            controller: "usuariosCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
 
-            .otherwise({
-                redirectTo: "/",
+        .when("/tecnicos", {
+            title: "Tecnicos",
+            templateUrl: "partial/tecnicos.html",
+            controller: "tecnicosCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/listadoAlarmas", {
+            title: "Alarmas",
+            templateUrl: "partial/listadoAlarmas.html",
+            controller: "AlarmasCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/mesaoffline/mesaoffline", {
+            title: "Mesa Offline",
+            templateUrl: "partial/mesaoffline/mesaoffline.html",
+            controller: "mesaofflineCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/mesaoffline/registrosOffline", {
+            title: "Registros Offline",
+            templateUrl: "partial/mesaoffline/registrosOffline.html",
+            controller: "registrosOfflineCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/brutalForce", {
+            title: "Brutal Force",
+            templateUrl: "partial/brutalForce.html",
+            controller: "brutalForceCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/contingencias", {
+            title: "Contingencias aprovisionamiento",
+            templateUrl: "partial/contingencias.html",
+            controller: "contingenciasCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+        .when("/nivelacion", {
+            title: "Gestión Nivelación",
+            templateUrl: "partial/nivelacion.html",
+            controller: "nivelacionCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/GestionNivelacion", {
+            title: "Gestión Nivelación",
+            templateUrl: "partial/GestionNivelacion.html",
+            controller: "GestionNivelacionCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/Gestioncontingencias", {
+            title: "Gestión Contingencias",
+            templateUrl: "partial/Gestioncontingencias.html",
+            controller: "GestioncontingenciasCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/gestionsoportegpon", {
+            title: "Gestión Soporte Gpon",
+            templateUrl: "partial/Gestionsoportegpon.html",
+            controller: "GestionsoportegponCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/gestioncodigoincompleto", {
+            title: "Registros Código Incompleto",
+            templateUrl: "partial/Gestioncodigoincompleto.html",
+            controller: "GestioncodigoincompletoCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/premisasInfraestructuras", {
+            title: "Premisas Infraestructuras",
+            templateUrl: "partial/premisasInfraestructuras.html",
+            controller: "premisasInfraestructurasCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/novedadesVisita", {
+            title: "Novedades Visita",
+            templateUrl: "partial/novedadesVisita.html",
+            controller: "novedadesVisitaCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/contrasenaClick", {
+            title: "Contraseñas ClickSoftware",
+            templateUrl: "partial/contrasenaClick.html",
+            controller: "contrasenasClickCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/turnos", {
+            title: "Gestión turnos",
+            templateUrl: "partial/turnos.html",
+            controller: "turnosCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/quejasGo", {
+            title: "Quejas Gestión Operativa",
+            templateUrl: "partial/quejasGo.html",
+            controller: "quejasGoCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+
+        .when("/gestion-quejasGo", {
+            title: "Gestión QuejasGo",
+            templateUrl: "partial/gestionQuejasGo.html",
+            controller: "quejasGoCtrl2",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/consultaSara", {
+            title: "Consulta SARA",
+            templateUrl: "partial/consultaSara.html",
+            controller: "saraCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/KPI-Contingencia", {
+            title: "KPI Contingecia",
+            templateUrl: "partial/graficos-contingecia.html",
+            controller: "GraficosContingeciaCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/gestion-ventas-instaleTiendas", {
+            title: "Gestion Ventas Instale",
+            templateUrl: "partial/ventasInstale/VentasInstaleTiendas.html",
+            controller: "gestionVentasInstaleTiendasCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/perfil-menu", {
+            title: "Administracion menu - perfiles",
+            templateUrl: "partial/menu-perfil.html",
+            controller: "MenuPerfilCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when('/validaciones-app', {
+            title: 'Validaciones App',
+            templateUrl: 'partial/validaciones-app.html',
+            controller: 'validacionesAppCtrl',
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            },
+        })
+
+        .when('/registro-equipos', {
+            title: 'Registro equipos',
+            templateUrl: 'partial/registro_equipo.html',
+            controller: 'registroEquipoCtrl',
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            },
+        })
+
+        .otherwise({
+            redirectTo: "/",
+        });
+
+    /*$locationProvider
+       .html5Mode({
+           enabled: false,
+           requireBase: true,
+       })
+       .hashPrefix([""]);*/
+}
+
+// crear function valida email
+
+
+function loadUserData($rootScope, $q, $route, $location, services, $cookies) {
+    return services.checkSession().then(complete, failed);
+
+    function complete(data) {
+        if (!data.data.login) {
+            swal({
+                type: "error",
+                title: 'Su session ha caducado',
+                text: 'Inicia session nuevamente para continuar',
+                timer: 4000,
+            }).then(function () {
+                $cookies.remove("usuarioseguimiento");
+                $location.path("/");
+                $rootScope.galletainfo = undefined;
+                $rootScope.permiso = false;
+                $route.reload();
             });
+        }
+        var today = new Date();
+        $rootScope.year = today.getFullYear();
+        $rootScope.nombre = data.data.nombre;
+        $rootScope.login = data.data.login;
+        $rootScope.perfil = data.data.perfil;
+        $rootScope.identificacion = data.data.identificacion;
+        $rootScope.menu = data.data.menu;
+        $rootScope.authenticated = true;
+        $rootScope.permiso = true;
 
-        //$locationProvider.html5Mode(true);
+        $cookies.put("usuarioseguimiento", JSON.stringify(data.data));
+        var galleta = JSON.parse($cookies.get("usuarioseguimiento"));
+        $rootScope.galletainfo = galleta;
 
-        $locationProvider
-            .html5Mode({
-                enabled: false,
-                requireBase: true,
-            })
-            .hashPrefix([""]);
-    },
-]);
+        return data;
+    }
+
+    function failed(reason) {
+        $rootScope.authenticated = false;
+        if ($route.current.loginRequired) {
+            var error = {
+                status: 401,
+                message: "Unauthorized"
+            };
+            return $q.reject(error);
+        }
+    }
+}
+
+function runConfig($rootScope, $location) {
+    $rootScope.$on('$routeChangeStart', function (e, curr, prev) {
+
+    });
+    $rootScope.$on('$routeChangeSuccess', function (e, curr, prev) {
+        //console.log(e, curr, prev, ' routeChangeSuccess');
+        $rootScope.title = curr.$$route.title;
+        $rootScope.tituloPagina =
+            "Seguimiento a pedidos - " + curr.$$route.title;
+    });
+    $rootScope.$on('$routeChangeError', function (arg1, arg2, arg3, arg4) {
+
+        if (arg4.status == 404) {
+            $location.url('/');
+        }
+        if (arg4.status == 401) {
+            $location.url('/');
+        }
+    });
+}
 
 app.run(function ($rootScope, services, i18nService) {
     i18nService.setCurrentLang("es");
@@ -12286,21 +12806,6 @@ app.run([
     "$cookies",
     "services",
     function ($location, $rootScope, $route, $cookies, services) {
-        $rootScope.$on("$routeChangeStart", function (evt, to, from) {
-            if ($cookies.get("usuarioseguimiento") == undefined) {
-                $location.path("/");
-            }
-        });
-
-        $rootScope.$on("$routeChangeSuccess", function (event, current, previous) {
-            $rootScope.title = current.$$route.title;
-            $rootScope.tituloPagina =
-                "Seguimiento a pedidos - " + current.$$route.title;
-        });
-
-        $rootScope.$on("$routeChangeError", function (evt, to, from, error) {
-        });
-
         $rootScope.executeCopy = function executeCopy(text) {
             var input = document.createElement("textarea");
             document.body.appendChild(input);
@@ -12432,228 +12937,230 @@ app.run([
         ];
 
         $rootScope.empresas = [
-            { ID: 1, EMPRESA: "Une" },
-            { ID: 0, EMPRESA: "Sin empresa" },
-            { ID: 3, EMPRESA: "Redes y edificaciones" },
-            { ID: 4, EMPRESA: "Energia integral andina" },
-            { ID: 6, EMPRESA: "Eagle" },
-            { ID: 7, EMPRESA: "Servtek" },
-            { ID: 8, EMPRESA: "Furtelcom" },
-            { ID: 9, EMPRESA: "Emtelco" },
-            { ID: 10, EMPRESA: "Conavances" },
-            { ID: 11, EMPRESA: "Techcom" },
+            {ID: 1, EMPRESA: "Une"},
+            {ID: 0, EMPRESA: "Sin empresa"},
+            {ID: 3, EMPRESA: "Redes y edificaciones"},
+            {ID: 4, EMPRESA: "Energia integral andina"},
+            {ID: 6, EMPRESA: "Eagle"},
+            {ID: 7, EMPRESA: "Servtek"},
+            {ID: 8, EMPRESA: "Furtelcom"},
+            {ID: 9, EMPRESA: "Emtelco"},
+            {ID: 10, EMPRESA: "Conavances"},
+            {ID: 11, EMPRESA: "Techcom"},
         ];
 
         $rootScope.procesosoffline = [
-            { ID: "Instalaciones", PROCESO: "Instalaciones" },
-            { ID: "Reparaciones", PROCESO: "Reparaciones" },
+            {ID: "Instalaciones", PROCESO: "Instalaciones"},
+            {ID: "Reparaciones", PROCESO: "Reparaciones"},
         ];
 
         $rootScope.estadosComercial = [
-            { ID: "Cobertura 3G", ESTADO: "Cobertura 3G" },
-            { ID: "Decisión Usuario 42", ESTADO: "Decisión Usuario 42" },
-            { ID: "Estudio Legal 82", ESTADO: "Estudio Legal 82" },
-            { ID: "Oferta Economica", ESTADO: "Oferta Económica" },
-            { ID: "PEREP", ESTADO: "PEREP" },
-            { ID: "PETEC", ESTADO: "PETEC" },
-            { ID: "PFACT", ESTADO: "PFACT" },
-            { ID: "PORDE", ESTADO: "PORDE" },
+            {ID: "Cobertura 3G", ESTADO: "Cobertura 3G"},
+            {ID: "Decisión Usuario 42", ESTADO: "Decisión Usuario 42"},
+            {ID: "Estudio Legal 82", ESTADO: "Estudio Legal 82"},
+            {ID: "Oferta Economica", ESTADO: "Oferta Económica"},
+            {ID: "PEREP", ESTADO: "PEREP"},
+            {ID: "PETEC", ESTADO: "PETEC"},
+            {ID: "PFACT", ESTADO: "PFACT"},
+            {ID: "PORDE", ESTADO: "PORDE"},
         ];
 
         $rootScope.productos = [
-            { ID: "ADSL-Internet", PRODUCTO: "ADSL-Internet" },
-            { ID: "ADSL-IPTV", PRODUCTO: "ADSL-IPTV" },
-            { ID: "ADSL-ToIP", PRODUCTO: "ADSL-ToIP" },
-            { ID: "HFC-Internet", PRODUCTO: "HFC-Internet" },
-            { ID: "HFC-ToIP", PRODUCTO: "HFC-ToIP" },
-            { ID: "HFC-TV_Basica", PRODUCTO: "HFC-TV Basica" },
-            { ID: "HFC-TV_Digital", PRODUCTO: "HFC-TV Digital" },
-            { ID: "GPON", PRODUCTO: "GPON" },
-            { ID: "Telefonia_Basica", PRODUCTO: "Telefonia Basica" },
-            { ID: "DTH-Television", PRODUCTO: "DTH-Television" },
+            {ID: "ADSL-Internet", PRODUCTO: "ADSL-Internet"},
+            {ID: "ADSL-IPTV", PRODUCTO: "ADSL-IPTV"},
+            {ID: "ADSL-ToIP", PRODUCTO: "ADSL-ToIP"},
+            {ID: "HFC-Internet", PRODUCTO: "HFC-Internet"},
+            {ID: "HFC-ToIP", PRODUCTO: "HFC-ToIP"},
+            {ID: "HFC-TV_Basica", PRODUCTO: "HFC-TV Basica"},
+            {ID: "HFC-TV_Digital", PRODUCTO: "HFC-TV Digital"},
+            {ID: "GPON", PRODUCTO: "GPON"},
+            {ID: "Telefonia_Basica", PRODUCTO: "Telefonia Basica"},
+            {ID: "DTH-Television", PRODUCTO: "DTH-Television"},
         ];
 
         $rootScope.conceptosRegistros = [
-            { ID: "", CONCEPTO: "--Seleccione--" },
-            { ID: "pedido", CONCEPTO: "Pedido" },
-            { ID: "asesor", CONCEPTO: "Asesor" },
-            { ID: "accion", CONCEPTO: "Accion" },
-            { ID: "proceso", CONCEPTO: "Proceso" },
+            {ID: "", CONCEPTO: "--Seleccione--"},
+            {ID: "pedido", CONCEPTO: "Pedido"},
+            {ID: "asesor", CONCEPTO: "Asesor"},
+            {ID: "accion", CONCEPTO: "Accion"},
+            {ID: "proceso", CONCEPTO: "Proceso"},
         ];
 
         $rootScope.conceptoVentaInstale = [
-            { ID: "", CONCEPTO: "--Seleccione--" },
-            { ID: "Gestionados", CONCEPTO: "Gestionados" },
-            { ID: "Ok", CONCEPTO: "Aprobados" },
-            { ID: "Rechazados", CONCEPTO: "Rechazados" },
+            {ID: "", CONCEPTO: "--Seleccione--"},
+            {ID: "Gestionados", CONCEPTO: "Gestionados"},
+            {ID: "Ok", CONCEPTO: "Aprobados"},
+            {ID: "Rechazados", CONCEPTO: "Rechazados"},
         ];
 
         $rootScope.conceptosRegistrosComercial = [
-            { ID: "", CONCEPTO: "--Seleccione--" },
-            { ID: "pedido_actual", CONCEPTO: "Pedido" },
-            { ID: "login_asesor", CONCEPTO: "Asesor" },
+            {ID: "", CONCEPTO: "--Seleccione--"},
+            {ID: "pedido_actual", CONCEPTO: "Pedido"},
+            {ID: "login_asesor", CONCEPTO: "Asesor"},
             {
                 ID: "gestion",
                 CONCEPTO: "Gestión",
             },
-            { ID: "clasificacion", CONCEPTO: "Clasificación" },
-            { ID: "ciudad", CONCEPTO: "Ciudad" },
-            { ID: "estado", CONCEPTO: "Estado" },
+            {ID: "clasificacion", CONCEPTO: "Clasificación"},
+            {ID: "ciudad", CONCEPTO: "Ciudad"},
+            {ID: "estado", CONCEPTO: "Estado"},
         ];
 
         $rootScope.conceptosBuscar = [
-            { ID: "", CONCEPTO: "--Seleccione--" },
-            { ID: "nombre", CONCEPTO: "Nombre" },
-            { ID: "login", CONCEPTO: "Login" },
+            {ID: "", CONCEPTO: "--Seleccione--"},
+            {ID: "nombre", CONCEPTO: "Nombre"},
+            {ID: "login", CONCEPTO: "Login"},
         ];
 
         $rootScope.perfiles = [
-            { ID: 1, PERFIL: "Supervisor" },
-            { ID: 2, PERFIL: "Creador de Experiencia" },
-            { ID: 3, PERFIL: "Perfil Regional" },
-            { ID: 4, PERFIL: "Mesa Offline" },
-            { ID: 5, PERFIL: "Creador de Experiencia Plus" },
-            { ID: 6, PERFIL: "Premisas Infraestructuras" },
-            { ID: 7, PERFIL: "Asesor VIP" },
-            { ID: 8, PERFIL: "Registros" },
-            { ID: 9, PERFIL: "Brutal Force" },
-            { ID: 10, PERFIL: "Gestión Brutal" },
-            { ID: 13, PERFIL: "Quejas GO" },
-            { ID: 14, PERFIL: "Nivelacion" },
+            {ID: 1, PERFIL: "Supervisor"},
+            {ID: 2, PERFIL: "Creador de Experiencia"},
+            {ID: 3, PERFIL: "Perfil Regional"},
+            {ID: 4, PERFIL: "Mesa Offline"},
+            {ID: 5, PERFIL: "Creador de Experiencia Plus"},
+            {ID: 6, PERFIL: "Premisas Infraestructuras"},
+            {ID: 7, PERFIL: "Asesor VIP"},
+            {ID: 8, PERFIL: "Registros"},
+            {ID: 9, PERFIL: "Brutal Force"},
+            {ID: 10, PERFIL: "Gestión Brutal"},
+            {ID: 13, PERFIL: "Quejas GO"},
+            {ID: 14, PERFIL: "Nivelacion"},
         ];
 
         $rootScope.conceptosBuscartecnico = [
-            { ID: "", CONCEPTO: "--Seleccione--" },
-            { ID: "nombre", CONCEPTO: "Nombre" },
-            { ID: "identificacion", CONCEPTO: "Cedula" },
-            { ID: "ciudad", CONCEPTO: "Ciudad" },
-            { ID: "celuar", CONCEPTO: "Celuar" },
-            { ID: 'login', CONCEPTO: 'login' }
+            {ID: "", CONCEPTO: "--Seleccione--"},
+            {ID: "nombre", CONCEPTO: "Nombre"},
+            {ID: "identificacion", CONCEPTO: "Cedula"},
+            {ID: "ciudad", CONCEPTO: "Ciudad"},
+            {ID: "celular", CONCEPTO: "celular"},
+            {ID: 'login', CONCEPTO: 'login'}
         ];
 
         $rootScope.contrato = [
-            { ID: "", CONCEPTO: "Seleccione" },
-            { ID: "EMTELCO", CONCEPTO: "EMTELCO" },
-            { ID: "RYE", CONCEPTO: "RYE" },
-            { ID: "EIA", CONCEPTO: "EIA" },
-            { ID: "ETP", CONCEPTO: "ETP" },
+            {ID: "", CONCEPTO: "Seleccione"},
+            {ID: "EMTELCO", CONCEPTO: "EMTELCO"},
+            {ID: "RYE", CONCEPTO: "RYE"},
+            {ID: "EIA", CONCEPTO: "EIA"},
+            {ID: "ETP", CONCEPTO: "ETP"},
         ];
 
         $rootScope.tecnologia = [
-            { ID: "", CONCEPTO: "Seleccione" },
-            { ID: "HFC", CONCEPTO: "HFC" },
-            { ID: "GPON", CONCEPTO: "GPON" },
-            { ID: "COBRE", CONCEPTO: "COBRE" },
-            { ID: "DTH", CONCEPTO: "DTH" },
+            {ID: "", CONCEPTO: "Seleccione"},
+            {ID: "HFC", CONCEPTO: "HFC"},
+            {ID: "GPON", CONCEPTO: "GPON"},
+            {ID: "COBRE", CONCEPTO: "COBRE"},
+            {ID: "DTH", CONCEPTO: "DTH"},
         ];
 
         $rootScope.ciudadesContingencias = [
-            { ID: "", CONCEPTO: "--Seleccione--" },
-            { ID: "ARMENIA", CONCEPTO: "ARMENIA" },
-            { ID: "BARRANCABERMEJA", CONCEPTO: "BARRANCABERMEJA" },
-            { ID: "BARRANQUILLA", CONCEPTO: "BARRANQUILLA" },
-            { ID: "BOGOTA", CONCEPTO: "BOGOTA" },
-            { ID: "BUCARAMANGA", CONCEPTO: "BUCARAMANGA" },
-            { ID: "BUGA", CONCEPTO: "BUGA" },
-            { ID: "CALI", CONCEPTO: "CALI" },
-            { ID: "CARTAGENA", CONCEPTO: "CARTAGENA" },
-            { ID: "CUCUTA", CONCEPTO: "CUCUTA" },
-            { ID: "IBAGUE", CONCEPTO: "IBAGUE" },
-            { ID: "MANIZALES", CONCEPTO: "MANIZALES" },
-            { ID: "MEDELLIN", CONCEPTO: "MEDELLIN" },
-            { ID: "MONTERIA", CONCEPTO: "MONTERIA" },
-            { ID: "PALMIRA", CONCEPTO: "PALMIRA" },
-            { ID: "PEREIRA", CONCEPTO: "PEREIRA" },
-            { ID: "POPAYAN", CONCEPTO: "POPAYAN" },
-            { ID: "SANTA MARTA", CONCEPTO: "SANTA MARTA" },
-            { ID: "SINCELEJO", CONCEPTO: "SINCELEJO" },
-            { ID: "TUNJA", CONCEPTO: "TUNJA" },
-            { ID: "VALLEDUPAR", CONCEPTO: "VALLEDUPAR" },
-            { ID: "VILLAVICENCIO", CONCEPTO: "VILLAVICENCIO" },
+            {ID: "", CONCEPTO: "--Seleccione--"},
+            {ID: "ARMENIA", CONCEPTO: "ARMENIA"},
+            {ID: "BARRANCABERMEJA", CONCEPTO: "BARRANCABERMEJA"},
+            {ID: "BARRANQUILLA", CONCEPTO: "BARRANQUILLA"},
+            {ID: "BOGOTA", CONCEPTO: "BOGOTA"},
+            {ID: "BUCARAMANGA", CONCEPTO: "BUCARAMANGA"},
+            {ID: "BUGA", CONCEPTO: "BUGA"},
+            {ID: "CALI", CONCEPTO: "CALI"},
+            {ID: "CARTAGENA", CONCEPTO: "CARTAGENA"},
+            {ID: "CUCUTA", CONCEPTO: "CUCUTA"},
+            {ID: "IBAGUE", CONCEPTO: "IBAGUE"},
+            {ID: "MANIZALES", CONCEPTO: "MANIZALES"},
+            {ID: "MEDELLIN", CONCEPTO: "MEDELLIN"},
+            {ID: "MONTERIA", CONCEPTO: "MONTERIA"},
+            {ID: "PALMIRA", CONCEPTO: "PALMIRA"},
+            {ID: "PEREIRA", CONCEPTO: "PEREIRA"},
+            {ID: "POPAYAN", CONCEPTO: "POPAYAN"},
+            {ID: "SANTA MARTA", CONCEPTO: "SANTA MARTA"},
+            {ID: "SINCELEJO", CONCEPTO: "SINCELEJO"},
+            {ID: "TUNJA", CONCEPTO: "TUNJA"},
+            {ID: "VALLEDUPAR", CONCEPTO: "VALLEDUPAR"},
+            {ID: "VILLAVICENCIO", CONCEPTO: "VILLAVICENCIO"},
         ];
 
         $rootScope.paquetescontingencias = [
-            { ID: "N/A", CONCEPTO: "N/A" },
-            { ID: "BasicoAXM", CONCEPTO: "BasicoAXM" },
-            { ID: "BasicoBGA", CONCEPTO: "BasicoBGA" },
-            { ID: "BasicoBOG", CONCEPTO: "BasicoBOG" },
-            { ID: "BasicoBQA", CONCEPTO: "BasicoBQA" },
-            { ID: "BasicoBUG", CONCEPTO: "BasicoBUG" },
-            { ID: "BasicoCLO", CONCEPTO: "BasicoCLO" },
-            { ID: "BasicoCTG", CONCEPTO: "BasicoCTG" },
-            { ID: "BasicoCUC", CONCEPTO: "BasicoCUC" },
-            { ID: "BasicoEJA", CONCEPTO: "BasicoEJA" },
-            { ID: "BasicoIBE", CONCEPTO: "BasicoIBE" },
-            { ID: "BasicoMED", CONCEPTO: "BasicoMED" },
-            { ID: "BasicoMTR", CONCEPTO: "BasicoMTR" },
-            { ID: "BasicoMTR", CONCEPTO: "BasicoMTR" },
-            { ID: "BasicoMZL", CONCEPTO: "BasicoMZL" },
-            { ID: "BasicoPEI", CONCEPTO: "BasicoPEI" },
-            { ID: "BasicoPPN", CONCEPTO: "BasicoPPN" },
-            { ID: "BasicoSIN", CONCEPTO: "BasicoSIN" },
-            { ID: "BasicoSMR", CONCEPTO: "BasicoSMR" },
-            { ID: "BasicoVUP", CONCEPTO: "BasicoVUP" },
-            { ID: "BasicoVVC", CONCEPTO: "BasicoVVC" },
-            { ID: "BasicoCLO", CONCEPTO: "BasicoCLO" },
-            { ID: "BasicoHD", CONCEPTO: "BasicoHD" },
-            { ID: "BLACK", CONCEPTO: "BLACK" },
-            { ID: "BRONZE", CONCEPTO: "BRONZE" },
-            { ID: "CO_CLASICAHD", CONCEPTO: "CO_CLASICAHD" },
-            { ID: "CO_CLASICAHD_GP", CONCEPTO: "CO_CLASICAHD_GP" },
-            { ID: "CO_CLAHDPLUSONE", CONCEPTO: "CO_CLAHDPLUSONE" },
-            { ID: "CO_ESPECIAL_GP", CONCEPTO: "CO_ESPECIAL_GP" },
-            { ID: "CO_ANDROIONE", CONCEPTO: "CO_ANDROIONE" },
-            { ID: "WINPREM", CONCEPTO: "WINPREM" },
-            { ID: "FOXMAS", CONCEPTO: "FOXMAS" },
-            { ID: "GOLD", CONCEPTO: "GOLD" },
-            { ID: "HBO-MAX", CONCEPTO: "HBO-MAX" },
-            { ID: "HBOPACK", CONCEPTO: "HBOPACK" },
-            { ID: "HD-NalAXM", CONCEPTO: "HD-NalAXM" },
-            { ID: "HD-NalBGA", CONCEPTO: "HD-NalBGA" },
-            { ID: "HD-NalBOG", CONCEPTO: "HD-NalBOG" },
-            { ID: "HD-NalBUG", CONCEPTO: "HD-NalBUG" },
-            { ID: "HD-NalCLO", CONCEPTO: "HD-NalCLO" },
-            { ID: "HD-NalCTG", CONCEPTO: "HD-NalCTG" },
-            { ID: "HD-NalCUC", CONCEPTO: "HD-NalCUC" },
-            { ID: "HD-NalEJA", CONCEPTO: "HD-NalEJA" },
-            { ID: "HD-NalMED", CONCEPTO: "HD-NalMED" },
-            { ID: "HD-NalMZL", CONCEPTO: "HD-NalMZL" },
-            { ID: "HD-NalPEI", CONCEPTO: "HD-NalPEI" },
-            { ID: "HOTELES", CONCEPTO: "HOTELES" },
-            { ID: "HOTPACK", CONCEPTO: "HOTPACK" },
-            { ID: "LIFESTYLE", CONCEPTO: "LIFESTYLE" },
-            { ID: "MINIPACK", CONCEPTO: "MINIPACK" },
-            { ID: "MOVIECITY", CONCEPTO: "MOVIECITY" },
-            { ID: "MUSIC", CONCEPTO: "MUSIC" },
-            { ID: "PLAYBOY", CONCEPTO: "PLAYBOY" },
-            { ID: "Premium", CONCEPTO: "Premium" },
-            { ID: "PRIVATEGOLD", CONCEPTO: "PRIVATEGOLD" },
-            { ID: "SILVER", CONCEPTO: "SILVER" },
-            { ID: "SPORTS", CONCEPTO: "SPORTS" },
-            { ID: "TVDIG-HDBAS", CONCEPTO: "TVDIG-HDBAS" },
-            { ID: "TVDIG-HDPREM", CONCEPTO: "TVDIG-HDPREM" },
-            { ID: "TVDIGITAL", CONCEPTO: "TVDIGITAL" },
-            { ID: "UFC", CONCEPTO: "UFC" },
-            { ID: "FOX-TEMP", CONCEPTO: "FOX-TEMP" },
-            { ID: "ESCENCIAL", CONCEPTO: "ESCENCIAL" },
-            { ID: "ESCENCIAL-PLUS", CONCEPTO: "ESCENCIAL-PLUS" },
-            { ID: "IDEAL", CONCEPTO: "IDEAL" },
-            { ID: "IDEAL-PLUS", CONCEPTO: "IDEAL-PLUS" },
-            { ID: "ONE", CONCEPTO: "ONE" },
-            { ID: "ONE PLUS", CONCEPTO: "ONE PLUS" },
-            { ID: "ONE ELITE", CONCEPTO: "ONE ELITE" },
-            { ID: "DTHCOL-BASICO", CONCEPTO: "DTHCOL-BASICO" },
-            { ID: "DTHCOL-AVANZADO", CONCEPTO: "DTHCOL-AVANZADO" },
-            { ID: "BASICO MIPYME", CONCEPTO: "BASICO MIPYME" },
+            {ID: "N/A", CONCEPTO: "N/A"},
+            {ID: "BasicoAXM", CONCEPTO: "BasicoAXM"},
+            {ID: "BasicoBGA", CONCEPTO: "BasicoBGA"},
+            {ID: "BasicoBOG", CONCEPTO: "BasicoBOG"},
+            {ID: "BasicoBQA", CONCEPTO: "BasicoBQA"},
+            {ID: "BasicoBUG", CONCEPTO: "BasicoBUG"},
+            {ID: "BasicoCLO", CONCEPTO: "BasicoCLO"},
+            {ID: "BasicoCTG", CONCEPTO: "BasicoCTG"},
+            {ID: "BasicoCUC", CONCEPTO: "BasicoCUC"},
+            {ID: "BasicoEJA", CONCEPTO: "BasicoEJA"},
+            {ID: "BasicoIBE", CONCEPTO: "BasicoIBE"},
+            {ID: "BasicoMED", CONCEPTO: "BasicoMED"},
+            {ID: "BasicoMTR", CONCEPTO: "BasicoMTR"},
+            {ID: "BasicoMTR", CONCEPTO: "BasicoMTR"},
+            {ID: "BasicoMZL", CONCEPTO: "BasicoMZL"},
+            {ID: "BasicoPEI", CONCEPTO: "BasicoPEI"},
+            {ID: "BasicoPPN", CONCEPTO: "BasicoPPN"},
+            {ID: "BasicoSIN", CONCEPTO: "BasicoSIN"},
+            {ID: "BasicoSMR", CONCEPTO: "BasicoSMR"},
+            {ID: "BasicoVUP", CONCEPTO: "BasicoVUP"},
+            {ID: "BasicoVVC", CONCEPTO: "BasicoVVC"},
+            {ID: "BasicoCLO", CONCEPTO: "BasicoCLO"},
+            {ID: "BasicoHD", CONCEPTO: "BasicoHD"},
+            {ID: "BLACK", CONCEPTO: "BLACK"},
+            {ID: "BRONZE", CONCEPTO: "BRONZE"},
+            {ID: "CO_CLASICAHD", CONCEPTO: "CO_CLASICAHD"},
+            {ID: "CO_CLASICAHD_GP", CONCEPTO: "CO_CLASICAHD_GP"},
+            {ID: "CO_CLAHDPLUSONE", CONCEPTO: "CO_CLAHDPLUSONE"},
+            {ID: "CO_ESPECIAL_GP", CONCEPTO: "CO_ESPECIAL_GP"},
+            {ID: "CO_ANDROIONE", CONCEPTO: "CO_ANDROIONE"},
+            {ID: "WINPREM", CONCEPTO: "WINPREM"},
+            {ID: "FOXMAS", CONCEPTO: "FOXMAS"},
+            {ID: "GOLD", CONCEPTO: "GOLD"},
+            {ID: "HBO-MAX", CONCEPTO: "HBO-MAX"},
+            {ID: "HBOPACK", CONCEPTO: "HBOPACK"},
+            {ID: "HD-NalAXM", CONCEPTO: "HD-NalAXM"},
+            {ID: "HD-NalBGA", CONCEPTO: "HD-NalBGA"},
+            {ID: "HD-NalBOG", CONCEPTO: "HD-NalBOG"},
+            {ID: "HD-NalBUG", CONCEPTO: "HD-NalBUG"},
+            {ID: "HD-NalCLO", CONCEPTO: "HD-NalCLO"},
+            {ID: "HD-NalCTG", CONCEPTO: "HD-NalCTG"},
+            {ID: "HD-NalCUC", CONCEPTO: "HD-NalCUC"},
+            {ID: "HD-NalEJA", CONCEPTO: "HD-NalEJA"},
+            {ID: "HD-NalMED", CONCEPTO: "HD-NalMED"},
+            {ID: "HD-NalMZL", CONCEPTO: "HD-NalMZL"},
+            {ID: "HD-NalPEI", CONCEPTO: "HD-NalPEI"},
+            {ID: "HOTELES", CONCEPTO: "HOTELES"},
+            {ID: "HOTPACK", CONCEPTO: "HOTPACK"},
+            {ID: "LIFESTYLE", CONCEPTO: "LIFESTYLE"},
+            {ID: "MINIPACK", CONCEPTO: "MINIPACK"},
+            {ID: "MOVIECITY", CONCEPTO: "MOVIECITY"},
+            {ID: "MUSIC", CONCEPTO: "MUSIC"},
+            {ID: "PLAYBOY", CONCEPTO: "PLAYBOY"},
+            {ID: "Premium", CONCEPTO: "Premium"},
+            {ID: "PRIVATEGOLD", CONCEPTO: "PRIVATEGOLD"},
+            {ID: "SILVER", CONCEPTO: "SILVER"},
+            {ID: "SPORTS", CONCEPTO: "SPORTS"},
+            {ID: "TVDIG-HDBAS", CONCEPTO: "TVDIG-HDBAS"},
+            {ID: "TVDIG-HDPREM", CONCEPTO: "TVDIG-HDPREM"},
+            {ID: "TVDIGITAL", CONCEPTO: "TVDIGITAL"},
+            {ID: "UFC", CONCEPTO: "UFC"},
+            {ID: "FOX-TEMP", CONCEPTO: "FOX-TEMP"},
+            {ID: "ESCENCIAL", CONCEPTO: "ESCENCIAL"},
+            {ID: "ESCENCIAL-PLUS", CONCEPTO: "ESCENCIAL-PLUS"},
+            {ID: "IDEAL", CONCEPTO: "IDEAL"},
+            {ID: "IDEAL-PLUS", CONCEPTO: "IDEAL-PLUS"},
+            {ID: "ONE", CONCEPTO: "ONE"},
+            {ID: "ONE PLUS", CONCEPTO: "ONE PLUS"},
+            {ID: "ONE ELITE", CONCEPTO: "ONE ELITE"},
+            {ID: "DTHCOL-BASICO", CONCEPTO: "DTHCOL-BASICO"},
+            {ID: "DTHCOL-AVANZADO", CONCEPTO: "DTHCOL-AVANZADO"},
+            {ID: "BASICO MIPYME", CONCEPTO: "BASICO MIPYME"},
         ];
 
         $rootScope.productoGrafico = [
-            { id: 'Internet+Toip', concepto: 'Internet+Toip' },
-            { id: 'TV', concepto: 'TV' }
+            {id: 'Internet+Toip', concepto: 'Internet+Toip'},
+            {id: 'TV', concepto: 'TV'},
+            {id: 'Todos', concepto: 'Todos'}
         ];
+
         $rootScope.estadoGrafico = [
-            { id: 'Acepta', concepto: 'Acepta' },
-            { id: 'Rechaza', concepto: 'Rechaza' }
+            {id: 'Acepta', concepto: 'Acepta'},
+            {id: 'Rechaza', concepto: 'Rechaza'}
         ];
 
         $rootScope.empresaGrafico = [
