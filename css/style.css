@@ -361,7 +361,7 @@ grid
 
 .table>.table-header>tr>th {
     vertical-align: middle;
-    
+
 }
 
 .table-header>tr>th,
@@ -561,11 +561,11 @@ input[type="checkbox"].switch_1{
 	-webkit-transition: all .2s ease-in-out;
 	transition: all .2s ease-in-out;
   }
-  
+
   input[type="checkbox"].switch_1:checked{
 	background: #18913c;
   }
-  
+
   input[type="checkbox"].switch_1:after{
 	position: absolute;
 	content: "";
@@ -581,7 +581,7 @@ input[type="checkbox"].switch_1{
 	-webkit-transition: all .2s ease-in-out;
 	transition: all .2s ease-in-out;
   }
-  
+
   input[type="checkbox"].switch_1:checked:after{
 	left: calc(100% - 1.5em);
   }

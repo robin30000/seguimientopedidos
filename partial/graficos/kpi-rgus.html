@@ -1,0 +1,103 @@
+<div class="container-fluid">
+    <br>
+    <br>
+    <br>
+
+    <style>
+        .chartjs-line-labels {
+            position: absolute;
+            top: -20px; /* Ajusta este valor para mover las etiquetas hacia arriba o hacia abajo según tus necesidades */
+        }
+    </style>
+    <div class="row" style="display: inline-block;">
+        <div class="col-sm-2">
+            <div class="input-group">
+                <input type="text" class="form-control input-sm" ng-model="fecha" placeholder="Fecha"
+                       datetime-picker="" date-format="yyyy-MM-dd" date-only autocomplete="off">
+                <span class="input-group-btn">
+                    <button class="btn btn-default btn-sm" type="button"><i class="fa fa-calendar"
+                                                                            aria-hidden="true"></i></button>
+                </span>
+            </div>
+        </div>
+        <div class="col-sm-1">
+            <i class="fa fa-search btn" aria-hidden="true" ng-click="buscar(fecha)" ng-disabled="loading"
+               tooltip-placement="right" uib-tooltip="Buscar" ng-disabled="loading"> </i>
+        </div>
+        <div class="col-sm-1" *ngIf="loading">
+            <div data-ng-if="loading">
+                <img title="Esperando respuesta" data-toggle="tooltip" data-placement="top" src="img/loader.gif"/>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-7">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span><b>{{fecha}} Gráfico Meta v cumplimiento</b></span>
+                </div>
+
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <canvas id="lineChart" width="400" height="250"></canvas>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="panel panel-default">
+                <div class="panel-heading" style="overflow: auto;">
+                    <span><b>{{fecha}} Cumplimiento</b></span>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="table">
+                            <table class="table small table-striped table-hover table-bordered table-condensed">
+                                <thead class="table-header">
+                                <tr>
+                                    <th rowspan="2">Hora</th>
+                                    <th rowspan="2">Meta</th>
+                                    <th colspan="5">Cumplimiento</th>
+                                </tr>
+                                <tr>
+                                    <th>Nacional</th>
+                                    <th>Andina</th>
+                                    <th>Costa</th>
+                                    <th>Bogotá</th>
+                                    <th>Sur</th>
+                                </tr>
+                                </thead>
+                                <tbody ng-repeat="d in rgu">
+                                <tr>
+                                    <td>{{d.hora}}</td>
+                                    <td>{{d.meta}} %</td>
+                                    <td>{{d.nacional}} <span ng-if="d.nacional">%</span></td>
+                                    <td>{{d.andina}} <span ng-if="d.andina">%</span></td>
+                                    <td>{{d.costa}} <span ng-if="d.costa">%</span></td>
+                                    <td>{{d.bogota}} <span ng-if="d.bogota">%</span></td>
+                                    <td>{{d.sur}} <span ng-if="d.sur">%</span></td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="page-header text-center" ng-if="mensaje">
+                    <h3>{{mensaje}}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<br><br><br>

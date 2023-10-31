@@ -163,7 +163,7 @@ class kpi
 		FROM contingencias p
 		WHERE 1=1 $condicion AND p.horacontingencia BETWEEN '$today 00:00:00' AND '$today 23:59:59') C2
 		GROUP BY C2.USUARIO, producto
-        ORDER BY CANTIDAD DESC");
+        ORDER BY producto, CANTIDAD DESC");
 
 
         $stmt->execute();
@@ -292,11 +292,11 @@ class kpi
 		GROUP BY C2.USUARIO ORDER BY CANTIDAD DESC");
 
         $stmt->execute();
-        if ($stmt->rowCount()) {
-            $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
-        } else {
-            $response = array('state' => 0, 'msj' => 'No se encontraron datos');
-        }
+        //if ($stmt->rowCount()) {
+            $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'user' => $res);
+        //} else {
+          //  $response = array('state' => 0, 'msj' => 'No se encontraron datos');
+        //}
 
         echo json_encode($response);
     }
@@ -426,7 +426,7 @@ class kpi
 
         $stmt->execute();
         if ($stmt->rowCount()) {
-            $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
+            $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'user' => $res);
         } else {
             $response = array('state' => 0, 'msj' => 'No se encontraron datos');
         }
@@ -449,7 +449,7 @@ class kpi
             $stmt = $this->_BD->prepare("SELECT * from usuarios WHERE login = :u");
             $stmt->execute(array(':u' => $data['usuario']));
             if ($stmt->rowCount() == 1) {
-                $stmt = $this->_BD->prepare("INSERT INTO usuario_kpi (usuario, tabla) VALUES (:u, 'mmss')");
+                $stmt = $this->_BD->prepare("INSERT INTO usuario_kpi (usuario, tabla) VALUES (:u, 'ssmm')");
                 $stmt->execute(array(':u' => $data['usuario']));
                 if ($stmt->rowCount() == 1) {
                     $response = array('state' => 1, 'msj' => 'Usuario agregado correctamente');
@@ -511,7 +511,7 @@ class kpi
             $condicion = " AND p.acepta = 'acepta' ";
         }
 
-        $stmt = $this->_BD->query("SELECT usuario FROM usuario_kpi WHERE tabla = 'mmss'");
+        $stmt = $this->_BD->query("SELECT usuario FROM usuario_kpi WHERE tabla = 'ssmm'");
         $stmt->execute();
         $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $usuarios_array = array_column($res, 'usuario');
@@ -547,7 +547,7 @@ class kpi
 
         $stmt->execute();
         if ($stmt->rowCount()) {
-            $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
+            $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'user' => $res);
         } else {
             $response = array('state' => 0, 'msj' => 'No se encontraron datos');
         }
@@ -562,53 +562,33 @@ class kpi
         session_start(); */
         //$data = json_decode(file_get_contents('php://input'), true);
         $estado = $data['estado'];
-        $producto = $data['producto'];
         $fecha = $data['fecha'];
         $today = date("Y-m-d");
 
-        if (!empty($data['tabla'])) {
-            $stmt = $this->_BD->prepare("SELECT * from usuarios WHERE login = :u");
-            $stmt->execute(array(':u' => $data['usuario']));
-            if ($stmt->rowCount() == 1) {
-                $stmt = $this->_BD->prepare("INSERT INTO usuario_kpi (usuario, tabla) VALUES (:u, 'emtelco')");
-                $stmt->execute(array(':u' => $data['usuario']));
-                if ($stmt->rowCount() == 1) {
-                    $response = array('state' => 1, 'msj' => 'Usuario agregado correctamente');
-                } else {
-                    $response = array('state' => 0, 'msj' => 'Ha ocurrido un error interno inténtalo nuevamente en unos minutos');
-                }
-
-            } else {
-                $response = array('state' => 0, 'msj' => 'El usuario ingresado no se encuentra registrado');
-            }
-            echo json_encode($response);
-            exit();
+        if (empty($fecha)){
+            $today = date("Y-m-d");
+        }else{
+            $today = $data['fecha'];
         }
 
         $condicion = '';
-        if (($estado == 'Acepta') && (!empty($fecha))) {
-            $today = $fecha;
+        if (($estado == 'Acepta')) {
             $condicion = " AND p.acepta = 'Acepta' ";
-        } elseif ($estado == 'Acepta') {
-            $condicion = " AND p.acepta = 'Acepta' ";
-        } elseif (($estado == 'Rechaza') && (!empty($fecha))) {
-            $today = $fecha;
+        } elseif (($estado == 'Rechaza')) {
             $condicion = " AND p.acepta = 'Rechaza' ";
-        } elseif ($estado == 'Rechaza') {
-            $condicion = " AND p.acepta = 'Rechaza' ";
-        } elseif (!empty($fecha)) {
-            $today = $fecha;
+        } elseif ($estado == '') {
+            $condicion = " AND p.acepta IN ('Rechaza', 'Acepta')";
         } else {
             $condicion = " AND p.acepta = 'Acepta' ";
         }
 
-        $stmt = $this->_BD->query("SELECT usuario FROM usuario_kpi WHERE tabla = 'emtelco'");
+        $stmt = $this->_BD->query("SELECT usuario FROM usuario_kpi");
         $stmt->execute();
         $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $usuarios_array = array_column($res, 'usuario');
         $usuarios_cadena = "'" . implode("','", $usuarios_array) . "'";
 
-        $stmt = $this->_BD->query("SELECT 
+        $stmt1 = $this->_BD->query("SELECT 
 		C2.USUARIO
 		, COUNT(*) AS CANTIDAD
 		, SUM(CASE WHEN (C2.RANGO_PENDIENTE) >= 0 AND (C2.RANGO_PENDIENTE) <= 6 THEN 1 ELSE 0 END) AS 'am06' 
@@ -636,9 +616,10 @@ class kpi
 
 		GROUP BY C2.USUARIO ORDER BY CANTIDAD DESC");
 
-        $stmt->execute();
-        if ($stmt->rowCount()) {
-            $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
+        $stmt1->execute();
+        if ($stmt1->rowCount()) {
+            $res =  $stmt1->fetchAll(PDO::FETCH_ASSOC);
+            $response = array('state' => 1, 'data' => $res);
         } else {
             $response = array('state' => 0, 'msj' => 'No se encontraron datos');
         }

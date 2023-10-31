@@ -24,23 +24,54 @@ class registroEquipos
             if (!empty($data['fecha'])) {
                 $fechaini = $data['fecha']['fechaini'];
                 $fechafin = $data['fecha']['fechafin'];
-                $condicion = " AND fecha_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
+                $condicion = " BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
             } else {
                 $fechaini = date('Y-m-d');
                 $fechafin = date('Y-m-d');
-                $condicion = " AND fecha_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
+                $condicion = " BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
             }
 
             if (!empty($data['buscar'])) {
                 $buscar = $data['buscar'];
-                $condicion .= " and pedido = '$buscar' ";
+                $condicion .= " and re.pedido = '$buscar' ";
             }
 
-            $stmt = $this->_DB->query("SELECT * FROM registro_equipo WHERE 1=1 $condicion");
+            $stmt = $this->_DB->query("SELECT * FROM registro_equipo re  WHERE 1=1 and re.fecha_ingreso $condicion");
             $stmt->execute();
             $count = $stmt->rowCount();
 
-            $stmt = $this->_DB->query("SELECT * FROM registro_equipo WHERE 1=1 $condicion ORDER BY fecha_ingreso DESC LIMIT $offset, $pagesize");
+            if (!empty($data['buscar'])) {
+                $stmt = $this->_DB->query("SELECT * FROM registro_equipo re WHERE 1=1 and re.fecha_ingreso $condicion ORDER BY fecha_ingreso DESC LIMIT $offset, $pagesize");
+            }else{
+                $stmt = $this->_DB->query("SELECT
+                                                        *
+                                                    FROM (
+                                                        SELECT
+                                                            MAX(re.id) AS id,
+                                                            MAX(re.pedido) AS pedido,
+                                                            re.tecnico,
+                                                            MAX(re.direccion) AS direccion,
+                                                            MAX(re.municipio) AS municipio,
+                                                            MAX(re.gis) AS gis,
+                                                            GROUP_CONCAT(re.mac_entra SEPARATOR ' - ') AS mac_entra,
+                                                            MAX(re.observacion) AS observacion,
+                                                            MAX(re.cliente) AS cliente,
+                                                            re.fecha_ingreso,
+                                                            MAX(re.cc_tecnico) AS cc_tecnico
+                                                        FROM
+                                                            registro_equipo re
+                                                        WHERE
+                                                            re.fecha_ingreso  $condicion
+                                                        GROUP BY
+                                                            re.fecha_ingreso,
+                                                            re.tecnico
+                                                    ) sub
+                                                    ORDER BY
+                                                        sub.fecha_ingreso DESC
+                                                    LIMIT $offset, $pagesize");
+            }
+
+            //$stmt = $this->_DB->query("SELECT * FROM registro_equipo WHERE 1=1 $condicion ORDER BY fecha_ingreso DESC LIMIT $offset, $pagesize");
             $stmt->execute();
             if ($stmt->rowCount()) {
                 $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'counter' => $count);

@@ -107,6 +107,11 @@ if (isset($data['method'])) {
             $user = new Contingencia();
             $user->registrosContingenciasCsv($data['data']);
             break;
+        case 'savecontingencia':
+            require_once '../class/contingencia.php';
+            $user = new Contingencia();
+            $user->savecontingencia($data['data']);
+            break;
 
         default:
             echo 'ninguna opción valida.';

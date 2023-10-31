@@ -1,5 +1,7 @@
 {
     "require": {
-        "ext-gd": "*"
+        "ext-gd": "*",
+        "ext-calendar": "*",
+        "ext-pdo": "*"
     }
 }

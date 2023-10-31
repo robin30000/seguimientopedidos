@@ -12,204 +12,331 @@
         $scope.equiposEntran.push({});
         $scope.equiposSalen = [];
         $scope.equiposSalen.push({});
+        ciudadadesContingencia();
 
 
         $scope.producto = [
             {id: "TV", producto: "TV"},
             {id: "Internet", producto: "Internet"},
             {id: "ToIP", producto: "ToIP"},
-            {id: "Internet+ToIP", producto: "Internet+ToIP"}
+            {id: "Internet+ToIP", producto: "Internet+ToIP"},
+            {id: "BA", producto: "BA"}
         ]
 
-        $scope.buscarPedidoAprovisionamiento = (pedido) => {
+        function ciudadadesContingencia() {
+            services.myService('', 'otherServicesCtrl.php', 'ciudades').then((data) => {
+                $scope.ciudadesCont = data.data.data;
+            }).catch((e) => {
+                console.log(e)
+            })
+        }
+
+        $scope.detalleTarea = (f) => {
+            if (!f) {
+                Swal({
+                    type: 'error',
+                    title: 'Opss...',
+                    text: 'Ingrese la tarea para buscar su historial',
+                    timer: 4000
+                })
+                return;
+            }
+
+            services.myService(f, 'otrosServiciosCtrl.php', 'buscarPedidoContingencias').then((data) => {
+                if (data.data.state == 99) {
+                    swal({
+                        type: "error",
+                        title: data.data.title,
+                        text: data.data.text,
+                        timer: 4000,
+                    }).then(function () {
+                        $cookies.remove("usuarioseguimiento");
+                        $location.path("/");
+                        $rootScope.galletainfo = undefined;
+                        $rootScope.permiso = false;
+                        $route.reload();
+                    });
+                } else if (data.data.state != 1) {
+                    Swal({
+                        type: 'error',
+                        text: data.data.msj,
+                        timer: 4000
+                    })
+                } else {
+                    $scope.databsucarPedido = data.data.data;
+                    $("#modalHistoricoContingencias").modal('show');
+                }
+            }).catch((e) => {
+                console.log(e)
+            });
+
+        }
+
+        $scope.autoCompletaTarea = function (pedido) {
             if (!pedido) {
                 Swal({
                     type: 'error',
-                    title: 'Error',
+                    title: 'Oops...',
+                    text: 'Ingrese el pedido a buscar',
+                    timer: 4000
+                })
+                return;
+            }
+
+            services.windowsBridge("HCHV/Buscar/" + pedido)
+                .then((f) => {
+                    let data = f.data
+                    console.log(data.uNEProductos)
+                    let productoSplit = data.uNEProductos.split(/\s|-/);
+                    let tecnologiaSplit = data.uNETecnologias.split('-');
+                    $scope.contingencias.prod = productoSplit[0];
+
+                    //let producto = (productoSplit[0].toLowerCase() === 'internet' || productoSplit[0].toLowerCase() === 'inter' || productoSplit[0].toLowerCase() === 'toip' || productoSplit[0].toLowerCase() === 'internet+toip') ? 'INTER' : 'TV';
+                    let producto = (productoSplit[0].toLowerCase() === 'internet' || productoSplit[0].toLowerCase() === 'inter' || productoSplit[0].toLowerCase() === 'toip' || productoSplit[0].toLowerCase() === 'internet+toip' || productoSplit[0].toLowerCase() === 'to') ? 'Internet' : (productoSplit[0].toLowerCase() === 'televisión' || productoSplit[0].toLowerCase() === 'television' || productoSplit[0].toLowerCase() === 'tv') ? 'TV' : 'Otro';
+
+                    let proceso = '';
+
+                    if (data.taskType.indexOf('Reparacion') !== -1) {
+                        proceso = 'Reparacion'
+                    } else {
+                        proceso = 'Instalación'
+                    }
+
+                    $scope.contingencias.pedido = data.pEDIDO_UNE;
+                    //$scope.contingencias.producto = producto;
+                    $scope.contingencias.producto = producto;
+                    $scope.contingencias.uen = data.uNEUENcalculada;
+                    $scope.contingencias.proceso = proceso;
+                    $scope.contingencias.ciudad = data.uNEMunicipio;
+                    $scope.contingencias.tecnologia = tecnologiaSplit[0] ?? tecnologiaSplit;
+                    $scope.contingencias.uneSourceSystem = data.sistema;
+                    $scope.contingencias.tarea = data.tAREA_ID;
+
+                    services.windowsBridge("BB8/contingencias/Buscar/GetClick/" + pedido).then((d) => {
+                        $scope.contingencias.contrato = d.data[0].EQIdentificadorServicio;
+                        let direccion = d.data[0].UNECodigoDireccionServicio;
+                        services.windowsBridge("BB8/contingencias/Buscar/GetPlanBaMSS/" + direccion).then((data) => {
+                            let d = data.data;
+
+                            if (d.length !== 0) {
+                                for (let i = 0; i < d.length; i++) {
+                                    if (d[i].VALUE_LABEL == 'Plan') {
+                                        $scope.contingencias.perfil = d[i].VALID_VALUE;
+                                    }
+                                }
+                            } else {
+                                $scope.contingencias.perfil = 'N/A';
+                            }
+
+                        })
+                    })
+
+                }).catch((e) => {
+                    console.log(e)
+                }
+            );
+        }
+
+        $scope.guardaContingencia = (f) => {
+            if (f.accion == 'mesaOffline') {
+                f.motivo = 'N/A';
+                f.tipoEquipo = 'N/A';
+            }
+
+            console.log(f)
+
+            if (!f) {
+                Swal({
+                    type: 'error',
+                    title: 'Opss..',
+                    text: 'Ingresa todos los datos',
+                    timer: 4000
+                })
+                return;
+            }
+
+            if (!f.pedido) {
+                Swal({
+                    type: 'error',
+                    title: 'Opss..',
                     text: 'Ingrese el pedido',
                     timer: 4000
                 })
                 return;
             }
 
-            /* function actividades(pedido) {
-
-                $scope.sininfopedido = true;
-                $scope.url = "http://" + $scope.ipServer + ":8080/HCHV/Buscar/" + pedido;
-                $http.get($scope.url, { timeout: 2000 })
-                    .then(function (data) {
-                        $scope.myWelcome = data.data;
-                        $scope.equipos = $scope.myWelcome.Equipos;
-                        if ($scope.myWelcome.pEDIDO_UNE == null) {
-                            $scope.infopedido = false;
-                            $scope.errorconexion1 = false;
-                            $scope.myWelcome = {};
-                        } else if ($scope.myWelcome.engineerID == null) {
-                            $scope.infopedido = false;
-                            $scope.errorconexion1 = false;
-                            $scope.myWelcome = {};
-                        } else if ($scope.myWelcome.pEDIDO_UNE == "TIMEOUT") {
-                            $scope.infopedido = false;
-                            $scope.errorconexion1 = true;
-                            $scope.myWelcome = {};
-                            $scope.errorconexion = "No hay conexión con Click, ingrese datos manualmente";
-                        } else {
-                            $scope.infopedido = true;
-                            $scope.gestionmanual.tecnico = $scope.myWelcome.engineerID;
-                            $scope.gestionmanual.CIUDAD = $scope.myWelcome.uNEMunicipio.toUpperCase();
-                            $scope.BuscarTecnico();
-                        }
-
-                        return data.data;
-                    },
-
-                        function (err) {
-                            $scope.ipServer = "10.100.66.254";
-                            $scope.url = "http://" + $scope.ipServer + ":8080/HCHV/Buscar/" + pedido;
-                            $http.get($scope.url, { timeout: 2000 })
-                                .then(function (data) {
-                                    $scope.myWelcome = data.data;
-                                    if ($scope.myWelcome.pEDIDO_UNE == null) {
-                                        $scope.infopedido = false;
-                                        $scope.errorconexion1 = false;
-                                        $scope.myWelcome = {};
-                                    } else if ($scope.myWelcome.pEDIDO_UNE == "TIMEOUT") {
-                                        $scope.infopedido = false;
-                                        $scope.errorconexion1 = true;
-                                        $scope.myWelcome = {};
-                                        $scope.errorconexion = "No hay conexión con Click, ingrese datos manualmente";
-                                    } else {
-                                        $scope.infopedido = true;
-                                        $scope.gestionmanual.tecnico = $scope.myWelcome.engineerID;
-                                        $scope.gestionmanual.CIUDAD = $scope.myWelcome.uNEMunicipio.toUpperCase();
-                                        $scope.BuscarTecnico();
-                                    }
-                                    ;
-                                    return data.data;
-                                }, function (err) {
-                                    console.log("ERROR DE CONEXION: NO PUEDO ALCANZAR EL SERVIDOR!!!");
-                                    $scope.infopedido = false;
-                                    $scope.errorconexion1 = true;
-                                    $scope.myWelcome = {};
-                                    $scope.errorconexion = "No hay conexión con Web Service, ingrese datos manualmente";
-                                });
-                        },
-                        function errorCallback(response) {
-                            console.log("ERRORRRR");
-                        }
-                    );
-            } */
-
-            $scope.consulta = {};
-            $scope.url = "http://10.100.66.254:8080/BB8/contingencias/Buscar/";
-
-            Promise.all([
-                $http.get($scope.url + "GetClick/" + pedido, {timeout: 4000}),
-                $http.get($scope.url + "GetPlanBaMSS/" + pedido, {timeout: 4000}),
-                $http.get($scope.url + "GetPlanTOMSS/" + pedido, {timeout: 4000}),
-                $http.get($scope.url + "GetPlanTVMSS/" + pedido, {timeout: 4000}),
-                $http.get("http://10.100.66.254:8080/HCHV/Buscar/" + pedido, {timeout: 4000})
-            ]).then(function (responses) {
-                $scope.consulta.click = responses[0].data;
-                $scope.consulta.bb8plan = responses[1].data;
-                $scope.consulta.bb8Telefonia = responses[2].data;
-                $scope.consulta.bb8Television = responses[3].data;
-                $scope.consulta.actividades = responses[4].data;
-                console.log($scope.consulta);
-
-                if ($scope.consulta.click[0].EQProducto === 'Telefonía') {
-                    $scope.consulta.click[0].EQProducto = "ToIP";
-                }
-
-                if ($scope.consulta.actividades.uNETecnologias == 'HFC-HFC') {
-                    $scope.consulta.actividades.uNETecnologias = 'HFC';
-                }
-
-                if ($scope.consulta.actividades.uNEProductos == 'Internet-Telefonía') {
-                    $scope.consulta.actividades.uNEProductos = 'Internet+ToIP';
-                } else if ($scope.consulta.actividades.uNEProductos == 'Televisión Hogares') {
-                    $scope.consulta.actividades.uNEProductos = 'TV';
-                }
-
-                if ($scope.consulta.actividades.Type == 'Install') {
-                    $scope.consulta.actividades.Type = 'Instalación'
-                } else {
-                    $scope.consulta.actividades.Type = 'Reparación'
-                }
-
-                if ($scope.consulta.actividades.uNEDepartamento == 'Bogotá D.C.') {
-                    $scope.consulta.actividades.uNEDepartamento = 'BOGOTA'
-                }
-
-                $scope.contingencias.producto = $scope.consulta.actividades.uNEProductos;
-                $scope.contingencias.tecnologia = $scope.consulta.actividades.uNETecnologias;
-                $scope.contingencias.proceso = $scope.consulta.actividades.Type;
-                $scope.contingencias.ciudad = $scope.consulta.actividades.uNEDepartamento;
-                $scope.contingencias.uen = $scope.consulta.actividades.uNEUENcalculada
-
-            }).catch(function (error) {
-                console.log(error);
-            });
-        }
-
-        $scope.BuscarPedidoContingencia = function () {
-            services
-                .buscarPedidoSeguimiento(
-                    $scope.contingencias.pedido,
-                    $scope.contingencias.producto,
-                    $scope.contingencias.remite
-                )
-                .then(
-                    function (data) {
-                        $scope.GuardarContingencia($scope.contingencias);
-                    },
-                    function errorCallback(response) {
-                        console.log(response);
-                    }
-                );
-        };
-
-        $scope.buscarhistoricoPedidoContingencia = function (pedido) {
-            if (pedido == undefined || pedido == "") {
+            if (!f.producto) {
                 Swal({
                     type: 'error',
-                    text: 'Ingrese un pedido',
+                    title: 'Opss..',
+                    text: 'Seleccione el producto',
                     timer: 4000
                 })
-            } else {
-                services.getbuscarPedidoContingencia(pedido).then(
-                    function (data) {
-                        console.log(data);
-                        if (data.data.state == 99) {
-                            swal({
-                                type: "error",
-                                title: data.data.title,
-                                text: data.data.text,
-                                timer: 4000,
-                            }).then(function () {
-                                $cookies.remove("usuarioseguimiento");
-                                $location.path("/");
-                                $rootScope.galletainfo = undefined;
-                                $rootScope.permiso = false;
-                                $route.reload();
-                            });
-                        } else if (data.data.state != 1) {
-                            Swal({
-                                type: 'error',
-                                text: data.data.msj,
-                                timer: 4000
-                            })
-                        } else {
-                            $scope.databsucarPedido = data.data.data;
-                            $("#modalHistoricoContingencias").modal('show');
-                        }
-                    },
-                    function errorCallback(response) {
-                        console.log(response);
-                    }
-                );
+                return;
             }
-        };
+            if (!f.contrato) {
+                Swal({
+                    type: 'error',
+                    title: 'Opss..',
+                    text: 'Ingrese el identificador de servicio',
+                    timer: 4000
+                })
+                return;
+            }
+            if (!f.perfil) {
+                Swal({
+                    type: 'error',
+                    title: 'Opss..',
+                    text: 'Ingrese el perfil, plan o Equipment ID',
+                    timer: 4000
+                }).then(() => {
+                    $("#perfil").focus();
+                })
+                return;
+            }
+
+            if (!f.uen) {
+                Swal({
+                    type: 'error',
+                    title: 'Opss..',
+                    text: 'Seleccione el UEN',
+                    timer: 4000
+                })
+                return;
+            }
+
+            if (!f.proceso) {
+                Swal({
+                    type: 'error',
+                    title: 'Opss..',
+                    text: 'Seleccione el proceso',
+                    timer: 4000
+                }).then(() => {
+                    $("#proceso").focus();
+                })
+                return;
+            }
+
+            if (!f.tecnologia) {
+                Swal({
+                    type: 'error',
+                    title: 'Opss..',
+                    text: 'Seleccione la tecnología',
+                    timer: 4000
+                }).then(() => {
+                    $("#tecnologia").focus();
+                })
+                return;
+            }
+
+            if (!f.accion) {
+                Swal({
+                    type: 'error',
+                    title: 'Opss..',
+                    text: 'Seleccione la acción',
+                    timer: 4000
+                }).then(() => {
+                    $("#accion").focus();
+                })
+                return;
+            }
+
+            if (!f.motivo) {
+                Swal({
+                    type: 'error',
+                    title: 'Opss..',
+                    text: 'Seleccione la motivo',
+                    timer: 4000
+                }).then(() => {
+                    $("#motivo").focus();
+                })
+                return;
+            }
+
+            if (!f.tipoEquipo) {
+                Swal({
+                    type: 'error',
+                    title: 'Opss..',
+                    text: 'Seleccione el tipo de equipo',
+                    timer: 4000
+                }).then(() => {
+                    $("#tipoEquipo").focus();
+                })
+                return;
+            }
+
+            if (!f.remite) {
+                Swal({
+                    type: 'error',
+                    title: 'Opss..',
+                    text: 'Seleccione el remitente',
+                    timer: 4000
+                }).then(() => {
+                    $("#remite").focus();
+                })
+                return;
+            }
+
+            if (!f.observacion) {
+                Swal({
+                    type: 'error',
+                    title: 'Opss..',
+                    text: 'Ingrese la observación',
+                    timer: 4000
+                }).then(() => {
+                    $("#observacion").focus();
+                })
+                return;
+            }
+
+            f.usuario_guarda = $rootScope.login;
+            f.id = $rootScope.galletainfo.id;
+
+            let equiposIn = "";
+            let equiposOut = "";
+            let sep = "";
+            for (var equipo of $scope.equiposEntran) {
+                if (equipo.value == undefined || equipo.value == "undefined") continue;
+                else {
+                    equiposIn = equiposIn + sep + equipo.value;
+                    sep = "-";
+                }
+            }
+            sep = "";
+            for (var equipo of $scope.equiposSalen) {
+                if (equipo.value == undefined || equipo.value == "undefined") continue;
+                else {
+                    equiposOut = equiposOut + sep + equipo.value;
+                    sep = "-";
+                }
+            }
+
+            f.macEntra = equiposIn;
+            f.macSale = equiposOut;
+
+            services.myService(f, 'contingenciaCtrl.php', 'savecontingencia').then((data) => {
+                if (data.data.state) {
+                    Swal({
+                        type: 'success',
+                        title: 'Muy Bien',
+                        text: data.data.msj,
+                        timer: 4000
+                    }).then(() => {
+                        $route.reload();
+                    })
+                } else {
+                    Swal({
+                        type: 'error',
+                        title: 'Opss...',
+                        text: data.data.msj,
+                        timer: 4000
+                    })
+                }
+            }).catch((e) => {
+                console.log(e)
+            })
+
+        }
 
         $scope.muestraModalObservacion = (data) => {
             $scope.observacionContingencia = data;
@@ -224,13 +351,13 @@
             $scope.equiposSalen.push({});
         };
 
-        $scope.updateEnGestion = function () {
+        /*$scope.updateEnGestion = function () {
             services.UpdatePedidosEngestion($rootScope.galletainfo).then(
                 function (data) {
                     if (data.data.state != 1) {
-                        console.log(data);
+
                     } else {
-                        console.log(data);
+
                         $scope.haypedido = true;
                         $scope.pedidosEngestion = data.data.data;
 
@@ -270,14 +397,13 @@
                     console.log(response);
                 }
             );
-        };
+        };*/
 
-        $scope.GuardarContingencia = function (contingencias) {
+        /*$scope.GuardarContingencia = function (contingencias) {
+            contingencias.usuario_guarda = $rootScope.login;
+            console.log(contingencias);
+            return;
             $("#guardaPedidoContingencia").attr("disabled", true);
-
-            $scope.pedidoguardado = true;
-            $scope.pedidoexiste = false;
-            $scope.mensaje = "Pedido guardado con exito.";
 
             var equiposIn = "";
 
@@ -344,7 +470,7 @@
                 });
 
             $scope.updateEnGestion();
-        };
+        };*/
 
         $scope.CancelarContingencia = function (data) {
             Swal.fire({
@@ -390,7 +516,7 @@
             });
         };
 
-        $scope.updateContingencias = setInterval(function () {
+        /*$scope.updateContingencias = setInterval(function () {
             $scope.updateEnGestion();
         }, 300000);
 
@@ -399,6 +525,6 @@
             clearInterval($scope.updateContingencias);
         });
 
-        $scope.updateEnGestion();
+        $scope.updateEnGestion();*/
     }
 })();

@@ -4,7 +4,7 @@
     validacionesAppCtrl.$inject = ["$scope", "$http", "$rootScope", "$route", "services"];
 
     function validacionesAppCtrl($scope, $http, $rootScope, $route, services) {
-
+        console.log('entr4e')
         estadoActual();
 
         function estadoActual() {
@@ -12,6 +12,11 @@
                 $scope.contingenciaSara = data.data.data[0].valida;
                 $scope.contingenciaEquipo = data.data.data[1].valida;
                 $scope.gponInfraestructura = data.data.data[2].valida;
+                $scope.codigoIncompleto = data.data.data[3].valida;
+                $scope.Encuesta = data.data.data[4].valida;
+                $scope.gponEquipo = data.data.data[5].valida;
+                $scope.etpEquipo = data.data.data[6].valida;
+                $scope.etpInfraestructura = data.data.data[7].valida;
             })
         }
 

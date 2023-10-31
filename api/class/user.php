@@ -1,8 +1,8 @@
 <?php
 require_once '../class/conection.php';
 
-/* error_reporting(E_ALL);
-ini_set('display_errors', 1); */
+error_reporting(0);
+ini_set('display_errors', 0);
 
 class user
 {
@@ -17,28 +17,31 @@ class user
     {
 
         try {
-            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();*/
+
             $stmt = $this->_DB->prepare("update usuarios
                                                 set nombre         = :nombre,
-                                                    identificacion = :dentificacion,
-                                                    login          = :usuarioid,
+                                                    identificacion = :identificacion,
+                                                    login          = :login,
                                                     password       = :password,
-                                                    perfil         = :perfil
+                                                    perfil         = :perfil,
+                                                    usuario_crea   = :usuario_crea,
+                                                    fecha_crea     = :fecha_crea
                                                 where id = :id");
             $stmt->execute([
-                ':nombre'         => $data['nombre'],
-                ':identificacion' => $data['identificacion'],
-                ':login'          => $data['usuarioid'],
-                ':password'       => $data['password'],
+                ':nombre'         => $data['NOMBRE'],
+                ':identificacion' => $data['IDENTIFICACION'],
+                ':login'          => $data['LOGIN'],
+                ':password'       => $data['PASSWORD'],
                 ':perfil'         => $data['perfil'],
+                ':usuario_crea'   => $data['usuario_crea'],
+                ':fecha_crea'     => date('Y-m-d H:i:s'),
+                ':id'             => $data['ID'],
             ]);
 
             if ($stmt->rowCount() == 1) {
-                $response = ['type' => 'success', 'msj' => 'Usuario actualizado'];
+                $response = ['state' => true, 'msj' => 'Usuario actualizado'];
             } else {
-                $response = ['type' => 'error', 'msj' => 'Ah ocurrido un error inténtalo de nuevo en unos minutos'];
+                $response = ['state' => false, 'msj' => 'Ah ocurrido un error inténtalo de nuevo en unos minutos'];
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -246,16 +249,10 @@ class user
         echo json_encode($response);
     }
 
-    public function ingresarPedidoAsesor($params)
+    /*public function ingresarPedidoAsesor($params)
     {
         try {
 
-            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();
-            if (!$_SESSION) {
-                $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
-            } else {*/
             $idcambioequipo   = $params['idcambioequipo'];
             $duracion_llamada = $params['duracion_llamada'];
             $crearpedido      = $params['datospedido'];
@@ -347,15 +344,15 @@ class user
             }
 
             if ($proceso == 'Reparaciones') {
-
+echo 1;exit();
                 $stmt = $this->_DB->prepare("INSERT INTO registros (pedido, id_tecnico, empresa, asesor, observaciones,
-                       accion, tipo_pendiente, proceso, producto, duracion, llamada_id, prueba_integrada, codigo_familiar,
-                       smartplay, toip, inter, iptv, telev, totdm, plantilla, despacho, id_cambio_equipo, pruebaSmnet,
+                       accion, tipo_pendiente, proceso, producto, duracion, llamada_id,plantilla prueba_integrada, codigo_familiar,
+                       smartplay, toip, inter, iptv, telev, totdm, despacho, id_cambio_equipo, pruebaSmnet,
                        UNESourceSystem, pendiente, diagnostico)
                         VALUES (:pedido, :tecnico, :nombre_de_la_empresa,
                                 upper(:user), :observaciones, :accion, :subaccion, :proceso, :producto,
-                                :duracion_llamada, :id_llamada, :prueba_integra, :cod_familiar, :smartPlay, :toip, :internet,
-                                :iptv, :telev_hfc, :telefonia_tdm, :plantilla, :despacho, :idcambioequipo, :pruebaSMNET,
+                                :duracion_llamada, :id_llamada,:plantilla, :prueba_integra, :cod_familiar, :smartPlay, :toip, :internet,
+                                :iptv, :telev_hfc, :telefonia_tdm, :despacho, :idcambioequipo, :pruebaSMNET,
                                 :UNESourceSystem, :codigo, :diagnostico)");
 
                 $stmt->execute([
@@ -392,7 +389,7 @@ class user
                     $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo de nuevo'];
                 }
             } else {
-
+                echo 2;exit();
                 $stmt = $this->_DB->prepare("INSERT INTO registros (pedido, id_tecnico, empresa, asesor, observaciones, accion, tipo_pendiente, proceso, producto,
                        duracion, llamada_id, plantilla, despacho, pruebaSmnet,
                        UNESourceSystem, pendiente, diagnostico)
@@ -425,6 +422,208 @@ class user
                 } else {
                     $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo de nuevo'];
                 }
+            }
+
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+        $this->_DB = null;
+        echo json_encode($response);
+    }*/
+
+    public function ingresarPedidoAsesor($params)
+    {
+        try {
+            /*echo '<pre>';
+            var_dump($params);
+            echo '<pre>';
+            exit();*/
+            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
+            session_start();
+            if (!$_SESSION) {
+                $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
+            } else {*/
+            $idcambioequipo   = $params['idcambioequipo'];
+            $duracion_llamada = $params['duracion_llamada'];
+            $crearpedido      = $params['datospedido'];
+
+            //taskType
+            //Area
+            $plantilla = (isset($params['plantilla'])) ? $params['plantilla'] : '';
+
+            $datosClick     = (isset($params['datosClick'])) ? $params['datosClick'] : '';
+            $user           = $datosClick['login'];
+            $id_llamada     = (isset($crearpedido['id_llamada'])) ? $crearpedido['id_llamada'] : '';
+            $proceso        = (isset($crearpedido['proceso'])) ? $crearpedido['proceso'] : '';
+            $accion         = (isset($crearpedido['accion'])) ? $crearpedido['accion'] : '';
+            $subaccion      = (isset($crearpedido['subAccion'])) ? $crearpedido['subAccion'] : '';
+            $observaciones  = (isset($crearpedido['observaciones'])) ? $crearpedido['observaciones'] : '';
+            $cod_familiar   = (isset($crearpedido['cod_familiar'])) ? $crearpedido['cod_familiar'] : '';
+            $prueba_integra = (isset($crearpedido['prueba_integra'])) ? $crearpedido['prueba_integra'] : '';
+            $telefonia_tdm  = (isset($crearpedido['telefonia_tdm'])) ? $crearpedido['telefonia_tdm'] : '';
+            $telev_hfc      = (isset($crearpedido['telev_hfc'])) ? $crearpedido['telev_hfc'] : '';
+            $iptv           = (isset($crearpedido['iptv'])) ? $crearpedido['iptv'] : '';
+            $internet       = (isset($crearpedido['internet'])) ? $crearpedido['internet'] : '';
+            $toip           = (isset($crearpedido['toip'])) ? $crearpedido['toip'] : '';
+            $smartPlay      = (isset($crearpedido['smartPlay'])) ? $crearpedido['smartPlay'] : '';
+            $observaciones  = (isset($crearpedido['observaciones'])) ? $crearpedido['observaciones'] : '';
+            $observaciones  = str_replace("\n", "/", $observaciones);
+            $observaciones  = str_replace("'", " ", $observaciones);
+            $pruebaSMNET    = (isset($crearpedido['pruebaSMNET'])) ? $crearpedido['pruebaSMNET'] : '';
+            //$UNESourceSystem = (isset($crearpedido['UNESourceSystem'])) ? $crearpedido['UNESourceSystem'] : '';
+            $UNESourceSystem = $plantilla['sistema'];
+            $area            = $plantilla['Area'];
+            $taskType        = $plantilla['taskType'];
+            $codigo          = (isset($crearpedido['pendiente'])) ? $crearpedido['pendiente'] : '';
+            $tipointeraccion = (isset($crearpedido['interaccion'])) ? $crearpedido['interaccion'] : '';
+            $diagnostico     = (isset($crearpedido['diagnostico'])) ? $crearpedido['diagnostico'] : '';
+
+            $clienteContestaLlamada = (isset($crearpedido['clienteContestaLlamada'])) ? $crearpedido['clienteContestaLlamada'] : '';
+            $razonNoInstalacion     = (isset($crearpedido['razonNoInstalacion'])) ? $crearpedido['razonNoInstalacion'] : '';
+            $tecnicoVivienda        = (isset($crearpedido['tecnicoVivienda'])) ? $crearpedido['tecnicoVivienda'] : '';
+            $conocimientoAgenda     = (isset($crearpedido['conocimientoAgenda'])) ? $crearpedido['conocimientoAgenda'] : '';
+
+            if ($clienteContestaLlamada != '') {
+                $observaciones = '¿Técnico esta en la vivienda?: ' . $tecnicoVivienda . '||¿Tenia conocimiento de la agenda?: ' . $conocimientoAgenda . '||¿cliente contesta la llamada?: ' . $clienteContestaLlamada . '||¿Nos podría indicar por que no se puede instalar los servicios?: ' . $razonNoInstalacion . '||' . $observaciones;
+            }
+
+            if ($tipointeraccion != 'llamada') {
+                $id_llamada = '';
+            }
+
+            if ($datosClick['pEDIDO_UNE'] == "" || $datosClick['pEDIDO_UNE'] == "TIMEOUT") {
+
+                $tecnico              = $crearpedido['tecnico'];
+                $despacho             = $crearpedido['CIUDAD'];
+                $producto             = $crearpedido['producto'];
+                $pedido               = $params['pedido'];
+                $nombre_de_la_empresa = $params['empresa'];
+            } else {
+                if ($datosClick['uNEProvisioner'] == "EMT") {
+                    $nombre_de_la_empresa = "EMTELCO";
+                } elseif ($datosClick['uNEProvisioner'] == "RYE") {
+                    $nombre_de_la_empresa = "REDES Y EDIFICACIONES";
+                } elseif ($datosClick['uNEProvisioner'] == "EIA") {
+                    $nombre_de_la_empresa = "ENERGIA INTEGRAL ANDINA";
+                } else {
+                    $nombre_de_la_empresa = $datosClick['uNEProvisioner'];
+                }
+                $producto = $datosClick['uNETecnologias'];
+                $tecnico  = $datosClick['engineerID'];
+                $despacho = $datosClick['uNEMunicipio'];
+                $pedido   = $datosClick['pEDIDO_UNE'];
+            }
+
+            if (
+                ($proceso == 'Reparaciones' && $accion == 'Cambio Equipo') ||
+                ($proceso == 'Instalaciones' && $accion == 'Aprovisionar') ||
+                ($proceso == 'Instalaciones' && $accion == 'Contingencia') ||
+                ($proceso == 'Reparaciones' && $accion == 'Aprovisionar') ||
+                ($proceso == 'Reparaciones' && $accion == 'Contingencia')
+            ) {
+                $patron        = [",", ", "];
+                $patronreplace = ["|", "|"];
+                $macEntra      = str_replace($patron, $patronreplace, trim(strtoupper($crearpedido['macEntra'])));
+                $macSale       = str_replace($patron, $patronreplace, trim(strtoupper($crearpedido['macSale'])));
+
+                $stmt = $this->_DB->prepare("INSERT INTO cambio_equipos (pedido, hfc_equipo_sale, hfc_equipo_entra)
+                                                    VALUES (:pedido, :macSale, :macEntra)");
+                $stmt->execute([
+                    ':pedido'   => $pedido,
+                    ':macSale'  => $macSale,
+                    ':macEntra' => $macEntra,
+                ]);
+                if (!$stmt->rowCount()) {
+                    $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo de nuevo'];
+                }
+            }
+
+            //echo $UNESourceSystem;exit();
+
+            if ($proceso == 'Reparaciones') {
+
+                $stmt = $this->_DB->prepare("INSERT INTO registros (pedido, id_tecnico, empresa, asesor, observaciones,
+                       accion, tipo_pendiente, proceso, producto, duracion, llamada_id, prueba_integrada, codigo_familiar,
+                       smartplay, toip, inter, iptv, telev, totdm, despacho, id_cambio_equipo, pruebaSmnet,
+                       UNESourceSystem, pendiente, diagnostico, area, task_type)
+                        VALUES (:pedido, :tecnico, :nombre_de_la_empresa,
+                                upper(:user), :observaciones, :accion, :subaccion, :proceso, :producto,
+                                :duracion_llamada, :id_llamada, :prueba_integra, :cod_familiar, :smartPlay, :toip, :internet,
+                                :iptv, :telev_hfc, :telefonia_tdm, :despacho, :idcambioequipo, :pruebaSMNET,
+                                :UNESourceSystem, :codigo, :diagnostico, :area, :task_type)");
+
+                $stmt->execute([
+                    ':pedido'               => $pedido,
+                    ':tecnico'              => $tecnico,
+                    ':nombre_de_la_empresa' => $nombre_de_la_empresa,
+                    ':user'                 => $user,
+                    ':observaciones'        => $observaciones,
+                    ':accion'               => $accion,
+                    ':subaccion'            => $subaccion,
+                    ':proceso'              => $proceso,
+                    ':producto'             => $producto,
+                    ':duracion_llamada'     => $duracion_llamada,
+                    ':id_llamada'           => $id_llamada,
+                    ':prueba_integra'       => $prueba_integra,
+                    ':cod_familiar'         => $cod_familiar,
+                    ':smartPlay'            => $smartPlay,
+                    ':toip'                 => $toip,
+                    ':internet'             => $internet,
+                    ':iptv'                 => $iptv,
+                    ':telev_hfc'            => $telev_hfc,
+                    ':telefonia_tdm'        => $telefonia_tdm,
+                    //':plantilla' => $plantilla,
+                    ':despacho'             => $despacho,
+                    ':idcambioequipo'       => $idcambioequipo,
+                    ':pruebaSMNET'          => $pruebaSMNET,
+                    ':UNESourceSystem'      => $UNESourceSystem,
+                    ':codigo'               => $codigo,
+                    ':diagnostico'          => $diagnostico,
+                    ':area'                 => $area,
+                    ':task_type'            => $taskType,
+                ]);
+                if ($stmt->rowCount() == 1) {
+                    $response = ['state' => 1, 'msj' => 'Registro ingresado'];
+                } else {
+                    $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo de nuevo'];
+                }
+            } else {
+
+                $stmt = $this->_DB->prepare("INSERT INTO registros (pedido, id_tecnico, empresa, asesor, observaciones, accion, tipo_pendiente, proceso, producto,
+                       duracion, llamada_id, despacho, pruebaSmnet,
+                       UNESourceSystem, pendiente, diagnostico, area, task_type)
+                        VALUES (:pedido, :tecnico, :nombre_de_la_empresa, upper(:user), :observaciones, :accion, :subaccion, :proceso, :producto,
+                                :duracion_llamada, :id_llamada, :despacho, :pruebaSMNET,
+                                :UNESourceSystem, :codigo, :diagnostico, :area, :task_type)");
+
+                $stmt->execute([
+                    ':pedido'               => $pedido,
+                    ':tecnico'              => $tecnico,
+                    ':nombre_de_la_empresa' => $nombre_de_la_empresa,
+                    ':user'                 => $user,
+                    ':observaciones'        => $observaciones,
+                    ':accion'               => $accion,
+                    ':subaccion'            => $subaccion,
+                    ':proceso'              => $proceso,
+                    ':producto'             => $producto,
+                    ':duracion_llamada'     => $duracion_llamada,
+                    ':id_llamada'           => $id_llamada,
+                    //':plantilla' => $plantilla,
+                    ':despacho'             => $despacho,
+                    ':pruebaSMNET'          => $pruebaSMNET,
+                    ':UNESourceSystem'      => $UNESourceSystem,
+                    ':codigo'               => $codigo,
+                    ':diagnostico'          => $diagnostico,
+                    ':area'                 => $area,
+                    ':task_type'            => $taskType,
+                ]);
+
+                if ($stmt->rowCount() == 1) {
+                    $response = ['state' => 1, 'msj' => 'Registro ingresado'];
+                } else {
+                    $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo de nuevo'];
+                }
                 /* }*/
             }
         } catch (PDOException $e) {
@@ -437,56 +636,40 @@ class user
     public function creaUsuario($data)
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();
-            if (!$_SESSION) {
-                $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
+
+            $identificacion = $data['identificacion'];
+            $nombre         = $data['nombre'];
+            $loginUser      = $data['login'];
+            $perfil         = $data['perfil'];
+            $password       = $data['password'];
+            $usuario_crea   = $data['usuario_crea'];
+
+            $stmt = $this->_DB->prepare("SELECT * FROM usuarios where identificacion = :identificacion ");
+            $stmt->execute([':identificacion' => $identificacion]);
+
+            if ($stmt->rowCount() == 1) {
+                $response = ['state' => false, 'msj' => 'El documento de identidad ingresado ya se encuentra registrado'];
             } else {
-                $identificacion = $data['IDENTIFICACION'];
-                $nombre         = $data['NOMBRE'];
-                $loginUser      = $data['LOGIN'];
-                $perfil         = $data['PERFIL'];
-                $password       = $data['PASSWORD'];
+                $stmt = $this->_DB->prepare("insert into usuarios (login, nombre, password, identificacion, perfil, fecha_crea, usuario_crea)
+                                                values (:loginUser, :nombre, :password, :identificacion, :perfil, :fecha_crea, :usuario_crea)");
+                $stmt->execute([
+                    ':loginUser'      => $loginUser,
+                    ':nombre'         => $nombre,
+                    ':password'       => $password,
+                    ':identificacion' => $identificacion,
+                    ':perfil'         => $perfil,
+                    ':fecha_crea'     => date('Y-m-d H:i:s'),
+                    ':usuario_crea'   => $usuario_crea,
+                ]);
 
-                if (!isset($nombre) || $nombre == '') {
-                    $response = ['state' => 0, 'msj' => 'El nombre es requerido'];
-                }
-                if (!isset($password) || $password == '') {
-                    $response = ['state' => 0, 'msj' => 'El password es requerido'];
-                }
-                if (!isset($perfil) || $perfil == '') {
-                    $response = ['state' => 0, 'msj' => 'El perfil es requerido'];
-                } elseif (!isset($loginUser) || $loginUser == '') {
-                    $response = ['state' => 0, 'msj' => 'El login es requerido'];
-                } elseif ($identificacion == '0' || $identificacion == 0) {
-                    $response = ['state' => 0, 'msj' => 'El número de identificación no puede empezar por 0'];
-                } elseif (strlen($identificacion) < 5) {
-                    $response = ['state' => 0, 'msj' => 'El número de identificación es muy corto'];
-                } elseif (strlen($identificacion) > 15) {
-                    $response = ['state' => 0, 'msj' => 'El número de identificación es muy largo'];
+                if ($stmt->rowCount() == 1) {
+                    $response = ['state' => true, 'msj' => 'Usuario creado'];
                 } else {
-
-
-                    $stmt = $this->_DB->prepare("insert into usuarios (login, nombre, password, identificacion, perfil, gestion)
-                                                values (:loginUser, :nombre, :password, :identificacion, :perfil, :gestion)");
-                    $stmt->execute([
-                        ':loginUser'      => $loginUser,
-                        ':nombre'         => $nombre,
-                        ':password'       => $password,
-                        ':identificacion' => $identificacion,
-                        ':perfil'         => $perfil,
-                        ':gestion'        => '',
-
-                    ]);
-
-                    if ($stmt->rowCount() == 1) {
-                        $response = ['state' => 1, 'msj' => 'Usuario creado'];
-                    } else {
-                        $response = ['state' => 0, 'msj' => 'Ah ocurrido un error intentalo nuevamente'];
-                    }
+                    $response = ['state' => false, 'msj' => 'Ah ocurrido un error intentalo nuevamente'];
                 }
             }
+
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
@@ -598,15 +781,15 @@ class user
             }
 
             $parametro = '';
-            if ($data['concepto'] == 'nombre') {
+            if ($data['concepto'] == 'identificacion') {
                 $usuario   = $data['usuario'];
-                $parametro = "and a.nombre LIKE '%$usuario%'";
+                $parametro = " and a.identificacion = '$usuario' ";
             } elseif ($data['concepto'] == 'login') {
                 $usuario   = $data['usuario'];
-                $parametro = " and a.login LIKE '%$usuario%'";
+                $parametro = " and a.login = '$usuario' ";
             }
 
-            $stmt = $this->_DB->prepare("SELECT * FROM usuarios");
+            $stmt = $this->_DB->prepare("SELECT * FROM usuarios a where 1=1 $parametro");
             $stmt->execute();
             $counter = $stmt->rowCount();
 
@@ -615,6 +798,7 @@ class user
                                                        a.identificacion AS IDENTIFICACION,
                                                        a.login AS LOGIN,
                                                        a.perfil,
+                                                       a.estado,
                                                        (select b.nombre from perfiles b where b.perfil = a.perfil) as PERFIL,
                                                        a.password AS PASSWORD
                                                 FROM usuarios a
@@ -623,9 +807,9 @@ class user
 
             if ($stmt->rowCount()) {
                 $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $response = ['state' => 1, 'data' => $result, 'counter' => $counter];
+                $response = ['state' => true, 'data' => $result, 'counter' => $counter];
             } else {
-                $response = ['state' => 0];
+                $response = ['state' => false, 'msj' => 'No se encontraron registros'];
             }
             /*}*/
         } catch (PDOException $e) {
@@ -638,17 +822,15 @@ class user
 
     public function borrarUsuario($data)
     {
+        $cc = $data['identificacion'];
         try {
-            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();*/
-            $stmt = $this->_DB->prepare("delete from usuarios where id = :id");
-            $stmt->execute([':id' => $data]);
+            $stmt = $this->_DB->prepare("UPDATE usuarios SET estado = 'Inactivo' WHERE identificacion = :id");
+            $stmt->execute([':id' => $cc]);
 
             if ($stmt->rowCount() == 1) {
-                $response = ['Usuario eliminado', 201];
+                $response = ['state' => true, 'msj' => 'Usuario eliminado correctamente'];
             } else {
-                $response = ['Ah ocurrido un erro intentalo nuevamente'];
+                $response = ['state' => false, 'msj' =>  'Ha ocurrido un error interno intentalo nuevamente en unos minutos'];
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -803,7 +985,7 @@ class user
             if ($count > 0) {
                 $response = ['state' => 1, 'msj' => 'Se han actualizado ' . $count . ' registros'];
             } else {
-                $response = ['state' => 0, 'msj' => 'no se actualizron registros los datos estan actualizados'];
+                $response = ['state' => 0, 'msj' => 'no se actualizaron registros los datos están al dia'];
             }
 
         } catch (PDOException $th) {

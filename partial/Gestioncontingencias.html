@@ -68,7 +68,7 @@
                                             <tr>
                                                 <th>Marcar</th>
                                                 <th>Login</th>
-                                                <th>Pedido</th>
+                                                <th>Tarea</th>
                                                 <th>Mac Entra</th>
                                                 <th>Mac Sale</th>
                                                 <th>Paquetes</th>
@@ -86,7 +86,7 @@
                                         </thead>
                                         <tbody>
                                             <tr ng-repeat="data in contingenciasTV | orderBy : 'horagestion' : false track by $index "
-                                                ng-class="{'resaltado15min': data.horagestion <= quinceminutos[indice]}">
+                                                ng-class="{'resaltado15min': data.horagestion <= quinceminutos[indice], 'warning': data.pedido.toLowerCase().indexOf('s') !== -1}">
                                                 <td>
                                                     <div>
                                                         <input type="checkbox" ng-model="data.bloqueo" name="bloqueo"
@@ -127,9 +127,9 @@
                                                 <!-- Fin ocultar el login gestión -->
                                                 <td class="icons_in_tables">
                                                     <button type="button" class="btn btn-default btn-xs"
-                                                        ng-click="CopyPortaPapeles(data.pedido)" tooltip-placement="top"
-                                                        uib-tooltip="Copiar pedido" id=tv{{$index}}>
-                                                        {{data.pedido}}
+                                                        ng-click="CopyPortaPapeles(data.tarea)" tooltip-placement="top"
+                                                        uib-tooltip="Copiar tarea" id=tv{{$index}}>
+                                                        {{data.tarea}}
                                                     </button>
                                                     <i class="fa fa-info-circle" aria-hidden="true"
                                                         tooltip-placement="top" uib-tooltip="Datos bb8"
@@ -258,7 +258,7 @@
                                                     <tr>
                                                         <th>Marcar</th>
                                                         <th>Login</th>
-                                                        <th>Pedido</th>
+                                                        <th>Tarea</th>
                                                         <th>Mac Entra</th>
                                                         <th>Mac Sale</th>
                                                         <th>Nro Línea</th>
@@ -276,7 +276,7 @@
                                                 </thead>
                                                 <tbody>
                                                     <tr ng-repeat="data in contingenciasOTROS | orderBy : 'horagestion' : false track by $index"
-                                                        ng-class="{'resaltado15min': data.horagestion <= quinceminutos[indice]}">
+                                                        ng-class="{'resaltado15min': data.horagestion <= quinceminutos[indice], 'warning': data.pedido.toLowerCase().indexOf('s') !== -1}">
                                                         <td>
                                                             <div>
                                                                 <input type="checkbox" ng-model="data.bloqueo"
@@ -320,9 +320,9 @@
                                                         <!-- Fin ocultar el login gestión -->
                                                         <td class="icons_in_tables">
                                                             <button type="button" class="btn btn-default btn-xs"
-                                                                ng-click="CopyPortaPapeles(data.pedido)"
-                                                                tooltip-placement="top" uib-tooltip="Copiar pedido"
-                                                                id=i{{$index}}>{{data.pedido}}
+                                                                ng-click="CopyPortaPapeles(data.tarea)"
+                                                                tooltip-placement="top" uib-tooltip="Copiar tarea"
+                                                                id=i{{$index}}>{{data.tarea}}
                                                             </button>
                                                             <i class="fa fa-info-circle" aria-hidden="true"
                                                                 tooltip-placement="top" uib-tooltip="Datos bb8"
@@ -429,171 +429,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- <div id="portafolio" class="tab-pane fade">
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading nav navbar-default">
-                                            <ul class="nav navbar-nav navbar-left">
-                                                <b><i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                                                    Corregir
-                                                    Inconsistencia Portafolio</b>
-                                            </ul>
-                                            <ul class="nav navbar-nav navbar-right">
-                                                <b>
-                                                    <button type="button" class="btn btn-default btn-xs"
-                                                        ng-click="gestioncontingencias()" title="Actualizar"
-                                                        data-toggle="tooltip" data-placement="top"
-                                                        ng-disabled="loading">
-                                                        <i class="fa fa-refresh" aria-hidden="true"></i>
-                                                    </button>
-                                                </b>&nbsp;
-                                            </ul>
-                                        </div>
-
-                                        <div ng-show="!haypedidoPortafolio">
-                                            <div class="jumbotron">
-
-                                                <h3>Gestión Prioritaria</h3>
-                                                <h5>{{mensajeotros}}</h5>
-
-                                            </div>
-                                        </div>
-                                        <div ng-show="haypedidoPortafolio" class="table-responsive">
-                                            <table
-                                                class="table small table-striped table-hover table-condensed table-bordered animated bounceInRight">
-                                                <thead class="table-header">
-                                                    <tr>
-                                                        <th>Marcar</th>
-                                                        <th>Login</th>
-                                                        <th>Pedido</th>
-                                                        <th>Mac Entra</th>
-                                                        <th>Mac Sale</th>
-                                                        <th>Ciudad</th>
-                                                        <th>Proceso</th>
-                                                        <th>Acción</th>
-                                                        <td>Hora ingreso</td>
-                                                        <th>Producto</th>
-                                                        <th>Tipo equipo</th>
-                                                        <th>Remitente</th>
-                                                        <th>Tipificación</th>
-                                                        <th>Observaciones</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <!-- DATA DE contingenciasPortafolio -
-                                                    <tr ng-repeat="data in contingenciasPortafolio track by $index"
-                                                        ng-class="{'resaltado15min': data.horagestion <= quinceminutos[indice]}">
-                                                        <td>
-
-                                                            <input type="checkbox" ng-model="data.bloqueo"
-                                                                name="bloqueo" id="bloqueo"
-                                                                ng-change="marcarEnGestionPortafolio(data)">
-
-                                                        </td>
-                                                        <!-- En estas lineas se oculta el login gestión 
-                                                        <td
-                                                            ng-show="data.loginContingenciaPortafolio == galletainfo.LOGIN">
-                                                            <span
-                                                                ng-class="{'label label-primary label-xsmall': data.enGestionPortafolio == 1, 'label label-primary label-xsmall': data.loginContingenciaPortafolio == galletainfo.LOGIN}">{{data.loginContingenciaPortafolio}}</span>
-                                                        </td>
-
-                                                        <td
-                                                            ng-show="data.loginContingenciaPortafolio != galletainfo.LOGIN && data.enGestionPortafolio == 1">
-                                                            <span
-                                                                ng-class="{'label label-primary label-xsmall': data.enGestionPortafolio == 1, 'label label-primary label-xsmall': data.loginContingenciaPortafolio != galletainfo.LOGIN}">En
-                                                                gestión</span>
-                                                        </td>
-
-                                                        <td
-                                                            ng-show="data.loginContingenciaPortafolio != galletainfo.LOGIN && data.enGestionPortafolio != 1">
-                                                            <span
-                                                                ng-class="{'label label-primary label-xsmall': data.enGestionPortafolio != 1}"></span>
-                                                        </td>
-                                                        <!-- Fin de ocultar el login gestión 
-                                                        <td>
-                                                            <button type="button" class="btn btn-default btn-xs"
-                                                                ng-click="CopyPortaPapeles(data.pedido)" tooltip
-                                                                title="Copiar pedido" id=p{{$index}}>{{data.pedido}}
-                                                            </button>
-                                                        </td>
-                                                        <td>{{data.macEntra}}</td>
-                                                        <td>{{data.macSale}}</td>
-                                                        <td>{{data.ciudad}}</td>
-                                                        <td>{{data.proceso}}</td>
-                                                        <td>{{data.accion}}</td>
-                                                        <td>{{data.horagestion}}</td>
-                                                        <td>{{data.producto}}</td>
-                                                        <td>{{data.tipoEquipo}}</td>
-                                                        <td>{{data.remite}}</td>
-                                                        <td>
-                                                            <select ng-model="data.tipificacionPortafolio"
-                                                                class="btn btn-default btn-xs grupo-select"
-                                                                name="tipificacion" style="width:100px"
-                                                                ng-change="palancacp(data,$index)">
-                                                                <option value="Ok">Ok</option>
-                                                                <option value="rechazado por posible fraude">
-                                                                    Rechazado
-                                                                    por posible fraude
-                                                                </option>
-                                                                <option value="rechazado por mal ingreso">
-                                                                    Rechazado por
-                                                                    mal ingreso
-                                                                </option>
-                                                                <option value="duplicado">Duplicado</option>
-                                                                <option value="rechazado por falta de gestión">
-                                                                    Rechazado
-                                                                    por falta de gestión
-                                                                </option>
-                                                                <option value="pendiente por solución externa">
-                                                                    Pendiente
-                                                                    por solución externa
-                                                                </option>
-                                                                <option value="no aplica gestión">No Aplica
-                                                                    Gestión
-                                                                </option>
-                                                            </select>
-                                                        </td>
-                                                        <td class="icons_in_tables">
-                                                            <!-- <button type="button" class="btn btn-default btn-xs"
-                                                                ng-click="muestraModalObservacion(data.observacion)">
-                                                                <i class="fa fa-commenting" aria-hidden="true"></i>
-                                                            </button> 
-                                                            <button popover-placement="left"
-                                                                uib-popover="{{data.observacion}}"
-                                                                popover-title="Observaciones" type="button"
-                                                                class="btn btn-default btn-xs">
-                                                                <i class="fa fa-commenting" aria-hidden="true"></i>
-                                                            </button>
-                                                            <button type="button" class="btn btn-default btn-xs"
-                                                                data-toggle="modal"
-                                                                ng-click="guardarContingenciaPortafolio(data)"
-                                                                data-backdrop="static" tooltip
-                                                                title="Observaciones y guardar gestión"
-                                                                data-placement="top" data-html="true" data-selector="">
-                                                                <i class="fa fa-floppy-o" aria-hidden="true">
-                                                                </i>
-                                                            </button>
-                                                            <button type="button" class="btn btn-default btn-xs"
-                                                                data-toggle="modal" data-backdrop="static"
-                                                                ng-hide="data.alerta == 'FALSE'" tooltip
-                                                                title="El pedido ya pasó por contingencias anteriormente, por favor validar!"
-                                                                data-placement="top" data-html="true" data-selector="">
-                                                                <i class="fa fa-exclamation" style="color:red"
-                                                                    aria-hidden="true"> </i>
-                                                            </button>
-
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
                     </div>
                 </div>
                 <!-- MODULO DE SEGUMIENTO -->
@@ -604,14 +439,14 @@
                     </h5>
 
                     <div class="panel panel-default" ng-show="dataPedido">
-                        <div class="panel-heading nav navbar-default">
+                        <div class="panel-heading nav navbar-default table-responsive">
                             <table class="table small table-striped table-hover table-condensed table-bordered">
                                 <thead class="table-header">
                                     <tr>
+                                        <th>Tarea</th>
                                         <th>Pedido</th>
                                         <th>Acción</th>
                                         <th>Ciudad</th>
-                                        <th>Correo</th>
                                         <th>Mac Entra</th>
                                         <th>Mac Sale</th>
                                         <th>Paquetes</th>
@@ -626,13 +461,13 @@
                                     <tr ng-repeat="data in databsucarPedido">
                                         <td>
                                             <button type="button" class="btn btn-default btn-xs"
-                                                ng-click="CopyPortaPapeles(data.pedido)" tooltip title="Copiar pedido"
-                                                id=p{{$index}}>{{data.pedido}}
+                                                ng-click="CopyPortaPapeles(data.tarea)" tooltip title="Copiar tarea"
+                                                id=p{{$index}}>{{data.tarea}}
                                             </button>
                                         </td>
+                                        <td>{{data.pedido}}</td>
                                         <td>{{data.accion}}</td>
                                         <td>{{data.ciudad}}</td>
-                                        <td>{{data.correo}}</td>
                                         <td>{{data.macEntra}}</td>
                                         <td>{{data.macSale}}</td>
                                         <td>{{data.paquetes}}</td>
@@ -667,7 +502,6 @@
                                 </thead>
                                 <tbody>
                                     <tr ng-repeat="data in databsucarPedido">
-
 
                                         <td>{{data.logindepacho}}</td>
                                         <td>{{data.logincontingencia}}</td>
@@ -726,10 +560,10 @@
                             <table class="table small table-striped table-hover table-condensed">
                                 <thead class="table-header">
                                     <tr>
-                                        <th>Pedido</th>
+                                        <th>Tarea</th>
+                                        <th>Padido</th>
                                         <th>Acción</th>
                                         <th>Ciudad</th>
-                                        <th>Correo</th>
                                         <th>Mac Entra</th>
                                         <th>Mac Sale</th>
                                         <th>Paquetes</th>
@@ -744,13 +578,13 @@
                                     <tr ng-repeat="data in databsucarPedido">
                                         <td>
                                             <button type="button" class="btn btn-default btn-xs"
-                                                ng-click="CopyPortaPapeles(data.pedido)" tooltip-placement="top"
-                                                uib-tooltip="Copiar pedido" id=p{{$index}}>{{data.pedido}}
+                                                ng-click="CopyPortaPapeles(data.tarea)" tooltip-placement="top"
+                                                uib-tooltip="Copiar pedido" id=p{{$index}}>{{data.tarea}}
                                             </button>
                                         </td>
+                                        <td>{{data.pedido}}</td>
                                         <td>{{data.accion}}</td>
                                         <td>{{data.ciudad}}</td>
-                                        <td>{{data.correo}}</td>
                                         <td>{{data.macEntra}}</td>
                                         <td>{{data.macSale}}</td>
                                         <td>{{data.paquetes}}</td>
@@ -785,8 +619,6 @@
                                 </thead>
                                 <tbody>
                                     <tr ng-repeat="data in databsucarPedido">
-
-
                                         <td>{{data.logindepacho}}</td>
                                         <td>{{data.logincontingencia}}</td>
                                         <td>{{data.loginContingenciaPortafolio}}</td>
@@ -905,7 +737,7 @@
                                     <ul class="nav navbar-nav navbar-right" ng-hide="formulario">
                                         <li>
                                             <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs"
-                                                ng-model="buscarPedido" placeholder="Buscar Pedido">
+                                                ng-model="buscarPedido" placeholder="Buscar Tarea">
                                         </li>
                                         <li>
                                             <b>
@@ -954,12 +786,14 @@
                                 </div>
                                 <div class="panel panel-default panel-body">
                                     <h6 class="subtitulo text-center">
-                                        <str>Datos de TV, Internet-ToIp <span
+                                        <strong>Datos de TV, Internet-ToIp <span
                                                 class="badge ng-binding">{{counter}}</span></strong>
                                     </h6>
-                                    <table class="table small table-fixed table-bordered table-condensed">
-                                        <thead class="table-header">
+                                    <div class="table-responsive">
+                                        <table class="table small table-fixed table-bordered table-condensed">
+                                            <thead class="table-header">
                                             <tr>
+                                                <th>Tarea</th>
                                                 <th>Pedido</th>
                                                 <th>Login ingreso</th>
                                                 <th>Fecha ingreso</th>
@@ -967,14 +801,17 @@
                                                 <th>Fecha gestión</th>
                                                 <th>Estado</th>
                                             </tr>
-                                        </thead>
-                                        <tbody>
+                                            </thead>
+                                            <tbody>
                                             <tr ng-repeat="data in dataresumenContingencias">
                                                 <td>
                                                     <button type="button" class="btn btn-default btn-xs"
-                                                        ng-click="CopyPortaPapeles(data.pedido)" tooltip
-                                                        title="Copiar pedido" id=p{{$index}}>{{data.pedido}}
+                                                            ng-click="CopyPortaPapeles(data.tarea)" tooltip
+                                                            title="Copiar tarea" id=p{{$index}}>{{data.tarea}}
                                                     </button>
+                                                </td>
+                                                <td>
+                                                    {{data.pedido}}
                                                 </td>
                                                 <td>{{data.logindepacho}}</td>
                                                 <td>{{data.horagestion}}</td>
@@ -982,8 +819,10 @@
                                                 <td>{{data.horacontingencia}}</td>
                                                 <td>{{data.estado}}</td>
                                             </tr>
-                                        </tbody>
-                                    </table>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
                                     <div class="text-center">
                                         <ul uib-pagination class="pagination-sm" total-items="totalItems"
                                             ng-model="currentPage" ng-change="pageChanged()" items-per-page="pageSize"
@@ -1331,58 +1170,69 @@
                             <div class="col-md-3">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
-                                        <b>Datos de clic <i class="fa fa-database" aria-hidden="true"></i></b>
+                                        <b>Datos de click <i class="fa fa-database" aria-hidden="true"></i></b>
                                     </div>
-                                    <div class="panel-body">
-                                        <span class="recore"><b>Pedido: </b>{{UNEPedido}}</span><br>
+                                    <div class="panel-body" style="text-align: center">
+                                        <span class="recore"><b></b>{{UNEPedido}}</span><br>
                                         <span class="recore"><b>Gis: </b>{{ID_GIS}}</span><br>
-                                        <span class="recore"><b>Estado: </b>{{Estado}}</span><br>
-                                        <span class="recore"><b>Categoría: </b>{{Categoria}}</span><br>
-                                        <span class="recore"><b>CRM: </b>{{CRM}}</span><br>
-                                        <span class="recore"><b>Ciudad: </b>{{UNEMunicipio}}</span><br>
-                                        <span class="recore"><b>Cliente: </b>{{UNENombreCliente}}</span><br>
-                                        <span class="recore"><b>Identificación: </b>{{UNEIdCliente}}</span>
+                                        <span class="recore"><b></b>{{Estado}}</span><br>
+                                        <span class="recore"><b></b>{{CRM}}</span><br>
+                                        <span class="recore"><b></b>{{Categoria}}</span><br>
+                                        <span class="recore"><b></b>{{Sistema}}</span><br>
+                                        <span class="recore"><b></b>{{UNEMunicipio}}</span><br>
+                                        <span class="recore"><b></b>{{UNENombreCliente}}</span><br>
+                                        <span class="recore"><b>CC: </b>{{UNEIdCliente}}</span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3" ng-if="bb8Internet">
+                            <div class="col-md-3" style="text-align: center" ng-if="bb8Internet">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
                                         <b>Internet <i class="fa fa-internet-explorer" aria-hidden="true"></i></b>
                                     </div>
                                     <div class="panel-body">
-                                        <div ng-repeat="data1 in recorreinternet">
-                                            <span class="recore"><b>{{data1.VALUE_LABEL}}:
-                                                </b>{{data1.VALID_VALUE}}</span><br>
+                                        <div>
+                              <span class="recore"><b>ID Servicio:
+                                </b>{{IDServicioInternet}}</span><br>
+                                            <span class="recore"><b>Velocidad:
+                                </b>{{Velocidad}}</span><br>
+                                            <span class="recore"><b>NAT:
+                                </b>{{NAT}}</span><br>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3" ng-if="bb8Telefonia">
+                            <div class="col-md-3" style="text-align: center" ng-if="bb8Telefonia">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
                                         <b>Telefonía <i class="fa fa-phone" aria-hidden="true"></i></b>
                                     </div>
                                     <div class="panel-body">
 
-                                        <div ng-repeat="data2 in recorretelefonia">
-                                            <span class="recore"><b>{{data2.VALUE_LABEL}}:
-                                                </b>{{data2.VALID_VALUE}}</span><br>
-                                            <span class="recore"><b>{{data2.ITEM_ALIAS}}:
-                                                </b>{{data2.LINEA}}</span><br>
+                                        <div>
+                              <span class="recore"><b>ID Servicio:
+                                </b>{{IDServicioTele}}</span><br>
+                                            <span class="recore"><b>Linea:
+                                </b>{{Linea}}</span><br>
+                                            <span class="recore"><b>Plataforma:
+                                </b>{{Plataforma}}</span><br>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3" ng-if="bb8Television">
+                            <div class="col-md-3" style="text-align: center" ng-if="bb8Television">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
                                         <b>Television <i class="fa fa-television" aria-hidden="true"></i></b>
                                     </div>
                                     <div class="panel-body">
-                                        <div ng-repeat="data in recore">
-                                            <span class="recore"><b>{{data.VALUE_LABEL}}:
-                                                </b>{{data.VALID_VALUE}}</span><br>
+                                        <div>
+                              <span class="recore"><b>ID Servicio:
+                                </b>{{IDServicioTV}}</span><br>
+                                            <span class="recore"><b>Product ID:
+                                </b>{{productIdTV}}</span><br>
+                                            <span class="recore"><b>Paquetes:
+                                </b>{{paquete}}</span><br>
                                         </div>
                                     </div>
                                 </div>

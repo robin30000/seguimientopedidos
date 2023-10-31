@@ -53,7 +53,7 @@
             let diff = date_2 - date_1;
 
             let TotalDays = Math.ceil(diff / (1000 * 3600 * 24));
-            if (TotalDays > 8) {
+            if (TotalDays > 31) {
                 swal({
                     type: "error",
                     text: "Para optimizacion de los reportes estos no pueden sobrepasar los 8 dias",
@@ -134,12 +134,12 @@
                 Swal({
                     type: 'error',
                     title: 'Opss...',
-                    text: 'Ingrese el pedido a buscar',
+                    text: 'Ingrese la tarea a buscar',
                     timer: 4000
                 })
                 return;
             } else {
-                data = {
+                let data = {
                     page: $scope.currentPage,
                     size: $scope.pageSize,
                     pedido: param,
@@ -227,6 +227,21 @@
                     })
 
             }
+        };
+
+        $scope.CopyPortaPapeles = function (data) {
+            var copyTextTV = document.createElement("input");
+            copyTextTV.value = data;
+            document.body.appendChild(copyTextTV);
+            copyTextTV.select();
+            document.execCommand("copy");
+            document.body.removeChild(copyTextTV);
+            Swal({
+                type: "info",
+                title: "Aviso",
+                text: "El texto seleccionado fue copiado",
+                timer: 2000,
+            });
         };
     }
 })();

@@ -1,0 +1,36 @@
+<div class="cuerpoModal">
+    <h4>Módulos encontrados </h4>
+
+    <div class="table">
+        <table class="table table-bordered small">
+            <thead class="table-header">
+            <tr>
+                <th>Modulo</th>
+                <th>Hora ingreso</th>
+                <th>Hora gestión</th>
+                <th>Estado</th>
+                <th>Login gestión</th>
+                <th>Observación terreno</th>
+                <th>Observación Asesor</th>
+            </tr>
+            </thead>
+            <tbody ng-repeat="moduleData in $ctrl.items">
+            <tr ng-repeat="data in moduleData">
+                <td>{{ data.modulo }}</td>
+                <td>{{ data.fecha_ingreso }}</td>
+                <td>{{ data.fecha_fin }}</td>
+                <td>{{ data.gestion }}</td>
+                <td>{{ data.logincontingencia }}</td>
+                <td>{{ data.observacion }}</td>
+                <td>{{ data.observacion_asesor }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <br>
+    <div class="form-group">
+        <button type="button" class="btn btn-info btn-sm pull-right" data-dismiss="modal" ng-click="$ctrl.cancel()">Cerrar</button>
+    </div>
+    <br>
+</div>

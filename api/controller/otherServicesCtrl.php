@@ -69,6 +69,12 @@ if (isset($data['method'])) {
             $user = new otherServices();
             $user->Pendientesxestado($data['data']);
             break;
+        case 'ciudades':
+            require_once '../class/otherServices.php';
+            $user = new otherServices();
+            $res = $user->ciudades();
+            echo json_encode($res);
+            break;
 
         default:
             echo 'ninguna opción valida.';

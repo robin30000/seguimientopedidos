@@ -1,0 +1,204 @@
+<div class="container-fluid">
+    <br>
+    <div class="row">
+        <div class="col-md-9">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-md-2 col-xs-3">
+                            <div class="input-group">
+                                <input type="month" name="fechaCompara" id="fecha" class="form-control input-sm" value="2019-08" ng-model="fecha">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default btn-sm" type="button" tooltip-placement="top" uib-tooltip="Buscar" ng-click="buscarFecha(fecha)"
+                                            ng-disabled="loading">
+                                        <i class="fa fa-search" aria-hidden="true"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-1 col-xs-1">
+                            <button ng-click="imprimirGrafico()" class="btn btn-default btn-sm" tooltip-placement="top" uib-tooltip="Imprime todos los gráficos"><i
+                                    class="fa fa-print"></i></button>
+                        </div>
+                        <div class="col-md-1 col-xs-1">
+                            <div data-ng-if="loading">
+                                <img title="Esperando respuesta" data-toggle="tooltip" data-placement="top" src="img/loader.gif"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <canvas id="barChart" width="400" height="140"></canvas>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <b>Detalles {{getNombreMes(response[0].fechaFin)}} </b>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="table">
+                                <table class="table">
+                                    <thead class="table-header">
+                                    <tr>
+                                        <th scope="col">Area</th>
+                                        <th scope="col">Suma de ruteadas</th>
+                                        <th scope="col">Suma de abiertas</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="d in response">
+                                        <td>{{d.area}}</td>
+                                        <td>{{d.porcentaje_asignados}} %</td>
+                                        <td>{{d.porcentaje_abiertas}} %</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-9">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="input-group col-md-1">
+                        <input type="month" name="fechaCompara" id="fechaCompara" class="form-control input-sm" value="2019-08" ng-model="fechaCompara">
+                        <span class="input-group-btn">
+                        <button class="btn btn-default btn-sm" type="button" ng-click="buscarFechaCompara(fechaCompara)"
+                                ng-disabled="loading" tooltip-placement="top" uib-tooltip="Buscar"
+                                ng-disabled="loading"><i class="fa fa-search" aria-hidden="true"></i></button>
+                    </span>
+                    </div>
+                    <div class="col-md-1 col-xs-1 ">
+                        <div data-ng-if="loading">
+                            <img title="Esperando respuesta" data-toggle="tooltip" data-placement="top" src="img/loader.gif"/>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <canvas id="barChart1" width="400" height="150"></canvas>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <b>Detalles entre {{getNombreMes(responses[0].fechaIni)}} y {{getNombreMes(responses[0].fechaFin)}} </b>
+                </div>
+                <div class="panel-body">
+                    <div class="table">
+                        <table class="table small">
+                            <thead class="table-header">
+                            <tr>
+                                <th scope="col">Area</th>
+                                <th scope="col">Mes</th>
+
+                                <th scope="col">Suma de ruteadas</th>
+                                <th scope="col">Suma de abiertas</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="d in responses" ng-class="{ 'info': $index % 4 < 2 }">
+                                <td>{{d.area}}</td>
+                                <td>{{d.mes}}</td>
+                                <td>{{d.porcentaje_asignados}} %</td>
+                                <td>{{d.porcentaje_abiertas}} %</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-9">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-md-2 col-xs-3">
+                            <div class="input-group">
+                                <input type="text" class="form-control input-sm" ng-model="fechaDia" placeholder="Fecha" datetime-picker=""
+                                       date-format="yyyy-MM-dd" date-only autocomplete="off"/>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default btn-sm" type="button" ng-click="buscarDia(fechaDia)" ng-disabled="loading" tooltip-placement="top"
+                                            uib-tooltip="Buscar"
+                                            ng-disabled="loading">
+                                        <i class="fa fa-search" aria-hidden="true"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-1 col-xs-1">
+                            <div data-ng-if="loading">
+                                <img title="Esperando respuesta" data-toggle="tooltip" data-placement="top" src="img/loader.gif"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <canvas id="barChart2" width="400" height="100"></canvas>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <b>Detalles dia {{responseDia[0].fecha}}</b>
+                </div>
+                <div class="panel-body">
+                    <div class="table">
+                        <table class="table">
+                            <thead class="table-header">
+                            <tr>
+                                <th scope="col">Area</th>
+                                <th scope="col">Suma de ruteadas</th>
+                                <th scope="col">Suma de abiertas</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="d in responseDia">
+                                <td>{{d.area}}</td>
+                                <td>{{d.porcentaje_asignados}} %</td>
+                                <td>{{d.porcentaje_abiertas}} %</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<br><br><br>

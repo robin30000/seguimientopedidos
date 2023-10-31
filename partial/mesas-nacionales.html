@@ -1,0 +1,716 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading nav navbar-default">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a data-toggle="tab" href="/#mesa1">Mesa 8.1</a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="/#mesa2">Mesa 8.3</a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="/#mesa3">Mesa 8.9</a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="/#mesa4">Premisas extendidas</a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="/#registros">Registro y auditoria</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content">
+                    <div id="mesa1" class="tab-pane fade in active">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="table">
+                                    <br>
+                                    <ul class="nav navbar-nav pull-left">
+                                        <li>
+                                            &nbsp;
+                                            &nbsp;
+                                            <b>Mesa 8.1</b> <span class="badge badge-default">{{Items1}}</span>
+                                        </li>
+                                        <li>
+                                            &nbsp;
+                                            &nbsp;
+                                            <div data-ng-if="loading">
+                                                <img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif"/>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            &nbsp;
+                                            &nbsp;
+                                            <button type="button" class="btn btn-default btn-xs" ng-click="recargaPageGestion(1)" title="Actualizar"
+                                                    data-toggle="tooltip" data-placement="top" ng-disabled="loading">
+                                                <i class="fa fa-refresh" aria-hidden="true"></i>
+                                            </button>
+                                        </li>
+                                        &nbsp;
+                                    </ul>
+                                    <br><br>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover table-condensed small">
+                                            <thead class="table-header">
+                                            <tr>
+                                                <th class="text-center"><span>Mar.</span></th>
+                                                <th class="text-center"><span>Login</span></th>
+                                                <th class="text-center"><span>Tarea</span></th>
+                                                <th class="text-center"><span>Sistema</span></th>
+                                                <th class="text-center"><span>Cel técnico</span></th>
+                                                <th class="text-center"><span>Nombre técnico</span></th>
+                                                <th class="text-center"><span>Categoría</span></th>
+                                                <th class="text-center"><span>Pedido</span></th>
+                                                <th class="text-center"><span>Tipificacion</span></th>
+                                                <th class="text-center"><span>Tipificacion 2</span></th>
+                                                <th class="text-center"><span>Fecha ingreso</span></th>
+                                                <th class="text-center"><span>Obs. técnico</span></th>
+                                                <th class="text-center"><span>Acción técnico</span></th>
+                                                <th class="text-center"><span>Respuesta</span></th>
+
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr ng-repeat="data in mesa1" ng-class="{'danger' : data.UneSourceSystem == 'EDA', 'warning': data.tarea.toLowerCase().indexOf('s') !== -1}">
+                                                <td>
+                                                    <div>
+                                                        <input type="checkbox" ng-model="data.estado"
+                                                               ng-click="marcarEngestion(data.id)"
+                                                               ng-checked="data.estado == 'En gestión'">
+                                                        <!-- <div class="loadingio-spinner-ellipsis-3nun7cb96ao">
+                                                             <div class="ldio-pettsxrv7wj">
+                                                                 <div></div>
+                                                                 <div></div>
+                                                                 <div></div>
+                                                                 <div></div>
+                                                                 <div></div>
+                                                             </div>
+                                                         </div>-->
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="label label-primary label-xsmall" ng-if="data.login_gestion == galletainfo.login">{{data.login_gestion}}</span>
+                                                    <span class="label label-primary label-xsmall" ng-if="data.login_gestion != galletainfo.login">{{data.login_gestion}}</span>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-default btn-xs"
+                                                            ng-click="CopyPortaPapeles(data.tarea)"
+                                                            tooltip-placement="top" uib-tooltip="Copiar tarea"
+                                                            id=i{{$index}}>{{data.tarea}}
+                                                    </button>
+                                                </td>
+                                                <td>{{data.UneSourceSystem}}</td>
+                                                <td>{{data.num_contacto_tecnico}}</td>
+                                                <td>{{data.nombre_tecnico}}</td>
+                                                <td>{{data.TaskTypeCategory}}</td>
+                                                <td>{{data.pedido}}</td>
+
+                                                <td>
+                                                    <select ng-model="data.tipificaciones" class="btn btn-default btn-xs grupo-select">
+                                                        <option value="" selected>Seleccione</option>
+                                                        <option value="Aprovisionar">Aprovisionar</option>
+                                                        <option value="Configurar wifi">Configurar wifi</option>
+                                                        <option value="Configurar tarjetas">Configurar tarjetas</option>
+                                                        <option value="Soporté técnico">Soporté técnico</option>
+                                                        <option value="Código de geocerca">Código de geocerca</option>
+                                                        <option value="Actividad no gestionable">Actividad no gestionable</option>
+                                                        <option value="Reenvió de registros">Reenvió de registros</option>
+                                                        <option value="Forzar cablemodem">Forzar cablemodem</option>
+                                                        <option value="Información de portafolio">Información de portafolio</option>
+                                                        <option value="Validación de parámetros">Validación de parámetros</option>
+                                                        <option ng-if="data.UneSourceSystem == 'EDA'" value="Código de incompleto">Código de incompleto</option>
+                                                        <option ng-if="data.UneSourceSystem == 'EDA'" value="Código de completo">Código de completo</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select ng-model="data.tipificaciones2" class="btn btn-default btn-xs grupo-select">
+                                                        <option value="" selected>Seleccione</option>
+                                                        <option value="Finalizado">Finalizado</option>
+                                                        <option value="No finalizado con éxito">No finalizado con éxito</option>
+                                                        <option value="Devuelto al técnico por mal ingreso">Devuelto al técnico por mal ingreso</option>
+                                                    </select>
+                                                </td>
+                                                <td>{{data.hora_ingreso}}</td>
+                                                <td>
+                                                    <button popover-placement="left" uib-popover="{{data.observacion_tecnico}}"
+                                                            tooltip-placement="top" uib-tooltip="Observación técnico" type="button" class="btn btn-default btn-xs">
+                                                        <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                    </button>
+                                                </td>
+                                                <td>{{data.accion_tecnico}}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-default btn-xs" tooltip-placement="top"
+                                                            uib-tooltip="Guardar" ng-click="GuardarMn(data)">
+                                                        <i class="fa fa-edit" aria-hidden="true"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="mesa2" class="tab-pane fade">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="table">
+                                    <br>
+                                    <ul class="nav navbar-nav pull-left">
+                                        <li>
+                                            &nbsp;
+                                            &nbsp;
+                                            <b>Mesa 8.3</b> <span class="badge badge-default">{{Items2}}</span>
+                                        </li>
+                                        <li>
+                                            &nbsp;
+                                            &nbsp;
+                                            <div data-ng-if="loading">
+                                                <img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif"/>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            &nbsp;
+                                            &nbsp;
+                                            <button type="button" class="btn btn-default btn-xs" ng-click="recargaPageGestion(2)" title="Actualizar"
+                                                    data-toggle="tooltip" data-placement="top" ng-disabled="loading">
+                                                <i class="fa fa-refresh" aria-hidden="true"></i>
+                                            </button>
+                                        </li>
+                                        &nbsp;
+                                    </ul>
+                                    <br><br>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover table-condensed small">
+                                            <thead class="table-header">
+                                            <tr>
+                                                <th class="text-center"><span>Mar.</span></th>
+                                                <th class="text-center"><span>Login</span></th>
+                                                <th class="text-center"><span>Tarea</span></th>
+                                                <th class="text-center"><span>Sistema</span></th>
+                                                <th class="text-center"><span>Cel técnico</span></th>
+                                                <th class="text-center"><span>Nombre técnico</span></th>
+                                                <th class="text-center"><span>Categoría</span></th>
+                                                <th class="text-center"><span>Pedido</span></th>
+                                                <th class="text-center"><span>Tipificacion</span></th>
+                                                <th class="text-center"><span>Tipificacion 2</span></th>
+                                                <th class="text-center"><span>Fecha ingreso</span></th>
+                                                <th class="text-center"><span>Obs. técnico</span></th>
+                                                <th class="text-center"><span>Acción técnico</span></th>
+                                                <th class="text-center"><span>Respuesta</span></th>
+
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr ng-repeat="data in mesa2" ng-class="{'danger' : data.UneSourceSystem == 'EDA'}">
+                                                <td>
+                                                    <div>
+                                                        <input type="checkbox" ng-model="data.estado"
+                                                               ng-click="marcarEngestion(data.id)"
+                                                               ng-checked="data.estado == 'En gestión'">
+                                                        <!-- <div class="loadingio-spinner-ellipsis-3nun7cb96ao">
+                                                             <div class="ldio-pettsxrv7wj">
+                                                                 <div></div>
+                                                                 <div></div>
+                                                                 <div></div>
+                                                                 <div></div>
+                                                                 <div></div>
+                                                             </div>
+                                                         </div>-->
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="label label-primary label-xsmall" ng-if="data.login_gestion == galletainfo.login">{{data.login_gestion}}</span>
+                                                    <span class="label label-primary label-xsmall" ng-if="data.login_gestion != galletainfo.login">{{data.login_gestion}}</span>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-default btn-xs"
+                                                            ng-click="CopyPortaPapeles(data.tarea)"
+                                                            tooltip-placement="top" uib-tooltip="Copiar tarea"
+                                                            id=i{{$index}}>{{data.tarea}}
+                                                    </button>
+                                                </td>
+                                                <td>{{data.UneSourceSystem}}</td>
+                                                <td>{{data.num_contacto_tecnico}}</td>
+                                                <td>{{data.nombre_tecnico}}</td>
+                                                <td>{{data.TaskTypeCategory}}</td>
+                                                <td>{{data.pedido}}</td>
+
+                                                <td>
+                                                    <select ng-model="data.tipificaciones" class="btn btn-default btn-xs grupo-select">
+                                                        <option value="" selected>Seleccione</option>
+                                                        <option value="Cambio de puerto/Actualizar infra / replanteo">Cambio de puerto/Actualizar infra / replanteo</option>
+                                                        <option value="Actividad no gestionable">Actividad no gestionable</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select ng-model="data.tipificaciones2" class="btn btn-default btn-xs grupo-select">
+                                                        <option value="" selected>Seleccione</option>
+                                                        <option value="Finalizado">Finalizado</option>
+                                                        <option value="No finalizado con éxito">No finalizado con éxito</option>
+                                                        <option value="Devuelto al técnico por mal ingreso">Devuelto al técnico por mal ingreso</option>
+                                                    </select>
+                                                </td>
+                                                <td>{{data.hora_ingreso}}</td>
+                                                <td>
+                                                    <button popover-placement="left" uib-popover="{{data.observacion_tecnico}}"
+                                                            tooltip-placement="top" uib-tooltip="Observación técnico" type="button" class="btn btn-default btn-xs">
+                                                        <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                    </button>
+                                                </td>
+                                                <td>{{data.accion_tecnico}}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-default btn-xs" tooltip-placement="top"
+                                                            uib-tooltip="Guardar" ng-click="GuardarMn(data)">
+                                                        <i class="fa fa-edit" aria-hidden="true"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="mesa3" class="tab-pane fade">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="table">
+                                    <br>
+                                    <ul class="nav navbar-nav pull-left">
+                                        <li>
+                                            &nbsp;
+                                            &nbsp;
+                                            <b>Mesa 8.9</b> <span class="badge badge-default">{{Items3}}</span>
+                                        </li>
+                                        <li>
+                                            &nbsp;
+                                            &nbsp;
+                                            <div data-ng-if="loading">
+                                                <img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif"/>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            &nbsp;
+                                            &nbsp;
+                                            <button type="button" class="btn btn-default btn-xs" ng-click="recargaPageGestion(3)" title="Actualizar"
+                                                    data-toggle="tooltip" data-placement="top" ng-disabled="loading">
+                                                <i class="fa fa-refresh" aria-hidden="true"></i>
+                                            </button>
+                                        </li>
+                                        &nbsp;
+                                    </ul>
+                                    <br><br>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover table-condensed small">
+                                            <thead class="table-header">
+                                            <tr>
+                                                <th class="text-center"><span>Mar.</span></th>
+                                                <th class="text-center"><span>Login</span></th>
+                                                <th class="text-center"><span>Tarea</span></th>
+                                                <th class="text-center"><span>Sistema</span></th>
+                                                <th class="text-center"><span>Cel técnico</span></th>
+                                                <th class="text-center"><span>Nombre técnico</span></th>
+                                                <th class="text-center"><span>Categoría</span></th>
+                                                <th class="text-center"><span>Pedido</span></th>
+                                                <th class="text-center"><span>Tipificacion</span></th>
+                                                <th class="text-center"><span>Tipificacion 2</span></th>
+                                                <th class="text-center"><span>Fecha ingreso</span></th>
+                                                <th class="text-center"><span>Obs. técnico</span></th>
+                                                <th class="text-center"><span>Acción técnico</span></th>
+                                                <th class="text-center"><span>Respuesta</span></th>
+
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr ng-repeat="data in mesa3">
+                                                <td>
+                                                    <div>
+                                                        <input type="checkbox" ng-model="data.estado"
+                                                               ng-click="marcarEngestion(data.id)"
+                                                               ng-checked="data.estado == 'En gestión'">
+                                                        <!-- <div class="loadingio-spinner-ellipsis-3nun7cb96ao">
+                                                             <div class="ldio-pettsxrv7wj">
+                                                                 <div></div>
+                                                                 <div></div>
+                                                                 <div></div>
+                                                                 <div></div>
+                                                                 <div></div>
+                                                             </div>
+                                                         </div>-->
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="label label-primary label-xsmall" ng-if="data.login_gestion == galletainfo.login">{{data.login_gestion}}</span>
+                                                    <span class="label label-primary label-xsmall" ng-if="data.login_gestion != galletainfo.login">{{data.login_gestion}}</span>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-default btn-xs"
+                                                            ng-click="CopyPortaPapeles(data.tarea)"
+                                                            tooltip-placement="top" uib-tooltip="Copiar tarea"
+                                                            id=i{{$index}}>{{data.tarea}}
+                                                    </button>
+                                                </td>
+                                                <td>{{data.UneSourceSystem}}</td>
+                                                <td>{{data.num_contacto_tecnico}}</td>
+                                                <td>{{data.nombre_tecnico}}</td>
+                                                <td>{{data.TaskTypeCategory}}</td>
+                                                <td>{{data.pedido}}</td>
+
+                                                <td>
+                                                    <select ng-model="data.tipificaciones" class="btn btn-default btn-xs grupo-select">
+                                                        <option value="" selected>Seleccione</option>
+                                                        <option value="Cierre con llamada">Cierre con llamada</option>
+                                                        <option value="Validación de parámetros">Validación de parámetros</option>
+                                                        <option value="Código de incompleto">Código de incompleto</option>
+                                                        <option value="Código de completo">Código de completo</option>
+                                                        <option value="Actividad no gestionable">Actividad no gestionable</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select ng-model="data.tipificaciones2" class="btn btn-default btn-xs grupo-select">
+                                                        <option value="" selected>Seleccione</option>
+                                                        <option value="Finalizado">Finalizado</option>
+                                                        <option value="No finalizado con éxito">No finalizado con éxito</option>
+                                                        <option value="Devuelto al técnico por mal ingreso">Devuelto al técnico por mal ingreso</option>
+                                                    </select>
+                                                </td>
+                                                <td>{{data.hora_ingreso}}</td>
+                                                <td>
+                                                    <button popover-placement="left" uib-popover="{{data.observacion_tecnico}}"
+                                                            tooltip-placement="top" uib-tooltip="Observación técnico" type="button" class="btn btn-default btn-xs">
+                                                        <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                    </button>
+                                                </td>
+                                                <td>{{data.accion_tecnico}}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-default btn-xs" tooltip-placement="top"
+                                                            uib-tooltip="Guardar" ng-click="GuardarMn(data)">
+                                                        <i class="fa fa-edit" aria-hidden="true"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="mesa4" class="tab-pane fade">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="table">
+                                    <br>
+                                    <ul class="nav navbar-nav pull-left">
+                                        <li>
+                                            &nbsp;
+                                            &nbsp;
+                                            <b>Premisas extendidas</b> <span class="badge badge-default">{{Items4}}</span>
+                                        </li>
+                                        <li>
+                                            &nbsp;
+                                            &nbsp;
+                                            <div data-ng-if="loading">
+                                                <img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif"/>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            &nbsp;
+                                            &nbsp;
+                                            <button type="button" class="btn btn-default btn-xs" ng-click="recargaPageGestion(4)" title="Actualizar"
+                                                    data-toggle="tooltip" data-placement="top" ng-disabled="loading">
+                                                <i class="fa fa-refresh" aria-hidden="true"></i>
+                                            </button>
+                                        </li>
+                                        &nbsp;
+                                    </ul>
+                                    <br><br>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover table-condensed small">
+                                            <thead class="table-header">
+                                            <tr>
+                                                <th class="text-center"><span>Mar.</span></th>
+                                                <th class="text-center"><span>Login</span></th>
+                                                <th class="text-center"><span>Tarea</span></th>
+                                                <th class="text-center"><span>Sistema</span></th>
+                                                <th class="text-center"><span>Cel técnico</span></th>
+                                                <th class="text-center"><span>Nombre técnico</span></th>
+                                                <th class="text-center"><span>Categoría</span></th>
+                                                <th class="text-center"><span>Pedido</span></th>
+                                                <th class="text-center"><span>Tipificacion</span></th>
+                                                <th class="text-center"><span>Tipificacion 2</span></th>
+                                                <th class="text-center"><span>Fecha ingreso</span></th>
+                                                <th class="text-center"><span>Obs. técnico</span></th>
+                                                <th class="text-center"><span>Acción técnico</span></th>
+                                                <th class="text-center"><span>Respuesta</span></th>
+
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr ng-repeat="data in mesa4">
+                                                <td>
+                                                    <div>
+                                                        <input type="checkbox" ng-model="data.estado"
+                                                               ng-click="marcarEngestion(data.id)"
+                                                               ng-checked="data.estado == 'En gestión'">
+                                                        <!-- <div class="loadingio-spinner-ellipsis-3nun7cb96ao">
+                                                             <div class="ldio-pettsxrv7wj">
+                                                                 <div></div>
+                                                                 <div></div>
+                                                                 <div></div>
+                                                                 <div></div>
+                                                                 <div></div>
+                                                             </div>
+                                                         </div>-->
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="label label-primary label-xsmall" ng-if="data.login_gestion == galletainfo.login">{{data.login_gestion}}</span>
+                                                    <span class="label label-primary label-xsmall" ng-if="data.login_gestion != galletainfo.login">{{data.login_gestion}}</span>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-default btn-xs"
+                                                            ng-click="CopyPortaPapeles(data.tarea)"
+                                                            tooltip-placement="top" uib-tooltip="Copiar tarea"
+                                                            id=i{{$index}}>{{data.tarea}}
+                                                    </button>
+                                                </td>
+                                                <td>{{data.UneSourceSystem}}</td>
+                                                <td>{{data.num_contacto_tecnico}}</td>
+                                                <td>{{data.nombre_tecnico}}</td>
+                                                <td>{{data.TaskTypeCategory}}</td>
+                                                <td>{{data.pedido}}</td>
+
+                                                <td>
+                                                    <select ng-model="data.tipificaciones" class="btn btn-default btn-xs grupo-select">
+                                                        <option value="" selected>Seleccione</option>
+                                                        <option value="Código de completo">Código de completo</option>
+                                                        <option value="Código de incompleto">Código de incompleto</option>
+                                                        <option value="Validación de parámetros">Validación de parámetros</option>
+                                                        <option value="Código de geocerca">Código de geocerca</option>
+                                                        <option value="Pendiente">Pendiente</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select ng-model="data.tipificaciones2" class="btn btn-default btn-xs grupo-select">
+                                                        <option value="" selected>Seleccione</option>
+                                                        <option value="Finalizado">Finalizado</option>
+                                                        <option value="No finalizado con éxito">No finalizado con éxito</option>
+                                                        <option value="Devuelto al técnico por mal ingreso">Devuelto al técnico por mal ingreso</option>
+                                                    </select>
+                                                </td>
+                                                <td>{{data.hora_ingreso}}</td>
+                                                <td>
+                                                    <button popover-placement="left" uib-popover="{{data.observacion_tecnico}}"
+                                                            tooltip-placement="top" uib-tooltip="Observación técnico" type="button" class="btn btn-default btn-xs">
+                                                        <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                    </button>
+                                                </td>
+                                                <td>{{data.accion_tecnico}}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-default btn-xs" tooltip-placement="top"
+                                                            uib-tooltip="Guardar" ng-click="GuardarMn(data)">
+                                                        <i class="fa fa-edit" aria-hidden="true"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="registros" class="tab-pane fade">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="table">
+                                    <br>
+                                    <ul class="nav navbar-nav pull-left">
+                                        <li>
+                                            &nbsp;
+                                            <b>Registros y auditoria</b> <span class="badge badge-default">{{Items5}}</span>
+                                        </li>
+                                        <li>
+                                            &nbsp;
+                                            <div data-ng-if="loading">
+                                                <img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif"/>
+                                            </div>
+                                        </li>
+
+                                        <li>
+                                            &nbsp;
+                                            <select class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" style="width: 160px"
+                                                    ng-model="mn.mesas" ng-change="detalleMesa(mn.mesas)">
+                                                <option value="" selected>Seleccione el filtro</option>
+                                                <option value="Todos">Todas las mesas</option>
+                                                <option value="Mesa 1">Mesa 8.1</option>
+                                                <option value="Mesa 2">Mesa 8.3</option>
+                                                <option value="Mesa 3">Mesa 8.9</option>
+                                                <option value="Mesa 4">Premisas</option>
+                                                <!--<option value="sg">Sin gestionar</option>-->
+
+                                            </select>
+                                            <i class="fa fa-calendar fa-fw"></i>
+                                        </li>
+
+                                        <li>
+                                            &nbsp;
+                                            <input type="text" class="btn btn-default btn-xs" ng-model="mn.tarea"
+                                                   placeholder="Buscar tarea" autocomplete="off"/>&nbsp;
+                                            <button type="button" class="btn btn-default btn-xs" ng-click="registrosMn(mn.tarea)"
+                                                    ng-disabled="loading">
+                                                <i class="fa fa-search" aria-hidden="true"></i>
+                                            </button>
+                                        </li>
+                                        <li>
+                                            &nbsp;
+                                            <input style="width: 130px" type="text" name="fechaini" id="fechaini"
+                                                   class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="mn.fechaini"
+                                                   placeholder="Fecha Inicial" datetime-picker="" date-only date-format="yyyy-MM-dd"
+                                                   autocomplete="off"/>
+                                            <i class="fa fa-calendar fa-fw"></i>
+                                            <input style="width: 130px" type="text" name="fechafin" id="fechafin"
+                                                   class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="mn.fechafin"
+                                                   placeholder="Fecha Final" datetime-picker="" date-only date-format="yyyy-MM-dd"
+                                                   autocomplete="off"/>
+                                        </li>
+                                        <li>
+                                            &nbsp;
+                                            <button type="button" class="btn btn-default btn-xs" ng-click="registrosMnTiempo(mn)"
+                                                    ng-disabled="loading">
+                                                <i class="fa fa-search" aria-hidden="true"></i>
+                                            </button>
+                                        </li>
+                                        <li>
+                                            &nbsp;
+                                            <button type="button" class="btn btn-success btn-xs" title="Exportar Registros"
+                                                    ng-click="csvToip(mn)" ng-disabled="loading" title="Exportar" tooltip data-placement="top">
+                                                <i class="fa fa-cloud-download" aria-hidden="true"> </i>
+                                            </button>
+                                        </li>
+                                        <li>
+                                            &nbsp;
+                                            <button type="button" class="btn btn-default btn-xs" ng-click="recargaPageGestion(5)" title="Actualizar"
+                                                    data-toggle="tooltip" data-placement="top" ng-disabled="loading">
+                                                <i class="fa fa-refresh" aria-hidden="true"></i>
+                                            </button>
+                                        </li>
+                                    </ul>
+                                    <br><br>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover table-condensed small">
+                                            <thead class="table-header">
+                                            <tr>
+                                                <th class="text-center"><span>Log. gestión</span></th>
+                                                <th class="text-center"><span>Tarea</span></th>
+                                                <th class="text-center"><span>Sistema</span></th>
+                                                <th class="text-center"><span>Cel. técnico</span></th>
+                                                <th class="text-center"><span>Nombre técnico</span></th>
+                                                <th class="text-center"><span>Categoría</span></th>
+                                                <th class="text-center"><span>Pedido</span></th>
+                                                <th class="text-center"><span>Mesa</span></th>
+                                                <th class="text-center"><span>Tipificacion</span></th>
+                                                <th class="text-center"><span>Tipificacion 2</span></th>
+                                                <th class="text-center"><span>Fecha ingreso</span></th>
+                                                <th class="text-center"><span>Fecha marca</span></th>
+                                                <th class="text-center"><span>Fecha gestión</span></th>
+                                                <th class="text-center"><span>Obs. técnico</span></th>
+                                                <th class="text-center"><span>Acción técnico</span></th>
+                                                <th class="text-center"><span>Obs. asesor</span></th>
+
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr ng-repeat="data in registros">
+
+                                                <td>
+                                                    {{data.login_gestion}}
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-default btn-xs"
+                                                            ng-click="CopyPortaPapeles(data.tarea)" tooltip-placement="top"
+                                                            uib-tooltip="Copiar pedido" id=p{{$index}}>{{data.tarea}}
+                                                    </button>
+                                                </td>
+                                                <td>{{data.UneSourceSystem}}</td>
+                                                <td>{{data.num_contacto_tecnico}}</td>
+                                                <td>{{data.nombre_tecnico}}</td>
+                                                <td>{{data.TaskTypeCategory}}</td>
+                                                <td>{{data.pedido}}</td>
+                                                <td>{{data.mesa}}</td>
+                                                <td>
+                                                    <select ng-model="data.tipificacion" class="btn btn-default btn-xs grupo-select" disabled style="width: 220px">
+                                                        <option value="Cambio de puerto/Actualizar infra / replanteo">Cambio de puerto/Actualizar infra / replanteo</option>
+                                                        <option value="Código de geocerca">Código de geocerca</option>
+                                                        <option value="Cierre con llamada">Cierre con llamada</option>
+                                                        <option value="Validación de parámetros">Validación de parámetros</option>
+                                                        <option value="Código de incompleto">Código de incompleto</option>
+                                                        <option value="Código de completo">Código de completo</option>
+                                                        <option value="Actividad no gestionable">Actividad no gestionable</option>
+                                                        <option value="Aprovisionar">Aprovisionar</option>
+                                                        <option value="Cierre con llamada">Cierre con llamada</option>
+                                                        <option value="Configurar wifi">Configurar wifi</option>
+                                                        <option value="Confirmar infraestructura">Confirmar infraestructura</option>
+                                                        <option value="Configurar tarjetas">Configurar tarjetas</option>
+                                                        <option value="Finalizado">Finalizado</option>
+                                                        <option value="Pendiente">Pendiente</option>
+                                                        <option value="Soporté técnico">Soporté técnico</option>
+                                                        <option value="Reenvió de registros">Reenvió de registros</option>
+                                                        <option value="Forzar cablemodem">Forzar cablemodem</option>
+                                                        <option value="Información de portafolio">Información de portafolio</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select ng-model="data.tipificacion_2" class="btn btn-default btn-xs grupo-select" disabled style="width: 220px">
+                                                        <option value="Finalizado">Finalizado</option>
+                                                        <option value="No finalizado con éxito">No finalizado con éxito</option>
+                                                        <option value="Devuelto al técnico por mal ingreso">Devuelto al técnico por mal ingreso</option>
+                                                    </select>
+                                                </td>
+                                                <td>{{data.hora_ingreso}}</td>
+                                                <td>{{data.hora_marca}}</td>
+                                                <td>{{data.hora_gestion}}</td>
+                                                <td>
+                                                    <button popover-placement="left" uib-popover="{{data.observacion_tecnico}}"
+                                                            tooltip-placement="top" uib-tooltip="Observación técnico" type="button" class="btn btn-default btn-xs">
+                                                        <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                    </button>
+                                                </td>
+                                                <td>{{data.accion_tecnico}}</td>
+                                                <td>
+                                                    <button popover-placement="left" uib-popover="{{data.observacion_gestion}}"
+                                                            tooltip-placement="top" uib-tooltip="Observación gestión" type="button" class="btn btn-default btn-xs">
+                                                        <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                    </button>
+                                                </td>
+
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <ul uib-pagination class="pagination-sm" total-items="totalItems"
+                                        ng-model="currentPage"
+                                        ng-change="pageChanged()" items-per-page="pageSize" max-size="5"
+                                        boundary-links="true" rotate="true"
+                                        previous-text="&#8672;" next-text="&#8674;" first-text="Primero"
+                                        last-text="Último"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br><br><br>

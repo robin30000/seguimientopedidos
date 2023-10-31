@@ -1234,6 +1234,7 @@
 
             services.windowsBridge("BB8/contingencias/Buscar/GetClick/" + pedido)
                 .then(function (data) {
+
                     $scope.clic = data.data[0];
                     $scope.UNEPedido = $scope.clic.UNEPedido;
                     $scope.Estado = $scope.clic.Estado;
@@ -1246,16 +1247,16 @@
                     $scope.Estado = $scope.clic.Estado;
                     $scope.CRM = $scope.clic.TTC;
                     $scope.Sistema = $scope.clic.UNESourceSystem;
-                    console.log($scope.clic.Duration);
+
                     $scope.Duration = parseInt($scope.clic.Duration);
                     $scope.Duration = ($scope.Duration / 60);
                     services.windowsBridge("BB8/contingencias/Buscar/GetPlanBaMSS/" + pedido)
                         .then(function (data) {
-                            console.log(data, " internet ");
                             if (data.data.length > 0) {
                                 $scope.NAT = 'SI';
                                 $scope.bb8Internet = 1;
                                 $scope.recorreinternet = data.data;
+
 
                                 for (let i = 0; i < $scope.recorreinternet.length; i++) {
                                     if ($scope.recorreinternet[i].VALUE_LABEL == 'Qty') {
@@ -1269,7 +1270,6 @@
                             } else {
                                 services.windowsBridge("BB8/contingencias/Buscar/GetPlanBaMSS/" + $scope.clic.UNECodigoDireccionServicio)
                                     .then(function (data) {
-                                        console.log(data, " internet2 ");
                                         if (data.data.length > 0) {
                                             $scope.NAT = 'SI';
                                             $scope.bb8Internet = 1;
@@ -1288,7 +1288,6 @@
                             }
                             services.windowsBridge("BB8/contingencias/Buscar/GetPlanTOMSS/" + pedido)
                                 .then(function (data) {
-                                    console.log(data, " telefonia");
                                     if (data.data.length > 0) {
                                         $scope.bb8Telefonia = 1;
                                         $scope.recorretelefonia = data.data;
@@ -1304,7 +1303,6 @@
                                     } else {
                                         services.windowsBridge("BB8/contingencias/Buscar/GetPlanTOMSS/" + $scope.clic.UNECodigoDireccionServicio)
                                             .then(function (data) {
-                                                console.log(data, " telefonia2");
                                                 if (data.data.length > 0) {
                                                     $scope.bb8Telefonia = 1;
                                                     $scope.recorretelefonia = data.data;
@@ -1322,7 +1320,6 @@
                                     }
                                     services.windowsBridge("BB8/contingencias/Buscar/GetPlanTVMSS/" + pedido)
                                         .then(function (data) {
-                                            console.log(data, " tv");
                                             if (data.data.length > 0) {
                                                 $scope.bb8Television = 1;
                                                 $scope.recore = data.data;
@@ -1342,7 +1339,6 @@
                                             } else {
                                                 services.windowsBridge("BB8/contingencias/Buscar/GetPlanTVMSS/" + $scope.clic.UNECodigoDireccionServicio)
                                                     .then(function (data) {
-                                                        console.log(data, " tv2");
                                                         if (data.data.length > 0) {
                                                             $scope.bb8Television = 1;
                                                             $scope.recore = data.data;
@@ -1515,7 +1511,7 @@
                     } else {
                         $scope.celular = $scope.Tecnico[0].CELULAR;
                     }
-                    //   console.log($scope.Tecnico[0]);
+
                     $scope.creaTecnico = true;
                     return;
                 },
@@ -1540,7 +1536,6 @@
 
 
         $scope.guardarPedido = function () {
-
 
             if ($scope.gestionmanual.interaccion == "" || $scope.gestionmanual.interaccion == undefined) {
                 Swal({
@@ -1643,9 +1638,9 @@
             $timeout.cancel(timer);
             timer = null;
 
-            var hours = Math.floor($scope.counter / 3600),
-                minutes = Math.floor(($scope.counter % 3600) / 60),
-                seconds = Math.floor($scope.counter % 60);
+            let hours = Math.floor($scope.counter / 3600);
+            let minutes = Math.floor(($scope.counter % 3600) / 60);
+            let seconds = Math.floor($scope.counter % 60);
 
             if (hours < 10) {
                 hours = "0" + hours;

@@ -3,7 +3,15 @@
     angular.module("seguimientopedidos").controller("GestioncontingenciasCtrl", GestioncontingenciasCtrl);
     GestioncontingenciasCtrl.$inject = ["$scope", "$rootScope", "services", "$http", "$route", "$cookies", "$location"];
 
-    function GestioncontingenciasCtrl($scope,$rootScope,services,$http,$route,$cookies,$location) {
+    function GestioncontingenciasCtrl(
+        $scope,
+        $rootScope,
+        services,
+        $http,
+        $route,
+        $cookies,
+        $location
+    ) {
         $scope.rutaCierreMasivoContin =
             "partial/modals/cierreMasivoContingencias.html";
         $scope.haypedidoOtros = false;
@@ -28,64 +36,144 @@
             $scope.bb8Telefonia = 0;
             $scope.bb8Television = 0;
 
+            console.log(pedido);
             services.windowsBridge("BB8/contingencias/Buscar/GetClick/" + pedido)
                 //"http://10.100.66.254:8080/BB8/contingencias/Buscar/GetClick/" + pedido;
 
                 .then(function (data) {
+                    console.log('bb8', data);
                     $scope.clic = data.data[0];
                     $scope.UNEPedido = $scope.clic.UNEPedido;
                     $scope.Estado = $scope.clic.Estado;
                     $scope.TipoEquipo = $scope.clic.TipoEquipo;
-                    $scope.Categoria = $scope.clic.TT;
+                    $scope.Categoria = $scope.clic.TTC;
+                    $scope.Sistema = $scope.clic.UNESourceSystem;
                     $scope.UNEMunicipio = $scope.clic.UNEMunicipio;
                     $scope.UNENombreCliente = $scope.clic.UNENombreCliente;
                     $scope.UNEIdCliente = $scope.clic.UNEIdCliente;
                     $scope.ID_GIS = $scope.clic.UNECodigoDireccionServicio;
                     $scope.Estado = $scope.clic.Estado;
-                    $scope.CRM = $scope.clic.TTC;
+                    $scope.CRM = $scope.clic.TT;
+                    $scope.paquete = '';
+
                     services.windowsBridge("BB8/contingencias/Buscar/GetPlanBaMSS/" + pedido)
                         // "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanBaMSS/" +
                         // pedido;
 
                         .then(function (data) {
+                            console.log('internet', data)
                             if (data.data.length > 0) {
+                                $scope.NAT = 'SI';
                                 $scope.bb8Internet = 1;
                                 $scope.recorreinternet = data.data;
+
+                                for (let i = 0; i < $scope.recorreinternet.length; i++) {
+                                    if ($scope.recorreinternet[i].VALUE_LABEL == 'Qty') {
+                                        $scope.Velocidad = $scope.recorreinternet[i].VALID_VALUE;
+                                    }
+                                    if ($scope.recorreinternet[i].VALUE_LABEL == 'IdServicio') {
+                                        $scope.IDServicioInternet = $scope.recorreinternet[i].VALID_VALUE;
+                                    }
+                                }
+
                             } else {
-                                services.windowsBridge("BB8/contingencias/Buscar/GetPlanBaMSS/" + $scope.clic.UNECodigoDireccionServicio)
+                                services.windowsBridge("BB8/contingencias/Buscar/GetPlanBaMSS/" + $scope.ID_GIS)
                                     .then(function (data) {
+                                        console.log(data, " internet2 ");
                                         if (data.data.length > 0) {
+                                            $scope.NAT = 'SI';
                                             $scope.bb8Internet = 1;
                                             $scope.recorreinternet = data.data;
+
+                                            for (let i = 0; i < $scope.recorreinternet.length; i++) {
+                                                if ($scope.recorreinternet[i].VALUE_LABEL == 'Qty') {
+                                                    $scope.Velocidad = $scope.recorreinternet[i].VALID_VALUE;
+                                                }
+                                                if ($scope.recorreinternet[i].VALUE_LABEL == 'IdServicio' || $scope.recorreinternet[i].VALUE_LABEL == 'IdServicioRel') {
+                                                    $scope.IDServicioInternet = $scope.recorreinternet[i].VALID_VALUE;
+                                                }
+                                            }
                                         }
                                     });
                             }
-                            $scope.url = services.windowsBridge("BB8/contingencias/Buscar/GetPlanTOMSS/" + pedido)
+                            services.windowsBridge("BB8/contingencias/Buscar/GetPlanTOMSS/" + pedido)
                                 .then(function (data) {
+                                    console.log(data, " telefonia");
                                     if (data.data.length > 0) {
                                         $scope.bb8Telefonia = 1;
                                         $scope.recorretelefonia = data.data;
+                                        $scope.Linea = $scope.recorretelefonia[0].LINEA;
+                                        for (let i = 0; i < $scope.recorretelefonia.length; i++) {
+                                            if ($scope.recorretelefonia[i].VALUE_LABEL == 'IdServicio') {
+                                                $scope.IDServicioTele = $scope.recorretelefonia[i].VALID_VALUE;
+                                            }
+                                            if ($scope.recorretelefonia[i].VALUE_LABEL == 'PlataformaTOIP') {
+                                                $scope.Plataforma = $scope.recorretelefonia[i].VALID_VALUE;
+                                            }
+                                        }
                                     } else {
-                                        services.windowsBridge("BB8/contingencias/Buscar/GetPlanTOMSS/" + $scope.clic.UNECodigoDireccionServicio)
+                                        services.windowsBridge("BB8/contingencias/Buscar/GetPlanTOMSS/" + $scope.ID_GIS)
                                             .then(function (data) {
+                                                console.log(data, " telefonia2");
                                                 if (data.data.length > 0) {
                                                     $scope.bb8Telefonia = 1;
                                                     $scope.recorretelefonia = data.data;
+                                                    $scope.Linea = $scope.recorretelefonia[0].LINEA;
+                                                    for (let i = 0; i < $scope.recorretelefonia.length; i++) {
+
+                                                        if ($scope.recorretelefonia[i].VALUE_LABEL == 'IdServicio') {
+                                                            $scope.IDServicioTele = $scope.recorretelefonia[i].VALID_VALUE;
+                                                        }
+                                                        if ($scope.recorretelefonia[i].VALUE_LABEL == 'PlataformaTOIP') {
+                                                            $scope.Plataforma = $scope.recorretelefonia[i].VALID_VALUE;
+                                                        }
+                                                    }
                                                 }
                                             });
                                     }
-                                    $scope.url = services.windowsBridge("BB8/contingencias/Buscar/GetPlanTVMSS/" + pedido)
+                                    services.windowsBridge("BB8/contingencias/Buscar/GetPlanTVMSS/" + pedido)
                                         .then(function (data) {
+                                            console.log(data, " tv");
                                             if (data.data.length > 0) {
                                                 $scope.bb8Television = 1;
                                                 $scope.recore = data.data;
+                                                for (let i = 0; i < $scope.recore.length; i++) {
+                                                    if ($scope.recore[i].VALUE_LABEL == 'IdServicio') {
+                                                        $scope.IDServicioTV = $scope.recore[i].VALID_VALUE;
+                                                    }
+                                                    if ($scope.recore[i].VALUE_LABEL == 'productId') {
+                                                        $scope.productIdTV = $scope.recore[i].VALID_VALUE;
+                                                    }
+                                                    if ($scope.recore[i].ITEM_ALIAS == 'PaqueteTV') {
+
+                                                        $scope.paquete += $scope.recore[i].VALUE_LABEL + '|' + $scope.recore[i].VALID_VALUE + '\n\n';
+                                                    }
+
+                                                }
+                                                $scope.paquete = $scope.paquete.replace('undefined', '');
+
                                             } else {
-                                                $scope.url = services.windowsBridge("BB8/contingencias/Buscar/GetPlanTVMSS/" +
-                                                    $scope.clic.UNECodigoDireccionServicio)
+                                                services.windowsBridge("BB8/contingencias/Buscar/GetPlanTVMSS/" + $scope.ID_GIS)
                                                     .then(function (data) {
+                                                        console.log(data, " tv2");
                                                         if (data.data.length > 0) {
                                                             $scope.bb8Television = 1;
                                                             $scope.recore = data.data;
+                                                            for (let i = 0; i < $scope.recore.length; i++) {
+                                                                if ($scope.recore[i].VALUE_LABEL == 'IdServicio') {
+                                                                    $scope.IDServicioTV = $scope.recore[i].VALID_VALUE;
+                                                                }
+                                                                if ($scope.recore[i].VALUE_LABEL == 'productId') {
+                                                                    $scope.productIdTV = $scope.recore[i].VALID_VALUE;
+                                                                }
+
+                                                                if ($scope.recore[i].ITEM_ALIAS == 'PaqueteTV') {
+                                                                    $scope.paquete += $scope.recore[i].VALUE_LABEL + '|' + $scope.recore[i].VALID_VALUE + '\n\n';
+                                                                }
+
+                                                            }
+                                                            $scope.paquete = $scope.paquete.replace('undefined', '');
+
                                                         }
                                                     });
                                             }
@@ -159,7 +247,7 @@
                         );
 
                         function js_yyyy_mm_dd_hh_mm_ss() {
-                            now = new Date();
+                            let now = new Date();
                             year = "" + now.getFullYear();
                             month = "" + (now.getMonth() + 1);
                             if (month.length == 1) {
@@ -169,15 +257,15 @@
                             if (day.length == 1) {
                                 day = "0" + day;
                             }
-                            hour = "" + now.getHours();
+                            let hour = "" + now.getHours();
                             if (hour.length == 1) {
                                 hour = "0" + hour;
                             }
-                            minute = "" + now.getMinutes();
+                            let minute = "" + now.getMinutes();
                             if (minute.length == 1) {
                                 minute = "0" + minute;
                             }
-                            second = "" + now.getSeconds();
+                            let second = "" + now.getSeconds();
                             if (second.length == 1) {
                                 second = "0" + second;
                             }
@@ -705,7 +793,6 @@
             } else {
                 services.getbuscarPedidoContingencia(pedido).then(
                     function (data) {
-                        console.log(data, ' lllllll');
                         if (data.data.state == 99) {
                             swal({
                                 type: "error",
@@ -738,11 +825,11 @@
         };
 
         $scope.pageChanged = function () {
-            data = {page: $scope.currentPage, size: $scope.pageSize, fecha: $scope.resumen};
+            let data = {page: $scope.currentPage, size: $scope.pageSize, fecha: $scope.resumen};
             resumenContingencias(data);
         };
         $scope.pageSizeChanged = function () {
-            data = {page: $scope.currentPage, size: $scope.pageSize, fecha: $scope.resumen};
+            let data = {page: $scope.currentPage, size: $scope.pageSize, fecha: $scope.resumen};
             resumenContingencias(data);
         };
 
@@ -756,7 +843,6 @@
             }
             services.getresumenContingencias(data).then(
                 function (data) {
-                    console.log(data);
                     $scope.dataresumenContingencias = data.data[0];
                     $scope.dataresumenContingenciasTV = data.data[6];
                     $scope.dataresumenContingenciasInTo = data.data[7];

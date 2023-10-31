@@ -58,8 +58,8 @@
                                 <input type="password" class="form-control input-sm" ng-model="autenticacion.password"
                                     placeholder="password" required="" />
                             </div>
-                            <button type="submit" ng-disabled="!loginUserForm.$valid" class="btn btn-xs btn-primary"
-                                ng-click="login()">Login
+                            <button type="submit" ng-disabled="!loginUserForm.$valid" class="btn btn-sm btn-info"
+                                ng-click="login()">Login <i class="fa fa-sign-in" aria-hidden="true"></i>
                             </button>
                         </form>
                     </div>
@@ -78,12 +78,39 @@
     </div><!-- /.container-fluid -->
 </nav>
 
-<div ng-show="galletainfo!=undefined && permiso" class="col-md-6 col-md-offset-3">
+<!--<div ng-show="galletainfo!=undefined && permiso" class="col-md-6 col-md-offset-3">
     <div class="panel panel-primary">
         <div class="mi-heading">
             <b>{{title}} <i class="fa fa-arrow-down" aria-hidden="true"></i></b>
         </div>
     </div>
+</div>-->
+
+<div ng-show="galletainfo!=undefined && permiso" class="col-md-12">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="input-group" style="margin-top: 7px">
+                <input type="search" class="form-control input-sm" placeholder="Buscar tarea" ng-model="Sbusqueda">
+                <span class="input-group-btn">
+                        <button class="btn btn-default btn-sm" type="button" ng-click="SuperB(Sbusqueda)"
+                                ng-disabled="loading" tooltip-placement="top" uib-tooltip="Buscar tarea"
+                                ng-disabled="loading"><i class="fa fa-search" aria-hidden="true"></i></button>
+                    </span>
+            </div>
+            <div data-ng-if="loading">
+                <img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif"/>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-md-offset-1">
+            <div class="panel panel-primary">
+                <div class="mi-heading">
+                    <b>{{title}} <i class="fa fa-arrow-down" aria-hidden="true"></i></b>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <!-- FOOTER -->

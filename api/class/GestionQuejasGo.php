@@ -97,28 +97,26 @@ class GestionQuejasGo
 		try {
 
 			//$data = json_decode(file_get_contents('php://input'), true);
-			ini_set('session.gc_maxlifetime', 3600); // 1 hour
-			session_set_cookie_params(3600);
-			session_start();
-			if (!$_SESSION) {
-				$response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
+            /*ini_set('session.gc_maxlifetime', 86400); // 1 day
+            session_set_cookie_params(86400);
+			session_start();*/
+            $login_gestion = $data['login_gestion'];
+            $id = $data['id'];
+			if (!$login_gestion) {
+                $res = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
 			} else {
-
-				$login_gestion = $_SESSION['login'];
-				$id = $data['id'];
 
 				$stmt = $this->_DB->prepare("SELECT en_gestion, asesor FROM quejasgo WHERE id = :id");
 				$stmt->execute(array(':id' => $id));
 				$response = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-				if ($response[0]['en_gestion'] == 0) {
-					//echo $login_gestion;exit();
+				if ($response[0]['asesor'] == '' && $response[0]['en_gestion'] == 0) {
 					$stmt = $this->_DB->prepare("UPDATE quejasgo SET en_gestion = 1, asesor = :login_gestion, fecha_marca = :fecha_marca WHERE id = :id");
 					$stmt->execute(array(':id' => $id, ':login_gestion' => $login_gestion, ':fecha_marca' => date('Y-m-d H:i:s')));
 					if ($stmt->rowCount() == 1) {
 						$res = array('state' => 1, 'msj' => 'Pedido ' . $response[0]['pedido'] . ' Ahora esta Bloqueado');
 					}
-				} elseif (($response[0]['en_gestion'] == 1) && ($response[0]['asesor'] == $login_gestion)) {
+				} elseif ((($response[0]['en_gestion'] == 1) && ($response[0]['asesor'] == $login_gestion)) || $login_gestion == 'cramiceb') {
 					$stmt = $this->_DB->prepare("UPDATE quejasgo SET en_gestion = 0, asesor = '' WHERE id = :id");
 					$stmt->execute(array(':id' => $id));
 					if ($stmt->rowCount() == 1) {

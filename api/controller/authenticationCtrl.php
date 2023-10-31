@@ -24,6 +24,12 @@ if (isset($data->method)) {
             $user = new authentication();
             $user->checkSession();
             break;
+        case 'SuperB':
+            require_once '../class/authentication.php';
+            $user = new authentication();
+            $res = $user->SuperB($data->data);
+            echo json_encode($res);
+            break;
 
         default:
             echo 'ninguna opción valida.';

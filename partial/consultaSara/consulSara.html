@@ -13,6 +13,9 @@
 <div class="panel-heading nav navbar-default">
     <ul class="nav navbar-nav navbar-left">
         <b><i class="fa fa-list-alt" aria-hidden="true"></i> Formulario de Consulta Ticket SARA</b>
+        <div class="col-md-2" data-ng-if="loading">
+            <img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif"/>
+        </div>
     </ul>
 </div>
 <!-- cuerpo de la página -->
@@ -27,11 +30,11 @@
                             <b>Buscar:</b>
 
                             <input style="width:200px" type="text"
-                                class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
-                                placeholder="Ingrese la tarea a buscar" ng-model="frmSara.tarea">
+                                   class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                   placeholder="Ingrese la tarea a buscar" ng-model="frmSara.tarea">
 
                             <button type="button" class="btn btn-default btn-xs" ng-click="buscarDataSara(frmSara)"
-                                ng-disabled="loading" title="Buscar Pedido">
+                                    ng-disabled="loading" title="Buscar Pedido">
                                 <i class="fa fa-search-plus" aria-hidden="true"></i>
                             </button>
                         </div>
@@ -39,9 +42,9 @@
                         <div class="col-xs-3">
                             <table class="table small table-striped table-hover table-bordered table-condensed">
                                 <thead>
-                                    <td colspan="5" style="text-align:center">
-                                        <b>Información Servicio</b>
-                                    </td>
+                                <td colspan="5" style="text-align:center">
+                                    <b>Información Servicio</b>
+                                </td>
                                 </thead>
                                 <tr>
                                     <td>
@@ -65,9 +68,9 @@
                             <table class="table small table-striped table-hover table-bordered table-condensed">
 
                                 <thead>
-                                    <td colspan="5" style="text-align:center">
-                                        <b>Tiempo en SARA</b>
-                                    </td>
+                                <td colspan="5" style="text-align:center">
+                                    <b>Tiempo en SARA</b>
+                                </td>
                                 </thead>
 
                                 <tr style="text-align:center;" height="163">

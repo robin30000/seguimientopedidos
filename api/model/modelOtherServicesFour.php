@@ -16,7 +16,7 @@ class modelOtherServicesFour
     public function UenCargada()
     {
         try {
-            session_start();
+
             $stmt = $this->_DB->query("SELECT DISTINCT uen FROM carga_agenda ORDER BY uen");
             $stmt->execute();
             if ($stmt->rowCount()) {
@@ -39,7 +39,7 @@ class modelOtherServicesFour
     public function gestionComercial()
     {
         try {
-            session_start();
+
             $stmt = $this->_DB->query("SELECT DISTINCT GESTION
                                                 FROM procesos_comercial
                                                 ORDER BY GESTION");
@@ -71,7 +71,7 @@ class modelOtherServicesFour
     public function ResponsablePendiente($data)
     {
         try {
-            session_start();
+
             echo 'No esxiste';
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -83,7 +83,7 @@ class modelOtherServicesFour
     public function listaCausaRaiz($data)
     {
         try {
-            session_start();
+
             echo 'No esxiste';
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -106,7 +106,7 @@ class modelOtherServicesFour
     public function pendiBrutal()
     {
         try {
-            session_start();
+
             $fecha = date("Y-m-d");
 
             $stmt = $this->_DB->prepare("select distinct pro.PEDIDO_CRM,
@@ -164,7 +164,7 @@ class modelOtherServicesFour
     public function clasificacionComercial($data)
     {
         try {
-            session_start();
+
             $stmt = $this->_DB->query("SELECT DISTINCT CLASIFICACION
                                                 FROM procesos_comercial
                                                 WHERE gestion = :gestion
@@ -185,7 +185,7 @@ class modelOtherServicesFour
     public function buscaregistros($data)
     {
         try {
-            session_start();
+
             $pedido = $data->pedido;
             $fecha  = $data->fecha;
 
@@ -288,7 +288,7 @@ class modelOtherServicesFour
     public function guardarRecogerEquipos($data)
     {
         try {
-            session_start();
+     
             $datos = $data;
 
             $total = count($datos);

@@ -1,6 +1,7 @@
 <?php
 require_once '../class/conection.php';
-
+//error_reporting(E_ALL);
+//ini_set('display_errors', 1);
 class soporteGpon
 {
 
@@ -448,18 +449,16 @@ class soporteGpon
     public function csvRegistrosSoporteGpon($params)
     {
 
+        ini_set('memory_limit', '256M');
+
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();
-            $usuarioid = $_SESSION['login'];
             $datos = $params['datos'];
             $fechaini = $datos['fechaini'];
             $fechafin = $datos['fechafin'];
 
             if ($fechaini == "" && $fechafin == "") {
-                $fechaini = date("Y") . "-" . date("m") . "-" . date("d");
-                $fechafin = date("Y") . "-" . date("m") . "-" . date("d");
+                $fechaini = date("Y-m-d");
+                $fechafin = date("Y-m-d");
             }
 
             $query = "SELECT tarea, arpon, nap, hilo, port_internet_1, port_internet_2, port_internet_3, port_internet_4, port_television_1, port_television_2, port_television_3, 

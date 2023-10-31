@@ -1,8 +1,8 @@
 <?php
 
 require_once '../class/conection.php';
-//error_reporting(E_ALL);
-//ini_set('display_errors', 1);
+error_reporting(0);
+ini_set('display_errors', 0);
 
 
 class authentication
@@ -24,7 +24,7 @@ class authentication
         $aplicacion = "Seguimiento";
 
         try {
-            $stmt = $this->_DB->prepare("SELECT id, login, nombre, identificacion, perfil FROM usuarios WHERE login = ? AND password = ?");
+            $stmt = $this->_DB->prepare("SELECT id, login, nombre, identificacion, perfil FROM usuarios WHERE login = ? AND password = ? AND estado = 'Activo'");
             $stmt->bindParam(1, $data->username, PDO::PARAM_STR);
             $stmt->bindParam(2, $data->password, PDO::PARAM_STR);
             $stmt->execute();
@@ -87,13 +87,13 @@ class authentication
                 $stmtIngreso->execute([':fechaini' => "$today 00:00:00", ':fechafin' => "$today 23:59:59", ':usuario_id' => $resLogin->login]);
 
                 if ($stmtIngreso->rowCount()) {
-                    $resStmtIngreso = $stmtIngreso->fetch(PDO::FETCH_OBJ);
+                    /*$resStmtIngreso = $stmtIngreso->fetch(PDO::FETCH_OBJ);
                     $stmt = $this->_DB->prepare("update registro_ingresoSeguimiento set status='logged in', ingresos=ingresos+1 where id=?");
                     $stmt->bindParam(1, $resLogin->id, PDO::PARAM_INT);
-                    $stmt->execute();
+                    $stmt->execute();*/
                 } else {
 
-                    $otherStmt = $this->_DB->prepare("insert into registro_ingresoSeguimiento (idusuario,status,fecha_ingreso, ip, pc, aplicacion) " .
+                    /*$otherStmt = $this->_DB->prepare("insert into registro_ingresoSeguimiento (idusuario,status,fecha_ingreso, ip, pc, aplicacion) " .
                         "values(:usuario_id,'logged in',:fechaIngreso, :ip, :usuarioPc, :aplicacion)");
                     $otherStmt->execute([
                         ':usuario_id' => $resLogin->login,
@@ -101,7 +101,7 @@ class authentication
                         ':ip' => $usuarioIp,
                         ':usuarioPc' => $usuarioPc,
                         ':aplicacion' => $aplicacion,
-                    ]);
+                    ]);*/
                 }
             } else {
                 $response = array('state' => 0, 'msj' => 'Usuario y/o contraseña no validos');
@@ -171,6 +171,99 @@ class authentication
         echo json_encode($response);
     }
 
+    public function SuperB($data){
+        try {
+
+            $this->_DB->beginTransaction();
+            $response = [];
+
+            $stmt = $this->_DB->prepare("select 'Contingencia' as modulo,
+                                                               observacion,
+                                                               logincontingencia,
+                                                               horagestion as fecha_ingreso,
+                                                               horacontingencia as fecha_fin,
+                                                               observacion as observacion,
+                                                               observContingencia as observacion_asesor,
+                                                               case engestion when 1 then 'Finalizado' else 'Sin gestión' end gestion
+                                                        from contingencias
+                                                        where tarea = :tarea");
+            $stmt->execute(array(':tarea' => $data));
+
+            if ($stmt->rowCount() > 0){
+                array_push($response, $stmt->fetchAll(PDO::FETCH_ASSOC));
+            }
+
+            $stmt = $this->_DB->prepare("select 'ETP' as modulo,
+                                                       login_gestion as logincontingencia,
+                                                       fecha_crea as fecha_ingreso,
+                                                       fecha_gestion as fecha_fin,
+                                                       observacion_terreno as observacion,
+                                                       observacionesGestion as observacion_asesor,
+                                                       case status_soporte when '1' then 'En gestión' when '0' then 'Sin gestión' else 'Finalizado' end gestion
+                                                from etp
+                                                where tarea = :tarea");
+            $stmt->execute(array(':tarea' => $data));
+
+            if ($stmt->rowCount() > 0){
+                array_push($response, $stmt->fetchAll(PDO::FETCH_ASSOC));
+            }
+
+            $stmt = $this->_DB->prepare("select 'Soporte GPON' as modulo,
+                                                       login as logincontingencia,
+                                                       fecha_creado as fecha_ingreso,
+                                                       fecha_respuesta as fecha_fin,
+                                                       observacion_terreno as observacion,
+                                                       observacion as observacion_asesor,
+                                                       case status_soporte when '1' then 'En gestión' when '0' then 'Sin gestión' else 'Finalizado' end gestion
+                                                from soporte_gpon
+                                                where tarea = :tarea");
+            $stmt->execute(array(':tarea' => $data));
+
+            if ($stmt->rowCount() > 0){
+                array_push($response, $stmt->fetchAll(PDO::FETCH_ASSOC));
+            }
+
+            $stmt = $this->_DB->prepare("select 'TOIP' as modulo,
+                                                                   login_gestion as logincontingencia,
+                                                                   hora_ingreso as fecha_ingreso,
+                                                                   hora_gestion as fecha_fin,
+                                                                   'N/A' as observacion,
+                                                                   observacion as observacion_asesor,
+                                                                   case en_gestion when '1' then 'En gestión' when '0' then 'Sin gestión' else 'Finalizado' end gestion
+                                                            from activacion_toip
+                                                            where tarea = :tarea");
+            $stmt->execute(array(':tarea' => $data));
+
+            if ($stmt->rowCount() > 0){
+                array_push($response, $stmt->fetchAll(PDO::FETCH_ASSOC));
+            }
+
+            $stmt = $this->_DB->prepare("select 'Mesas nacionales' as modulo,
+                                                                   login_gestion as logincontingencia,
+                                                                   hora_ingreso as fecha_ingreso,
+                                                                   hora_gestion as fecha_fin,
+                                                                   observacion_tecnico as observacion,
+                                                                   observacion_gestion as observacion_asesor,
+                                                                   case estado when 'Gestionado' then 'Finalizado' else estado end gestion                                                            
+                                                            from mesas_nacionales
+                                                            where tarea = :tarea");
+            $stmt->execute(array(':tarea' => $data));
+
+            if ($stmt->rowCount() > 0){
+                array_push($response, $stmt->fetchAll(PDO::FETCH_ASSOC));
+            }
+
+            if ($response){
+                $res = array('state' => true, 'data' => $response);
+            }else{
+                $res = array('state' => false, 'msj' => 'No se encontraron registros');
+            }
+
+            return $res;
+        }catch (PDOException $e){
+            var_dump($e->getMessage());
+        }
+    }
     private function getMenu($perfil)
     {
         try {

@@ -2221,7 +2221,8 @@ app.service("LoadingInterceptor", [
     },
 ]);
 
-app.controller("loginCtrl", function ($scope, $rootScope, $location, $cookies, services) {
+app.controller("loginCtrl",
+    function ($scope, $rootScope, $location, $cookies, services) {
     $scope.login = function () {
         services.loginUser($scope.autenticacion).then(complete).catch(failed);
 

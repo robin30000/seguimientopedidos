@@ -1,0 +1,64 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <b> <i class="fa fa-bars" aria-hidden="true"></i> Conteo consultas</b>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <input style="width: 130px" placeholder="Fecha" type="text" name="fecha" id="fecha"
+                                   class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="fecha"
+                                   datetime-picker="" date-format="yyyy-MM-dd" date-only autocomplete="off" autocomplete="off"/>
+                            <i class="fa fa-calendar fa-fw"></i>
+                        </li>
+                        <li>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default btn-xs" ng-click="buscarRegistros(fecha)"
+                                        ng-disabled="loading" tooltip-placement="top" uib-tooltip="Buscar">
+                                    <i class="fa fa-search-plus" aria-hidden="true"> </i>
+                                </button>
+                            </div>
+                            &nbsp;
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="panel-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <table class="table small table-condensed table-bordered table-hover">
+                                    <thead class="table-header">
+                                    <tr>
+                                        <th>Descripción</th>
+                                        <th>Fecha</th>
+                                        <th>Total</th>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="d in contador">
+                                        <td>{{d.Modulo}}</td>
+                                        <td>{{d.Fecha}}</td>
+                                        <td>{{d.Contador}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-sm-6">
+                                <canvas id="myChart" width="400" height="100"></canvas>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!--Container información asesor-->
+            </div>
+            <!--Container global-->
+        </div>
+        <!--panel body-->
+    </div>
+    <!--panel default-->
+</div>
+

@@ -1,0 +1,131 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="col-md-2">
+                <select class="form-control input-sm" name="producto20"
+                        id="producto20" ng-model="tiempo.producto" data-placeholder="Seleccione los producto...">
+                    <option value="" selected>Todos</option>
+                    <option value="Internet+Toip">Internet+Toip</option>
+                    <option value="TV">TV</option>
+                </select>
+            </div>
+            <br class="d-sm-none">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <input  type="text" name="fechaini" id="fechaini" class="form-control input-sm"
+                            ng-model="tiempo.fechaini"
+                            placeholder="Fecha Inicial" datetime-picker="" date-format="yyyy-MM-dd" date-only autocomplete="off">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default btn-sm" type="button" ><i class="fa fa-calendar" aria-hidden="true"></i></button>
+                    </span>
+                </div>
+            </div>
+            <br class="d-sm-none">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <input  placeholder="Fecha Final" type="text" name="fechafin" id="fechafin"
+                            class="form-control input-sm" ng-model="tiempo.fechafin"
+                            datetime-picker="" date-format="yyyy-MM-dd" date-only autocomplete="off" autocomplete="off">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default btn-sm" type="button" ><i class="fa fa-calendar" aria-hidden="true"></i></button>
+                    </span>
+                </div>
+            </div>
+            <br class="d-sm-none">
+            <div class="col-md-1">
+                <!--<button type="button" class="btn btn-default btn-sm" ng-click="buscar(tiempo)"
+                        ng-disabled="loading" tooltip-placement="top" uib-tooltip="Buscar" ng-disabled="loading">
+                    <i class="fa fa-search-plus" aria-hidden="true"> </i>
+                </button>-->
+
+
+                <i class="fa fa-search btn" aria-hidden="true" ng-click="buscar(tiempo)"
+                   ng-disabled="loading" tooltip-placement="top" uib-tooltip="Buscar" ng-disabled="loading"> </i>
+            </div>
+            <div class="col-md-1 col-xs-1 ">
+                <div data-ng-if="loading">
+                    <img title="Esperando respuesta" data-toggle="tooltip" data-placement="top" src="img/loader.gif" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <!--<div class="panel-heading">
+                    <b><i class="fa fa-bar-chart" aria-hidden="true"></i> Tiempo en cola</b>
+
+
+                </div>-->
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <canvas id="myChart" width="400" height="200"></canvas>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <!--<div class="panel-heading">
+                    <b><i class="fa fa-bars" aria-hidden="true"></i> Tiempo atención</b>
+                </div>-->
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <canvas id="myChartAtencion" width="400" height="200"></canvas>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <!--<div class="panel-heading">
+                    <b><i class="fa fa-bars" aria-hidden="true"></i> Tiempo en sistema</b>
+                </div>-->
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <canvas id="myChartSistema" width="400" height="160"></canvas>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <!--<div class="panel-heading">
+                    <b><i class="fa fa-bars" aria-hidden="true"></i> Tiempos unificados</b>
+                </div>-->
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <canvas id="robChart" width="400" height="160"></canvas>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <canvas id="barLineChart"  width="400" height="160"></canvas>
+        </div>
+
+    </div>
+</div>
+<br><br><br>

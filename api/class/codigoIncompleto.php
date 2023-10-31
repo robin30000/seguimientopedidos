@@ -215,7 +215,7 @@ class codigoIncompleto
                 $fechafin = date('Y-m-d');
             }
 
-            $query = "SELECT id_codigo_incompleto, tarea, numero_contacto, nombre_contacto, unepedido, tasktypecategory, unemunicipio, uneproductos, engineer_id, engineer_name, mobile_phone, fecha_creado, fecha_respuesta, observacion, respuesta_gestion 
+            $query = "SELECT id_codigo_incompleto, tarea, numero_contacto, nombre_contacto, unepedido, tasktypecategory, unemunicipio, uneproductos, engineer_id, engineer_name, mobile_phone, fecha_creado, fecha_respuesta, observacion, respuesta_gestion, codigo 
             FROM gestion_codigo_incompleto
             WHERE fecha_creado BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59'
             ORDER BY fecha_creado DESC";

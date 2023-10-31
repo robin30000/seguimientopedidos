@@ -1,0 +1,605 @@
+<div class="container-fluid">
+    <br>
+    <br>
+    <br>
+    <div class="row" style="display: inline-block;">
+        <div class="col-sm-2">
+            <div class="input-group">
+                <input type="text" class="form-control input-sm" ng-model="tiempo.fecha" placeholder="Fecha"
+                       datetime-picker="" date-format="yyyy-MM-dd" date-only autocomplete="off">
+                <span class="input-group-btn">
+                    <button class="btn btn-default btn-sm" type="button"><i class="fa fa-calendar"
+                                                                            aria-hidden="true"></i></button>
+                </span>
+            </div>
+        </div>
+        <div class="col-sm-1">
+            <i class="fa fa-search btn" aria-hidden="true" ng-click="buscar(tiempo)" ng-disabled="loading"
+               tooltip-placement="right" uib-tooltip="Buscar" ng-disabled="loading"> </i>
+        </div>
+        <div class="col-sm-1" *ngIf="loading">
+            <div data-ng-if="loading">
+                <img title="Esperando respuesta" data-toggle="tooltip" data-placement="top" src="img/loader.gif"/>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span><b>Gráfico Toip</b></span>
+                </div>
+
+
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <canvas id="myChart" width="400" height="200"></canvas>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading" style="overflow: auto;">
+                    <span><b>Gráfico aprovisionado por contingencia</b></span>
+                </div>
+
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <canvas id="myChartTiempo" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                    <div class="page-header text-center" ng-if="mensaje">
+                        <h3>{{mensaje}}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading nav navbar-default">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <b>Consolidados por hora </b>
+                        </div>
+
+                        <div class="col-sm-8">
+                            <ul class="nav navbar-nav navbar-right" style="width: 100%;
+                            display: flex;
+                            justify-content: flex-end;">
+                                <li>
+                                    <div class="col-sm-3">
+                                        <div class="form-floating">
+                                            <select class="btn btn-default btn-xs grupo-select"
+                                                    ng-model="tiempo.estado">
+                                                <option value="" selected>Seleccione</option>
+                                                <option value="ALL">Todos</option>
+                                                <option value="Aprovisionamiento automático">Aprovisionamiento automático</option>
+                                                <option value="Aprovisionado por contingencia">Aprovisionado por contingencia</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <div class="col-sm-1">
+                                        <button type="button" class="btn btn-default btn-xs"
+                                                ng-click="consultaTabla(tiempo)" tooltip-placement="top"
+                                                uib-tooltip="Consultar" ng-disabled="loading">
+                                            <i class="fa fa-search" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table small table-striped table-hover table-bordered table-condensed">
+                        <thead class="table-header">
+                        <tr>
+                            <th class="text-center">Usuario</th>
+                            <th class="text-center">TOTAL</th>
+
+                            <th class="text-center">06 am</th>
+                            <th class="text-center">07 am</th>
+                            <th class="text-center">08 am</th>
+                            <th class="text-center">09 am</th>
+                            <th class="text-center">10 am</th>
+                            <th class="text-center">11 am</th>
+                            <th class="text-center">12 am</th>
+                            <th class="text-center">01 pm</th>
+                            <th class="text-center">02 pm</th>
+                            <th class="text-center">03 pm</th>
+                            <th class="text-center">04 pm</th>
+                            <th class="text-center">05 pm</th>
+                            <th class="text-center">06 pm</th>
+                            <th class="text-center">07 pm</th>
+                            <th class="text-center">08 pm</th>
+                            <th class="text-center">09 pm</th>
+                            <th class="text-center">Más 09 pm</th>
+
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr ng-repeat="datar in tiempoCompleto">
+                            <td class="text-center">
+                                <span>{{datar.USUARIO}}</span>
+                            </td>
+                            <td style="font-weight: bolder" class="text-center">
+                                {{datar.CANTIDAD}}
+                            </td>
+                            <td class="text-center">{{datar.am06}}</td>
+                            <td class="text-center">{{datar.am07}}</td>
+                            <td class="text-center">{{datar.am08}}</td>
+                            <td class="text-center">{{datar.am09}}</td>
+                            <td class="text-center">{{datar.am10}}</td>
+                            <td class="text-center">{{datar.am11}}</td>
+                            <td class="text-center">{{datar.am12}}</td>
+                            <td class="text-center">{{datar.pm01}}</td>
+                            <td class="text-center">{{datar.pm02}}</td>
+                            <td class="text-center">{{datar.pm03}}</td>
+                            <td class="text-center">{{datar.pm04}}</td>
+                            <td class="text-center">{{datar.pm05}}</td>
+                            <td class="text-center">{{datar.pm06}}</td>
+                            <td class="text-center">{{datar.pm07}}</td>
+                            <td class="text-center">{{datar.pm08}}</td>
+                            <td class="text-center">{{datar.pm09}}</td>
+                            <td class="text-center">{{datar.Masde09}}</td>
+
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <th class="text-center">TOTALES</th>
+                            <th class="text-center">{{totalesT}}</th>
+                            <th class="text-center">{{total06T}}</th>
+                            <th class="text-center">{{total07T}}</th>
+                            <th class="text-center">{{total08T}}</th>
+                            <th class="text-center">{{total09T}}</th>
+                            <th class="text-center">{{total10T}}</th>
+                            <th class="text-center">{{total11T}}</th>
+                            <th class="text-center">{{total12T}}</th>
+                            <th class="text-center">{{total13T}}</th>
+                            <th class="text-center">{{total14T}}</th>
+                            <th class="text-center">{{total15T}}</th>
+                            <th class="text-center">{{total16T}}</th>
+                            <th class="text-center">{{total17T}}</th>
+                            <th class="text-center">{{total18T}}</th>
+                            <th class="text-center">{{total19T}}</th>
+                            <th class="text-center">{{total20T}}</th>
+                            <th class="text-center">{{total21T}}</th>
+                            <th class="text-center">{{total22T}}</th>
+
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading nav navbar-default">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <b>Consolidado últimos 15 dias </b>
+                        </div>
+
+                        <!--<div class="col-sm-8">
+                            <ul class="nav navbar-nav navbar-right" style="width: 100%;
+                            display: flex;
+                            justify-content: flex-end;">
+                                <li>
+                                    <div class="col-sm-2">
+                                        <div class="form-floating">
+                                            <select class="btn btn-default btn-xs grupo-select"
+                                                    ng-model="tiempo.estado">
+                                                <option value="" selected>Seleccione</option>
+                                                <option value="ALL">Todos</option>
+                                                <option value="SI">Funciono</option>
+                                                <option value="NO">No funciono</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                </li>
+                                &lt;!&ndash;<li ng-if="tiempo.estado =='NO'">
+                                    <div class="col-sm-3">
+                                        <div class="form-floating">
+                                            <select class="btn btn-default btn-xs grupo-select" ng-model="tiempo.subtipificacion">
+                                                <option value="" selected>Seleccione</option>
+                                                <option value="Cm_offline">Cm_offline</option>
+                                                <option value="Se requiere reiniciar">Se requiere reiniciar</option>
+                                                <option value="Garantía instalación">Garantía instalación</option>
+                                                <option value="Numero mal creado/No creado ims">Numero mal creado/No creado ims</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </li>&ndash;&gt;
+                                <li>
+                                    <div class="col-sm-1">
+                                        <button type="button" class="btn btn-default btn-xs"
+                                                ng-click="consultaTabla(tiempo)" tooltip-placement="top"
+                                                uib-tooltip="Consultar" ng-disabled="loading">
+                                            <i class="fa fa-search" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                            </ul>
+                        </div>-->
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table small table-striped table-hover table-bordered table-condensed">
+                        <thead class="table-header">
+                        <tr>
+                            <th class="text-center">Fecha</th>
+                            <th class="text-center">0-1 Hora</th>
+                            <th class="text-center">1-2 Hora</th>
+                            <th class="text-center">2-3 Hora</th>
+                            <th class="text-center">3-4 Hora</th>
+                            <th class="text-center">4-5 Hora</th>
+                            <th class="text-center">5-6 Hora</th>
+                            <th class="text-center">6-7 Hora</th>
+                            <th class="text-center">7-8 Hora</th>
+                            <th class="text-center">8-9 Hora</th>
+                            <th class="text-center">9-10 Hora</th>
+                            <th class="text-center">mas de 10 Horas</th>
+
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr ng-repeat="datar in registro_15">
+
+                            <td class="text-center">
+                                <span>{{datar.fecha}}</span>
+                            </td>
+                            <td class="text-center">{{datar[0]}}</td>
+                            <td class="text-center">{{datar[1]}}</td>
+                            <td class="text-center">{{datar[2]}}</td>
+                            <td class="text-center">{{datar[3]}}</td>
+                            <td class="text-center">{{datar[4]}}</td>
+                            <td class="text-center">{{datar[5]}}</td>
+                            <td class="text-center">{{datar[6]}}</td>
+                            <td class="text-center">{{datar[7]}}</td>
+                            <td class="text-center">{{datar[8]}}</td>
+                            <td class="text-center">{{datar[9]}}</td>
+                            <td class="text-center">{{datar[10]}}</td>
+                            <!--<td style="font-weight: bolder" class="text-center">
+                                &lt;!&ndash;{{datar[0] + datar[1] + datar[2] + datar[3] + datar[4] + datar[5] + datar[6] + datar[7] + datar[8] + datar[9] + datar[10]}}&ndash;&gt;
+                                &lt;!&ndash;{{parseInt(datar[0]) + parseInt(datar[1]) + parseInt(datar[2]) + parseInt(datar[3]) + parseInt(datar[4]) + parseInt(datar[5]) + parseInt(datar[6]) + parseInt(datar[7]) + parseInt(datar[8]) + parseInt(datar[9]) + parseInt(datar[10])}}&ndash;&gt;
+                                {{parseInt(datar[0])}}
+
+                            </td>-->
+
+
+                        </tr>
+                        </tbody>
+                        <!--<tfoot>
+                        <tr>
+                            <th class="text-center">TOTALES</th>
+                            <th class="text-center">{{totalesT}}</th>
+                            <th class="text-center">{{total06T}}</th>
+                            <th class="text-center">{{total07T}}</th>
+                            <th class="text-center">{{total08T}}</th>
+                            <th class="text-center">{{total09T}}</th>
+                            <th class="text-center">{{total10T}}</th>
+                            <th class="text-center">{{total11T}}</th>
+                            <th class="text-center">{{total12T}}</th>
+                            <th class="text-center">{{total13T}}</th>
+                            <th class="text-center">{{total14T}}</th>
+                            <th class="text-center">{{total15T}}</th>
+
+                        </tr>
+                        </tfoot>-->
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading nav navbar-default">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <b>Consolidado General </b>
+                        </div>
+
+                        <!--<div class="col-sm-8">
+                            <ul class="nav navbar-nav navbar-right" style="width: 100%;
+                            display: flex;
+                            justify-content: flex-end;">
+                                <li>
+                                    <div class="col-sm-2">
+                                        <div class="form-floating">
+                                            <select class="btn btn-default btn-xs grupo-select"
+                                                    ng-model="tiempo.estado">
+                                                <option value="" selected>Seleccione</option>
+                                                <option value="ALL">Todos</option>
+                                                <option value="SI">Funciono</option>
+                                                <option value="NO">No funciono</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                </li>
+                                &lt;!&ndash;<li ng-if="tiempo.estado =='NO'">
+                                    <div class="col-sm-3">
+                                        <div class="form-floating">
+                                            <select class="btn btn-default btn-xs grupo-select" ng-model="tiempo.subtipificacion">
+                                                <option value="" selected>Seleccione</option>
+                                                <option value="Cm_offline">Cm_offline</option>
+                                                <option value="Se requiere reiniciar">Se requiere reiniciar</option>
+                                                <option value="Garantía instalación">Garantía instalación</option>
+                                                <option value="Numero mal creado/No creado ims">Numero mal creado/No creado ims</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </li>&ndash;&gt;
+                                <li>
+                                    <div class="col-sm-1">
+                                        <button type="button" class="btn btn-default btn-xs"
+                                                ng-click="consultaTabla(tiempo)" tooltip-placement="top"
+                                                uib-tooltip="Consultar" ng-disabled="loading">
+                                            <i class="fa fa-search" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                            </ul>
+                        </div>-->
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table small table-striped table-hover table-bordered table-condensed">
+                        <thead class="table-header">
+                        <tr>
+                            <th class="text-center">Fecha</th>
+                            <th class="text-center">0-1 Hora</th>
+                            <th class="text-center">1-2 Hora</th>
+                            <th class="text-center">2-3 Hora</th>
+                            <th class="text-center">3-4 Hora</th>
+                            <th class="text-center">4-5 Hora</th>
+                            <th class="text-center">5-6 Hora</th>
+                            <th class="text-center">6-7 Hora</th>
+                            <th class="text-center">7-8 Hora</th>
+                            <th class="text-center">8-9 Hora</th>
+                            <th class="text-center">9-10 Hora</th>
+                            <th class="text-center">mas de 10 Horas</th>
+
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr ng-repeat="datar in consolidado">
+
+                            <td class="text-center">
+                                <span>{{datar.tipificacion}}</span>
+                            </td>
+                            <td class="text-center">{{datar[0]}}</td>
+                            <td class="text-center">{{datar[1]}}</td>
+                            <td class="text-center">{{datar[2]}}</td>
+                            <td class="text-center">{{datar[3]}}</td>
+                            <td class="text-center">{{datar[4]}}</td>
+                            <td class="text-center">{{datar[5]}}</td>
+                            <td class="text-center">{{datar[6]}}</td>
+                            <td class="text-center">{{datar[7]}}</td>
+                            <td class="text-center">{{datar[8]}}</td>
+                            <td class="text-center">{{datar[9]}}</td>
+                            <td class="text-center">{{datar[10]}}</td>
+
+                        </tr>
+                        <tr>
+                            <th class="text-center">Totales</th>
+                            <td class="text-center" ng-repeat="(clave, valor) in consolidadoPorDiaYColumna">
+                                {{ consolidadoPorDiaYColumna[clave] }}
+                            </td>
+                        </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading nav navbar-default">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <b>Consolidado aprovisionado por contingencia </b>
+                        </div>
+
+                        <!--<div class="col-sm-8">
+                            <ul class="nav navbar-nav navbar-right" style="width: 100%;
+                            display: flex;
+                            justify-content: flex-end;">
+                                <li>
+                                    <div class="col-sm-2">
+                                        <div class="form-floating">
+                                            <select class="btn btn-default btn-xs grupo-select"
+                                                    ng-model="tiempo.estado">
+                                                <option value="" selected>Seleccione</option>
+                                                <option value="ALL">Todos</option>
+                                                <option value="SI">Funciono</option>
+                                                <option value="NO">No funciono</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                </li>
+                                &lt;!&ndash;<li ng-if="tiempo.estado =='NO'">
+                                    <div class="col-sm-3">
+                                        <div class="form-floating">
+                                            <select class="btn btn-default btn-xs grupo-select" ng-model="tiempo.subtipificacion">
+                                                <option value="" selected>Seleccione</option>
+                                                <option value="Cm_offline">Cm_offline</option>
+                                                <option value="Se requiere reiniciar">Se requiere reiniciar</option>
+                                                <option value="Garantía instalación">Garantía instalación</option>
+                                                <option value="Numero mal creado/No creado ims">Numero mal creado/No creado ims</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </li>&ndash;&gt;
+                                <li>
+                                    <div class="col-sm-1">
+                                        <button type="button" class="btn btn-default btn-xs"
+                                                ng-click="consultaTabla(tiempo)" tooltip-placement="top"
+                                                uib-tooltip="Consultar" ng-disabled="loading">
+                                            <i class="fa fa-search" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                            </ul>
+                        </div>-->
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table small table-striped table-hover table-bordered table-condensed">
+                        <thead class="table-header">
+                        <tr>
+                            <th class="text-center">Fecha</th>
+                            <th class="text-center">0-1 Hora</th>
+                            <th class="text-center">1-2 Hora</th>
+                            <th class="text-center">2-3 Hora</th>
+                            <th class="text-center">3-4 Hora</th>
+                            <th class="text-center">4-5 Hora</th>
+                            <th class="text-center">5-6 Hora</th>
+                            <th class="text-center">6-7 Hora</th>
+                            <th class="text-center">7-8 Hora</th>
+                            <th class="text-center">8-9 Hora</th>
+                            <th class="text-center">9-10 Hora</th>
+                            <th class="text-center">mas de 10 Horas</th>
+
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr ng-repeat="datar in detalles_contingencias">
+
+                            <td class="text-center">
+                                <span>{{datar.subtipificacion}}</span>
+                            </td>
+                            <td class="text-center">{{datar[0]}}</td>
+                            <td class="text-center">{{datar[1]}}</td>
+                            <td class="text-center">{{datar[2]}}</td>
+                            <td class="text-center">{{datar[3]}}</td>
+                            <td class="text-center">{{datar[4]}}</td>
+                            <td class="text-center">{{datar[5]}}</td>
+                            <td class="text-center">{{datar[6]}}</td>
+                            <td class="text-center">{{datar[7]}}</td>
+                            <td class="text-center">{{datar[8]}}</td>
+                            <td class="text-center">{{datar[9]}}</td>
+                            <td class="text-center">{{datar[10]}}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-center">Totales</th>
+                            <td class="text-center" ng-repeat="(clave, valor) in consolidadoPorDia">
+                                {{ consolidadoPorDia[clave] }}
+                            </td>
+                        </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading nav navbar-default">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <b>Detalles aprovisionado por contingencia </b>
+                        </div>
+
+                        <!--<div class="col-sm-8">
+                            <ul class="nav navbar-nav navbar-right" style="width: 100%;
+                            display: flex;
+                            justify-content: flex-end;">
+                                <li>
+                                    <div class="col-sm-2">
+                                        <div class="form-floating">
+                                            <select class="btn btn-default btn-xs grupo-select"
+                                                    ng-model="tiempo.estado">
+                                                <option value="" selected>Seleccione</option>
+                                                <option value="ALL">Todos</option>
+                                                <option value="SI">Funciono</option>
+                                                <option value="NO">No funciono</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                </li>
+                                &lt;!&ndash;<li ng-if="tiempo.estado =='NO'">
+                                    <div class="col-sm-3">
+                                        <div class="form-floating">
+                                            <select class="btn btn-default btn-xs grupo-select" ng-model="tiempo.subtipificacion">
+                                                <option value="" selected>Seleccione</option>
+                                                <option value="Cm_offline">Cm_offline</option>
+                                                <option value="Se requiere reiniciar">Se requiere reiniciar</option>
+                                                <option value="Garantía instalación">Garantía instalación</option>
+                                                <option value="Numero mal creado/No creado ims">Numero mal creado/No creado ims</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </li>&ndash;&gt;
+                                <li>
+                                    <div class="col-sm-1">
+                                        <button type="button" class="btn btn-default btn-xs"
+                                                ng-click="consultaTabla(tiempo)" tooltip-placement="top"
+                                                uib-tooltip="Consultar" ng-disabled="loading">
+                                            <i class="fa fa-search" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                            </ul>
+                        </div>-->
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table small table-striped table-hover table-bordered table-condensed">
+                        <thead class="table-header">
+                        <tr>
+                            <th class="text-center">Subtipificacion</th>
+                            <th class="text-center">Cantidad</th>
+
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr ng-repeat="datar in data">
+
+                            <td class="text-center">
+                                <span>{{datar.subtipificacion}}</span>
+                            </td>
+                            <td class="text-center">{{datar.count}}</td>
+
+
+                        </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br><br><br>

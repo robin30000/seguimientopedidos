@@ -1,7 +1,9 @@
 <?php
 
 require_once '../class/conection.php';
-ini_set('display_errors', 0);
+
+error_reporting(1);
+ini_set('display_errors', E_ALL);
 
 /* ini_set('session.gc_maxlifetime', 3600); // 1 hour
 session_set_cookie_params(3600); */
@@ -13,6 +15,100 @@ class Contingencia
     public function __construct()
     {
         $this->_DB = new Conection();
+    }
+
+    public function savecontingencia($data)
+    {
+
+        try {
+
+            $pedido          = $data['pedido'];
+            $producto        = $data['producto'];
+            $uen             = $data['uen'];
+            $proceso         = $data['proceso'];
+            $ciudad          = $data['ciudad'];
+            $tecnologia      = $data['tecnologia'];
+            $contrato        = $data['contrato'];
+            $accion          = $data['accion'] ?? '';
+            $motivo          = $data['motivo'];
+            $perfil          = $data['perfil'];
+            $tipoEquipo      = $data['tipoEquipo'];
+            $remite          = $data['remite'];
+            $observacion     = $data['observacion'];
+            $login           = $data['usuario_guarda'];
+            $paquetes        = $data['paquetes'] ?? '';
+            $macSale         = $data['macSale'];
+            $macEntra        = $data['macEntra'];
+            $tipoproducto    = $data['producto'];
+            $grupo           = ($tipoproducto == 'Internet' || $tipoproducto == 'ToIP' || $tipoproducto == 'Internet+Toip') ? 'INTER' : 'TV';
+            $nuevaHora       = date('Y-m-d H:i:s');
+            $idUsuario       = $data['id'];
+            $uneSourceSystem = $data['uneSourceSystem'];
+            $tarea           = $data['tarea'];
+
+            if ($paquetes != '') {
+                $tam          = count($paquetes);
+                $paqueteconca = "";
+                for ($i = 0; $i < $tam; $i++) {
+                    $paqueteconca = $paqueteconca . $paquetes[$i] . "/";
+                }
+            }
+
+            $stmt = $this->_DB->prepare("SELECT identificacion FROM usuarios WHERE id = :id");
+            $stmt->execute([':id' => $idUsuario]);
+            $id_usuario = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $idTerreno  = $id_usuario[0]['identificacion'] ?? '';
+
+            $stmt = $this->_DB->prepare("SELECT * FROM contingencias WHERE pedido= :pedido AND producto =:producto 
+                                               AND FINALIZADO IS NULL AND ACEPTA IS NULL AND TIPIFICACION IS NULL AND ACEPTAPORTAFOLIO IS NULL");
+            $stmt->execute([':pedido' => $pedido, ':producto' => $producto]);
+
+            if ($stmt->rowCount()) {
+                $response = ['state' => false, 'msj' => 'Ya se encuentra esta tarea en gestión'];
+            } else {
+                $stmt = $this->_DB->prepare("INSERT INTO contingencias (accion, ciudad, macEntra, macSale, motivo,
+                                                       observacion, paquetes, pedido, proceso, producto,
+                                                       remite, tecnologia, tipoEquipo, uen, contrato, perfil, grupo, logindepacho, id_terreno, horagestion, engestion, uneSourceSystem, tarea)
+                                                    values (:accion, :ciudad, :macEntra, :macSale, :motivo,
+                                                            :observacion, :paqueteconca, :pedido, :proceso, :producto,
+                                                            :remite, :tecnologia, :tipoEquipo, :uen, :contrato, :perfil, :grupo, :login, :idTerreno, :nuevaHora,0, :uneSourceSystem, :tarea)");
+                $stmt->execute([
+                    ':accion'          => $accion,
+                    ':ciudad'          => $ciudad,
+                    ':macEntra'        => $macEntra,
+                    ':macSale'         => $macSale,
+                    ':motivo'          => $motivo,
+                    ':observacion'     => $observacion,
+                    ':paqueteconca'    => $paqueteconca,
+                    ':pedido'          => $pedido,
+                    ':proceso'         => $proceso,
+                    ':producto'        => $producto,
+                    ':remite'          => $remite,
+                    ':tecnologia'      => $tecnologia,
+                    ':tipoEquipo'      => $tipoEquipo,
+                    ':uen'             => $uen,
+                    ':contrato'        => $contrato,
+                    ':perfil'          => $perfil,
+                    ':grupo'           => $grupo,
+                    ':login'           => $login,
+                    ':idTerreno'       => $idTerreno,
+                    ':nuevaHora'       => $nuevaHora,
+                    ':uneSourceSystem' => $uneSourceSystem,
+                    ':tarea'           => $tarea,
+                ]);
+
+                if ($stmt->rowCount() == 1) {
+                    $response = ['state' => true, 'msj' => 'Datos ingresados correctamente'];
+                } else {
+                    $response = ['state' => false, 'msj' => 'Ha ocurrido un error intentalo nuevamente en unos minutos'];
+                }
+            }
+
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+        $this->_DB = null;
+        echo json_encode($response);
     }
 
     public function resumencontingencias($data)
@@ -52,7 +148,7 @@ class Contingencia
             $stmt->execute();
             $counter = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            $query = "SELECT logindepacho, pedido, horagestion, logincontingencia, horacontingencia,
+            $query = "SELECT logindepacho, pedido, horagestion, logincontingencia, horacontingencia, tarea,
 		(CASE 
 			WHEN acepta IS NULL THEN 'Pendiente' 
 			ELSE acepta 
@@ -360,9 +456,9 @@ class Contingencia
     public function resultadoCP($fechaIni, $fechaFin)
     {
         try {
-           /* ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();*/
+            /* ini_set('session.gc_maxlifetime', 3600); // 1 hour
+             session_set_cookie_params(3600);
+             session_start();*/
             $stmt = $this->_DB->query("SELECT logindepacho, pedido, horagestion, loginContingenciaPortafolio, horaContingenciaPortafolio,
 							(CASE
 								WHEN aceptaPortafolio = 'Acepta' THEN 'Acepta'
@@ -493,7 +589,7 @@ class Contingencia
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
             } else {*/
 
-                $stmt = $this->_DB->query("SELECT c.pedido,  REPLACE (c.macEntra,CHAR(45),CONCAT(CHAR(10),CHAR(10),CHAR(10)))AS macEntra, REPLACE (c.macSale,CHAR(45),CONCAT(CHAR(10),CHAR(10),CHAR(10))) AS macSale, c.logincontingencia, REPLACE (c.paquetes,CHAR(47),CONCAT(CHAR(10),CHAR(10),CHAR(10)))AS paquetes, c.ciudad, c.proceso, c.accion, c.tipoEquipo, c.remite, c.observacion, 
+            $stmt = $this->_DB->query("SELECT c.pedido,  REPLACE (c.macEntra,CHAR(45),CONCAT(CHAR(10),CHAR(10),CHAR(10)))AS macEntra, REPLACE (c.macSale,CHAR(45),CONCAT(CHAR(10),CHAR(10),CHAR(10))) AS macSale, c.logincontingencia, REPLACE (c.paquetes,CHAR(47),CONCAT(CHAR(10),CHAR(10),CHAR(10)))AS paquetes, c.ciudad, c.proceso, c.accion, c.tipoEquipo, c.remite, c.observacion, 
 					c.engestion, c.producto, c.grupo, c.horagestion, c.perfil, c.tipificacion, c.acepta, c.loginContingenciaPortafolio, c.aceptaPortafolio, 
 					c.tipificacionPortafolio, c.enGestionPortafolio, c.fechaClickMarcaPortafolio, c.id_terreno, CASE WHEN (SELECT COUNT(*)
 					FROM contingencias c1
@@ -501,26 +597,26 @@ class Contingencia
 				FROM contingencias c
 				WHERE c.finalizado IS NULL AND c.finalizadoPortafolio IS NULL AND c.pedido <> ''
 				ORDER BY c.horagestion");
-                $stmt->execute();
+            $stmt->execute();
 
-                if ($stmt->rowCount()) {
-                    $resultadoTV         = [];
-                    $resultadoOTROS      = [];
-                    $resultadoPORTAFOLIO = [];
-                    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            if ($stmt->rowCount()) {
+                $resultadoTV         = [];
+                $resultadoOTROS      = [];
+                $resultadoPORTAFOLIO = [];
+                foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
-                        if ($row['grupo'] == "TV") {
-                            $resultadoTV[] = $row;
-                        } elseif ($row['grupo'] == "INTER") {
-                            $resultadoOTROS[] = $row;
-                        } elseif ($row['grupo'] == "PORTAFOLIO") {
-                            $resultadoPORTAFOLIO[] = $row;
-                        }
+                    if ($row['grupo'] == "TV") {
+                        $resultadoTV[] = $row;
+                    } elseif ($row['grupo'] == "INTER") {
+                        $resultadoOTROS[] = $row;
+                    } elseif ($row['grupo'] == "PORTAFOLIO") {
+                        $resultadoPORTAFOLIO[] = $row;
                     }
                 }
+            }
 
-                $response = ['state' => 1, 'data' => [$resultadoTV, $resultadoOTROS, $resultadoPORTAFOLIO]];
-           /* }*/
+            $response = ['state' => 1, 'data' => [$resultadoTV, $resultadoOTROS, $resultadoPORTAFOLIO]];
+            /* }*/
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
@@ -538,27 +634,27 @@ class Contingencia
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
             } else {*/
 
-                $pagenum  = $data['page'];
-                $pagesize = $data['size'];
-                $offset   = ($pagenum - 1) * $pagesize;
-                $search   = $data['search'];
+            $pagenum  = $data['page'];
+            $pagesize = $data['size'];
+            $offset   = ($pagenum - 1) * $pagesize;
+            $search   = $data['search'];
 
-                $stmt = $this->_DB->query("select * from registros_offline");
-                $stmt->execute();
-                $counter = $stmt->rowCount();
+            $stmt = $this->_DB->query("select * from registros_offline");
+            $stmt->execute();
+            $counter = $stmt->rowCount();
 
 
-                $stmt = $this->_DB->query("SELECT LOGIN_ASESOR_OFF,LOGIN_ASESOR, PEDIDO,PROCESO, PRODUCTO, ACCION, ACTIVIDAD, ACTIVIDAD2, OBSERVACIONES, FECHA_CARGA 
+            $stmt = $this->_DB->query("SELECT LOGIN_ASESOR_OFF,LOGIN_ASESOR, PEDIDO,PROCESO, PRODUCTO, ACCION, ACTIVIDAD, ACTIVIDAD2, OBSERVACIONES, FECHA_CARGA 
                                             FROM registros_offline order by FECHA_CARGA desc limit $offset, $pagesize");
-                $stmt->execute();
+            $stmt->execute();
 
-                if ($stmt->rowCount()) {
+            if ($stmt->rowCount()) {
 
-                    $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    $response = ['state' => 1, 'data' => $result, 'counter' => $counter];
-                } else {
-                    $response = 0;
-                }
+                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = ['state' => 1, 'data' => $result, 'counter' => $counter];
+            } else {
+                $response = 0;
+            }
             /*}*/
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -711,71 +807,70 @@ class Contingencia
     {
 
         try {
-            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();
-            if (!$_SESSION) {
+            $login = $datosguardar['login'];
+
+            if (!$login) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
-            } else {*/
-            $login                = $datosguardar['login'];
-            $pedido               = (isset($datosguardar['pedido'])) ? $datosguardar['pedido'] : '';
-            $producto             = (isset($datosguardar['producto'])) ? $datosguardar['producto'] : '';
-            $observacionesconting = (isset($datosguardar['observacionescontingencia'])) ? $datosguardar['observacionescontingencia'] : '';
-            $ingresoClick         = (isset($datosguardar['ingresoClick'])) ? $datosguardar['ingresoClick'] : '';
-            $tipificacion         = (isset($datosguardar['tipificacion'])) ? $datosguardar['tipificacion'] : '';
-            $generarCr            = (isset($datosguardar['generarcr'])) ? $datosguardar['generarcr'] : 0;
-            $horacontingencia     = date("Y-m-d H:i:s");
-
-            if ($tipificacion == 'Ok') {
-                $acepta = 'Acepta';
             } else {
-                $acepta = 'Rechaza';
-            }
 
-            $stmt = $this->_DB->prepare("SELECT id, logincontingencia
+                $pedido               = (isset($datosguardar['pedido'])) ? $datosguardar['pedido'] : '';
+                $producto             = (isset($datosguardar['producto'])) ? $datosguardar['producto'] : '';
+                $observacionesconting = (isset($datosguardar['observacionescontingencia'])) ? $datosguardar['observacionescontingencia'] : '';
+                $ingresoClick         = (isset($datosguardar['ingresoClick'])) ? $datosguardar['ingresoClick'] : '';
+                $tipificacion         = (isset($datosguardar['tipificacion'])) ? $datosguardar['tipificacion'] : '';
+                $generarCr            = (isset($datosguardar['generarcr'])) ? $datosguardar['generarcr'] : 0;
+                $horacontingencia     = date("Y-m-d H:i:s");
+
+                if ($tipificacion == 'Ok') {
+                    $acepta = 'Acepta';
+                } else {
+                    $acepta = 'Rechaza';
+                }
+
+                $stmt = $this->_DB->prepare("SELECT id, logincontingencia
 					FROM contingencias
 					WHERE pedido = :pedido
 					AND producto= :producto
 					AND finalizado IS NULL");
 
-            $stmt->execute([':pedido' => $pedido, ':producto' => $producto]);
+                $stmt->execute([':pedido' => $pedido, ':producto' => $producto]);
 
-            if ($stmt->rowCount()) {
+                if ($stmt->rowCount()) {
 
-                $resultado         = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $id                = $resultado[0]['id'];
-                $logincontingencia = $resultado[0]['logincontingencia'];
+                    $resultado         = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $id                = $resultado[0]['id'];
+                    $logincontingencia = $resultado[0]['logincontingencia'];
 
-                if ($login != $logincontingencia) {
-                    $response = ['state' => 3, 'text' => 'El pedido se encuentra en gestión por otro agente'];
-                } else {
-                    /*ESTE QUERY ME ACTULIZA LA INFORMACION QUE ANALISTA A GESTIONADO*/
-                    $stmtupdate = $this->_DB->prepare("UPDATE contingencias SET horacontingencia = :horacontingencia, 
+                    if ($login != $logincontingencia) {
+                        $response = ['state' => 3, 'text' => 'El pedido se encuentra en gestión por otro agente'];
+                    } else {
+                        /*ESTE QUERY ME ACTULIZA LA INFORMACION QUE ANALISTA A GESTIONADO*/
+                        $stmtupdate = $this->_DB->prepare("UPDATE contingencias SET horacontingencia = :horacontingencia, 
                     observContingencia = :observacionesconting, 
                     ingresoEquipos = :ingresoClick, tipificacion = :tipificacion, 
                     acepta = :acepta, generarcr = :generarCr, finalizado = 'OK' 
                      WHERE id = :id");
 
-                    $stmtupdate->execute([
-                        ':horacontingencia'     => $horacontingencia,
-                        ':observacionesconting' => $observacionesconting,
-                        ':ingresoClick'         => $ingresoClick,
-                        ':tipificacion'         => $tipificacion,
-                        ':acepta'               => $acepta,
-                        ':generarCr'            => $generarCr,
-                        ':id'                   => $id,
-                    ]);
+                        $stmtupdate->execute([
+                            ':horacontingencia'     => $horacontingencia,
+                            ':observacionesconting' => $observacionesconting,
+                            ':ingresoClick'         => $ingresoClick,
+                            ':tipificacion'         => $tipificacion,
+                            ':acepta'               => $acepta,
+                            ':generarCr'            => $generarCr,
+                            ':id'                   => $id,
+                        ]);
 
-                    if ($stmtupdate->rowCount() == 1) {
-                        $response = ['state' => 1, 'text' => 'Contingencia actualizada'];
-                    } else {
-                        $response = ['state' => 0, 'text' => 'Ha ocurrido un error intentalo nuevamente'];
+                        if ($stmtupdate->rowCount() == 1) {
+                            $response = ['state' => 1, 'text' => 'Contingencia actualizada'];
+                        } else {
+                            $response = ['state' => 0, 'text' => 'Ha ocurrido un error intentalo nuevamente'];
+                        }
                     }
+                } else {
+                    $response = ['state' => 0, 'text' => 'No se encontraron datos'];
                 }
-            } else {
-                $response = ['state' => 0, 'text' => 'No se encontraron datos'];
             }
-            /*}*/
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
@@ -946,9 +1041,9 @@ class Contingencia
     public function guardarPedidoContingenciaPortafolio($datosguardar)
     {
         try {
-           /* ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();*/
+            /* ini_set('session.gc_maxlifetime', 3600); // 1 hour
+             session_set_cookie_params(3600);
+             session_start();*/
             $login                        = $_SESSION['login'];
             $pedido                       = $datosguardar['pedido'];
             $producto                     = $datosguardar['producto'];
@@ -1484,82 +1579,21 @@ class Contingencia
         echo json_encode($response);
     }
 
-    /*public function marcarengestion($params)
-    {
-
-        try {
-
-            session_start();
-            if (!$_SESSION) {
-                $response = ['state' => 99, 'title' => 'Su session ha expirado', 'text' => 'Inicia session nuevamente para continuar'];
-            } else {
-
-                $today = date("Y-m-d H:i:s");
-
-                $datosguardar = $params['datos'];
-                $login        = $_SESSION['login'];
-                $pedido       = $datosguardar['pedido'];
-                $gestion      = $datosguardar['bloqueo'];
-                $producto     = $datosguardar['producto'];
-
-                if ($gestion == true) {
-                    $gestion = 1;
-                } else {
-                    $gestion = 0;
-                }
-
-                $query = "SELECT id, logincontingencia FROM contingencias where engestion = '1' and finalizado is null and pedido = '$pedido' and producto = '$producto' ";
-
-                $rst = $this->_DB->query($query);
-                $rst->execute();
-                $row               = $rst->fetch(PDO::FETCH_OBJ);
-                $logincontingencia = $row->logincontingencia;
-                $id                = $row->id;
-
-                if ($rst->rowCount() == 1) {
-
-                    if ($login == $logincontingencia) {
-                        $sqlupdate = "UPDATE contingencias SET engestion = '0', logincontingencia = '', fechaClickMarca='$today' WHERE id = '$id'";
-
-                        $this->_DB->query($sqlupdate);
-                        $response = ['state' => 1, 'title' => 'Desbloqueado', 'text' => 'El pedido se encuentra desbloqueado'];
-                    } else {
-                        $response = ['state' => 2, 'title' => 'Bloqueado', 'text' => 'El pedido se encuentra en gestión'];
-                    }
-                } else {
-
-                    $stmt = $this->_DB->query("SELECT id FROM contingencias where pedido = '$pedido' and producto = '$producto'");
-                    $stmt->execute();
-                    $result = $stmt->fetch(PDO::FETCH_OBJ);
-                    $id     = $result->id;
-
-                    $stmt = $this->_DB->query("UPDATE contingencias SET engestion = '1', logincontingencia = '$login', fechaClickMarca='$today' WHERE id='$id'");
-                    $stmt->execute();
-                    $response = ['state' => 1, 'title' => 'Bloqueado', 'text' => 'El pedido se encuentra bloqueado'];
-                }
-            }
-
-        } catch (PDOException $e) {
-            var_dump($e);
-        }
-        $this->_DB = null;
-        echo json_encode($response);
-    }*/
-
     public function marcarengestion($params)
     {
+
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();
-            if (!$_SESSION) {
+
+            $datosLogin = $params['login'];
+            $login      = $datosLogin['login'];
+
+            if (!$login) {
                 $response = ['state' => 99, 'title' => 'Su session ha expirado', 'text' => 'Inicia session nuevamente para continuar'];
             } else {
 
                 $today = date("Y-m-d H:i:s");
 
                 $datosguardar = $params['datos'];
-                $login        = $_SESSION['login'];
                 $pedido       = $datosguardar['pedido'];
                 $gestion      = $datosguardar['bloqueo'];
                 $producto     = $datosguardar['producto'];
@@ -1593,10 +1627,10 @@ class Contingencia
                     $rst = $this->_DB->query($query);
                     $rst->execute();
                     $row               = $rst->fetch(PDO::FETCH_OBJ);
-                    $logincontingencia = $row->logincontingencia ?? "";
+                    $logincontingencia = $row->logincontingencia;
                     $id                = $row->id;
 
-                    if ($login == $logincontingencia) {
+                    if ($login == $logincontingencia || $login == 'cramiceb' || $login == 'cvasquor' || $login == 'garcila' || $login == 'jromang' || $login == 'mhuertas') {
 
                         $stmt = $this->_DB->prepare("UPDATE contingencias SET engestion = 0, logincontingencia = '', fechaClickMarca = '' WHERE id = :id");
                         $stmt->execute([':id' => $id]);

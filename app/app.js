@@ -1,4 +1,4 @@
-/*var app = angular.module("seguimientopedidos", [
+var app = angular.module("seguimientopedidos", [
     "ngRoute",
     "ngCookies",
     "ng-fusioncharts",
@@ -20,9 +20,9 @@
     "angular.filter",
     "ui.bootstrap",
     "ui.select2"
-]);*/
+]);
 
-angular.module("seguimientopedidos").service("fileUpload", [
+app.service("fileUpload", [
     "$http",
     "$cookieStore",
     function ($http, $cookieStore) {
@@ -61,7 +61,7 @@ angular.module("seguimientopedidos").service("fileUpload", [
     },
 ]);
 
-angular.module("seguimientopedidos").service("fileUploadrepa", [
+app.service("fileUploadrepa", [
     "$http",
     "$cookieStore",
     function ($http, $cookieStore) {
@@ -84,7 +84,7 @@ angular.module("seguimientopedidos").service("fileUploadrepa", [
     },
 ]);
 
-angular.module("seguimientopedidos").service("cargaRegistros", [
+app.service("cargaRegistros", [
     "$http",
     "$cookieStore",
     "$q",
@@ -117,7 +117,7 @@ angular.module("seguimientopedidos").service("cargaRegistros", [
     },
 ]);
 
-angular.module("seguimientopedidos").directive("fileModel", [
+app.directive("fileModel", [
     "$parse",
     function ($parse) {
         return {
@@ -136,10 +136,10 @@ angular.module("seguimientopedidos").directive("fileModel", [
     },
 ]);
 
-angular.module("seguimientopedidos").factory("services", [
+app.factory("services", [
     "$http",
     "$timeout",
-    function ($http, $q, $timeout) {
+    function ($http, $q) {
         var serviceBase = "services/";
         //var serviceBase1 =
         //    "http://10.100.88.2/seguimientopedidos/api/controller/";
@@ -147,6 +147,22 @@ angular.module("seguimientopedidos").factory("services", [
             "api/controller/";
         //var serviceBase1 = 'http://localhost/seguimientopedidos/api/controller/';
         var obj = {};
+
+        obj.myService = function (datos, controller, method) {
+            let data = {
+                method: method,
+                data: datos,
+            };
+            return $http.post(serviceBase1 + controller, data);
+
+            /*            function complete(response) {
+                            return $q.when(response.data)
+                        }
+
+                        function failed(response) {
+                            return $q.reject(response.data)
+                        }*/
+        };
 
         /**
          * authentication
@@ -390,14 +406,6 @@ angular.module("seguimientopedidos").factory("services", [
                     datosguardar: datosguardar,
                     datosDespacho: datosDespacho,
                 },
-            };
-            return $http.post(serviceBase1 + "otherServicesCtrl.php", data);
-        };
-
-        obj.guardarContingencia = function (datosguardar) {
-            var data = {
-                method: "savecontingencia",
-                data: datosguardar,
             };
             return $http.post(serviceBase1 + "otherServicesCtrl.php", data);
         };
@@ -1069,6 +1077,7 @@ angular.module("seguimientopedidos").factory("services", [
             var data = {
                 method: "guardarpedidocontingencia",
                 data: datos,
+
             };
             return $http.post(serviceBase1 + "contingenciaCtrl.php", data);
         };
@@ -1187,14 +1196,6 @@ angular.module("seguimientopedidos").factory("services", [
                 data: datos
             }
             return $http.post(serviceBase1 + "contingenciaCtrl.php", data);
-        };
-
-        obj.getbuscarPedidoContingencia = function (pedido) {
-            var data = {
-                method: "buscarPedidoContingencias",
-                data: pedido,
-            };
-            return $http.post(serviceBase1 + "otrosServiciosCtrl.php", data);
         };
 
         obj.getCiudades = function () {
@@ -2154,6 +2155,14 @@ angular.module("seguimientopedidos").factory("services", [
             return $http.post(serviceBase1 + 'registroEquiposCtrl.php', data);
         }
 
+        obj.csvRegistroEquipos = function (datos) {
+            let data = {
+                method: 'csvRegistroEquipos',
+                data: datos
+            }
+            return $http.post(serviceBase1 + 'registroEquiposCtrl.php', data);
+        }
+
         obj.acualizaTecnicos = function (datos) {
             let data = {
                 method: 'acualizaTecnicos',
@@ -2162,12 +2171,11 @@ angular.module("seguimientopedidos").factory("services", [
             return $http.post(serviceBase1 + 'userCtrl.php', data);
         };
 
-
         return obj;
     },
 ]);
 
-angular.module("seguimientopedidos").service("LoadingInterceptor", [
+app.service("LoadingInterceptor", [
     "$q",
     "$rootScope",
     "$log",
@@ -2211,6 +2219,4132 @@ angular.module("seguimientopedidos").service("LoadingInterceptor", [
         };
     },
 ]);
+
+app.controller('actividadesCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services) {
+    $scope.iniciaGestion = true;
+    $scope.plantillaReparaciones = 0;
+    $scope.selectSubAccion = false;
+    $scope.errorconexion = "";
+    $scope.registrocreado = false;
+    $scope.myWelcome = {};
+    $scope.listadoSubAcciones = {};
+    $scope.planRescate = false;
+    $scope.TVdigital1 = false;
+    $scope.TVdigital2 = false;
+    $scope.TVdigital3 = false;
+    $scope.TVdigital4 = false;
+    $scope.TVdigital5 = false;
+    $scope.TVdigital6 = false;
+    $scope.Internet = false;
+    $scope.ToIP = false;
+    $scope.verplantilla = false;
+    $scope.ipServer = "10.100.66.254";
+    var timer;
+    $scope.inicio = 0;
+
+    $scope.usuarios = function (editarUser) {
+        $scope.update = false;
+        if (editarUser.PASSWORD == "") {
+            Swal({
+                type: 'error',
+                title: 'Opsss...',
+                text: 'Por favor ingrese la contraseña.',
+                timer: 4000
+            })
+        } else {
+            services.editarUsuario(editarUser).then(
+                function (data) {
+                    $scope.respuesta = "Usuario " + editarUser.LOGIN + " actualizado exitosamente";
+                    $scope.update = true;
+                    return data.data;
+                },
+                function errorCallback(response) {
+                    console.log(response);
+                }
+            )
+        }
+    }
+
+    $scope.editarModal = function () {
+        $scope.errorDatos = null;
+        $scope.Tecnico = {};
+        $scope.idUsuario = $rootScope.galletainfo.id;
+        $scope.UsuarioNom = $rootScope.galletainfo.nombre;
+        $scope.TituloModal = "Editar Usuario con el ID:";
+    }
+
+    $scope.procesos = function () {
+        $scope.validaraccion = false;
+        $scope.validarsubaccion = false;
+        services.getProcesos().then(function (data) {
+            $scope.listadoProcesos = data.data.data;
+            $scope.listadoAcciones = {};
+            return data.data;
+        });
+    }
+
+    $scope.calcularAcciones = function () {
+
+        if ($scope.gestionmanual.proceso == 'Plan rescate') {
+            $scope.planRescate = 1;
+        } else {
+            $scope.planRescate = 0;
+        }
+
+        if ($scope.gestionmanual.proceso == 'Reparaciones') {
+            $scope.plantillaReparaciones = 1;
+        } else {
+            $scope.plantillaReparaciones = 0;
+            $scope.gestionmanual.cod_familiar = "";
+            $scope.gestionmanual.prueba_integra = "";
+            $scope.gestionmanual.telefonia_tdm = "";
+            $scope.gestionmanual.telev_hfc = "";
+            $scope.gestionmanual.iptv = "";
+            $scope.gestionmanual.internet = "";
+            $scope.gestionmanual.toip = "";
+            $scope.gestionmanual.smartPlay = "";
+        }
+
+        $scope.listadoAcciones = {};
+
+        services.getAcciones($scope.gestionmanual.proceso).then(function (data) {
+            $scope.listadoAcciones = data.data.data;
+            $scope.validaraccion = true;
+            $scope.validarsubaccion = false;
+        })
+    }
+
+    $scope.calcularSubAcciones = function () {
+        $scope.listadoSubAcciones = {};
+        if ($scope.gestionmanual.proceso == "Plan rescate" && ($scope.gestionmanual.accion == "Pendiente" || $scope.gestionmanual.accion == "Incompleto")) {
+            $scope.validarsubaccion = true;
+            $scope.listadoSubAcciones = [
+                {ID: '1011 - Fuera de cobertura', SUBACCION: '1011 - Fuera de cobertura'},
+                {ID: '1019 - Mala asesoria', SUBACCION: '1019 - Mala asesoria'},
+                {ID: '1020 - Incumplimiento contratista', SUBACCION: '1020 - Incumplimiento contratista'},
+                {ID: '1021 - Imposibilidad técnica', SUBACCION: '1021 - Imposibilidad técnica'},
+                {ID: '1022 - Tap copado', SUBACCION: '1022 - Tap copado'},
+                {ID: '1025 - Cliente no desea', SUBACCION: '1025 - Cliente no desea'},
+                {ID: '1026 - Casa sola', SUBACCION: '1026 - Casa sola'},
+                {ID: '1028 - Aplazada por cliente', SUBACCION: '1028 - Aplazada por cliente'},
+                {ID: '1209 - Zona de invasión', SUBACCION: '1209 - Zona de invasión'},
+                {ID: '1217 - Equipo no engancha', SUBACCION: '1217 - Equipo no engancha'},
+                {ID: '1505 - Dirección errada', SUBACCION: '1505 - Dirección errada'},
+                {ID: '1506 - Cliente solicitó otro producto', SUBACCION: '1506 - Cliente solicitó otro producto'},
+                {ID: '1508 - Ductos obstruídos', SUBACCION: '1508 - Ductos obstruídos'},
+                {ID: '1510 - Cliente no contactado', SUBACCION: '1510 - Cliente no contactado'},
+                {ID: '2898 - Requiere visita supervisor ETP', SUBACCION: '2898 - Requiere visita supervisor ETP'},
+                {ID: '2899 - Aplazada por lluvia', SUBACCION: '2899 - Aplazada por lluvia'},
+                {ID: '8383 - Problemas plataformas', SUBACCION: '8383 - Problemas plataformas'},
+                {ID: 'O-01 - Red pendiente en edificios y urbanizaciones', SUBACCION: 'O-01 - Red pendiente en edificios y urbanizaciones'},
+                {ID: 'O-02 - Pendiente cliente no autoriza', SUBACCION: 'O-02 - Pendiente cliente no autoriza'},
+                {ID: 'O-06 - Gestión de instalaciones', SUBACCION: 'O-06 - Gestión de instalaciones'},
+                {ID: 'O-09 - Pendiente por porteria madera', SUBACCION: 'O-09 - Pendiente por porteria madera'},
+                {ID: 'O-11 - Pend tiene línea con otro operador', SUBACCION: 'O-11 - Pend tiene línea con otro operador'},
+                {ID: 'O-13 - Red pendiente en exteriores', SUBACCION: 'O-13 - Red pendiente en exteriores'},
+                {ID: 'O-14 - Ped solicitud repetida', SUBACCION: 'O-14 - Ped solicitud repetida'},
+                {ID: 'O-15 - Pendiente por mala asignación', SUBACCION: 'O-15 - Pendiente por mala asignación'},
+                {ID: 'O-20 - Pendi inconsistencias infraestructura', SUBACCION: 'O-20 - Pendi inconsistencias infraestructura'},
+                {ID: 'O-40 - Pendiente x orden público y/o factores climát', SUBACCION: 'O-40 - Pendiente x orden público y/o factores climát'},
+                {ID: 'O-48 - Red mal estado', SUBACCION: 'O-48 - Red mal estado'},
+                {ID: 'O-49 - No desea el servicio', SUBACCION: 'O-49 - No desea el servicio'},
+                {ID: 'O-50 - Cliente ilocalizado', SUBACCION: 'O-50 - Cliente ilocalizado'},
+                {ID: 'O-51 - Pend tiene línea con otro operador', SUBACCION: 'O-51 - Pend tiene línea con otro operador'},
+                {ID: 'O-53 - Inconsistencia información', SUBACCION: 'O-53 - Inconsistencia información'},
+                {ID: 'O-69 - Pen cliente no contactado', SUBACCION: 'O-69 - Pen cliente no contactado'},
+                {ID: 'O-85 - Red externa pendiente', SUBACCION: 'O-85 - Red externa pendiente'},
+                {ID: 'O-86 - Pendiente por nodo xdsl', SUBACCION: 'O-86 - Pendiente por nodo xdsl'},
+                {ID: 'O-100 - Pendiente solución con proyecto', SUBACCION: 'O-100 - Pendiente solución con proyecto'},
+                {ID: 'O-101 - Renumerar o reconfigurar oferta', SUBACCION: 'O-101 - Renumerar o reconfigurar oferta'},
+                {ID: 'O-103 - Pendiente por autorización de terceros', SUBACCION: 'O-103 - Pendiente por autorización de terceros'},
+                {ID: 'O-112 - Pendiente por reparación de red', SUBACCION: 'O-112 - Pendiente por reparación de red'},
+                {ID: 'OT-C01 - Cliente no autoriza', SUBACCION: 'OT-C01 - Cliente no autoriza'},
+                {ID: 'OT-C04 - Orden público', SUBACCION: 'OT-C04 - Orden público'},
+                {ID: 'OT-C08 - Reconfigurar pedido', SUBACCION: 'OT-C08 - Reconfigurar pedido'},
+                {ID: 'OT-C10 - Validar condición instalación', SUBACCION: 'OT-C10 - Validar condición instalación'},
+                {ID: 'OT-C12 - Reconfigurar motivo técnico', SUBACCION: 'OT-C12 - Reconfigurar motivo técnico'},
+                {ID: 'OT-C14 - Orden del suscriptor', SUBACCION: 'OT-C14 - Orden del suscriptor'},
+                {ID: 'OT-C17 - Autorización de terceros', SUBACCION: 'OT-C17 - Autorización de terceros'},
+                {ID: 'OT-C19 - Factores climáticos', SUBACCION: 'OT-C19 - Factores climáticos'},
+                {ID: 'OT-T01 - Red pendiente edif y urb', SUBACCION: 'OT-T01 - Red pendiente edif y urb'},
+                {ID: 'OT-T04 - Red externa', SUBACCION: 'OT-T04 - Red externa'},
+                {ID: 'OT-T05 - Mala asignación', SUBACCION: 'OT-T05 - Mala asignación'},
+                {ID: 'OT-T10 - Reparación de red externa', SUBACCION: 'OT-T10 - Reparación de red externa'},
+                {ID: 'P-CRM - Reagendado', SUBACCION: 'P-CRM - Reagendado'},
+                {ID: 'O-08 - Pendiente por orden del suscriptor', SUBACCION: 'O-08 - Pendiente por orden del suscriptor'},
+                {ID: 'O-23 - Pendiente no contestan', SUBACCION: 'O-23 - Pendiente no contestan'},
+                {ID: 'OT-C02 - Cliente ilocalizado', SUBACCION: 'OT-C02 - Cliente ilocalizado'},
+                {ID: 'OT-C06 - Inconsistencia información', SUBACCION: 'OT-C06 - Inconsistencia información'},
+                {ID: 'OT-T02 - Gestión de instalaciones', SUBACCION: 'OT-T02 - Gestión de instalaciones'},
+                {ID: 'O-34 - Pendiente por factores climáticos', SUBACCION: 'O-34 - Pendiente por factores climáticos'},
+                {ID: 'OT-C15 - Por agendar', SUBACCION: 'OT-C15 - Por agendar'},
+                {ID: 'OT-T19 - Plataforma caída', SUBACCION: 'OT-T19 - Plataforma caída'},
+                {ID: '1014 - Poste averiado', SUBACCION: '1014 - Poste averiado'},
+                {ID: 'O-24 - Pendi postería', SUBACCION: 'O-24 - Pendi postería'},
+                {ID: 'OT-C05 - Gestión fraudes instalaciones', SUBACCION: 'OT-C05 - Gestión fraudes instalaciones'},
+                {ID: 'OT-C11 - Cancelar motivo técnico', SUBACCION: 'OT-C11 - Cancelar motivo técnico'},
+                {ID: 'OT-T17 - Solución con proyecto', SUBACCION: 'OT-T17 - Solución con proyecto'}
+            ];
+        } else {
+            services.getSubAcciones($scope.gestionmanual.proceso, $scope.gestionmanual.accion).then(function (data) {
+                $scope.listadoSubAcciones = data.data.data;
+                $scope.validarsubaccion = true;
+            }, function errorCallback(response) {
+
+                if (response.status == "200") {
+                    $scope.validarsubaccion = false;
+                }
+                var subAccion = "";
+                $scope.mostrarModal();
+            });
+        }
+    }
+
+    $scope.calcularCodigos = function () {
+
+        $scope.listadocodigos = {};
+        services.getCodigos($scope.gestionmanual.proceso, $scope.gestionmanual.UNESourceSystem).then(function (data) {
+            $scope.listadocodigos = data.data[0];
+        }, function errorCallback(response) {
+            console.log(response);
+        });
+    }
+
+    $scope.calcularDiagnostico = function (producto, accion) {
+
+        if (accion == 'Enrutar') {
+            $scope.listadodiagnosticos = {};
+            services.getDiagnosticos($scope.gestionmanual.producto, $scope.gestionmanual.accion).then(function (data) {
+                $scope.listadodiagnosticos = data.data.data;
+            }, function errorCallback(response) {
+                if (response.status == "200") {
+
+                }
+            });
+        }
+    }
+
+    $scope.mostrarModal = function () {
+        if ($scope.infopedido == true) {
+            var producto = $scope.myWelcome.uNETecnologias;
+
+            if ($scope.gestionmanual.producto != "" && $scope.gestionmanual.producto != undefined) {
+                producto = $scope.gestionmanual.producto;
+            }
+        } else if ($scope.gestionmanual.producto == undefined) {
+            Swal({
+                type: 'error',
+                title: 'Opsss...',
+                text: 'Por favor seleccione el producto',
+                timer: 4000
+            })
+        } else {
+            var producto = $scope.gestionmanual.producto;
+        }
+
+        if (producto.indexOf("HFC") !== -1) {
+            var tecnologia = "HFC";
+        } else if (producto.indexOf("ADSL") !== -1 || producto.indexOf("REDCO") !== -1 || producto.indexOf("Telefonia_Basica") !== -1) {
+            var tecnologia = "ADSL";
+        } else if (producto.indexOf("GPON") !== -1) {
+            var tecnologia = "GPON";
+        } else if (producto.indexOf("DTH") !== -1) {
+            var tecnologia = "DTH";
+        } else if (producto.indexOf("LTE") !== -1) {
+            var tecnologia = "LTE";
+        }
+
+        if ($scope.gestionmanual.accion == "Registrar materiales") {
+            $scope.materiales = [{id: '1', tipoCable: 'No uso', inicio: '', fin: ''}];
+            $('#Registrarmateriales').modal('show');
+            $scope.OpenModal = "Registrarmateriales";
+        }
+
+
+        if (tecnologia == "HFC" && ($scope.gestionmanual.subAccion == "INFRAESTRUCTURA HFC" || $scope.gestionmanual.subAccion == "O-112 Pendiente Por Reparacion de Red")) {
+            if (producto == undefined) {
+                Swal({
+                    type: 'error',
+                    title: 'Opsss...',
+                    text: 'Por favor seleccione el producto',
+                    timer: 4000
+                })
+            } else {
+                $('#PendiInfraHFC').modal('show');
+                $scope.OpenModal = "PendiInfraHFC";
+            }
+        } else if (tecnologia == "ADSL" && ($scope.gestionmanual.subAccion == "INFRAESTRUCTURA COBRE" || $scope.gestionmanual.subAccion == "O-112 Pendiente Por Reparacion de Red")) {
+            $('#PendiInfraADSL').modal('show');
+            $scope.OpenModal = "PendiInfraADSL";
+        }
+
+
+        if ($scope.gestionmanual.subAccion == "Contingencia(solo en NCA)") {
+            if (tecnologia == "DTH") {
+                $('#ContingenciaDTH').modal('show');
+                $scope.OpenModal = "ContingenciaDTH";
+            } else {
+                $('#ContingenciaOtros').modal('show');
+                $scope.OpenModal = "ContingenciaOtros";
+            }
+        }
+
+
+        if ($scope.gestionmanual.subAccion == "Normal") {
+            $('#ContingenciaNormal').modal('show');
+            $scope.OpenModal = "ContingenciaNormal";
+        } else if ($scope.gestionmanual.subAccion == "Contingencia Cambio") {
+            $('#ContingenciaCambio').modal('show');
+            $scope.OpenModal = "ContingenciaCambio";
+        } else if ($scope.gestionmanual.subAccion == "Contingencia Nuevo") {
+            $('#ContingenciaNuevo').modal('show');
+            $scope.OpenModal = "ContingenciaNuevo";
+        } else if ($scope.gestionmanual.subAccion == "Contingencia Reuso") {
+            $('#ContingenciaReuso').modal('show');
+            $scope.OpenModal = "ContingenciaReuso";
+        }
+
+        if ($scope.gestionmanual.subAccion == "Cumple parametros de instalacion" || $scope.gestionmanual.subAccion == "Cumple parametros de reparacion") {
+            if (tecnologia == "LTE" || tecnologia == "DTH") {
+                Swal({
+                    type: 'error',
+                    title: 'Opsss...',
+                    text: 'Para los productos DTH y LTE no aplica cumplir con parametros',
+                    timer: 4000
+                })
+            } else if ($scope.gestionmanual.CIUDAD == "MESA DE AYUDA" || $scope.gestionmanual.CIUDAD == "MIGRACIONES" || $scope.gestionmanual.CIUDAD == "TECNICOS DE APOYO") {
+                Swal({
+                    type: 'error',
+                    title: 'Opsss...',
+                    text: 'Para los despachos Mesa, migraciones y técnicos de apoyo no aplica cumplir con parametros',
+                    timer: 4000
+                })
+            } else {
+                if ($scope.gestionmanual.subAccion == "Cumple parametros de instalacion") {
+                    $scope.cumplirproceso = "Cumplir instalacion";
+                } else {
+                    $scope.cumplirproceso = "Cumplir reparacion";
+                }
+                var tech = '';
+                if ($scope.myWelcome.uNETecnologias != '' && $scope.myWelcome.uNETecnologias != undefined) {
+                    tech = $scope.myWelcome.uNETecnologias;
+                } else {
+                    tech = $scope.gestionmanual.producto;
+                }
+
+                tech = tech.toUpperCase();
+
+                if (tech.includes("HFC")) {
+                    $('#cumplirInstalacionHFC').modal('show');
+                    $scope.OpenModal = "cumplirInstalacionHFC";
+                }
+                if (tech.includes("ADSL")) {
+                    $('#cumplirInstalacionADSL').modal('show');
+                    $scope.OpenModal = "cumplirInstalacionADSL";
+                }
+            }
+
+        }
+
+        if ($scope.gestionmanual.accion == "Cumplir" && $scope.gestionmanual.subAccion == "Recoger Equipos") {
+            $scope.equiposRecoger = [{
+                id: '1',
+                pedido: $scope.pedido,
+                mac: '',
+                serial: '',
+                ciudad: $scope.gestionmanual.CIUDAD,
+                CedTecnico: $scope.gestionmanual.tecnico,
+                NomTecnico: $scope.tecnico,
+                contratista: $scope.empresa
+            }];
+            $('#recogerEquipos').modal('show');
+            $scope.OpenModal = "recogerEquipos";
+        }
+
+
+        if (tecnologia == "HFC" && ($scope.gestionmanual.subAccion == "OT-T10-Reparacion de red externa")) {
+            if (producto == undefined) {
+                Swal({
+                    type: 'error',
+                    title: 'Opsss...',
+                    text: 'Por favor seleccione el producto',
+                    timer: 4000
+                })
+            } else {
+                $('#PendiInstaHFC-OT-T10').modal('show');
+                $scope.OpenModal = "PendiInstaHFC-OT-T10";
+            }
+        }
+    }
+
+    $scope.addNuevoMaterial = function () {
+        var newItemNo = $scope.materiales.length + 1;
+        $scope.materiales.push({'id': +newItemNo, tipoCable: 'No uso'});
+    }
+
+    $scope.addEquipoRecoger = function () {
+        var newEquiporecoger = $scope.equiposRecoger.length + 1;
+        $scope.equiposRecoger.push({
+            'id': +newEquiporecoger,
+            pedido: $scope.pedido,
+            ciudad: $scope.gestionmanual.CIUDAD,
+            CedTecnico: $scope.gestionmanual.tecnico,
+            NomTecnico: $scope.tecnico,
+            contratista: $scope.empresa,
+            celular: $scope.celular
+        });
+    }
+
+    $scope.removeNuevoMaterial = function () {
+        var lastItem = $scope.materiales.length - 1;
+        if (lastItem != 0) {
+            $scope.materiales.splice(lastItem);
+        }
+    }
+
+    $scope.removeEquipoRecoger = function () {
+        var lastEquipoRecoger = $scope.equiposRecoger.length - 1;
+        if (lastEquipoRecoger != 0) {
+            $scope.equiposRecoger.splice(lastEquipoRecoger);
+        }
+    }
+
+    $scope.guardarModal = function (materiales) {
+        $scope.verplantilla = true;
+        if ($scope.OpenModal == "Registrarmateriales") {
+            var total = materiales.length;
+            $scope.observacion = "";
+            for (var i = 0; i < total; i++) {
+                $scope.observacion = $scope.observacion + "Tipo cable: " + materiales[i].tipoCable + ", Inicio: " + materiales[i].inicio + ", Fin: " + materiales[i].fin + "/";
+            }
+        }
+
+        if ($scope.OpenModal == "CambioEquipoDTH") {
+            $scope.observacion = "Cuenta Domiciliaria: " + $scope.equipoDTH.cuenta + ", ID Cuenta: " + $scope.equipoDTH.IdCuenta + ", Motivo: " + $scope.equipoDTH.motivoCambio + ", Chip ID Entra: " + $scope.equipoDTH.chipEntra + ", Chip ID Sale: " + $scope.equipoDTH.chipSale + ", SmartCard Entra: " + $scope.equipoDTH.SmartEntra + ", SmartCard Sale: " + $scope.equipoDTH.SmartSale
+
+            services.insertarCambioEquipo('DTH', $scope.equipoDTH, $scope.pedido).then(
+                function (data) {
+                    $scope.datoscambioEquipo = data.data[0];
+                    console.log("id cambio equipo DTH: " + $scope.datoscambioEquipo);
+                }
+            );
+
+        }
+
+        if ($scope.OpenModal == "CambioEquipoHFC") {
+            $scope.observacion = "Cuenta Domiciliaria: " + $scope.equipoHFC.cuenta + ", ID Cuenta: " + $scope.equipoHFC.IdCuenta + ", Servicio: " + $scope.equipoHFC.servicio + ", Motivo: " + $scope.equipoHFC.motivoCambio + ", Equipo Entra: " + $scope.equipoHFC.equipoEntra + ", Equipo Sale: " + $scope.equipoHFC.equipoSale + ", MAC Entra: " + $scope.equipoHFC.macEntra + ", MAC Sale: " + $scope.equipoHFC.macSale
+
+            services.insertarCambioEquipo('HFC', $scope.equipoHFC, $scope.pedido).then(
+                function (data) {
+                    $scope.datoscambioEquipo = data.data[0];
+                }
+            );
+        }
+
+        if ($scope.OpenModal == "CambioEquipoOtros") {
+            $scope.observacion = "Motivo del cambio: " + $scope.equipoOtros.motivoCambio + ", Serial sale: " + $scope.equipoOtros.Serialsale + ", Serial entra: " + $scope.equipoOtros.Serialentra + ", Marca sale: " + $scope.equipoOtros.Marcasale + ", Marca entra: " + $scope.equipoOtros.Marcaentra + ", Referencia sale: " + $scope.equipoOtros.Refentra + ", Referencia entra: " + $scope.equipoOtros.Refsale
+
+            services.insertarCambioEquipo('ADSL', $scope.equipoOtros, $scope.pedido).then(x |
+                function (data) {
+                    $scope.datoscambioEquipo = data.data[0];
+                }
+            );
+        }
+
+        if ($scope.OpenModal == "PendiInfraADSL") {
+
+            $scope.observacion = "";
+            if ($scope.gestionmanual.NomTec == undefined) {
+                $scope.NombreTecnico = $scope.tecnico;
+            } else {
+                $scope.NombreTecnico = $scope.gestionmanual.NomTec;
+            }
+
+            var label = [
+                'Daño: ',
+                ', Prod: ',
+                ', Sape Dist pri: ',
+                ', Smpro Dist pri: ',
+                ', VAC AT Dist pri: ',
+                ', VDC AT Dist pri: ',
+                ', Resist AT Dist pri: ',
+                ', Cap AT Dist pri: ',
+                ', VAC BT Dist pri: ',
+                ', VDC BT Dist pri: ',
+                ', Resist BT Dist pri: ',
+                ', Cap BT Dist pri: ',
+                ', VAC AB Dist pri: ',
+                ', VDC AB Dist pri: ',
+                ', Resist AB Dist pri: ',
+                ', Cap AB Dist pri: ',
+                ', Sape Arm pri: ',
+                ', Smpro Arm pri: ',
+                ', VAC AT Arm pri: ',
+                ', VDC AT Arm pri: ',
+                ', Resist AT Arm pri: ',
+                ', Cap AT Arm pri: ',
+                ', VAC BT Arm pri: ',
+                ', VDC BT Arm pri: ',
+                ', Resist BT Arm pri: ',
+                ', Cap BT Arm pri: ',
+                ', VAC AB Arm pri: ',
+                ', VDC AB Arm pri: ',
+                ', Resist AB Arm pri: ',
+                ', Cap AB Arm pri: ',
+                ', Sape caja sec: ',
+                ', Smpro caja sec: ',
+                ', VAC AT caja sec: ',
+                ', VDC AT caja sec: ',
+                ', Resist AT caja sec: ',
+                ', Cap AT caja sec: ',
+                ', VAC BT caja sec: ',
+                ', VDC BT caja sec: ',
+                ', Resist BT caja sec: ',
+                ', Cap BT caja sec: ',
+                ', VAC AB caja sec: ',
+                ', VDC AB caja sec: ',
+                ', Resist AB caja sec: ',
+                ', Cap AB caja sec: ',
+                ', Sape Arm sec: ',
+                ', Smpro Arm sec: ',
+                ', VAC AT Arm sec: ',
+                ', VDC AT Arm sec: ',
+                ', Resist AT Arm sec: ',
+                ', Cap AT Arm sec: ',
+                ', VAC BT Arm sec: ',
+                ', VDC BT Arm sec: ',
+                ', Resist BT Arm sec: ',
+                ', Cap BT Arm sec: ',
+                ', VAC AB Arm sec: ',
+                ', VDC AB Arm sec: ',
+                ', Resist AB Arm sec: ',
+                ', Cap AB Arm sec: ',
+                ', Tec: ',
+                ', Cel: ',
+                ', Ciud: ',
+                ', Eq med: ',
+                ', Observaciones: '
+            ];
+
+            var value = [
+                $scope.pendiInfraCobre.IdDano,
+                $scope.pendiInfraCobre.producto,
+
+                $scope.pendiInfraCobre.priSapeDis,
+                $scope.pendiInfraCobre.priSmproDis,
+
+                $scope.pendiInfraCobre.priDisVACAT,
+                $scope.pendiInfraCobre.priDisVDCAT,
+                $scope.pendiInfraCobre.priDisResisAT,
+                $scope.pendiInfraCobre.priDisCapaAT,
+
+                $scope.pendiInfraCobre.priDisVACBT,
+                $scope.pendiInfraCobre.priDisVDCBT,
+                $scope.pendiInfraCobre.priDisResisBT,
+                $scope.pendiInfraCobre.priDisCapaBT,
+
+                $scope.pendiInfraCobre.priDisVACAB,
+                $scope.pendiInfraCobre.priDisVDCAB,
+                $scope.pendiInfraCobre.priDisResisAB,
+                $scope.pendiInfraCobre.priDisCapaAB,
+
+                $scope.pendiInfraCobre.priSapeArm,
+                $scope.pendiInfraCobre.priSmproArm,
+
+                $scope.pendiInfraCobre.priArmVACAT,
+                $scope.pendiInfraCobre.priArmVDCAT,
+                $scope.pendiInfraCobre.priArmResisAT,
+                $scope.pendiInfraCobre.priArmCapaAT,
+
+                $scope.pendiInfraCobre.priArmVACBT,
+                $scope.pendiInfraCobre.priArmVDCBT,
+                $scope.pendiInfraCobre.priArmResisBT,
+                $scope.pendiInfraCobre.priArmCapaBT,
+
+                $scope.pendiInfraCobre.priArmVACAB,
+                $scope.pendiInfraCobre.priArmVDCAB,
+                $scope.pendiInfraCobre.priArmResisAB,
+                $scope.pendiInfraCobre.priArmCapaAB,
+
+                $scope.pendiInfraCobre.SecSapeDis,
+                $scope.pendiInfraCobre.SecSmproDis,
+
+                $scope.pendiInfraCobre.SecDisVACAT,
+                $scope.pendiInfraCobre.SecDisVDCAT,
+                $scope.pendiInfraCobre.SecDisResisAT,
+                $scope.pendiInfraCobre.SecDisCapaAT,
+
+                $scope.pendiInfraCobre.SecDisVACBT,
+                $scope.pendiInfraCobre.SecDisVDCBT,
+                $scope.pendiInfraCobre.SecDisResisBT,
+                $scope.pendiInfraCobre.SecDisCapaBT,
+
+                $scope.pendiInfraCobre.SecDisVACAB,
+                $scope.pendiInfraCobre.SecDisVDCAB,
+                $scope.pendiInfraCobre.SecDisResisAB,
+                $scope.pendiInfraCobre.SecDisCapaAB,
+
+                $scope.pendiInfraCobre.SecSapeArm,
+                $scope.pendiInfraCobre.SecSmproArm,
+
+                $scope.pendiInfraCobre.SecArmVACAT,
+                $scope.pendiInfraCobre.SecArmVDCAT,
+                $scope.pendiInfraCobre.SecArmResisAT,
+                $scope.pendiInfraCobre.SecArmCapaAT,
+
+                $scope.pendiInfraCobre.SecArmVACBT,
+                $scope.pendiInfraCobre.SecArmVDCBT,
+                $scope.pendiInfraCobre.SecArmResisBT,
+                $scope.pendiInfraCobre.SecArmCapaBT,
+
+                $scope.pendiInfraCobre.SecArmVACAB,
+                $scope.pendiInfraCobre.SecArmVDCAB,
+                $scope.pendiInfraCobre.SecArmResisAB,
+                $scope.pendiInfraCobre.SecArmCapaAB,
+
+                $scope.NombreTecnico,
+                $scope.pendiInfraCobre.CelTec,
+                $scope.gestionmanual.CIUDAD,
+                $scope.pendiInfraCobre.EqMedicion,
+                $scope.pendiInfraCobre.observaciones
+            ];
+
+            for (var i = 0; i < value.length; i += 1) {
+                if (value[i] != undefined) {
+                    $scope.observacion += label[i] + value[i];
+                }
+            }
+            $scope.observacion = $scope.observacion.replace(/undefined/g, "");
+
+        }
+
+        if ($scope.OpenModal == "PendiInfraHFC") {
+
+            if ($scope.gestionmanual.producto == 'HFC-Internet' || $scope.gestionmanual.producto == 'HFC-ToIP' || $scope.gestionmanual.producto == 'HFC-TV_Digital') {
+                var CMobsoleto = document.getElementById("CMobsoleto").value;
+                if (CMobsoleto == "Si") {
+                    $scope.modal = ""
+                    Swal(
+                        'No se puede guardar la plantilla!',
+                        'Se requiere cambiar el equipo ya que es obsoleto'
+                    );
+                } else {
+                    $scope.modal = "modal"
+                }
+
+                var label = [
+                    'Señal: ',
+                    ', v tap: ',
+                    ', Marcación TAP: ',
+                    ', Dir TAP:',
+                    ', Id pru: ',
+                    ', Mac CM: ',
+                    ', Mac DSAM: ',
+                    ', Técnico:  ',
+                    ', Cel: ',
+                    ', City: ',
+                    ', Id p vecinos: ',
+                    '/',
+                    '/',
+                    ', T Red: ',
+                    ', RF-14: ',
+                    ' dBm, RF-120: ',
+                    ' dBm, RF-135: ',
+                    ' dBm, RF-157: ',
+                    ' dBm, CH: ',
+                    ', CH: ',
+                    ', RF 1: ',
+                    ' dBm, RF 2: ',
+                    ' dBm, Perdida de pq 1: ',
+                    ', Perdida de pq 2: ',
+                    ', MER 1: ',
+                    ' dB, MER 2: ',
+                    ' dB, BER 1: ',
+                    ', BER 2: ',
+                    ', P UP 1: ',
+                    ' dB, P UP 2: ',
+                    ' dB, P DOWN 1: ',
+                    ' dB, P DOWN 2: ',
+                    ' dB, RF CH 89: ',
+                    ', MER 89: ',
+                    ', BER 89: ',
+                    ', RF CH 73: ',
+                    ' dBm, MER 73: ',
+                    ', BER 73: ',
+                    ', CH: ',
+                    ', RF: ',
+                    ' dBm, MER: ',
+                    ', BER: ',
+                    ', CH: ',
+                    ', RF: ',
+                    ' dBm, MER: ',
+                    ', BER: ',
+                    ', # sin enlace en der: ',
+                    ', # sin enlace en amp: ',
+                    ', # afect en der: ',
+                    ', # afect en amp: ',
+                    ', # cltes TDR amp: ',
+                    ', Img adj PNM CRM: ',
+                    ', Img adj falla CRM: ',
+                    ', Ruido: ',
+                    ', Marquilla: ',
+                    ', Nodo/Cmts: ',
+                    ', Observaciones: '
+                ];
+
+                var value = [
+                    $scope.pendiInfraInternet.repaProvisional,
+                    $scope.pendiInfraInternet.valortab,
+                    $scope.pendiInfraInternet.MarcacionTap,
+                    $scope.pendiInfraInternet.DireccionTap,
+                    $scope.pendiInfraInternet.idPrueba,
+                    $scope.pendiInfraInternet.macEquipo,
+                    $scope.pendiInfraInternet.macDsam,
+                    $scope.tecnico,
+                    $scope.pendiInfraInternet.Celular,
+                    $scope.gestionmanual.CIUDAD,
+                    $scope.pendiInfraInternet.idVecinos,
+                    $scope.pendiInfraInternet.idVecinos1,
+                    $scope.pendiInfraInternet.idVecinos2,
+                    $scope.pendiInfraInternet.tipored,
+                    $scope.pendiInfraInternet.RF14,
+                    $scope.pendiInfraInternet.RF120,
+                    $scope.pendiInfraInternet.RF135,
+                    $scope.pendiInfraInternet.RF157,
+                    $scope.pendiInfraInternet.Ch1,
+                    $scope.pendiInfraInternet.Ch2,
+                    $scope.pendiInfraInternet.RF1,
+                    $scope.pendiInfraInternet.RF22,
+                    $scope.pendiInfraInternet.PerdidaPaquete1,
+                    $scope.pendiInfraInternet.PerdidaPaquete2,
+                    $scope.pendiInfraInternet.Mer1,
+                    $scope.pendiInfraInternet.Mer2,
+                    $scope.pendiInfraInternet.Ber1,
+                    $scope.pendiInfraInternet.Ber2,
+                    $scope.pendiInfraInternet.PotenciaUp1,
+                    $scope.pendiInfraInternet.PotenciaUp2,
+                    $scope.pendiInfraInternet.PotenciaDW1,
+                    $scope.pendiInfraInternet.PotenciaDW2,
+                    $scope.pendiInfraInternet.RFCH89,
+                    $scope.pendiInfraInternet.Mer89,
+                    $scope.pendiInfraInternet.Ber89,
+                    $scope.pendiInfraInternet.RFCH73,
+                    $scope.pendiInfraInternet.Mer73,
+                    $scope.pendiInfraInternet.Ber73,
+                    $scope.pendiInfraInternet.CHMalo1,
+                    $scope.pendiInfraInternet.RFMalo1,
+                    $scope.pendiInfraInternet.MerMalo1,
+                    $scope.pendiInfraInternet.BerMalo1,
+                    $scope.pendiInfraInternet.CHMalo2,
+                    $scope.pendiInfraInternet.RFMalo2,
+                    $scope.pendiInfraInternet.MerMalo2,
+                    $scope.pendiInfraInternet.BerMalo2,
+                    $scope.pendiInfraInternet.NroCliSinEnlace,
+                    $scope.pendiInfraInternet.NroCliSinAmplificador,
+                    $scope.pendiInfraInternet.NroCliAfecDerivador,
+                    $scope.pendiInfraInternet.NroCliAfecAmplificador,
+                    $scope.pendiInfraInternet.NroCliTDRAmplificador,
+                    $scope.pendiInfraInternet.ImgPnm,
+                    $scope.pendiInfraInternet.IMGFallaSiebel,
+                    $scope.pendiInfraInternet.ProbRuido,
+                    $scope.pendiInfraInternet.InstCorreaPlastica,
+                    $scope.pendiInfraInternet.NodoAAA,
+                    $scope.pendiInfraInternet.observaciones
+                ];
+
+                $scope.observacion = "";
+
+                if (CMobsoleto != "Si") {
+                    for (var i = 0; i < value.length; i += 1) {
+                        if (value[i] != undefined) {
+                            $scope.observacion += label[i] + value[i];
+                        }
+                    }
+                } else {
+                    $scope.observacion = "";
+                }
+
+                $scope.observacion = $scope.observacion.replace(/undefined/g, "");
+
+            } else if ($scope.gestionmanual.producto == 'HFC-TV_Basica') {
+                $scope.observacion = "reparación provisional?: " + $scope.pendiInfraTvBas.repaProvisional + ", RF canal 2: " + $scope.pendiInfraTvBas.RF2 + ", RF canal 110: " + $scope.pendiInfraTvBas.RF110 + ", Ciudad: " + $scope.pendiInfraTvBas.Ciudad + ", Celular: " + $scope.pendiInfraTvBas.Celular + ", Técnico: " + $scope.pendiInfraTvBas.nomTecnico + ", Observaciones: " + $scope.pendiInfraTvBas.observaciones
+            }
+        }
+
+        if ($scope.OpenModal == "ContingenciaDTH") {
+
+            $scope.observacion = "Se aprovisiona ";
+
+            if ($scope.contingenciaDTH.aprovi != undefined) {
+                $scope.observacion += "-Deco TV Digital por " + $scope.contingenciaDTH.aprovi + " con el Chip ID " + $scope.contingenciaDTH.chip + " y SmartCard " + $scope.contingenciaDTH.smart;
+            }
+
+            if ($scope.contingenciaDTH.aprovi2 != undefined) {
+                $scope.observacion += "-Deco TV Digital por " + $scope.contingenciaDTH.aprovi2 + " con el Chip ID " + $scope.contingenciaDTH.chip2 + " y SmartCard " + $scope.contingenciaDTH.smart2;
+            }
+
+            if ($scope.contingenciaDTH.aprovi3 != undefined) {
+                $scope.observacion += "-Deco TV Digital por " + $scope.contingenciaDTH.aprovi3 + " con el Chip ID " + $scope.contingenciaDTH.chip3 + " y SmartCard " + $scope.contingenciaDTH.smart3;
+            }
+
+            if ($scope.contingenciaDTH.aprovi4 != undefined) {
+                $scope.observacion += "-Deco TV Digital por " + $scope.contingenciaDTH.aprovi4 + " con el Chip ID " + $scope.contingenciaDTH.chip4 + " y SmartCard " + $scope.contingenciaDTH.smart4;
+            }
+
+            if ($scope.contingenciaDTH.observaciones != undefined) {
+                $scope.observacion += "-Queda en pediente: " + $scope.contingenciaDTH.observaciones + "--";
+            }
+        }
+
+        if ($scope.OpenModal == "ContingenciaOtros") {
+
+            $scope.observacion = "Se aprovisiona ";
+
+            if ($scope.contingenciaNCA.aproviInternet != undefined) {
+                $scope.observacion += "-Internet por " + $scope.contingenciaNCA.aproviInternet + " con la MAC " + $scope.contingenciaNCA.MACinternet;
+            }
+
+            if ($scope.contingenciaNCA.aproviToIP != undefined) {
+                $scope.observacion += "-ToIP por " + $scope.contingenciaNCA.aproviToIP + " con la MAC " + $scope.contingenciaNCA.MACToIP;
+            }
+
+            if ($scope.contingenciaNCA.aprovi1 != undefined) {
+                $scope.observacion += "-Deco TV Digital por " + $scope.contingenciaNCA.aprovi1 + " con la MAC " + $scope.contingenciaNCA.MACTV1;
+            }
+
+            if ($scope.contingenciaNCA.aprovi2 != undefined) {
+                $scope.observacion += "-Deco TV Digital por " + $scope.contingenciaNCA.aprovi2 + " con la MAC " + $scope.contingenciaNCA.MACTV2;
+            }
+
+            if ($scope.contingenciaNCA.aprovi3 != undefined) {
+                $scope.observacion += "-Deco TV Digital por " + $scope.contingenciaNCA.aprovi3 + " con la MAC " + $scope.contingenciaNCA.MACTV3;
+            }
+
+            if ($scope.contingenciaNCA.aprovi4 != undefined) {
+                $scope.observacion += "-Deco TV Digital por " + $scope.contingenciaNCA.aprovi4 + " con la MAC " + $scope.contingenciaNCA.MACTV4;
+            }
+
+            if ($scope.contingenciaNCA.aprovi5 != undefined) {
+                $scope.observacion += "-Deco TV Digital por " + $scope.contingenciaNCA.aprovi5 + " con la MAC " + $scope.contingenciaNCA.MACTV5;
+            }
+
+            if ($scope.contingenciaNCA.aprovi6 != undefined) {
+                $scope.observacion += "-Deco TV Digital por " + $scope.contingenciaNCA.aprovi6 + " con la MAC " + $scope.contingenciaNCA.MACTV6;
+            }
+
+            if ($scope.contingenciaNCA.observaciones != undefined) {
+                $scope.observacion += "-Queda en pediente: " + $scope.contingenciaNCA.observaciones + "--";
+            }
+        }
+
+        if ($scope.OpenModal == "cumplirInstalacionHFC") {
+
+            var diagnostico = "";
+
+            if ($scope.cumplir.sinalarmas != undefined && $scope.cumplir.sinalarmas) {
+                diagnostico = "0";
+            } else {
+                if ($scope.cumplir.potenciaup != undefined && $scope.cumplir.potenciaup) diagnostico = "1";
+                if ($scope.cumplir.snrup != undefined && $scope.cumplir.snrup) diagnostico = diagnostico + "/2";
+                if ($scope.cumplir.potenciadown != undefined && $scope.cumplir.potenciadown) diagnostico = diagnostico + "/3";
+                if ($scope.cumplir.snrdown != undefined && $scope.cumplir.snrdown) diagnostico = diagnostico + "/4";
+                if ($scope.cumplir.paquetesnocorregidosup != undefined && $scope.cumplir.paquetesnocorregidosup) diagnostico = diagnostico + "/5";
+                if ($scope.cumplir.paquetesnocorregidosdown != undefined && $scope.cumplir.paquetesnocorregidosdown) diagnostico = diagnostico + "/6";
+                if ($scope.cumplir.modoparcialenportadoras != undefined && $scope.cumplir.modoparcialenportadoras) diagnostico = diagnostico + "/7";
+                if ($scope.cumplir.ajustesdepotencia != undefined && $scope.cumplir.ajustesdepotencia) diagnostico = diagnostico + "/8";
+                if ($scope.cumplir.porcentajemiss != undefined && $scope.cumplir.porcentajemiss) diagnostico = diagnostico + "/9";
+            }
+
+            $scope.observacion = "*TID : " + $scope.cumplir.transaccionid +
+                "*LDAP : " + $scope.cumplir.validacionldap +
+                "*Estado CM : " + $scope.cumplir.estadocm +
+                "*IP Navegación : " + $scope.cumplir.tieneipnavegacion +
+                "*Diagnostico: {" + diagnostico + "}" +
+                "*IP EMTA : " + $scope.cumplir.tieneipemta +
+                "*Archivo de Config : " + $scope.cumplir.tienearchivoconfiguracion +
+                "*Linea registrada : " + $scope.cumplir.registradaims +
+                "*ID Llamada : " + $scope.cumplir.idllamadaentrante +
+                "*Config. Plataforma : " + $scope.cumplir.configuradoplataformatv +
+                "*ONETV : " + $scope.cumplir.esonetv +
+                "*Estado CM Deco : " + $scope.cumplir.estadocmembebido;
+        }
+
+        if ($scope.OpenModal == "cumplirInstalacionADSL") {
+
+            $scope.observacion = "*PI: " + $scope.cumplir.pruebaintegrada +
+                "*Est. OSS: " + $scope.cumplir.oss +
+                "*Est. Acce: " + $scope.cumplir.acceso +
+                "*Est. CPE: " + $scope.cumplir.cpe +
+                "*Est. Plata: " + $scope.cumplir.plataformas;
+        }
+
+
+        if ($scope.OpenModal == "ContingenciaNormal") {
+            $scope.observacion = "Reutilizó equipos? " + $scope.contingenciaNormal.reuEquipos + ", Equipo aprovisionado: " + $scope.contingenciaNormal.equipo
+        }
+
+        if ($scope.OpenModal == "ContingenciaCambio") {
+            var producto = "";
+            var puertos = "";
+            if ($scope.contingenciaCambio.BA == true) {
+                producto = producto + "-BA-";
+            }
+            if ($scope.contingenciaCambio.ToIP == true) {
+                producto = producto + "-ToIP-";
+            }
+            if ($scope.contingenciaCambio.TV == true) {
+                producto = producto + "-TV-";
+            }
+            ;
+            if ($scope.contingenciaCambio.puerto1 == true) {
+                puertos = puertos + "-1-";
+            }
+            if ($scope.contingenciaCambio.puerto2 == true) {
+                puertos = puertos + "-2-";
+            }
+            if ($scope.contingenciaCambio.puerto3 == true) {
+                puertos = puertos + "-3-";
+            }
+            if ($scope.contingenciaCambio.puerto4 == true) {
+                puertos = puertos + "-4-";
+            }
+            ;
+
+            $scope.observacion = "Productos: " + producto + ", CR o Autoriza: " + $scope.contingenciaCambio.autoriza + ", MAC de datos entra: " + $scope.contingenciaCambio.MacdatosEntra + ", MAC de datos sale: " + $scope.contingenciaCambio.MacdatosSale + ", Línea: " + $scope.contingenciaCambio.linea + ", MAC de voz entra: " + $scope.contingenciaCambio.MacvozEntra + ", MAC de voz sale: " + $scope.contingenciaCambio.MacvozSale + ", Deco(s) entra: " + $scope.contingenciaCambio.decoEntra + ", Deco(s) Sale: " + $scope.contingenciaCambio.decoSale + ", Puertos: " + puertos
+            console.log($scope.observacion);
+        }
+
+        if ($scope.OpenModal == "ContingenciaNuevo") {
+            var producto = "";
+            if ($scope.contingenciaNuevo.BA == true) {
+                producto = producto + "-BA-";
+            }
+            if ($scope.contingenciaNuevo.ToIP == true) {
+                producto = producto + "-ToIP-";
+            }
+            if ($scope.contingenciaNuevo.TV == true) {
+                producto = producto + "-TV-";
+            }
+            ;
+
+            $scope.observacion = "Productos: " + producto + ", CR o Autoriza: " + $scope.contingenciaNuevo.autoriza + ", Decos: " + $scope.contingenciaNuevo.Decos + ", línea: " + $scope.contingenciaNuevo.linea + ", MAC de datos: " + $scope.contingenciaNuevo.MacDatos + ", MAC de voz: " + $scope.contingenciaNuevo.MacVoz
+            console.log($scope.observacion);
+        }
+
+        if ($scope.OpenModal == "ContingenciaReuso") {
+            var producto = "";
+            var puertos = "";
+            if ($scope.contingenciaReuso.BA == true) {
+                producto = producto + "-BA-";
+            }
+            if ($scope.contingenciaReuso.ToIP == true) {
+                producto = producto + "-ToIP-";
+            }
+            if ($scope.contingenciaReuso.TV == true) {
+                producto = producto + "-TV-";
+            }
+            ;
+            if ($scope.contingenciaReuso.puerto1 == true) {
+                puertos = puertos + "-1-";
+            }
+            if ($scope.contingenciaReuso.puerto2 == true) {
+                puertos = puertos + "-2-";
+            }
+            if ($scope.contingenciaReuso.puerto3 == true) {
+                puertos = puertos + "-3-";
+            }
+            if ($scope.contingenciaReuso.puerto4 == true) {
+                puertos = puertos + "-4-";
+            }
+            ;
+
+            $scope.observacion = "Productos: " + producto + ", CR o Autoriza: " + $scope.contingenciaReuso.autoriza + ", MAC de datos: " + $scope.contingenciaReuso.Macdatos + ", MAC de voz: " + $scope.contingenciaReuso.Macvoz + ", Decos: " + $scope.contingenciaReuso.decos + ", Línea: " + $scope.contingenciaReuso.linea + ", Puertos: " + puertos
+        }
+
+        if ($scope.OpenModal == "formaDsam") {
+            $scope.observacion = "ID SMNET: " + $scope.DSAM.idSmnet + ", DQI: " + $scope.DSAM.DQI + ", DS SNR: " + $scope.DSAM.SNR + ", CH 2: " + $scope.DSAM.CH2 + ", BER: " + $scope.DSAM.BER + ", POT UP: " + $scope.DSAM.POTUP + ", CH 119: " + $scope.DSAM.CH119 + ", MER: " + $scope.DSAM.MER + ", POTDOWN: " + $scope.DSAM.POTDOWN
+        }
+
+        if ($scope.OpenModal == "PendiInstaHFC-OT-T10") {
+
+            if ($scope.gestionmanual.producto == 'HFC-Internet' || $scope.gestionmanual.producto == 'HFC-ToIP' || $scope.gestionmanual.producto == 'HFC-TV_Digital') {
+                var CMobsoleto = document.getElementById("CMobsoleto2").value;
+                if (CMobsoleto == "Si") {
+                    $scope.modal = ""
+                    Swal(
+                        'No se puede guardar la plantilla!',
+                        'Se requiere cambiar el equipo ya que es obsoleto'
+                    )
+                } else {
+                    $scope.modal = "modal"
+                }
+
+                var label = [
+                    'Señal: ',
+                    ', v tap: ',
+                    ', Marcación TAP: ',
+                    ', Dir TAP:',
+                    ', Id pru: ',
+                    ', Mac CM: ',
+                    ', Técnico:  ',
+                    ', Cel: ',
+                    ', City: ',
+                    ', Id p vecinos: ',
+                    '/',
+                    '/',
+                    ', T Red: ',
+                    ', RF-14: ',
+                    ' dBm, RF-120: ',
+                    ' dBm, RF-135: ',
+                    ' dBm, RF-157: ',
+                    ' dBm, CH: ',
+                    ', CH: ',
+                    ', RF 1: ',
+                    ' dBm, RF 2: ',
+                    ' dBm, MER 1: ',
+                    ' dB, MER 2: ',
+                    ' dB, BER 1: ',
+                    ', BER 2: ',
+                    ', P DOWN 1: ',
+                    ' dB, P DOWN 2: ',
+                    ' dB, RF CH 89: ',
+                    ', MER 89: ',
+                    ', BER 89: ',
+                    ', RF CH 73: ',
+                    ' dBm, MER 73: ',
+                    ', BER 73: ',
+                    ', CH: ',
+                    ', RF: ',
+                    ' dBm, MER: ',
+                    ', BER: ',
+                    ', CH: ',
+                    ', RF: ',
+                    ' dBm, MER: ',
+                    ', BER: ',
+                    ', # sin enlace en der: ',
+                    ', # sin enlace en amp: ',
+                    ', # afect en der: ',
+                    ', # afect en amp: ',
+                    ', # cltes TDR amp: ',
+                    ', Img adj PNM CRM: ',
+                    ', Img adj falla CRM: ',
+                    ', Ruido: ',
+                    ', Marquilla: ',
+                    ', Nodo/Cmts: ',
+                    ', Observaciones: '
+                ];
+
+                var value = [
+                    $scope.PendiInstaHFCOTT10.repaProvisional,
+                    $scope.PendiInstaHFCOTT10.valortab,
+                    $scope.PendiInstaHFCOTT10.MarcacionTap,
+                    $scope.PendiInstaHFCOTT10.DireccionTap,
+                    $scope.PendiInstaHFCOTT10.idPrueba,
+                    $scope.PendiInstaHFCOTT10.macEquipo,
+                    $scope.tecnico,
+                    $scope.PendiInstaHFCOTT10.Celular,
+                    $scope.gestionmanual.CIUDAD,
+                    $scope.PendiInstaHFCOTT10.idVecinos,
+                    $scope.PendiInstaHFCOTT10.idVecinos1,
+                    $scope.PendiInstaHFCOTT10.idVecinos2,
+                    $scope.PendiInstaHFCOTT10.tipored,
+                    $scope.PendiInstaHFCOTT10.RF14,
+                    $scope.PendiInstaHFCOTT10.RF120,
+                    $scope.PendiInstaHFCOTT10.RF135,
+                    $scope.PendiInstaHFCOTT10.RF157,
+                    $scope.PendiInstaHFCOTT10.Ch1,
+                    $scope.PendiInstaHFCOTT10.Ch2,
+                    $scope.PendiInstaHFCOTT10.RF1,
+                    $scope.PendiInstaHFCOTT10.RF22,
+                    $scope.PendiInstaHFCOTT10.Mer1,
+                    $scope.PendiInstaHFCOTT10.Mer2,
+                    $scope.PendiInstaHFCOTT10.Ber1,
+                    $scope.PendiInstaHFCOTT10.Ber2,
+                    $scope.PendiInstaHFCOTT10.PotenciaDW1,
+                    $scope.PendiInstaHFCOTT10.PotenciaDW2,
+                    $scope.PendiInstaHFCOTT10.RFCH89,
+                    $scope.PendiInstaHFCOTT10.Mer89,
+                    $scope.PendiInstaHFCOTT10.Ber89,
+                    $scope.PendiInstaHFCOTT10.RFCH73,
+                    $scope.PendiInstaHFCOTT10.Mer73,
+                    $scope.PendiInstaHFCOTT10.Ber73,
+                    $scope.PendiInstaHFCOTT10.CHMalo1,
+                    $scope.PendiInstaHFCOTT10.RFMalo1,
+                    $scope.PendiInstaHFCOTT10.MerMalo1,
+                    $scope.PendiInstaHFCOTT10.BerMalo1,
+                    $scope.PendiInstaHFCOTT10.CHMalo2,
+                    $scope.PendiInstaHFCOTT10.RFMalo2,
+                    $scope.PendiInstaHFCOTT10.MerMalo2,
+                    $scope.PendiInstaHFCOTT10.BerMalo2,
+                    $scope.PendiInstaHFCOTT10.NroCliSinEnlace,
+                    $scope.PendiInstaHFCOTT10.NroCliSinAmplificador,
+                    $scope.PendiInstaHFCOTT10.NroCliAfecDerivador,
+                    $scope.PendiInstaHFCOTT10.NroCliAfecAmplificador,
+                    $scope.PendiInstaHFCOTT10.NroCliTDRAmplificador,
+                    $scope.PendiInstaHFCOTT10.ImgPnm,
+                    $scope.PendiInstaHFCOTT10.IMGFallaSiebel,
+                    $scope.PendiInstaHFCOTT10.ProbRuido,
+                    $scope.PendiInstaHFCOTT10.InstCorreaPlastica,
+                    $scope.PendiInstaHFCOTT10.NodoAAA,
+                    $scope.PendiInstaHFCOTT10.observaciones
+                ];
+
+                $scope.observacion = "";
+
+                if (CMobsoleto != "Si") {
+                    for (var i = 0; i < value.length; i += 1) {
+                        if (value[i] != undefined) {
+                            $scope.observacion += label[i] + value[i];
+                        }
+                    }
+                } else {
+                    $scope.observacion = "";
+                }
+
+                $scope.observacion = $scope.observacion.replace(/undefined/g, "");
+            }
+        }
+    }
+
+    $scope.guardarModalRecogerEq = function (equiposRecoger) {
+
+        if ($scope.gestionmanual.tecnico == "" || $scope.gestionmanual.tecnico == undefined) {
+            Swal({
+                type: 'error',
+                title: 'Opsss...',
+                text: 'Por favor ingresar el tecnico.',
+                timer: 4000
+            })
+        }
+
+        if ($scope.gestionmanual.producto == "" || $scope.gestionmanual.producto == undefined) {
+            Swal({
+                type: 'error',
+                title: 'Opsss...',
+                text: 'Por favor ingresar el producto.',
+                timer: 4000
+            })
+        }
+
+        services.recogidaEquipos(equiposRecoger).then(
+            function (respuesta) {
+                if (respuesta.status == '201' || respuesta.status == '200') {
+                    Swal({
+                        type: 'success',
+                        title: 'Muy bien.',
+                        text: 'Los equipos a recoger fueron guardados!',
+                        timer: 4000
+                    })
+                }
+                $("#recogerEquipos").modal('hide');
+                $scope.equipo = {};
+            },
+            function errorCallback(response) {
+                if (response.status == '400') {
+                    Swal({
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Este pedido ya está registrado!'
+                    })
+                }
+            }
+        )
+    }
+
+    $scope.selectProductoHFC = function (producto) {
+        if (producto == 'Internet-ToIP') {
+            $scope.gestionmanual.producto = 'HFC-Internet';
+        } else {
+            $scope.gestionmanual.producto = producto;
+        }
+    }
+
+    $(".mi-hover").hover(
+        function () {
+            $(this).addClass("panel-primary");
+        },
+        function () {
+            $(this).removeClass("panel-primary");
+        }
+    )
+
+    $scope.selectProductocontingencia = function (producto) {
+        if (producto == 'TV digital 1') {
+            $scope.TVdigital1 = true;
+            $scope.TVdigital2 = false;
+            $scope.TVdigital3 = false;
+            $scope.TVdigital4 = false;
+            $scope.TVdigital5 = false;
+            $scope.TVdigital6 = false;
+            $scope.Internet = false;
+            $scope.ToIP = false;
+        } else if (producto == 'TV digital 2') {
+            $scope.TVdigital1 = false;
+            $scope.TVdigital2 = true;
+            $scope.TVdigital3 = false;
+            $scope.TVdigital4 = false;
+            $scope.TVdigital5 = false;
+            $scope.TVdigital6 = false;
+            $scope.Internet = false;
+            $scope.ToIP = false;
+        } else if (producto == 'TV digital 3') {
+            $scope.TVdigital1 = false;
+            $scope.TVdigital2 = false;
+            $scope.TVdigital3 = true;
+            $scope.TVdigital4 = false;
+            $scope.TVdigital5 = false;
+            $scope.TVdigital6 = false;
+            $scope.Internet = false;
+            $scope.ToIP = false;
+        } else if (producto == 'TV digital 4') {
+            $scope.TVdigital1 = false;
+            $scope.TVdigital2 = false;
+            $scope.TVdigital3 = false;
+            $scope.TVdigital4 = true;
+            $scope.TVdigital5 = false;
+            $scope.TVdigital6 = false;
+            $scope.Internet = false;
+            $scope.ToIP = false;
+        } else if (producto == 'TV digital 5') {
+            $scope.TVdigital1 = false;
+            $scope.TVdigital2 = false;
+            $scope.TVdigital3 = false;
+            $scope.TVdigital4 = false;
+            $scope.TVdigital5 = true;
+            $scope.TVdigital6 = false;
+            $scope.Internet = false;
+            $scope.ToIP = false;
+        } else if (producto == 'TV digital 6') {
+            $scope.TVdigital1 = false;
+            $scope.TVdigital2 = false;
+            $scope.TVdigital3 = false;
+            $scope.TVdigital4 = false;
+            $scope.TVdigital5 = false;
+            $scope.TVdigital6 = true;
+            $scope.Internet = false;
+            $scope.ToIP = false;
+        } else if (producto == 'Internet') {
+            $scope.TVdigital1 = false;
+            $scope.TVdigital2 = false;
+            $scope.TVdigital3 = false;
+            $scope.TVdigital4 = false;
+            $scope.TVdigital5 = false;
+            $scope.TVdigital6 = false;
+            $scope.Internet = true;
+            $scope.ToIP = false;
+        } else if (producto == 'ToIP') {
+            $scope.TVdigital1 = false;
+            $scope.TVdigital2 = false;
+            $scope.TVdigital3 = false;
+            $scope.TVdigital4 = false;
+            $scope.TVdigital5 = false;
+            $scope.TVdigital6 = false;
+            $scope.Internet = false;
+            $scope.ToIP = true;
+        }
+    }
+
+    function bb8(pedido) {
+        $scope.bb8Internet = 0;
+        $scope.bb8Telefonia = 0;
+        $scope.bb8Television = 0;
+
+        services.windowsBridge("BB8/contingencias/Buscar/GetClick/" + pedido)
+            .then(function (data) {
+
+                /*services.myService('sara','ContadorCtrl.php','contador').then((data) => {
+                    console.log(data);
+                })*/
+
+                /*                services.myService('bb8','ContadorCtrl.php','contador').then((data) => {
+                                    console.log(data);
+                                })*/
+                $scope.clic = data.data[0];
+                $scope.UNEPedido = $scope.clic.UNEPedido;
+                $scope.Estado = $scope.clic.Estado;
+                $scope.TipoEquipo = $scope.clic.TipoEquipo;
+                $scope.Categoria = $scope.clic.TT;
+                $scope.UNEMunicipio = $scope.clic.UNEMunicipio;
+                $scope.UNENombreCliente = $scope.clic.UNENombreCliente;
+                $scope.UNEIdCliente = $scope.clic.UNEIdCliente;
+                $scope.ID_GIS = $scope.clic.UNECodigoDireccionServicio;
+                $scope.Estado = $scope.clic.Estado;
+                $scope.CRM = $scope.clic.TTC;
+                $scope.Sistema = $scope.clic.UNESourceSystem;
+                console.log($scope.clic.Duration);
+                $scope.Duration = parseInt($scope.clic.Duration);
+                $scope.Duration = ($scope.Duration / 60);
+                services.windowsBridge("BB8/contingencias/Buscar/GetPlanBaMSS/" + pedido)
+                    .then(function (data) {
+                        console.log(data, " internet ");
+                        if (data.data.length > 0) {
+                            $scope.NAT = 'SI';
+                            $scope.bb8Internet = 1;
+                            $scope.recorreinternet = data.data;
+
+
+                            for (let i = 0; i < $scope.recorreinternet.length; i++) {
+                                if ($scope.recorreinternet[i].VALUE_LABEL == 'Qty') {
+                                    $scope.Velocidad = $scope.recorreinternet[i].VALID_VALUE;
+                                }
+                                if ($scope.recorreinternet[i].VALUE_LABEL == 'IdServicio') {
+                                    $scope.IDServicioInternet = $scope.recorreinternet[i].VALID_VALUE;
+                                }
+                            }
+
+                        } else {
+                            services.windowsBridge("BB8/contingencias/Buscar/GetPlanBaMSS/" + $scope.clic.UNECodigoDireccionServicio)
+                                .then(function (data) {
+                                    console.log(data, " internet2 ");
+                                    if (data.data.length > 0) {
+                                        $scope.NAT = 'SI';
+                                        $scope.bb8Internet = 1;
+                                        $scope.recorreinternet = data.data;
+
+                                        for (let i = 0; i < $scope.recorreinternet.length; i++) {
+                                            if ($scope.recorreinternet[i].VALUE_LABEL == 'Qty') {
+                                                $scope.Velocidad = $scope.recorreinternet[i].VALID_VALUE;
+                                            }
+                                            if ($scope.recorreinternet[i].VALUE_LABEL == 'IdServicio') {
+                                                $scope.IDServicioInternet = $scope.recorreinternet[i].VALID_VALUE;
+                                            }
+                                        }
+                                    }
+                                });
+                        }
+                        services.windowsBridge("BB8/contingencias/Buscar/GetPlanTOMSS/" + pedido)
+                            .then(function (data) {
+                                console.log(data, " telefonia");
+                                if (data.data.length > 0) {
+                                    $scope.bb8Telefonia = 1;
+                                    $scope.recorretelefonia = data.data;
+                                    $scope.Linea = $scope.recorretelefonia[0].LINEA;
+                                    for (let i = 0; i < $scope.recorretelefonia.length; i++) {
+                                        if ($scope.recorretelefonia[i].VALUE_LABEL == 'IdServicio') {
+                                            $scope.IDServicioTele = $scope.recorretelefonia[i].VALID_VALUE;
+                                        }
+                                        if ($scope.recorretelefonia[i].VALUE_LABEL == 'PlataformaTOIP') {
+                                            $scope.Plataforma = $scope.recorretelefonia[i].VALID_VALUE;
+                                        }
+                                    }
+                                } else {
+                                    services.windowsBridge("BB8/contingencias/Buscar/GetPlanTOMSS/" + $scope.clic.UNECodigoDireccionServicio)
+                                        .then(function (data) {
+                                            console.log(data, " telefonia2");
+                                            if (data.data.length > 0) {
+                                                $scope.bb8Telefonia = 1;
+                                                $scope.recorretelefonia = data.data;
+                                                $scope.Linea = recorretelefonia[0].LINEA;
+                                                for (let i = 0; i < $scope.recorretelefonia.length; i++) {
+                                                    if ($scope.recorretelefonia[i].VALUE_LABEL == 'IdServicio') {
+                                                        $scope.IDServicioTele = $scope.recorretelefonia[i].VALID_VALUE;
+                                                    }
+                                                    if ($scope.recorretelefonia[i].VALUE_LABEL == 'PlataformaTOIP') {
+                                                        $scope.Plataforma = $scope.recorretelefonia[i].VALID_VALUE;
+                                                    }
+                                                }
+                                            }
+                                        });
+                                }
+                                services.windowsBridge("BB8/contingencias/Buscar/GetPlanTVMSS/" + pedido)
+                                    .then(function (data) {
+                                        console.log(data, " tv");
+                                        if (data.data.length > 0) {
+                                            $scope.bb8Television = 1;
+                                            $scope.recore = data.data;
+                                            for (let i = 0; i < $scope.recore.length; i++) {
+                                                if ($scope.recore[i].VALUE_LABEL == 'IdServicio') {
+                                                    $scope.IDServicioTV = $scope.recore[i].VALID_VALUE;
+                                                }
+                                                if ($scope.recore[i].VALUE_LABEL == 'productId') {
+                                                    $scope.productIdTV = $scope.recore[i].VALID_VALUE;
+                                                }
+                                                if ($scope.recore[i].ITEM_ALIAS == 'PaqueteTV') {
+                                                    $scope.paquete = $scope.recore[i].VALID_VALUE;
+                                                    $scope.paquete1 = $scope.recore[i].VALUE_LABEL;
+                                                }
+
+                                            }
+                                        } else {
+                                            services.windowsBridge("BB8/contingencias/Buscar/GetPlanTVMSS/" + $scope.clic.UNECodigoDireccionServicio)
+                                                .then(function (data) {
+                                                    console.log(data, " tv2");
+                                                    if (data.data.length > 0) {
+                                                        $scope.bb8Television = 1;
+                                                        $scope.recore = data.data;
+                                                        for (let i = 0; i < $scope.recore.length; i++) {
+                                                            if ($scope.recore[i].VALUE_LABEL == 'IdServicio') {
+                                                                $scope.IDServicioTV = $scope.recore[i].VALID_VALUE;
+                                                            }
+                                                            if ($scope.recore[i].VALUE_LABEL == 'productId') {
+                                                                $scope.productIdTV = $scope.recore[i].VALID_VALUE;
+                                                            }
+                                                            if ($scope.recore[i].ITEM_ALIAS == 'PaqueteTV') {
+                                                                $scope.paquete = $scope.recore[i].VALID_VALUE;
+                                                                $scope.paquete1 = $scope.recore[i].VALUE_LABEL;
+                                                            }
+
+                                                        }
+                                                    }
+                                                });
+                                        }
+                                    })
+                                    .catch(function (error) {
+                                        console.log(error);
+                                    });
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
+    function actividades(pedido) {
+
+        $scope.plantillaReparaciones = 0;
+        $scope.iniciaGestion = false;
+        $scope.errorconexion1 = false;
+        $scope.gestionmanual = {};
+        $scope.pedido = pedido;
+        $scope.gestionmanual.producto = "";
+        $scope.collapse = 0;
+        $scope.counter = 0;
+
+        $scope.startCounter = function () {
+            if (timer === null) {
+                updateCounter();
+            }
+        };
+        var updateCounter = function () {
+            $scope.counter++;
+            timer = $timeout(updateCounter, 1000);
+        };
+        updateCounter();
+
+        if (pedido == "" || pedido == undefined) {
+            Swal({
+                type: 'info',
+                title: 'Opsss....',
+                text: 'Ingrese un pedido para buscar',
+                timer: 4000
+            })
+        } else {
+
+            $scope.sininfopedido = true;
+            services.windowsBridge("HCHV/Buscar/" + pedido)
+                .then(function (data) {
+                        $scope.myWelcome = data.data;
+                        $scope.equipos = $scope.myWelcome.Equipos;
+                        if ($scope.myWelcome.pEDIDO_UNE == null) {
+                            $scope.infopedido = false;
+                            $scope.errorconexion1 = false;
+                            $scope.myWelcome = {};
+                        } else if ($scope.myWelcome.engineerID == null) {
+                            $scope.infopedido = false;
+                            $scope.errorconexion1 = false;
+                            $scope.myWelcome = {};
+                        } else if ($scope.myWelcome.pEDIDO_UNE == "TIMEOUT") {
+                            $scope.infopedido = false;
+                            $scope.errorconexion1 = true;
+                            $scope.myWelcome = {};
+                            $scope.errorconexion = "No hay conexión con Click, ingrese datos manualmente";
+                        } else {
+                            $scope.infopedido = true;
+                            $scope.gestionmanual.tecnico = $scope.myWelcome.engineerID;
+                            $scope.gestionmanual.CIUDAD = $scope.myWelcome.uNEMunicipio.toUpperCase();
+                            $scope.BuscarTecnico();
+                        }
+                    },
+
+                    function (err) {
+                        console.log(err)
+                    }
+                );
+        }
+
+    }
+
+    function buscarDataSara(pedido) {
+        services.windowsBridge("SARA/Buscar/" + pedido)
+            .then(function (data) {
+                    $scope.dataSara = data.data;
+
+                    if ($scope.dataSara.Error == "No hay datos para mostrar") {
+
+                        $scope.horasTranscurridas = 0;
+                        $scope.minutosTranscurridos = 0;
+                        $scope.segundosTranscurridos = 0;
+
+                    }
+
+                    $scope.indiceSara = (Object.keys($scope.dataSara.SolicitudesSara).length) - 1;
+                    var tiempoSara = $scope.dataSara.SolicitudesSara[$scope.indiceSara].TiempoRespuesta;
+                    $scope.horasTranscurridas = tiempoSara.substr(0, 2);
+                    $scope.minutosTranscurridos = tiempoSara.substr(3, 2);
+                    $scope.segundosTranscurridos = tiempoSara.substr(6, 2);
+                    return data.data;
+                },
+
+                function (Error) {
+                    console.log(errro);
+                });
+    }
+
+    $scope.BuscarPedido = function (pedido) {
+        if (!pedido) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Ingrese el pedido a buscar',
+                timer: 4000
+            })
+            return;
+        }
+        $scope.inicio = 1;
+        bb8(pedido);
+        actividades(pedido);
+        buscarDataSara(pedido);
+    }
+
+    $scope.BuscarTecnico = function () {
+
+        if ($scope.gestionmanual.tecnico == undefined || $scope.gestionmanual.tecnico == "") {
+            $scope.gestionmanual.tecnico = $scope.myWelcome.engineerID;
+        }
+
+        if ($scope.gestionmanual.tecnico == undefined || $scope.gestionmanual.tecnico == "") {
+            return;
+        }
+        data = {'buscar': 'identificacion', 'variable': $scope.gestionmanual.tecnico, 'page': 1, 'size': 15}
+
+        services.listadoTecnicos(data).then(
+            function (data) {
+
+                $scope.Tecnico = data.data.data;
+                $scope.tecnico = $scope.Tecnico[0].NOMBRE;
+                $scope.empresa = $scope.Tecnico[0].NOM_EMPRESA;
+                if ($scope.Tecnico[0].CELULAR == "") {
+                    Swal({
+                        type: 'info',
+                        title: 'Opsss....',
+                        text: 'El número de celular del tecnico no existe!',
+                        timer: 4000
+                    })
+                    $scope.celular = "0000000000";
+                } else {
+                    $scope.celular = $scope.Tecnico[0].CELULAR;
+                }
+                //   console.log($scope.Tecnico[0]);
+                $scope.creaTecnico = true;
+                return;
+            },
+            function errorCallback(response) {
+                $('#NuevoTecnico').modal('show');
+                $scope.creaTecnico = false;
+            }
+        )
+    }
+
+    $scope.createTecnico = function () {
+        services.creaTecnico($scope.crearTecnico, $scope.gestionmanual.tecnico).then(
+            function (data) {
+                $scope.BuscarTecnico();
+                return data.data;
+            },
+            function errorCallback(response) {
+                console.log($scope.errorDatos);
+            }
+        )
+    }
+
+
+    $scope.guardarPedido = function () {
+        console.log('kkkkkkkkkkkkkkkk');
+
+        if ($scope.gestionmanual.interaccion == "" || $scope.gestionmanual.interaccion == undefined) {
+            Swal({
+                type: 'info',
+                title: 'Opsss....',
+                text: 'Debe seleccionar el tipo de interacción.',
+                timer: 4000
+            })
+            return;
+        }
+
+        if (($scope.gestionmanual.interaccion == "llamada" && $scope.gestionmanual.id_llamada == "") || ($scope.gestionmanual.interaccion == "llamada" && $scope.gestionmanual.id_llamada == undefined)) {
+            Swal({
+                type: 'info',
+                title: 'Opsss....',
+                text: 'Por favor ingresar el ID de llamada.',
+                timer: 4000
+            })
+            return;
+        }
+
+        if ($scope.gestionmanual.interaccion == "llamada" && $scope.gestionmanual.id_llamada.length > 40) {
+            Swal({
+                type: 'info',
+                title: 'Opsss....',
+                text: 'Por favor ingrese un Id de Llamada válido.',
+                timer: 4000
+            })
+            return;
+        }
+
+        if ($scope.gestionmanual.tecnico == "" || $scope.gestionmanual.tecnico == undefined) {
+            Swal({
+                type: 'info',
+                title: 'Opsss....',
+                text: 'Por favor ingresar el tecnico.',
+                timer: 4000
+            })
+            return;
+        }
+
+        if ($scope.gestionmanual.producto == "" || $scope.gestionmanual.producto == undefined) {
+            Swal({
+                type: 'info',
+                title: 'Opsss....',
+                text: 'Por favor ingresar un producto.',
+                timer: 4000
+            })
+            return;
+        }
+
+        if ($scope.gestionmanual.proceso == "" || $scope.gestionmanual.proceso == undefined) {
+            Swal({
+                type: 'info',
+                title: 'Opsss....',
+                text: 'Por favor ingresar el proceso.',
+                timer: 4000
+            })
+            return;
+        }
+
+        if ($scope.gestionmanual.accion == "" || $scope.gestionmanual.accion == undefined) {
+            Swal({
+                type: 'info',
+                title: 'Opsss....',
+                text: 'Por favor ingresar una accion.',
+                timer: 4000
+            })
+            return;
+        }
+
+        if ($scope.gestionmanual.accion == "Soporte GPON" && ($scope.gestionmanual.subAccion == "" || $scope.gestionmanual.subAccion == undefined)) {
+            Swal({
+                type: 'info',
+                title: 'Opsss....',
+                text: 'Por favor ingresar una subaccion.',
+                timer: 4000
+            })
+            return;
+        }
+
+        if ($scope.gestionmanual.observaciones == "" || $scope.gestionmanual.observaciones == undefined) {
+            Swal({
+                type: 'info',
+                title: 'Opsss....',
+                text: 'Debes documentar bien ingresa observaciones.',
+                timer: 4000
+            })
+            return;
+        }
+
+        //se quita validaciones requerimiento por carlos 3-04-2023
+        /*if ($scope.gestionmanual.proceso == "Reparaciones" && $scope.gestionmanual.accion == "Cambio Equipo") {
+            if ($scope.gestionmanual.macEntra == "" || $scope.gestionmanual.macEntra == undefined || $scope.gestionmanual.macSale == "" || $scope.gestionmanual.macSale == undefined) {
+                alert("Debes de ingresar al menos una MAC Entra y una MAC Sale.");
+                return;
+            }
+        }*/
+
+        $timeout.cancel(timer);
+        timer = null;
+
+        var hours = Math.floor($scope.counter / 3600),
+            minutes = Math.floor(($scope.counter % 3600) / 60),
+            seconds = Math.floor($scope.counter % 60);
+
+        if (hours < 10) {
+            hours = "0" + hours;
+        }
+
+        if (minutes < 10) {
+            minutes = "0" + minutes;
+        }
+
+        if (seconds < 10) {
+            seconds = "0" + seconds;
+        }
+
+        $scope.counter = hours + ":" + minutes + ":" + seconds;
+
+        console.log($scope.counter, ' """""""""""""""""""""222');
+
+        services.ingresarPedidoAsesor(
+            $scope.gestionmanual,
+            $scope.pedido,
+            $scope.empresa,
+            $scope.counter,
+            $rootScope.galletainfo,
+            $scope.myWelcome,
+            $scope.observacion,
+            $scope.datoscambioEquipo = 0
+        ).then(
+            function (data) {
+                console.log(data);
+                if (data.data.state == 99) {
+                    swal({
+                        type: "error",
+                        title: data.data.title,
+                        text: data.data.msg,
+                        timer: 4000,
+                    }).then(function () {
+                        $cookies.remove("usuarioseguimiento");
+                        $location.path("/");
+                        $rootScope.galletainfo = undefined;
+                        $rootScope.permiso = false;
+                        $route.reload();
+                    });
+                } else if (data.data.state == 1) {
+                    swal({
+                        type: "success",
+                        title: 'Bien',
+                        text: data.data.msj,
+                        timer: 4000,
+                    }).then(() => {
+                        $route.reload();
+                    })
+                } else if (data.data.state == 0) {
+                    swal({
+                        type: "error",
+                        title: 'Oppss...',
+                        text: data.data.msj,
+                        timer: 4000,
+                    })
+                }
+
+            },
+            function errorCallback(response) {
+                console.log(response);
+            }
+        )
+    }
+
+    $scope.limpiar = function () {
+        location.reload();
+    }
+
+    $scope.procesos();
+});
+
+app.controller(
+    "premisasInfraestructurasCtrl",
+    function (
+        $scope,
+        $rootScope,
+        $location,
+        $route,
+        $cookies,
+        services
+    ) {
+        $scope.isInfraestructureFromField = false;
+        $scope.isInfraestructureFromIntranet = false;
+        $scope.isLoadingData = true;
+        $scope.dataEscalamientoInfraestructura = [];
+        $scope.dataEscalamientoInfraestructuraPrioridad2 = [];
+
+        $scope.listarescalamientosinfraestructura = () => {
+            database
+                .collection("infraestructure")
+                .where("status", "==", 0)
+                .orderBy("dateCreated", "asc")
+                .get()
+                .then((querySnapshot) => {
+                    $scope.isInfraestructureFromField = false;
+                    $scope.listaEscalamientosInfraestructura = [];
+                    querySnapshot.forEach((doc) => {
+                        let dataQuerySnapshot = {};
+                        dataQuerySnapshot = {
+                            _id: doc.id,
+                            addressTap: doc.data().addressTap,
+                            observaciones: doc.data().comments,
+                            dateCreated: doc.data().dateCreated,
+                            correa_marcacion: doc.data().isMarkInstalledSif,
+                            isPhoto: doc.data().isPhoto,
+                            isSmnetTestSif: doc.data().isSmnetTestSif,
+                            mac_real_cpe: doc.data().macRealCPE,
+                            markTap: doc.data().markTap,
+                            netType: doc.data().netType,
+                            proceso: doc.data().process,
+                            producto: doc.data().product,
+                            motivo: doc.data().subject,
+                            status: doc.data().status,
+                            pedido: doc.data().task,
+                            user_ID: doc.data().user_ID,
+                            user_identification: doc.data().user_identification,
+                            vTap: doc.data().vTap,
+                            informacion_adicional: doc.data().concatData,
+                        };
+
+                        var date = dataQuerySnapshot.dateCreated.toDate();
+                        var year = date.getFullYear();
+                        var month = date.getMonth();
+                        var day = "0" + date.getDate();
+                        var hours = "0" + date.getHours();
+                        var minutes = "0" + date.getMinutes();
+                        var seconds = "0" + date.getSeconds();
+
+                        var formattedTime =
+                            year +
+                            "-" +
+                            (month + 1) +
+                            "-" +
+                            day.substr(-2) +
+                            " " +
+                            hours.substr(-2) +
+                            ":" +
+                            minutes.substr(-2) +
+                            ":" +
+                            seconds.substr(-2);
+
+                        dataQuerySnapshot.fecha_solicitud = formattedTime;
+                        $scope.listaEscalamientosInfraestructura.push(dataQuerySnapshot);
+                    });
+
+                    if ($scope.flagOnlyPSData) {
+                        $scope.dataEscalamientoInfraestructura =
+                            $scope.listaEscalamientosInfraestructura.concat(
+                                $scope.dataGestionEscalamiento
+                            );
+                        $scope.isLoadingData = false;
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        };
+
+        $scope.gestionescalamiento = () => {
+            isLoadingData = true;
+            $scope.flagOnlyPSData = false;
+            $scope.dataGestionEscalamiento = [];
+
+            services
+                .datosgestionescalamientos()
+                .then(function (data) {
+                    console.log(data);
+                    if (data.data.state == 99) {
+                        swal({
+                            type: "error",
+                            title: data.data.title,
+                            text: data.data.text,
+                            timer: 4000,
+                        }).then(function () {
+                            $cookies.remove("usuarioseguimiento");
+                            $location.path("/");
+                            $rootScope.galletainfo = undefined;
+                            $rootScope.permiso = false;
+                            $route.reload();
+                        });
+                    } else {
+                        $scope.listarescalamientosinfraestructura();
+                        if (data.data.state != 1) {
+                            Swal({
+                                type: 'error',
+                                text: data.data.msj,
+                                timer: 4000
+                            })
+                        } else {
+                            $scope.dataGestionEscalamiento = data.data.data;
+                            if ($scope.listaEscalamientosInfraestructura) {
+                                if ($scope.listaEscalamientosInfraestructura.length > 0) {
+                                    $scope.dataEscalamientoInfraestructura =
+                                        $scope.listaEscalamientosInfraestructura.concat(
+                                            $scope.dataGestionEscalamiento
+                                        );
+                                    $scope.isLoadingData = false;
+                                } else {
+                                    $scope.flagOnlyPSData = true;
+                                }
+                            } else {
+                                $scope.flagOnlyPSData = true;
+                            }
+                        }
+
+                    }
+                })
+                .catch((err) => {
+                    $scope.listarescalamientosinfraestructura();
+                    console.log(err);
+                });
+
+            services
+                .datosgestionescalamientosprioridad2()
+                .then(function (data) {
+                    if (data.data.state != 1) {
+                        console.log(data.data.msj);
+                    } else {
+                        $scope.dataEscalamientoInfraestructuraPrioridad2 = data.data.data;
+                    }
+
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        };
+
+        $scope.exportarRegistros = () => {
+            services.exportEscalamientos()
+                .then(function (data) {
+                    if (data.data.state == 1) {
+                        var wb = XLSX.utils.book_new();
+                        var ws = XLSX.utils.json_to_sheet(data.data.data);
+                        XLSX.utils.book_append_sheet(wb, ws, 'nivedades_tecnico');
+                        XLSX.writeFile(wb, 'Novedades_tecnico_' + tiempo + '.xlsx');
+                    } else {
+                        Swal({
+                            type: 'error',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        };
+
+        $scope.mostrarModalConcatenacion = (data) => {
+            data = data.replaceAll("||", "<br>");
+            Swal({
+                type: "info",
+                title: "Información Adicional",
+                html:
+                    '<div style="text-align:justify;font-size: 12px;">' + data + "</div>",
+                footer: "Puedes copiar esta información si lo deseas",
+            });
+        };
+
+        $scope.mostrarModalEscalamiento = function (data) {
+            if (data.engestion == null || data.engestion == "0") {
+                Swal({
+                    type: 'info',
+                    title: 'Opsss....',
+                    text: 'Debes bloquear el pedido',
+                    timer: 4000
+                })
+            } else if (data.tipificacion == undefined || data.tipificacion == "") {
+                Swal({
+                    type: 'info',
+                    title: 'Opsss....',
+                    text: 'Recuerda seleccionar todas las opciones!!',
+                    timer: 4000
+                })
+            } else {
+                $scope.gestionescala = data;
+                $("#editarModal").modal("show");
+                return data.data;
+            }
+        };
+
+        $scope.marcarEngestionEscalamiento = async (data) => {
+            if (data._id) {
+                try {
+                    await $scope.autocompletarEscalamiento(data);
+                } catch (error) {
+                    return swal({
+                        title: "Aviso Importante: ",
+                        html: "El pedido no fue desbloqueado.",
+                        type: "error",
+                    });
+                }
+            } else {
+                services
+                    .marcarengestionescalamiento(data, $rootScope.galletainfo)
+                    .then(function (data) {
+                        if (data.data.data != 1) {
+                            Swal({
+                                type: 'error',
+                                text: data.data.msj,
+                                timer: 4000
+                            })
+                        } else if (data.data == "") {
+                            Swal({
+                                type: 'success',
+                                text: data.data.msj,
+                                timer: 4000
+                            })
+                        }
+                    })
+                    .catch((err) => console.log(err));
+            }
+        };
+
+        $scope.autocompletarEscalamiento = async (data) => {
+            try {
+                var autocompleteQuery = await fetch(
+                    "http://10.100.66.254:8080/HCHV_DEV/Buscar/" + data.pedido
+                );
+                var autocompleteData = await autocompleteQuery.json();
+                data.engineerID = autocompleteData.engineerID;
+                data.engineer = autocompleteData.engineerName;
+                data.dateCreated = data.dateCreated.toDate();
+                data.area = autocompleteData.Area;
+                data.taskType = autocompleteData.TaskType;
+                data.region = autocompleteData.Region;
+                data.task = autocompleteData.tAREA_ID;
+                data.tech = autocompleteData.uNETecnologias;
+                data.department = autocompleteData.uNEDepartamento;
+                data.status = autocompleteData.Estado;
+                data.crm = autocompleteData.Crm;
+                data.ans = null;
+
+                if (autocompleteData.TaskType == "Reparacion") {
+                    var ansQuery = await fetch(
+                        "http://10.100.66.254:7771/api/ans/" + data.pedido
+                    );
+                    var ansData = await ansQuery.json();
+                    data.ans = ansData.horas;
+                }
+
+                if (
+                    data.status == "" ||
+                    data.status == undefined ||
+                    data.status == null
+                ) {
+                    swal({
+                        title: "El Pedido Debe Cancelarse: ",
+                        html: `El pedido ${data.pedido} que ha seleccionado, no existe en click.`,
+                        type: "warning",
+                    });
+                } else {
+                    if (data.status != "En Sitio") {
+                        swal({
+                            title: "El Pedido Debe Cancelarse: ",
+                            html: `El pedido ${data.pedido} que ha seleccionado, no se encuentra en sitio, proceda a cancelarlo.`,
+                            type: "warning",
+                        });
+                    }
+
+                    if (data.tech != "HFC") {
+                        swal({
+                            title: "El Pedido Debe Cancelarse: ",
+                            html: `El pedido ${data.pedido} que ha seleccionado, no es de tecnología HFC.`,
+                            type: "warning",
+                        });
+                    }
+                }
+                var queryIsAlreadyToken = database
+                    .collection("infraestructure")
+                    .doc(data._id);
+                var querySnapshotAT = await queryIsAlreadyToken.get();
+                if (querySnapshotAT.data().status == 1) {
+                    swal({
+                        title: "Este pedido ya ha sido tomado: ",
+                        html: `El pedido ${data.pedido} que ha seleccionado, ya ha sido tomado.`,
+                        type: "warning",
+                    });
+                } else {
+                    await fetch(
+                        "https://autogestionterreno.com.co/api/state-infraestructure/",
+                        {
+                            method: "PUT",
+                            mode: "cors",
+                            body: JSON.stringify({infraestructure_ID: data._id}),
+                            headers: {"Content-type": "application/json;charset=UTF-8"},
+                        }
+                    );
+
+                    var querySaveScale = await services.guardarEscalamiento(
+                        data,
+                        $rootScope.galletainfo
+                    );
+                    $scope.gestionescalamiento();
+                }
+            } catch (error) {
+                swal({
+                    title: "Información Pedido: ",
+                    html: "No encontrado",
+                    type: "warning",
+                });
+                console.log(error);
+                return;
+            }
+        };
+
+        $scope.guardarescalamiento = async function (data) {
+            if (data.login_gestion == null) {
+                Swal({
+                    type: 'info',
+                    title: 'Opsss....',
+                    text: 'Debes de marcar la solicitud, antes de guardar!',
+                    timer: 4000
+                })
+            } else {
+                if (!data.observacionesescalamiento) {
+                    Swal({
+                        type: 'info',
+                        title: 'Opsss....',
+                        text: 'Debes ingresar las observaciones.',
+                        timer: 4000
+                    })
+                } else {
+                    try {
+                        Swal({
+                            type: 'success',
+                            title: 'Muy bien',
+                            text: 'Pedido guardado, recuerda actualizar!!',
+                            timer: 4000
+                        })
+                        var currentTimeDate = new Date().toLocaleString();
+                        var statusInfraestructure =
+                            data.tipificacion == "Escalamiento realizado ok" ||
+                            data.tipificacion == "Escalamiento ok nivel 2" ||
+                            data.tipificacion == "Escalamiento ok nivel 2 Prioridad"
+                                ? "Aprobado"
+                                : "Rechazado";
+
+                        await fetch(
+                            "https://autogestionterreno.com.co/api/update-infraestructure/",
+                            {
+                                method: "PUT",
+                                mode: "cors",
+                                body: JSON.stringify({
+                                    infraestructure_ID: data.id_terreno,
+                                    infraestructure_Status: statusInfraestructure,
+                                    dateAswered: currentTimeDate,
+                                }),
+                                headers: {"Content-type": "application/json;charset=UTF-8"},
+                            }
+                        );
+
+                        services
+                            .editarregistroescalamiento(data, $rootScope.galletainfo)
+                            .then(function (data) {
+                            })
+                            .catch((err) => alert(err));
+                        $scope.gestionescalamiento();
+                    } catch (error) {
+                        swal({
+                            title: "Hay problemas al almacenar la gestión ",
+                            html: "Consulte con desarrollo para más información",
+                            type: "warning",
+                        });
+                    }
+                }
+            }
+        };
+
+        $scope.CopyPortaPapelesEscalamientoInfraestructura = (data) => {
+            var copyTextEI = document.createElement("input");
+            copyTextEI.value = data;
+            document.body.appendChild(copyTextEI);
+            copyTextEI.select();
+            document.execCommand("copy");
+            document.body.removeChild(copyTextEI);
+            Swal({
+                type: "info",
+                title: "Aviso",
+                text: "El texto seleccionado fue copiado",
+            });
+        };
+
+        $scope.gestionescalamiento();
+    }
+);
+
+app.controller(
+    "novedadesVisitaCtrl",
+    function (
+        $scope,
+        $http,
+        $rootScope,
+        services,
+        $cookies, $location, $route
+    ) {
+
+        var tiempo = new Date().getTime();
+        var date1 = new Date();
+        var year = date1.getFullYear();
+        var month =
+            date1.getMonth() + 1 <= 9
+                ? "0" + (date1.getMonth() + 1)
+                : date1.getMonth() + 1;
+        var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
+
+        tiempo = year + "-" + month + "-" + day;
+
+        $scope.novedadesVisitasTecnicos = {};
+        $scope.Registros = {};
+        $scope.novedadesVisitasSel = {};
+        $scope.observacionCCO = "";
+        $scope.pedidoElegido = "";
+
+        novedadesVisitas();
+
+        function novedadesVisitas(data) {
+            if (data === '' || data === undefined) {
+                $scope.currentPage = 1;
+                $scope.totalItems = 0;
+                $scope.pageSize = 15;
+                $scope.searchText = '';
+                data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+            }
+            services
+                .novedadesTecnicoService(data)
+                .then(
+                    function (data) {
+                        console.log(data);
+                        $scope.novedadesVisitasTecnicos = data.data.data;
+                        $scope.cantidad = $scope.novedadesVisitasTecnicos.length;
+                        $scope.counter = data.data.contador;
+
+                        $scope.totalItems = data.data.counter;
+                        $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                        $scope.endItem = $scope.currentPage * $scope.pageSize;
+                        if ($scope.endItem > data.data.counter) {
+                            $scope.endItem = data.data.counter;
+                        }
+                    },
+                    function errorCallback(response) {
+                        console.log(response);
+                    }
+                );
+        }
+
+        $scope.pageChanged = function () {
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+            console.log(data)
+            novedadesVisitas(data);
+        }
+        $scope.pageSizeChanged = function () {
+            console.log(data)
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+            $scope.currentPage = 1;
+            novedadesVisitas(data);
+        }
+
+        $scope.buscarNovedades = function (data) {
+            if (data === "" || data === undefined) {
+                $scope.currentPage = 1;
+                $scope.totalItems = 0;
+                $scope.pageSize = 15;
+                $scope.searchText = "";
+                data = {page: $scope.currentPage, size: $scope.pageSize};
+            }
+
+            data = {page: $scope.currentPage, size: $scope.pageSize, data};
+            novedadesVisitas(data);
+        }
+
+        $scope.mostraModal = function (registrosTenicos) {
+            angular.copy(registrosTenicos, $scope.novedadesVisitasSel);
+
+            $("#modalNovedadVisita").modal();
+        };
+
+        $scope.abrirAgregarObservacion = (pedido) => {
+            $("#novedadesVisitaObservacion").modal();
+            $scope.pedidoElegido = pedido;
+        };
+
+        $scope.agregarObservacion = (observacionCCO) => {
+            services
+                .updateNovedadesTecnico(observacionCCO, $scope.pedidoElegido)
+                .then((res) => {
+                    console.log(res);
+                    Swal("Tu Novedad fue Actualizada!", "Bien Hecho");
+                    $("#observacionCCO").val("");
+                    $scope.pedidoElegido = "";
+                    $scope.observacionCCO = "";
+                })
+                .catch((err) => {
+                    console.log(err);
+                    Swal("Tu Novedad tuvo un Error!", "Vuelve a intentar");
+                    $("#observacionCCO").val("");
+                    $scope.pedidoElegido = "";
+                    $scope.observacionCCO = "";
+                });
+        };
+
+        $scope.refrescarCamposNovedadesMotivos = () => {
+            if (
+                $scope.novedadesVisitasSel.situaciontriangulo ==
+                "No cumple políticas de tiempos"
+            ) {
+                $scope.optionsMotivo = [
+                    "Respuesta mesas de soporte",
+                    "Retrasos premisas",
+                    "Problemas en las plataformas",
+                    "Fallas fisicas en la red",
+                ];
+            }
+            if (
+                $scope.novedadesVisitasSel.situaciontriangulo == "Malos procedimientos"
+            ) {
+                $scope.optionsMotivo = ["Logísticos", "Conocimiento"];
+            }
+            if (
+                $scope.novedadesVisitasSel.situaciontriangulo ==
+                "Riesgo incumplimiento AM" ||
+                $scope.novedadesVisitasSel.situaciontriangulo ==
+                "Riesgo incumplimiento PM"
+            ) {
+                $scope.optionsMotivo = ["Capacidad operativa", "Novedades Click"];
+            }
+        };
+
+        $scope.refrescarCamposNovedadesSubmotivos = () => {
+            if (
+                $scope.novedadesVisitasSel.motivotriangulo ==
+                "Respuesta mesas de soporte"
+            ) {
+                $scope.optionsSubmotivo = [
+                    "Infraestructura AAA",
+                    "Linea GPON",
+                    "Linea Asignaciones",
+                    "Linea Bloqueo y desbloqueo",
+                    "Brutal Force",
+                    "Contingencias",
+                ];
+            }
+            if ($scope.novedadesVisitasSel.motivotriangulo == "Retrasos premisas") {
+                $scope.optionsSubmotivo = [
+                    "demora de escalera",
+                    "distancia de la instalación",
+                    "en actividades en bodega",
+                    "demora auxiliar de distribuidor",
+                    "técnico sin materiales",
+                    "técnico sin herramienta",
+                    "demoras por ubicación",
+                    "demoras en aprovisionamiento de equipos",
+                    "problemas dispositivo móvil o señal",
+                    "técnico en espera de apoyo de supervisor",
+                    "técnico sin equipos",
+                    "técnico y supervisor no contestan",
+                ];
+            }
+            if (
+                $scope.novedadesVisitasSel.motivotriangulo ==
+                "Problemas en las plataformas"
+            ) {
+                $scope.optionsSubmotivo = [];
+            }
+            if (
+                $scope.novedadesVisitasSel.motivotriangulo == "Fallas fisicas en la red"
+            ) {
+                $scope.optionsSubmotivo = [];
+            }
+            if ($scope.novedadesVisitasSel.motivotriangulo == "Logísticos") {
+                $scope.optionsSubmotivo = [
+                    "técnico no marca estado",
+                    "técnico no finaliza",
+                    "técnico no está en sitio",
+                    "abandono de pedido",
+                    "no sigue ruta asignada",
+                ];
+            }
+            if ($scope.novedadesVisitasSel.motivotriangulo == "Conocimiento") {
+                $scope.optionsSubmotivo = [
+                    "Mal aprovisionamiento",
+                    "No usó el bot Sara",
+                    "No adjuntó fotos requeridas",
+                    "Mal uso de click mobile",
+                ];
+            }
+            if ($scope.novedadesVisitasSel.motivotriangulo == "Capacidad operativa") {
+                $scope.optionsSubmotivo = [
+                    "Sin tecnicos con la habilidad",
+                    "Supervisor no aprueba desplazamiento",
+                    "Supervisor garantiza visita",
+                ];
+            }
+            if ($scope.novedadesVisitasSel.motivotriangulo == "Novedades Click") {
+                $scope.optionsSubmotivo = ["Cargado tarde", "Microzona errada"];
+            }
+        };
+
+        $scope.regiones = function () {
+            $scope.validaraccion = false;
+            services.getRegiones().then(function (data) {
+                if (data.data.state != 1) {
+                    Swal({
+                        type: 'error',
+                        text: data.data.msj,
+                        timer: 4000
+                    })
+                } else {
+
+                    $scope.listadoRegiones = data.data.data;
+                    $scope.listadoMunicipios = {};
+                }
+
+            });
+        };
+
+        $scope.calcularAcciones = function () {
+            $scope.listadoMunicipios = {};
+            services
+                .getMunicipios($scope.novedadesVisitasSel.region)
+                .then(function (data) {
+                    if (data.data.state != 1) {
+                        Swal({
+                            type: 'error',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    } else {
+                        $scope.listadoMunicipios = data.data.data;
+                        $scope.validaraccion = true;
+                    }
+
+                });
+        };
+
+        $scope.situacion = function () {
+            $scope.validaraccion = false;
+            services.getSituacion().then(function (data) {
+                if (data.data.state != 1) {
+                    Swal({
+                        type: 'error',
+                        text: data.data.msj,
+                        timer: 4000
+                    })
+                } else {
+                    $scope.listadoSituacion = data.data.data;
+                    $scope.listadoDetalle = {};
+                }
+
+            });
+        };
+
+        $scope.calcularDetalle = function () {
+            $scope.listadoDetalle = {};
+            services
+                .getDetalle($scope.novedadesVisitasSel.situacion)
+                .then(function (data) {
+                    if (data.data.state != 1) {
+                        Swal({
+                            type: 'error',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    } else {
+                        $scope.listadoDetalle = data.data.data;
+                        $scope.validaraccion = true;
+                    }
+
+                });
+        };
+
+        $scope.BuscarPedidoNovedad = function (pedido) {
+            $scope.errorconexion1 = false;
+            $scope.gestionmanual = {};
+            $scope.pedido = pedido;
+            $scope.gestionmanual.producto = "";
+
+            if (pedido == "" || pedido == undefined) {
+                Swal({
+                    type: 'info',
+                    title: 'Opss...',
+                    text: 'Ingrese un pedido para buscar',
+                    timer: 4000
+                })
+                $scope.sininfopedido = false;
+            } else {
+                $scope.ipServer = "10.100.66.254";
+                $scope.sininfopedido = true;
+                $scope.url =
+                    "http://" + $scope.ipServer + ":8080/HCHV/Buscar/" + pedido;
+                $http.get($scope.url, {timeout: 2000}).then(
+                    function (data) {
+                        $scope.myWelcome = data.data;
+                        if ($scope.myWelcome.pEDIDO_UNE == null) {
+                            $scope.infopedido = false;
+                            $scope.errorconexion1 = false;
+                            $scope.myWelcome = {};
+                        } else if ($scope.myWelcome.pEDIDO_UNE == "TIMEOUT") {
+                            $scope.infopedido = false;
+                            $scope.errorconexion1 = true;
+                            $scope.myWelcome = {};
+                            $scope.errorconexion =
+                                "No hay conexión con Click, ingrese datos manualmente";
+                        } else {
+                            $scope.infopedido = true;
+                            $scope.novedadesVisitasSel.contrato2 =
+                                $scope.myWelcome.uNEProvisioner;
+                            $scope.novedadesVisitasSel.cedulaTecnico2 =
+                                $scope.myWelcome.engineerID;
+                            $scope.novedadesVisitasSel.nombreTecnico2 =
+                                $scope.myWelcome.engineerName;
+                            $scope.novedadesVisitasSel.proceso2 =
+                                $scope.myWelcome.engineer_Type;
+                            $scope.novedadesVisitasSel.municipio2 =
+                                $scope.myWelcome.uNEMunicipio;
+
+                            $scope.novedadesVisitasSel.region =
+                                $scope.myWelcome.uNEUen;
+                        }
+                        return data.data;
+                    },
+                    function (err) {
+                        $scope.ipServer = "10.100.66.254";
+
+                        $scope.url =
+                            "http://" + $scope.ipServer + ":8080/HCHV/Buscar/" + pedido;
+                        $http.get($scope.url, {timeout: 2000}).then(
+                            function (data) {
+                                $scope.myWelcome = data.data;
+                                if ($scope.myWelcome.pEDIDO_UNE == null) {
+                                    $scope.infopedido = false;
+                                    $scope.errorconexion1 = false;
+                                    $scope.myWelcome = {};
+                                } else if ($scope.myWelcome.pEDIDO_UNE == "TIMEOUT") {
+                                    $scope.infopedido = false;
+                                    $scope.errorconexion1 = true;
+                                    $scope.myWelcome = {};
+                                    $scope.errorconexion =
+                                        "No hay conexión con Click, ingrese los datos manualmente";
+                                } else {
+                                    $scope.infopedido = true;
+                                    $scope.novedadesVisitasSel.contrato2 =
+                                        $scope.myWelcome.uNEProvisioner;
+                                    $scope.novedadesVisitasSel.cedulaTecnico2 =
+                                        $scope.myWelcome.engineerID;
+                                    $scope.novedadesVisitasSel.nombreTecnico2 =
+                                        $scope.myWelcome.engineerName;
+                                    $scope.novedadesVisitasSel.proceso2 =
+                                        $scope.myWelcome.engineer_Type;
+                                    $scope.novedadesVisitasSel.municipio2 =
+                                        $scope.myWelcome.uNEMunicipio;
+                                    $scope.novedadesVisitasSel.region =
+                                        $scope.myWelcome.uNEUen;
+                                }
+                                return data.data;
+                            },
+                            function (err) {
+                                $scope.infopedido = false;
+                                $scope.errorconexion1 = true;
+                                $scope.myWelcome = {};
+                                $scope.errorconexion =
+                                    "No hay conexión con el Web Service, ingrese los datos manualmente";
+                            }
+                        );
+                    },
+                    function errorCallback(response) {
+                        console.log(response);
+                    }
+                );
+            }
+        };
+
+        $scope.guardar = function (registrosTenicos, frmNovedadVisita) {
+            services
+                .guardarNovedadesTecnico(registrosTenicos, $rootScope.galletainfo)
+                .then(
+                    function (data) {
+                        if (data.data.state == 99) {
+                            swal({
+                                type: "error",
+                                title: data.data.title,
+                                text: data.data.text,
+                                timer: 4000,
+                            }).then(function () {
+                                $cookies.remove("usuarioseguimiento");
+                                $location.path("/");
+                                $rootScope.galletainfo = undefined;
+                                $rootScope.permiso = false;
+                                $route.reload();
+                            });
+                        } else if (data.data.state == 1) {
+                            $("#modalNovedadVisita").modal("hide");
+                            Swal({
+                                type: 'success',
+                                title: 'Bien',
+                                text: data.data.text,
+                                timer: 4000
+                            }).then(() => {
+                                setTimeout(() => {
+                                    $route.reload();
+                                }, 500);
+
+                            })
+                        } else if (data.data.state == 0) {
+                            Swal({
+                                type: 'error',
+                                title: 'Ops...',
+                                text: data.data.text,
+                                timer: 4000
+                            })
+                        }
+                        /* if (respuesta.status == "201") {
+                            Swal("Tu Novedad fue Guardada!", "Bien Hecho");
+                        }
+
+                        $("#modalNovedadVisita").modal("hide");
+                        $scope.novedadesVisitasSel = {};
+
+                        frmNovedadVisita.autoValidateFormOptions.resetForm(); */
+                    },
+                    function errorCallback(response) {
+                        console.log(response);
+                    }
+                );
+            $scope.RegistrosTecnicos(registrosTenicos);
+        };
+
+        $scope.csvNovedadesTecnicos = function () {
+            $scope.csvPend = false;
+            if ($scope.Registros.fechaini > $scope.Registros.fechafin) {
+                Swal({
+                    type: 'info',
+                    title: 'Opss...',
+                    text: 'La fecha inicial debe ser menor que la inicial',
+                    timer: 4000
+                })
+            } else {
+                services
+                    .expCsvNovedadesTecnico($scope.Registros, $rootScope.galletainfo)
+                    .then(function (data) {
+                        if (data.data.state == 1) {
+                            var wb = XLSX.utils.book_new();
+                            var ws = XLSX.utils.json_to_sheet(data.data.data);
+                            XLSX.utils.book_append_sheet(wb, ws, 'nivedades_tecnico');
+                            XLSX.writeFile(wb, 'Novedades_tecnico_' + tiempo + '.xlsx');
+                        } else {
+                            Swal({
+                                type: 'error',
+                                text: data.data.msj,
+                                timer: 4000
+                            })
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+            }
+        };
+
+        $scope.regiones();
+        $scope.situacion();
+    }
+);
+
+app.controller(
+    "contrasenasClickCtrl",
+    function ($scope, $rootScope, $location, services, $route, $cookies) {
+        $scope.listaTecnicos = {};
+        $scope.tecnico = null;
+        $scope.concepto = null;
+        $scope.crearTecnico = {};
+        buscarTecnico();
+
+        $scope.tecnicos = () => {
+            //try {
+            $scope.loading = 1;
+            services.windowsBridge("HCHV_DEV/tecnicos/s").then((data) => {
+                services.acualizaTecnicos(data).then(
+                    function (data) {
+                        if (data.data.state == 1) {
+                            Swal({
+                                type: "success",
+                                title: 'Bien',
+                                text: data.data.msj,
+                                timer: 4000,
+                            }).then(function () {
+                                $route.reload();
+                            });
+                        } else {
+                            Swal({
+                                type: "info",
+                                title: 'Ops..',
+                                text: data.data.msj,
+                                timer: 4000,
+                            }).then(function () {
+                                $route.reload();
+                            });
+                        }
+
+                    },
+                    function errorCallback(error) {
+                        console.log(error);
+                    }
+                );
+            }).catch((e) => {
+                console.log(e)
+            })
+            /*var autocompleteQuery = await fetch(
+                "http://10.100.66.254:8080/HCHV_DEV/tecnicos/s"
+            );
+            var autocompleteData = await autocompleteQuery.json();*/
+
+            /*services.acualizaTecnicos(autocompleteData).then(
+                function (data) {
+                    if (data.data.state == 1) {
+                        Swal({
+                            type: "success",
+                            title: 'Bien',
+                            text: data.data.msj,
+                            timer: 4000,
+                        }).then(function () {
+                            $route.reload();
+                        });
+                    } else {
+                        Swal({
+                            type: "info",
+                            title: 'Ops..',
+                            text: data.data.msj,
+                            timer: 4000,
+                        }).then(function () {
+                            $route.reload();
+                        });
+                    }
+
+                },
+                function errorCallback(error) {
+                    console.log(error);
+                }
+            );*/
+            /*} catch (error) {
+                console.log(error);
+            }*/
+        };
+
+        $scope.pageChanged = function () {
+            data = {page: $scope.currentPage, size: $scope.pageSize, buscar: $scope.concepto, variable: $scope.tecnico};
+            buscarTecnico(data);
+        };
+        $scope.pageSizeChanged = function () {
+            data = {page: $scope.currentPage, size: $scope.pageSize, buscar: $scope.concepto, variable: $scope.tecnico};
+            $scope.currentPage = 1;
+            buscarTecnico(data);
+        };
+
+        function buscarTecnico(data) {
+            if (data === "" || data === undefined) {
+                $scope.currentPage = 1;
+                $scope.totalItems = 0;
+                $scope.pageSize = 15;
+                $scope.searchText = "";
+                data = {page: $scope.currentPage, size: $scope.pageSize, buscar: $scope.concepto, variable: $scope.tecnico};
+            }
+            services.listadoTecnicos(data).then(
+                (data) => {
+                    if (data.data.state == 99) {
+                        swal({
+                            type: "error",
+                            title: data.data.title,
+                            text: data.data.text,
+                            timer: 4000,
+                        }).then(function () {
+                            $cookies.remove("usuarioseguimiento");
+                            $location.path("/");
+                            $rootScope.galletainfo = undefined;
+                            $rootScope.permiso = false;
+                            $route.reload();
+                        });
+                    } else {
+                        $scope.listaTecnicos = data.data.data;
+                        $scope.cantidad = data.data.data.length;
+                        $scope.counter = data.data.counter;
+
+                        $scope.totalItems = data.data.counter;
+                        $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                        $scope.endItem = $scope.currentPage * $scope.pageSize;
+                        if ($scope.endItem > data.data.counter) {
+                            $scope.endItem = data.data.counter;
+                        }
+                    }
+
+                })
+                .catch((response) => {
+                    console.log(response);
+                    ;
+                })
+
+        }
+
+        $scope.buscarTec = function (param, dato) {
+            console.log(param);
+            if (param == undefined) {
+                Swal({
+                    type: "info",
+                    title: "Oops...",
+                    text: "seleccione parametro a buscar",
+                    timer: 4000,
+                });
+            } else if (dato == undefined) {
+                Swal({
+                    type: "info",
+                    title: "Oops...",
+                    text: "Ingrese el valor a buscar",
+                    timer: 4000,
+                });
+            } else {
+                data = {
+                    page: $scope.currentPage,
+                    size: $scope.pageSize,
+                    buscar: param,
+                    variable: dato
+                };
+                buscarTecnico(data);
+            }
+        };
+
+        $scope.createTecnico = function () {
+            var id_tecnico = "";
+            $scope.errorDatos = null;
+            $scope.respuestaupdate = null;
+            $scope.respuestadelete = null;
+            services.creaTecnico($scope.crearTecnico, id_tecnico).then(
+                function (data) {
+                    $scope.respuestaupdate = "Técnico creado.";
+                    return data.data;
+                },
+                function errorCallback(response) {
+                    console.log(response);
+                }
+            );
+        };
+
+        $scope.editarModal = function (datos) {
+            $rootScope.datos = datos;
+            $scope.idTecnico = datos.ID;
+            $scope.TecnicoNom = datos.NOMBRE;
+            $scope.UsuarioLog = datos.LOGIN;
+            $rootScope.TituloModal = "Editar Técnico con el ID:";
+        };
+
+        $scope.edittecnico = function (datos) {
+            $scope.errorDatos = null;
+            $scope.respuestaupdate = null;
+            $scope.respuestadelete = null;
+            services.editarTecnico(datos).then(
+                function (data) {
+                    $scope.respuestaupdate =
+                        "Técnico " + datos.NOMBRE + " actualizado exitosamente";
+
+                    return data.data;
+                },
+                function errorCallback(response) {
+                }
+            );
+        };
+
+        $scope.borrarTecnico = function (id) {
+            $scope.idBorrar = id;
+            $scope.Tecnico = {};
+            $scope.errorDatos = null;
+            $scope.respuestaupdate = null;
+            $scope.respuestadelete = null;
+            services.deleteTecnico($scope.idBorrar).then(
+                function (data) {
+                    $scope.respuestadelete =
+                        "Técnico " + $rootScope.datos.NOMBRE + " eliminado exitosamente";
+                },
+                function errorCallback(response) {
+                    $scope.errorDatos = "No se borro";
+                }
+            );
+        };
+    }
+);
+
+app.controller(
+    "quejasGoCtrl",
+    function (
+        $scope,
+        $rootScope,
+        $timeout,
+        services,
+        $route,
+        $cookies, $location, $interval
+    ) {
+
+        var tiempo = new Date().getTime();
+        var date1 = new Date();
+        var year = date1.getFullYear();
+        var month =
+            date1.getMonth() + 1 <= 9
+                ? "0" + (date1.getMonth() + 1)
+                : date1.getMonth() + 1;
+        var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
+
+        tiempo = year + "-" + month + "-" + day;
+
+        $scope.listaQuejasGo = {};
+        $scope.Registros = {};
+        $scope.quejasGoSel = {};
+        var timer;
+        var idqueja;
+
+        $scope.validarDatos = function (datos) {
+            if (datos.columnaBusqueda == undefined || datos.valorBusqueda == undefined) {
+                datos.columnaBusqueda = "";
+                datos.valorBusqueda = "";
+            }
+
+            if (datos.fechaini == undefined || datos.fechafin == undefined) {
+                Swal({
+                    type: "error",
+                    title: "Oops...",
+                    text: "Debe seleccionar un rango de fecha!",
+                });
+            } else {
+                data = {
+                    page: $scope.currentPage,
+                    size: $scope.pageSize,
+                    datos
+                };
+                LoadQuejasGo(data);
+            }
+        };
+
+        LoadQuejasGo();
+
+        function iniciarTiempo() {
+            var segundos = 0;
+            var minutos = 0;
+            var horas = 0;
+            //var tiempo = 0;
+
+            $interval(function () {
+                segundos++;
+                if (segundos === 60) {
+                    segundos = 0;
+                    minutos++;
+                }
+                if (minutos === 60) {
+                    minutos = 0;
+                    horas++;
+                }
+
+                $scope.tiempo = pad(horas) + ":" + pad(minutos) + ":" + pad(segundos);
+            }, 1000);
+        };
+
+        function pad(numero) {
+            return numero < 10 ? "0" + numero : numero;
+        }
+
+        function LoadQuejasGo(data) {
+            if (data === '' || data === undefined) {
+                $scope.currentPage = 1;
+                $scope.totalItems = 0;
+                $scope.pageSize = 15;
+                $scope.searchText = '';
+                data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
+            }
+
+            services.extraeQuejasGoDia(data).then(
+                function (data) {
+                    if (data.data.state == 99) {
+                        swal({
+                            type: "error",
+                            title: data.data.title,
+                            text: data.data.text,
+                            timer: 4000,
+                        }).then(function () {
+                            $cookies.remove("usuarioseguimiento");
+                            $location.path("/");
+                            $rootScope.galletainfo = undefined;
+                            $rootScope.permiso = false;
+                            $route.reload();
+                        });
+                    } else if (data.data.state == 1) {
+                        $scope.listaQuejasGo = data.data.data;
+                        $scope.cantidad = data.data.length;
+                        $scope.counterpag = data.data.counter;
+
+                        $scope.counter = data.data.counter;
+
+                        $scope.totalItems = data.data.counter;
+                        $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                        $scope.endItem = $scope.currentPage * $scope.pageSize;
+                        if ($scope.endItem > data.data.counter) {
+                            $scope.endItem = data.data.counter;
+                        }
+                    }
+
+                },
+
+                function errorCallback(response) {
+                    console.log(response);
+                }
+            );
+        };
+
+        $scope.pageChanged = function () {
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
+            LoadQuejasGo(data);
+        }
+        $scope.pageSizeChanged = function () {
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
+            $scope.currentPage = 1;
+            LoadQuejasGo(data);
+        }
+
+
+        $scope.mostraModal = function () {
+            /*$scope.counter = 0;
+
+            $scope.startCounter = function () {
+                if (timer === null) {
+                    updateCounter();
+                }
+            };
+            var updateCounter = function () {
+                $scope.counter++;
+                timer = $timeout(updateCounter, 1000);
+            };
+            updateCounter();*/
+
+            iniciarTiempo();
+
+            $scope.quejasGoSel.observacion = "";
+
+            angular.copy();
+            $("#modalQuejasGo").modal();
+        };
+
+        $scope.ciudadesQuejasGo = function () {
+            services.getCiudadesQuejasGo().then(function (data) {
+                if (data.data.state != 1) {
+                    Swal({
+                        type: 'error',
+                        text: data.data.msj,
+                        timer: 4000
+                    })
+                } else {
+                    $scope.listadoCiudadesQGo = data.data.data;
+                }
+            });
+        };
+
+        $scope.BuscarTecnico = function () {
+            var cedula = $scope.quejasGoSel.cedtecnico;
+
+            if (cedula == undefined) {
+                Swal({
+                    type: "error",
+                    title: "Oops...",
+                    text: "Debe ingresar la cédula del técnico!",
+                });
+
+                return;
+            }
+
+            services.traerTecnico(cedula).then(
+                function (data) {
+                    if (data.data.state != 1) {
+                        $scope.ciudadesQuejasGo();
+                        $('#crearTecnicoQuejasGo').modal('show');
+                        $scope.infoTecnico = false;
+                    } else {
+                        $scope.Tecnico = data.data.data;
+                        $scope.quejasGoSel.tecnico = $scope.Tecnico[0].nombre;
+                        $scope.quejasGoSel.region = $scope.Tecnico[0].ciudad;
+                        $scope.infoTecnico = true;
+                    }
+                },
+                function errorCallback(data) {
+                    console.log(data);
+                }
+            );
+        };
+
+        $scope.crearTecQuejasGo = function (
+            crearTecnicoquejasGoSel,
+            frmCrearTecnicoQuejasGo
+        ) {
+            services.creaTecnicoQuejasGo(crearTecnicoquejasGoSel).then(
+                function (data) {
+                    if (data.data.state == 1) {
+                        $("#crearTecnicoQuejasGo").modal("hide");
+                        frmCrearTecnicoQuejasGo.autoValidateFormOptions.resetForm();
+                        Swal({
+                            type: 'success',
+                            title: 'Bien',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    } else {
+                        Swal({
+                            type: 'success',
+                            title: 'Bien',
+                            text: 'data.data.msj',
+                            timer: 4000
+                        })
+                    }
+                },
+
+                function errorCallback(response) {
+                    console.log(response)
+                }
+            );
+        };
+
+        $scope.guardar = function (quejasGoSel, frmQuejasGo) {
+            /*$timeout.cancel(timer);
+            timer = null;
+
+            var hours = Math.floor($scope.counter / 3600),
+                minutes = Math.floor(($scope.counter % 3600) / 60),
+                seconds = Math.floor($scope.counter % 60);
+
+            if (hours < 10) {
+                hours = "0" + hours;
+            }
+            if (minutes < 10) {
+                minutes = "0" + minutes;
+            }
+            if (seconds < 10) {
+                seconds = "0" + seconds;
+            }
+            $scope.counter = hours + ":" + minutes + ":" + seconds;*/
+
+            services
+                .guardarQuejaGo(quejasGoSel, $scope.tiempo, $rootScope.galletainfo.login)
+                .then(
+                    function (respuesta) {
+                        /* if (respuesta.data.state == 99) {
+                            swal({
+                                type: "error",
+                                title: data.data.title,
+                                text: data.data.text,
+                                timer: 4000,
+                            }).then(function () {
+                                $cookies.remove("usuarioseguimiento");
+                                $location.path("/");
+                                $rootScope.galletainfo = undefined;
+                                $rootScope.permiso = false;
+                                $route.reload();
+                            });
+                        } else  */
+
+                        if (respuesta.data.state == 1) {
+                            $("#modalQuejasGo").modal("hide");
+                            //$scope.infoTecnico = false;
+                            //$scope.quejasGoSel = {};
+                            //frmGenereacionTT.autoValidateFormOptions.resetForm();
+                            Swal({
+                                type: "success",
+                                title: "Bien",
+                                text: "Datos guardados correctamente",
+                                timer: 4000
+                            }).then(() => {
+                                setTimeout(() => {
+                                    $route.reload();
+                                }, 500);
+
+                            })
+
+                        } else {
+                            Swal({
+                                type: "error",
+                                title: "Oops...",
+                                text: "No fue posible guardar la queja!",
+                                timer: 4000
+                            });
+                        }
+                    },
+                    function errorCallback(response) {
+                        console.log(response);
+                    }
+                );
+
+        };
+
+        $scope.csvQuejasGo = function () {
+            $scope.csvPend = false;
+
+            if (
+                $scope.Registros.columnaBusqueda == undefined ||
+                $scope.Registros.valorBusqueda == undefined
+            ) {
+                $scope.Registros.columnaBusqueda = "";
+                $scope.Registros.valorBusqueda = "";
+            }
+
+            if (
+                $scope.Registros.fechaini == undefined ||
+                $scope.Registros.fechafin == undefined
+            ) {
+                $scope.Registros.fechaini = "";
+                $scope.Registros.fechafin = "";
+            }
+
+            if ($scope.Registros.fechaini > $scope.Registros.fechafin) {
+                Swal({
+                    type: 'error',
+                    text: 'La fecha inicial no puede ser mayor que la final',
+                    timer: 4000
+                })
+            } else {
+                services.expCsvQuejasGo($scope.Registros, $rootScope.galletainfo)
+                    .then(function (data) {
+                        if (data.data.state == 1) {
+                            var wb = XLSX.utils.book_new();
+                            var ws = XLSX.utils.json_to_sheet(data.data.data);
+                            XLSX.utils.book_append_sheet(wb, ws, 'QuejasGo');
+                            XLSX.writeFile(wb, 'QuejasGo_' + tiempo + '.xlsx');
+                        } else {
+                            Swal({
+                                type: 'error',
+                                text: data.data.msj,
+                                timer: 4000
+                            })
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+            }
+        };
+
+        $scope.abrirModalModificarObs = function (id, observacion) {
+            $scope.quejasGoSel.observacion = observacion;
+            idqueja = id;
+            angular.copy();
+            $("#modObserQuejasGo").modal();
+        };
+
+        $scope.modificarObservacionQuejasGo = function (
+            quejasGoSel,
+            frmModObserQuejasGo,
+            id
+        ) {
+            services.modiObserQuejasGo(quejasGoSel, idqueja).then(
+                function (data) {
+                    if (data.data.state == 99) {
+                        swal({
+                            type: "error",
+                            title: data.data.title,
+                            text: data.data.text,
+                            timer: 4000,
+                        }).then(function () {
+                            $cookies.remove("usuarioseguimiento");
+                            $location.path("/");
+                            $rootScope.galletainfo = undefined;
+                            $rootScope.permiso = false;
+                            $route.reload();
+                        });
+                    } else if (data.data.state == 1) {
+                        $("#modObserQuejasGo").modal("hide");
+                        $scope.quejasGoSel = {};
+                        Swal({
+                            type: "success",
+                            title: "Bien",
+                            text: data.data.msj,
+                            timer: 4000
+                        }).then(() => {
+                            setTimeout(() => {
+                                $route.reload();
+                            }, 500);
+                        })
+                    } else if (data.data.state == 0) {
+                        Swal({
+                            type: "error",
+                            title: "Oops...",
+                            text: data.data.msj,
+                            timer: 4000
+                        });
+                    }
+
+                },
+                function errorCallback(response) {
+                    console.log(response);
+                }
+            );
+        };
+    }
+);
+
+app.controller('quejasGoCtrl2', function ($interval, $scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services, cargaRegistros) {
+    var tiempo = new Date().getTime();
+    var date1 = new Date();
+    var year = date1.getFullYear();
+    var month =
+        date1.getMonth() + 1 <= 9
+            ? "0" + (date1.getMonth() + 1)
+            : date1.getMonth() + 1;
+    var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
+
+    tiempo = year + "-" + month + "-" + day;
+    init();
+
+    function init() {
+        dataQueja();
+        dataQuejasGoTerminado();
+    }
+
+    function dataQueja() {
+        $scope.listaQuejasGo = {};
+
+        services.datosQuejasGo().then(
+            function (data) {
+                if (data.data.state == 99) {
+                    swal({
+                        type: "error",
+                        title: data.data.title,
+                        text: data.data.text,
+                        timer: 4000,
+                    }).then(function () {
+                        $cookies.remove("usuarioseguimiento");
+                        $location.path("/");
+                        $rootScope.galletainfo = undefined;
+                        $rootScope.permiso = false;
+                        $route.reload();
+                    });
+                } else if (data.data.state == 1) {
+                    $scope.listaQuejasGo = data.data.data;
+                }
+
+            },
+
+            function errorCallback(response) {
+                console.log(response);
+            });
+    }
+
+    $scope.currentPage = 1;
+    $scope.totalItems = 0;
+    $scope.pageSize = 10;
+    $scope.searchText = '';
+
+    function dataQuejasGoTerminado(data) {
+        $scope.dataQuejasTerminados = '';
+        if (data === '' || data === undefined) {
+            $scope.currentPage = 1;
+            $scope.totalItems = 0;
+            $scope.pageSize = 10;
+            $scope.searchText = '';
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+        }
+
+        services.datosQuejasGoTerminado(data).then(function (data) {
+            $scope.dataQuejasTerminados = data.data.data;
+
+            $scope.activity = [];
+            $scope.totalItems = data.data.totalCount;
+            $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+            $scope.endItem = $scope.currentPage * $scope.pageSize;
+            if ($scope.endItem > data.data.totalCount) {
+                $scope.endItem = data.data.totalCount;
+            }
+
+        })
+    }
+
+    $scope.pageChanged = function () {
+        data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+        dataQuejasGoTerminado(data);
+    }
+    $scope.pageSizeChanged = function () {
+        data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+        dataQuejasGoTerminado(data);
+    }
+
+    function iniciarTiempo() {
+        var segundos = 0;
+        var minutos = 0;
+        var horas = 0;
+        //var tiempo = 0;
+
+        $interval(function () {
+            segundos++;
+            if (segundos === 60) {
+                segundos = 0;
+                minutos++;
+            }
+            if (minutos === 60) {
+                minutos = 0;
+                horas++;
+            }
+
+            $scope.tiempo = pad(horas) + ":" + pad(minutos) + ":" + pad(segundos);
+        }, 1000);
+        console.log($scope.tiempo)
+    };
+
+    function pad(numero) {
+        return numero < 10 ? "0" + numero : numero;
+    }
+
+    $scope.marcarEngestion = function (id) {
+
+        data = {'id': id, 'login_gestion': $rootScope.galletainfo.login}
+        services.marcarEnGestionQuejasGo(data).then(function (data) {
+            if (data.data.state == 99) {
+                swal({
+                    type: "error",
+                    title: data.data.title,
+                    text: data.data.text,
+                    timer: 4000,
+                }).then(function () {
+                    $cookies.remove("usuarioseguimiento");
+                    $location.path("/");
+                    $rootScope.galletainfo = undefined;
+                    $rootScope.permiso = false;
+                    $route.reload();
+                });
+            } else if (data.data.state == 1) {
+                Swal({
+                    type: 'success',
+                    title: 'Bien',
+                    text: data.data.msj,
+                    timer: 4000
+                }).then(function () {
+                    //$route.reload();
+                    dataQueja();
+                    iniciarTiempo();
+                })
+            } else {
+                Swal({
+                    type: 'info',
+                    title: 'Oops...',
+                    text: data.data.msj,
+                    timer: 4000
+                }).then(function () {
+                    $route.reload();
+                })
+            }
+        })
+    }
+
+    $scope.abreModal = function (data) {
+        if (data.en_gestion != '1') {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Debes Marcar el pedido',
+                timer: 4000
+            })
+        } else if (data.accion == '' || data.accion == undefined) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Debes Seleccionar la accion',
+                timer: 4000
+            })
+        } else if (data.gestion == '' || data.gestion == undefined) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Debes Seleccionar la gestion',
+                timer: 4000
+            })
+        } else {
+            data = {'accion': data.accion, 'gestion': data.gestion, 'id': data.id, 'login_gestion': $rootScope.galletainfo.login}
+            $('#modalQuejasGo').modal('show');
+
+            $scope.guardaSolicitudQuejasGo = function (obs) {
+                if (obs == '' || obs == undefined) {
+                    Swal({
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Recuerda documentar observaciones',
+                        timer: 4000
+                    })
+                } else {
+                    data.observacion_seguimiento = obs.observacion_gestion;
+                    data.tiempo = $scope.tiempo;
+                    console.log('Robin ', data, ' ', $scope.tiempo);
+                    services.guardaGestionQuejasGo(data).then(function (data) {
+                        if (data.data.state == 1) {
+                            setTimeout(() => {
+                                $('#modalQuejasGo').modal('hide');
+                            }, 500);
+
+                            Swal({
+                                type: 'success',
+                                title: 'Bien',
+                                text: data.data.msj,
+                                timer: 3000
+                            }).then(function () {
+                                $route.reload();
+                            })
+                        } else {
+                            Swal({
+                                type: 'error',
+                                title: 'Oops...',
+                                text: data.data.msj,
+                                timer: 4000
+                            })
+                        }
+                    })
+                }
+            }
+        }
+
+    }
+
+    $scope.ver_mas = (data) => {
+        $scope.observacionQuejas = data;
+        $("#modalObservaciones").modal('show');
+    }
+
+    $scope.recargaPage = function () {
+        $scope.quejago = {};
+        $scope.pedido = '';
+        init();
+    }
+
+    $scope.detallePedidoQuejaGo = (pedido) => {
+        if (pedido == '' || pedido == undefined) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Debes ingresar un pedido',
+                timer: 4000
+            })
+        } else {
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'pedido': pedido}
+            dataQuejasGoTerminado(data);
+        }
+    }
+
+    $scope.registrosQuejasGo = (data) => {
+        if (data == '' || data == undefined) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Seleccione un rango de fecha valido',
+                timer: 4000
+            })
+        } else if (data.fechaini == '' || data.fechaini == undefined) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'La fecha inicial es requerida',
+                timer: 4000
+            })
+        } else if (data.fechafin == '' || data.fechafin == undefined) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'La fecha final es requerida',
+                timer: 4000
+            })
+        } else if (data.fechaini > data.fechafin) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'La fecha final no puede ser menor a la inicial',
+                timer: 4000
+            })
+        } else {
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'fecha': data}
+            dataQuejasGoTerminado(data);
+        }
+    }
+
+    $scope.csvQuejaGo = (data) => {
+
+
+        if (data == '' || data == undefined) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Seleccione un rango de fecha valido',
+                timer: 4000
+            })
+            return;
+        }
+
+        var fechaini = new Date(data.fechaini);
+        var fechafin = new Date(data.fechafin);
+        var diffMs = (fechafin - fechaini);
+        var diffDays = Math.round(diffMs / 86400000);
+
+        if (data.fechaini == '' || data.fechaini == undefined) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'La fecha inicial es requerida',
+                timer: 4000
+            })
+        } else if (data.fechafin == '' || data.fechafin == undefined) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'La fecha final es requerida',
+                timer: 4000
+            })
+        } else if (data.fechaini > data.fechafin) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'La fecha final no puede ser menor a la inicial',
+                timer: 4000
+            })
+        } else {
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'fecha': data}
+            services.csvQuejaGo(data)
+                .then(function (data) {
+                    if (data.data.state == 1) {
+                        var wb = XLSX.utils.book_new();
+                        var ws = XLSX.utils.json_to_sheet(data.data.data);
+                        XLSX.utils.book_append_sheet(wb, ws, 'GestionQuejasGo');
+                        XLSX.writeFile(wb, 'GestionQuejasGo_' + tiempo + '.xlsx'); // Descarga el a
+                    } else {
+                        Swal({
+                            type: 'error',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        }
+    }
+
+    $scope.CopyPortaPapeles = function (data) {
+        var copyTextTV = document.createElement("input");
+        copyTextTV.value = data;
+        document.body.appendChild(copyTextTV);
+        copyTextTV.select();
+        document.execCommand("copy");
+        document.body.removeChild(copyTextTV);
+        Swal({
+            type: 'info',
+            title: 'Aviso',
+            text: "El texto seleccionado fue copiado",
+            timer: 2000
+        });
+    }
+
+});
+
+
+app.controller("saraCtrl", function ($scope, $http, $rootScope, services) {
+    $scope.rutaConsultaSara = "partial/consultaSara/consulSara.html";
+    $scope.dataSara = {};
+    $scope.horasTranscurridas = 0;
+    $scope.minutosTranscurridos = 0;
+    $scope.segundosTranscurridos = 0;
+
+    var tiempo = new Date().getTime();
+    var date1 = new Date();
+    var year = date1.getFullYear();
+    var month =
+        date1.getMonth() + 1 <= 9
+            ? "0" + (date1.getMonth() + 1)
+            : date1.getMonth() + 1;
+    var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
+
+    tiempo = year + "-" + month + "-" + day;
+
+    $scope.buscarDataSara = function (datos) {
+        $scope.loading = 1;
+        let tareaSara = datos.tarea;
+        services.windowsBridge("SARA/Buscar/" + tareaSara)
+            .then(
+                function (data) {
+                    $scope.loading = 0;
+                    $scope.dataSara = data.data;
+
+                    if ($scope.dataSara.Error == "No hay datos para mostrar") {
+                        $scope.horasTranscurridas = 0;
+                        $scope.minutosTranscurridos = 0;
+                        $scope.segundosTranscurridos = 0;
+
+                        Swal({
+                            type: "error",
+                            title: "Oops...",
+                            text: "Aún no se hace la solicitud a SARA",
+                        });
+                        return;
+                    }
+
+                    services.myService('sara', 'ContadorCtrl.php', 'contador').then((data) => {
+                        console.log(data);
+                    })
+
+                    $scope.indiceSara =
+                        Object.keys($scope.dataSara.SolicitudesSara).length - 1;
+                    var tiempoSara =
+                        $scope.dataSara.SolicitudesSara[$scope.indiceSara].TiempoRespuesta;
+                    $scope.horasTranscurridas = tiempoSara.substr(0, 2);
+                    $scope.minutosTranscurridos = tiempoSara.substr(3, 2);
+                    $scope.segundosTranscurridos = tiempoSara.substr(6, 2);
+                    return data.data;
+                },
+
+                function (Error) {
+                    console.log(Error)
+                }
+            );
+    };
+
+    $scope.csvexportarRRHH = async function () {
+        try {
+            const data = await services.windowsBridge("RRHH/Exporte/1");
+            console.log(data.data);
+            if (data.data) {
+                var wb = XLSX.utils.book_new();
+                var ws = XLSX.utils.json_to_sheet(data.data);
+                XLSX.utils.book_append_sheet(wb, ws, 'exportrrhh');
+                XLSX.writeFile(wb, 'exportrrhh_' + tiempo + '.xlsx');
+            } else {
+                Swal({
+                    type: 'error',
+                    text: 'No se encontraron registros',
+                    timer: 4000
+                });
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+});
+
+app.controller(
+    "registrosCtrl",
+    function ($scope, $rootScope, services, cargaRegistros, $route, $cookies, $location) {
+        $scope.listaRegistros = {};
+        $scope.Registros = {};
+        $scope.listadoAcciones = {};
+        $scope.datosRegistros = {};
+        $scope.verplantilla = false;
+
+        $scope.currentPage = 1;
+        $scope.totalItems = 0;
+        $scope.pageSize = 15;
+        $scope.searchText = "";
+
+        if (
+            $scope.Registros.fechaini == undefined ||
+            $scope.Registros.fechafin == undefined
+        ) {
+            var tiempo = new Date().getTime();
+            var date1 = new Date();
+            var year = date1.getFullYear();
+            var month =
+                date1.getMonth() + 1 <= 9
+                    ? "0" + (date1.getMonth() + 1)
+                    : date1.getMonth() + 1;
+            var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
+
+            tiempo = year + "-" + month + "-" + day;
+
+            $scope.fechaini = tiempo;
+            $scope.fechafin = tiempo;
+        }
+
+        BuscarRegistros();
+
+        $scope.pageChanged = function () {
+            data = {page: $scope.currentPage, size: $scope.pageSize, param: $scope.Registros};
+            console.log(data);
+            BuscarRegistros(data);
+        };
+        $scope.pageSizeChanged = function () {
+            console.log(data);
+            data = {page: $scope.currentPage, size: $scope.pageSize, param: $scope.Registros};
+            $scope.currentPage = 1;
+            BuscarRegistros(data);
+        };
+
+        function BuscarRegistros(data) {
+            if (data === "" || data === undefined) {
+                $scope.currentPage = 1;
+                $scope.totalItems = 0;
+                $scope.pageSize = 15;
+                $scope.searchText = "";
+                data = {page: $scope.currentPage, size: $scope.pageSize, param: $scope.Registros};
+            }
+            services.registros(data).then(
+                function (data) {
+                    console.log(data);
+                    if (data.data.state == 99) {
+                        swal({
+                            type: "error",
+                            title: data.data.title,
+                            text: data.data.text,
+                            timer: 4000,
+                        }).then(function () {
+                            $cookies.remove("usuarioseguimiento");
+                            $location.path("/");
+                            $rootScope.galletainfo = undefined;
+                            $rootScope.permiso = false;
+                            $route.reload();
+                        });
+                    } else {
+                        $scope.listaRegistros = data.data.data;
+                        $scope.cantidad = data.data.length;
+                        $scope.counter = data.data.counter;
+
+                        $scope.totalItems = data.data.counter;
+                        $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                        $scope.endItem = $scope.currentPage * $scope.pageSize;
+                        if ($scope.endItem > data.data.counter) {
+                            $scope.endItem = data.data.counter;
+                        }
+                    }
+
+                    function errorCallback(response) {
+                        console.log(response);
+                    }
+                }
+            );
+        }
+
+        $scope.buscarRegistros = function (param) {
+            if (param == undefined) {
+                Swal({
+                    type: "info",
+                    title: "Oops...",
+                    text: "Ingrese el pedido a buscar",
+                    timer: 4000,
+                });
+            } else {
+                data = {
+                    page: $scope.currentPage,
+                    size: $scope.pageSize,
+                    param
+                };
+                BuscarRegistros(data);
+            }
+        };
+
+        $scope.muestraNotas = function (datos) {
+
+            $scope.pedido = datos.pedido;
+            $scope.TituloModal = "Observaciones para el pedido:";
+            $scope.observaciones = datos.observaciones;
+            $("#NotasModal").modal('show');
+            // console.log( $scope.observaciones);
+        }
+
+        $scope.calcularSubAcciones = function (proceso, accion) {
+            $scope.listadoSubAcciones = {};
+            $scope.validarsubaccion = false;
+
+            services.getSubAcciones(proceso, accion).then(
+                function (data) {
+                    if (data.data.state == 0) {
+                        $scope.validarsubaccion = false;
+                    } else {
+                        $scope.validarsubaccion = true;
+                        $scope.listadoSubAcciones = data.data.data;
+                    }
+                },
+                function errorCallback(response) {
+                    console.log(response);
+                }
+            );
+        };
+
+        $scope.calcularAcciones = function (proceso) {
+            if (proceso == "") {
+                $scope.validaraccion = false;
+                $scope.validarsubaccion = false;
+            } else {
+                services.getAcciones(proceso).then(function (data) {
+                    if (data.data.state == 0) {
+                        $scope.validaraccion = false;
+                    } else {
+                        $scope.validaraccion = true;
+                        $scope.listadoAcciones = data.data.data;
+                    }
+                });
+            }
+        };
+
+        $scope.editarRegistros = function (datos) {
+            $scope.datosRegistros = datos;
+            if ($scope.datosRegistros.plantilla != "") {
+                $scope.verplantilla = true;
+            } else {
+                $scope.verplantilla = false;
+            }
+            $scope.TituloModal = "Editar pedido:";
+            $scope.pedido = datos.pedido;
+            $scope.calcularAcciones($scope.datosRegistros.proceso);
+            $scope.calcularSubAcciones(
+                $scope.datosRegistros.proceso,
+                $scope.datosRegistros.accion
+            );
+            $("#Editardato").modal('show');
+        };
+
+        $scope.editRegistro = function (datos) {
+            $scope.errorDatos = null;
+            $scope.respuestaupdate = null;
+            $scope.respuestadelete = null;
+
+            services.editarRegistro(datos, $rootScope.galletainfo).then(
+                function (data) {
+                    if (data.data.state != 1) {
+                        Swal({
+                            type: 'error',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    } else {
+                        Swal({
+                            type: 'success',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                        data = {
+                            page: $scope.currentPage,
+                            size: $scope.pageSize
+                        };
+                        BuscarRegistros(data);
+                    }
+                },
+                function errorCallback(response) {
+                }
+            );
+        };
+
+        $scope.csvRegistros = function () {
+            $scope.csvPend = false;
+            if ($scope.Registros.fechaini > $scope.Registros.fechafin) {
+                Swal({
+                    type: 'error',
+                    text: 'La fecha inicial no puede ser mayor a la final',
+                    timer: 4000
+                })
+                return;
+            }
+
+            let date_1 = new Date($scope.Registros.fechaini);
+            let date_2 = new Date($scope.Registros.fechafin);
+            let diff = date_2 - date_1;
+
+            let TotalDays = Math.ceil(diff / (1000 * 3600 * 24));
+
+            if (TotalDays > 6) {
+                Swal({
+                    type: 'error',
+                    title: 'Opss...',
+                    text: 'por motivos de optimización el rango de búsqueda debe ser de 7 dias',
+                    timer: 4000
+                })
+                return;
+            }
+
+            services.expCsvRegistros($scope.Registros, $rootScope.galletainfo)
+                .then(function (data) {
+                    console.log(data);
+                    if (data.data.state == 1) {
+                        var wb = XLSX.utils.book_new();
+                        var ws = XLSX.utils.json_to_sheet(data.data.data);
+                        XLSX.utils.book_append_sheet(wb, ws, 'registros');
+                        XLSX.writeFile(wb, 'registros_' + tiempo + '.xlsx'); // Descarga el a
+                    } else {
+                        Swal({
+                            type: 'error',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        };
+
+        $scope.csvtecnico = function () {
+            let date_1 = new Date($scope.Registros.fechaini);
+            let date_2 = new Date($scope.Registros.fechafin);
+            let diff = date_2 - date_1;
+
+            let TotalDays = Math.ceil(diff / (1000 * 3600 * 24));
+            if (TotalDays > 8) {
+                swal({
+                    type: "error",
+                    text: "Para optimizacion de los reportes estos no pueden sobrepasar los 8 dias",
+                });
+            } else if ($scope.Registros.fechafin < $scope.Registros.fechafin) {
+                Swal({
+                    type: "error",
+                    text: "La fecha final no puede ser menor que la inicial",
+                });
+            } else {
+                services.expCsvtecnico($scope.Registros, $rootScope.galletainfo)
+                    .then(function (data) {
+                        if (data.data.state == 1) {
+                            var wb = XLSX.utils.book_new();
+                            var ws = XLSX.utils.json_to_sheet(data.data.data);
+                            XLSX.utils.book_append_sheet(wb, ws, 'registros-equipos');
+                            XLSX.writeFile(wb, 'registros-equipos_' + tiempo + '.xlsx'); // Descarga el a
+                        } else {
+                            Swal({
+                                type: 'error',
+                                text: data.data.msj,
+                                timer: 4000
+                            })
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+
+            }
+        };
+
+        $scope.uploadFile = function (data) {
+            $("#cargarRegistros").attr("disabled", true);
+            if (!data) {
+                Swal({
+                    type: 'error',
+                    text: 'Seleccione el archivo',
+                    timer: 4000,
+                })
+                $("#cargarRegistros").attr("disabled", false);
+                return;
+            }
+
+            $scope.carga_ok = true;
+            var file = data;
+            $scope.user = $rootScope.galletainfo.LOGIN;
+            $scope.name = "";
+            $scope.delete_ok = false;
+
+            var uploadUrl = "api/class/subeArchivo.php";
+            cargaRegistros.uploadFileToUrl(file, uploadUrl).then((data) => {
+                console.log(data);
+                if (data.data.state == 1) {
+                    Swal({
+                        type: 'success',
+                        title: 'Bien',
+                        text: data.data.msj,
+                        timer: 4000
+                    }).then(() => {
+                        $route.reload();
+                    })
+                } else {
+                    Swal({
+                        type: 'error',
+                        title: 'Ops...',
+                        text: data.data.msj,
+                        timer: 4000
+                    })
+                }
+            })
+                .catch((error) => {
+                    console.log(error);
+                })
+        };
+    }
+);
+
+app.controller("registrosOfflineCtrl", function ($scope, services) {
+    $scope.listaRegistrosOffline = {};
+    RegistrosOffline();
+
+    $scope.pageChanged = function () {
+        data = {page: $scope.currentPage, size: $scope.pageSize};
+        console.log(data);
+        RegistrosOffline(data);
+    };
+    $scope.pageSizeChanged = function () {
+        console.log(data);
+        data = {page: $scope.currentPage, size: $scope.pageSize};
+        $scope.currentPage = 1;
+        RegistrosOffline(data);
+    };
+
+    function RegistrosOffline(data) {
+        if (data === "" || data === undefined) {
+            $scope.currentPage = 1;
+            $scope.totalItems = 0;
+            $scope.pageSize = 8;
+            $scope.searchText = "";
+            data = {page: $scope.currentPage, size: $scope.pageSize};
+        }
+        services.registrosOffline(data).then(
+            function (data) {
+                $scope.listaRegistrosOffline = data.data.data;
+                $scope.cantidad = data.data.counter;
+                $scope.counter = data.data.data;
+
+                $scope.totalItems = data.data.counter;
+                $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                $scope.endItem = $scope.currentPage * $scope.pageSize;
+                if ($scope.endItem > data.data.totalCount) {
+                    $scope.endItem = data.data.totalCount;
+                }
+            },
+            function errorCallback(response) {
+                console.log(response);
+            }
+        );
+    }
+});
+
+app.controller(
+    "mesaofflineCtrl",
+    function (
+        $scope,
+        $rootScope,
+        services
+    ) {
+        $scope.validarproducto = false;
+        $scope.validaractividad = false;
+
+        $scope.calcularAccionOffline = function () {
+            var producto = $scope.offline.PRODUCTO;
+            $scope.validarproducto = true;
+            services.getAccionesoffline(producto).then(function (data) {
+                if (data.data.state != 1) {
+                    Swal({
+                        type: 'error',
+                        text: data.data.msj,
+                        timer: 4000
+                    })
+                } else {
+                    $scope.listadoAcciones = data.data.data;
+                }
+            });
+        };
+
+        $scope.calcularActividad2offline = function () {
+            if ($scope.offline.ACTIVIDAD == "Patinaje") {
+                $scope.validaractividad = true;
+                $scope.actividades2 = [
+                    {ID: "Asesor reiterativo", ACTIVIDAD2: "Asesor reiterativo"},
+                    {ID: "Asesor AHT alto", ACTIVIDAD2: "Asesor AHT alto"},
+                    {
+                        ID: "Requiere intervencion - Supervisor",
+                        ACTIVIDAD2: "Requiere intervencion - Supervisor",
+                    },
+                    {
+                        ID: "Requiere intervención – Formacion ",
+                        ACTIVIDAD2: "Requiere intervención – Formacion ",
+                    },
+                ];
+            } else $scope.validaractividad = false;
+        };
+
+        $scope.guardarPedidoOffline = function () {
+            services.pedidoOffline($scope.offline, $rootScope.galletainfo).then(
+                function (data) {
+                    $scope.respuestaupdate = "Pedido creado.";
+                    return data.data;
+                },
+                function errorCallback(response) {
+                    $scope.errorDatos = "Pedido no fue creado.";
+                }
+            );
+        };
+    }
+);
 
 function fn_ValidarObsoleto() {
     var CMobsoleto = document.getElementById("CMobsoleto").value;
@@ -2302,7 +6436,599 @@ function fn_popup5() {
     }
 }
 
-angular.module("seguimientopedidos").filter("mapNivelacion", function () {
+app.controller(
+    "nivelacionCtrl",
+    function (
+        $scope,
+        $http,
+        $rootScope,
+        $location,
+        $route,
+        $cookies,
+        services
+    ) {
+        $scope.nivelacion = {};
+        $scope.nivelacion.ticket = "";
+        $scope.nivelacion.newIdTecnic = "";
+        $scope.visible = false;
+        $scope.newTec = false;
+        $scope.tec = false;
+
+        en_genstion_nivelacion();
+
+        function en_genstion_nivelacion() {
+            services.en_genstion_nivelacion().then(complete).catch(failed);
+
+            function complete(data) {
+                if (data.data.state == 99) {
+                    swal({
+                        type: "error",
+                        title: data.data.title,
+                        text: data.data.text,
+                        timer: 4000,
+                    }).then(function () {
+                        $cookies.remove("usuarioseguimiento");
+                        $location.path("/");
+                        $rootScope.galletainfo = undefined;
+                        $rootScope.permiso = false;
+                        $route.reload();
+                    });
+                } else {
+                    $scope.nivelacion.proceso_terminado = data.data.tarea;
+                    if (data.data.gestion[0].total !== "undefined") {
+                        $scope.nivelacion.pendienteTotal = data.data.gestion[0].total;
+                    } else {
+                        $scope.nivelacion.pendienteTotal = 0;
+                    }
+
+                    if (data.data.gestion[1].total !== "undefined") {
+                        $scope.nivelacion.realizadoTotal = data.data.gestion[1].total;
+                    } else {
+                        $scope.nivelacion.realizadoTotal = 0;
+                    }
+                }
+            }
+
+            function failed(data) {
+                console.log(data);
+            }
+        }
+
+        $scope.buscarhistoricoNivelacion = function () {
+            if (
+                $scope.nivelacion.historico == "" ||
+                $scope.nivelacion.historico == undefined
+            ) {
+                swal({
+                    type: "error",
+                    text: "Ingrese la tarea a buscar",
+                });
+            } else {
+                services
+                    .buscarhistoricoNivelacion($scope.nivelacion.historico)
+                    .then(complete)
+                    .catch(failed);
+
+                function complete(data) {
+                    $scope.nivelacion.databsucarPedido = data.data.data;
+                    $("#modalHistoricoNivelacion").modal("show");
+                    return data.data;
+                }
+
+                function failed(data) {
+                    console.log(data);
+                }
+            }
+        };
+
+        $scope.searchTicket = function () {
+            if (
+                $scope.nivelacion.ticket === "" ||
+                $scope.nivelacion.ticket === undefined
+            ) {
+                Swal({
+                    type: "error",
+                    title: "Ingrese una tarea",
+                });
+            } else {
+                $scope.url =
+                    "http://10.100.66.254:8080/HCHV_DEV/BuscarC/" +
+                    $scope.nivelacion.ticket;
+                $http.get($scope.url, {timeout: 2000}).then(
+                    function (data) {
+                        if (data.data.state != 0) {
+                            Swal({
+                                type: "error",
+                                title: "No se encontraron datos",
+                                timer: 4000
+                            });
+                        } else {
+                            $scope.nivelacion.pedido = data.data[0].UNEpedido;
+                            $scope.nivelacion.subZona = data.data[0].district;
+                            $scope.nivelacion.nombreTecnico = data.data[0].EngineerName;
+                            $scope.nivelacion.idTecnico = data.data[0].EngineerID;
+                            $scope.nivelacion.proceso = data.data[0].tasktypecategory;
+                            $scope.nivelacion.zona = data.data[0].region;
+                            $scope.visible = true;
+
+                            $scope.status = data.data[0].status;
+                            $scope.fecha_res = data.data[0].unefechacita;
+                            $scope.fecha_res = $scope.fecha_res.split(" ");
+                            if ($scope.fecha_res[2]) {
+                                $scope.fecha_res = $scope.fecha_res[0];
+                                $scope.fecha_res = $scope.fecha_res.split("/");
+                                $scope.fecha_res =
+                                    $scope.fecha_res[2] +
+                                    "-" +
+                                    $scope.fecha_res[1] +
+                                    "-" +
+                                    $scope.fecha_res[0];
+                            } else {
+                                $scope.fecha_res = data.data[0].unefechacita;
+                            }
+
+                            $scope.searchIdTecnic = function () {
+                                services
+                                    .searchIdTecnic($scope.nivelacion.newIdTecnic)
+                                    .then(complete)
+                                    .catch(failed);
+
+                                function complete(data) {
+                                    if (data.data.state === 0) {
+                                        Swal({
+                                            type: "error",
+                                            title: "No se encontraron datos",
+                                            timer: 4000
+                                        });
+                                    } else {
+                                        $scope.nivelacion.newTecName = data.data.data.nombre;
+                                        $scope.newTec = true;
+                                    }
+                                }
+
+                                function failed(data) {
+                                    console.log(data);
+                                }
+                            };
+
+                            $scope.saveNivelation = function () {
+                                var today = new Date();
+                                var day = today.getDate();
+                                var month = today.getMonth() + 1;
+                                var year = today.getFullYear();
+                                var hoy = `${year}-${month}-${day}`;
+                                $scope.case6 = 0;
+                                $scope.case7 = 0;
+                                //$scope.fecha_res = '2022-12-16';
+                                if ($scope.nivelacion.motivo == 1) {
+                                    if (
+                                        $scope.nivelacion.motivo == 1 &&
+                                        ($scope.status == "Abierto" || $scope.status == "Asignado")
+                                    ) {
+                                        Swal({
+                                            type: "error",
+                                            title: "La tarea esta en estado de asignacion automatica",
+                                            timer: 4000,
+                                        }).then(function () {
+                                            $route.reload();
+                                        });
+                                    } else if (
+                                        $scope.nivelacion.motivo == 1 &&
+                                        ($scope.status == "Finalizada" ||
+                                            $scope.status == "Suspendido" ||
+                                            $scope.status == "Suspendido-Abierto" ||
+                                            $scope.status == "Incompleto" ||
+                                            $scope.status == "Pendiente" ||
+                                            $scope.status == "Abierto" ||
+                                            $scope.status == "Asignado")
+                                    ) {
+                                        Swal({
+                                            type: "error",
+                                            title: "La tarea esta en estado no valido",
+                                            timer: 4000,
+                                        }).then(function () {
+                                            $route.reload();
+                                        });
+                                    } else {
+                                        services
+                                            .saveNivelation($scope.nivelacion, $rootScope.galletainfo)
+                                            .then(complete)
+                                            .catch(failed);
+
+                                        function complete(data) {
+                                            if (data.data.state == 99) {
+                                                swal({
+                                                    type: "error",
+                                                    title: data.data.title,
+                                                    text: data.data.text,
+                                                    timer: 4000,
+                                                }).then(function () {
+                                                    $cookies.remove("usuarioseguimiento");
+                                                    $location.path("/");
+                                                    $rootScope.galletainfo = undefined;
+                                                    $rootScope.permiso = false;
+                                                    $route.reload();
+                                                });
+                                            } else if (data.data.state === 0) {
+                                                Swal({
+                                                    type: "error",
+                                                    title: data.data.msj,
+                                                    timer: 4000,
+                                                }).then(function () {
+                                                    $route.reload();
+                                                });
+                                            } else {
+                                                Swal({
+                                                    type: "success",
+                                                    title:
+                                                        "La solicitud de nivelación se ha creado correctamente",
+                                                    timer: 4000,
+                                                }).then(function () {
+                                                    $route.reload();
+                                                });
+                                            }
+                                        }
+
+                                        function failed(data) {
+                                            console.log(data);
+                                        }
+                                    }
+                                } else {
+                                    if (
+                                        $scope.nivelacion.submotivo == 6 ||
+                                        $scope.nivelacion.submotivo == 7
+                                    ) {
+                                        if ($scope.nivelacion.submotivo == 6) {
+                                            $scope.url =
+                                                "http://10.100.66.254:8080/HCHV_DEV/BuscarF/" +
+                                                $scope.nivelacion.ticket;
+                                            $http
+                                                .get($scope.url, {timeout: 2000})
+                                                .then(function (data) {
+                                                    if (data.data.state == 1) {
+                                                        Swal({
+                                                            type: "error",
+                                                            title: data.data.data,
+                                                            timer: 4000,
+                                                        }).then(function () {
+                                                            $route.reload();
+                                                        });
+                                                    } else if (data.data.state == 0) {
+                                                        if (
+                                                            $scope.nivelacion.submotivo == 6 &&
+                                                            $scope.status != "Incompleto"
+                                                        ) {
+                                                            if (
+                                                                $scope.nivelacion.submotivo == 6 &&
+                                                                $scope.status != "Pendiente"
+                                                            ) {
+                                                                Swal({
+                                                                    type: "error",
+                                                                    title: "La tarea esta en estado no valido",
+                                                                    timer: 4000,
+                                                                }).then(function () {
+                                                                    $route.reload();
+                                                                });
+                                                            } else if (
+                                                                $scope.nivelacion.submotivo == 6 &&
+                                                                $scope.fecha_res != hoy
+                                                            ) {
+                                                                Swal({
+                                                                    type: "error",
+                                                                    title:
+                                                                        "La tarea tiene una fecha diferente a hoy",
+                                                                    timer: 4000,
+                                                                }).then(function () {
+                                                                    $route.reload();
+                                                                });
+                                                            } else {
+                                                                services
+                                                                    .saveNivelation(
+                                                                        $scope.nivelacion,
+                                                                        $rootScope.galletainfo
+                                                                    )
+                                                                    .then(complete)
+                                                                    .catch(failed);
+
+                                                                function complete(data) {
+                                                                    if (data.data.state == 99) {
+                                                                        swal({
+                                                                            type: "error",
+                                                                            title: data.data.title,
+                                                                            text: data.data.text,
+                                                                            timer: 4000,
+                                                                        }).then(function () {
+                                                                            $cookies.remove("usuarioseguimiento");
+                                                                            $location.path("/");
+                                                                            $rootScope.galletainfo = undefined;
+                                                                            $rootScope.permiso = false;
+                                                                            $route.reload();
+                                                                        });
+                                                                    } else if (data.data.state === 0) {
+                                                                        Swal({
+                                                                            type: "error",
+                                                                            title: data.data.msj,
+                                                                            timer: 4000,
+                                                                        }).then(function () {
+                                                                            $route.reload();
+                                                                        });
+                                                                    } else {
+                                                                        Swal({
+                                                                            type: "success",
+                                                                            title:
+                                                                                "La solicitud de nivelación se ha creado correctamente",
+                                                                            timer: 4000,
+                                                                        }).then(function () {
+                                                                            $route.reload();
+                                                                        });
+                                                                    }
+                                                                }
+                                                            }
+                                                        } else if (
+                                                            $scope.nivelacion.submotivo == 6 &&
+                                                            $scope.fecha_res != hoy
+                                                        ) {
+                                                            Swal({
+                                                                type: "error",
+                                                                title:
+                                                                    "La tarea tiene una fecha diferente a hoy",
+                                                                timer: 4000,
+                                                            }).then(function () {
+                                                                $route.reload();
+                                                            });
+                                                        } else {
+                                                            services
+                                                                .saveNivelation(
+                                                                    $scope.nivelacion,
+                                                                    $rootScope.galletainfo
+                                                                )
+                                                                .then(complete)
+                                                                .catch(failed);
+
+                                                            function complete(data) {
+                                                                if (data.data.state == 99) {
+                                                                    swal({
+                                                                        type: "error",
+                                                                        title: data.data.title,
+                                                                        text: data.data.text,
+                                                                        timer: 4000,
+                                                                    }).then(function () {
+                                                                        $cookies.remove("usuarioseguimiento");
+                                                                        $location.path("/");
+                                                                        $rootScope.galletainfo = undefined;
+                                                                        $rootScope.permiso = false;
+                                                                        $route.reload();
+                                                                    });
+                                                                } else if (data.data.state === 0) {
+                                                                    Swal({
+                                                                        type: "error",
+                                                                        title: data.data.msj,
+                                                                        timer: 4000,
+                                                                    }).then(function () {
+                                                                        $route.reload();
+                                                                    });
+                                                                } else {
+                                                                    Swal({
+                                                                        type: "success",
+                                                                        title:
+                                                                            "La solicitud de nivelación se ha creado correctamente",
+                                                                        timer: 4000,
+                                                                    }).then(function () {
+                                                                        $route.reload();
+                                                                    });
+                                                                }
+                                                            }
+                                                        }
+
+                                                        function failed(data) {
+                                                            console.log(data);
+                                                        }
+                                                    }
+                                                });
+                                        } else if ($scope.nivelacion.submotivo == 7) {
+                                            $scope.url =
+                                                "http://10.100.66.254:8080/HCHV_DEV/BuscarF/" +
+                                                $scope.nivelacion.ticket;
+                                            $http
+                                                .get($scope.url, {timeout: 2000})
+                                                .then(function (data) {
+                                                    if (data.data.state == 1) {
+                                                        Swal({
+                                                            type: "error",
+                                                            title: data.data.data,
+                                                            timer: 4000,
+                                                        }).then(function () {
+                                                            $route.reload();
+                                                        });
+                                                    } else if (data.data.state == 0) {
+                                                        if (
+                                                            $scope.nivelacion.submotivo == 7 &&
+                                                            $scope.status != "Incompleto"
+                                                        ) {
+                                                            if (
+                                                                $scope.nivelacion.submotivo == 7 &&
+                                                                $scope.status != "Pendiente"
+                                                            ) {
+                                                                Swal({
+                                                                    type: "error",
+                                                                    title: "La tarea esta en estado no valido",
+                                                                    timer: 4000,
+                                                                }).then(function () {
+                                                                    $route.reload();
+                                                                });
+                                                            } else if (
+                                                                $scope.nivelacion.submotivo == 7 &&
+                                                                $scope.fecha_res >= hoy
+                                                            ) {
+                                                                Swal({
+                                                                    type: "error",
+                                                                    title: "La tarea tiene una fecha mayor",
+                                                                    timer: 4000,
+                                                                }).then(function () {
+                                                                    $route.reload();
+                                                                });
+                                                            } else {
+                                                                services
+                                                                    .saveNivelation(
+                                                                        $scope.nivelacion,
+                                                                        $rootScope.galletainfo
+                                                                    )
+                                                                    .then(complete)
+                                                                    .catch(failed);
+
+                                                                function complete(data) {
+                                                                    if (data.data.state == 99) {
+                                                                        swal({
+                                                                            type: "error",
+                                                                            title: data.data.title,
+                                                                            text: data.data.text,
+                                                                            timer: 4000,
+                                                                        }).then(function () {
+                                                                            $cookies.remove("usuarioseguimiento");
+                                                                            $location.path("/");
+                                                                            $rootScope.galletainfo = undefined;
+                                                                            $rootScope.permiso = false;
+                                                                            $route.reload();
+                                                                        });
+                                                                    } else if (data.data.state === 0) {
+                                                                        Swal({
+                                                                            type: "error",
+                                                                            title: data.data.msj,
+                                                                            timer: 4000,
+                                                                        }).then(function () {
+                                                                            $route.reload();
+                                                                        });
+                                                                    } else {
+                                                                        Swal({
+                                                                            type: "success",
+                                                                            title:
+                                                                                "La solicitud de nivelación se ha creado correctamente",
+                                                                            timer: 4000,
+                                                                        }).then(function () {
+                                                                            $route.reload();
+                                                                        });
+                                                                    }
+                                                                }
+                                                            }
+                                                        } else if (
+                                                            $scope.nivelacion.submotivo == 7 &&
+                                                            $scope.fecha_res >= hoy
+                                                        ) {
+                                                            Swal({
+                                                                type: "error",
+                                                                title: "La tarea tiene una fecha mayor",
+                                                                timer: 4000,
+                                                            }).then(function () {
+                                                                $route.reload();
+                                                            });
+                                                        } else {
+                                                            services
+                                                                .saveNivelation(
+                                                                    $scope.nivelacion,
+                                                                    $rootScope.galletainfo
+                                                                )
+                                                                .then(complete)
+                                                                .catch(failed);
+
+                                                            function complete(data) {
+                                                                if (data.data.state == 99) {
+                                                                    swal({
+                                                                        type: "error",
+                                                                        title: data.data.title,
+                                                                        text: data.data.text,
+                                                                        timer: 4000,
+                                                                    }).then(function () {
+                                                                        $cookies.remove("usuarioseguimiento");
+                                                                        $location.path("/");
+                                                                        $rootScope.galletainfo = undefined;
+                                                                        $rootScope.permiso = false;
+                                                                        $route.reload();
+                                                                    });
+                                                                } else if (data.data.state === 0) {
+                                                                    Swal({
+                                                                        type: "error",
+                                                                        title: data.data.msj,
+                                                                        timer: 4000,
+                                                                    }).then(function () {
+                                                                        $route.reload();
+                                                                    });
+                                                                } else {
+                                                                    Swal({
+                                                                        type: "success",
+                                                                        title:
+                                                                            "La solicitud de nivelación se ha creado correctamente",
+                                                                        timer: 4000,
+                                                                    }).then(function () {
+                                                                        $route.reload();
+                                                                    });
+                                                                }
+                                                            }
+                                                        }
+
+                                                        function failed(data) {
+                                                            console.log(data);
+                                                        }
+                                                    }
+                                                });
+                                        }
+                                    } else {
+                                        services
+                                            .saveNivelation($scope.nivelacion, $rootScope.galletainfo)
+                                            .then(complete)
+                                            .catch(failed);
+
+                                        function complete(data) {
+                                            if (data.data.state == 99) {
+                                                swal({
+                                                    type: "error",
+                                                    title: data.data.title,
+                                                    text: data.data.text,
+                                                    timer: 4000,
+                                                }).then(function () {
+                                                    $cookies.remove("usuarioseguimiento");
+                                                    $location.path("/");
+                                                    $rootScope.galletainfo = undefined;
+                                                    $rootScope.permiso = false;
+                                                    $route.reload();
+                                                });
+                                            } else if (data.data.state === 0) {
+                                                Swal({
+                                                    type: "error",
+                                                    title: data.data.msj,
+                                                    timer: 4000,
+                                                }).then(function () {
+                                                    $route.reload();
+                                                });
+                                            } else {
+                                                Swal({
+                                                    type: "success",
+                                                    title:
+                                                        "La solicitud de nivelación se ha creado correctamente",
+                                                    timer: 4000,
+                                                }).then(function () {
+                                                    $route.reload();
+                                                });
+                                            }
+                                        }
+
+                                        function failed(data) {
+                                            console.log(data);
+                                        }
+                                    }
+                                }
+                            };
+                        }
+                    },
+                    function (failed) {
+                        console.log(2, failed);
+                    }
+                );
+            }
+        };
+    }
+);
+
+app.filter("mapNivelacion", function () {
     var genderHash = {
         SI: "SI",
         NO: "NO",
@@ -2317,7 +7043,1053 @@ angular.module("seguimientopedidos").filter("mapNivelacion", function () {
     };
 });
 
-angular.module("seguimientopedidos").filter("replace", [
+app.controller("GestionNivelacionCtrl", [
+    "$scope",
+    "$rootScope",
+    "$location",
+    "$route",
+    "$routeParams",
+    "$cookies",
+    "$cookieStore",
+    "$timeout",
+    "services",
+    "i18nService",
+    function (
+        $scope,
+        $rootScope,
+        $location,
+        $route,
+        $cookies,
+        services,
+        i18nService
+    ) {
+        $scope.GestionNivelacion = {};
+        $scope.Registros = {};
+        $scope.nivelacion = {};
+        i18nService.setCurrentLang("es");
+        $scope.userLog = $rootScope.galletainfo.login;
+        var tiempo = new Date().getTime();
+        var date1 = new Date();
+        var year = date1.getFullYear();
+        var month =
+            date1.getMonth() + 1 <= 9
+                ? "0" + (date1.getMonth() + 1)
+                : date1.getMonth() + 1;
+        var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
+
+        tiempo = year + "-" + month + "-" + day;
+        init();
+
+        function init() {
+            getGrid();
+            registrosTecnicos();
+        }
+
+        function getGrid() {
+            Date.prototype.addMins = function (m) {
+                this.setTime(this.getTime() + m * 60 * 1000);
+                return this;
+            };
+
+            var fechaI2 = new Date();
+
+            var columnDefs = [
+                {
+                    name: "Marcar",
+                    cellTemplate:
+                        "<div style='text-align: center'><input ng-checked={{row.entity.en_gestion}} value='{{row.entity.en_gestion}}' ng-model='row.entity.en_gestion' type='checkbox' ng-click='grid.appScope.engestion(row)'></div>",
+                    minWidth: 70,
+                    width: "1%",
+                    enableCellEdit: false,
+                    enableFiltering: false,
+                    enableRowHeaderSelection: true,
+                },
+                {
+                    name: "Login",
+                    field: "gestiona_por",
+                    cellTemplate:
+                        "<div style='text-align: center' ng-show='(row.entity.gestiona_por !== null)'>" +
+                        "<span class='label label-primary label-xsmall' ng-if='(row.entity.gestiona_por ==  grid.appScope.userLog)' style='vertical-align: sub'>{{grid.appScope.userLog}}</span>" +
+                        "<span class='label label-primary label-xsmall' ng-if='(row.entity.gestiona_por != grid.appScope.userLog)' style='vertical-align: sub'>En gestion</span>" +
+                        "</div>",
+                    minWidth: 80,
+                    width: "3%",
+                    enableCellEdit: false,
+                },
+                {
+                    name: "Tarea",
+                    field: "ticket_id",
+                    cellTemplate:
+                        '<div style="text-align: center;"><button type="button" style="padding: 0; border: none" className="btn btn-default btn-xs ng-binding" ng-click="grid.appScope.CopyPortaPapeles(row.entity.ticket_id)" tooltip="" title="" id="tv0" data-original-title="Copiar pedido">{{row.entity.ticket_id}}</button></div>',
+                    minWidth: 120,
+                    width: "3%",
+                    enableCellEdit: false,
+                },
+                {
+                    name: "Fecha ingreso",
+                    field: "fecha_ingreso",
+                    cellStyle: {"text-align": "center"},
+                    minWidth: 70,
+                    width: "10%",
+                    enableCellEdit: false,
+                    cellClass: function (grid, row, col, rowRenderIndex, colRenderIndex) {
+                        var date = new Date(row.entity.fecha_ingreso);
+
+                        date.addMins(15);
+                        if (date <= fechaI2) {
+                            return "blue";
+                        }
+                    },
+                },
+                {
+                    name: "Proceso",
+                    field: "proceso",
+                    cellStyle: {"text-align": "center"},
+                    minWidth: 70,
+                    width: "10%",
+                    enableCellEdit: false,
+                    cellTooltip: function (row, col) {
+                        return row.entity.proceso;
+                    },
+                },
+                {
+                    name: "Zona",
+                    field: "zona",
+                    cellStyle: {"text-align": "center"},
+                    minWidth: 80,
+                    width: "8%",
+                    enableCellEdit: false,
+                },
+                {
+                    name: "Sub zona",
+                    field: "zubzona",
+                    cellStyle: {"text-align": "center"},
+                    minWidth: 70,
+                    width: "8%",
+                    enableCellEdit: false,
+                },
+                {
+                    name: "Nombre técnico",
+                    field: "nombre_tecnico",
+                    cellStyle: {"text-align": "center"},
+                    width: "11%",
+                    enableCellEdit: false,
+                },
+                {
+                    name: "cc técnico",
+                    field: "cc_tecnico",
+                    cellStyle: {"text-align": "center"},
+                    minWidth: 70,
+                    width: "6%",
+                    cellFilter: 'currency:"":0',
+                    enableCellEdit: false,
+                },
+                {
+                    name: "Tipo solicitud",
+                    field: "solicitud",
+                    cellStyle: {"text-align": "center"},
+                    width: "6%",
+                    enableCellEdit: false,
+                    cellTooltip: function (row, col) {
+                        return row.entity.solicitud;
+                    },
+                },
+                {
+                    name: "Motivo",
+                    field: "motivo",
+                    cellStyle: {"text-align": "center"},
+                    width: "9%",
+                    enableCellEdit: false,
+                },
+                {
+                    name: "Submotivo",
+                    field: "submotivo",
+                    cellStyle: {"text-align": "center"},
+                    width: "6%",
+                    enableCellEdit: false,
+                },
+                {
+                    name: "N. nuevo técnico",
+                    field: "nombre_nuevo_tecnico",
+                    cellStyle: {"text-align": "center"},
+                    width: "11%",
+                    enableCellEdit: false,
+                },
+                {
+                    name: "c. n. técnico",
+                    field: "cc_nuevo_tecnico",
+                    cellStyle: {"text-align": "center"},
+                    minWidth: 70,
+                    width: "6%",
+                    suppressSizeToFit: true,
+                    enableColumnResizing: true,
+                    cellFilter: 'currency:"":0',
+                },
+                {
+                    name: "nivelacion",
+                    editType: "dropdown",
+                    cellFilter: "mapNivelacion",
+                    enableCellEdit: true,
+                    cellTemplate:
+                        "<div style='text-align: center'><select ng-model='row.entity.nivelacion' class='btn btn-default btn-xs grupo-select'>" +
+                        "<option value=''>Selec</option>" +
+                        "<option value='SI'>SI</option>" +
+                        "<option value='NO'>NO</option>" +
+                        "</select>" +
+                        "</div>",
+                    minWidth: 50,
+                    width: "6%",
+                    enableColumnResizing: true,
+                },
+                {
+                    name: "Obs.",
+                    cellTemplate: "partial/modals/template.html",
+                    width: "3%",
+                    enableFiltering: false,
+                    enableCellEdit: false,
+                    cellStyle: {"text-align": "center"},
+                },
+                {
+                    name: "Acc.",
+                    cellTemplate:
+                        "<div style='text-align: center'>" +
+                        '<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.guardagestion(row)">' +
+                        '<i class="fa fa-floppy-o" aria-hidden="true"> </i>' +
+                        "</button>",
+                    minWidth: 50,
+                    width: "3%",
+                    enableFiltering: false,
+                },
+            ];
+
+            var paginationOptions = {
+                sort: null,
+            };
+
+            $scope.gridOptions = {
+                enableFiltering: false,
+                enablePagination: true,
+                pageSize: 200,
+                enableHorizontalScrollbar: false,
+                enablePaginationControls: true,
+                columnDefs: columnDefs,
+                paginationPageSizes: [200, 500, 1000],
+                paginationPageSize: 200,
+                enableRowHeaderSelection: true,
+
+                exporterMenuPdf: false,
+                enableGridMenu: false,
+
+                useExternalPagination: true,
+                useExternalSorting: true,
+                enableRowSelection: true,
+
+                exporterCsvFilename: "Registros.csv",
+
+                exporterCsvLinkElement: angular.element(
+                    document.querySelectorAll(".custom-csv-link-location")
+                ),
+                exporterExcelFilename: "Registros.xlsx",
+                exporterExcelSheetName: "Sheet1",
+
+                onRegisterApi: function (gridApi) {
+                    $scope.gridApi = gridApi;
+                    $scope.gridApi.core.on.sortChanged(
+                        $scope,
+                        function (grid, sortColumns) {
+                            if (getPage) {
+                                if (sortColumns.length > 0) {
+                                    paginationOptions.sort = sortColumns[0].sort.direction;
+                                } else {
+                                    paginationOptions.sort = null;
+                                }
+                                getPage(
+                                    grid.options.paginationCurrentPage,
+                                    grid.options.paginationPageSize,
+                                    paginationOptions.sort
+                                );
+                            }
+                        }
+                    );
+                    gridApi.pagination.on.paginationChanged(
+                        $scope,
+                        function (newPage, pageSize) {
+                            if (getPage) {
+                                getPage(newPage, pageSize, paginationOptions.sort);
+                            }
+                        }
+                    );
+                },
+            };
+
+            var getPage = function (curPage, pageSize, sort) {
+                services
+                    .gestionarNivelacion(curPage, pageSize, sort)
+                    .then(complete)
+                    .catch(failed);
+
+                function complete(data) {
+                    var datos = data.data.data;
+                    var counter = data.data.counter;
+
+                    $scope.gridOptions.totalItems = counter;
+                    var firstRow = (curPage - 1) * datos;
+                    $scope.gridOptions.data = datos;
+                }
+
+                function failed(error) {
+                    console.log(error);
+                }
+            };
+
+            getPage(1, $scope.gridOptions.paginationPageSize, paginationOptions.sort);
+        }
+
+        function registrosTecnicos() {
+            var columnDefs = [
+                {
+                    name: "Tarea",
+                    field: "ticket_id",
+                    minWidth: 80,
+                    width: "5%",
+                },
+                {
+                    name: "Proceso",
+                    field: "proceso",
+                    minWidth: 80,
+                    width: "10%",
+                },
+                {
+                    name: "Nombre Teçnico",
+                    field: "nombre_tecnico",
+                    minWidth: 70,
+                    width: "15%",
+                },
+                {
+                    name: "CC Técnico",
+                    field: "cc_tecnico",
+                    minWidth: 80,
+                    width: "7%",
+                },
+                {
+                    name: "Tipo Solicitud",
+                    field: "solicitud",
+                    minWidth: 70,
+                    width: "8%",
+                },
+                {
+                    name: "Motivo",
+                    field: "motivo",
+                    width: "13%",
+                },
+                {
+                    name: "Sub Motivo",
+                    field: "submotivo",
+                    minWidth: 70,
+                    width: "7%",
+                },
+                {
+                    name: "CC Nuevo Téc.",
+                    field: "cc_nuevo_tecnico",
+                    minWidth: 70,
+                    width: "8%",
+                },
+                {
+                    name: "Nombre Nuevo Tec.",
+                    field: "nombre_nuevo_tecnico",
+                    minWidth: 70,
+                    width: "12%",
+                },
+                {
+                    name: "Nivelacion",
+                    field: "se_realiza_nivelacion",
+                    minWidth: 70,
+                    width: "10%",
+                },
+                {
+                    name: "Detalles",
+                    cellTemplate:
+                        "<div style='text-align: center'>" +
+                        '<button type="button" class="btn btn-default btn-xs" ng-click="grid.appScope.DetalleTotal(row)">' +
+                        '<i class="fa fa-info-circle" aria-hidden="true"> </i>' +
+                        "</button>",
+                    minWidth: 70,
+                    width: "5%",
+                    enableFiltering: false,
+                },
+            ];
+
+            var paginationOptions = {
+                sort: null,
+            };
+
+            $scope.gridOptionsRegistros = {
+                enableFiltering: true,
+                enablePagination: true,
+                pageSize: 200,
+                enableHorizontalScrollbar: false,
+                enablePaginationControls: true,
+                columnDefs: columnDefs,
+                paginationPageSizes: [200, 500, 1000],
+                paginationPageSize: 200,
+
+                useExternalPagination: true,
+                useExternalSorting: true,
+                enableRowSelection: true,
+
+                enableGridMenu: true,
+                enableSelectAll: true,
+                exporterCsvFilename: "Registros-nivelacion.csv",
+                exporterMenuPdf: false,
+                exporterCsvLinkElement: angular.element(
+                    document.querySelectorAll(".custom-csv-link-location")
+                ),
+                exporterExcelFilename: "Registros-nivelacion.xlsx",
+                exporterExcelSheetName: "Sheet1",
+                onRegisterApi: function (gridApi) {
+                    $scope.gridApi = gridApi;
+                    $scope.gridApi.core.on.sortChanged(
+                        $scope,
+                        function (grid, sortColumns) {
+                            if (getPage) {
+                                if (sortColumns.length > 0) {
+                                    paginationOptions.sort = sortColumns[0].sort.direction;
+                                } else {
+                                    paginationOptions.sort = null;
+                                }
+                                getPage(
+                                    grid.options.paginationCurrentPage,
+                                    grid.options.paginationPageSize,
+                                    $scope.Registros
+                                );
+                            }
+                        }
+                    );
+                    gridApi.pagination.on.paginationChanged(
+                        $scope,
+                        function (newPage, pageSize) {
+                            if (getPage) {
+                                getPage(newPage, pageSize, $scope.Registros);
+                            }
+                        }
+                    );
+                },
+            };
+
+            var getPage = function (curPage, pageSize, sort) {
+                services
+                    .gestionarRegistrosNivelacion(curPage, pageSize, $scope.Registros)
+                    .then(complete)
+                    .catch(failed);
+
+                function complete(data) {
+                    if (data.data.state == 99) {
+                        swal({
+                            type: "error",
+                            title: data.data.title,
+                            text: data.data.text,
+                            timer: 4000,
+                        }).then(function () {
+                            $cookies.remove("usuarioseguimiento");
+                            $location.path("/");
+                            $rootScope.galletainfo = undefined;
+                            $rootScope.permiso = false;
+                            $route.reload();
+                        });
+                    } else {
+                        var datos = data.data.data;
+                        var counter = data.data.counter;
+
+                        $scope.gridOptionsRegistros.totalItems = counter;
+                        var firstRow = (curPage - 1) * datos;
+                        $scope.gridOptionsRegistros.data = datos;
+                    }
+                }
+
+                function failed(error) {
+                    console.log(error);
+                }
+            };
+
+            getPage(
+                1,
+                $scope.gridOptionsRegistros.paginationPageSize,
+                paginationOptions.sort
+            );
+        }
+
+        $scope.gestion_nivelacion = function () {
+            getGrid();
+        };
+
+        $scope.registros_nivelacion = function () {
+            window.setTimeout(function () {
+                registrosTecnicos();
+                $(window).resize();
+                $(window).resize();
+            }, 1000);
+        };
+
+        $scope.DetalleTotal = function (row) {
+            services
+                .buscarhistoricoNivelacion(row.entity.ticket_id)
+                .then(complete)
+                .catch(failed);
+
+            function complete(data) {
+                if (data.data.state === 0) {
+                    Swal({
+                        type: "error",
+                        title: data.data.msj,
+                    });
+                } else {
+                    $scope.nivelacion.databsucarPedido = data.data.data;
+                    $("#modalHistoricoNivelacion").modal("show");
+                    return data.data;
+                }
+            }
+
+            function failed(data) {
+                console.log(data);
+            }
+        };
+
+        function js_yyyy_mm_dd_hh_mm_ss() {
+            now = new Date();
+            year = "" + now.getFullYear();
+            month = "" + (now.getMonth() + 1);
+            if (month.length == 1) {
+                month = "0" + month;
+            }
+            day = "" + now.getDate();
+            if (day.length == 1) {
+                day = "0" + day;
+            }
+            hour = "" + now.getHours();
+            if (hour.length == 1) {
+                hour = "0" + hour;
+            }
+            minute = "" + now.getMinutes();
+            if (minute.length == 1) {
+                minute = "0" + minute;
+            }
+            second = "" + now.getSeconds();
+            if (second.length == 1) {
+                second = "0" + second;
+            }
+            return (
+                year +
+                "-" +
+                month +
+                "-" +
+                day +
+                " " +
+                hour +
+                ":" +
+                minute +
+                ":" +
+                second
+            );
+        }
+
+        $scope.hora_sistema = js_yyyy_mm_dd_hh_mm_ss();
+
+        $scope.reloaddata = function () {
+            getGrid();
+        };
+
+        $scope.delete = function (row) {
+            console.log(row.entity);
+        };
+
+        $scope.engestion = function (row) {
+            services
+                .marcarEnGestionNivelacion(row.entity.id)
+                .then(complete)
+                .catch(failed);
+
+            function complete(data) {
+                if (data.data.state == 99) {
+                    swal({
+                        type: "error",
+                        title: data.data.title,
+                        text: data.data.text,
+                        timer: 4000,
+                    }).then(function () {
+                        $cookies.remove("usuarioseguimiento");
+                        $location.path("/");
+                        $rootScope.galletainfo = undefined;
+                        $rootScope.permiso = false;
+                        $route.reload();
+                    });
+                } else {
+                    Swal({
+                        type: "success",
+                        title: data.data.msj,
+                        timer: 4000,
+                    });
+                    $route.reload();
+                }
+            }
+
+            function failed(error) {
+                console.log(error);
+            }
+        };
+
+        $scope.guardagestion = function (row) {
+            if (!row.entity.nivelacion) {
+                Swal("Selecciona el estado de nivelación");
+                return;
+            }
+            $scope.GestionNivelacion.observacionesNivelacion = "";
+            $scope.datos = row.entity;
+            $("#editarModal").modal("show");
+        };
+
+        $scope.buscarhistoricoNivelacion = function () {
+            services
+                .buscarhistoricoNivelacion($scope.nivelacion.tarea)
+                .then(complete)
+                .catch(failed);
+
+            function complete(data) {
+                if (data.data.state === 0) {
+                    Swal({
+                        type: "error",
+                        title: data.data.msj,
+                    });
+                } else {
+                    $scope.nivelacion.databsucarPedido = data.data.data;
+                    $("#modalHistoricoNivelacion").modal("show");
+                    return data.data;
+                }
+            }
+
+            function failed(data) {
+                console.log(data);
+            }
+        };
+
+        $scope.CopyPortaPapeles = function (data) {
+            var copyTextTV = document.createElement("input");
+            copyTextTV.value = data;
+            document.body.appendChild(copyTextTV);
+            copyTextTV.select();
+            document.execCommand("copy");
+            document.body.removeChild(copyTextTV);
+            Swal({
+                type: "info",
+                title: "Aviso",
+                text: "El texto seleccionado fue copiado",
+                timer: 2000,
+            });
+        };
+
+        $scope.guardarGestionObsNivelacion = function (data) {
+            if (!data.nivelacion) {
+                Swal("Selecciona el estado de nivelación");
+                return;
+            }
+            $scope.GestionNivelacion.observacionesNivelacion = "";
+            $scope.datos = data;
+            $("#editarModal").modal("show");
+        };
+
+        $scope.guardaNivelacion = function () {
+            $scope.datos.observaciones =
+                $scope.GestionNivelacion.observacionesNivelacion;
+            services
+                .guardaNivelacion($scope.datos, $rootScope.galletainfo)
+                .then(complete)
+                .catch(failed);
+
+            function complete(data) {
+                if (data.data.state != 1) {
+                    Swal({
+                        type: "error",
+                        text: data.data.msj,
+                        timer: 4000,
+                    });
+                } else {
+                    Swal({
+                        type: "success",
+                        title: data.data.msj,
+                        timer: 4000,
+                    }).then(function () {
+                        $route.reload();
+                    });
+                }
+            }
+
+            function failed(errs) {
+                console.log(errs);
+            }
+        };
+
+        $scope.registrosNivelacion = function () {
+            var fechaini = new Date($scope.fechaini);
+            var fechafin = new Date($scope.fechafin);
+            var diffMs = fechafin - fechaini;
+            var diffDays = Math.round(diffMs / 86400000);
+
+            if (
+                $scope.Registros.fechaini === "" ||
+                $scope.Registros.fechaini === undefined
+            ) {
+                Swal({
+                    type: "error",
+                    text: "Ingrese la fecha inicial",
+                });
+            } else if (
+                $scope.Registros.fechafin === "" ||
+                $scope.Registros.fechafin === undefined
+            ) {
+                Swal({
+                    type: "error",
+                    text: "Ingrese la fecha final",
+                });
+            } else if ($scope.Registros.fechafin < $scope.Registros.fechaini) {
+                Swal({
+                    type: "error",
+                    text: "La fecha final no puede ser menor que la inicial",
+                });
+            } else {
+                services
+                    .gestionarRegistrosNivelacion(1, 200, $scope.Registros)
+                    .then(complete)
+                    .catch(failed);
+
+                function complete(data) {
+                    console.log(data.data.counter);
+                    var datos = data.data.data;
+                    var counter = data.data.counter;
+
+                    $scope.gridOptionsRegistros.totalItems = counter;
+                    $scope.gridOptionsRegistros.data = datos;
+                }
+
+                function failed(error) {
+                    console.log(error);
+                }
+            }
+        };
+
+        $scope.csvNivelacion = function () {
+            var fechaini = new Date($scope.fechaini);
+            var fechafin = new Date($scope.fechafin);
+            var diffMs = fechafin - fechaini;
+            var diffDays = Math.round(diffMs / 86400000);
+
+            if (
+                $scope.Registros.fechaini === "" ||
+                $scope.Registros.fechaini === undefined
+            ) {
+                Swal({
+                    type: "error",
+                    text: "Ingrese la fecha inicial",
+                });
+            } else if (
+                $scope.Registros.fechafin === "" ||
+                $scope.Registros.fechafin === undefined
+            ) {
+                Swal({
+                    type: "error",
+                    text: "Ingrese la fecha final",
+                });
+            } else if ($scope.Registros.fechafin < $scope.Registros.fechaini) {
+                Swal({
+                    type: "error",
+                    text: "La fecha final no puede ser menor que la inicial",
+                });
+            } else {
+                services.csvNivelacion($scope.Registros).then((data) => {
+                    if (data.data.state == 1) {
+                        var wb = XLSX.utils.book_new();
+                        var ws = XLSX.utils.json_to_sheet(data.data.data);
+                        XLSX.utils.book_append_sheet(wb, ws, 'nivelacion');
+                        XLSX.writeFile(wb, 'Nivelacion_' + tiempo + '.xlsx');
+                    } else {
+                        Swal({
+                            type: 'error',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    }
+                })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+
+            }
+        };
+
+        $scope.reloadNivelacion = function () {
+            getGrid();
+        };
+    },
+]);
+
+app.controller("pendientesBrutalCtrl", function ($scope, $uibModal, services) {
+    $scope.abrirModalPendientes = function () {
+        var modalInstance = $uibModal.open({
+            animation: true,
+            backdrop: "static",
+            keyboard: false,
+            size: "md",
+            templateUrl: "partial/PendientesBrutal.html",
+            controller: function ($scope, $uibModalInstance) {
+                $scope.tituloModalPausa = "Pendientes Brutal force";
+                services.pendientesBrutalForce().then(function (data) {
+                    $scope.pendientesBrutal = data.data[0];
+                    $scope.total = $scope.pendientesBrutal.length;
+                    return data.data;
+                });
+                $scope.cerrar = function () {
+                    $uibModalInstance.dismiss("cancel");
+                };
+            },
+        });
+    };
+});
+
+app.controller(
+    "GestionsoportegponCtrl",
+    function ($scope, $rootScope, services, $route, $sce, $cookies, $location) {
+        $scope.isSoporteGponFromField = false;
+        $scope.isSoporteGponFromIntranet = false;
+        $scope.isLoadingData = true;
+        $scope.dataSoporteGpon = [];
+        //$scope.dataContent = 'clic';
+
+
+        $scope.listarsoportegpon = () => {
+            $scope.isLoadingData = true;
+
+            services
+                .getListaPendientesSoporteGpon()
+                .then(function (data) {
+                    if (data.data.length > 0) {
+                        $scope.dataSoporteGpon = data.data[0];
+                        $scope.datacount = data.data[1];
+                        $scope.datacoun2 = data.data[2];
+
+                        $scope.finalizado = $scope.datacoun2[0]["Finalizado"];
+                        $scope.devuelto = $scope.datacoun2[0]["Devuelto al tecnico"];
+                        $scope.incompleto = $scope.datacoun2[0]["Incompleto"];
+                        $scope.sinrespuesta = $scope.datacoun2[0]["sinrespuesta"];
+                        $scope.isLoadingData = false;
+                    } else {
+                        $scope.flagOnlyPSData = true;
+                    }
+
+                    return data;
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+
+            $scope.isLoadingData = false;
+        };
+
+        $scope.contadorGpon = () => {
+            let counter = $scope.datacount;
+            console.log(counter);
+            let x = [];
+            let finalizado = $scope.finalizado;
+            let devuelto = $scope.devuelto;
+            let incompleto = $scope.incompleto;
+            let sinrespuesta = $scope.sinrespuesta;
+            var tabla = '<table class="table table-striped small">' +
+                '<thead>' +
+                '<tr>' +
+                '<th>Login Analista</th>' +
+                '<th>Cantidad Marcadas</th>' +
+                '</tr>' +
+                '</thead>' +
+                '<tbody>';
+
+            for (var i = 0; i < counter.length; i++) {
+                tabla += '<tr>' +
+                    '<td class="filterable-cell"><i class="fa fa-user" aria-hidden="true"></i>  ' + counter[i]['login'] + '</td>' +
+                    '<td class="filterable-cell">  ' + counter[i]['Conteo'] + '</td>' +
+                    '</tr>';
+            }
+            tabla += '</tbody>' +
+                '</table>' +
+                '<div style="text-align: center"><b>Detalles hoy</b></div>' +
+                '<ul style="list-style: none;">' +
+                '<li>' +
+                '<span class="label label-success">Finalizados: ' + finalizado + '</span>' +
+                '</li>' +
+                '<li>' +
+                '<span class="label label-warning">Devueltos al técnico: ' + devuelto + '</span>' +
+                '</li>' +
+                '<li>' +
+                '<span class="label label-danger">Incompletos: ' + incompleto + '</span>' +
+                '</li>' +
+                '<li>' +
+                '<span class="label label-info">Sin respuesta: ' + sinrespuesta + '</span>' +
+                '</li>' +
+                '</ul>';
+            $scope.contadorGpon = $sce.trustAsHtml(tabla);
+        }
+
+
+        $scope.ver_masss = (data) => {
+            $scope.dataContent = $sce.trustAsHtml('<div class="table-responsive" style="max-width: 380px;"><table class="table table-bordered table-hover table-condensed small" style="max-width: 350px;">' +
+                '<tbody><tr><td style="min-width: 80px">Pedido</td><td>' + data.unepedido + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Categoría</td><td>' + data.tasktypecategory + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Municipio</td><td>' + data.unemunicipio + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Productos</td><td>' + data.uneproductos + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Datos cola</td><td>' + data.datoscola + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Mac</td><td>' + data.mac + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Serial</td><td>' + data.serial.replace(/,/g, '\n') + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Sistema</td><td>' + data.uneSourceSystem + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Tipo equipo</td><td>' + data.tipo_equipo.replace(/,/g, '\n') + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Velocidad navegación</td><td>' + data.velocidad_navegacion + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Observación</td><td>' + data.observacion_terreno + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Fecha solicitud</td><td>' + data.fecha_creado + '</td></tr>' +
+                '</tbody></table></div>');
+        }
+
+
+        $scope.marcarEngestionGpon = async (data) => {
+            services
+                .marcarEngestionGpon(data, $rootScope.galletainfo)
+                .then(function (data) {
+                    if (data.data.state == 99) {
+                        swal({
+                            type: "error",
+                            title: data.data.title,
+                            text: data.data.msg,
+                            timer: 4000,
+                        }).then(function () {
+                            $cookies.remove("usuarioseguimiento");
+                            $location.path("/");
+                            $rootScope.galletainfo = undefined;
+                            $rootScope.permiso = false;
+                            $route.reload();
+                        });
+                    } else if (data.data.state == 1) {
+                        swal({
+                            title: "muy Bien",
+                            type: "success",
+                            text: data.data.msj,
+                            timer: 4000,
+                        }).then(function () {
+                            $scope.listarsoportegpon();
+                        })
+                    } else if (data.data.state == 0) {
+                        swal({
+                            title: "Ops...",
+                            type: "info",
+                            text: data.data.msj,
+                            timer: 4000,
+                        })
+                    }
+                })
+                .catch((err) => console.log(err));
+        };
+
+        $scope.abreTipificacion = (id) => {
+            var el = document.getElementById("optionTipificacion_" + id);
+            el.style.display = el.style.display == "none" ? "block" : "none";
+        };
+
+        $scope.gestionarSoporteGpon = async (id_soporte, id_firebase) => {
+            let tipificacion = $("#tipificacion" + id_soporte).val();
+            let tipificaciones = $("#tipificaciones" + id_soporte).val();
+
+            const {value: observacion} = await Swal({
+                title: "Gestión Soporte GPON",
+                input: "textarea",
+                inputPlaceholder: "Gestion...",
+                inputAttributes: {
+                    "aria-label": "Gestion",
+                },
+                showCancelButton: true,
+            });
+
+            if (observacion) {
+                Swal("Cargando...");
+
+                if (tipificaciones == "") {
+                    Swal({
+                        title: "Error",
+                        text: "Debes de seleccionar tipificaciónes.",
+                        type: "error",
+                    });
+                    return false;
+                }
+
+                if (tipificacion == "") {
+                    Swal({
+                        title: "Error",
+                        text: "Debes de seleccionar una tipificación.",
+                        type: "error",
+                    });
+                    return false;
+                }
+
+                services
+                    .gestionarSoporteGpon(
+                        id_soporte,
+                        tipificacion,
+                        tipificaciones,
+                        observacion,
+                        $rootScope.galletainfo
+                    )
+                    .then(function (data) {
+                        if (data.data.state == 99) {
+                            swal({
+                                type: "error",
+                                title: data.data.title,
+                                text: data.data.msg,
+                                timer: 4000,
+                            }).then(function () {
+                                $cookies.remove("usuarioseguimiento");
+                                $location.path("/");
+                                $rootScope.galletainfo = undefined;
+                                $rootScope.permiso = false;
+                                $route.reload();
+                            });
+                        } else if (data.data.state == 1) {
+                            Swal({
+                                type: "success",
+                                title: "Muy bien",
+                                text: data.data.msg,
+                                timer: 4000,
+                            }).then(function () {
+                                $route.reload();
+                            })
+
+                        } else if (data.data.state == 0 || data.data.state == 3) {
+                            Swal({
+                                type: "info",
+                                title: "Ops...",
+                                text: data.data.msg,
+                                timer: 4000,
+                            });
+                        }
+                    })
+                    .catch((err) => {
+                        console.log("err", err);
+                    });
+            } else {
+                Swal({
+                    title: "Error",
+                    text: "Debes ingresar una observacion.",
+                    type: "error",
+                });
+                return false;
+            }
+        };
+
+        $scope.listarsoportegpon();
+    }
+)
+    .filter("replace", [
         function () {
             return function (input, from, to) {
                 if (input === undefined) {
@@ -2330,7 +8102,2876 @@ angular.module("seguimientopedidos").filter("replace", [
         },
     ]);
 
-angular.module("seguimientopedidos").directive("cookie", function ($rootScope, $cookies) {
+app.controller(
+    "registrossoportegponCtrl",
+    function ($scope, $rootScope, services, $cookies, $location, $route) {
+        $scope.listaRegistros = {};
+        $scope.RegistrosSoporteGpon = {};
+        $scope.soportegpon = {};
+        $scope.listadoAcciones = {};
+        $scope.datosRegistros = {};
+        $scope.verplantilla = false;
+
+        $scope.currentPage = 1;
+        $scope.totalItems = 0;
+        $scope.pageSize = 10;
+        $scope.searchText = "";
+
+        BuscarRegistrosSoporteGpon();
+
+        $scope.pageChanged = function () {
+            data = {page: $scope.currentPage, size: $scope.pageSize, data: $scope.RegistrosSoporteGpon};
+            BuscarRegistrosSoporteGpon(data);
+        };
+        $scope.pageSizeChanged = function () {
+            data = {page: $scope.currentPage, size: $scope.pageSize, data: $scope.RegistrosSoporteGpon};
+            $scope.currentPage = 1;
+            BuscarRegistrosSoporteGpon(data);
+        };
+
+        if (
+            $scope.RegistrosSoporteGpon.fechaini == undefined ||
+            $scope.RegistrosSoporteGpon.fechafin == undefined
+        ) {
+            var tiempo = new Date().getTime();
+            var date1 = new Date();
+            var year = date1.getFullYear();
+            var month =
+                date1.getMonth() + 1 <= 9
+                    ? "0" + (date1.getMonth() + 1)
+                    : date1.getMonth() + 1;
+            var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
+
+            tiempo = year + "-" + month + "-" + day;
+
+            $scope.fechaini = tiempo;
+            $scope.fechafin = tiempo;
+        }
+
+        $scope.buscarRegistrosSoporteGpon = function (data) {
+            let date_1 = new Date(data.fechaini);
+            let date_2 = new Date(data.fechafin);
+            let diff = date_2 - date_1;
+
+            let TotalDays = Math.ceil(diff / (1000 * 3600 * 24));
+            if (TotalDays > 31) {
+                swal({
+                    type: "error",
+                    text: "Para optimizacion de los reportes estos no pueden sobrepasar los 8 dias",
+                });
+            } else if (data.fechafin == undefined) {
+                Swal({
+                    type: "error",
+                    title: "Oops...",
+                    text: "Ingrese la fecha final a consultar",
+                    timer: 4000,
+                });
+            } else if (data.fechaini == undefined) {
+                Swal({
+                    type: "error",
+                    title: "Oops...",
+                    text: "Ingrese la fecha inicial a consultar",
+                    timer: 4000,
+                });
+            } else if (data.fechaini > data.fechafin) {
+                Swal({
+                    type: "error",
+                    title: "Oops...",
+                    text: "La fecha inicial no puede ser mayor que la final",
+                    timer: 4000,
+                });
+            } else {
+                data = {page: $scope.currentPage, size: $scope.pageSize, data: data};
+                BuscarRegistrosSoporteGpon(data);
+            }
+        };
+
+        function BuscarRegistrosSoporteGpon(data) {
+            $scope.listaRegistros = "";
+            if (data === "" || data === undefined) {
+                $scope.currentPage = 1;
+                $scope.totalItems = 0;
+                $scope.pageSize = 10;
+                $scope.searchText = "";
+                data = {page: $scope.currentPage, size: $scope.pageSize};
+            }
+            services.registrossoportegpon(data).then(
+                function (data) {
+                    if (data.data.state == 99) {
+                        swal({
+                            type: "error",
+                            title: data.data.title,
+                            text: data.data.msg,
+                            timer: 4000,
+                        }).then(function () {
+                            $cookies.remove("usuarioseguimiento");
+                            $location.path("/");
+                            $rootScope.galletainfo = undefined;
+                            $rootScope.permiso = false;
+                            $route.reload();
+                        });
+                    } else {
+                        $scope.listaRegistros = data.data.data;
+                        $scope.cantidad = data.data.length;
+                        $scope.counter = data.data.counter;
+
+                        $scope.totalItems = data.data.counter;
+                        $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                        $scope.endItem = $scope.currentPage * $scope.pageSize;
+                        if ($scope.endItem > data.data.counter) {
+                            $scope.endItem = data.data.counter;
+                        }
+                    }
+                },
+
+                function errorCallback(response) {
+                    console.log(response);
+                }
+            );
+        }
+
+        $scope.buscarhistoricoSoporteGpon = function (param) {
+            if (!param) {
+                Swal({
+                    type: 'error',
+                    title: 'Opss...',
+                    text: 'Ingrese el pedido a buscar',
+                    timer: 4000
+                })
+                return;
+            } else {
+                data = {
+                    page: $scope.currentPage,
+                    size: $scope.pageSize,
+                    pedido: param,
+                };
+                services.registrossoportegpon(data).then(complete).catch(failed);
+
+                function complete(data) {
+                    if (data.data.state == 1) {
+                        $scope.historicoDatos = data.data.data;
+                        $("#HistoricoModal").modal('show')
+                    } else {
+                        Swal({
+                            type: "error",
+                            title: "Oops...",
+                            text: data.data.msj,
+                            timer: 4000,
+                        });
+                    }
+                }
+
+                function failed(data) {
+                    console.log(data);
+                }
+            }
+        };
+
+        $scope.muestraNotas = function (datos) {
+            $scope.TituloModal = "Detalle soporte gpon";
+            $scope.pedido = datos.unepedido;
+            $scope.tarea = datos.tarea;
+            $scope.velocidadnavegacion = datos.velocidad_navegacion;
+            $scope.arpon = datos.arpon;
+            $scope.nap = datos.nap;
+            $scope.hilo = datos.hilo;
+            $scope.intenet1 = datos.port_internet_1 == "1" ? "X" : "";
+            $scope.intenet2 = datos.port_internet_2 == "1" ? "X" : "";
+            $scope.intenet3 = datos.port_internet_3 == "1" ? "X" : "";
+            $scope.intenet4 = datos.port_internet_4 == "1" ? "X" : "";
+            $scope.television1 = datos.port_television_1 == "1" ? "X" : "";
+            $scope.television2 = datos.port_television_2 == "1" ? "X" : "";
+            $scope.television3 = datos.port_television_3 == "1" ? "X" : "";
+            $scope.television4 = datos.port_television_4 == "1" ? "X" : "";
+
+            let listaseriales = datos.serial.split(",");
+            let listamacs = datos.mac.split(",");
+
+            $scope.listaSeriales = listaseriales;
+            $scope.listaMacs = listamacs;
+            $scope.observaciones = datos.observacion;
+            $("#NotasModal").modal('show');
+        };
+
+        $scope.csvRegistros = function () {
+            $scope.csvPend = false;
+            if ($scope.RegistrosSoporteGpon.fechaini > $scope.RegistrosSoporteGpon.fechafin) {
+                swal({
+                    type: 'info',
+                    title: 'Opsss...',
+                    text: 'La fecha inicial debe ser menor que la inicial',
+                    timer: 4000
+                })
+            } else {
+                services
+                    .expCsvRegistrosSoporteGpon(
+                        $scope.RegistrosSoporteGpon,
+                        $rootScope.galletainfo
+                    )
+                    .then((data) => {
+                        if (data.data.state == 1) {
+                            var wb = XLSX.utils.book_new();
+                            var ws = XLSX.utils.json_to_sheet(data.data.data);
+                            XLSX.utils.book_append_sheet(wb, ws, 'soporte_gpon');
+                            XLSX.writeFile(wb, 'Soporte_gpon_' + tiempo + '.xlsx'); // Descarga el a
+                        } else {
+                            Swal({
+                                type: 'error',
+                                text: data.data.msj,
+                                timer: 4000
+                            })
+                        }
+                    })
+
+                    .catch((response) => {
+                        console.log(response);
+                    })
+
+            }
+        };
+    }
+);
+
+app.controller(
+    "GestioncodigoincompletoCtrl",
+    function ($scope, $rootScope, services) {
+        $scope.isSoporteGponFromField = false;
+        $scope.isSoporteGponFromIntranet = false;
+        $scope.isLoadingData = true;
+        $scope.dataCodigoIncompleto = [];
+
+        listarcodigoincompleto();
+
+        function listarcodigoincompleto(data) {
+            if (data === '' || data === undefined) {
+                $scope.currentPage = 1;
+                $scope.totalItems = 0;
+                $scope.pageSize = 15;
+                $scope.searchText = '';
+                data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+            }
+            services
+                .getListaCodigoIncompleto(data)
+                .then(function (data) {
+                    $scope.dataCodigoIncompleto = data.data.data;
+
+                    $scope.totalItems = data.data.counter;
+                    $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                    $scope.endItem = $scope.currentPage * $scope.pageSize;
+                    if ($scope.endItem > data.data.counter) {
+                        $scope.endItem = data.data.counter;
+                    }
+                })
+                .catch((err) => {
+                    $scope.isLoadingData = true;
+                    console.log(err);
+                });
+
+            $scope.isLoadingData = false;
+        };
+
+        $scope.pageChanged = function () {
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+            console.log(data)
+            listarcodigoincompleto(data);
+        }
+        $scope.pageSizeChanged = function () {
+            console.log(data)
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+            $scope.currentPage = 1;
+            listarcodigoincompleto(data);
+        }
+
+        $scope.gestionarCodigoIncompleto = async (id_codigo_incompleto) => {
+            let tipificacion = $("#tipificacion" + id_codigo_incompleto).val();
+
+            const {value: observacion} = await Swal({
+                title: "Gestión Código Incompleto",
+                input: "textarea",
+                inputPlaceholder: "Gestion...",
+                inputAttributes: {
+                    "aria-label": "Gestion",
+                },
+                showCancelButton: true,
+            });
+
+            if (observacion) {
+                Swal("Cargando...");
+
+                if (tipificacion == "") {
+                    Swal({
+                        title: "Error",
+                        text: "Debes de seleccionar una tipificación.",
+                        type: "error",
+                    });
+                    return false;
+                }
+
+                services
+                    .gestionarCodigoIncompleto(
+                        id_codigo_incompleto,
+                        tipificacion,
+                        observacion,
+                        $rootScope.galletainfo
+                    )
+                    .then(function (data) {
+                        $scope.listarcodigoincompleto();
+                        Swal({
+                            title: "Excelente",
+                            text: data.data.msg,
+                            type: "success",
+                        });
+                    })
+                    .catch((err) => {
+                        console.log("err", err);
+                    });
+            } else {
+                Swal({
+                    title: "Error",
+                    text: "Debes ingresar una observacion.",
+                    type: "error",
+                });
+                return false;
+            }
+        };
+    }
+);
+
+app.controller(
+    "registroscodigoincompletoCtrl",
+    function ($scope, $rootScope, services) {
+        $scope.listaRegistros = {};
+        $scope.RegistrosCodigoIncompleto = {};
+        $scope.listadoAcciones = {};
+        $scope.datosRegistros = {};
+        $scope.verplantilla = false;
+
+        if (
+            $scope.RegistrosCodigoIncompleto.fechaini == undefined ||
+            $scope.RegistrosCodigoIncompleto.fechafin == undefined
+        ) {
+            var tiempo = new Date().getTime();
+            var date1 = new Date();
+            var year = date1.getFullYear();
+            var month =
+                date1.getMonth() + 1 <= 9
+                    ? "0" + (date1.getMonth() + 1)
+                    : date1.getMonth() + 1;
+            var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
+
+            tiempo = year + "-" + month + "-" + day;
+
+            $scope.fechaini = tiempo;
+            $scope.fechafin = tiempo;
+        }
+
+        BuscarRegistrosCodigoIncompleto();
+
+        function BuscarRegistrosCodigoIncompleto(data) {
+            if (data === '' || data === undefined) {
+                $scope.currentPage = 1;
+                $scope.totalItems = 0;
+                $scope.pageSize = 15;
+                $scope.searchText = '';
+                data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+            }
+            services
+                .registroscodigoincompleto(data)
+                .then(
+                    function (data) {
+                        $scope.listaRegistros = data.data.data;
+                        $scope.cantidad = data.data.totalItems;
+                        $scope.counter = data.data.total_pages;
+
+                        $scope.totalItems = data.data.totalItems;
+                        $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                        $scope.endItem = $scope.currentPage * $scope.pageSize;
+                        if ($scope.endItem > data.data.totalItems) {
+                            $scope.endItem = data.data.totalItems;
+                        }
+                    },
+
+                    function errorCallback(response) {
+                        console.log(response);
+                    }
+                );
+
+        };
+
+        $scope.recargaPage = () => {
+            BuscarRegistrosCodigoIncompleto();
+            $scope.tarea = '';
+        }
+
+        $scope.CopyPortaPapeles = function (data) {
+            var copyTextTV = document.createElement("input");
+            copyTextTV.value = data;
+            document.body.appendChild(copyTextTV);
+            copyTextTV.select();
+            document.execCommand("copy");
+            document.body.removeChild(copyTextTV);
+            Swal({
+                type: 'info',
+                title: 'Aviso',
+                text: "El texto seleccionado fue copiado",
+                timer: 2000
+            });
+        }
+
+        $scope.Buscartarea = (tarea) => {
+            if (tarea == '' || tarea == undefined) {
+                Swal({
+                    type: 'info',
+                    title: 'Aviso',
+                    text: "Debes ingresar la tarea",
+                    timer: 4000
+                });
+                return
+            }
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.RegistrosCodigoIncompleto, 'tarea': tarea}
+            BuscarRegistrosCodigoIncompleto(data);
+        }
+
+
+        $scope.pageChanged = function (tarea) {
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.RegistrosCodigoIncompleto}
+            console.log(data)
+            BuscarRegistrosCodigoIncompleto(data);
+        }
+        $scope.pageSizeChanged = function () {
+            console.log(data)
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.RegistrosCodigoIncompleto}
+            $scope.currentPage = 1;
+            BuscarRegistrosCodigoIncompleto(data);
+        }
+
+        $scope.muestraNotas = function (datos) {
+            $scope.TituloModal = "Detalle código incompleto";
+            $scope.pedido = datos.unepedido;
+            $scope.observaciones = datos.observacion;
+            $("#NotasModal").modal('show');
+        };
+
+        $scope.buscarRegistrosCodigoIncompleto = function (param) {
+            if (param.fechaini == undefined) {
+                Swal({
+                    title: "Error",
+                    text: "Ingresa la fecha inicial",
+                    type: "error",
+                });
+            } else if (param.fechafin == undefined) {
+                Swal({
+                    title: "Error",
+                    text: "Ingresa la fecha Final",
+                    type: "error",
+                });
+            } else if (param.fechaini > param.fechafin) {
+                Swal({
+                    title: "Error",
+                    text: "La fecha inicial no puede ser mayor que la final",
+                    type: "error",
+                });
+            } else {
+                data = {'page': $scope.currentPage, 'size': $scope.pageSize, data: param}
+                BuscarRegistrosCodigoIncompleto(data)
+            }
+
+        }
+
+        $scope.csvRegistros = function () {
+            $scope.csvPend = false;
+            if (
+                $scope.RegistrosCodigoIncompleto.fechaini >
+                $scope.RegistrosCodigoIncompleto.fechafin
+            ) {
+                Swal({
+                    type: 'error',
+                    text: 'La fecha inicial no puede ser mayor a la final',
+                    timer: 4000
+                })
+            } else {
+                services
+                    .expCsvRegistrosCodigoIncompleto(
+                        $scope.RegistrosCodigoIncompleto,
+                        $rootScope.galletainfo
+                    )
+                    .then((data) => {
+                        if (data.data.state == 1) {
+                            var wb = XLSX.utils.book_new();
+                            var ws = XLSX.utils.json_to_sheet(data.data.data);
+                            XLSX.utils.book_append_sheet(wb, ws, 'codigo_incompleto');
+                            XLSX.writeFile(wb, 'Codigo_incompleto_' + tiempo + '.xlsx'); // Descarga el a
+                        } else {
+                            Swal({
+                                type: 'error',
+                                text: data.data.msj,
+                                timer: 4000
+                            })
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(console.error());
+                    })
+            }
+        };
+    }
+);
+
+app.controller("brutalForceCtrl", function ($scope, $rootScope, services) {
+    $scope.formularioBrutal = {};
+    $scope.pedidoexiste = false;
+    $scope.pedidoNoexiste = false;
+
+    $scope.validaTrans = function () {
+        if (
+            $scope.formularioBrutal.tipoTrans == "Reconfigurar" &&
+            $scope.formularioBrutal.accion == "Gestión AAA"
+        ) {
+            $scope.vernumSape = true;
+        } else {
+            $scope.vernumSape = false;
+        }
+    };
+
+    $scope.buscarObservaciones = function () {
+        services.Verobservacionasesor($scope.formularioBrutal.pedido).then(
+            function (data) {
+                if (data.data.state != 1) {
+                    Swal({
+                        type: 'error',
+                        text: data.data.msj,
+                        timer: 4000
+                    })
+                } else {
+                    $scope.observacion = data.data.data;
+                    if ($scope.observacion.ObservacionAsesor == "") {
+                        Swal({
+                            type: 'info',
+                            text: "El pedido se encuentra en gestión",
+                            timer: 4000
+                        })
+                        return;
+                    } else {
+                        Swal({
+                            type: 'info',
+                            text: $scope.observacion.ObservacionAsesor,
+                            timer: 4000
+                        })
+                        return;
+                    }
+                }
+
+            },
+            function errorCallback(response) {
+                console.log(response);
+            }
+        );
+    };
+
+    $scope.ruta = "actividades";
+
+    $scope.validarHorarioBF = function (pedido = "") {
+        if (window.location.hash != "brutalForce") {
+            return;
+        }
+
+        var tiempo = new Date();
+        var hora = tiempo.getHours();
+        var dia = tiempo.getDay();
+        if (hora >= 7 && hora < 19) {
+            if ($rootScope.galleta.perfil == 7) {
+                return;
+            }
+            services.contadorPendientesBrutalForce().then(
+                function (data) {
+                    $scope.respuesta = data.data[0][0];
+                    if (pedido != "") {
+                        services.windowsBridge(`HCHV/Buscar/${pedido}`).then((data) => data.json()).then((response) => {
+
+
+                            // fetch(`http://10.100.66.254:8080/HCHV/Buscar/${pedido}`)
+                            //     .then((data) => data.json())
+                            //    .then((response) => {
+                            if (response) {
+                                if (
+                                    response.taskType.indexOf("Cambio_Domicilio") !== -1 ||
+                                    response.uNERutaTrabajo.indexOf("NUEVO CON TRASLADO") !== -1
+                                ) {
+                                    swal({
+                                        title: "El pedido corresponde a la categoría priorizada",
+                                        type: "success",
+                                        position: "top-end",
+                                        showConfirmButton: false,
+                                        timer: 3000,
+                                    });
+                                } else {
+                                    swal({
+                                        title:
+                                            "Tu pedido no corresponde a la categoría priorizada:",
+                                        html: "<div>Solo se reciben solicitudes de traslado</div>",
+                                        type: "warning",
+                                    });
+                                    window.location = "actividades";
+                                }
+                            }
+                        })
+                            .catch((err) => {
+                                console.warn(err);
+                            });
+                    } else {
+                        Swal.fire({
+                            title:
+                                "Los tiempos de atención son altos, procede con el pendiente que corresponda:",
+                            html: '<div><font size=4><div class="label-premisas" style="text-align: left; padding-top: 20px;">Si tienes un pedido prioritario por favor valida tu ingreso especial.</div></font></div>',
+                            type: "warning",
+                            customClass: "custom-sweet-alert",
+                            input: "text",
+                            inputPlaceholder: "Introduzca el pedido a comprobar",
+                            showCancelButton: true,
+                            confirmButtonText: "Comprobar",
+                            cancelButtonText: "Cancelar",
+                            showLoaderOnConfirm: true,
+                            preConfirm: (pedido) => {
+                                services.windowsBridge(`HCHV/Buscar/${pedido}`).then((response) => {
+                                    //return fetch(`http://10.100.66.254:8080/HCHV/Buscar/${pedido}`)
+                                    //.then((response) => {
+                                    if (!response.ok) {
+                                        throw new Error(response.statusText);
+                                    }
+                                    return response.json();
+                                })
+                                    .catch((error) => {
+                                        Swal.showValidationMessage(`Petición Fallida: ${error}`);
+                                    });
+                            },
+                            allowOutsideClick: () => !Swal.isLoading(),
+                        }).then((result) => {
+                            if (result.value != undefined) {
+                                let tasktype =
+                                    result.value.taskType == null ? "" : result.value.taskType;
+                                let unerutatrabajo =
+                                    result.value.uNERutaTrabajo == null
+                                        ? ""
+                                        : result.value.uNERutaTrabajo;
+
+                                if (
+                                    tasktype.indexOf("Cambio_Domicilio") !== -1 ||
+                                    unerutatrabajo.indexOf("NUEVO CON TRASLADO") !== -1
+                                ) {
+                                    swal({
+                                        title: "El pedido corresponde a la categoría priorizada",
+                                        type: "success",
+                                        position: "top-end",
+                                        showConfirmButton: false,
+                                        timer: 3000,
+                                    });
+                                } else {
+                                    swal({
+                                        title:
+                                            "Tu pedido no corresponde a la categoría priorizada:",
+                                        html: "<div>Solo se reciben solicitudes de traslado</div>",
+                                        type: "warning",
+                                    });
+                                    window.location = "actividades";
+                                }
+                            } else {
+                                window.location = "actividades";
+                            }
+                        });
+                    }
+                },
+                function errorCallback(response) {
+                    console.log(response);
+                }
+            );
+        } else {
+            Swal(
+                "El ingreso de solicitudes solo esta disponible entre las 7 a.m. y las 7 p.m."
+            );
+            window.location = "actividades";
+        }
+    };
+
+    $scope.GuardarGestion = async function () {
+        emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+        celRegex = /^3[\d]{9}$/;
+        var tiempo = new Date();
+        var hora = tiempo.getHours();
+        var dia = tiempo.getDay();
+
+        var pedido = $scope.formularioBrutal.pedido;
+
+        var filtersEx = [
+            "1 - B2B",
+            "B2B",
+            "C2",
+            "C3",
+            "CORPORATE",
+            "Corporativo",
+            "CORPORATIVO GOBIERNO",
+            "CORPORATIVO PRIVADO",
+            "Pymes",
+            "PYMES",
+        ];
+        var countFilterEx = null;
+
+        try {
+            var prioridadBFQuery = await services.windowsBridge(`HCHV/Buscar/${pedido}`);
+            /* var prioridadBFQuery = await fetch(
+                 `http://10.100.66.254:8080/HCHV/Buscar/${pedido}`
+             );*/
+            var prioridadBF = await prioridadBFQuery.json();
+            countFilterEx = filtersEx.indexOf(prioridadBF.uNEUENcalculada);
+            if (countFilterEx != -1) {
+                $scope.formularioBrutal.prioridad = prioridadBF.uNEUENcalculada;
+            } else if (
+                prioridadBF.uNERutaTrabajo == "PREMISAS" ||
+                prioridadBF.uNERutaTrabajo == "YAYA"
+            ) {
+                $scope.formularioBrutal.prioridad = prioridadBF.uNERutaTrabajo;
+            } else {
+                $scope.formularioBrutal.prioridad = "Otro Concepto";
+            }
+        } catch (error) {
+            console.log(error);
+            swal({
+                title: "Tu pedido esta presentando inconvenientes",
+                type: "warning",
+                showConfirmButton: false,
+                timer: 3000,
+            });
+            return;
+        }
+
+        if (hora >= 7 && hora < 19 && dia != 7) {
+            if (emailRegex.test($scope.formularioBrutal.correo)) {
+                if (celRegex.test($scope.formularioBrutal.celular)) {
+                    services
+                        .getGuardargestiodespachoBrutal(
+                            $scope.formularioBrutal,
+                            $rootScope.galletainfo
+                        )
+                        .then(
+                            function (data) {
+                                if (data.status == "200") {
+                                    $scope.formularioBrutal = {};
+                                    $scope.pedidoexiste = false;
+                                    $scope.mensaje = "Gestión guardada correctamente";
+                                    $scope.pedidoNoexiste = true;
+                                }
+                            },
+                            function errorCallback(response) {
+                                $scope.mensaje =
+                                    "El pedido ya existe, no es posible guardar nueva gestión.";
+                                $scope.pedidoexiste = true;
+                                $scope.pedidoNoexiste = false;
+                            }
+                        );
+                } else {
+                    Swal({
+                        type: 'error',
+                        title: 'Opsss...',
+                        text: 'El Número celular del técnico debe ser formato de celular',
+                        timer: 4000
+                    })
+                }
+            } else {
+                Swal({
+                    type: 'error',
+                    title: 'Opsss...',
+                    text: 'El correo debe tener el formato de E-mail: correo@dominio.com',
+                    timer: 4000
+                })
+            }
+        } else {
+            Swal({
+                type: 'error',
+                title: 'Opsss...',
+                text: 'El ingreso de solicitudes solo esta disponible de lunes a sábado entre las 7 a.m. y las 7 p.m.',
+                timer: 4000
+            })
+        }
+    };
+
+    $scope.ObservacionesBF = function () {
+        services.ObsPedidosBF($rootScope.galletainfo).then(
+            function (data) {
+                $scope.haypedido = true;
+                $scope.datosBF = data.data[0];
+
+                return data.data;
+            },
+            function errorCallback(response) {
+                $scope.haypedido = false;
+                $scope.mensaje = "No tiene pedidos pendientes!!!";
+            }
+        );
+    };
+
+    $scope.ObservacionesBF();
+});
+
+app.controller("usuariosCtrl", function ($scope, $rootScope, services) {
+    $scope.listaUsuarios = {};
+    $scope.Usuarios = {};
+    $scope.crearuser = {};
+
+    $scope.currentPage = 1;
+    $scope.totalItems = 0;
+    $scope.pageSize = 15;
+    $scope.searchText = "";
+
+    listadoUsuarios();
+
+    function listadoUsuarios(data) {
+        if (data === "" || data === undefined) {
+            $scope.currentPage = 1;
+            $scope.totalItems = 0;
+            $scope.pageSize = 15;
+            $scope.searchText = "";
+            data = {page: $scope.currentPage, size: $scope.pageSize};
+        }
+        services.listadoUsuarios(data).then(
+            function (data) {
+                $scope.listaUsuarios = data.data.data;
+                $scope.cantidad = data.data.length;
+                $scope.counter = data.data.counter;
+
+                $scope.crearuser.NOMBRE = data.data.data[0].NOMBRE;
+                $scope.crearuser.PASSWORD = data.data.data[0].PASSWORD;
+                $scope.crearuser.IDENTIFICACION = data.data.data[0].IDENTIFICACION;
+                $scope.crearuser.PERFIL = data.data.data[0].perfil;
+                $scope.crearuser.LOGIN = data.data.data[0].LOGIN;
+
+                $scope.totalItems = data.data.counter;
+                $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                $scope.endItem = $scope.currentPage * $scope.pageSize;
+                if ($scope.endItem > data.data.counter) {
+                    $scope.endItem = data.data.counter;
+                }
+            },
+            function errorCallback(response) {
+                $scope.errorDatos = concepto + " " + usuario + " no existe.";
+            }
+        );
+    }
+
+    $scope.pageChanged = function () {
+        data = {page: $scope.currentPage, size: $scope.pageSize};
+        listadoUsuarios(data);
+    };
+    $scope.pageSizeChanged = function () {
+        console.log(data);
+        data = {page: $scope.currentPage, size: $scope.pageSize};
+        $scope.currentPage = 1;
+        listadoUsuarios(data);
+    };
+
+    $scope.buscarUsuario = function (concepto, usuario) {
+        data = {concepto: concepto, usuario: usuario};
+        listadoUsuarios(data);
+    };
+
+    $scope.editarModal = function (datos) {
+        console.log(datos);
+        $rootScope.datos = datos;
+        $scope.idUsuario = datos.ID;
+        $scope.UsuarioNom = datos.NOMBRE;
+        $rootScope.TituloModal = "Editar Usuario con el ID:";
+    };
+
+    $scope.createUser = function (concepto, tecnico) {
+        $scope.errorDatos = null;
+        $scope.respuestaupdate = null;
+        $scope.respuestadelete = null;
+        services.creaUsuario($scope.crearuser).then(
+            function (data) {
+                $scope.respuestaupdate = "Usuario creado.";
+                return data.data;
+            },
+            function errorCallback(response) {
+                $scope.errorDatos = "Usuario no fue creado.";
+            }
+        );
+    };
+
+    $scope.editUser = function (datos) {
+        $scope.errorDatos = null;
+        $scope.respuestaupdate = null;
+        $scope.respuestadelete = null;
+        if (datos.PASSWORD == "") {
+            Swal({
+                type: 'error',
+                title: 'Opsss...',
+                text: 'Por favor ingrese la contraseña.',
+                timer: 4000
+            })
+        } else {
+            services.editarUsuario(datos).then(
+                function (data) {
+                    $scope.respuestaupdate =
+                        "Usuario " + datos.LOGIN + " actualizado exitosamente";
+                    return data.data;
+                },
+                function errorCallback(response) {
+                }
+            );
+        }
+    };
+
+    $scope.borrarUsuario = function (id) {
+        $scope.idBorrar = id;
+        $scope.Usuarios = {};
+        $scope.errorDatos = null;
+        $scope.respuestaupdate = null;
+        $scope.respuestadelete = null;
+        swal({
+            title: "Aviso",
+            text: "Esta función ha sido deshabilitada, para eliminar usuarios de la plataforma debe comunicarse con desarrollo.",
+            type: "error",
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Aceptar",
+            closeOnConfirm: false,
+        });
+    };
+});
+
+app.controller("turnosCtrl", function ($scope, $rootScope, services) {
+    $scope.errorDatos = null;
+    $scope.turnos = [
+        {
+            id: "1",
+            fecha: "",
+            horaInicio: "",
+            horaFin: "",
+            usuariocrea: $rootScope.galletainfo.login,
+        },
+    ];
+    $scope.cumple = {};
+    $scope.editar = false;
+    var tiempo = new Date().getTime();
+    var date1 = new Date();
+    var year = date1.getFullYear();
+    var month =
+        date1.getMonth() + 1 <= 9
+            ? "0" + (date1.getMonth() + 1)
+            : date1.getMonth() + 1;
+    var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
+
+    $scope.fechaIni = year + "-" + month + "-" + day;
+    $scope.fechaFin = year + "-" + month + "-" + day;
+    $scope.cumple.fechaIni = year + "-" + month + "-" + day;
+
+    $scope.ingresoTurnos = function () {
+        services.getguardarTurnos($scope.turnos).then(function (data) {
+            $scope.turnos = [
+                {
+                    id: "1",
+                    fecha: "",
+                    horaInicio: "",
+                    horaFin: "",
+                    usuariocrea: $rootScope.galletainfo.login,
+                },
+            ];
+            $scope.obtenerlistaTurnos();
+        });
+    };
+
+    $scope.obtenercumplmientoTurnos = function () {
+        services.getcumplmientoTurnos($scope.cumple).then(
+            function (data) {
+                $scope.cumplimientoTurno = data.data[0];
+                $scope.nohaycumplimiento = null;
+                return data.data;
+            },
+            function errorCallback(response) {
+                $scope.nohaycumplimiento = "No hay datos!!";
+            }
+        );
+    };
+
+    $scope.obtenerlistaTurnos = function () {
+        services.getlistaTurnos($scope.fechaIni, $scope.fechaFin).then(
+            function (data) {
+                $scope.historicoturnos = data.data[0];
+                $scope.errorDatos = null;
+                return data.data;
+            },
+            function errorCallback(response) {
+                $scope.errorDatos = "No hay datos!!";
+                $scope.historicoturnos = {};
+            }
+        );
+    };
+
+    $scope.desacargarAdherencia = function () {
+        services
+            .csvAdherenciaTurnos(
+                $scope.fechaIni,
+                $scope.fechaFin,
+                $rootScope.galletainfo
+            )
+            .then(function (data) {
+                if (data.data[0] !== undefined) {
+                    window.location.href = "tmp/" + data.data[0];
+                    $scope.csvPend = true;
+                    $scope.counter = "Se exportaron: " + data.data[1] + " Registros";
+                    return data.data;
+                } else {
+                    $scope.counter = "No hay datos para exportar";
+                }
+            });
+    };
+
+    $scope.borrarTurno = function (idturno) {
+        services.borrarTurno(idturno).then(function (data) {
+            $scope.obtenerlistaTurnos();
+        });
+    };
+
+    $scope.usuariosTurnosSeguimiento = function () {
+        services.getusuariosTurnos().then(function (data) {
+            $scope.usuarios = data.data[0];
+            return data.data;
+        });
+    };
+
+    $scope.addNuevaNovedad = function (usuario) {
+        var newItemNo = $scope.turnos.length + 1;
+
+        $scope.turnos.push({
+            id: +newItemNo,
+            fecha: "",
+            horaIni: "",
+            horaFin: "",
+            usuariocrea: $rootScope.galletainfo.login,
+        });
+    };
+
+    $scope.updateStatus = function (data) {
+        services.updateTurnos(data).then(function (data) {
+            $scope.obtenerlistaTurnos();
+        });
+    };
+
+    $scope.statuses = [
+        {value: "Turno", novedades: "Turno"},
+        {value: "Vacaciones", novedades: "Vacaciones"},
+        {value: "Licencia", novedades: "Licencia"},
+        {value: "Incapacidad", novedades: "Incapacidad"},
+    ];
+
+    $scope.removeNuevaNovedad = function () {
+        var lastItem = $scope.turnos.length - 1;
+        if (lastItem != 0) {
+            $scope.turnos.splice(lastItem);
+        }
+    };
+
+    $scope.usuariosTurnosSeguimiento();
+    $scope.obtenerlistaTurnos();
+    $scope.obtenercumplmientoTurnos();
+});
+
+app.controller("AlarmasCtrl", function ($scope, services) {
+    $scope.crearAlarma = {};
+    $scope.listaAlarmas = {};
+
+    $scope.listadoAlarmas = function () {
+        services.listadoAlarmas().then(function (data) {
+            $scope.listaAlarmas = data.data;
+            return data.data;
+        });
+    };
+
+    $scope.crearAlarma = function (info) {
+        services.creaAlarma(info).then(
+            function (data) {
+                $scope.respuestaupdate = "Alarma creado.";
+                services.listadoAlarmas().then(function (data) {
+                    $scope.listaAlarmas = data.data;
+
+                    return data.data;
+                });
+            },
+            function errorCallback(response) {
+                $scope.errorDatos = "Alarma no fue creada.";
+            }
+        );
+        $scope.listadoAlarmas();
+    };
+
+    $scope.procesos = function () {
+        $scope.validaraccion = false;
+        $scope.validarsubaccion = false;
+        services.getProcesos().then(function (data) {
+            $scope.listadoProcesos = data.data[0];
+            $scope.listadoAcciones = {};
+        });
+    };
+
+    $scope.editarModal = function (datos) {
+        $scope.datosAlarmas = datos;
+    };
+
+    $scope.EditarDatosAlarma = function () {
+        $scope.errorDatos = null;
+        $scope.respuestaupdate = null;
+        $scope.respuestadelete = null;
+
+        services.editAlarma($scope.datosAlarmas).then(
+            function (data) {
+                $scope.respuestaupdate =
+                    "Alarma " +
+                    $scope.datosAlarmas.nombre_alarma +
+                    " actualizado exitosamente";
+                services.listadoAlarmas().then(function (data) {
+                    $scope.listaAlarmas = data.data;
+                    return data.data;
+                });
+            },
+            function errorCallback(response) {
+            }
+        );
+    };
+
+    $scope.borrarAlarma = function (id) {
+        $scope.idBorrar = id;
+        $scope.errorDatos = null;
+        $scope.respuestaupdate = null;
+        $scope.respuestadelete = null;
+        services.deleteAlarma($scope.idBorrar).then(
+            function (data) {
+                $scope.respuestadelete = "Alarma eliminada exitosamente";
+                services.listadoAlarmas().then(function (data) {
+                    $scope.listaAlarmas = data.data;
+
+                    return data.data;
+                });
+            },
+            function errorCallback(response) {
+                $scope.errorDatos = "No se borro";
+            }
+        );
+    };
+
+    $scope.calcularAcciones = function (proceso) {
+        $scope.listadoAcciones = {};
+        $scope.validarsubaccion = false;
+        if (proceso == "") {
+            $scope.validaraccion = false;
+            $scope.validarsubaccion = false;
+        } else {
+            services.getAcciones(proceso).then(function (data) {
+                $scope.listadoAcciones = data.data[0];
+                $scope.validaraccion = true;
+                $scope.validarsubaccion = false;
+            });
+        }
+    };
+
+    $scope.calcularSubAcciones = function (proceso, accion) {
+        $scope.listadoSubAcciones = {};
+        $scope.validarsubaccion = true;
+        services.getSubAcciones(proceso, accion).then(
+            function (data) {
+                console.log()
+                $scope.listadoSubAcciones = data.data[0];
+                $scope.validarsubaccion = true;
+            },
+            function errorCallback(response) {
+                $scope.validarsubaccion = false;
+            }
+        );
+    };
+
+    $scope.procesos();
+    $scope.listadoAlarmas();
+});
+
+app.controller('ModalInstanceUsuarioKpiCtrl', function ($uibModalInstance, items, services, $route, $scope, $timeout) {
+    var $ctrl = this;
+    $ctrl.items = items;
+    let usuarioKpi = {};
+
+    console.log(items, ' 11')
+
+    for (let i = 0; i < items.data.length; i++) {
+        usuarioKpi[i] = items.data[i]["usuario"];
+    }
+
+    $ctrl.nombreTable = items.tabla;
+
+    $ctrl.usuarios = usuarioKpi
+
+    $ctrl.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+
+    $ctrl.agregaUsuario = (data, tabla) => {
+        let datos = {usuario: data, tabla: tabla};
+        if (tabla == "Tiempo completo") {
+            services.contigenciaHoraAgenteTiempoCompleto(datos)
+                .then((data) => {
+                    if (data.data.state == 1) {
+                        Swal({
+                            type: 'success',
+                            text: data.data.msj,
+                            timer: 4000
+                        }).then(function () {
+                            $uibModalInstance.dismiss('cancel');
+                            $route.reload();
+                        })
+                    } else {
+                        Swal({
+                            type: 'error',
+                            title: 'Opss...',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        } else if (tabla == "ssmm") {
+            services.contigenciaHoraAgenteMmss(datos)
+                .then((data) => {
+                    if (data.data.state == 1) {
+                        Swal({
+                            type: 'success',
+                            text: data.data.msj,
+                            timer: 4000
+                        }).then(function () {
+                            $uibModalInstance.dismiss('cancel');
+                            $route.reload();
+                        })
+                    } else {
+                        Swal({
+                            type: 'error',
+                            title: 'Opss...',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        } else if (tabla == 'apoyo') {
+            services.contigenciaHoraAgenteApoyo(datos)
+                .then((data) => {
+                    if (data.data.state == 1) {
+                        Swal({
+                            type: 'success',
+                            text: data.data.msj,
+                            timer: 4000
+                        }).then(function () {
+                            $uibModalInstance.dismiss('cancel');
+                            $route.reload();
+                        })
+                    } else {
+                        Swal({
+                            type: 'error',
+                            title: 'Opss...',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        }
+    }
+
+
+    $ctrl.quitarUsuario = (user, tabla) => {
+        Swal({
+            title: "Está seguro?",
+            text: "Algunos datos pueden perderse.",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Sí, estoy seguro",
+            cancelButtonText: "Cancelar",
+            allowOutsideClick: () => !Swal.isLoading(),
+        }).then((result) => {
+            if (result.value) {
+                let data = {usuario: user, tabla: tabla}
+                services.quitarUsuarioKpi(data)
+                    .then((data) => {
+                        if (data.data.state == 1) {
+                            let array = Object.values($ctrl.usuarios);
+                            array = array.filter(function (valor) {
+                                return valor !== user;
+                            });
+                            $ctrl.usuarios = array;
+                            Swal({
+                                type: 'success',
+                                title: 'Bien',
+                                text: data.data.msj,
+                                timer: 4000
+                            }).then(() => {
+                                $uibModalInstance.dismiss('cancel');
+                                $route.reload();
+                            })
+                        } else {
+                            Swal({
+                                type: 'error',
+                                title: 'Oppsss..',
+                                text: data.data.msj,
+                                timer: 4000
+                            })
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+            } else {
+                $("#modalDetalles").modal('hide');
+            }
+        });
+    }
+});
+
+app.controller(
+    "gestionVentasInstaleTiendasCtrl",
+    function ($scope, $http, $rootScope, $route, services, $cookies, $location) {
+
+        var tiempo = new Date().getTime();
+        var date1 = new Date();
+        var year = date1.getFullYear();
+        var month =
+            date1.getMonth() + 1 <= 9
+                ? "0" + (date1.getMonth() + 1)
+                : date1.getMonth() + 1;
+        var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
+
+        tiempo = year + "-" + month + "-" + day;
+
+        $scope.ventaIstale = {};
+        init();
+
+        function init() {
+            data();
+            dataVentaTerminado();
+        }
+
+        function data() {
+            services.datosVentas().then(function (data) {
+                console.log(data);
+                $scope.dataVentas = data.data.data;
+            });
+        }
+
+        $scope.currentPage = 1;
+        $scope.totalItems = 0;
+        $scope.pageSize = 15;
+        $scope.searchText = "";
+
+        function dataVentaTerminado(data) {
+            if (data === "" || data === undefined) {
+                $scope.currentPage = 1;
+                $scope.totalItems = 0;
+                $scope.pageSize = 15;
+                $scope.searchText = "";
+                data = {page: $scope.currentPage, size: $scope.pageSize};
+            }
+            services.datosVentasInstaleTerminado(data).then(function (data) {
+                $scope.dataVentasTerminado = data.data.data;
+
+                $scope.activity = [];
+                $scope.totalItems = data.data.totalCount;
+                $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                $scope.endItem = $scope.currentPage * $scope.pageSize;
+                if ($scope.endItem > data.data.totalCount) {
+                    $scope.endItem = data.data.totalCount;
+                }
+            });
+        }
+
+        $scope.pageChanged = function () {
+            data = {page: $scope.currentPage, size: $scope.pageSize};
+            console.log(data);
+            dataVentaTerminado(data);
+        };
+        $scope.pageSizeChanged = function () {
+            console.log(data);
+            data = {page: $scope.currentPage, size: $scope.pageSize};
+            $scope.currentPage = 1;
+            dataVentaTerminado(data);
+        };
+
+        $scope.marcarEngestion = function (id) {
+            data = {id: id, login_gestion: $rootScope.galletainfo.LOGIN};
+            services.marcarEnGestionVentaInstale(data).then(function (data) {
+                if (data.data.state == 1) {
+                    Swal({
+                        type: "success",
+                        title: "Bien",
+                        text: data.data.msj,
+                        timer: 4000,
+                    }).then(function () {
+                        $route.reload();
+                    });
+                } else {
+                    Swal({
+                        type: "info",
+                        title: "Oops...",
+                        text: data.data.msj,
+                        timer: 4000,
+                    })
+                }
+            });
+        };
+
+        $scope.recargaVentas = function () {
+            init();
+        };
+
+        $scope.detalleVentaPedido = (pedido) => {
+            if (pedido == "" || pedido == undefined) {
+                Swal({
+                    type: "error",
+                    title: "Oops...",
+                    text: "Debes ingresar un pedido",
+                    timer: 4000,
+                });
+            } else {
+                data = {pedido: pedido};
+                services.detallePedidoVenta(data).then((data) => {
+                    if (data.data.state == 1) {
+                        $scope.detallePedidoVenta = data.data.data;
+                        $("#detallePedidoVentaInstale").modal("show");
+                    } else {
+                        Swal({
+                            type: "error",
+                            title: "Oops...",
+                            text: data.data.msj,
+                            timer: 4000,
+                        });
+                    }
+                });
+            }
+        };
+
+        $scope.registrosVentaInstale = () => {
+            if ($scope.ventaIstale.fechaini > $scope.ventaIstale.fechaFin) {
+                Swal({
+                    type: "error",
+                    title: "Oops...",
+                    text: "La fecha final no puede ser menor a la inicial",
+                    timer: 4000,
+                });
+            } else if (
+                $scope.ventaIstale.fechaini == "" ||
+                $scope.ventaIstale.fechaini == undefined
+            ) {
+                Swal({
+                    type: "error",
+                    title: "Oops...",
+                    text: "La fecha inicial es requerida",
+                    timer: 4000,
+                });
+            } else {
+                services.detalleVentaRagoFecha($scope.ventaIstale).then((data) => {
+                    console.log(console.log(data));
+                    if (data.data.state == 1) {
+                        $scope.detallePedidoVenta = data.data.data;
+                        $("#detallePedidoVentaInstale").modal("show");
+                    } else {
+                        Swal({
+                            type: "error",
+                            title: "Oops...",
+                            text: data.data.msj,
+                            timer: 4000,
+                        });
+                    }
+                });
+            }
+        };
+
+        $scope.CopyPortaPapeles = function (data) {
+            var copyTextTV = document.createElement("input");
+            copyTextTV.value = data;
+            document.body.appendChild(copyTextTV);
+            copyTextTV.select();
+            document.execCommand("copy");
+            document.body.removeChild(copyTextTV);
+            Swal({
+                type: "info",
+                title: "Aviso",
+                text: "El texto seleccionado fue copiado",
+                timer: 2000,
+            });
+        };
+
+        $scope.csvVentaInstale = function () {
+            console.log($scope.ventaIstale);
+            var fechaini = new Date($scope.ventaIstale.fechaini);
+            var fechafin = new Date($scope.ventaIstale.fechafin);
+            var diffMs = fechafin - fechaini;
+            var diffDays = Math.round(diffMs / 86400000);
+
+            if ($scope.ventaIstale.fechaini > $scope.ventaIstale.fechaFin) {
+                Swal({
+                    type: "error",
+                    title: "Oops...",
+                    text: "La fecha final no puede ser menor a la inicial",
+                    timer: 4000,
+                });
+            } else if (
+                $scope.ventaIstale.fechaini == "" ||
+                $scope.ventaIstale.fechaini == undefined
+            ) {
+                Swal({
+                    type: "error",
+                    title: "Oops...",
+                    text: "La fecha inicial es requerida",
+                    timer: 4000,
+                });
+            } else {
+                services.csvVentaInstale($scope.ventaIstale)
+                    .then((data) => {
+                        if (data.data.state == 1) {
+                            var wb = XLSX.utils.book_new();
+                            var ws = XLSX.utils.json_to_sheet(data.data.data);
+                            XLSX.utils.book_append_sheet(wb, ws, 'venta_instale');
+                            XLSX.writeFile(wb, 'Venta_instale_' + tiempo + '.xlsx');
+                        } else {
+                            Swal({
+                                type: 'error',
+                                text: data.data.msj,
+                                timer: 4000
+                            })
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+            }
+        };
+
+        $scope.observacionParaVenta = () => {
+            $("#observacionParaVentaModal").modal("show");
+        };
+
+        $scope.guardaObservacionVentaInstale = (data) => {
+            if (data == undefined) {
+                Swal({
+                    type: "error",
+                    title: "Oops...",
+                    text: "Dedes ingresar la observacion",
+                    timer: 4000,
+                });
+            } else {
+                data = {observacion: data, usuario: $rootScope.galletainfo.LOGIN};
+                services.guardaObservacionParaVentaInstale(data).then(function (data) {
+                    console.log(data.state);
+                    if (data.data.state != 1) {
+                        Swal({
+                            type: "error",
+                            title: "Oops...",
+                            text: data.data.msj,
+                            timer: 4000,
+                        });
+                    } else {
+                        setTimeout(() => {
+                            $("#observacionParaVentaModal").modal("hide");
+                        }, 500);
+                        Swal({
+                            type: "success",
+                            title: "Bien",
+                            text: data.data.msj,
+                            timer: 4000,
+                        }).then(function () {
+                            $route.reload();
+                        });
+                    }
+                });
+            }
+        };
+
+        $scope.verObservaciones = () => {
+            services.observacionDetalleVentaModal().then(function (data) {
+                if (data.data.state != 1) {
+                    Swal({
+                        type: "error",
+                        title: "Oops...",
+                        text: data.data.msj,
+                        timer: 4000,
+                    });
+                } else {
+                    $scope.datosVentaInstale = data.data.data;
+                    $("#observacionDetalleVentaModal").modal("show");
+                }
+            });
+        };
+
+        $scope.EliminaObservacion = (data) => {
+            services.eliminaObservacion(data).then(function (data) {
+                if (data.data.state != 1) {
+                    Swal({
+                        type: "error",
+                        title: "Oops...",
+                        text: data.data.msj,
+                        timer: 4000,
+                    });
+                } else {
+                    setTimeout(() => {
+                        $("#observacionDetalleVentaModal").modal("hide");
+                    }, 500);
+
+                    Swal({
+                        type: "success",
+                        title: "Bien",
+                        text: data.data.msj,
+                        timer: 3000,
+                    }).then(function () {
+                        $route.reload();
+                    });
+                }
+            });
+        };
+
+        $scope.consolidadoZona = () => {
+            services.consolidadoZona().then(function (data) {
+                if (data.data.state == 1) {
+                    $scope.apr = 0;
+                    $scope.rech = 0;
+                    $scope.pend = 0;
+                    $scope.consolidadosZona = data.data.data;
+                    angular.forEach($scope.consolidadosZona, function (value, key) {
+                        console.log(value.aprobada);
+                        if (value.aprobada) {
+                            $scope.apr = parseInt($scope.apr) + parseInt(value.aprobada);
+                        }
+                        if (value.rechazada) {
+                            $scope.rech = parseInt($scope.rech) + parseInt(value.rechazada);
+                        }
+                        if (value.pendiente) {
+                            $scope.pend = parseInt($scope.pend) + parseInt(value.pendiente);
+                        }
+                    });
+                    $("#consolidadoZona").modal("show");
+                } else {
+                    Swal({
+                        type: "error",
+                        title: "Oops...",
+                        text: data.data.msj,
+                        timer: 4000,
+                    });
+                }
+            });
+        };
+
+        $scope.abreModal = function (data) {
+            if (data.en_gestion != "1") {
+                Swal({
+                    type: "error",
+                    title: "Oops...",
+                    text: "Debes Marcar el pedido",
+                    timer: 4000,
+                });
+            } else if (data.tipificacion == "" || data.tipificacion == undefined) {
+                Swal({
+                    type: "error",
+                    title: "Oops...",
+                    text: "Debes Seleccionar la tipificacion",
+                    timer: 4000,
+                });
+            } else if (
+                data.obs_tipificacion == "" ||
+                data.obs_tipificacion == undefined
+            ) {
+                Swal({
+                    type: "error",
+                    title: "Oops...",
+                    text: "Debes Seleccionar un detalle de la tipificacion",
+                    timer: 4000,
+                });
+            } else if (data.tipificacion == "Ok" && data.obs_tipificacion != "Ok") {
+                Swal({
+                    type: "error",
+                    title: "Oops...",
+                    text: "Si la tipificacion es Ok el detalle debe ser Ok",
+                    timer: 4000,
+                });
+            } else if (
+                data.tipificacion == "Rechazada" &&
+                data.obs_tipificacion == "Ok"
+            ) {
+                Swal({
+                    type: "error",
+                    title: "Oops...",
+                    text: "Si la tipificacion es Rechazada el detalle no debe ser Ok",
+                    timer: 4000,
+                });
+            } else {
+                data = {
+                    tipificacion: data.tipificacion,
+                    obs_tipificacion: data.obs_tipificacion,
+                    id: data.id,
+                    login_gestion: $rootScope.galletainfo.LOGIN,
+                };
+                $("#modalVentaInstale").modal("show");
+
+                $scope.guardaSolicitud = function (obs) {
+                    if (obs == "" || obs == undefined) {
+                        Swal({
+                            type: "error",
+                            title: "Oops...",
+                            text: "Recuerda documentar observaciones",
+                            timer: 4000,
+                        });
+                    } else {
+                        data.observacion_seguimiento = obs.observacion_gestion;
+                        services.guardaVentaInstale(data).then(function (data) {
+                            if (data.data.state == 99) {
+                                swal({
+                                    type: "error",
+                                    title: data.data.title,
+                                    text: data.data.msg,
+                                    timer: 4000,
+                                }).then(function () {
+                                    $cookies.remove("usuarioseguimiento");
+                                    $location.path("/");
+                                    $rootScope.galletainfo = undefined;
+                                    $rootScope.permiso = false;
+                                    $route.reload();
+                                });
+                            } else if (data.data.state == 1) {
+                                setTimeout(() => {
+                                    $("#modalVentaInstale").modal("hide");
+                                }, 500);
+
+                                Swal({
+                                    type: "success",
+                                    title: "Bien",
+                                    text: data.data.msj,
+                                    timer: 3000,
+                                }).then(function () {
+                                    $route.reload();
+                                });
+                            } else {
+                                Swal({
+                                    type: "error",
+                                    title: "Oops...",
+                                    text: data.data.msj,
+                                    timer: 4000,
+                                });
+                            }
+                        });
+                    }
+                };
+            }
+        };
+
+    }
+);
+
+/*app.controller('validacionesAppCtrl', function ($scope, $http, $rootScope, $route, services) {
+
+    estadoActual();
+
+    function estadoActual() {
+        services.estadoActualValidacionApp().then(function (data) {
+            $scope.contingenciaSara = data.data.data[0].valida;
+            $scope.contingenciaEquipo = data.data.data[1].valida;
+            $scope.gponInfraestructura = data.data.data[2].valida;
+            $scope.codigoIncompleto = data.data.data[3].valida;
+        })
+    }
+
+    $scope.cambiaEstado = function (data, value) {
+        data = {'tipo': data, 'valor': value}
+        services.cambiaValidacionApp(data).then(function (response) {
+            if (response.data.state == 1) {
+                Swal({
+                    type: 'success',
+                    text: response.data.msj,
+                    timer: 4000
+                }).then(function () {
+                    $route.reload();
+                })
+            } else {
+                Swal({
+                    type: 'error',
+                    text: response.data.msj,
+                    timer: 4000
+                }).then(function () {
+                    $route.reload();
+                })
+            }
+        })
+    }
+})*/
+
+app.controller('registroEquipoCtrl', function ($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services, cargaRegistros) {
+    var tiempo = new Date().getTime();
+    var date1 = new Date();
+    var year = date1.getFullYear();
+    var month =
+        date1.getMonth() + 1 <= 9
+            ? "0" + (date1.getMonth() + 1)
+            : date1.getMonth() + 1;
+    var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
+
+    tiempo = year + "-" + month + "-" + day;
+    init();
+
+    function init() {
+        registroEquipos();
+    }
+
+
+    function registroEquipos(data) {
+
+        if (data === '' || data === undefined) {
+            $scope.currentPage = 1;
+            $scope.totalItems = 0;
+            $scope.pageSize = 15;
+            $scope.searchText = '';
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
+        }
+
+        services.registroEquipos(data).then(
+            function (data) {
+                console.log(data)
+                if (data.data.state == 1) {
+                    $scope.registroEquipos = data.data.data;
+
+                    $scope.cantidad = data.data.length;
+                    $scope.counterpag = data.data.counter;
+
+                    $scope.counter = data.data.counter;
+
+                    $scope.totalItems = data.data.counter;
+                    $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                    $scope.endItem = $scope.currentPage * $scope.pageSize;
+                    if ($scope.endItem > data.data.counter) {
+                        $scope.endItem = data.data.counter;
+                    }
+                }
+
+            },
+
+            function errorCallback(response) {
+                console.log(response);
+            });
+    }
+
+
+    $scope.pageChanged = function () {
+        data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
+        registroEquipos(data);
+    }
+    $scope.pageSizeChanged = function () {
+        data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
+        registroEquipos(data);
+    }
+
+    $scope.recargaPage = function () {
+        init();
+    }
+
+    $scope.buscarPedido = (data) => {
+        if (!data) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Ingresa el pedido',
+                timer: 4000
+            })
+            return;
+        }
+        data = {
+            page: $scope.currentPage,
+            size: $scope.pageSize,
+            buscar: data
+        };
+        registroEquipos(data);
+    }
+
+    $scope.registrosEq = (data) => {
+        if (!data) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Ingresa un rango de fecha',
+                timer: 4000
+            })
+            return;
+        }
+        data = {
+            page: $scope.currentPage,
+            size: $scope.pageSize,
+            fecha: data
+        };
+        registroEquipos(data);
+    }
+
+    $scope.csvRegistroEquipos = (data) => {
+
+
+        if (data == '' || data == undefined) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Seleccione un rango de fecha valido',
+                timer: 4000
+            })
+            return;
+        }
+
+        var fechaini = new Date(data.fechaini);
+        var fechafin = new Date(data.fechafin);
+        var diffMs = (fechafin - fechaini);
+        var diffDays = Math.round(diffMs / 86400000);
+
+        if (data.fechaini == '' || data.fechaini == undefined) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'La fecha inicial es requerida',
+                timer: 4000
+            })
+        } else if (data.fechafin == '' || data.fechafin == undefined) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'La fecha final es requerida',
+                timer: 4000
+            })
+        } else if (data.fechaini > data.fechafin) {
+            Swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'La fecha final no puede ser menor a la inicial',
+                timer: 4000
+            })
+        } else {
+            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'fecha': data}
+            services.csvRegistroEquipos(data)
+                .then(function (data) {
+                    if (data.data.state == 1) {
+                        var wb = XLSX.utils.book_new();
+                        var ws = XLSX.utils.json_to_sheet(data.data.data);
+                        XLSX.utils.book_append_sheet(wb, ws, 'RegistroEquipos');
+                        XLSX.writeFile(wb, 'registro_quipos_' + tiempo + '.xlsx'); // Descarga el a
+                    } else {
+                        Swal({
+                            type: 'error',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        }
+    }
+
+});
+
+app.controller(
+    'MenuPerfilCtrl',
+    function ($scope, $http, services, $route, $uibModal, $log) {
+
+        var tiempo = new Date().getTime();
+        var date1 = new Date();
+        var year = date1.getFullYear();
+        var month =
+            date1.getMonth() + 1 <= 9
+                ? "0" + (date1.getMonth() + 1)
+                : date1.getMonth() + 1;
+        var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
+
+        tiempo = year + "-" + month + "-" + day;
+
+        init();
+
+        function init() {
+            getMenu();
+            getSubmenu();
+            getPerfil();
+        }
+
+        function getMenu() {
+            services.getMenu()
+                .then((data) => {
+                    $scope.datosMenu = data.data.data;
+
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        }
+
+
+        function getSubmenu() {
+            services.getSubmenu()
+                .then((data) => {
+                    $scope.datosSubmenu = data.data.data;
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        }
+
+        function getPerfil() {
+            services.getPerfil()
+                .then((data) => {
+                    $scope.datosPerfil = data.data.data;
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        }
+
+        $scope.showPerfilMenu = (perfil, nombre) => {
+            services.verMenuPerfil(perfil)
+                .then((data) => {
+                    if (data.data.state == 1) {
+                        $scope.nombre = nombre;
+                        $scope.perfil_cambio = perfil;
+                        $scope.datosDetalles = data.data.data;
+                        $scope.estaEnDetalles = function (menu) {
+                            for (var i = 0; i < $scope.datosDetalles.length; i++) {
+                                if ($scope.datosDetalles[i].nombre == menu.nombre) {
+                                    return true;
+                                }
+                            }
+                            return false;
+                        }
+                        $("#modalDetalles").modal('show');
+                    } else {
+                        Swal({
+                            type: 'error',
+                            title: 'Oppsss..',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    }
+
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        }
+
+        $scope.exportarPerfiles = () => {
+            services.myService('', 'MenuPerfilCtrl.php', 'exportePerfil').then((data) => {
+                if (data.data.state) {
+                    var wb = XLSX.utils.book_new();
+                    var ws = XLSX.utils.json_to_sheet(data.data.data);
+                    XLSX.utils.book_append_sheet(wb, ws, 'Perfiles_seguimiento');
+                    XLSX.writeFile(wb, 'Perfiles_' + tiempo + '.xlsx');
+                } else {
+                    Swal({
+                        type: 'error',
+                        title: 'Oppsss..',
+                        text: data.data.msj,
+                        timer: 4000
+                    })
+                }
+            }).catch((e) => {
+                console.log(e)
+            })
+
+        }
+
+        $scope.cambioMenu = function (id, perfil, estado) {
+            Swal({
+                title: "Está seguro?",
+                text: "Algunos datos pueden perderse.",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Sí, estoy seguro",
+                cancelButtonText: "Cancelar",
+                allowOutsideClick: () => !Swal.isLoading(),
+            }).then((result) => {
+                if (result.value) {
+                    let data = {id: id, perfil: perfil, estado: estado}
+                    services.cambioMenu(data)
+                        .then((data) => {
+                            if (data.data.state == 1) {
+                                Swal({
+                                    type: 'success',
+                                    title: 'Bien',
+                                    text: data.data.msj,
+                                    timer: 4000
+                                }).then(function () {
+                                    $("#modalDetalles").modal('hide');
+                                    setTimeout(() => {
+                                        $route.reload();
+                                    }, 400);
+
+                                })
+                            } else {
+                                Swal({
+                                    type: 'error',
+                                    title: 'Oppsss..',
+                                    text: data.data.msj,
+                                    timer: 4000
+                                })
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        })
+                } else {
+                    Swal("Cancelado", "Los datos están seguros :)", "error");
+                    $("#modalDetalles").modal('hide');
+                    setTimeout(() => {
+                        $route.reload();
+                    }, 400);
+                }
+            });
+        }
+
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+
+        $scope.AgregarSubmenu = () => {
+
+            var modalInstance = $uibModal.open({
+                ariaLabelledBy: 'modal-title',
+                ariaDescribedBy: 'modal-body',
+                templateUrl: 'partial/modals/agregarSubmenu.html',
+                controller: 'ModalInstanceCtrl',
+                controllerAs: '$ctrl',
+                size: 'md',
+                resolve: {
+                    items: function () {
+                        return $scope.datosMenu;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function () {
+            }, function () {
+                console.log($scope.datosMenu);
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        }
+
+        $scope.cambiaEstadoSubmenu = (id, estado) => {
+            Swal({
+                title: "Está seguro que quiere cambiar el estado de este menu?",
+                text: "Algunos datos pueden perderse.",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Sí, estoy seguro",
+                cancelButtonText: "Cancelar",
+                allowOutsideClick: () => !Swal.isLoading(),
+            }).then((result) => {
+                if (result.value) {
+                    let data = {id: id, estado: estado}
+                    services.cambiaEstadoSubmenu(data)
+                        .then((data) => {
+                            if (data.data.state == 1) {
+                                Swal({
+                                    type: 'success',
+                                    title: 'Bien',
+                                    text: data.data.msj,
+                                    timer: 4000
+                                }).then(function () {
+                                    $("#modalDetalles").modal('hide');
+                                    setTimeout(() => {
+                                        $route.reload();
+                                    }, 400);
+
+                                })
+                            } else {
+                                Swal({
+                                    type: 'error',
+                                    title: 'Oppsss..',
+                                    text: data.data.msj,
+                                    timer: 4000
+                                })
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        })
+                } else {
+                    $("#modalDetalles").modal('hide');
+                }
+            });
+        }
+
+        $scope.AgregarPerfil = () => {
+            var modalInstance = $uibModal.open({
+                ariaLabelledBy: 'modal-title',
+                ariaDescribedBy: 'modal-body',
+                templateUrl: 'partial/modals/agregarPerfil.html',
+                controller: 'ModalInstanceCtrl',
+                controllerAs: '$ctrl',
+                size: 'md',
+                resolve: {
+                    items: function () {
+                        return $scope.datosMenu;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function () {
+            }, function () {
+                console.log($scope.datosMenu);
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        }
+    }
+);
+
+app.controller('tiemposCtrl', function ($scope, $http, $rootScope, $route, services) {
+    $scope.tiempo = {};
+    graficos();
+    $scope.opciones = [
+        {value: "", label: "Todos"},
+        {value: "Internet+Toip", label: "Internet+Toip"},
+        {value: "TV", label: "TV"}
+    ];
+
+    $scope.buscar = (data) => {
+        if (!data.fechaini) {
+            Swal({
+                type: 'error',
+                title: 'Opss...',
+                text: 'debes ingresar la fecha inicial',
+                timer: 4000
+            })
+            return;
+        }
+
+        if (!data.fechafin) {
+            Swal({
+                type: 'error',
+                title: 'Opss...',
+                text: 'debes ingresar la fecha final',
+                timer: 4000
+            })
+            return;
+        }
+
+        if (data.fechaini > data.fechafin) {
+            Swal({
+                type: 'error',
+                title: 'Opss...',
+                text: 'La fecha inicial no puede ser mayor a la final',
+                timer: 4000
+            })
+            return;
+        }
+
+        let date_1 = new Date(data.fechaini);
+        let date_2 = new Date(data.fechafin);
+        let diff = date_2 - date_1;
+
+        let TotalDays = Math.ceil(diff / (1000 * 3600 * 24));
+
+        if (TotalDays > 30) {
+            Swal({
+                type: 'error',
+                title: 'Opss...',
+                text: 'por motivos de optimización el rango de búsqueda debe ser de 30 dias',
+                timer: 4000
+            })
+            return;
+        }
+
+        graficos(data);
+    }
+
+    function roundNumber(x) {
+        // Convertir x a número si no es un número
+        x = parseFloat(x);
+
+        let minutos = Math.floor(x);
+        let segundos = Math.round((x - minutos) * 100);
+
+        if (segundos >= 60) {
+            minutos += Math.floor(segundos / 60);
+            segundos %= 60;
+        }
+
+        return minutos + ':' + segundos.toString().padStart(2, '0');
+    }
+
+    function graficos(data) {
+        //$route.reload();
+        $scope.loading = 1;
+        let response = '';
+        let response2 = '';
+        let response3 = '';
+        let fechas = [];
+        let promedios = [];
+        let promedios2 = [];
+        let promedios3 = [];
+        let tiemposEnMinutos = '';
+        let tiemposEnMinutos2 = '';
+
+        var chart = $scope.myChart;
+        var chart1 = $scope.myChart1;
+        var chart2 = $scope.myChart2;
+        var chart3 = $scope.myChart3;
+        if (chart) {
+            chart.destroy();
+            chart1.destroy();
+            chart2.destroy();
+            chart3.destroy();
+        }
+
+        let datos = '';
+        if (!data) {
+            datos = '';
+        } else {
+            datos = data;
+        }
+        services.myService(datos, 'tiemposCtrl.php', 'todosTiempos')
+            .then((data) => {
+                var respuestas = data.data;
+                $scope.loading = 0;
+                response = respuestas[0];
+
+                response.forEach(function (item) {
+                    fechas.push(item.fecha);
+                    promedios.push(item.promedio);
+                });
+
+                tiemposEnMinutos = promedios.map(function (tiempo) {
+                    let partes = tiempo.split(':');
+                    let horas = parseInt(partes[0], 10);
+                    let minutos = parseInt(partes[1], 10);
+                    let segundos = parseInt(partes[2], 10);
+
+                    if (segundos >= 60) {
+                        minutos += Math.floor(segundos / 60);
+                        segundos %= 60;
+                    }
+
+                    let totalSegundos = (horas * 3600) + (minutos * 60) + segundos;
+                    let totalMinutos = totalSegundos / 60;
+                    totalMinutos = Math.round(totalMinutos); // Redondear los minutos
+                    let segundosRedondeados = totalSegundos % 60; // Obtener los segundos restantes después de redondear los minutos
+
+                    return totalMinutos + '.' + segundosRedondeados.toString().padStart(2, '0');
+                });
+
+                var suma = tiemposEnMinutos.reduce(function (a, b) {
+                    return a + parseFloat(b);
+                }, 0);
+
+                var promedio = suma / tiemposEnMinutos.length;
+                var promedioRound = roundNumber(promedio);
+
+                $scope.chartOptions = {
+                    type: 'bar',
+                    data: {
+                        labels: fechas,
+                        datasets: [{
+                            label: 'Promedio Tiempo en cola',
+                            data: tiemposEnMinutos,
+                            backgroundColor: 'rgb(147,220,82)',
+                            borderColor: 'rgb(83,192,75)',
+                            //borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            datalabels: {
+                                align: 'end', // Alinea el texto a la derecha del punto de anclaje
+                                anchor: 'end', // Ancla el texto en la parte derecha del punto de anclaje
+                                color: 'black',
+                                font: {
+                                    size: 0, // Tamaño de la fuente
+                                },
+                                offset: 4, // Desplazamiento vertical desde el punto de anclaje
+                                /*formatter: function (value) {
+                                    return value + ' ms';
+                                }*/
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Tiempo en cola: ' + promedioRound,
+                            fontSize: 16, // Tamaño de fuente del título
+                            fontColor: 'rgb(0, 0, 0)', // Color de fuente del título
+                            //fontStyle: 'bold', // Estilo de fuente del título (normal, italic, bold, etc.)
+                            padding: 20 // Espaciado del título respecto al gráfico
+                        }, scales: {
+                            yAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: "Minutos"
+                                }
+                            }]
+                        }
+                    }
+                };
+
+                var ctx = document.getElementById('myChart').getContext('2d');
+                $scope.myChart = new Chart(ctx, $scope.chartOptions);
+                /**
+                 * grafico tiempoAtencion
+                 */
+                response2 = respuestas[1];
+
+                response2.forEach(function (item) {
+                    promedios2.push(item.promedio);
+                });
+
+                tiemposEnMinutos2 = promedios2.map(function (tiempo) {
+                    let partes = tiempo.split(':');
+                    let horas = parseInt(partes[0], 10);
+                    let minutos = parseInt(partes[1], 10);
+                    let segundos = parseInt(partes[2], 10);
+
+                    if (segundos >= 60) {
+                        minutos += Math.floor(segundos / 60);
+                        segundos %= 60;
+                    }
+
+                    let totalSegundos = (horas * 3600) + (minutos * 60) + segundos;
+                    let totalMinutos = totalSegundos / 60;
+                    totalMinutos = Math.round(totalMinutos); // Redondear los minutos
+                    let segundosRedondeados = totalSegundos % 60; // Obtener los segundos restantes después de redondear los minutos
+
+                    return totalMinutos + '.' + segundosRedondeados.toString().padStart(2, '0');
+                });
+
+                // Convertir cada elemento en el array a número y sumarlos
+                var suma = tiemposEnMinutos2.reduce(function (a, b) {
+                    return a + parseFloat(b);
+                }, 0);
+
+                var promedio = suma / tiemposEnMinutos2.length;
+                var promedioRound = roundNumber(promedio);
+                $scope.chartOptions1 = {
+                    type: 'bar',
+                    data: {
+                        labels: fechas,
+                        datasets: [{
+                            label: 'Promedio Tiempo Atención',
+                            data: tiemposEnMinutos2,
+                            backgroundColor: 'rgba(91,75,192,0.2)',
+                            borderColor: 'rgb(75,91,192)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            datalabels: {
+                                align: 'end', // Alinea el texto a la derecha del punto de anclaje
+                                anchor: 'end', // Ancla el texto en la parte derecha del punto de anclaje
+                                color: 'black',
+                                font: {
+                                    size: 0, // Tamaño de la fuente
+                                },
+                                offset: 4, // Desplazamiento vertical desde el punto de anclaje
+                                /*formatter: function (value) {
+                                    return value + 'x';
+                                }*/
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Tiempo en atención: ' + promedioRound,
+                            fontSize: 16, // Tamaño de fuente del título
+                            fontColor: 'rgb(0, 0, 0)', // Color de fuente del título
+                            //fontStyle: 'bold', // Estilo de fuente del título (normal, italic, bold, etc.)
+                            padding: 20 // Espaciado del título respecto al gráfico
+                        }, scales: {
+                            yAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: "Minutos"
+                                }
+                            }]
+                        }
+                    }
+                };
+
+                var ctx1 = document.getElementById('myChartAtencion').getContext('2d');
+                $scope.myChart1 = new Chart(ctx1, $scope.chartOptions1);
+                /**
+                 * grafico tiempoSistema
+                 */
+                response3 = respuestas[2];
+                response3.forEach(function (item) {
+                    promedios3.push(item.promedio);
+                });
+
+                let tiemposEnMinutos3 = promedios3.map(function (tiempo) {
+                    let partes = tiempo.split(':');
+                    let horas = parseInt(partes[0], 10);
+                    let minutos = parseInt(partes[1], 10);
+                    let segundos = parseInt(partes[2], 10);
+
+                    if (segundos >= 60) {
+                        minutos += Math.floor(segundos / 60);
+                        segundos %= 60;
+                    }
+
+                    let totalSegundos = (horas * 3600) + (minutos * 60) + segundos;
+                    let totalMinutos = totalSegundos / 60;
+                    totalMinutos = Math.round(totalMinutos); // Redondear los minutos
+                    let segundosRedondeados = totalSegundos % 60; // Obtener los segundos restantes después de redondear los minutos
+
+                    return totalMinutos + '.' + segundosRedondeados.toString().padStart(2, '0');
+                });
+
+                // Convertir cada elemento en el array a número y sumarlos
+                var suma = tiemposEnMinutos3.reduce(function (a, b) {
+                    return a + parseFloat(b);
+                }, 0);
+                var promedio = suma / tiemposEnMinutos3.length;
+                var promedioRound = roundNumber(promedio);
+
+                console.log(tiemposEnMinutos3)
+                $scope.chartOptions2 = {
+                    type: 'bar',
+                    data: {
+                        labels: fechas,
+                        datasets: [{
+                            label: 'Tiempo en sistema',
+                            data: tiemposEnMinutos3,
+                            backgroundColor: 'rgba(192,75,75,0.2)',
+                            borderColor: 'rgb(192,75,93)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            datalabels: {
+                                align: 'end', // Alinea el texto a la derecha del punto de anclaje
+                                anchor: 'end', // Ancla el texto en la parte derecha del punto de anclaje
+                                color: 'black',
+                                font: {
+                                    size: 0, // Tamaño de la fuente
+                                },
+                                offset: 4, // Desplazamiento vertical desde el punto de anclaje
+                                formatter: function (value) {
+                                    return value + ' m';
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Promedio Tiempo en sistema: ' + promedioRound,
+                            fontSize: 16, // Tamaño de fuente del título
+                            fontColor: 'rgb(0, 0, 0)', // Color de fuente del título
+                            //fontStyle: 'bold', // Estilo de fuente del título (normal, italic, bold, etc.)
+                            padding: 20 // Espaciado del título respecto al gráfico
+                        }, scales: {
+                            yAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: "Minutos"
+                                }
+                            }]
+                        }
+                    }
+                };
+
+                var ctx2 = document.getElementById('myChartSistema').getContext('2d');
+                $scope.myChart2 = new Chart(ctx2, $scope.chartOptions2);
+                /**
+                 * todos
+                 */
+                $scope.chartOptions3 = {
+                    type: 'line',
+                    data: {
+                        labels: fechas,
+                        datasets: [{
+                            label: 'Tiempo en sistema',
+                            data: tiemposEnMinutos3,
+                            backgroundColor: 'rgba(192,75,75,0.2)',
+                            borderColor: 'rgb(255,0,42)',
+                            borderWidth: 1,
+                            series: 'fato'
+                        }, {
+                            label: 'Tiempo atención',
+                            data: tiemposEnMinutos2,
+                            backgroundColor: 'rgba(91,75,192,0.2)',
+                            borderColor: 'rgb(0,36,255)',
+                            borderWidth: 1,
+                            series: 'pato'
+                        }, {
+                            label: 'Tiempo en cola',
+                            data: tiemposEnMinutos,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgb(57,227,19)',
+                            borderWidth: 1,
+                            fill: false
+                        }]
+                    },
+                    series: ['Tiempo en sistema', 'Tiempo atención', 'Tiempo en cola'], // Nombres de las series
+                    options: {
+                        datalabels: {
+                            align: 'end', // Alinea el texto a la derecha del punto de anclaje
+                            anchor: 'end', // Ancla el texto en la parte derecha del punto de anclaje
+                            color: 'black',
+                            font: {
+                                size: 0, // Tamaño de la fuente
+                            },
+                            /*offset: 4, // Desplazamiento vertical desde el punto de anclaje
+                            formatter: function (value) {
+                                return value + '%';
+                            }*/
+                        },
+                        title: {
+                            display: true,
+                            text: 'Gráficos unificados',
+                            fontSize: 16, // Tamaño de fuente del título
+                            fontColor: 'rgb(0, 0, 0)', // Color de fuente del título
+                            //fontStyle: 'bold', // Estilo de fuente del título (normal, italic, bold, etc.)
+                            padding: 20 // Espaciado del título respecto al gráfico
+                        }, scales: {
+                            yAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: "Minutos"
+                                }
+                            }]
+                        },
+                        legend: {
+                            display: true, // Mostrar la leyenda
+                            onClick: function (e, legendItem) {
+                                var index = legendItem.datasetIndex;
+                                var meta = this.chart.getDatasetMeta(index);
+                                meta.hidden = meta.hidden === null ? !this.chart.data.datasets[index].hidden : null;
+                                this.chart.update();
+                            }
+                        }
+                    }
+                };
+                /*$scope.chartOptions2 = {
+                    type: 'bar',
+                    data: {
+                        labels: fechas,
+                        datasets: [{
+                            label: 'Tiempo en sistema',
+                            data: tiemposEnMinutos3,
+                            backgroundColor: 'rgba(192,75,75,0.2)',
+                            borderColor: 'rgb(192,75,93)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            datalabels: {
+                                align: 'end', // Alinea el texto a la derecha del punto de anclaje
+                                anchor: 'end', // Ancla el texto en la parte derecha del punto de anclaje
+                                color: 'black',
+                                font: {
+                                    size: 10, // Tamaño de la fuente
+                                },
+                                offset: 4, // Desplazamiento vertical desde el punto de anclaje
+                                formatter: function (value) {
+                                    return value + '%';
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Tiempo en sistema: ' + promedioRound,
+                            fontSize: 16, // Tamaño de fuente del título
+                            fontColor: 'rgb(0, 0, 0)', // Color de fuente del título
+                            //fontStyle: 'bold', // Estilo de fuente del título (normal, italic, bold, etc.)
+                            padding: 20 // Espaciado del título respecto al gráfico
+                        }, scales: {
+                            yAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: "Minutos"
+                                }
+                            }]
+                        }
+                    }
+                };*/
+
+                var ctx3 = document.getElementById('robChart').getContext('2d');
+                $scope.myChart3 = new Chart(ctx3, $scope.chartOptions3);
+
+                $scope.toggleDataset = function (index) {
+                    if (index >= 0 && index < $scope.chartOptions3.data.datasets.length) {
+                        var dataset = $scope.chartOptions3.data.datasets[index];
+                        dataset.hidden = !dataset.hidden;
+                        $scope.chart.update();
+                    }
+                };
+            })
+            .catch(function (error) {
+                console.error('Error al realizar las peticiones:', error);
+            });
+    }
+});
+
+app.controller('ModalInstanceCtrl', function ($uibModalInstance, items, services, $route) {
+    var $ctrl = this;
+    $ctrl.items = items;
+    $ctrl.ok = function () {
+        $uibModalInstance.close($ctrl.selected.item);
+    };
+
+    $ctrl.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+
+    $ctrl.guarda = (data) => {
+        services.guardaNuevoSubmenu(data)
+            .then((data) => {
+                if (data.data.state == 1) {
+                    Swal({
+                        type: 'success',
+                        title: 'Bien',
+                        text: data.data.msj,
+                        timer: 4000
+                    }).then(() => {
+                        $uibModalInstance.dismiss('cancel');
+                        setTimeout(() => {
+                            $route.reload();
+                        }, 400);
+                    })
+                } else {
+                    Swal({
+                        type: 'error',
+                        title: 'Opss...',
+                        text: data.data.msj,
+                        timer: 4000
+                    })
+                }
+            })
+            .catch((data) => {
+                console.log(data);
+            })
+    }
+
+    $ctrl.guardaPerfil = (data) => {
+        services.guardaPerfil(data)
+            .then((data) => {
+                if (data.data.state == 1) {
+                    Swal({
+                        type: 'success',
+                        title: 'Bien',
+                        text: data.data.msj,
+                        timer: 4000
+                    }).then(() => {
+                        $uibModalInstance.dismiss('cancel');
+                        setTimeout(() => {
+                            $route.reload();
+                        }, 400);
+                    })
+                } else {
+                    Swal({
+                        type: 'error',
+                        title: 'Opss...',
+                        text: data.data.msj,
+                        timer: 4000
+                    })
+                }
+            })
+            .catch((data) => {
+                console.log(data);
+            })
+    }
+});
+
+app.controller('ConteoCtrl', function ($scope, $http, $rootScope, services) {
+
+    datos();
+
+    function datos(d) {
+        let data = {}
+        if (d) {
+            data = {fecha: d}
+        }
+        services.myService(data, 'ContadorCtrl.php', 'conteoDatos').then((data) => {
+            if (data.data.state) {
+                var chart = $scope.myChart;
+                if (chart) {
+                    chart.destroy();
+                }
+                $scope.contador = data.data.data
+                let modulo = [];
+                let fecha = [];
+                let cantidad = [];
+                $scope.contador.forEach(function (item) {
+                    modulo.push(item.Modulo);
+                    fecha.push(item.Fecha);
+                    cantidad.push(item.Contador);
+                });
+
+                var ctx = document.getElementById('myChart').getContext('2d');
+                $scope.myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: modulo,
+                        datasets: [{
+                            label: '# Consultas',
+                            data: cantidad,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                })
+            } else {
+                Swal({
+                    type: 'error',
+                    title: 'Oppss..',
+                    text: data.data.msj,
+                    timer: 4000
+                })
+            }
+        })
+    }
+
+
+    $scope.buscarRegistros = (data) => {
+        if (!data) {
+            Swal({
+                type: 'error',
+                title: 'Oppss..',
+                text: 'Seleccione una fecha',
+                timer: 4000
+            })
+            return;
+        }
+
+        datos(data);
+    }
+})
+
+app.directive("cookie", function ($rootScope, $cookies) {
     return {
         link: function ($scope, el, attr, ctrl) {
             if ($cookies.get("usuarioseguimiento") !== undefined) {
@@ -2356,21 +10997,492 @@ app.directive("tooltip", function () {
     };
 }); */
 
-angular.module("seguimientopedidos").config([
+app.config([
     "$compileProvider",
     function ($compileProvider) {
         $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|sip):/);
     },
 ]);
 
-angular.module("seguimientopedidos").config([
+app.config([
     "$httpProvider",
     function ($httpProvider) {
         $httpProvider.interceptors.push("LoadingInterceptor");
     },
 ]);
+app.config(routesConfig).run(runConfig);
 
-angular.module("seguimientopedidos").run(function ($rootScope, services, i18nService) {
+
+function routesConfig($routeProvider, $locationProvider, $compileProvider) {
+    $locationProvider.html5Mode(true).hashPrefix('!');
+    $compileProvider.aHrefSanitizationWhitelist(/^\s*(whatsapp|http|https|itms):/);
+    $routeProvider
+        .when("/", {
+            title: "Login",
+            templateUrl: "partial/login.html",
+            controller: "loginCtrl",
+        })
+
+        .when("/actividades", {
+            title: "Documentación de Pedidos",
+            templateUrl: "partial/actividades.html",
+            controller: "actividadesCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/registros", {
+            title: "Registros",
+            templateUrl: "partial/registros.html",
+            controller: "registrosCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/registrossoportegpon", {
+            title: "Registros Soporte GPON",
+            templateUrl: "partial/registrossoportegpon.html",
+            controller: "registrossoportegponCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/registroscodigoincompleto", {
+            title: "Registros Codigo incompleto",
+            templateUrl: "partial/registroscodigoincompleto.html",
+            controller: "registroscodigoincompletoCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/usuarios", {
+            title: "Usuarios",
+            templateUrl: "partial/usuarios.html",
+            controller: "usuariosCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/tecnicos", {
+            title: "Tecnicos",
+            templateUrl: "partial/tecnicos.html",
+            controller: "tecnicosCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/listadoAlarmas", {
+            title: "Alarmas",
+            templateUrl: "partial/listadoAlarmas.html",
+            controller: "AlarmasCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/mesaoffline/mesaoffline", {
+            title: "Mesa Offline",
+            templateUrl: "partial/mesaoffline/mesaoffline.html",
+            controller: "mesaofflineCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/mesaoffline/registrosOffline", {
+            title: "Registros Offline",
+            templateUrl: "partial/mesaoffline/registrosOffline.html",
+            controller: "registrosOfflineCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/brutalForce", {
+            title: "Brutal Force",
+            templateUrl: "partial/brutalForce.html",
+            controller: "brutalForceCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/contingencias", {
+            title: "Contingencias aprovisionamiento",
+            templateUrl: "partial/contingencias.html",
+            controller: "contingenciasCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+        .when("/nivelacion", {
+            title: "Gestión Nivelación",
+            templateUrl: "partial/nivelacion.html",
+            controller: "nivelacionCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/GestionNivelacion", {
+            title: "Gestión Nivelación",
+            templateUrl: "partial/GestionNivelacion.html",
+            controller: "GestionNivelacionCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/Gestioncontingencias", {
+            title: "Gestión Contingencias",
+            templateUrl: "partial/Gestioncontingencias.html",
+            controller: "GestioncontingenciasCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/gestionsoportegpon", {
+            title: "Gestión Soporte Gpon",
+            templateUrl: "partial/Gestionsoportegpon.html",
+            controller: "GestionsoportegponCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/gestioncodigoincompleto", {
+            title: "Registros Código Incompleto",
+            templateUrl: "partial/Gestioncodigoincompleto.html",
+            controller: "GestioncodigoincompletoCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/premisasInfraestructuras", {
+            title: "Premisas Infraestructuras",
+            templateUrl: "partial/premisasInfraestructuras.html",
+            controller: "premisasInfraestructurasCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/novedadesVisita", {
+            title: "Novedades Visita",
+            templateUrl: "partial/novedadesVisita.html",
+            controller: "novedadesVisitaCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/contrasenaClick", {
+            title: "Contraseñas ClickSoftware",
+            templateUrl: "partial/contrasenaClick.html",
+            controller: "contrasenasClickCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/turnos", {
+            title: "Gestión turnos",
+            templateUrl: "partial/turnos.html",
+            controller: "turnosCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/quejasGo", {
+            title: "Quejas Gestión Operativa",
+            templateUrl: "partial/quejasGo.html",
+            controller: "quejasGoCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+
+        .when("/gestion-quejasGo", {
+            title: "Gestión QuejasGo",
+            templateUrl: "partial/gestionQuejasGo.html",
+            controller: "quejasGoCtrl2",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/consultaSara", {
+            title: "Consulta SARA",
+            templateUrl: "partial/consultaSara.html",
+            controller: "saraCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/KPI-Contingencia", {
+            title: "KPI Contingecia",
+            templateUrl: "partial/graficos-contingecia.html",
+            controller: "GraficosContingeciaCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/gestion-ventas-instaleTiendas", {
+            title: "Gestion Ventas Instale",
+            templateUrl: "partial/ventasInstale/VentasInstaleTiendas.html",
+            controller: "gestionVentasInstaleTiendasCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/perfil-menu", {
+            title: "Administracion menu - perfiles",
+            templateUrl: "partial/menu-perfil.html",
+            controller: "MenuPerfilCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when('/validaciones-app', {
+            title: 'Validaciones App',
+            templateUrl: 'partial/validaciones-app.html',
+            controller: 'validacionesAppCtrl',
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            },
+        })
+
+        .when('/registro-equipos', {
+            title: 'Registro equipos',
+            templateUrl: 'partial/registro_equipo.html',
+            controller: 'registroEquipoCtrl',
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            },
+        })
+
+        .when("/tiempos", {
+            title: "Graficos tiempos",
+            templateUrl: "partial/tiempos.html",
+            controller: "tiemposCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/ruteo", {
+            title: "Graficos ruteo",
+            templateUrl: "partial/graficos/ruteo.html",
+            controller: "ruteoCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/consultas", {
+            title: "Conteo consultas",
+            templateUrl: "partial/consultas.html",
+            controller: "ConteoCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/activación-toip", {
+            title: "Activación Toip",
+            templateUrl: "partial/activacion_toip.html",
+            controller: "ActivacionToipCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/etp", {
+            title: "Gestión ETP",
+            templateUrl: "partial/etp.html",
+            controller: "etpCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/registros-etp", {
+            title: "Registros ETP",
+            templateUrl: "partial/registros-etp.html",
+            controller: "RegistrosETPCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/kpi-toip", {
+            title: "KPI Toip",
+            templateUrl: "partial/graficos/kpi-toip.html",
+            controller: "GraficoToipCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        }).when("/mesas-nacionales", {
+            title: "Mesas nacionales",
+            templateUrl: "partial/mesas-nacionales.html",
+            controller: "MesasNacionalesCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+        .when("/kpi-rgu", {
+            title: "KPI-RGU",
+            templateUrl: "partial/graficos/kpi-rgus.html",
+            controller: "RguCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+        .when("/mesas-nacionales", {
+            title: "Mesas nacionales",
+            templateUrl: "partial/mesas-nacionales.html",
+            controller: "MesasNacionalesCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .otherwise({
+            redirectTo: "/",
+        });
+
+    /*$locationProvider
+       .html5Mode({
+           enabled: false,
+           requireBase: true,
+       })
+       .hashPrefix([""]);*/
+}
+
+// crear function valida email
+
+
+function loadUserData($rootScope, $q, $route, $location, services, $cookies) {
+    return services.checkSession().then(complete, failed);
+
+    function complete(data) {
+        if (!data.data.login) {
+            swal({
+                type: "error",
+                title: 'Su session ha caducado',
+                text: 'Inicia session nuevamente para continuar',
+                timer: 4000,
+            }).then(function () {
+                $cookies.remove("usuarioseguimiento");
+                $location.path("/");
+                $rootScope.galletainfo = undefined;
+                $rootScope.permiso = false;
+                $route.reload();
+            });
+        }
+        var today = new Date();
+        $rootScope.year = today.getFullYear();
+        $rootScope.nombre = data.data.nombre;
+        $rootScope.login = data.data.login;
+        $rootScope.perfil = data.data.perfil;
+        $rootScope.identificacion = data.data.identificacion;
+        $rootScope.menu = data.data.menu;
+        $rootScope.authenticated = true;
+        $rootScope.permiso = true;
+
+        $cookies.put("usuarioseguimiento", JSON.stringify(data.data));
+        var galleta = JSON.parse($cookies.get("usuarioseguimiento"));
+        $rootScope.galletainfo = galleta;
+
+        return data;
+    }
+
+    function failed(reason) {
+        $rootScope.authenticated = false;
+        if ($route.current.loginRequired) {
+            var error = {
+                status: 401,
+                message: "Unauthorized"
+            };
+            return $q.reject(error);
+        }
+    }
+}
+
+function runConfig($rootScope, $location) {
+    $rootScope.$on('$routeChangeStart', function (e, curr, prev) {
+
+    });
+    $rootScope.$on('$routeChangeSuccess', function (e, curr, prev) {
+        //console.log(e, curr, prev, ' routeChangeSuccess');
+        $rootScope.title = curr.$$route.title;
+        $rootScope.tituloPagina =
+            "Seguimiento a pedidos - " + curr.$$route.title;
+    });
+    $rootScope.$on('$routeChangeError', function (arg1, arg2, arg3, arg4) {
+
+        if (arg4.status == 404) {
+            $location.url('/');
+        }
+        if (arg4.status == 401) {
+            $location.url('/');
+        }
+    });
+}
+
+app.run(function ($rootScope, services, i18nService) {
     i18nService.setCurrentLang("es");
     $rootScope.fechaProceso = function () {
         var tiempo = new Date().getTime();
@@ -2404,7 +11516,7 @@ angular.module("seguimientopedidos").run(function ($rootScope, services, i18nSer
     };
 });
 
-angular.module("seguimientopedidos").run([
+app.run([
     "$location",
     "$rootScope",
     "$route",
@@ -2422,7 +11534,7 @@ angular.module("seguimientopedidos").run([
     },
 ]);
 
-angular.module("seguimientopedidos").run([
+app.run([
     "$rootScope",
     "services",
     function ($rootScope, services) {
@@ -2613,9 +11725,10 @@ angular.module("seguimientopedidos").run([
 
         $rootScope.conceptosBuscar = [
             {ID: "", CONCEPTO: "--Seleccione--"},
-            {ID: "nombre", CONCEPTO: "Nombre"},
+            {ID: "identificacion", CONCEPTO: "identificacion"},
             {ID: "login", CONCEPTO: "Login"},
         ];
+
 
         $rootScope.perfiles = [
             {ID: 1, PERFIL: "Supervisor"},
@@ -2630,6 +11743,7 @@ angular.module("seguimientopedidos").run([
             {ID: 10, PERFIL: "Gestión Brutal"},
             {ID: 13, PERFIL: "Quejas GO"},
             {ID: 14, PERFIL: "Nivelacion"},
+            {ID: 15, PERFIL: "Venta Instale"},
         ];
 
         $rootScope.conceptosBuscartecnico = [
@@ -2793,7 +11907,7 @@ angular.module("seguimientopedidos").run([
     },
 ]);
 
-angular.module("seguimientopedidos").run([
+app.run([
     "$location",
     "$rootScope",
     "$cookies",
@@ -2808,5 +11922,3 @@ angular.module("seguimientopedidos").run([
         };
     },
 ]);
-
-

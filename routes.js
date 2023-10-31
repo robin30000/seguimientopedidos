@@ -2,7 +2,7 @@ angular.module('seguimientopedidos').config(routesConfig).run(runConfig);
 
 function routesConfig($routeProvider, $locationProvider, $compileProvider) {
     $locationProvider.html5Mode(true).hashPrefix('!');
-    $compileProvider.aHrefSanitizationWhitelist(/^\s*(whatsapp|http|itms):/);
+    $compileProvider.aHrefSanitizationWhitelist(/^\s*(whatsapp|http|https|itms):/);
     $routeProvider
         .when("/", {
             title: "Login",
@@ -240,26 +240,6 @@ function routesConfig($routeProvider, $locationProvider, $compileProvider) {
             }
         })
 
-        .when("/KPI-Contingencia", {
-            title: "KPI Contingecia",
-            templateUrl: "partial/graficos-contingecia.html",
-            controller: "GraficosContingeciaCtrl",
-            //authorize: true,
-            resolve: {
-                userData: loadUserData
-            }
-        })
-
-        .when("/tiempos", {
-            title: "Graficos tiempos",
-            templateUrl: "partial/tiempos.html",
-            controller: "tiemposCtrl",
-            //authorize: true,
-            resolve: {
-                userData: loadUserData
-            }
-        })
-
         .when("/gestion-ventas-instaleTiendas", {
             title: "Gestion Ventas Instale",
             templateUrl: "partial/ventasInstale/VentasInstaleTiendas.html",
@@ -300,9 +280,88 @@ function routesConfig($routeProvider, $locationProvider, $compileProvider) {
             },
         })
 
+        .when("/KPI-Contingencia", {
+            title: "KPI Contingecia",
+            templateUrl: "partial/graficos/graficos-contingecia.html",
+            controller: "GraficosContingeciaCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/tiempos", {
+            title: "Graficos tiempos",
+            templateUrl: "partial/graficos/tiempos.html",
+            controller: "tiemposCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/ruteo", {
+            title: "Graficos ruteo",
+            templateUrl: "partial/graficos/ruteo.html",
+            controller: "ruteoCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/consultas", {
+            title: "Conteo consultas",
+            templateUrl: "partial/consultas.html",
+            controller: "ConteoCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+        .when("/activación-toip", {
+            title: "Activación Toip",
+            templateUrl: "partial/activacion_toip.html",
+            controller: "ActivacionToipCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/etp", {
+            title: "Gestión ETP",
+            templateUrl: "partial/etp.html",
+            controller: "etpCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/registros-etp", {
+            title: "Registros ETP",
+            templateUrl: "partial/registros-etp.html",
+            controller: "RegistrosEtpCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
+        .when("/kpi-toip", {
+            title: "KPI TOIP",
+            templateUrl: "partial/graficos/kpi-toip.html",
+            controller: "GraficoToipCtrl",
+            //authorize: true,
+            resolve: {
+                userData: loadUserData
+            }
+        })
+
         .otherwise({
             redirectTo: "/",
-        });
+        })
 
     /*$locationProvider
        .html5Mode({
@@ -311,9 +370,6 @@ function routesConfig($routeProvider, $locationProvider, $compileProvider) {
        })
        .hashPrefix([""]);*/
 }
-
-// crear function valida email
-
 
 function loadUserData($rootScope, $q, $route, $location, services, $cookies) {
     return services.checkSession().then(complete, failed);
@@ -333,7 +389,7 @@ function loadUserData($rootScope, $q, $route, $location, services, $cookies) {
                 $route.reload();
             });
         }
-        var today = new Date();
+        let today = new Date();
         $rootScope.year = today.getFullYear();
         $rootScope.nombre = data.data.nombre;
         $rootScope.login = data.data.login;
@@ -344,8 +400,7 @@ function loadUserData($rootScope, $q, $route, $location, services, $cookies) {
         $rootScope.permiso = true;
 
         $cookies.put("usuarioseguimiento", JSON.stringify(data.data));
-        var galleta = JSON.parse($cookies.get("usuarioseguimiento"));
-        $rootScope.galletainfo = galleta;
+        $rootScope.galletainfo = JSON.parse($cookies.get("usuarioseguimiento"));
 
         return data;
     }
@@ -353,7 +408,7 @@ function loadUserData($rootScope, $q, $route, $location, services, $cookies) {
     function failed(reason) {
         $rootScope.authenticated = false;
         if ($route.current.loginRequired) {
-            var error = {
+            let error = {
                 status: 401,
                 message: "Unauthorized"
             };

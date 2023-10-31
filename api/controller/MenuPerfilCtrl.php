@@ -54,6 +54,12 @@ if (isset($data['method'])) {
             $user = new MenuPerfil();
             $user->quitarUsuarioKpi($data['data']);
             break;
+        case 'exportePerfil':
+            require_once '../class/MenuPerfil.php';
+            $user = new MenuPerfil();
+            $res  = $user->exportePerfil();
+            echo json_encode($res);
+            break;
         default:
             echo 'ninguna opción valida.';
             break;

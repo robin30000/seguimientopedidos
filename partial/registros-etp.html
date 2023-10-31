@@ -1,0 +1,147 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading nav navbar-default">
+                    <ul class="nav nav-tabs">
+
+                        <li>
+                            <a data-toggle="tab" href="/#registros"> Registros / Auditoria</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content">
+
+                    <div id="registros" class="tab-pane in active">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <br>
+                                <ul class="nav navbar-nav pull-left">
+                                    &nbsp;
+                                    <li>
+                                        &nbsp;
+                                        &nbsp;
+                                        <b>Registros ETP</b> <span class="badge badge-default">{{totalItems}}</span>
+                                    </li>
+                                    <li>
+                                        <div data-ng-if="loading">
+                                            <img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif"/>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        &nbsp;
+                                        <input style="width: 130px" type="text" name="fechaini" id="fechaini"
+                                               class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="ETP.fechaini"
+                                               placeholder="Fecha Inicial" datetime-picker="" date-only date-format="yyyy-MM-dd"
+                                               autocomplete="off"/>
+                                        <i class="fa fa-calendar fa-fw"></i>
+                                        <input style="width: 130px" type="text" name="fechafin" id="fechafin"
+                                               class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="ETP.fechafin"
+                                               placeholder="Fecha Final" datetime-picker="" date-only date-format="yyyy-MM-dd"
+                                               autocomplete="off"/>
+                                        <i class="fa fa-calendar fa-fw"></i>
+
+                                        <button type="button" class="btn btn-default btn-xs" ng-click="registrosETPRegistros(ETP)"
+                                                ng-disabled="loading">
+                                            <i class="fa fa-search-plus" aria-hidden="true"></i>
+                                        </button>
+
+                                        <button type="button" class="btn btn-success btn-xs" title="Exportar Registros"
+                                                ng-click="csvETPRegistros(ETP)" ng-disabled="loading" title="Exportar" tooltip data-placement="top">
+                                            <i class="fa fa-cloud-download" aria-hidden="true"> </i>
+                                        </button>
+
+                                        <b>
+                                            <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs" ng-model="ETP.pedido"
+                                                   placeholder="Buscar pedido" autocomplete="off"/>&nbsp;
+
+                                            <button type="button" class="btn btn-default btn-xs" ng-click="detallePedidoRegistros(ETP)"
+                                                    title="Buscar" data-toggle="tooltip" data-placement="left" ng-disabled="loading">
+                                                <i class="fa fa-search" aria-hidden="true"></i>
+                                            </button>
+                                        </b>&nbsp;
+                                    </li>
+                                    <li>
+                                        <button type="button" class="btn btn-default btn-xs" ng-click="recargaPageRegistros()" title="Actualizar"
+                                                data-toggle="tooltip" data-placement="top" ng-disabled="loading">
+                                            <i class="fa fa-refresh" aria-hidden="true"></i>
+                                        </button>
+                                    </li>
+                                    &nbsp;
+                                </ul>
+                                <br>
+                                <br>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered small">
+                                        <thead class="table-header">
+                                        <tr>
+                                            <th>Login</th>
+                                            <th>Pedido</th>
+                                            <th>Tarea</th>
+                                            <th>Region</th>
+                                            <th>Hora ingreso</th>
+                                            <th>Hora marca</th>
+                                            <th>Hora gestión</th>
+                                            <th>Tipificación 1</th>
+                                            <th>Tipificación 2</th>
+                                            <th class="text-center" rowspan="2"><span>Replanteo</span></th>
+                                            <th>Obs. tec.</th>
+                                            <th>Obs. Asesor</th>
+                                            <th><span>Ver +</span></i></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-repeat="data in datosTerminados2">
+                                            <td>{{data.login_gestion}}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-default btn-xs"
+                                                        ng-click="CopyPortaPapeles(data.unepedido)" tooltip-placement="top"
+                                                        uib-tooltip="Copiar pedido" id=p{{$index}}>{{data.unepedido}}
+                                                </button>
+                                            </td>
+                                            <td>{{data.tarea}}</td>
+                                            <td>{{data.unemunicipio}}</td>
+                                            <td>{{data.fecha_crea}}</td>
+                                            <td>{{data.fecha_marca}}</td>
+                                            <td>{{data.fecha_gestion}}</td>
+                                            <td>{{data.tipificaciones}}</td>
+                                            <td>{{data.tipificaciones2}}</td>
+                                            <td>{{data.replanteo}}</td>
+                                            <td class="text-center">
+                                                <button popover-placement="left" uib-popover="{{data.observacion_terreno}}"
+                                                        tooltip-placement="top" uib-tooltip="Observación técnico" type="button" class="btn btn-default btn-xs">
+                                                    <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                </button>
+                                            </td>
+                                            <td class="text-center">
+                                                <button popover-placement="left" uib-popover="{{data.observacionesGestion}}"
+                                                        tooltip-placement="top" uib-tooltip="Observación asesor" type="button" class="btn btn-default btn-xs">
+                                                    <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                </button>
+                                            </td>
+                                            <td >
+                                                <button popover-placement="left" ng-click="ver_mas2(data)" uib-popover-html="dataContent"
+                                                        popover-title="Ver mas" type="button" class="btn btn-default btn-xs" tooltip-placement="top"
+                                                        uib-tooltip="Ver mas">
+                                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                                </button>
+                                            </td>
+
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="text-center">
+                                    <ul uib-pagination class="pagination-sm" total-items="totalItems" ng-model="currentPage"
+                                        ng-change="pageChangedRegistro()" items-per-page="pageSize" max-size="5" boundary-links="true" rotate="true"
+                                        previous-text="&#8672;" next-text="&#8674;" first-text="Primero" last-text="Último"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br><br><br>

@@ -12,519 +12,307 @@
                     </ul>
                 </div>
                 <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-4 col-md-3">
+                            <div class="input-group">
+                                <input type="text" class="form-control input-sm" placeholder="Completar datos pedido?" ng-model="tareaAutocomplete">
+                                <span class="input-group-btn">
+                                <button class="btn btn-info btn-sm" type="button" ng-click="autoCompletaTarea(tareaAutocomplete)">Completar</button>
+                              </span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
                     <form action=" " method="post" name="contact_form1" id="contact_form1">
                         <div class="row">
                             <div class="col-md-3">
-                                <ul class="list-group">
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.correo.$touched && contact_form1.correo.$invalid}">
-                                        <li class="list-group-item small"><b>Correo: </b><br>
-                                            <input class="btn btn-default btn-xs" placeholder="correo@dominio.com"
-                                                   type="text" ng-model="contingencias.correo" name="correo" capitalize
-                                                   required>
-                                        </li>
-                                    </div>
 
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.pedido.$touched && contact_form1.pedido.$invalid}">
-                                        <li class="list-group-item small"><b>Pedido: </b><br>
-                                            <input class="btn btn-default btn-xs" placeholder="Pedido" type="text"
-                                                   ng-model="contingencias.pedido" name="pedido" capitalize required>
-                                        </li>
-                                    </div>
+                                <!--<div class="form-group" ng-class="{'has-error' : contact_form1.pedido.$touched && contact_form1.pedido.$invalid}">
+                                    <label for="pedido">Pedido</label>
+                                    <input type="text" class="form-control input-sm" id="pedido" name="pedido" placeholder="pedido" ng-model="contingencias.pedido">
+                                </div>-->
+                                <div class="form-group" ng-class="{'has-error' : contact_form1.tarea.$touched && contact_form1.tarea.$invalid}">
+                                    <label for="tarea">Tarea</label>
+                                    <input type="text" class="form-control input-sm" id="tarea" name="tarea" placeholder="tarea" ng-model="contingencias.tarea">
+                                </div>
 
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.accion.$touched && contact_form1.producto.$invalid}">
-                                        <li class="list-group-item small"><b>Producto:</b><br>
-                                            <select class="btn btn-default btn-xs grupo-select" name="producto"
-                                                    ng-model="contingencias.producto" capitalize required>
-                                                <option value="" disabled>Seleccione</option>
-                                                <option value="TV">TV</option>
-                                                <option value="Internet">Internet</option>
-                                                <option value="ToIP">ToIP</option>
-                                                <option value="Internet+ToIP">Internet+ToIP</option>
-                                            </select>
-                                        </li>
-                                    </div>
 
-                                    <div class="form-group" ng-show="contingencias.producto == 'Internet'|| contingencias.producto == 'Internet+ToIP' ||
-                                                                                 contingencias.producto == 'ToIP' ||
-                                                                                 contingencias.producto == 'TV'">
+                                <div class="form-group"
+                                     ng-class="{'has-error' : contact_form1.accion.$touched && contact_form1.producto.$invalid}">
+                                    <label for="Producto">Producto</label>
+                                    <select class="form-control input-sm" name="Producto" id="Producto"
+                                            ng-model="contingencias.producto" required>
+                                        <option value="" selected>Seleccione</option>
+                                        <option ng-repeat="f in producto" value="{{f.id}}">
+                                            {{f.producto}}
+                                        </option>
+                                        <!--<option value="" disabled>Seleccione</option>
+                                        <option value="TV">TV</option>
+                                        <option value="INTER">Internet</option>-->
+                                    </select>
 
-                                        <li class="list-group-item small"><b>Contrato o identificador de servicio:
-                                        </b><br>
-                                            <input class="btn btn-default btn-xs" placeholder="Contrato o Id"
-                                                   type="text" ng-model="contingencias.contrato" name="contrato">
-                                        </li>
-                                    </div>
+                                </div>
 
-                                    <div class="form-group" ng-show="contingencias.producto == 'Internet' || contingencias.producto == 'Internet+ToIP' ||
-                                                                                 contingencias.producto == 'ToIP'||
-                                                                                 contingencias.producto == 'TV'">
+                                <div class="form-group">
+                                    <label for="contrato">identificador de servicio</label>
+                                    <input class="form-control input-sm" placeholder="Contrato o Id"
+                                           type="text" ng-model="contingencias.contrato" name="contrato" id="contrato">
+                                </div>
 
-                                        <li class="list-group-item small"><b>Perfil, Plan o Equipment ID : </b>
-                                            <br>
-                                            <input class="btn btn-default btn-xs" placeholder="Perfil, plan" type="text"
-                                                   ng-model="contingencias.perfil" name="perfil">
-                                        </li>
-                                    </div>
-
-                                </ul>
+                                <div class="form-group">
+                                    <label for="perfil">Perfil, Plan o Equipment ID</label>
+                                    <input class="form-control input-sm" placeholder="Perfil, plan" type="text"
+                                           ng-model="contingencias.perfil" name="perfil" id="perfil">
+                                </div>
                             </div>
 
 
                             <div class="col-md-3">
-                                <ul class="list-group">
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.uen.$touched && contact_form1.uen.$invalid}">
-                                        <li class="list-group-item small"><b>UEN:</b><br>
-                                            <select class="btn btn-default btn-xs grupo-select" name="uen"
-                                                    ng-model="contingencias.uen" capitalize required>
-                                                <option value="" disabled>Seleccione</option>
-                                                <option value="Antioquia norte">HG</option>
-                                                <option value="Antioquia sur">Pymes</option>
-                                            </select>
-                                        </li>
-                                    </div>
+                                <div class="form-group"
+                                     ng-class="{'has-error' : contact_form1.uen.$touched && contact_form1.uen.$invalid}">
+                                    <label for="uen">UEN</label>
+                                    <select class="form-control input-sm" name="uen"
+                                            ng-model="contingencias.uen" id="uen" required>
+                                        <option value="" disabled>Seleccione</option>
+                                        <option value="Hogares">Hogares</option>
+                                        <option value="HOGARES">HOGARES</option>
+                                        <option value="HG">HG</option>
+                                        <option value="PYMES">PYMES</option>
+                                        <option value="C3">C3</option>
+                                    </select>
+                                </div>
 
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.proceso.$touched && contact_form1.proceso.$invalid}">
-                                        <li class="list-group-item small"><b>Proceso: </b><br>
-                                            <select class="btn btn-default btn-xs grupo-select" name="proceso"
-                                                    ng-model="contingencias.proceso" capitalize required>
-                                                <option value="" disabled>Seleccione</option>
-                                                <option value="Instalación">Instalación</option>
-                                                <option value="Reparacion">Reparación</option>
-                                            </select>
-                                        </li>
-                                    </div>
+                                <div class="form-group"
+                                     ng-class="{'has-error' : contact_form1.proceso.$touched && contact_form1.proceso.$invalid}">
+                                    <label for="proceso">Proceso</label>
+                                    <select class="form-control input-sm" name="proceso" id="proceso"
+                                            ng-model="contingencias.proceso" required>
+                                        <option value="" disabled>Seleccione</option>
+                                        <option value="Instalación">Instalación</option>
+                                        <option value="Reparacion">Reparación</option>
+                                    </select>
+                                </div>
 
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.tecnologia.$touched && contact_form1.tecnologia.$invalid}"
-                                         ng-show="contingencias.producto == 'TV' ">
-                                        <li class="list-group-item small"><b>Tecnología: </b><br>
-                                            <select class="btn btn-default btn-xs grupo-select" name="tecnologia"
-                                                    ng-model="contingencias.tecnologia" capitalize required>
-                                                <option value="" disabled>Seleccione</option>
-                                                <option value="HFC">HFC</option>
-                                                <option value="GPON">GPON</option>
-                                                <option value="Cobre">Cobre</option>
-                                                <option value="DTH">DTH</option>
-                                            </select>
-                                        </li>
-                                    </div>
-
-
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.tecnologia.$touched && contact_form1.tecnologia.$invalid}"
-                                         ng-show="contingencias.producto == 'Internet+ToIP'">
-                                        <li class="list-group-item small"><b>Tecnología: </b><br>
-                                            <select class="btn btn-default btn-xs grupo-select" name="tecnologia"
-                                                    ng-model="contingencias.tecnologia" capitalize required>
-                                                <option value="" disabled>Seleccione</option>
-                                                <option value="HFC">HFC</option>
-                                            </select>
-                                        </li>
-                                    </div>
+                                <div class="form-group"
+                                     ng-class="{'has-error' : contact_form1.tecnologia.$touched && contact_form1.tecnologia.$invalid}">
+                                    <label for="tecnologia">Tecnología</label>
+                                    <select class="form-control input-sm" name="tecnologia" id="tecnologia"
+                                            ng-model="contingencias.tecnologia" required>
+                                        <option value="">Seleccione</option>
+                                        <option value="HFC">HFC</option>
+                                        <option value="GPON">GPON</option>
+                                        <option value="Cobre">Cobre</option>
+                                        <option value="DTH">DTH</option>
+                                        <option value="REDCO">REDCO</option>
+                                    </select>
+                                </div>
 
 
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.tecnologia.$touched && contact_form1.tecnologia.$invalid}"
-                                         ng-show="contingencias.producto == 'ToIP' || contingencias.producto == 'Internet'">
-                                        <li class="list-group-item small"><b>Tecnología: </b><br>
-                                            <select class="btn btn-default btn-xs grupo-select" name="tecnologia"
-                                                    ng-model="contingencias.tecnologia" capitalize required>
-                                                <option value="" disabled>Seleccione</option>
-                                                <option value="HFC">HFC</option>
-                                                <option value="Cobre">Cobre</option>
-                                            </select>
-                                        </li>
-                                    </div>
+                                <div class="form-group"
+                                     ng-class="{'has-error' : contact_form1.accion.$touched && contact_form1.accion.$invalid}">
+                                    <label for="accion">Acción a ejecutar:</label>
+                                    <select class="form-control input-sm" name="accion" id="accion"
+                                            ng-model="contingencias.accion">
+                                        <option value="" selected>Seleccione</option>
+                                        <option value="Contingencia"
+                                                ng-show="(contingencias.producto == 'TV' || contingencias.producto == 'Internet' || contingencias.producto == 'ToIP' || contingencias.producto == 'Internet+ToIP') && (contingencias.tecnologia == 'HFC' || contingencias.tecnologia == 'GPON' || (contingencias.tecnologia == 'Cobre' || contingencias.tecnologia == 'REDCO') )">
+                                            Aprov. Contingencia
+                                        </option>
+                                        <option value="Refresh"
+                                                ng-show="(contingencias.producto == 'TV') && (contingencias.tecnologia == 'HFC' || contingencias.tecnologia == 'GPON' || contingencias.tecnologia == 'Cobre' || contingencias.tecnologia == 'REDCO')">
+                                            Refresh
+                                        </option>
+                                        <option value="Cambio de equipo"
+                                                ng-show="(contingencias.producto == 'TV' || contingencias.producto == 'Internet' || contingencias.producto == 'ToIP' || contingencias.producto == 'Internet+ToIP') && (contingencias.tecnologia == 'HFC' || contingencias.tecnologia == 'GPON' || contingencias.tecnologia == 'Cobre' || contingencias.tecnologia == 'REDCO')">
+                                            Cambio de equipo
+                                        </option>
+                                        <option value="mesaOffline"
+                                                ng-show="(contingencias.producto == 'TV' || contingencias.producto == 'Internet' || contingencias.producto == 'ToIP' || contingencias.producto == 'Internet+ToIP') && (contingencias.tecnologia == 'HFC' || contingencias.tecnologia == 'GPON' || contingencias.tecnologia == 'DTH' || contingencias.tecnologia == 'Cobre' || contingencias.tecnologia == 'REDCO')">
+                                            Mesa Offline
+                                        </option>
+                                        <option value="Corregir portafolio"
+                                                ng-show="contingencias.producto == 'Internet' || contingencias.producto == 'ToIP' || contingencias.producto == 'Internet+ToIP'">
+                                            Corregir Portafolio-Inventario
+                                        </option>
+                                        <option value="Crear Espacio" ng-show="(contingencias.producto == 'TV') && (contingencias.tecnologia == 'DTH')">Crear Espacio</option>
+                                        <option value="crear cliente" ng-show="(contingencias.producto == 'TV') && (contingencias.tecnologia == 'DTH')">Crear Cliente</option>
+                                        <option value="Cambio EID" ng-show="contingencias.producto == 'ToIP' || contingencias.producto == 'Internet+ToIP'">Cambio EID</option>
+                                        <option value="Registros ToIP" ng-show="contingencias.producto == 'ToIP' || contingencias.producto == 'Internet+ToIP'">Registros ToIP
+                                        </option>
+                                        <option value="OC Telefonia" ng-show="contingencias.producto == 'ToIP' || contingencias.producto == 'Internet+ToIP'">OC Telefonía</option>
+                                        <option value="Crear Linea IMS" ng-show="contingencias.producto == 'ToIP' || contingencias.producto == 'Internet+ToIP'">Crear Línea IMS
+                                        </option>
+                                    </select>
+                                </div>
 
-
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.accion.$touched && contact_form1.accion.$invalid}"
-                                         ng-show="contingencias.producto == 'TV' && contingencias.tecnologia == 'HFC' || contingencias.tecnologia == 'GPON'">
-                                        <li class="list-group-item small"><b>Acción a ejecutar: </b><br>
-                                            <select class="btn btn-default btn-xs grupo-select" name="accion"
-                                                    id="idaccionTVHFCGPON" ng-model="contingencias.accion"
-                                                    onchange="fn_popup1()" capitalize required>
-                                                <option value="" disabled>Seleccione</option>
-                                                <option value="Contingencia">Aprov. Contingencia</option>
-                                                <option value="Refresh">Refresh</option>
-                                                <option value="Cambio de equipo">Cambio de equipo</option>
-                                                <!-- <option value="Corregir portafolio">Corregir Portafolio-Inventario</option> -->
-                                                <option value="mesaOffline">Mesa Offline</option>
-                                            </select>
-                                        </li>
-                                    </div>
-
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.accion.$touched && contact_form1.accion.$invalid}"
-                                         ng-show="contingencias.producto == 'TV' && contingencias.tecnologia == 'Cobre'">
-                                        <li class="list-group-item small"><b>Acción a ejecutar: </b><br>
-                                            <select class="btn btn-default btn-xs grupo-select" name="accion"
-                                                    id="idaccionTVCobre" ng-model="contingencias.accion"
-                                                    onchange="fn_popup2()" capitalize required>
-                                                <option value="" disabled>Seleccione</option>
-                                                <option value="Contingencia">Aprov. Contingencia</option>
-                                                <option value="Refresh">Refresh</option>
-                                                <option value="Cambio de equipo">Cambio de equipo</option>
-                                                <option value="Corregir portafolio">Corregir Portafolio-Inventario
-                                                </option>
-                                                <option value="mesaOffline">Mesa Offline</option>
-                                            </select>
-                                        </li>
-                                    </div>
-
-
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.accion.$touched && contact_form1.accion.$invalid}"
-                                         ng-show="contingencias.producto == 'TV' && contingencias.tecnologia == 'DTH'">
-                                        <li class="list-group-item small"><b>Acción a ejecutar: </b><br>
-                                            <select class="btn btn-default btn-xs grupo-select" name="accion"
-                                                    id="idaccionTVDTH" ng-model="contingencias.accion"
-                                                    onchange="fn_popup3()" capitalize required>
-                                                <option value="" disabled>Seleccione</option>
-                                                <option value="Crear Espacio">Crear Espacio</option>
-                                                <option value="crear cliente">Crear Cliente</option>
-                                                <option value="Corregir portafolio">Corregir Portafolio-Inventario
-                                                </option>
-                                                <option value="mesaOffline">Mesa Offline</option>
-                                            </select>
-                                        </li>
-                                    </div>
-
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.accion.$touched && contact_form1.accion.$invalid}"
-                                         ng-show="contingencias.producto == 'Internet'">
-                                        <li class="list-group-item small"><b>Acción a ejecutar: </b><br>
-                                            <select class="btn btn-default btn-xs grupo-select" name="accion"
-                                                    id="idaccionINTTOIP" ng-model="contingencias.accion"
-                                                    onchange="fn_popup4()" capitalize required>
-                                                <option value="" disabled>Seleccione</option>
-                                                <option value="Contingencia">Aprov. Contingencia</option>
-                                                <option value="Cambio de equipo">Cambio de equipo</option>
-                                                <option value="Corregir portafolio">Corregir Portafolio-Inventario
-                                                </option>
-                                                <option value="mesaOffline">Mesa Offline</option>
-                                            </select>
-                                        </li>
-                                    </div>
-
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.accion.$touched && contact_form1.accion.$invalid}"
-                                         ng-show="contingencias.producto == 'Internet+ToIP' || contingencias.producto == 'ToIP'">
-                                        <li class="list-group-item small"><b>Acción a ejecutar: </b><br>
-                                            <select class="btn btn-default btn-xs grupo-select" name="accion"
-                                                    id="idaccionINTTOIP" ng-model="contingencias.accion"
-                                                    onchange="fn_popup4()" capitalize required>
-                                                <option value="" disabled>Seleccione</option>
-                                                <option value="Contingencia">Aprov. Contingencia</option>
-                                                <option value="Cambio EID">Cambio EID</option>
-                                                <option value="Cambio de equipo">Cambio de equipo</option>
-                                                <option value="Corregir portafolio">Corregir Portafolio-Inventario
-                                                </option>
-                                                <option value="Registros ToIP">Registros ToIP</option>
-                                                <option value="mesaOffline">Mesa Offline</option>
-                                                <option value="OC Telefonia">OC Telefonía</option>
-                                                <option value="Crear Linea IMS">Crear Línea IMS</option>
-                                            </select>
-                                        </li>
-                                    </div>
-
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.motivo.$touched && contact_form1.motivo.$invalid}"
-                                         ng-show="contingencias.proceso == 'Instalación'"
-                                         ng-switch="contingencias.accion">
-                                        <li class="list-group-item small"
-                                            ng-switch-when="Contingencia|Cambio de equipo|Corregir portafolio|Registros ToIP|Refresh|crear cliente|Crear Espacio"
-                                            ng-switch-when-separator="|"><b>Motivo: </b><br>
-                                            <select class="btn btn-default btn-xs grupo-select" name="motivo"
-                                                    style="width:180px" ng-model="contingencias.motivo" capitalize required>
-                                                <option value="" disabled>Seleccione</option>
-                                                <option value="Plataforma NCA caída">Plataforma NCA caída</option>
-                                                <option value="Errores de sistemas">Errores de sistemas</option>
-                                                <option value="Error Tecnico/Despacho">Error Técnico/Despacho</option>
-                                                <option value="Políticas erradas">Políticas erradas</option>
-                                                <option value="Envió registros">Envió registros</option>
-                                            </select>
-                                        </li>
-                                    </div>
-
-
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.motivo.$touched && contact_form1.motivo.$invalid}"
-                                         ng-show="contingencias.proceso == 'Reparacion'"
-                                         ng-switch="contingencias.accion">
-                                        <li class="list-group-item small"
-                                            ng-switch-when="Contingencia|Cambio de equipo|Corregir portafolio|Registros ToIP|Refresh|crear cliente|Crear Espacio"
-                                            ng-switch-when-separator="|"><b>Motivo: </b><br>
-                                            <select class="btn btn-default btn-xs grupo-select" name="motivo"
-                                                    style="width:180px" ng-model="contingencias.motivo" capitalize required>
-                                                <option value="" disabled>Seleccione</option>
-                                                <option value="Plataforma SMNET caída">Plataforma SMNET caída</option>
-                                                <option value="Plataforma NCA caída">Plataforma NCA caída</option>
-                                                <option value="Errores de sistemas">Errores de sistemas</option>
-                                                <option value="Error Técnico/Despacho">Error Técnico/Despacho</option>
-                                                <option value="Envió registros">Envió registros</option>
-                                            </select>
-                                        </li>
-                                    </div>
-
-
-                                </ul>
+                                <div class="form-group"
+                                     ng-class="{'has-error' : contact_form1.motivo.$touched && contact_form1.motivo.$invalid}" ng-show="contingencias.accion != 'mesaOffline'">
+                                    <label for="motivo">Motivo:</label>
+                                    <select class="form-control input-sm" name="motivo" id="motivo"
+                                            ng-model="contingencias.motivo" required>
+                                        <option value="" selected>Seleccione</option>
+                                        <option value="Plataforma NCA caída">Plataforma NCA caída</option>
+                                        <option value="Errores de sistemas">Errores de sistemas</option>
+                                        <option value="Error Tecnico/Despacho">Error Técnico/Despacho</option>
+                                       <!-- <option value="Políticas erradas">Políticas erradas</option>-->
+                                        <option value="Envió registros">Envió registros</option>
+                                        <option value="Plataforma SMNET caída">Plataforma SMNET caída</option>
+                                    </select>
+                                </div>
 
                             </div>
 
                             <div class="col-md-3">
-                                <ul class="list-group">
+                                <div class="form-group"
+                                     ng-class="{'has-error' : contact_form1.tipoEquipo.$touched && contact_form1.tipoEquipo.$invalid}"
+                                     ng-show="contingencias.accion != 'mesaOffline'">
+                                    <label for="tipoEquipo">Tipo Equipo:</label>
+                                    <select class="form-control input-sm" name="tipoEquipo" id="tipoEquipo"
+                                            ng-model="contingencias.tipoEquipo" required>
+                                        <option value="" selected>Seleccione</option>
+                                        <option value="Cisco e Irdeto (TV Digital)" ng-show="contingencias.producto == 'TV' && contingencias.tecnologia == 'HFC' ">Cisco e Irdeto
+                                            (TV
+                                            Digital)
+                                        </option>
+                                        <option value="DTA-ZAPPER-DVR (OneTV)" ng-show="contingencias.producto == 'TV' && contingencias.tecnologia == 'HFC' ">DTA-ZAPPER-DVR (OneTV)
+                                        </option>
+                                        <option value="Gateway y Minis (OneTV Elite)" ng-show="contingencias.producto == 'TV' && contingencias.tecnologia == 'HFC' ">Gateway y Minis
+                                            (OneTVElite)
+                                        </option>
+                                        <option value="ANDROID y DTA (OneTV 2.0)" ng-show="contingencias.producto == 'TV' && contingencias.tecnologia == 'HFC' ">ANDROID y DTA
+                                            (OneTV
+                                            2.0)
+                                        </option>
+                                        <option value="Sagem"
+                                                ng-show="contingencias.producto == 'TV' && (contingencias.tecnologia == 'Cobre' || contingencias.tecnologia == 'GPON' || contingencias.tecnologia == 'REDCO') ">
+                                            Sagem
+                                        </option>
+                                        <option value="Coship"
+                                                ng-show="contingencias.producto == 'TV' && (contingencias.tecnologia == 'Cobre' || contingencias.tecnologia == 'GPON' || contingencias.tecnologia == 'REDCO')">
+                                            Coship
+                                        </option>
+                                        <option value="ANDROID y DTA (OneTV 2.0)"
+                                                ng-show="contingencias.producto == 'TV' && (contingencias.tecnologia == 'Cobre' || contingencias.tecnologia == 'GPON' || contingencias.tecnologia == 'REDCO')">ANDROID y DTA
+                                            (OneTV 2.0)
+                                        </option>
+                                        <option value="Arion" ng-show="contingencias.producto == 'TV' && contingencias.tecnologia == 'DTH' ">Arion</option>
+                                        <option value="Handan" ng-show="contingencias.producto == 'TV' && contingencias.tecnologia == 'DTH' ">Handan</option>
+                                        <option value="Kaon" ng-show="contingencias.producto == 'TV' && contingencias.tecnologia == 'DTH' ">kaon</option>
+                                        <option value="CM"
+                                                ng-show="(contingencias.producto == 'Internet' || contingencias.producto == 'INTER' || contingencias.producto == 'Internet+ToIP' || contingencias.producto == 'ToIP') && contingencias.tecnologia == 'HFC' ">
+                                            CM
+                                        </option>
+                                        <option value="CM MTA"
+                                                ng-show="contingencias.tecnologia == 'HFC' && (contingencias.producto == 'Internet+ToIP' || contingencias.producto == 'ToIP')">CM
+                                            MTA
+                                        </option>
+                                        <option value="CPE"
+                                                ng-show="(contingencias.tecnologia == 'Cobre' || contingencias.tecnologia == 'REDCO') && (contingencias.producto == 'Internet' || contingencias.producto == 'ToIP' || contingencias.producto == 'Internet+ToIP')">
+                                            CPE
+                                        </option>
+                                    </select>
+                                </div>
 
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.tipoEquipo.$touched && contact_form1.tipoEquipo.$invalid}"
-                                         ng-show="contingencias.producto == 'TV' && contingencias.tecnologia == 'HFC' "
-                                         ng-switch="contingencias.accion">
-                                        <li class="list-group-item small"
-                                            ng-switch-when="Contingencia|Cambio de equipo|Corregir portafolio|Registros ToIP|Refresh|crear cliente|Crear Espacio"
-                                            ng-switch-when-separator="|"><b>Tipo Equipo: </b><br>
-                                            <select class="btn btn-default btn-xs grupo-select" name="tipoEquipo"
-                                                    ng-model="contingencias.tipoEquipo" capitalize required>
-                                                <option value="" disabled>Seleccione</option>
-                                                <option value="Cisco e Irdeto (TV Digital)">Cisco e Irdeto (TV Digital)
-                                                </option>
-                                                <option value="DTA-ZAPPER-DVR (OneTV)">DTA-ZAPPER-DVR (OneTV)</option>
-                                                <option value="Gateway y Minis (OneTV Elite)">Gateway y Minis (OneTV
-                                                    Elite)
-                                                </option>
-                                                <option value="ANDROID y DTA (OneTV 2.0)">ANDROID y DTA (OneTV 2.0)
-                                                </option>
-                                            </select>
-                                        </li>
+                                <div class="form-group"
+                                     ng-class="{'has-error' : contact_form1.ciudad.$touched && contact_form1.ciudad.$invalid}">
+                                    <label for="ciudad">Ciudad:</label>
+                                    <select ng-model="contingencias.ciudad" name="ciudad" id="ciudad"
+                                            class="form-control input-sm" required>
+                                        <option value="" selected>Seleccione</option>
+                                        <option ng-repeat="f in ciudadesCont" value="{{f.ciudad}}">
+                                            {{f.ciudad}}
+                                        </option>
+                                    </select>
+                                </div>
+
+
+                                <div class="form-group"
+                                     ng-class="{'has-error' : contact_form1.macEntra.$touched && contact_form1.macEntra.$invalid}"
+                                     ng-if="(contingencias.accion == 'Contingencia' || contingencias.accion == 'Cambio de equipo'|| contingencias.accion == 'Corregir portafolio' || contingencias.accion == 'Registros ToIP' || contingencias.accion == 'Refresh'|| contingencias.accion == 'crear cliente' || contingencias.accion == 'Crear Espacio')">
+                                    <label for="macEntra">MAC entra:</label>
+                                    <button class="buttonMac" ng-click="addEquipoEntra()">Nuevo Equipo</button>
+                                    <div ng-repeat="item in equiposEntran">
+                                        <input name="macEntra{{ $index }}" type="text" ng-model="item.value" id="macEntra"
+                                               placeholder="Mac entra" class="form-control input-sm" required
+                                               ng-pattern="/^([a-zA-Z0-9]){1,18}$/" ng-trim="false">
+                                        <p class="help-block"
+                                           ng-show="contact_form1.macEntra{{ $index }}.$error.required">Este
+                                            campo es requerido</p>
+                                        <p style="color:red;" class="help-block"
+                                           ng-show="contact_form1.macEntra{{ $index }}.$touched && contact_form1.macEntra{{ $index }}.$invalid">
+                                            La MAC no es válida</p>
                                     </div>
+                                </div>
 
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.tipoEquipo.$touched && contact_form1.tipoEquipo.$invalid}"
-                                         ng-show="contingencias.producto == 'TV' && contingencias.tecnologia == 'Cobre' || contingencias.tecnologia == 'GPON' "
-                                         ng-switch="contingencias.accion">
-                                        <li class="list-group-item small"
-                                            ng-switch-when="Contingencia|Cambio de equipo|Corregir portafolio|Registros ToIP|Refresh|crear cliente|Crear Espacio"
-                                            ng-switch-when-separator="|"><b>Tipo Equipo: </b><br>
-                                            <select class="btn btn-default btn-xs grupo-select" name="tipoEquipo"
-                                                    ng-model="contingencias.tipoEquipo" capitalize required>
-                                                <option value="" disabled>Seleccione</option>
-                                                <option value="Sagem">Sagem</option>
-                                                <option value="Coship">Coship</option>
-                                                <option value="ANDROID y DTA (OneTV 2.0)">ANDROID y DTA (OneTV 2.0)
-                                                </option>
-                                            </select>
-                                        </li>
+                                <div class="form-group"
+                                     ng-class="{'has-error' : contact_form1.macSale.$touched && contact_form1.macSale.$invalid}"
+                                     ng-if="contingencias.accion == 'Cambio de equipo'">
+                                    <label for="macSale">MAC Sale:</label>
+                                    <button class="buttonMac" ng-click="addEquipoSale()">Nuevo Equipo</button>
+                                    <div ng-repeat="item in equiposSalen">
+                                        <input name="macSale{{ $index }}" type="text" ng-model="item.value"
+                                               placeholder="Mac Sale" id="macSale" class="form-control input-sm"
+                                               ng-pattern="/^([a-zA-Z0-9]){1,18}$/" ng-trim="false">
+                                        <p class="help-block"
+                                           ng-show="contact_form1.macSale{{ $index }}.$error.required">Este
+                                            campo es requerido</p>
+                                        <p style="color:red;" class="help-block"
+                                           ng-show="contact_form1.macSale{{ $index }}.$touched && contact_form1.macSale{{ $index }}.$invalid">
+                                            La MAC no es válida</p>
                                     </div>
+                                    <input type="hidden" ng-model="contingencias.uneSourceSystem">
+                                    <!--<input type="hidden" ng-model="contingencias.tarea">-->
+                                </div>
 
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.tipoEquipo.$touched && contact_form1.tipoEquipo.$invalid}"
-                                         ng-show="contingencias.producto == 'TV' && contingencias.tecnologia == 'DTH' "
-                                         ng-switch="contingencias.accion">
-                                        <li class="list-group-item small"
-                                            ng-switch-when="Contingencia|Cambio de equipo|Corregir portafolio|Registros ToIP|Refresh|crear cliente|Crear Espacio"
-                                            ng-switch-when-separator="|"><b>Tipo Equipo: </b><br>
-                                            <select class="btn btn-default btn-xs grupo-select" name="tipoEquipo"
-                                                    ng-model="contingencias.tipoEquipo" capitalize required>
+                                <div class="form-group"
+                                     ng-class="{'has-error' : contact_form1.paquetes.$touched && contact_form1.paquetes.$invalid}"
+                                     ng-if="(contingencias.accion == 'Contingencia' || contingencias.accion == 'Cambio de equipo' || contingencias.accion == 'Registros ToIP' || contingencias.accion == 'Refresh' || contingencias.accion == 'crear cliente' || contingencias.accion == 'Crear Espacio')">
+                                    <label for="paquetes">Paquetes a aprovisionar</label>
+                                    <select style="width:100%" multiple
+                                            class="form-control input-sm" ui-select2="groupSetup"
+                                            name="paquetes" ng-model="contingencias.paquetes" id="paquetes"
+                                            data-placeholder="Seleccione los paquetes...">
+                                        <option ng-repeat="group1 in paquetescontingencias"
+                                                value="{{group1.CONCEPTO}}">{{group1.CONCEPTO}}
+                                        </option>
+                                    </select>
+                                </div>
 
-                                                <!-- <option value="CM" >CM</option>
-                                                            <option value="CM MTA" >CM MTA</option> -->
-                                                <option value="" disabled>Seleccione</option>
-                                                <option value=" Arion"> Arion</option>
-                                                <option value="Handan">Handan</option>
-                                                <option value="Kaon">kaon</option>
-                                            </select>
-                                        </li>
-                                    </div>
-
-
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.tipoEquipo.$touched && contact_form1.tipoEquipo.$invalid}"
-                                         ng-show="contingencias.producto == 'Internet' && contingencias.tecnologia == 'HFC' "
-                                         ng-switch="contingencias.accion">
-                                        <li class="list-group-item small"
-                                            ng-switch-when="Contingencia|Cambio de equipo|Corregir portafolio|Registros ToIP|Refresh|crear cliente|Crear Espacio"
-                                            ng-switch-when-separator="|"><b>Tipo Equipo: </b><br>
-                                            <select class="btn btn-default btn-xs grupo-select" name="tipoEquipo"
-                                                    ng-model="contingencias.tipoEquipo" capitalize required>
-                                                <option value="" disabled>Seleccione</option>
-                                                <option value="CM">CM</option>
-                                                <!-- <option value="CM MTA" >CM MTA</option> -->
-                                            </select>
-                                        </li>
-                                    </div>
-
-
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.tipoEquipo.$touched && contact_form1.tipoEquipo.$invalid}"
-                                         ng-show="contingencias.tecnologia == 'HFC' && contingencias.producto == 'Internet+ToIP'"
-                                         ng-switch="contingencias.accion">
-                                        <li class="list-group-item small"
-                                            ng-switch-when="Contingencia|Cambio de equipo|Corregir portafolio|Registros ToIP|Refresh|crear cliente|Crear Espacio"
-                                            ng-switch-when-separator="|"><b>Tipo Equipo: </b><br>
-                                            <select class="btn btn-default btn-xs grupo-select" name="tipoEquipo"
-                                                    ng-model="contingencias.tipoEquipo" capitalize required>
-                                                <option value="" disabled>Seleccione</option>
-                                                <option value="CM MTA">CM MTA</option>
-                                            </select>
-                                        </li>
-                                    </div>
-
-
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.tipoEquipo.$touched && contact_form1.tipoEquipo.$invalid}"
-                                         ng-show="contingencias.tecnologia == 'HFC' && contingencias.producto == 'ToIP'"
-                                         ng-switch="contingencias.accion">
-                                        <li class="list-group-item small"
-                                            ng-switch-when="Contingencia|Cambio de equipo|Corregir portafolio|Registros ToIP|Refresh|crear cliente|Crear Espacio"
-                                            ng-switch-when-separator="|"><b>Tipo Equipo: </b><br>
-                                            <select class="btn btn-default btn-xs grupo-select" name="tipoEquipo"
-                                                    ng-model="contingencias.tipoEquipo" capitalize required>
-                                                <option value="" disabled>Seleccione</option>
-                                                <option value="CM MTA">CM MTA</option>
-                                            </select>
-                                        </li>
-                                    </div>
-
-
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.tipoEquipo.$touched && contact_form1.tipoEquipo.$invalid}"
-                                         ng-show="contingencias.tecnologia == 'Cobre' && contingencias.producto == 'ToIP' || contingencias.tecnologia == 'Cobre' && contingencias.producto == 'Internet'"
-                                         ng-switch="contingencias.accion">
-                                        <li class="list-group-item small"
-                                            ng-switch-when="Contingencia|Cambio de equipo|Corregir portafolio|Registros ToIP|Refresh|crear cliente|Crear Espacio"
-                                            ng-switch-when-separator="|"><b>Tipo Equipo: </b><br>
-                                            <select class="btn btn-default btn-xs grupo-select" name="tipoEquipo"
-                                                    ng-model="contingencias.tipoEquipo" capitalize required>
-                                                <option value="" disabled>Seleccione</option>
-                                                <option value="CPE">CPE</option>
-                                            </select>
-                                        </li>
-                                    </div>
-
-
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.ciudad.$touched && contact_form1.ciudad.$invalid}">
-                                        <li class="list-group-item small"><b>Ciudad: </b><br>
-                                            <select ng-model="contingencias.ciudad" name="ciudad"
-                                                    class="btn btn-default btn-xs grupo-select" capitalize required>
-                                                <option ng-repeat="f in ciudadesContingencias" value="{{f.ID}}">
-                                                    {{f.CONCEPTO}}
-                                                </option>
-                                            </select>
-                                        </li>
-                                    </div>
-
-
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.macEntra.$touched && contact_form1.macEntra.$invalid}"
-                                         ng-switch="contingencias.accion">
-                                        <li class="list-group-item small "
-                                            ng-switch-when="Contingencia|Cambio de equipo|Corregir portafolio|Registros ToIP|Refresh|crear cliente|Crear Espacio"
-                                            ng-switch-when-separator="|"><b>MAC entra: </b><br>
-                                            <!--input class="btn btn-default btn-xs" placeholder="Mac entra" type="text" ng-model="contingencias.macEntra" name="macEntra" capitalize required-->
-                                            <button class="buttonMac" ng-click="addEquipoEntra()">Nuevo Equipo</button>
-                                            <div ng-repeat="item in equiposEntran">
-                                                <input name="macEntra{{ $index }}" type="text" ng-model="item.value"
-                                                       placeholder="Mac entra" capitalize required
-                                                       ng-pattern="/^([a-zA-Z0-9]){1,18}$/" ng-trim="false" \>
-                                                <p class="help-block"
-                                                   ng-show="contact_form1.macEntra{{ $index }}.$error.required">Este
-                                                    campo es requerido</p>
-                                                <p style="color:red;" class="help-block"
-                                                   ng-show="contact_form1.macEntra{{ $index }}.$touched && contact_form1.macEntra{{ $index }}.$invalid">
-                                                    La MAC no es válida</p>
-
-                                            </div>
-                                        </li>
-                                    </div>
-
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.macSale.$touched && contact_form1.macSale.$invalid}"
-                                         ng-show="contingencias.accion == 'Cambio de equipo'">
-                                        <li class="list-group-item small"><b>MAC Sale: </b><br>
-                                            <!--input class="btn btn-default btn-xs" placeholder="Mac entra" type="text" ng-model="contingencias.macEntra" name="macEntra" capitalize required-->
-                                            <button class="buttonMac" ng-click="addEquipoSale()">Nuevo Equipo</button>
-                                            <div ng-repeat="item in equiposSalen">
-                                                <input name="macSale{{ $index }}" type="text" ng-model="item.value"
-                                                       placeholder="Mac Sale" capitalize
-                                                       ng-pattern="/^([a-zA-Z0-9]){1,18}$/" ng-trim="false">
-                                                <p class="help-block"
-                                                   ng-show="contact_form1.macSale{{ $index }}.$error.required">Este
-                                                    campo es requerido</p>
-                                                <p style="color:red;" class="help-block"
-                                                   ng-show="contact_form1.macSale{{ $index }}.$touched && contact_form1.macSale{{ $index }}.$invalid">
-                                                    La MAC no es válida</p>
-                                            </div>
-                                        </li>
-                                    </div>
-
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.paquetes.$touched && contact_form1.paquetes.$invalid}"
-                                         ng-switch="contingencias.accion" ng-show="contingencias.producto == 'TV'">
-                                        <li class="list-group-item small"
-                                            ng-switch-when="Contingencia|Cambio de equipo|Corregir portafolio|Registros ToIP|Refresh|crear cliente|Crear Espacio"
-                                            ng-switch-when-separator="|"><b>Paquetes a aprovisionar: </b><br>
-                                            <select style="width:180px" multiple
-                                                    class="btn btn-default btn-xs !important" ui-select2="groupSetup"
-                                                    name="paquetes" ng-model="contingencias.paquetes"
-                                                    data-placeholder="Seleccione los paquetes...">
-                                                <option ng-repeat="group1 in paquetescontingencias"
-                                                        value="{{group1.CONCEPTO}}">{{group1.CONCEPTO}}
-                                                </option>
-                                            </select>
-                                        </li>
-                                    </div>
-
-                                    <div class="form-group" ng-show="contingencias.producto == 'Internet+ToIP' ||
-                                                                                 contingencias.producto == 'ToIP'">
-
-                                        <li class="list-group-item small"><b>Número de la Línea: </b>
-                                            <br>
-                                            <input class="btn btn-default btn-xs" placeholder="Línea TOIP" type="text"
-                                                   ng-model="contingencias.linea" name="linea">
-                                        </li>
-                                    </div>
-
-                                </ul>
+                                <!--<div class="form-group" ng-show="contingencias.producto == 'Internet+ToIP' || contingencias.producto == 'ToIP'">
+                                    <label for="lineatoip">Número de la Línea:</label>
+                                    <input class="form-control input-sm" placeholder="Línea TOIP" type="text"
+                                           ng-model="contingencias.linea" name="lineatoip" id="lineatoip">
+                                </div>-->
                             </div>
 
                             <div class="col-md-3">
-                                <ul class="list-group">
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.remite.$touched && contact_form1.remite.$invalid}">
-                                        <li class="list-group-item small"><b>Remitente: </b><br>
-                                            <select class="btn btn-default btn-xs grupo-select" name="remite"
-                                                    ng-model="contingencias.remite" capitalize required>
-                                                <option value="" disabled>Seleccione</option>
-                                                <option value="Despacho">Despacho</option>
-                                                <option value="Gestión contact center">Gestión contact center</option>
-                                                <option value="Grupo Soporte AAA">Grupo Soporte AAA</option>
-                                                <option value="Despacho ETP">Despacho ETP</option>
-                                                <option value="Despacho Edatel">Despacho Edatel</option>
-                                            </select>
-                                        </li>
-                                    </div>
+                                <div class="form-group"
+                                     ng-class="{'has-error' : contact_form1.remite.$touched && contact_form1.remite.$invalid}">
+                                    <label for="remite">Remitente:</label>
+                                    <select class="form-control input-sm" name="remite" id="remite"
+                                            ng-model="contingencias.remite" required>
+                                        <option value="" disabled>Seleccione</option>
+                                        <option value="Despacho">Despacho</option>
+                                        <option value="Gestión contact center">Gestión contact center</option>
+                                        <option value="Grupo Soporte AAA">Grupo Soporte AAA</option>
+                                        <option value="Despacho ETP">Despacho ETP</option>
+                                        <option value="Despacho Edatel">Despacho Edatel</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group"
+                                     ng-class="{'has-error' : contact_form1.observacion.$touched && contact_form1.observacion.$invalid}">
                                     <label for="observacion">Observación:</label>
-                                    <div class="form-group"
-                                         ng-class="{'has-error' : contact_form1.observacion.$touched && contact_form1.observacion.$invalid}">
-                                        <textarea name="observacion" class="form-control" cols="40" rows="6"
-                                                  ng-model="contingencias.observacion" capitalize required>
-                                                    </textarea>
-                                    </div>
-                                </ul>
-                                <ul class="nav navbar-nav navbar-right">
-                                    <li>
-                                        <button type="button" ng-disabled="contact_form1.$invalid"
-                                                class="btn btn-primary btn-xs" ng-click="BuscarPedidoContingencia()" id="guardaPedidoContingencia">
-                                            <i class="fa fa-floppy-o" aria-hidden="true"> </i> Guardar
-                                            gestión
-                                        </button>&nbsp;&nbsp;
-                                    </li>
-                                </ul>
+                                    <textarea name="observacion" class="form-control input-sm" cols="40" rows="6" id="observacion"
+                                              ng-model="contingencias.observacion" required></textarea>
+                                </div>
+
+
+                                <button type="button"
+                                        class="btn btn-info btn-sm btn-block" ng-click="guardaContingencia(contingencias)">
+                                    Guardar gestión <i class="fa fa-floppy-o" aria-hidden="true"> </i>
+                                </button>&nbsp;&nbsp;
+
                             </div>
                         </div>
                     </form>
@@ -537,39 +325,29 @@
                 <div class="col-md-12 col-xs-12">
                     <div class="panel panel-default">
                         <div class="panel-heading nav navbar-default">
-                            <b> Buscar histórico del pedido:</b>
+                            <b> Buscar histórico de la tarea:</b>
                         </div>
                         <div class="panel-heading nav navbar-default">
-                            <ul class="list-group small">
-                                <ul class="nav navbar-nav navbar-left" ng-hide="formulario">
-                                    <li>
-                                        <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs"
-                                               ng-model="buscarPedido" placeholder="Buscar Pedido">&nbsp;
-                                    </li>
-                                    <li>
-                                        <b>
-                                            <button type="button" class="btn btn-default btn-xs"
-                                                    ng-click="buscarhistoricoPedidoContingencia(buscarPedido)"
-                                                    title="Buscar" data-toggle="tooltip" data-placement="left"
-                                                    ng-disabled="loading">
-                                                <i class="fa fa-search" aria-hidden="true"></i>
-                                            </button>
-                                        </b>&nbsp;
-                                    </li>
-                                </ul>
-                            </ul>
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <input type="text" class="form-control input-sm" placeholder="tarea..." ng-model="tareaDetalle">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default btn-sm" type="button" ng-click="detalleTarea(tareaDetalle)">
+                                            <i class="fa fa-search" aria-hidden="true"></i></button>
+                                      </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-
         <div id="modalHistoricoContingencias" class="modal fullscreen-modal fade" role="dialog">
             <div class="modal-dialog modal-lg">
 
                 <!-- Modal content-->
-                <div class="modal-content">
+                <div class="modal-content" style="overflow-x: scroll">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                         <h4 class="modal-title">Histórico del pedido en contingencias</h4>
@@ -690,6 +468,9 @@
                                             Estado
                                         </th>
                                         <th>
+                                            Hora de respuesta
+                                        </th>
+                                        <th>
                                             Estado Corregir Portafolio
                                         </th>
                                         <th>
@@ -728,6 +509,9 @@
                                             {{data.acepta}}
                                         </td>
                                         <td>
+                                            {{data.horacontingencia}}
+                                        </td>
+                                        <td>
                                             {{data.aceptaPortafolio}}
                                         </td>
                                         <td class="icons_in_tables">
@@ -738,12 +522,6 @@
                                                 <i class="fa fa-commenting" aria-hidden="true"></i>
                                             </button>
 
-                                            <!-- <button type="button" class="btn btn-default btn-xs"
-                                                data-placement="left" title="Observacion gestión"
-                                                ng-click="muestraModalObservacion(data.observacion)">
-                                                <i class="fa fa-commenting" aria-hidden="true"></i>
-                                            </button> -->
-
                                             <button popover-placement="left"
                                                     uib-popover="{{data.observContingencia}}"
                                                     popover-title="Observación ingreso" type="button"
@@ -751,24 +529,12 @@
                                                 <i class="fa fa-commenting" aria-hidden="true"></i>
                                             </button>
 
-                                            <!--  <button type="button" class="btn btn-default btn-xs"
-                                                data-placement="left" title="Observacion ingreso"
-                                                ng-click="muestraModalObservacion(data.observContingencia)">
-                                                <i class="fa fa-commenting" aria-hidden="true"></i>
-                                            </button> -->
-
                                             <button popover-placement="left"
                                                     uib-popover="{{data.observContingenciaPortafolio}}"
                                                     popover-title="Observación gestión Corregir Portafolio"
                                                     type="button" class="btn btn-default btn-xs">
                                                 <i class="fa fa-commenting" aria-hidden="true"></i>
                                             </button>
-
-                                            <!-- <button type="button" class="btn btn-default btn-xs"
-                                                data-placement="left" title="Observacion gestión Corregir Porta"
-                                                ng-click="muestraModalObservacion(data.observContingenciaPortafolio)">
-                                                <i class="fa fa-commenting" aria-hidden="true"></i>
-                                            </button> -->
                                         </td>
                                     </tr>
                                     </tbody>
@@ -860,74 +626,6 @@
                             </h5>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-9">
-            <div class="row">
-                <div class="help-block" ng-messages="contact_form1.pedido.$error">
-
-                    <div class="col-md-4">
-
-                        <div class="alert alert-warning" ng-show="contact_form1.correo.$error.required">
-                            <strong>Error! </strong> El campo correo es requerido.
-                        </div>
-
-                        <div class="alert alert-warning" ng-show="contact_form1.pedido.$error.required">
-                            <strong>Error! </strong> El Pedido es requerido
-                        </div>
-
-                        <div class="alert alert-warning" ng-show="contact_form1.producto.$error.required">
-                            <strong>Error! </strong> El campo producto es requerido
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="alert alert-warning" ng-show="contact_form1.uen.$error.required">
-                            <strong>Error! </strong> El campo uen es requerido.
-                        </div>
-                        <div class="alert alert-warning" ng-show="contact_form1.proceso.$error.required">
-                            <strong>Error! </strong> El campo proceso es requerido.
-                        </div>
-                        <div class="alert alert-warning" ng-show="contact_form1.tecnologia.$error.required">
-                            <strong>Error! </strong> La tecnología es requerida.
-                        </div>
-                        <div class="alert alert-warning" ng-show="contact_form1.accion.$error.required">
-                            <strong>Error! </strong> El campo acción es requerido.
-                        </div>
-                        <div class="alert alert-warning" ng-show="contact_form1.motivo.$error.required">
-                            <strong>Error! </strong> El motivo es requerido.
-                        </div>
-
-                    </div>
-
-                    <div class="col-md-4">
-
-                        <div class="alert alert-warning" ng-show="contact_form1.tipoEquipo.$error.required">
-                            <strong>Error! </strong> El Tipo equipo es requerido.
-                        </div>
-                        <div class="alert alert-warning" ng-show="contact_form1.ciudad.$error.required">
-                            <strong>Error! </strong> El campo ciudad es requerido.
-                        </div>
-                        <div class="alert alert-warning" ng-show="contact_form1.macEntra.$error.required">
-                            <strong>Error! </strong> La mac que entra es requerida.
-                        </div>
-                        <div class="alert alert-warning" ng-show="contact_form1.macSale.$error.required">
-                            <strong>Error! </strong> La mac que sale es requerida.
-                        </div>
-                        <div class="alert alert-warning" ng-show="contact_form1.paquetes.$error.required">
-                            <strong>Error! </strong> Debe ingresar al menos un paquete.
-                        </div>
-                        <div class="alert alert-warning" ng-show="contact_form1.remite.$error.required">
-                            <strong>Error! </strong> El campo remitente es requerido.
-                        </div>
-                        <div class="alert alert-warning" ng-show="contact_form1.observacion.$error.required">
-                            <strong>Error! </strong> Ingrese observaciones.
-                        </div>
-                    </div>
-
-
                 </div>
             </div>
         </div>
