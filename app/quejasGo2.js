@@ -3,9 +3,7 @@
     "use strict";
     angular.module("seguimientopedidos").controller("quejasGoCtrl2", quejasGoCtrl2);
     quejasGoCtrl2.$inject = ["$interval", "$scope", "$http", "$rootScope", "$location", "$route", "$routeParams", "$cookies", "$timeout", "services"];
-
-
-    function quejasGoCtrl2($interval, $scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services) {
+    function quejasGoCtrl2($interval, $scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services, cargaRegistros) {
         var tiempo = new Date().getTime();
         var date1 = new Date();
         var year = date1.getFullYear();
@@ -133,7 +131,7 @@
                         $rootScope.permiso = false;
                         $route.reload();
                     });
-                }else if (data.data.state == 1) {
+                } else if (data.data.state == 1) {
                     Swal({
                         type: 'success',
                         title: 'Bien',
@@ -194,22 +192,9 @@
                     } else {
                         data.observacion_seguimiento = obs.observacion_gestion;
                         data.tiempo = $scope.tiempo;
-
+                        console.log('Robin ', data, ' ', $scope.tiempo);
                         services.guardaGestionQuejasGo(data).then(function (data) {
-                            if (data.data.state == 99) {
-                                swal({
-                                    type: "error",
-                                    title: data.data.title,
-                                    text: data.data.text,
-                                    timer: 4000,
-                                }).then(function () {
-                                    $cookies.remove("usuarioseguimiento");
-                                    $location.path("/");
-                                    $rootScope.galletainfo = undefined;
-                                    $rootScope.permiso = false;
-                                    $route.reload();
-                                });
-                            }else if (data.data.state == 1) {
+                            if (data.data.state == 1) {
                                 setTimeout(() => {
                                     $('#modalQuejasGo').modal('hide');
                                 }, 500);
@@ -222,7 +207,7 @@
                                 }).then(function () {
                                     $route.reload();
                                 })
-                            } else if (data.data.state == 0){
+                            } else {
                                 Swal({
                                     type: 'error',
                                     title: 'Oops...',

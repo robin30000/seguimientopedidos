@@ -17,10 +17,9 @@
 
         $scope.producto = [
             {id: "TV", producto: "TV"},
+            {id: "Internet+ToIP", producto: "Internet+ToIP"},
             {id: "Internet", producto: "Internet"},
             {id: "ToIP", producto: "ToIP"},
-            {id: "Internet+ToIP", producto: "Internet+ToIP"},
-            {id: "BA", producto: "BA"}
         ]
 
         function ciudadadesContingencia() {
@@ -92,7 +91,26 @@
                     $scope.contingencias.prod = productoSplit[0];
 
                     //let producto = (productoSplit[0].toLowerCase() === 'internet' || productoSplit[0].toLowerCase() === 'inter' || productoSplit[0].toLowerCase() === 'toip' || productoSplit[0].toLowerCase() === 'internet+toip') ? 'INTER' : 'TV';
-                    let producto = (productoSplit[0].toLowerCase() === 'internet' || productoSplit[0].toLowerCase() === 'inter' || productoSplit[0].toLowerCase() === 'toip' || productoSplit[0].toLowerCase() === 'internet+toip' || productoSplit[0].toLowerCase() === 'to') ? 'Internet' : (productoSplit[0].toLowerCase() === 'televisión' || productoSplit[0].toLowerCase() === 'television' || productoSplit[0].toLowerCase() === 'tv') ? 'TV' : 'Otro';
+                    /*let producto = (productoSplit[0].toLowerCase() === 'internet' ||
+                        productoSplit[0].toLowerCase() === 'inter' ||
+                        productoSplit[0].toLowerCase() === 'internet+toip' ||
+                    ) ? 'Internet+ToIP' :
+                        (productoSplit[0].toLowerCase() === 'toip'
+                            || productoSplit[0].toLowerCase() === 'to' ||
+                            productoSplit[0].toLowerCase() === 'telefonía') ? 'ToIP' :
+                            (productoSplit[0].toLowerCase() === 'televisión' ||
+                                productoSplit[0].toLowerCase() === 'television'
+                                || productoSplit[0].toLowerCase() === 'tv') ? 'TV';*/
+
+                    let producto = (productoSplit[0].toLowerCase() === 'internet' ||
+                        productoSplit[0].toLowerCase() === 'inter') ? 'Internet' :
+                        (productoSplit[0].toLowerCase() === 'internet+toip') ? 'Internet+ToIP' :
+                        (productoSplit[0].toLowerCase() === 'toip'
+                            || productoSplit[0].toLowerCase() === 'to' ||
+                            productoSplit[0].toLowerCase() === 'telefonía') ? 'ToIP' :
+                            (productoSplit[0].toLowerCase() === 'televisión' ||
+                                productoSplit[0].toLowerCase() === 'television'
+                                || productoSplit[0].toLowerCase() === 'tv') ? 'TV' : 'Other';
 
                     let proceso = '';
 
@@ -143,7 +161,9 @@
                 f.tipoEquipo = 'N/A';
             }
 
-            console.log(f)
+            if (f.remite == 'Grupo Soporte AAA' || f.remite == 'Gestión contact center') {
+                f.pedido = f.tarea;
+            }
 
             if (!f) {
                 Swal({
@@ -154,6 +174,8 @@
                 })
                 return;
             }
+
+            console.log(f, ' este')
 
             if (!f.pedido) {
                 Swal({

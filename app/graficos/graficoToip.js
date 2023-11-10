@@ -5,7 +5,6 @@
 
     function GraficoToipCtrl($scope, $http, $rootScope, $route, services) {
         $scope.tiempo = {};
-        console.log('este.  ')
 
         init();
 
@@ -80,19 +79,14 @@
                     var fecha = datos[i].fecha;
                     var tipificacion = datos[i].tipificacion;
 
-                    // Iterar por las horas (columnas del 0 al 10)
                     for (var hora = 0; hora <= 10; hora++) {
                         var cantidadHoras = parseInt(datos[i][hora] || 0);
 
-                        // Crear una clave única para cada día y columna
                         var clave = fecha + '-' + hora;
 
-                        // Inicializar la suma de horas para la clave actual
                         if (!consolidadoPorDiaYColumna[clave]) {
                             consolidadoPorDiaYColumna[clave] = 0;
                         }
-
-                        // Agregar la cantidad de horas a la clave correspondiente
                         consolidadoPorDiaYColumna[clave] += cantidadHoras;
                     }
                 }
@@ -223,7 +217,6 @@
                         function asignarColor(tipificacion) {
                             switch (tipificacion) {
                                 case "No funciono":
-
                                     return "rgb(55, 200, 70)"
                                 case "Aprovisionamiento automático":
                                     return "rgb(0, 0, 85)"; // Color para "No funciono"
@@ -248,19 +241,9 @@
                             item.color = asignarColor(item.tipificacion);
                         });
 
-                        console.log(data)
-
                         var colors = data.map(function (item) {
                             return item.color;
                         });
-
-
-                        /*var colors = [
-                            'rgb(255, 190, 0)',   // Color para "Garantía instalación"
-                            'rgb(55, 200, 70)',   // Color para "Cm_offline"
-                            'rgb(0, 200, 255)',   // Color para "Se requiere reiniciar"
-                            'rgb(240, 120, 30)'    // Color para "Numero mal creado/No creado ims"
-                        ];*/
 
                         var ctx = document.getElementById('myChart').getContext('2d');
                         $scope.myChart = new Chart(ctx, {
@@ -374,13 +357,6 @@
                             return item.color;
                         });
 
-                        /*var colors = [
-                            'rgb(255, 190, 0)',   // Color para "Garantía instalación"
-                            'rgb(55, 200, 70)',   // Color para "Cm_offline"
-                            'rgb(0, 200, 255)',   // Color para "Se requiere reiniciar"
-                            'rgb(240, 120, 30)'    // Color para "Numero mal creado/No creado ims"
-                        ];*/
-
                         var ctx = document.getElementById('myChartTiempo').getContext('2d');
                         $scope.myChart1 = new Chart(ctx, {
                             type: 'doughnut',
@@ -422,12 +398,6 @@
                             }
                         })
                     } else {
-                        /*Swal({
-                            type: 'error',
-                            title: 'Opss..',
-                            text: respuestas.data.msj,
-                            timer: 4000,
-                        })*/
                         $scope.mensaje = respuestas.data.msj
                     }
 

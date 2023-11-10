@@ -2,17 +2,15 @@
     "use strict";
     angular.module("seguimientopedidos").controller("registroscodigoincompletoCtrl", registroscodigoincompletoCtrl);
     registroscodigoincompletoCtrl.$inject = ["$scope", "$rootScope", "services"];
-
     function registroscodigoincompletoCtrl($scope, $rootScope, services) {
         $scope.listaRegistros = {};
         $scope.RegistrosCodigoIncompleto = {};
         $scope.listadoAcciones = {};
         $scope.datosRegistros = {};
         $scope.verplantilla = false;
-
         if (
-            $scope.RegistrosCodigoIncompleto.fechaini == undefined ||
-            $scope.RegistrosCodigoIncompleto.fechafin == undefined
+            $scope.RegistrosCodigoIncompleto.fechaini === undefined ||
+            $scope.RegistrosCodigoIncompleto.fechafin === undefined
         ) {
             var tiempo = new Date().getTime();
             var date1 = new Date();
@@ -60,7 +58,7 @@
                     }
                 );
 
-        };
+        }
 
         $scope.recargaPage = () => {
             BuscarRegistrosCodigoIncompleto();
@@ -83,7 +81,7 @@
         }
 
         $scope.Buscartarea = (tarea) => {
-            if (tarea == '' || tarea == undefined) {
+            if (tarea === '' || tarea === undefined) {
                 Swal({
                     type: 'info',
                     title: 'Aviso',
@@ -92,19 +90,22 @@
                 });
                 return
             }
-            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.RegistrosCodigoIncompleto, 'tarea': tarea}
+            let data = {
+                'page': $scope.currentPage,
+                'size': $scope.pageSize,
+                'data': $scope.RegistrosCodigoIncompleto,
+                'tarea': tarea
+            }
             BuscarRegistrosCodigoIncompleto(data);
         }
 
 
-        $scope.pageChanged = function (tarea) {
-            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.RegistrosCodigoIncompleto}
-            console.log(data)
+        $scope.pageChanged = function () {
+            let data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.RegistrosCodigoIncompleto}
             BuscarRegistrosCodigoIncompleto(data);
         }
         $scope.pageSizeChanged = function () {
-            console.log(data)
-            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.RegistrosCodigoIncompleto}
+            let data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.RegistrosCodigoIncompleto}
             $scope.currentPage = 1;
             BuscarRegistrosCodigoIncompleto(data);
         }
@@ -117,13 +118,13 @@
         };
 
         $scope.buscarRegistrosCodigoIncompleto = function (param) {
-            if (param.fechaini == undefined) {
+            if (param.fechaini === undefined) {
                 Swal({
                     title: "Error",
                     text: "Ingresa la fecha inicial",
                     type: "error",
                 });
-            } else if (param.fechafin == undefined) {
+            } else if (param.fechafin === undefined) {
                 Swal({
                     title: "Error",
                     text: "Ingresa la fecha Final",
@@ -136,7 +137,7 @@
                     type: "error",
                 });
             } else {
-                data = {'page': $scope.currentPage, 'size': $scope.pageSize, data: param}
+                let data = {'page': $scope.currentPage, 'size': $scope.pageSize, data: param}
                 BuscarRegistrosCodigoIncompleto(data)
             }
 
@@ -160,7 +161,7 @@
                         $rootScope.galletainfo
                     )
                     .then((data) => {
-                        if (data.data.state == 1) {
+                        if (data.data.state === 1) {
                             var wb = XLSX.utils.book_new();
                             var ws = XLSX.utils.json_to_sheet(data.data.data);
                             XLSX.utils.book_append_sheet(wb, ws, 'codigo_incompleto');
@@ -174,7 +175,7 @@
                         }
                     })
                     .catch((error) => {
-                        console.log(console.error());
+                        console.log(error);
                     })
             }
         };

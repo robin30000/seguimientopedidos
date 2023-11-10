@@ -783,44 +783,29 @@
         };
 
         $scope.buscarPedidoContingencia = function (pedido) {
-            if (pedido == undefined || pedido == "") {
+            if (!pedido) {
                 Swal({
-                    type: 'suceess',
-                    title: 'Debe ingresar un pedido',
-                    text: msg,
+                    type: 'error',
+                    title: 'Oppss...',
+                    text: 'Debes ingresar una tarea',
                     timer: 4000
                 })
             } else {
-                services.getbuscarPedidoContingencia(pedido).then(
-                    function (data) {
-                        if (data.data.state == 99) {
-                            swal({
-                                type: "error",
-                                title: data.data.title,
-                                text: data.data.text,
-                                timer: 4000,
-                            }).then(function () {
-                                $cookies.remove("usuarioseguimiento");
-                                $location.path("/");
-                                $rootScope.galletainfo = undefined;
-                                $rootScope.permiso = false;
-                                $route.reload();
-                            });
-                        } else if (data.data.state != 1) {
-                            Swal({
-                                type: 'error',
-                                text: data.data.msj,
-                                timer: 4000
-                            })
-                        } else if (data.data.state == 1) {
-                            $scope.databsucarPedido = data.data.data;
-                            $scope.dataPedido = true;
-                        }
-                    },
-                    function errorCallback(response) {
-                        console.log(response);
+                services.myService(pedido, 'otrosServiciosCtrl.php', 'buscarPedidoContingencias').then((data) => {
+                    if (data.data.state) {
+                        $scope.databsucarPedido = data.data.data;
+                        $scope.dataPedido = true;
+                    } else {
+                        swal({
+                            type: "error",
+                            title: 'Oppss...',
+                            text: data.data.msj,
+                            timer: 4000,
+                        })
                     }
-                );
+                }).catch((e) => {
+                    console.log(e)
+                })
             }
         };
 

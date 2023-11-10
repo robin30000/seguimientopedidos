@@ -12,8 +12,6 @@
             {value: "Internet+Toip", label: "Internet+Toip"},
             {value: "TV", label: "TV"}
         ];
-        //crearGrafico()
-
 
         $scope.buscar = (data) => {
             if (!data.fechaini) {
@@ -111,7 +109,8 @@
                 datos = data;
             }
             services.myService(datos, 'tiemposCtrl.php', 'todosTiempos')
-                .then((respuestas) => {
+                .then((data) => {
+                    var respuestas = data.data;
                     $scope.loading = 0;
                     response = respuestas[0];
 
@@ -147,40 +146,45 @@
                     var promedioRound = roundNumber(promedio);
 
                     $scope.chartOptions = {
-                        type: 'line',
+                        type: 'bar',
                         data: {
                             labels: fechas,
                             datasets: [{
-                                label: 'Tiempo en cola',
+                                label: 'Promedio Tiempo en cola',
                                 data: tiemposEnMinutos,
                                 backgroundColor: 'rgb(147,220,82)',
                                 borderColor: 'rgb(83,192,75)',
-                                borderWidth: 1
+                                //borderWidth: 1
                             }]
                         },
                         options: {
                             plugins: {
                                 datalabels: {
-                                    align: 'center',
-                                    anchor: 'center',
+                                    align: 'end', // Alinea el texto a la derecha del punto de anclaje
+                                    anchor: 'end', // Ancla el texto en la parte derecha del punto de anclaje
                                     color: 'black',
-                                    formatter: function (value) {
-                                        return value + ' min';
-                                    }
+                                    font: {
+                                        size: 0, // Tamaño de la fuente
+                                    },
+                                    offset: 4, // Desplazamiento vertical desde el punto de anclaje
+                                    /*formatter: function (value) {
+                                        return value + ' ms';
+                                    }*/
                                 }
                             },
                             title: {
                                 display: true,
-                                text: 'Tiempo en cola: ' + promedioRound + ' min',
-                                fontSize: 14, // Tamaño de fuente del título
-                                padding: 20 // Espaciado del título respecto al gráfico
+                                text: 'Tiempo en cola: ' + promedioRound,
+                                fontSize: 16, // Tamaño de fuente del título
+                                fontColor: 'rgb(0, 0, 0)', // Color de fuente del título
+                                //fontStyle: 'bold', // Estilo de fuente del título (normal, italic, bold, etc.)
+                                padding: 5 // Espaciado del título respecto al gráfico
                             }, scales: {
                                 yAxes: [{
-                                    ticks: {
-                                        callback: function (value, index, values) {
-                                            return value + ' min';
-                                        }
-                                    },
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: "Minutos"
+                                    }
                                 }]
                             }
                         }
@@ -223,13 +227,12 @@
 
                     var promedio = suma / tiemposEnMinutos2.length;
                     var promedioRound = roundNumber(promedio);
-
                     $scope.chartOptions1 = {
-                        type: 'line',
+                        type: 'bar',
                         data: {
                             labels: fechas,
                             datasets: [{
-                                label: 'Tiempo Atención',
+                                label: 'Promedio Tiempo Atención',
                                 data: tiemposEnMinutos2,
                                 backgroundColor: 'rgba(91,75,192,0.2)',
                                 borderColor: 'rgb(75,91,192)',
@@ -239,26 +242,31 @@
                         options: {
                             plugins: {
                                 datalabels: {
-                                    align: 'center',
-                                    anchor: 'center',
+                                    align: 'end', // Alinea el texto a la derecha del punto de anclaje
+                                    anchor: 'end', // Ancla el texto en la parte derecha del punto de anclaje
                                     color: 'black',
-                                    formatter: function (value) {
-                                        return value + ' min';
-                                    }
+                                    font: {
+                                        size: 0, // Tamaño de la fuente
+                                    },
+                                    offset: 4, // Desplazamiento vertical desde el punto de anclaje
+                                    /*formatter: function (value) {
+                                        return value + 'x';
+                                    }*/
                                 }
                             },
                             title: {
                                 display: true,
-                                text: 'Tiempo en atención: ' + promedioRound + ' min',
-                                fontSize: 14, // Tamaño de fuente del título
-                                padding: 20 // Espaciado del título respecto al gráfico
+                                text: 'Tiempo en atención: ' + promedioRound,
+                                fontSize: 16, // Tamaño de fuente del título
+                                fontColor: 'rgb(0, 0, 0)', // Color de fuente del título
+                                //fontStyle: 'bold', // Estilo de fuente del título (normal, italic, bold, etc.)
+                                padding: 5 // Espaciado del título respecto al gráfico
                             }, scales: {
                                 yAxes: [{
-                                    ticks: {
-                                        callback: function (value, index, values) {
-                                            return value + ' min';
-                                        }
-                                    },
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: "Minutos"
+                                    }
                                 }]
                             }
                         }
@@ -297,12 +305,11 @@
                     var suma = tiemposEnMinutos3.reduce(function (a, b) {
                         return a + parseFloat(b);
                     }, 0);
-
                     var promedio = suma / tiemposEnMinutos3.length;
                     var promedioRound = roundNumber(promedio);
 
                     $scope.chartOptions2 = {
-                        type: 'line',
+                        type: 'bar',
                         data: {
                             labels: fechas,
                             datasets: [{
@@ -316,26 +323,30 @@
                         options: {
                             plugins: {
                                 datalabels: {
-                                    align: 'center',
-                                    anchor: 'center',
+                                    align: 'end', // Alinea el texto a la derecha del punto de anclaje
+                                    anchor: 'end', // Ancla el texto en la parte derecha del punto de anclaje
                                     color: 'black',
+                                    font: {
+                                        size: 0, // Tamaño de la fuente
+                                    },
+                                    offset: 4, // Desplazamiento vertical desde el punto de anclaje
                                     formatter: function (value) {
-                                        return value + ' min';
+                                        return value + ' m';
                                     }
                                 }
                             },
                             title: {
                                 display: true,
-                                text: 'Tiempo en sistema: ' + promedioRound + ' min',
-                                fontSize: 14, // Tamaño de fuente del título
-                                padding: 20 // Espaciado del título respecto al gráfico
+                                text: 'Promedio Tiempo en sistema: ' + promedioRound,
+                                fontSize: 16, // Tamaño de fuente del título
+                                fontColor: 'rgb(0, 0, 0)', // Color de fuente del título
+                                padding: 5 // Espaciado del título respecto al gráfico
                             }, scales: {
                                 yAxes: [{
-                                    ticks: {
-                                        callback: function (value, index, values) {
-                                            return value + ' min';
-                                        }
-                                    },
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: "Minutos"
+                                    }
                                 }]
                             }
                         }
@@ -373,33 +384,34 @@
                                 fill: false
                             }]
                         },
-                        series: ['Tiempo en sistema', 'Tiempo atención', 'Tiempo en cola'], // Nombres de las series
+                        series: ['Tiempo en sistema', 'Tiempo atención', 'Tiempo en cola'],
                         options: {
-                            /*plugins: {
-                                datalabels: {
-                                    align: 'center',
-                                    anchor: 'center',
-                                    color: 'black',
-                                    formatter: function (value) {
-                                        return value + ' min';
-                                    }
-                                }
-                            },*/
+                            datalabels: {
+                                align: 'end',
+                                anchor: 'end',
+                                color: 'black',
+                                font: {
+                                    size: 0,
+                                },
+
+                            },
                             title: {
                                 display: true,
+                                //padding: 5 // Espaciado del título respecto al gráfico
                                 text: 'Gráficos unificados',
-                                fontSize: 14, // Tamaño de fuente del título
-                                padding: 20 // Espaciado del título respecto al gráfico
+                                fontSize: 16, // Tamaño de fuente del título
+                                fontColor: 'rgb(0, 0, 0)', // Color de fuente del título
+                                //fontStyle: 'bold', // Estilo de fuente del título (normal, italic, bold, etc.)
                             }, scales: {
                                 yAxes: [{
-                                    ticks: {
-                                        callback: function (value, index, values) {
-                                            return value + ' min';
-                                        }
-                                    },
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: "Minutos"
+                                    }
                                 }]
                             },
                             legend: {
+                                position: 'bottom',
                                 display: true, // Mostrar la leyenda
                                 onClick: function (e, legendItem) {
                                     var index = legendItem.datasetIndex;
@@ -421,62 +433,10 @@
                             $scope.chart.update();
                         }
                     };
-
-
-                    /**
-                     * test
-                     */
-
-                    const data = {
-                        labels: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio"],
-                        datasets: [
-                            {
-                                type: "bar",
-                                label: "Ventas",
-                                data: [50, 25, 70, 40, 60, 80],
-                                backgroundColor: "rgba(75, 192, 192, 0.2)",
-                                borderColor: "rgba(75, 192, 192, 1)",
-                                borderWidth: 1,
-                            },
-                            {
-                                type: "line",
-                                label: "Ganancias",
-                                data: [30, 45, 60, 35, 50, 70],
-                                borderColor: "rgba(255, 99, 132, 1)",
-                                borderWidth: 2,
-                                fill: false,
-                            },
-                        ],
-                    };
-
-                    // Configuración del gráfico
-                    const config = {
-                        type: "bar",
-                        data: data,
-                        options: {
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                },
-                            },
-                        },
-                    };
-
-                    // Crear el gráfico
-                    const ctx8 = document.getElementById("barLineChart").getContext("2d");
-                    new Chart(ctx8, config);
                 })
                 .catch(function (error) {
                     console.error('Error al realizar las peticiones:', error);
                 });
         }
-
-
-        document.addEventListener("DOMContentLoaded", () => {
-            // Datos del gráfico
-
-        });
-
-
     }
 })();

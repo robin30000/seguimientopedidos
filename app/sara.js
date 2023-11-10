@@ -22,7 +22,7 @@
 
         $scope.buscarDataSara = function (datos) {
             $scope.loading = 1;
-            let tareaSara = datos.tarea
+            let tareaSara = datos.tarea;
             services.windowsBridge("SARA/Buscar/" + tareaSara)
                 .then(
                     function (data) {
@@ -39,6 +39,7 @@
                                 title: "Oops...",
                                 text: "Aún no se hace la solicitud a SARA",
                             });
+                            return;
                         }
 
                         $scope.indiceSara =
@@ -57,27 +58,6 @@
                 );
         };
 
-        /*$scope.csvexportarRRHH = function () {
-            services.windowsBridge("RRHH/Exporte/1")
-                .then(function (data) {
-                    console.log(data)
-                    if (data) {
-                        var wb = XLSX.utils.book_new();
-                        var ws = XLSX.utils.json_to_sheet(data);
-                        XLSX.utils.book_append_sheet(wb, ws, 'exportrrhh');
-                        XLSX.writeFile(wb, 'exportrrhh_' + '.xlsx');
-                    } else {
-                        Swal({
-                            type: 'error',
-                            text: 'No se encontraron registros',
-                            timer: 4000
-                        })
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
-        }*/
         $scope.csvexportarRRHH = async function () {
             try {
                 const data = await services.windowsBridge("RRHH/Exporte/1");

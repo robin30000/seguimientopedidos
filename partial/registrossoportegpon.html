@@ -3,15 +3,15 @@
     <div class="col-xs-12">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <b><i class="fa fa-bars" aria-hidden="true"></i> Historico de
-            Registros</b>
+          <b><i class="fa fa-bars" aria-hidden="true"></i> Histórico de
+            Registros soporte Gpon</b>
           <span style="color: red" class="pull-right"><i class="fa fa-exclamation-triangle warning" aria-hidden="true"
               ng-hide="errorDatos==null"></i>
             {{errorDatos}}</span>
           <ul class="nav navbar-nav navbar-right">
             <div class="col-md-1 col-xs-1">
               <div data-ng-if="loading">
-                <img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif" />
+                <img title="Esperando respuesta" data-placement="top" src="img/loader.gif" />
               </div>
             </div>
             &nbsp;
@@ -60,7 +60,7 @@
               </li>
               <b>
                 <input type="text" name="tarea" id="pedido" class="btn btn-default btn-xs" ng-model="tarea"
-                  placeholder="Buscar Pedido" autocomplete="off" />&nbsp;
+                  placeholder="Buscar tarea" autocomplete="off" />&nbsp;
 
                 <button class="btn btn-default btn-xs" data-toggle="modal"
                   tooltip-placement="top" uib-tooltip="Buscar"
@@ -97,7 +97,13 @@
             </thead>
             <tbody>
               <tr ng-repeat="data in listaRegistros as results">
-                <td><span>{{data.tarea}}</span></td>
+                <td>
+                  <button type="button" class="btn btn-default btn-xs"
+                          ng-click="CopyPortaPapeles(data.tarea)"
+                          tooltip-placement="top" uib-tooltip="Copiar tarea"
+                          id=i{{$index}}>{{data.tarea}}
+                  </button>
+                </td>
                 <td><span>{{data.unepedido}}</span></td>
                 <td><span>{{data.numero_contacto}}</span></td>
                 <td><span>{{data.nombre_contacto}}</span></td>

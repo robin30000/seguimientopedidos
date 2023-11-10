@@ -40,14 +40,14 @@ class kpi
         $today = date("Y-m-d");
         $fecha_anterior = date("Y-m-d", strtotime($today . "- 15 days"));
 
-        $stmt = $this->_BD->query("SELECT DATE_FORMAT(horagestion, '%Y-%m-%e') AS Fecha, 
+        $stmt = $this->_BD->query("SELECT DATE_FORMAT(horagestion, '%Y-%m-%d') AS Fecha, 
         SUM(CASE WHEN producto = 'TV' THEN 1 ELSE 0 END ) AS 'TV',
         SUM(CASE WHEN producto IN ('Internet', 'Internet+ToIP', 'ToIP') THEN 1 ELSE 0 END ) AS 'Internet',
         acepta
         FROM contingencias
         WHERE horagestion BETWEEN '$fecha_anterior 00:00:00' AND '$today 23:59:59' $condicion
         GROUP BY Fecha
-        ORDER BY Fecha;");
+        ORDER BY Fecha ASC;");
         $stmt->execute();
         if ($stmt->rowCount()) {
             $response = array('state' => 1, 'type' => 'chart-bar', 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
@@ -87,13 +87,13 @@ class kpi
         }
 
 
-        $stmt = $this->_BD->query("SELECT c.logincontingencia agente, u.empresa, c.acepta,
+        $stmt = $this->_BD->query("SELECT c.logincontingencia agente, c.acepta,
         SUM(CASE WHEN producto = 'TV' THEN 1 ELSE 0 END) AS 'TV',
         SUM(CASE WHEN producto IN ('Internet', 'Internet+ToIP','ToIP') THEN 1 ELSE 0 END ) AS 'Internet'
         FROM contingencias c
         INNER JOIN usuarios u ON u.login = c.logincontingencia
         WHERE c.horagestion BETWEEN '$today 00:00:00' AND '$today 23:59:59' $condicion
-        GROUP BY agente, u.empresa, c.acepta ORDER by Internet DESC;");
+        GROUP BY agente, c.acepta ORDER by Internet DESC;");
         $stmt->execute();
         if ($stmt->rowCount()) {
             $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
@@ -115,7 +115,7 @@ class kpi
 
         //echo $fecha;exit();
 
-        $condicion = " AND p.acepta = 'Acepta' ";
+        $condicion = "";
         if (($estado == 'Acepta') && (!empty($fecha))) {
             $today = $fecha;
             $condicion = " AND p.acepta = 'Acepta' ";
@@ -163,7 +163,7 @@ class kpi
 		FROM contingencias p
 		WHERE 1=1 $condicion AND p.horacontingencia BETWEEN '$today 00:00:00' AND '$today 23:59:59') C2
 		GROUP BY C2.USUARIO, producto
-        ORDER BY producto, CANTIDAD DESC");
+        ORDER BY CANTIDAD DESC");
 
 
         $stmt->execute();

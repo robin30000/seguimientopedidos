@@ -1,6 +1,8 @@
 <?php
 require_once 'conection.php';
 
+echo 100;exit;
+
 class ApiGraficoCco
 {
 	private $_DB;
@@ -9,6 +11,43 @@ class ApiGraficoCco
 	{
 		$this->_DB = new Conection();
 	}
+
+    public function chartContingencia($data)
+    {
+        try {
+            if (!empty($data)) {
+                $fecha = $data;
+            }else{
+                $fecha = date('Y-m-d');
+            }
+            $stmt = $this->_DB->prepare("SELECT
+                                                    HOUR(horagestion) AS hora,
+                                                    SEC_TO_TIME(AVG(TIME_TO_SEC(TIMEDIFF(fechaClickMarca, horagestion))) ) AS ASA,
+                                                        SUBSTRING_INDEX(SEC_TO_TIME(AVG(TIME_TO_SEC(TIMEDIFF(fechaClickMarca, horacontingencia)))), '.', 1) AS AHT,
+                                                        -- SUBSTRING_INDEX(SEC_TO_TIME(AVG(TIME_TO_SEC(TIMEDIFF(horagestion, horacontingencia)))), '.', 1) AS promedio3,
+                                                        COUNT(producto) AS cantidad
+                                                FROM
+                                                    contingencias
+                                                WHERE
+                                                    1 = 1
+                                                        AND horagestion BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59'
+                                                    AND HOUR(horagestion) BETWEEN 7 AND 20
+                                                GROUP BY
+                                                    hora
+                                                ORDER BY
+                                                    hora ASC;");
+            $stmt->execute();
+            if ($stmt->rowCount()) {
+                $response = ['status' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+            } else {
+                $response = ['status' => false, 'msj' => 'No se encontraron registros'];
+            }
+            $this->_DB = null;
+            return $response;
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+    }
 
 	public function activacionToip()
 	{

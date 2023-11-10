@@ -119,28 +119,55 @@
                     {ID: '2898 - Requiere visita supervisor ETP', SUBACCION: '2898 - Requiere visita supervisor ETP'},
                     {ID: '2899 - Aplazada por lluvia', SUBACCION: '2899 - Aplazada por lluvia'},
                     {ID: '8383 - Problemas plataformas', SUBACCION: '8383 - Problemas plataformas'},
-                    {ID: 'O-01 - Red pendiente en edificios y urbanizaciones', SUBACCION: 'O-01 - Red pendiente en edificios y urbanizaciones'},
+                    {
+                        ID: 'O-01 - Red pendiente en edificios y urbanizaciones',
+                        SUBACCION: 'O-01 - Red pendiente en edificios y urbanizaciones'
+                    },
                     {ID: 'O-02 - Pendiente cliente no autoriza', SUBACCION: 'O-02 - Pendiente cliente no autoriza'},
                     {ID: 'O-06 - Gestión de instalaciones', SUBACCION: 'O-06 - Gestión de instalaciones'},
                     {ID: 'O-09 - Pendiente por porteria madera', SUBACCION: 'O-09 - Pendiente por porteria madera'},
-                    {ID: 'O-11 - Pend tiene línea con otro operador', SUBACCION: 'O-11 - Pend tiene línea con otro operador'},
+                    {
+                        ID: 'O-11 - Pend tiene línea con otro operador',
+                        SUBACCION: 'O-11 - Pend tiene línea con otro operador'
+                    },
                     {ID: 'O-13 - Red pendiente en exteriores', SUBACCION: 'O-13 - Red pendiente en exteriores'},
                     {ID: 'O-14 - Ped solicitud repetida', SUBACCION: 'O-14 - Ped solicitud repetida'},
                     {ID: 'O-15 - Pendiente por mala asignación', SUBACCION: 'O-15 - Pendiente por mala asignación'},
-                    {ID: 'O-20 - Pendi inconsistencias infraestructura', SUBACCION: 'O-20 - Pendi inconsistencias infraestructura'},
-                    {ID: 'O-40 - Pendiente x orden público y/o factores climát', SUBACCION: 'O-40 - Pendiente x orden público y/o factores climát'},
+                    {
+                        ID: 'O-20 - Pendi inconsistencias infraestructura',
+                        SUBACCION: 'O-20 - Pendi inconsistencias infraestructura'
+                    },
+                    {
+                        ID: 'O-40 - Pendiente x orden público y/o factores climát',
+                        SUBACCION: 'O-40 - Pendiente x orden público y/o factores climát'
+                    },
                     {ID: 'O-48 - Red mal estado', SUBACCION: 'O-48 - Red mal estado'},
                     {ID: 'O-49 - No desea el servicio', SUBACCION: 'O-49 - No desea el servicio'},
                     {ID: 'O-50 - Cliente ilocalizado', SUBACCION: 'O-50 - Cliente ilocalizado'},
-                    {ID: 'O-51 - Pend tiene línea con otro operador', SUBACCION: 'O-51 - Pend tiene línea con otro operador'},
+                    {
+                        ID: 'O-51 - Pend tiene línea con otro operador',
+                        SUBACCION: 'O-51 - Pend tiene línea con otro operador'
+                    },
                     {ID: 'O-53 - Inconsistencia información', SUBACCION: 'O-53 - Inconsistencia información'},
                     {ID: 'O-69 - Pen cliente no contactado', SUBACCION: 'O-69 - Pen cliente no contactado'},
                     {ID: 'O-85 - Red externa pendiente', SUBACCION: 'O-85 - Red externa pendiente'},
                     {ID: 'O-86 - Pendiente por nodo xdsl', SUBACCION: 'O-86 - Pendiente por nodo xdsl'},
-                    {ID: 'O-100 - Pendiente solución con proyecto', SUBACCION: 'O-100 - Pendiente solución con proyecto'},
-                    {ID: 'O-101 - Renumerar o reconfigurar oferta', SUBACCION: 'O-101 - Renumerar o reconfigurar oferta'},
-                    {ID: 'O-103 - Pendiente por autorización de terceros', SUBACCION: 'O-103 - Pendiente por autorización de terceros'},
-                    {ID: 'O-112 - Pendiente por reparación de red', SUBACCION: 'O-112 - Pendiente por reparación de red'},
+                    {
+                        ID: 'O-100 - Pendiente solución con proyecto',
+                        SUBACCION: 'O-100 - Pendiente solución con proyecto'
+                    },
+                    {
+                        ID: 'O-101 - Renumerar o reconfigurar oferta',
+                        SUBACCION: 'O-101 - Renumerar o reconfigurar oferta'
+                    },
+                    {
+                        ID: 'O-103 - Pendiente por autorización de terceros',
+                        SUBACCION: 'O-103 - Pendiente por autorización de terceros'
+                    },
+                    {
+                        ID: 'O-112 - Pendiente por reparación de red',
+                        SUBACCION: 'O-112 - Pendiente por reparación de red'
+                    },
                     {ID: 'OT-C01 - Cliente no autoriza', SUBACCION: 'OT-C01 - Cliente no autoriza'},
                     {ID: 'OT-C04 - Orden público', SUBACCION: 'OT-C04 - Orden público'},
                     {ID: 'OT-C08 - Reconfigurar pedido', SUBACCION: 'OT-C08 - Reconfigurar pedido'},
@@ -154,12 +181,18 @@
                     {ID: 'OT-T05 - Mala asignación', SUBACCION: 'OT-T05 - Mala asignación'},
                     {ID: 'OT-T10 - Reparación de red externa', SUBACCION: 'OT-T10 - Reparación de red externa'},
                     {ID: 'P-CRM - Reagendado', SUBACCION: 'P-CRM - Reagendado'},
-                    {ID: 'O-08 - Pendiente por orden del suscriptor', SUBACCION: 'O-08 - Pendiente por orden del suscriptor'},
+                    {
+                        ID: 'O-08 - Pendiente por orden del suscriptor',
+                        SUBACCION: 'O-08 - Pendiente por orden del suscriptor'
+                    },
                     {ID: 'O-23 - Pendiente no contestan', SUBACCION: 'O-23 - Pendiente no contestan'},
                     {ID: 'OT-C02 - Cliente ilocalizado', SUBACCION: 'OT-C02 - Cliente ilocalizado'},
                     {ID: 'OT-C06 - Inconsistencia información', SUBACCION: 'OT-C06 - Inconsistencia información'},
                     {ID: 'OT-T02 - Gestión de instalaciones', SUBACCION: 'OT-T02 - Gestión de instalaciones'},
-                    {ID: 'O-34 - Pendiente por factores climáticos', SUBACCION: 'O-34 - Pendiente por factores climáticos'},
+                    {
+                        ID: 'O-34 - Pendiente por factores climáticos',
+                        SUBACCION: 'O-34 - Pendiente por factores climáticos'
+                    },
                     {ID: 'OT-C15 - Por agendar', SUBACCION: 'OT-C15 - Por agendar'},
                     {ID: 'OT-T19 - Plataforma caída', SUBACCION: 'OT-T19 - Plataforma caída'},
                     {ID: '1014 - Poste averiado', SUBACCION: '1014 - Poste averiado'},
@@ -894,7 +927,6 @@
                 ;
 
                 $scope.observacion = "Productos: " + producto + ", CR o Autoriza: " + $scope.contingenciaCambio.autoriza + ", MAC de datos entra: " + $scope.contingenciaCambio.MacdatosEntra + ", MAC de datos sale: " + $scope.contingenciaCambio.MacdatosSale + ", Línea: " + $scope.contingenciaCambio.linea + ", MAC de voz entra: " + $scope.contingenciaCambio.MacvozEntra + ", MAC de voz sale: " + $scope.contingenciaCambio.MacvozSale + ", Deco(s) entra: " + $scope.contingenciaCambio.decoEntra + ", Deco(s) Sale: " + $scope.contingenciaCambio.decoSale + ", Puertos: " + puertos
-                console.log($scope.observacion);
             }
 
             if ($scope.OpenModal == "ContingenciaNuevo") {
@@ -908,10 +940,9 @@
                 if ($scope.contingenciaNuevo.TV == true) {
                     producto = producto + "-TV-";
                 }
-                ;
+
 
                 $scope.observacion = "Productos: " + producto + ", CR o Autoriza: " + $scope.contingenciaNuevo.autoriza + ", Decos: " + $scope.contingenciaNuevo.Decos + ", línea: " + $scope.contingenciaNuevo.linea + ", MAC de datos: " + $scope.contingenciaNuevo.MacDatos + ", MAC de voz: " + $scope.contingenciaNuevo.MacVoz
-                console.log($scope.observacion);
             }
 
             if ($scope.OpenModal == "ContingenciaReuso") {
@@ -939,7 +970,6 @@
                 if ($scope.contingenciaReuso.puerto4 == true) {
                     puertos = puertos + "-4-";
                 }
-                ;
 
                 $scope.observacion = "Productos: " + producto + ", CR o Autoriza: " + $scope.contingenciaReuso.autoriza + ", MAC de datos: " + $scope.contingenciaReuso.Macdatos + ", MAC de voz: " + $scope.contingenciaReuso.Macvoz + ", Decos: " + $scope.contingenciaReuso.decos + ", Línea: " + $scope.contingenciaReuso.linea + ", Puertos: " + puertos
             }
@@ -1090,12 +1120,11 @@
         }
 
         $scope.guardarModalRecogerEq = function (equiposRecoger) {
-
             if ($scope.gestionmanual.tecnico == "" || $scope.gestionmanual.tecnico == undefined) {
                 Swal({
                     type: 'error',
                     title: 'Opsss...',
-                    text: 'Por favor ingresar el tecnico.',
+                    text: 'Por favor ingresar el técnico.',
                     timer: 4000
                 })
             }
@@ -1234,7 +1263,6 @@
 
             services.windowsBridge("BB8/contingencias/Buscar/GetClick/" + pedido)
                 .then(function (data) {
-
                     $scope.clic = data.data[0];
                     $scope.UNEPedido = $scope.clic.UNEPedido;
                     $scope.Estado = $scope.clic.Estado;
@@ -1247,7 +1275,6 @@
                     $scope.Estado = $scope.clic.Estado;
                     $scope.CRM = $scope.clic.TTC;
                     $scope.Sistema = $scope.clic.UNESourceSystem;
-
                     $scope.Duration = parseInt($scope.clic.Duration);
                     $scope.Duration = ($scope.Duration / 60);
                     services.windowsBridge("BB8/contingencias/Buscar/GetPlanBaMSS/" + pedido)
@@ -1256,7 +1283,6 @@
                                 $scope.NAT = 'SI';
                                 $scope.bb8Internet = 1;
                                 $scope.recorreinternet = data.data;
-
 
                                 for (let i = 0; i < $scope.recorreinternet.length; i++) {
                                     if ($scope.recorreinternet[i].VALUE_LABEL == 'Qty') {
@@ -1496,7 +1522,6 @@
 
             services.listadoTecnicos(data).then(
                 function (data) {
-
                     $scope.Tecnico = data.data.data;
                     $scope.tecnico = $scope.Tecnico[0].NOMBRE;
                     $scope.empresa = $scope.Tecnico[0].NOM_EMPRESA;
@@ -1504,16 +1529,14 @@
                         Swal({
                             type: 'info',
                             title: 'Opsss....',
-                            text: 'El número de celular del tecnico no existe!',
+                            text: 'El número de celular del técnico no existe!',
                             timer: 4000
                         })
                         $scope.celular = "0000000000";
                     } else {
                         $scope.celular = $scope.Tecnico[0].CELULAR;
                     }
-
                     $scope.creaTecnico = true;
-                    return;
                 },
                 function errorCallback(response) {
                     $('#NuevoTecnico').modal('show');
@@ -1536,7 +1559,6 @@
 
 
         $scope.guardarPedido = function () {
-
             if ($scope.gestionmanual.interaccion == "" || $scope.gestionmanual.interaccion == undefined) {
                 Swal({
                     type: 'info',
@@ -1601,7 +1623,7 @@
                 Swal({
                     type: 'info',
                     title: 'Opsss....',
-                    text: 'Por favor ingresar una accion.',
+                    text: 'Por favor ingresar una acción.',
                     timer: 4000
                 })
                 return;
@@ -1611,7 +1633,7 @@
                 Swal({
                     type: 'info',
                     title: 'Opsss....',
-                    text: 'Por favor ingresar una subaccion.',
+                    text: 'Por favor ingresar una subacción.',
                     timer: 4000
                 })
                 return;
@@ -1627,20 +1649,12 @@
                 return;
             }
 
-            //se quita validaciones requerimiento por carlos 3-04-2023
-            /*if ($scope.gestionmanual.proceso == "Reparaciones" && $scope.gestionmanual.accion == "Cambio Equipo") {
-                if ($scope.gestionmanual.macEntra == "" || $scope.gestionmanual.macEntra == undefined || $scope.gestionmanual.macSale == "" || $scope.gestionmanual.macSale == undefined) {
-                    alert("Debes de ingresar al menos una MAC Entra y una MAC Sale.");
-                    return;
-                }
-            }*/
-
             $timeout.cancel(timer);
             timer = null;
 
-            let hours = Math.floor($scope.counter / 3600);
-            let minutes = Math.floor(($scope.counter % 3600) / 60);
-            let seconds = Math.floor($scope.counter % 60);
+            var hours = Math.floor($scope.counter / 3600),
+                minutes = Math.floor(($scope.counter % 3600) / 60),
+                seconds = Math.floor($scope.counter % 60);
 
             if (hours < 10) {
                 hours = "0" + hours;
@@ -1665,44 +1679,40 @@
                 $scope.myWelcome,
                 $scope.observacion,
                 $scope.datoscambioEquipo = 0
-            ).then(
-                function (data) {
-                    if (data.data.state == 99) {
-                        swal({
-                            type: "error",
-                            title: data.data.title,
-                            text: data.data.msg,
-                            timer: 4000,
-                        }).then(function () {
-                            $cookies.remove("usuarioseguimiento");
-                            $location.path("/");
-                            $rootScope.galletainfo = undefined;
-                            $rootScope.permiso = false;
-                            $route.reload();
-                        });
-                    } else if (data.data.state == 1) {
-                        swal({
-                            type: "success",
-                            title: 'Bien',
-                            text: data.data.msj,
-                            timer: 4000,
-                        }).then(() => {
-                            $route.reload();
-                        })
-                    } else if (data.data.state == 0) {
-                        swal({
-                            type: "error",
-                            title: 'Oppss...',
-                            text: data.data.msj,
-                            timer: 4000,
-                        })
-                    }
-
-                },
-                function errorCallback(response) {
-                    console.log(response);
+            ).then((data) => {
+                if (data.data.state == 99) {
+                    swal({
+                        type: "error",
+                        title: data.data.title,
+                        text: data.data.msg,
+                        timer: 4000,
+                    }).then(function () {
+                        $cookies.remove("usuarioseguimiento");
+                        $location.path("/");
+                        $rootScope.galletainfo = undefined;
+                        $rootScope.permiso = false;
+                        $route.reload();
+                    });
+                } else if (data.data.state == 1) {
+                    swal({
+                        type: "success",
+                        title: 'Bien',
+                        text: data.data.msj,
+                        timer: 4000,
+                    }).then(() => {
+                        $route.reload();
+                    })
+                } else if (data.data.state == 0) {
+                    swal({
+                        type: "error",
+                        title: 'Oppss...',
+                        text: data.data.msj,
+                        timer: 4000,
+                    })
                 }
-            )
+            }).catch((e) => {
+                console.log(e)
+            })
         }
 
         $scope.limpiar = function () {

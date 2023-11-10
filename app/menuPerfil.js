@@ -3,6 +3,16 @@
     angular.module("seguimientopedidos").controller("MenuPerfilCtrl", MenuPerfilCtrl);
     MenuPerfilCtrl.$inject = ["$scope", "$http", "services", "$route", "$uibModal", "$log"];
     function MenuPerfilCtrl($scope, $http, services, $route, $uibModal, $log) {
+        var tiempo = new Date().getTime();
+        var date1 = new Date();
+        var year = date1.getFullYear();
+        var month =
+            date1.getMonth() + 1 <= 9
+                ? "0" + (date1.getMonth() + 1)
+                : date1.getMonth() + 1;
+        var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
+
+        tiempo = year + "-" + month + "-" + day;
 
         init();
 
@@ -16,7 +26,6 @@
             services.getMenu()
                 .then((data) => {
                     $scope.datosMenu = data.data.data;
-
                 })
                 .catch((error) => {
                     console.log(error);
@@ -75,6 +84,27 @@
                 })
         }
 
+        $scope.exportarPerfiles = () => {
+            services.myService('', 'MenuPerfilCtrl.php', 'exportePerfil').then((data) => {
+                if (data.data.state) {
+                    var wb = XLSX.utils.book_new();
+                    var ws = XLSX.utils.json_to_sheet(data.data.data);
+                    XLSX.utils.book_append_sheet(wb, ws, 'Perfiles_seguimiento');
+                    XLSX.writeFile(wb, 'Perfiles_' + tiempo + '.xlsx');
+                } else {
+                    Swal({
+                        type: 'error',
+                        title: 'Oppsss..',
+                        text: data.data.msj,
+                        timer: 4000
+                    })
+                }
+            }).catch((e) => {
+                console.log(e)
+            })
+
+        }
+
         $scope.cambioMenu = function (id, perfil, estado) {
             Swal({
                 title: "Está seguro?",
@@ -111,8 +141,7 @@
                                     timer: 4000
                                 })
                             }
-                        })
-                        .catch((error) => {
+                        }).catch((error) => {
                             console.log(error);
                         })
                 } else {
@@ -130,7 +159,6 @@
         };
 
         $scope.AgregarSubmenu = () => {
-
             var modalInstance = $uibModal.open({
                 ariaLabelledBy: 'modal-title',
                 ariaDescribedBy: 'modal-body',
@@ -147,7 +175,6 @@
 
             modalInstance.result.then(function () {
             }, function () {
-                console.log($scope.datosMenu);
                 $log.info('Modal dismissed at: ' + new Date());
             });
         }
@@ -215,7 +242,6 @@
 
             modalInstance.result.then(function () {
             }, function () {
-                console.log($scope.datosMenu);
                 $log.info('Modal dismissed at: ' + new Date());
             });
         }

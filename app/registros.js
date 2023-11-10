@@ -2,6 +2,7 @@
     "use strict";
     angular.module("seguimientopedidos").controller("registrosCtrl", registrosCtrl);
     registrosCtrl.$inject = ["$scope", "$rootScope", "services", "cargaRegistros", "$route", "$cookies", "$location"];
+
     function registrosCtrl($scope, $rootScope, services, cargaRegistros, $route, $cookies, $location) {
         $scope.listaRegistros = {};
         $scope.Registros = {};
@@ -37,11 +38,9 @@
 
         $scope.pageChanged = function () {
             data = {page: $scope.currentPage, size: $scope.pageSize, param: $scope.Registros};
-            console.log(data);
             BuscarRegistros(data);
         };
         $scope.pageSizeChanged = function () {
-            console.log(data);
             data = {page: $scope.currentPage, size: $scope.pageSize, param: $scope.Registros};
             $scope.currentPage = 1;
             BuscarRegistros(data);
@@ -57,7 +56,6 @@
             }
             services.registros(data).then(
                 function (data) {
-                    console.log(data);
                     if (data.data.state == 99) {
                         swal({
                             type: "error",
@@ -91,22 +89,59 @@
             );
         }
 
-        $scope.buscarRegistros = function (param) {
-            if (param == undefined) {
+        $scope.buscarRegistro = (param) => {
+
+            if (Object.entries(param).length === 0) {
                 Swal({
                     type: "info",
                     title: "Oops...",
-                    text: "Ingrese el pedido a buscar",
+                    text: "Seleccione los concepto de búsqueda",
                     timer: 4000,
                 });
-            } else {
-                data = {
-                    page: $scope.currentPage,
-                    size: $scope.pageSize,
-                    param
-                };
-                BuscarRegistros(data);
+                return;
             }
+
+            if (param.concepto){
+                if (!param.buscar){
+                    Swal({
+                        type: "info",
+                        title: "Oops...",
+                        text: "Ingrese el concepto a consultar",
+                        timer: 4000,
+                    }).then(() => {
+                        angular.element('#btnSearch').blur();
+                        setTimeout(() => {
+                            angular.element('#buscar').focus();
+                        }, 100);
+                    })
+                    return;
+                }
+            }
+
+            if (param.buscar){
+                if (!param.concepto){
+                    Swal({
+                        type: "info",
+                        title: "Oops...",
+                        text: "Seleccione el concepto a consultar",
+                        timer: 4000,
+                    }).then(() => {
+                        angular.element('#btnSearch').blur();
+                        setTimeout(() => {
+                            angular.element('#concepto').focus();
+                            //$("#concepto").focus();
+                        }, 100);
+                    })
+                    return;
+                }
+            }
+            let data = {
+                page: $scope.currentPage,
+                size: $scope.pageSize,
+                param
+            }
+
+            BuscarRegistros(data);
         };
 
         $scope.muestraNotas = function (datos) {
@@ -115,7 +150,6 @@
             $scope.TituloModal = "Observaciones para el pedido:";
             $scope.observaciones = datos.observaciones;
             $("#NotasModal").modal('show');
-            // console.log( $scope.observaciones);
         }
 
         $scope.calcularSubAcciones = function (proceso, accion) {
@@ -209,26 +243,43 @@
                     text: 'La fecha inicial no puede ser mayor a la final',
                     timer: 4000
                 })
-            } else {
-                services.expCsvRegistros($scope.Registros, $rootScope.galletainfo)
-                    .then(function (data) {
-                        if (data.data.state == 1) {
-                            var wb = XLSX.utils.book_new();
-                            var ws = XLSX.utils.json_to_sheet(data.data.data);
-                            XLSX.utils.book_append_sheet(wb, ws, 'registros');
-                            XLSX.writeFile(wb, 'registros_' + tiempo + '.xlsx'); // Descarga el a
-                        } else {
-                            Swal({
-                                type: 'error',
-                                text: data.data.msj,
-                                timer: 4000
-                            })
-                        }
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    })
+                return;
             }
+
+            let date_1 = new Date($scope.Registros.fechaini);
+            let date_2 = new Date($scope.Registros.fechafin);
+            let diff = date_2 - date_1;
+
+            let TotalDays = Math.ceil(diff / (1000 * 3600 * 24));
+
+            if (TotalDays > 6) {
+                Swal({
+                    type: 'error',
+                    title: 'Opss...',
+                    text: 'por motivos de optimización el rango de búsqueda debe ser de 7 dias',
+                    timer: 4000
+                })
+                return;
+            }
+
+            services.expCsvRegistros($scope.Registros, $rootScope.galletainfo)
+                .then(function (data) {
+                    if (data.data.state == 1) {
+                        var wb = XLSX.utils.book_new();
+                        var ws = XLSX.utils.json_to_sheet(data.data.data);
+                        XLSX.utils.book_append_sheet(wb, ws, 'registros');
+                        XLSX.writeFile(wb, 'registros_' + tiempo + '.xlsx'); // Descarga el a
+                    } else {
+                        Swal({
+                            type: 'error',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
         };
 
         $scope.csvtecnico = function () {
@@ -290,7 +341,6 @@
 
             var uploadUrl = "api/class/subeArchivo.php";
             cargaRegistros.uploadFileToUrl(file, uploadUrl).then((data) => {
-                console.log(data);
                 if (data.data.state == 1) {
                     Swal({
                         type: 'success',

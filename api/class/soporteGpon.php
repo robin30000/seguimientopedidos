@@ -380,7 +380,7 @@ class soporteGpon
 
                 if ($data['pedido']) {
                     $pedido = $data['pedido'];
-                    $condicion = " AND  unepedido = '$pedido' ";
+                    $condicion = " AND  tarea = '$pedido' ";
                 }
 
 
@@ -464,7 +464,7 @@ class soporteGpon
             $query = "SELECT tarea, arpon, nap, hilo, port_internet_1, port_internet_2, port_internet_3, port_internet_4, port_television_1, port_television_2, port_television_3, 
                     port_television_4, numero_contacto, nombre_contacto, unepedido, tasktypecategory, unemunicipio, uneproductos, datoscola, engineer_id, engineer_name, mobile_phone, 
                     serial, mac, tipo_equipo, velocidad_navegacion, user_id_firebase, request_id_firebase, user_identification_firebase, status_soporte, fecha_solicitud_firebase, 
-                    fecha_creado, respuesta_soporte, respuesta_tipificaciones, observacion, observacion_terreno, login, fecha_respuesta, fecha_marca 
+                    fecha_creado, respuesta_soporte, respuesta_tipificaciones, observacion, observacion_terreno, login, fecha_respuesta, fecha_marca, area, task_type, uneSourceSystem
                     FROM soporte_gpon 
                     WHERE fecha_creado BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59'
                     ORDER BY fecha_creado DESC;";
@@ -518,7 +518,7 @@ class soporteGpon
 
                     //echo $loginsoportegpon.''.$login;exit();
 
-                    if ($login == $loginsoportegpon) {
+                    if ($login == $loginsoportegpon || $login == 'cramiceb' || $login == 'cvasquor' || $login == 'garcila' || $login == 'jromang' || $login == 'mhuertas') {
                         $stmt = $this->_DB->query("UPDATE soporte_gpon SET status_soporte = 0, login = NULL, fecha_marca = NULL WHERE id_soporte ='$id'");
                         $stmt->execute();
                         $response = ['state' => 1, 'msj' => 'El pedido se encuentra desbloqueado'];

@@ -45,7 +45,7 @@
                                     </ul>
                                     <br><br>
                                     <div class="table-responsive">
-                                        <table class="table table-bordered small">
+                                        <table class="table small table-striped table-hover table-condensed table-bordered">
                                             <thead class="table-header">
                                             <tr>
                                                 <th>Marca</th>
@@ -60,10 +60,10 @@
                                                 <th>Id servicio</th>
                                                 <th>Tipificación</th>
                                                 <th>Subtipificación</th>
-                                                <th>Verifica Tono</th>
-                                                <th>Cerrado en GTC</th>
+                                                <th>Ver. Tono</th>
+                                                <th>Cerrado GTC</th>
                                                 <th>Ver +</th>
-                                                <th>Guardar</th>
+                                                <th>Guar.</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -108,14 +108,13 @@
                                                 <td>{{data.hora_ingreso}}</td>
                                                 <td>{{data.identificador_servicio}}</td>
                                                 <td>
-                                                    <select ng-model="data.tipificacion" style="width: 210px"
+                                                    <select ng-model="data.tipificacion" style="width: 150px"
                                                             class="btn btn-default btn-xs grupo-select"
                                                             name="tipificacion" id="tipificacion">
                                                         <option value="" selected>Seleccione</option>
-                                                        <option value="Aprovisionamiento automático">Aprovisionamiento
-                                                            automático
+                                                        <option value="Aprovisionamiento automático">Aprov. automático
                                                         </option>
-                                                        <option value="Aprovisionado por contingencia">Aprovisionado por
+                                                        <option value="Aprovisionado por contingencia">Aprov por
                                                             contingencia
                                                         </option>
                                                         <!--<option value="No funciono">No funciono</option>-->
@@ -123,19 +122,23 @@
                                                 </td>
                                                 <td>
                                                     <select ng-show="data.tipificacion == 'Aprovisionado por contingencia'"
-                                                            ng-model="data.subtipificacion" style="width: 210px"
+                                                            ng-model="data.subtipificacion" style="width: 150px"
                                                             class="btn btn-default btn-xs grupo-select"
                                                             name="subtipificacion" id="subtipificacion">
                                                         <option value="" selected>Seleccione</option>
                                                         <option value="Cm_offline">Cm_offline</option>
-                                                        <option value="Se requiere reiniciar">Se requiere reiniciar</option>
-                                                        <option value="Garantía instalación">Garantía instalación</option>
-                                                        <option value="Numero mal creado/No creado ims">Numero mal creado/No creado ims</option>
+                                                        <option value="Se requiere reiniciar">Se requiere reiniciar
+                                                        </option>
+                                                        <option value="Garantía instalación">Garantía instalación
+                                                        </option>
+                                                        <option value="Numero mal creado/No creado ims">Num. mal
+                                                            creado/No creado ims
+                                                        </option>
                                                         <option value="Contingencia OK">Contingencia OK</option>
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <select ng-model="data.verifica_tono" style="width: 120px"
+                                                    <select ng-model="data.verifica_tono" style="width: 80px"
                                                             class="btn btn-default btn-xs grupo-select"
                                                             name="verifica_tono" id="verifica_tono">
                                                         <option value="" selected>Seleccione</option>
@@ -144,7 +147,7 @@
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <select ng-model="data.cerrado_gtc" style="width: 120px"
+                                                    <select ng-model="data.cerrado_gtc" style="width: 80px"
                                                             class="btn btn-default btn-xs grupo-select"
                                                             name="cerrado_gtc">
                                                         <option value="" selected>Seleccione</option>
@@ -162,7 +165,8 @@
                                                     </button>
                                                 </td>
                                                 <td>
-                                                    <button type="button" class="btn btn-default btn-xs" data-toggle="modal"
+                                                    <button type="button" class="btn btn-default btn-xs"
+                                                            data-toggle="modal"
                                                             ng-click="GuardarActivacionToip(data)"
                                                             tooltip-placement="top" uib-tooltip="Guardar gestión">
                                                         <i class="fa fa-floppy-o" aria-hidden="true"> </i>
@@ -271,7 +275,7 @@
                                 <br>
                                 <br>
                                 <div class="table-responsive">
-                                    <table class="table table-bordered small">
+                                    <table class="table small table-striped table-hover table-condensed table-bordered">
                                         <thead class="table-header">
                                         <tr>
                                             <th>Login</th>
@@ -289,7 +293,7 @@
                                             <th>Subtipificación</th>
                                             <th>Verifica tono</th>
                                             <th>Cerrado_GTC</th>
-                                            <th>Observación</th>
+                                            <th>Obser.</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -316,7 +320,7 @@
                                             <td>{{data.hora_gestion}}</td>
                                             <td>{{data.identificador_servicio}}</td>
                                             <td>
-                                                <select ng-model="data.tipificacion" style="width: 210px"
+                                                <select ng-model="data.tipificacion" style="width: 150px"
                                                         class="btn btn-default btn-xs grupo-select"
                                                         name="tipificacion" disabled>
                                                     <option value="" selected>No tiene</option>
@@ -330,7 +334,7 @@
                                                 </select>
                                             </td>
                                             <td>
-                                                <select ng-model="data.subtipificacion" style="width: 210px"
+                                                <select ng-model="data.subtipificacion" style="width: 150px"
                                                         class="btn btn-default btn-xs grupo-select"
                                                         name="subtipificacion" disabled>
                                                     <option value="" selected>N/A</option>

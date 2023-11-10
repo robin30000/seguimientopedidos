@@ -4,7 +4,6 @@
     ActivacionToipCtrl.$inject = ["$scope", "$rootScope", "services", "$route", "$sce", "$cookies", "$location", "$uibModal", "$log", "$interval"];
 
     function ActivacionToipCtrl($scope, $rootScope, services, $route, $sce, $cookies, $location, $uibModal, $log, $interval) {
-
         var tiempo = new Date().getTime();
         var date1 = new Date();
         var year = date1.getFullYear();
@@ -21,38 +20,12 @@
         function init() {
             gestionToip();
             gestionToipTerminado();
-            // reloadPage();
         }
-
-       /* var reloadMinutes = [601, 731, 801, 831, 901, 931, 1001, 1031, 1101, 1131, 1201, 1231, 1301, 1331, 1401, 1431, 1501, 1531, 1601, 1631, 1701, 1731, 1801, 1831, 1901, 1931, 2001, 2031, 2101, 2131];
-
-        function reloadPage() {
-            location.reload();
-        }
-
-        function checkReloadTime() {
-            var now = new Date();
-            var currentMinute = now.getHours() * 60 + now.getMinutes();
-
-            if (reloadMinutes.includes(currentMinute)) {
-                reloadPage();
-            }
-        }
-
-        var intervalPromise = $interval(checkReloadTime, 60000);
-
-        $scope.$on('$destroy', function() {
-            $interval.cancel(intervalPromise);
-        });*/
 
         $scope.loading = false;
 
         function gestionToip(data) {
             if (data === '' || data === undefined) {
-                /*$scope.currentPage = 1;
-                $scope.totalItems = 0;
-                $scope.pageSize = 15;
-                $scope.searchText = '';*/
                 data = {'page': '', 'size': '', 'data': $scope.toip}
             }
             services.myService('', 'toipCtrl.php', 'datos').then((data) => {
@@ -86,6 +59,9 @@
             } else {
                 datos = data;
             }
+            if(datos['recargar'] == 1){
+                $scope.toip = null;
+            }
             $scope.loading = 1;
             services.myService(datos, 'toipCtrl.php', 'datosTerminados').then((data) => {
                 $scope.loading = false;
@@ -113,7 +89,6 @@
         };
 
         $scope.marcarEngestion = (data) => {
-            console.log(data, ' TTTTT')
             let user = $rootScope.login;
             let datos = {usuario: user, id: data.id, gestion: data.bloqueo}
 
@@ -161,6 +136,8 @@
                 return;
             }
 
+
+
             let datos = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': data}
             gestionToipTerminado(datos);
         }
@@ -180,8 +157,10 @@
         }
 
         $scope.recargaPage = () => {
-            let datos = {'page': $scope.currentPage, 'size': $scope.pageSize}
+            let datos = {'page': $scope.currentPage, 'size': $scope.pageSize, 'recargar':1}
+            $scope.loading = true;
             gestionToipTerminado(datos);
+            $scope.loading = false;
         }
 
         $scope.recargaPageGestion = () => {
@@ -190,7 +169,7 @@
 
         $scope.pageChanged = function () {
             let data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.toip}
-            gestionToip(data);
+            gestionToipTerminado(data);
         }
         $scope.pageSizeChanged = function () {
            let data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.toip}
@@ -198,6 +177,7 @@
         }
 
         $scope.csvToip = (data) => {
+
             if (!data) {
                 Swal({
                     type: 'error',
@@ -215,9 +195,10 @@
                 })
                 return;
             }
-            let datos = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': data}
+            let datos = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': data, 'export' :1}
+            $scope.loading = 1;
             services.myService(datos, 'toipCtrl.php', 'datosTerminados').then((data) => {
-                $scope.loading = false;
+                $scope.loading = 0;
                 if (data.data.state) {
                     var wb = XLSX.utils.book_new();
                     var ws = XLSX.utils.json_to_sheet(data.data.data);
@@ -287,6 +268,16 @@
                     type: 'error',
                     title: 'Oppss..',
                     text: 'Debes seleccionar alguna tipificación',
+                    timer: 4000
+                })
+                return;
+            }
+
+            if ((data.tipificacion == 'Aprovisionado por contingencia') && (data.subtipificacion == '' || data.subtipificacion == null)){
+                Swal({
+                    type: 'error',
+                    title: 'Oppss..',
+                    text: 'Debes seleccionar alguna subtipificacion para Aprovisionado por contingencia',
                     timer: 4000
                 })
                 return;

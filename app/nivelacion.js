@@ -2,8 +2,16 @@
     "use strict";
     angular.module("seguimientopedidos").controller("nivelacionCtrl", nivelacionCtrl);
     nivelacionCtrl.$inject = ["$scope", "$http", "$rootScope", "$location", "$route", "$cookies", "services"];
-    
-    function nivelacionCtrl($scope, $http, $rootScope, $location, $route, $cookies, services) {
+
+    function nivelacionCtrl(
+        $scope,
+        $http,
+        $rootScope,
+        $location,
+        $route,
+        $cookies,
+        services
+    ) {
         $scope.nivelacion = {};
         $scope.nivelacion.ticket = "";
         $scope.nivelacion.newIdTecnic = "";

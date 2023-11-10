@@ -26,7 +26,6 @@
 
         function data() {
             services.datosVentas().then(function (data) {
-                console.log(data);
                 $scope.dataVentas = data.data.data;
             });
         }
@@ -59,11 +58,9 @@
 
         $scope.pageChanged = function () {
             data = {page: $scope.currentPage, size: $scope.pageSize};
-            console.log(data);
             dataVentaTerminado(data);
         };
         $scope.pageSizeChanged = function () {
-            console.log(data);
             data = {page: $scope.currentPage, size: $scope.pageSize};
             $scope.currentPage = 1;
             dataVentaTerminado(data);
@@ -142,7 +139,6 @@
                 });
             } else {
                 services.detalleVentaRagoFecha($scope.ventaIstale).then((data) => {
-                    console.log(console.log(data));
                     if (data.data.state == 1) {
                         $scope.detallePedidoVenta = data.data.data;
                         $("#detallePedidoVentaInstale").modal("show");
@@ -234,7 +230,6 @@
             } else {
                 data = {observacion: data, usuario: $rootScope.galletainfo.LOGIN};
                 services.guardaObservacionParaVentaInstale(data).then(function (data) {
-                    console.log(data.state);
                     if (data.data.state != 1) {
                         Swal({
                             type: "error",
@@ -309,7 +304,6 @@
                     $scope.pend = 0;
                     $scope.consolidadosZona = data.data.data;
                     angular.forEach($scope.consolidadosZona, function (value, key) {
-                        console.log(value.aprobada);
                         if (value.aprobada) {
                             $scope.apr = parseInt($scope.apr) + parseInt(value.aprobada);
                         }

@@ -2,7 +2,6 @@
     "use strict";
     angular.module("seguimientopedidos").controller("registroEquipoCtrl", registroEquipoCtrl);
     registroEquipoCtrl.$inject = ["$scope", "$http", "$rootScope", "$location", "$route", "$routeParams", "$cookies", "$timeout", "services", "cargaRegistros"];
-
     function registroEquipoCtrl($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services, cargaRegistros) {
         var tiempo = new Date().getTime();
         var date1 = new Date();
@@ -33,7 +32,6 @@
 
             services.registroEquipos(data).then(
                 function (data) {
-                    console.log(data)
                     if (data.data.state == 1) {
                         $scope.registroEquipos = data.data.data;
 

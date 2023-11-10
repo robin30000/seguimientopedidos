@@ -8,9 +8,6 @@
         $scope.isSoporteGponFromIntranet = false;
         $scope.isLoadingData = true;
         $scope.dataSoporteGpon = [];
-        //$scope.dataContent = 'clic';
-
-
         $scope.listarsoportegpon = () => {
             $scope.isLoadingData = true;
 
@@ -42,7 +39,6 @@
 
         $scope.contadorGpon = () => {
             let counter = $scope.datacount;
-            console.log(counter);
             let x = [];
             let finalizado = $scope.finalizado;
             let devuelto = $scope.devuelto;
@@ -102,7 +98,7 @@
         }
 
 
-        $scope.marcarEngestionGpon = async (data) => {
+        $scope.marcarEngestionGpon = (data) => {
             services
                 .marcarEngestionGpon(data, $rootScope.galletainfo)
                 .then(function (data) {

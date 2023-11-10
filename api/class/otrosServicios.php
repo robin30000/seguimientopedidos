@@ -1301,37 +1301,26 @@ class otrosServicios
     public function buscarPedidoContingencias($data)
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();
-            if (!$_SESSION) {
-                $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
-            } else {
-                $pedido = $data;
 
-                if ($pedido !== "") {
-
-                    $query = $this->_DB->prepare("SELECT pedido, accion, ciudad, correo, macEntra, macSale, paquetes, motivo, proceso, producto, contrato, perfil,
+                    $stmt = $this->_DB->prepare("SELECT pedido, accion, ciudad, correo, macEntra, macSale, paquetes, motivo, proceso, producto, contrato, perfil,
 						horagestion, logindepacho,	logincontingencia, loginContingenciaPortafolio, horacontingencia, horaContingenciaPortafolio,
 						tipoEquipo, tecnologia, remite, tipificacion, tipificacionPortafolio, acepta, aceptaPortafolio, observacion, observContingencia,
-						observContingenciaPortafolio, ingresoEquipos
-						FROM contingencias
-						WHERE pedido = :pedido
-					");
+						observContingenciaPortafolio, ingresoEquipos, tarea
+						FROM contingencias WHERE (tarea = :pedido or pedido = :pedido)");
 
-                    $query->execute([':pedido' => $pedido]);
+                    $stmt->execute([':pedido' => $data]);
 
-                    if ($query->rowCount()) {
-                        $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+                    if ($stmt->rowCount()) {
+                        $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                         $response = array('state' => 1, 'data' => $resultado);
                     } else {
                         $response = array('state' => 0, 'msj' => 'No se encontraron datos');
                     }
-                } else {
+                /*} else {
                     $response = array('state' => 0, 'msj' => 'Ingrese un pedido');
-                }
-            }
+                }*/
+           // }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }

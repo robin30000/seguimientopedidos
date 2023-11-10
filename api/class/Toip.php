@@ -47,34 +47,38 @@ class Toip
     {
         try {
             $user = $data['usuario'];
-            $id   = $data['id'];
+            $id = $data['id'];
 
-            $stmt = $this->_DB->prepare("SELECT en_gestion, login_gestion FROM activacion_toip WHERE id = :id");
-            $stmt->execute([':id' => $id]);
+            if (!$id) {
+                $response = ['state' => false, 'msj' => 'Inicia session nuevamente para continuar'];
+            } else {
+                $stmt = $this->_DB->prepare("SELECT en_gestion, login_gestion FROM activacion_toip WHERE id = :id");
+                $stmt->execute([':id' => $id]);
 
-            if ($stmt->rowCount()) {
-                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                if ($res[0]['en_gestion'] == 0) {
-                    $stmt = $this->_DB->prepare("UPDATE activacion_toip SET en_gestion = '1', login_gestion = :user, hora_marca = :fecha WHERE id = :id");
-                    $stmt->execute([':user' => $user, ':fecha' => date('Y-m-d H:i:s'), ':id' => $id]);
-                    if ($stmt->rowCount()) {
-                        $response = ['state' => true, 'msj' => 'Pedido bloqueado correctamente'];
+                if ($stmt->rowCount()) {
+                    $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    if ($res[0]['en_gestion'] == 0) {
+                        $stmt = $this->_DB->prepare("UPDATE activacion_toip SET en_gestion = '1', login_gestion = :user, hora_marca = :fecha WHERE id = :id");
+                        $stmt->execute([':user' => $user, ':fecha' => date('Y-m-d H:i:s'), ':id' => $id]);
+                        if ($stmt->rowCount()) {
+                            $response = ['state' => true, 'msj' => 'Pedido bloqueado correctamente'];
+                        } else {
+                            $response = ['state' => false, 'msj' => 'Ha ocurrido un erro interno intentalo nuevamente en unos minutos'];
+                        }
+                    } elseif (($res[0]['en_gestion'] == 1) && ($res[0]['login_gestion'] == $user || $user == 'cramiceb' || $user == 'cvasquor' || $user == 'garcila' || $user == 'jromang' || $user == 'mhuertas')) {
+                        $stmt = $this->_DB->prepare("UPDATE activacion_toip SET en_gestion = '0', login_gestion = '' WHERE id = :id");
+                        $stmt->execute([':id' => $id]);
+                        if ($stmt->rowCount()) {
+                            $response = ['state' => true, 'msj' => 'Pedido desbloqueado correctamente'];
+                        } else {
+                            $response = ['state' => false, 'msj' => 'Ha ocurrido un erro interno intentalo nuevamente en unos minutos'];
+                        }
                     } else {
-                        $response = ['state' => false, 'msj' => 'Ha ocurrido un erro interno intentalo nuevamente en unos minutos'];
-                    }
-                } elseif ($res[0]['en_gestion'] == 1 && $res[0]['login_gestion'] == $user) {
-                    $stmt = $this->_DB->prepare("UPDATE activacion_toip SET en_gestion = '0', login_gestion = '' WHERE id = :id");
-                    $stmt->execute([':id' => $id]);
-                    if ($stmt->rowCount()) {
-                        $response = ['state' => true, 'msj' => 'Pedido desbloqueado correctamente'];
-                    } else {
-                        $response = ['state' => false, 'msj' => 'Ha ocurrido un erro interno intentalo nuevamente en unos minutos'];
+                        $response = ['state' => false, 'msj' => 'El pedido se encuentra bloqueado por otro agente'];
                     }
                 } else {
-                    $response = ['state' => false, 'msj' => 'El pedido se encuentra bloqueado por otro agente'];
+                    $response = ['state' => false, 'msj' => 'El pedido no existe'];
                 }
-            } else {
-                $response = ['state' => false, 'msj' => 'El pedido no existe'];
             }
 
             return $response;
@@ -90,14 +94,14 @@ class Toip
     public function guarda($data)
     {
         try {
-            $id              = $data['id'];
-            $fecha           = date('Y-m-d H:i:s');
-            $tipificacion    = $data['tipificacion'];
-            $verifica_tono   = $data['verifica_tono'];
-            $observacion     = $data['observacion'];
-            $user            = $data['login_gestion'];
+            $id = $data['id'];
+            $fecha = date('Y-m-d H:i:s');
+            $tipificacion = $data['tipificacion'];
+            $verifica_tono = $data['verifica_tono'];
+            $observacion = $data['observacion'];
+            $user = $data['login_gestion'];
             $subtipificacion = $data['subtipificacion'];
-            $cerrado_gtc     = $data['cerrado_gtc'];
+            $cerrado_gtc = $data['cerrado_gtc'];
 
 
             $stmt = $this->_DB->prepare("SELECT login_gestion FROM activacion_toip WHERE id = :id");
@@ -107,13 +111,13 @@ class Toip
                 if ($res[0]['login_gestion'] == $user) {
                     $stmt = $this->_DB->prepare("UPDATE activacion_toip SET hora_gestion = :fecha, tipificacion = :tipifica, observacion = :obser, verifica_tono = :verifica, subtipificacion = :subtipificacion, cerrado_gtc = :cerrado_gtc, en_gestion = '2' WHERE id = :id");
                     $stmt->execute([
-                        ':fecha'           => $fecha,
-                        ':tipifica'        => $tipificacion,
-                        ':obser'           => $observacion,
-                        ':verifica'        => $verifica_tono,
-                        ':id'              => $id,
+                        ':fecha' => $fecha,
+                        ':tipifica' => $tipificacion,
+                        ':obser' => $observacion,
+                        ':verifica' => $verifica_tono,
+                        ':id' => $id,
                         ':subtipificacion' => $subtipificacion,
-                        ':cerrado_gtc'     => $cerrado_gtc,
+                        ':cerrado_gtc' => $cerrado_gtc,
                     ]);
                     if ($stmt->rowCount() == 1) {
                         $response = ['state' => true, 'msj' => 'Pedido guardado correctamente'];
@@ -141,29 +145,58 @@ class Toip
     {
         try {
 
-            $pagenum  = $data['page'];
+            $pagenum = $data['page'];
             $pagesize = $data['size'];
-            $offset   = ($pagenum - 1) * $pagesize;
+            $offset = ($pagenum - 1) * $pagesize;
 
             $con = '';
             if (isset($data['data']['fechaini']) && isset($data['data']['fechafin'])) {
-                $fechaini = $data['data']['fechaini'];
-                $fechafin = $data['data']['fechafin'];
+                if ($data['data']['fechaini'] == '' && $data['data']['fechafin'] == '') {
+                    if (isset($data['data']['pedido'])) {
+                        $con;
+                    }
+                } else {
+                    if (isset($data['data']['pedido'])) {
+                    } else {
+                        $fechaini = $data['data']['fechaini'];
+                        $fechafin = $data['data']['fechafin'];
 
-                $con = " and hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
+                        $con = " and hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
+                    }
+                }
+
             }
 
             if (isset($data['data']['pedido'])) {
                 $pedido = $data['data']['pedido'];
-                $con    .= " AND pedido = '$pedido' ";
+                $con .= " AND pedido = '$pedido' OR tarea = '$pedido'";
             }
 
-            $stmt = $this->_DB->query("SELECT * FROM activacion_toip where en_gestion = '2' ORDER BY hora_ingreso desc");
-            $stmt->execute();
-            $count = $stmt->rowCount();
+            if (isset($data['data']['filtro'])) {
+                if ($data['data']['filtro'] == 'Gestionados') {
+                    $con .= "AND en_gestion = 2 ";
+                } elseif ($data['data']['filtro'] == 'Sin gestionar') {
+                    $con .= "AND en_gestion IN (0,1)";
+                } elseif ($data['data']['filtro'] == 'Todos') {
 
-            $stmt = $this->_DB->query("SELECT * FROM activacion_toip where 1=1 $con and en_gestion = '2' ORDER BY hora_ingreso desc LIMIT $offset, $pagesize");
-            $stmt->execute();
+                }
+            } else {
+                $con .= "AND en_gestion = 2 ";
+            }
+            if (isset($data['export'])) {
+                $count = 1;
+                $stmt = $this->_DB->query("SELECT * FROM activacion_toip where 1=1 $con  ORDER BY hora_ingreso desc");
+                $stmt->execute();
+            } else {
+
+                $stmt = $this->_DB->query("SELECT * FROM activacion_toip where 1=1 $con ORDER BY hora_ingreso desc");
+                $stmt->execute();
+                $count = $stmt->rowCount();
+
+                $stmt = $this->_DB->query("SELECT * FROM activacion_toip where 1=1 $con  ORDER BY hora_ingreso desc LIMIT $offset, $pagesize");
+                $stmt->execute();
+            }
+
 
             if ($stmt->rowCount()) {
                 $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'counter' => $count];
@@ -317,9 +350,10 @@ class Toip
         }
     }
 
-        public function registro_15(){
-            try{
-                $stmt = $this->_DB->query("SELECT
+    public function registro_15()
+    {
+        try {
+            $stmt = $this->_DB->query("SELECT
                                                       DATE(hora_ingreso) AS fecha,
                                                       SUM(CASE WHEN TIMESTAMPDIFF(HOUR, hora_ingreso, hora_gestion) = 0 THEN 1 ELSE 0 END) AS '0',
                                                       SUM(CASE WHEN TIMESTAMPDIFF(HOUR, hora_ingreso, hora_gestion) = 1 THEN 1 ELSE 0 END) AS '1',
@@ -337,21 +371,22 @@ class Toip
                                                     GROUP BY fecha
                                                     ORDER BY fecha;");
 
-                $stmt->execute();
-                if ($stmt->rowCount()) {
-                    $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
-                } else {
-                    $response = ['state' => false, 'msj' => 'No se encontraron datos'];
-                }
-                $this->_DB = '';
-
-                return $response;
-            }catch (PDOException $e){
-                var_dump($e->getMessage());
+            $stmt->execute();
+            if ($stmt->rowCount()) {
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+            } else {
+                $response = ['state' => false, 'msj' => 'No se encontraron datos'];
             }
+            $this->_DB = '';
+
+            return $response;
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
     }
 
-    public function consolidado($data){
+    public function consolidado($data)
+    {
 
 
         try {
@@ -388,12 +423,13 @@ class Toip
             $this->_DB = '';
 
             return $response;
-        }catch (PDOException $e){
+        } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
     }
 
-    public function detalles_contingencias($data){
+    public function detalles_contingencias($data)
+    {
         try {
             if (isset($data['fecha'])) {
                 $fecha = $data['fecha'];
@@ -435,7 +471,7 @@ class Toip
             $this->_DB = '';
 
             return $response;
-        }catch (PDOException $e){
+        } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
     }

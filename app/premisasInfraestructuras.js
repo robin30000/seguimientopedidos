@@ -2,7 +2,15 @@
     "use strict";
     angular.module("seguimientopedidos").controller("premisasInfraestructurasCtrl", premisasInfraestructurasCtrl);
     premisasInfraestructurasCtrl.$inject = ["$scope", "$rootScope", "$location", "$route", "$cookies", "services"];
-    function premisasInfraestructurasCtrl($scope, $rootScope, $location, $route, $cookies, services) {
+
+    function premisasInfraestructurasCtrl(
+        $scope,
+        $rootScope,
+        $location,
+        $route,
+        $cookies,
+        services
+    ) {
         $scope.isInfraestructureFromField = false;
         $scope.isInfraestructureFromIntranet = false;
         $scope.isLoadingData = true;
@@ -81,7 +89,7 @@
         };
 
         $scope.gestionescalamiento = () => {
-            isLoadingData = true;
+            let isLoadingData = true;
             $scope.flagOnlyPSData = false;
             $scope.dataGestionEscalamiento = [];
 

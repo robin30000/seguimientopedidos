@@ -514,8 +514,152 @@
 
             modalInstance.result.then(function () {
             }, function () {
-                console.log($scope.datosMenu);
                 $log.info('Modal dismissed at: ' + new Date());
+            });
+        }
+    }
+
+
+    angular.module("seguimientopedidos").controller("ModalInstanceUsuarioKpiCtrl", ModalInstanceUsuarioKpiCtrl);
+    ModalInstanceUsuarioKpiCtrl.$inject = ["$uibModalInstance", "items", "services", "$route", "$scope", "$timeout"];
+    function ModalInstanceUsuarioKpiCtrl($uibModalInstance, items, services, $route, $scope, $timeout) {
+        var $ctrl = this;
+        $ctrl.items = items;
+        let usuarioKpi = {};
+
+        for (let i = 0; i < items.data.length; i++) {
+            usuarioKpi[i] = items.data[i]["usuario"];
+        }
+
+        $ctrl.nombreTable = items.tabla;
+        $ctrl.usuarios = usuarioKpi
+
+        $ctrl.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+
+        $ctrl.agregaUsuario = (data, tabla) => {
+            let datos = {usuario: data, tabla: tabla};
+            if (tabla == "Tiempo completo") {
+                services.contigenciaHoraAgenteTiempoCompleto(datos)
+                    .then((data) => {
+                        if (data.data.state == 1) {
+                            Swal({
+                                type: 'success',
+                                text: data.data.msj,
+                                timer: 4000
+                            }).then(function () {
+                                $uibModalInstance.dismiss('cancel');
+                                $route.reload();
+                            })
+                        } else {
+                            Swal({
+                                type: 'error',
+                                title: 'Opss...',
+                                text: data.data.msj,
+                                timer: 4000
+                            })
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+            } else if (tabla == "ssmm") {
+                services.contigenciaHoraAgenteMmss(datos)
+                    .then((data) => {
+                        if (data.data.state == 1) {
+                            Swal({
+                                type: 'success',
+                                text: data.data.msj,
+                                timer: 4000
+                            }).then(function () {
+                                $uibModalInstance.dismiss('cancel');
+                                $route.reload();
+                            })
+                        } else {
+                            Swal({
+                                type: 'error',
+                                title: 'Opss...',
+                                text: data.data.msj,
+                                timer: 4000
+                            })
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+            } else if (tabla == 'apoyo') {
+                services.contigenciaHoraAgenteApoyo(datos)
+                    .then((data) => {
+                        if (data.data.state == 1) {
+                            Swal({
+                                type: 'success',
+                                text: data.data.msj,
+                                timer: 4000
+                            }).then(function () {
+                                $uibModalInstance.dismiss('cancel');
+                                $route.reload();
+                            })
+                        } else {
+                            Swal({
+                                type: 'error',
+                                title: 'Opss...',
+                                text: data.data.msj,
+                                timer: 4000
+                            })
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+            }
+        }
+
+        $ctrl.quitarUsuario = (user, tabla) => {
+            Swal({
+                title: "Está seguro?",
+                text: "Algunos datos pueden perderse.",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Sí, estoy seguro",
+                cancelButtonText: "Cancelar",
+                allowOutsideClick: () => !Swal.isLoading(),
+            }).then((result) => {
+                if (result.value) {
+                    let data = {usuario: user, tabla: tabla}
+                    services.quitarUsuarioKpi(data)
+                        .then((data) => {
+                            if (data.data.state == 1) {
+                                let array = Object.values($ctrl.usuarios);
+                                array = array.filter(function (valor) {
+                                    return valor !== user;
+                                });
+                                $ctrl.usuarios = array;
+                                Swal({
+                                    type: 'success',
+                                    title: 'Bien',
+                                    text: data.data.msj,
+                                    timer: 4000
+                                }).then(() => {
+                                    $uibModalInstance.dismiss('cancel');
+                                    $route.reload();
+                                })
+                            } else {
+                                Swal({
+                                    type: 'error',
+                                    title: 'Oppsss..',
+                                    text: data.data.msj,
+                                    timer: 4000
+                                })
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        })
+                } else {
+                    $("#modalDetalles").modal('hide');
+                }
             });
         }
     }

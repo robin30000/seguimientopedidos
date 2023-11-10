@@ -10,8 +10,8 @@
 
         $scope.validaTrans = function () {
             if (
-                $scope.formularioBrutal.tipoTrans == "Reconfigurar" &&
-                $scope.formularioBrutal.accion == "Gestión AAA"
+                $scope.formularioBrutal.tipoTrans === "Reconfigurar" &&
+                $scope.formularioBrutal.accion === "Gestión AAA"
             ) {
                 $scope.vernumSape = true;
             } else {
@@ -22,7 +22,7 @@
         $scope.buscarObservaciones = function () {
             services.Verobservacionasesor($scope.formularioBrutal.pedido).then(
                 function (data) {
-                    if (data.data.state != 1) {
+                    if (data.data.state !== 1) {
                         Swal({
                             type: 'error',
                             text: data.data.msj,
@@ -30,7 +30,7 @@
                         })
                     } else {
                         $scope.observacion = data.data.data;
-                        if ($scope.observacion.ObservacionAsesor == "") {
+                        if ($scope.observacion.ObservacionAsesor === "") {
                             Swal({
                                 type: 'info',
                                 text: "El pedido se encuentra en gestión",
@@ -73,11 +73,6 @@
                         $scope.respuesta = data.data[0][0];
                         if (pedido != "") {
                             services.windowsBridge(`HCHV/Buscar/${pedido}`).then((data) => data.json()).then((response) => {
-
-
-                                // fetch(`http://10.100.66.254:8080/HCHV/Buscar/${pedido}`)
-                                //     .then((data) => data.json())
-                                //    .then((response) => {
                                 if (response) {
                                     if (
                                         response.taskType.indexOf("Cambio_Domicilio") !== -1 ||
@@ -119,8 +114,6 @@
                                 showLoaderOnConfirm: true,
                                 preConfirm: (pedido) => {
                                     services.windowsBridge(`HCHV/Buscar/${pedido}`).then((response) => {
-                                        //return fetch(`http://10.100.66.254:8080/HCHV/Buscar/${pedido}`)
-                                        //.then((response) => {
                                         if (!response.ok) {
                                             throw new Error(response.statusText);
                                         }
@@ -179,15 +172,15 @@
         };
 
         $scope.GuardarGestion = async function () {
-            emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
-            celRegex = /^3[\d]{9}$/;
-            var tiempo = new Date();
-            var hora = tiempo.getHours();
-            var dia = tiempo.getDay();
+            let emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+            let celRegex = /^3[\d]{9}$/;
+            let tiempo = new Date();
+            let hora = tiempo.getHours();
+            let dia = tiempo.getDay();
 
-            var pedido = $scope.formularioBrutal.pedido;
+            let pedido = $scope.formularioBrutal.pedido;
 
-            var filtersEx = [
+            let filtersEx = [
                 "1 - B2B",
                 "B2B",
                 "C2",

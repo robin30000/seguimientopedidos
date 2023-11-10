@@ -3,7 +3,14 @@
     angular.module("seguimientopedidos").controller("quejasGoCtrl", quejasGoCtrl);
     quejasGoCtrl.$inject = ["$scope", "$rootScope", "$timeout", "services", "$route", "$cookies", "$location", "$interval"];
 
-    function quejasGoCtrl($scope, $rootScope, $timeout, services, $route, $cookies, $location, $interval) {
+    function quejasGoCtrl(
+        $scope,
+        $rootScope,
+        $timeout,
+        services,
+        $route,
+        $cookies, $location, $interval
+    ) {
 
         var tiempo = new Date().getTime();
         var date1 = new Date();
@@ -80,42 +87,38 @@
                 data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
             }
 
-            services.extraeQuejasGoDia(data).then(
-                function (data) {
-                    if (data.data.state == 99) {
-                        swal({
-                            type: "error",
-                            title: data.data.title,
-                            text: data.data.text,
-                            timer: 4000,
-                        }).then(function () {
-                            $cookies.remove("usuarioseguimiento");
-                            $location.path("/");
-                            $rootScope.galletainfo = undefined;
-                            $rootScope.permiso = false;
-                            $route.reload();
-                        });
-                    } else if (data.data.state == 1) {
-                        $scope.listaQuejasGo = data.data.data;
-                        $scope.cantidad = data.data.length;
-                        $scope.counterpag = data.data.counter;
+            services.extraeQuejasGoDia(data).then((data) => {
+                if (data.data.state == 99) {
+                    swal({
+                        type: "error",
+                        title: data.data.title,
+                        text: data.data.text,
+                        timer: 4000,
+                    }).then(function () {
+                        $cookies.remove("usuarioseguimiento");
+                        $location.path("/");
+                        $rootScope.galletainfo = undefined;
+                        $rootScope.permiso = false;
+                        $route.reload();
+                    });
+                } else if (data.data.state == 1) {
+                    $scope.listaQuejasGo = data.data.data;
+                    $scope.cantidad = data.data.length;
+                    $scope.counterpag = data.data.counter;
 
-                        $scope.counter = data.data.counter;
+                    $scope.counter = data.data.counter;
 
-                        $scope.totalItems = data.data.counter;
-                        $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
-                        $scope.endItem = $scope.currentPage * $scope.pageSize;
-                        if ($scope.endItem > data.data.counter) {
-                            $scope.endItem = data.data.counter;
-                        }
+                    $scope.totalItems = data.data.counter;
+                    $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                    $scope.endItem = $scope.currentPage * $scope.pageSize;
+                    if ($scope.endItem > data.data.counter) {
+                        $scope.endItem = data.data.counter;
                     }
-
-                },
-
-                function errorCallback(response) {
-                    console.log(response);
                 }
-            );
+
+            }).catch((e) => {
+                console.log(e)
+            });
         };
 
         $scope.pageChanged = function () {
@@ -130,23 +133,8 @@
 
 
         $scope.mostraModal = function () {
-            /*$scope.counter = 0;
-
-            $scope.startCounter = function () {
-                if (timer === null) {
-                    updateCounter();
-                }
-            };
-            var updateCounter = function () {
-                $scope.counter++;
-                timer = $timeout(updateCounter, 1000);
-            };
-            updateCounter();*/
-
             iniciarTiempo();
-
             $scope.quejasGoSel.observacion = "";
-
             angular.copy();
             $("#modalQuejasGo").modal();
         };
@@ -229,48 +217,12 @@
         };
 
         $scope.guardar = function (quejasGoSel, frmQuejasGo) {
-            /*$timeout.cancel(timer);
-            timer = null;
-
-            var hours = Math.floor($scope.counter / 3600),
-                minutes = Math.floor(($scope.counter % 3600) / 60),
-                seconds = Math.floor($scope.counter % 60);
-
-            if (hours < 10) {
-                hours = "0" + hours;
-            }
-            if (minutes < 10) {
-                minutes = "0" + minutes;
-            }
-            if (seconds < 10) {
-                seconds = "0" + seconds;
-            }
-            $scope.counter = hours + ":" + minutes + ":" + seconds;*/
-
             services
                 .guardarQuejaGo(quejasGoSel, $scope.tiempo, $rootScope.galletainfo.login)
                 .then(
                     function (respuesta) {
-                        /* if (respuesta.data.state == 99) {
-                            swal({
-                                type: "error",
-                                title: data.data.title,
-                                text: data.data.text,
-                                timer: 4000,
-                            }).then(function () {
-                                $cookies.remove("usuarioseguimiento");
-                                $location.path("/");
-                                $rootScope.galletainfo = undefined;
-                                $rootScope.permiso = false;
-                                $route.reload();
-                            });
-                        } else  */
-
                         if (respuesta.data.state == 1) {
                             $("#modalQuejasGo").modal("hide");
-                            //$scope.infoTecnico = false;
-                            //$scope.quejasGoSel = {};
-                            //frmGenereacionTT.autoValidateFormOptions.resetForm();
                             Swal({
                                 type: "success",
                                 title: "Bien",

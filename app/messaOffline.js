@@ -2,8 +2,11 @@
     "use strict";
     angular.module("seguimientopedidos").controller("mesaofflineCtrl", mesaofflineCtrl);
     mesaofflineCtrl.$inject = ["$scope", "$rootScope", "services"];
-
-    function mesaofflineCtrl($scope, $rootScope, services) {
+    function mesaofflineCtrl(
+        $scope,
+        $rootScope,
+        services
+    ) {
         $scope.validarproducto = false;
         $scope.validaractividad = false;
 

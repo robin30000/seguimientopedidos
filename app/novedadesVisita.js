@@ -2,7 +2,14 @@
     "use strict";
     angular.module("seguimientopedidos").controller("novedadesVisitaCtrl", novedadesVisitaCtrl);
     novedadesVisitaCtrl.$inject = ["$scope", "$http", "$rootScope", "services", "services", "$cookies", "$location", "$route"];
-    function novedadesVisitaCtrl($scope, $http, $rootScope, services, $cookies, $location, $route) {
+
+    function novedadesVisitaCtrl(
+        $scope,
+        $http,
+        $rootScope,
+        services,
+        $cookies, $location, $route
+    ) {
 
         var tiempo = new Date().getTime();
         var date1 = new Date();
@@ -23,19 +30,19 @@
 
         novedadesVisitas();
 
-        function novedadesVisitas(data) {
-            if (data === '' || data === undefined) {
+        function novedadesVisitas(d) {
+            if (d === '' || d === undefined) {
                 $scope.currentPage = 1;
                 $scope.totalItems = 0;
                 $scope.pageSize = 15;
                 $scope.searchText = '';
-                data = {'page': $scope.currentPage, 'size': $scope.pageSize}
             }
+            let data = {'page': $scope.currentPage, 'size': $scope.pageSize}
             services
                 .novedadesTecnicoService(data)
                 .then(
                     function (data) {
-                        console.log(data);
+                        console.log(data)
                         $scope.novedadesVisitasTecnicos = data.data.data;
                         $scope.cantidad = $scope.novedadesVisitasTecnicos.length;
                         $scope.counter = data.data.contador;
@@ -54,27 +61,24 @@
         }
 
         $scope.pageChanged = function () {
-            data = {'page': $scope.currentPage, 'size': $scope.pageSize}
-            console.log(data)
+            let data = {'page': $scope.currentPage, 'size': $scope.pageSize}
             novedadesVisitas(data);
         }
         $scope.pageSizeChanged = function () {
-            console.log(data)
-            data = {'page': $scope.currentPage, 'size': $scope.pageSize}
+            let data = {'page': $scope.currentPage, 'size': $scope.pageSize}
             $scope.currentPage = 1;
             novedadesVisitas(data);
         }
 
-        $scope.buscarNovedades = function (data) {
-            if (data === "" || data === undefined) {
+        $scope.buscarNovedades = function (d) {
+            if (d === "" || d === undefined) {
                 $scope.currentPage = 1;
                 $scope.totalItems = 0;
                 $scope.pageSize = 15;
                 $scope.searchText = "";
-                data = {page: $scope.currentPage, size: $scope.pageSize};
             }
 
-            data = {page: $scope.currentPage, size: $scope.pageSize, data};
+            let data = {page: $scope.currentPage, size: $scope.pageSize, d};
             novedadesVisitas(data);
         }
 
@@ -90,21 +94,32 @@
         };
 
         $scope.agregarObservacion = (observacionCCO) => {
-            services
-                .updateNovedadesTecnico(observacionCCO, $scope.pedidoElegido)
-                .then((res) => {
-                    console.log(res);
-                    Swal("Tu Novedad fue Actualizada!", "Bien Hecho");
-                    $("#observacionCCO").val("");
-                    $scope.pedidoElegido = "";
-                    $scope.observacionCCO = "";
+            let data = {'observacion': observacionCCO, 'pedido': $scope.pedidoElegido}
+            services.myService(data, 'novedadesTecnicoCtrl.php', 'updateNovedadesTecnico')
+                .then((data) => {
+                    if (data.data.state) {
+                        $("#observacionCCO").val("");
+                        $scope.pedidoElegido = "";
+                        $scope.observacionCCO = "";
+                        Swal({
+                            type: 'success',
+                            title: 'Muy Bien!',
+                            text: data.data.msj,
+                            timer: 4000
+                        }).then(() => {
+                            $route.reload();
+                        })
+                    } else {
+                        Swal({
+                            type: 'error',
+                            title: 'Oppss...',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
+                    }
                 })
                 .catch((err) => {
-                    console.log(err);
-                    Swal("Tu Novedad tuvo un Error!", "Vuelve a intentar");
-                    $("#observacionCCO").val("");
-                    $scope.pedidoElegido = "";
-                    $scope.observacionCCO = "";
+                    console.log(err)
                 });
         };
 
@@ -293,144 +308,69 @@
                 })
                 $scope.sininfopedido = false;
             } else {
-                $scope.ipServer = "10.100.66.254";
                 $scope.sininfopedido = true;
-                $scope.url =
-                    "http://" + $scope.ipServer + ":8080/HCHV/Buscar/" + pedido;
-                $http.get($scope.url, {timeout: 2000}).then(
-                    function (data) {
-                        $scope.myWelcome = data.data;
-                        if ($scope.myWelcome.pEDIDO_UNE == null) {
-                            $scope.infopedido = false;
-                            $scope.errorconexion1 = false;
-                            $scope.myWelcome = {};
-                        } else if ($scope.myWelcome.pEDIDO_UNE == "TIMEOUT") {
-                            $scope.infopedido = false;
-                            $scope.errorconexion1 = true;
-                            $scope.myWelcome = {};
-                            $scope.errorconexion =
-                                "No hay conexión con Click, ingrese datos manualmente";
-                        } else {
-                            $scope.infopedido = true;
-                            $scope.novedadesVisitasSel.contrato2 =
-                                $scope.myWelcome.uNEProvisioner;
-                            $scope.novedadesVisitasSel.cedulaTecnico2 =
-                                $scope.myWelcome.engineerID;
-                            $scope.novedadesVisitasSel.nombreTecnico2 =
-                                $scope.myWelcome.engineerName;
-                            $scope.novedadesVisitasSel.proceso2 =
-                                $scope.myWelcome.engineer_Type;
-                            $scope.novedadesVisitasSel.municipio2 =
-                                $scope.myWelcome.uNEMunicipio;
+                services.windowsBridge("HCHV/Buscar/" + pedido).then((data) => {
+                    $scope.myWelcome = data.data;
+                    if ($scope.myWelcome.pEDIDO_UNE == null) {
+                        $scope.infopedido = false;
+                        $scope.errorconexion1 = false;
+                        $scope.myWelcome = {};
+                    } else if ($scope.myWelcome.pEDIDO_UNE == "TIMEOUT") {
+                        $scope.infopedido = false;
+                        $scope.errorconexion1 = true;
+                        $scope.myWelcome = {};
+                        $scope.errorconexion =
+                            "No hay conexión con Click, ingrese datos manualmente";
+                    } else {
+                        $scope.infopedido = true;
+                        $scope.novedadesVisitasSel.contrato2 =
+                            $scope.myWelcome.uNEProvisioner;
+                        $scope.novedadesVisitasSel.cedulaTecnico2 =
+                            $scope.myWelcome.engineerID;
+                        $scope.novedadesVisitasSel.nombreTecnico2 =
+                            $scope.myWelcome.engineerName;
+                        $scope.novedadesVisitasSel.proceso2 =
+                            $scope.myWelcome.engineer_Type;
+                        $scope.novedadesVisitasSel.municipio2 =
+                            $scope.myWelcome.uNEMunicipio;
 
-                            $scope.novedadesVisitasSel.region =
-                                $scope.myWelcome.uNEUen;
-                        }
-                        return data.data;
-                    },
-                    function (err) {
-                        $scope.ipServer = "10.100.66.254";
-
-                        $scope.url =
-                            "http://" + $scope.ipServer + ":8080/HCHV/Buscar/" + pedido;
-                        $http.get($scope.url, {timeout: 2000}).then(
-                            function (data) {
-                                $scope.myWelcome = data.data;
-                                if ($scope.myWelcome.pEDIDO_UNE == null) {
-                                    $scope.infopedido = false;
-                                    $scope.errorconexion1 = false;
-                                    $scope.myWelcome = {};
-                                } else if ($scope.myWelcome.pEDIDO_UNE == "TIMEOUT") {
-                                    $scope.infopedido = false;
-                                    $scope.errorconexion1 = true;
-                                    $scope.myWelcome = {};
-                                    $scope.errorconexion =
-                                        "No hay conexión con Click, ingrese los datos manualmente";
-                                } else {
-                                    $scope.infopedido = true;
-                                    $scope.novedadesVisitasSel.contrato2 =
-                                        $scope.myWelcome.uNEProvisioner;
-                                    $scope.novedadesVisitasSel.cedulaTecnico2 =
-                                        $scope.myWelcome.engineerID;
-                                    $scope.novedadesVisitasSel.nombreTecnico2 =
-                                        $scope.myWelcome.engineerName;
-                                    $scope.novedadesVisitasSel.proceso2 =
-                                        $scope.myWelcome.engineer_Type;
-                                    $scope.novedadesVisitasSel.municipio2 =
-                                        $scope.myWelcome.uNEMunicipio;
-                                    $scope.novedadesVisitasSel.region =
-                                        $scope.myWelcome.uNEUen;
-                                }
-                                return data.data;
-                            },
-                            function (err) {
-                                $scope.infopedido = false;
-                                $scope.errorconexion1 = true;
-                                $scope.myWelcome = {};
-                                $scope.errorconexion =
-                                    "No hay conexión con el Web Service, ingrese los datos manualmente";
-                            }
-                        );
-                    },
-                    function errorCallback(response) {
-                        console.log(response);
+                        $scope.novedadesVisitasSel.region =
+                            $scope.myWelcome.uNEUen;
                     }
-                );
+                    return data.data;
+                }).catch((e) => {
+                    console.log(e)
+                });
             }
         };
 
-        $scope.guardar = function (registrosTenicos, frmNovedadVisita) {
-            services
-                .guardarNovedadesTecnico(registrosTenicos, $rootScope.galletainfo)
-                .then(
-                    function (data) {
-                        if (data.data.state == 99) {
-                            swal({
-                                type: "error",
-                                title: data.data.title,
-                                text: data.data.text,
-                                timer: 4000,
-                            }).then(function () {
-                                $cookies.remove("usuarioseguimiento");
-                                $location.path("/");
-                                $rootScope.galletainfo = undefined;
-                                $rootScope.permiso = false;
-                                $route.reload();
-                            });
-                        } else if (data.data.state == 1) {
-                            $("#modalNovedadVisita").modal("hide");
-                            Swal({
-                                type: 'success',
-                                title: 'Bien',
-                                text: data.data.text,
-                                timer: 4000
-                            }).then(() => {
-                                setTimeout(() => {
-                                    $route.reload();
-                                }, 500);
+        $scope.guardar = function (registrosTenicos) {
 
-                            })
-                        } else if (data.data.state == 0) {
-                            Swal({
-                                type: 'error',
-                                title: 'Ops...',
-                                text: data.data.text,
-                                timer: 4000
-                            })
-                        }
-                        /* if (respuesta.status == "201") {
-                            Swal("Tu Novedad fue Guardada!", "Bien Hecho");
-                        }
-
+            registrosTenicos.login = $rootScope.galletainfo.login;
+            services.myService(registrosTenicos, 'novedadesTecnicoCtrl.php', 'guardarNovedadesTecnico')
+                .then((data) => {
+                    if (data.data.state) {
                         $("#modalNovedadVisita").modal("hide");
-                        $scope.novedadesVisitasSel = {};
-
-                        frmNovedadVisita.autoValidateFormOptions.resetForm(); */
-                    },
-                    function errorCallback(response) {
-                        console.log(response);
+                        Swal({
+                            type: 'success',
+                            title: 'Bien',
+                            text: data.data.text,
+                            timer: 4000
+                        }).then(() => {
+                            $route.reload();
+                        });
+                    } else {
+                        Swal({
+                            type: 'error',
+                            title: 'Ops...',
+                            text: data.data.text,
+                            timer: 4000
+                        })
                     }
-                );
+                }).catch((e) => {
+                console.log(e)
+            })
+
             $scope.RegistrosTecnicos(registrosTenicos);
         };
 

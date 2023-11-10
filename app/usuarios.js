@@ -15,7 +15,6 @@
         $scope.pageSize = 15;
         $scope.searchText = "";
         $scope.con = {};
-
         listadoUsuarios();
 
         function listadoUsuarios(data) {

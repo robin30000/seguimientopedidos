@@ -4,7 +4,6 @@
     ConteoCtrl.$inject = ["$scope", "$http", "$rootScope", "services"];
 
     function ConteoCtrl($scope, $http, $rootScope, services) {
-
         datos();
 
         function datos(d) {
@@ -13,12 +12,12 @@
                 data = {fecha: d}
             }
             services.myService(data, 'ContadorCtrl.php', 'conteoDatos').then((data) => {
-                if (data.state) {
+                if (data.data.state) {
                     var chart = $scope.myChart;
                     if (chart) {
                         chart.destroy();
                     }
-                    $scope.contador = data.data
+                    $scope.contador = data.data.data
                     let modulo = [];
                     let fecha = [];
                     let cantidad = [];
@@ -67,7 +66,7 @@
                     Swal({
                         type: 'error',
                         title: 'Oppss..',
-                        text: data.msj,
+                        text: data.data.msj,
                         timer: 4000
                     })
                 }

@@ -11,44 +11,56 @@
             buscarTecnico();
 
             $scope.tecnicos = () => {
-
                 $scope.loading = 1;
+                services.windowsBridge("HCHV_DEV/tecnicos/s").then((data) => {
+                    services.acualizaTecnicos(data).then(
+                        function (data) {
+                            if (data.data.state == 1) {
+                                Swal({
+                                    type: "success",
+                                    title: 'Bien',
+                                    text: data.data.msj,
+                                    timer: 4000,
+                                }).then(function () {
+                                    $route.reload();
+                                });
+                            } else {
+                                Swal({
+                                    type: "info",
+                                    title: 'Ops..',
+                                    text: data.data.msj,
+                                    timer: 4000,
+                                }).then(function () {
+                                    $route.reload();
+                                });
+                            }
 
-                services.windowsBridge('HCHV_DEV/tecnicos/s').then((data) => {
-                    let datos = data.data;
-                    services.acualizaTecnicos(datos).then((data) => {
-                        if (data.data.state == 1) {
-                            Swal({
-                                type: "success",
-                                title: 'Bien',
-                                text: data.data.msj,
-                                timer: 4000,
-                            }).then(function () {
-                                $route.reload();
-                            });
-                        } else {
-                            Swal({
-                                type: "info",
-                                title: 'Ops..',
-                                text: data.data.msj,
-                                timer: 4000,
-                            }).then(function () {
-                                $route.reload();
-                            });
+                        },
+                        function errorCallback(error) {
+                            console.log(error);
                         }
-                    }).catch((data) => {
-                        console.log(data)
-                    })
+                    );
+                }).catch((e) => {
+                    console.log(e)
                 })
-            }
-
+            };
 
             $scope.pageChanged = function () {
-                let data = {page: $scope.currentPage, size: $scope.pageSize, buscar: $scope.concepto, variable: $scope.tecnico};
+                let data = {
+                    page: $scope.currentPage,
+                    size: $scope.pageSize,
+                    buscar: $scope.concepto,
+                    variable: $scope.tecnico
+                };
                 buscarTecnico(data);
             };
             $scope.pageSizeChanged = function () {
-                let data = {page: $scope.currentPage, size: $scope.pageSize, buscar: $scope.concepto, variable: $scope.tecnico};
+                let data = {
+                    page: $scope.currentPage,
+                    size: $scope.pageSize,
+                    buscar: $scope.concepto,
+                    variable: $scope.tecnico
+                };
                 $scope.currentPage = 1;
                 buscarTecnico(data);
             };
@@ -59,10 +71,15 @@
                     $scope.totalItems = 0;
                     $scope.pageSize = 15;
                     $scope.searchText = "";
-                    data = {page: $scope.currentPage, size: $scope.pageSize, buscar: $scope.concepto, variable: $scope.tecnico};
+                    data = {
+                        page: $scope.currentPage,
+                        size: $scope.pageSize,
+                        buscar: $scope.concepto,
+                        variable: $scope.tecnico
+                    };
                 }
-                services.listadoTecnicos(data)
-                    .then((data) => {
+                services.listadoTecnicos(data).then(
+                    (data) => {
                         if (data.data.state == 99) {
                             swal({
                                 type: "error",
@@ -113,7 +130,7 @@
                         timer: 4000,
                     });
                 } else {
-                    let data = {
+                    data = {
                         page: $scope.currentPage,
                         size: $scope.pageSize,
                         buscar: param,
@@ -147,20 +164,16 @@
                 $rootScope.TituloModal = "Editar Técnico con el ID:";
             };
 
-            $scope.edittecnico = function (datos) {
+            $scope.edittecnico = (datos) => {
                 $scope.errorDatos = null;
                 $scope.respuestaupdate = null;
                 $scope.respuestadelete = null;
-                services.editarTecnico(datos).then(
-                    function (data) {
-                        $scope.respuestaupdate =
-                            "Técnico " + datos.NOMBRE + " actualizado exitosamente";
+                services.editarTecnico(datos).then((data) => {
+                    $scope.respuestaupdate = "Técnico " + datos.NOMBRE + " actualizado exitosamente";
 
-                        return data.data;
-                    },
-                    function errorCallback(response) {
-                    }
-                );
+                }).catch((e) => {
+                    console.log(e)
+                });
             };
 
             $scope.borrarTecnico = function (id) {

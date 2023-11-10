@@ -2,18 +2,17 @@
     "use strict";
     angular.module("seguimientopedidos").controller("registrosOfflineCtrl", registrosOfflineCtrl);
     registrosOfflineCtrl.$inject = ["$scope", "services"];
+
     function registrosOfflineCtrl($scope, services) {
         $scope.listaRegistrosOffline = {};
         RegistrosOffline();
 
         $scope.pageChanged = function () {
-            data = {page: $scope.currentPage, size: $scope.pageSize};
-            console.log(data);
+            let data = {page: $scope.currentPage, size: $scope.pageSize};
             RegistrosOffline(data);
         };
         $scope.pageSizeChanged = function () {
-            console.log(data);
-            data = {page: $scope.currentPage, size: $scope.pageSize};
+            let data = {page: $scope.currentPage, size: $scope.pageSize};
             $scope.currentPage = 1;
             RegistrosOffline(data);
         };

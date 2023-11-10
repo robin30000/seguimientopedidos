@@ -1,43 +1,19 @@
 <!DOCTYPE html>
-
 <html ng-app="seguimientopedidos" lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="google" content="notranslate"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="/seguimientopedidos-dev/">
-    <!-- <base href="/seguimientopedidos/"> -->
-    <!-- <link href="css/bootstrap.min.css" rel="stylesheet"> -->
-    <!-- <link href="css/ui-bootstrap-csp.css" rel="stylesheet"> -->
-
-
     <link rel="stylesheet" href="css/select2.min.css"/>
-    <!-- <link href="css/animate.css" rel="stylesheet"> -->
     <link href="css/font-awesome.min.css" rel="stylesheet">
     <link rel="shortcut icon" type="image/ico" href="img/favicon.ico"/>
     <link rel="stylesheet" href="css/angularjs-datetime-picker.css"/>
     <link rel="stylesheet" type="text/css" href="css/ui-grid.min.css"/>
-
-
-    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0/css/select2.min.css" rel="stylesheet" /> -->
-    <!-- SweetAlert -->
     <link rel="stylesheet" href="plugins/sweetalert/sweetalert2.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/style.css"/>
-
-
     <title>{{tituloPagina}}</title>
-
-    <script>
-        /*var currentUrl = window.location.href;
-
-        if (currentUrl.startsWith('https://10.100.88.2/seguimientopedidos/') || currentUrl.startsWith('http://10.100.88.2/seguimientopedidos/') || currentUrl.startsWith('https://netvm-ptctrl01/seguimientopedidos/') || currentUrl.startsWith('http://netvm-ptctrl01/seguimientopedidos/')) {
-            var redirectUrl = 'https://seguimientopedido.tigo.com.co/seguimientopedidos/';
-            window.location.href = redirectUrl;
-        }*/
-    </script>
-
 </head>
 
 <body class="bodis">
@@ -48,12 +24,9 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
 <script src="js/select2.min.js"></script>
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0/js/select2.min.js"></script> -->
 
 <script src="plugins/sweetalert/sweetalert2.min.js"></script>
 
-
-<script type="text/javascript" src="js/fusioncharts.js"></script>
 <script src="js/angular/angular.min.js"></script>
 <script src="js/angular/angular-route.min.js"></script>
 <script src="js/angular/angular-cookies.min.js"></script>
@@ -63,38 +36,26 @@
 
 <script src="js/select2.js"></script>
 
-<!-- <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/shim.min.js"></script> -->
-<!-- use version 0.19.3 -->
-<!--<script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script> -->
 <script lang="javascript" src="js/xlsx.full.min.js"></script>
-<!-- <script src="js/export.min.js"></script> -->
-
-<!-- <script src="js/FileSaver.min.js"></script>
-<script src="js/angular-file-saver.min.js"></script>
-<script src="js/Blob.js"></script> -->
-<!-- <script src="js/jquery-3.1.1.min.js"></script>
-<script src="js/bootstrap.min.js"></script> -->
 
 <script src="js/ui-bootstrap-tpls.js"></script>
 <script src="js/ui-bootstrap.js"></script>
 
-<!--<script src="js/Chart.min.js"></script>
-<script src="js/angular-chart.min.js"></script>-->
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
 <script ng-if="robcastro==1" src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
-<!--<script src="js/Chart.min.js"></script>-->
 <script src="js/angular-chart.min.js"></script>
 
-    <!--app-->
-<script src="app/app.js?v=12"></script>
-<script src="app/login.js?v=12"></script>
+<!--app-->
+<script src="app/app.js?v=1"></script>
+<script src="app/login.js?v=11"></script>
 <script src="app/activacion_toip.js?v=1"></script>
 <script src="app/etp.js"></script>
 <script src="app/graficos/graficoToip.js"></script>
 <script src="app/graficos/kpi_contingencia.js"></script>
 <script src="app/graficos/ruteo.js"></script>
 <script src="app/graficos/rgu.js"></script>
+<script src="app/graficos/tiempos.js"></script>
+<script src="app/graficos/kpi-cco.js"></script>
 <script src="app/usuarios.js"></script>
 <script src="app/mesas_nacionales.js?v=1"></script>
 <script src="app/validacionesApp.js"></script>
@@ -102,12 +63,27 @@
 <script src="app/contingencias.js"></script>
 <script src="app/actividades.js"></script>
 <script src="app/registroSoporteGpon.js"></script>
+<script src="app/conteoConsulta.js"></script>
+<script src="app/quejasGo.js"></script>
+<script src="app/quejasGo2.js"></script>
+<script src="app/registroEquipo.js"></script>
+<script src="app/registros.js"></script>
+<script src="app/gestionVentasInstaleTiendas.js"></script>
+<script src="app/contrasenasClick.js"></script>
+<script src="app/gestionCodigoIncompleto.js"></script>
+<script src="app/registrosCodigoIncompleto.js"></script>
+<script src="app/gestionSoporteGpon.js"></script>
+<script src="app/messaOffline.js"></script>
+<script src="app/registrosOffline.js"></script>
+<script src="app/sara.js"></script>
+<script src="app/novedadesVisita.js"></script>
+<script src="app/menuPerfil.js"></script>
+<!--fin app-->
 
 
 <script src="js/angularjs-datetime-picker.min.js"></script>
 <script src="js/angular-file-upload.js"></script>
 <script src="js/angularjs-dropdown-multiselect.js"></script>
-<script type="text/javascript" src="js/angular-fusioncharts.min.js"></script>
 <script src="js/ui-bootstrap-custom-tpls-2.4.0.min.js"></script>
 <script src="js/angular-ui.js"></script>
 <script src="js/ui-grid.min.js"></script>

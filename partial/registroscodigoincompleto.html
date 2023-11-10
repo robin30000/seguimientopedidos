@@ -98,7 +98,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="data in listaRegistros as results">
+              <tr ng-repeat="data in listaRegistros as results" ng-class="{'warning': data.tarea.toLowerCase().indexOf('s') !== -1}">
                 <td><span>
                     <button type="button" class="btn btn-default btn-xs" ng-click="CopyPortaPapeles(data.tarea)" tooltip
                       title="Copiar pedido" id=tv{{$index}}>

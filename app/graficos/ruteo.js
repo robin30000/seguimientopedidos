@@ -294,9 +294,6 @@
                         $scope.responses[area].porcentaje_abiertas = porcentajeAbiertas;
                     }
 
-                    console.log($scope.responses)
-
-
                     var areas = Object.keys($scope.responses);
                     var labels = areas.map(area => $scope.responses[area].area + ' - ' + $scope.responses[area].mes);
 

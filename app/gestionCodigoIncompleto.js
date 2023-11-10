@@ -2,13 +2,12 @@
     "use strict";
     angular.module("seguimientopedidos").controller("GestioncodigoincompletoCtrl", GestioncodigoincompletoCtrl);
     GestioncodigoincompletoCtrl.$inject = ["$scope", "$rootScope", "services"];
-
     function GestioncodigoincompletoCtrl($scope, $rootScope, services) {
         $scope.isSoporteGponFromField = false;
         $scope.isSoporteGponFromIntranet = false;
         $scope.isLoadingData = true;
         $scope.dataCodigoIncompleto = [];
-
+        console.log('codigo');
         listarcodigoincompleto();
 
         function listarcodigoincompleto(data) {
@@ -37,15 +36,13 @@
                 });
 
             $scope.isLoadingData = false;
-        };
+        }
 
         $scope.pageChanged = function () {
             data = {'page': $scope.currentPage, 'size': $scope.pageSize}
-            console.log(data)
             listarcodigoincompleto(data);
         }
         $scope.pageSizeChanged = function () {
-            console.log(data)
             data = {'page': $scope.currentPage, 'size': $scope.pageSize}
             $scope.currentPage = 1;
             listarcodigoincompleto(data);
@@ -67,7 +64,7 @@
             if (observacion) {
                 Swal("Cargando...");
 
-                if (tipificacion == "") {
+                if (tipificacion === "") {
                     Swal({
                         title: "Error",
                         text: "Debes de seleccionar una tipificación.",
@@ -97,7 +94,7 @@
             } else {
                 Swal({
                     title: "Error",
-                    text: "Debes ingresar una observacion.",
+                    text: "Debes ingresar una observación.",
                     type: "error",
                 });
                 return false;

@@ -141,6 +141,7 @@ class formaAsesores
     {
 
         try {
+
             //var_dump($data);Exit();
             /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
@@ -165,7 +166,7 @@ class formaAsesores
                     $condicion = " AND a.fecha BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
                 }
 
-                if (!empty($data['param']['concepto'])) {
+                if (!empty($data['param']['buscar'])) {
                     $buscar = $data['param']['buscar'];
                     $concepto = $data['param']['concepto'];
                     $condicion .= " and $concepto = '$buscar' ";

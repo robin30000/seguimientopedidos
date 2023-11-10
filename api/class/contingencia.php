@@ -103,7 +103,6 @@ class Contingencia
                     $response = ['state' => false, 'msj' => 'Ha ocurrido un error intentalo nuevamente en unos minutos'];
                 }
             }
-
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
@@ -590,7 +589,7 @@ class Contingencia
             } else {*/
 
             $stmt = $this->_DB->query("SELECT c.pedido,  REPLACE (c.macEntra,CHAR(45),CONCAT(CHAR(10),CHAR(10),CHAR(10)))AS macEntra, REPLACE (c.macSale,CHAR(45),CONCAT(CHAR(10),CHAR(10),CHAR(10))) AS macSale, c.logincontingencia, REPLACE (c.paquetes,CHAR(47),CONCAT(CHAR(10),CHAR(10),CHAR(10)))AS paquetes, c.ciudad, c.proceso, c.accion, c.tipoEquipo, c.remite, c.observacion, 
-					c.engestion, c.producto, c.grupo, c.horagestion, c.perfil, c.tipificacion, c.acepta, c.loginContingenciaPortafolio, c.aceptaPortafolio, 
+					c.engestion, c.producto, c.grupo, c.horagestion, c.perfil, c.tipificacion, c.acepta, c.loginContingenciaPortafolio, c.aceptaPortafolio, c.tarea,
 					c.tipificacionPortafolio, c.enGestionPortafolio, c.fechaClickMarcaPortafolio, c.id_terreno, CASE WHEN (SELECT COUNT(*)
 					FROM contingencias c1
 					WHERE c1.pedido=c.pedido AND c1.horagestion >= DATE_SUB(CURDATE(), INTERVAL 10 DAY) AND c1.finalizado = 'OK') > 0 THEN 'TRUE' ELSE 'FALSE' END alerta

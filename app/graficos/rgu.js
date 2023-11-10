@@ -38,7 +38,6 @@
         function mesa1(data) {
 
             services.myService(data, 'graficoRguCtrl.php', 'datos').then((res) => {
-                console.log(res);
                 $scope.rgu = res.data.data;
                 $scope.fecha = res.data.data[0].fecha;
 
