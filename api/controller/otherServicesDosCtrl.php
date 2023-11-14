@@ -54,7 +54,11 @@ if (isset($data['method'])) {
             $user = new otherServicesDos();
             $user->buscarPedido($data['data']);
             break;
-
+        case 'buscarPedidoSegui':
+            require_once '../class/otherServicesDos.php';
+            $user = new otherServicesDos();
+            $user->buscarPedidoSegui($data['data']);
+            break;
         case 'csvRegistros':
             require_once '../class/otherServicesDos.php';
             $user = new otherServicesDos();

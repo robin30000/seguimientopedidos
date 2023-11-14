@@ -386,7 +386,7 @@ class kpi
         } elseif (!empty($fecha)) {
             $today = $fecha;
         } else {
-            $condicion = " AND p.acepta = 'acepta' ";
+            $condicion = " AND p.acepta in ('Acepta', 'Rechaza') ";
         }
 
         $stmt = $this->_BD->query("SELECT usuario FROM usuario_kpi WHERE tabla = 'tiempo_completo'");

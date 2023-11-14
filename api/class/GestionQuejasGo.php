@@ -32,7 +32,7 @@ class GestionQuejasGo
 
 				$stmt = $this->_DB->query("SELECT *
 					FROM quejasgo
-					WHERE 1=1 and en_gestion = '0' OR en_gestion = '1' ORDER BY fecha DESC");
+					WHERE 1=1 and en_gestion = '0' OR en_gestion = '1' ORDER BY fecha");
 				$stmt->execute();
 
 
@@ -116,7 +116,7 @@ class GestionQuejasGo
 					if ($stmt->rowCount() == 1) {
 						$res = array('state' => 1, 'msj' => 'Pedido ' . $response[0]['pedido'] . ' Ahora esta Bloqueado');
 					}
-				} elseif ((($response[0]['en_gestion'] == 1) && ($response[0]['asesor'] == $login_gestion)) || $login_gestion == 'cramiceb') {
+				} elseif (($response[0]['en_gestion'] == 1) && ($response[0]['asesor'] == $login_gestion || $login_gestion == 'cramiceb' || $login_gestion == 'cvasquor' || $login_gestion == 'garcila' || $login_gestion == 'jromang' || $login_gestion == 'mhuertas')) {
 					$stmt = $this->_DB->prepare("UPDATE quejasgo SET en_gestion = 0, asesor = '' WHERE id = :id");
 					$stmt->execute(array(':id' => $id));
 					if ($stmt->rowCount() == 1) {

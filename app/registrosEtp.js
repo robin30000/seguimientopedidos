@@ -4,9 +4,6 @@
     RegistrosEtpCtrl.$inject = ["$scope", "$rootScope", "services", "$route", "$sce", "$cookies", "$location", "$uibModal", "$log", "$interval"];
 
     function RegistrosEtpCtrl($scope, $rootScope, services, $route, $sce, $cookies, $location, $uibModal, $log, $interval) {
-
-        console.log('pppppppp');
-
         var tiempo = new Date().getTime();
         var date1 = new Date();
         var year = date1.getFullYear();
@@ -21,31 +18,8 @@
         init();
 
         function init() {
-            //gestionETP();
             gestionETPTerminado();
-            //reloadPage();
         }
-
-        /* var reloadMinutes = [601, 731, 801, 831, 901, 931, 1001, 1031, 1101, 1131, 1201, 1231, 1301, 1331, 1401, 1431, 1501, 1531, 1601, 1631, 1701, 1731, 1801, 1831, 1901, 1931, 2001, 2031, 2101, 2131];
-
-         function reloadPage() {
-             location.reload();
-         }
-
-         function checkReloadTime() {
-             var now = new Date();
-             var currentMinute = now.getHours() * 60 + now.getMinutes();
-
-             if (reloadMinutes.includes(currentMinute)) {
-                 reloadPage();
-             }
-         }
-
-         var intervalPromise = $interval(checkReloadTime, 60000);
-
-         $scope.$on('$destroy', function() {
-             $interval.cancel(intervalPromise);
-         });*/
 
         $scope.loading = false;
 
@@ -74,8 +48,7 @@
             }).catch((e) => {
                 console.log(e)
             })
-
-        };
+        }
 
         function gestionETPTerminado(data) {
             let datos = '';
@@ -111,15 +84,11 @@
             }).catch((e) => {
                 console.log(e)
             })
-
-        };
+        }
 
         $scope.marcarEngestion = (data) => {
-            console.log(data, ' TTTTT');
             let user = $rootScope.login;
             let datos = {usuario: user, id: data.id_soporte}
-
-
 
             services.myService(datos, 'etpCtrl.php', 'marca').then((data) => {
                 console.log(data)
@@ -282,8 +251,6 @@
                 timer: 2000
             });
         }
-
-
     }
 
 })();

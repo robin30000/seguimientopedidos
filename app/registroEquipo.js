@@ -2,6 +2,7 @@
     "use strict";
     angular.module("seguimientopedidos").controller("registroEquipoCtrl", registroEquipoCtrl);
     registroEquipoCtrl.$inject = ["$scope", "$http", "$rootScope", "$location", "$route", "$routeParams", "$cookies", "$timeout", "services", "cargaRegistros"];
+
     function registroEquipoCtrl($scope, $http, $rootScope, $location, $route, $routeParams, $cookies, $timeout, services, cargaRegistros) {
         var tiempo = new Date().getTime();
         var date1 = new Date();
@@ -30,38 +31,35 @@
                 data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
             }
 
-            services.registroEquipos(data).then(
-                function (data) {
-                    if (data.data.state == 1) {
-                        $scope.registroEquipos = data.data.data;
+            services.myService(data, 'registroEquiposCtrl.php', 'registroEquipos').then((data) => {
+                if (data.data.state == 1) {
+                    $scope.registroEquipos = data.data.data;
 
-                        $scope.cantidad = data.data.length;
-                        $scope.counterpag = data.data.counter;
+                    $scope.cantidad = data.data.length;
+                    $scope.counterpag = data.data.counter;
 
-                        $scope.counter = data.data.counter;
+                    $scope.counter = data.data.counter;
 
-                        $scope.totalItems = data.data.counter;
-                        $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
-                        $scope.endItem = $scope.currentPage * $scope.pageSize;
-                        if ($scope.endItem > data.data.counter) {
-                            $scope.endItem = data.data.counter;
-                        }
+                    $scope.totalItems = data.data.counter;
+                    $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                    $scope.endItem = $scope.currentPage * $scope.pageSize;
+                    if ($scope.endItem > data.data.counter) {
+                        $scope.endItem = data.data.counter;
                     }
+                }
 
-                },
-
-                function errorCallback(response) {
-                    console.log(response);
-                });
+            }).catch((e) => {
+                console.log(e)
+            })
         }
 
 
         $scope.pageChanged = function () {
-            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
+            let data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
             registroEquipos(data);
         }
         $scope.pageSizeChanged = function () {
-            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
+            let data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
             registroEquipos(data);
         }
 
@@ -146,8 +144,8 @@
                 })
             } else {
                 data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'fecha': data}
-                services.csvRegistroEquipos(data)
-                    .then(function (data) {
+                services.myService(data, 'registroEquiposCtrl.php', 'csvRegistroEquipos')
+                    .then((data) => {
                         if (data.data.state == 1) {
                             var wb = XLSX.utils.book_new();
                             var ws = XLSX.utils.json_to_sheet(data.data.data);
@@ -166,6 +164,5 @@
                     })
             }
         }
-
     }
 })();

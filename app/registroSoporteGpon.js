@@ -28,10 +28,7 @@
             BuscarRegistrosSoporteGpon(data);
         };
 
-        if (
-            $scope.RegistrosSoporteGpon.fechaini == undefined ||
-            $scope.RegistrosSoporteGpon.fechafin == undefined
-        ) {
+        if ($scope.RegistrosSoporteGpon.fechaini === undefined || $scope.RegistrosSoporteGpon.fechafin === undefined) {
             var tiempo = new Date().getTime();
             var date1 = new Date();
             var year = date1.getFullYear();
@@ -56,16 +53,16 @@
             if (TotalDays > 31) {
                 swal({
                     type: "error",
-                    text: "Para optimizacion de los reportes estos no pueden sobrepasar los 8 dias",
+                    text: "Para optimización de los reportes estos no pueden sobrepasar los 8 dias",
                 });
-            } else if (data.fechafin == undefined) {
+            } else if (data.fechafin === undefined) {
                 Swal({
                     type: "error",
                     title: "Oops...",
                     text: "Ingrese la fecha final a consultar",
                     timer: 4000,
                 });
-            } else if (data.fechaini == undefined) {
+            } else if (data.fechaini === undefined) {
                 Swal({
                     type: "error",
                     title: "Oops...",
@@ -94,39 +91,35 @@
                 $scope.searchText = "";
                 data = {page: $scope.currentPage, size: $scope.pageSize};
             }
-            services.registrossoportegpon(data).then(
-                function (data) {
-                    if (data.data.state == 99) {
-                        swal({
-                            type: "error",
-                            title: data.data.title,
-                            text: data.data.msg,
-                            timer: 4000,
-                        }).then(function () {
-                            $cookies.remove("usuarioseguimiento");
-                            $location.path("/");
-                            $rootScope.galletainfo = undefined;
-                            $rootScope.permiso = false;
-                            $route.reload();
-                        });
-                    } else {
-                        $scope.listaRegistros = data.data.data;
-                        $scope.cantidad = data.data.length;
-                        $scope.counter = data.data.counter;
+            services.myService(data, 'soporteGponCtrl.php', 'registrossoportegpon').then((data) => {
+                if (data.data.state === 99) {
+                    swal({
+                        type: "error",
+                        title: data.data.title,
+                        text: data.data.msg,
+                        timer: 4000,
+                    }).then(function () {
+                        $cookies.remove("usuarioseguimiento");
+                        $location.path("/");
+                        $rootScope.galletainfo = undefined;
+                        $rootScope.permiso = false;
+                        $route.reload();
+                    });
+                } else {
+                    $scope.listaRegistros = data.data.data;
+                    $scope.cantidad = data.data.length;
+                    $scope.counter = data.data.counter;
 
-                        $scope.totalItems = data.data.counter;
-                        $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
-                        $scope.endItem = $scope.currentPage * $scope.pageSize;
-                        if ($scope.endItem > data.data.counter) {
-                            $scope.endItem = data.data.counter;
-                        }
+                    $scope.totalItems = data.data.counter;
+                    $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                    $scope.endItem = $scope.currentPage * $scope.pageSize;
+                    if ($scope.endItem > data.data.counter) {
+                        $scope.endItem = data.data.counter;
                     }
-                },
-
-                function errorCallback(response) {
-                    console.log(response);
                 }
-            );
+            }).catch((e) => {
+                console.log(e)
+            });
         }
 
         $scope.buscarhistoricoSoporteGpon = function (param) {
@@ -138,32 +131,27 @@
                     timer: 4000
                 })
                 return;
-            } else {
-                let data = {
-                    page: $scope.currentPage,
-                    size: $scope.pageSize,
-                    pedido: param,
-                };
-                services.registrossoportegpon(data).then(complete).catch(failed);
-
-                function complete(data) {
-                    if (data.data.state == 1) {
-                        $scope.historicoDatos = data.data.data;
-                        $("#HistoricoModal").modal('show')
-                    } else {
-                        Swal({
-                            type: "error",
-                            title: "Oops...",
-                            text: data.data.msj,
-                            timer: 4000,
-                        });
-                    }
-                }
-
-                function failed(data) {
-                    console.log(data);
-                }
             }
+            let data = {
+                page: $scope.currentPage,
+                size: $scope.pageSize,
+                pedido: param,
+            };
+            services.myService(data, 'soporteGponCtrl.php', 'registrossoportegpon').then((data) => {
+                if (data.data.state === 1) {
+                    $scope.historicoDatos = data.data.data;
+                    $("#HistoricoModal").modal('show')
+                } else {
+                    Swal({
+                        type: "error",
+                        title: "Oops...",
+                        text: data.data.msj,
+                        timer: 4000,
+                    });
+                }
+            }).catch((e) => {
+                console.log(e)
+            })
         };
 
         $scope.muestraNotas = function (datos) {
@@ -174,14 +162,14 @@
             $scope.arpon = datos.arpon;
             $scope.nap = datos.nap;
             $scope.hilo = datos.hilo;
-            $scope.intenet1 = datos.port_internet_1 == "1" ? "X" : "";
-            $scope.intenet2 = datos.port_internet_2 == "1" ? "X" : "";
-            $scope.intenet3 = datos.port_internet_3 == "1" ? "X" : "";
-            $scope.intenet4 = datos.port_internet_4 == "1" ? "X" : "";
-            $scope.television1 = datos.port_television_1 == "1" ? "X" : "";
-            $scope.television2 = datos.port_television_2 == "1" ? "X" : "";
-            $scope.television3 = datos.port_television_3 == "1" ? "X" : "";
-            $scope.television4 = datos.port_television_4 == "1" ? "X" : "";
+            $scope.intenet1 = datos.port_internet_1 === "1" ? "X" : "";
+            $scope.intenet2 = datos.port_internet_2 === "1" ? "X" : "";
+            $scope.intenet3 = datos.port_internet_3 === "1" ? "X" : "";
+            $scope.intenet4 = datos.port_internet_4 === "1" ? "X" : "";
+            $scope.television1 = datos.port_television_1 === "1" ? "X" : "";
+            $scope.television2 = datos.port_television_2 === "1" ? "X" : "";
+            $scope.television3 = datos.port_television_3 === "1" ? "X" : "";
+            $scope.television4 = datos.port_television_4 === "1" ? "X" : "";
 
             let listaseriales = datos.serial.split(",");
             let listamacs = datos.mac.split(",");
@@ -203,12 +191,9 @@
                 })
             } else {
                 services
-                    .expCsvRegistrosSoporteGpon(
-                        $scope.RegistrosSoporteGpon,
-                        $rootScope.galletainfo
-                    )
+                    .myService($scope.RegistrosSoporteGpon, 'soporteGponCtrl.php', 'csvRegistrosSoporteGpon')
                     .then((data) => {
-                        if (data.data.state == 1) {
+                        if (data.data.state === 1) {
                             var wb = XLSX.utils.book_new();
                             var ws = XLSX.utils.json_to_sheet(data.data.data);
                             XLSX.utils.book_append_sheet(wb, ws, 'soporte_gpon');
@@ -221,7 +206,6 @@
                             })
                         }
                     })
-
                     .catch((response) => {
                         console.log(response);
                     })

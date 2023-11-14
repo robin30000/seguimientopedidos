@@ -4,11 +4,10 @@
     loginCtrl.$inject = ["$scope", "$rootScope", "$location", "$cookies", "services", "$uibModal", "$log"];
 
     function loginCtrl($scope, $rootScope, $location, $cookies, services, $uibModal, $log) {
-        $scope.login = function () {
-            services.loginUser($scope.autenticacion).then(complete).catch(failed);
 
-            function complete(data) {
-                if (data.data.state != 1) {
+        $scope.login = () => {
+            services.myService($scope.autenticacion, 'authenticationCtrl.php', 'login').then((data) => {
+                if (data.data.state !== 1) {
                     Swal({
                         type: "error",
                         title: "Oops...",
@@ -16,7 +15,7 @@
                         timer: 4000,
                     });
                 } else {
-                    var today = new Date();
+                    const today = new Date();
                     $rootScope.year = today.getFullYear();
                     $rootScope.nombre = data.data.data.nombre;
                     $rootScope.login = data.data.data.login;
@@ -28,33 +27,38 @@
                     $location.path("/actividades");
                     $cookies.put("usuarioseguimiento", JSON.stringify(data.data.data));
 
-                    //console.log($cookies.get("usuarioseguimiento"));
-
-                    var galleta = JSON.parse($cookies.get("usuarioseguimiento"));
-                    //var galleta = $cookies.get("usuarioseguimiento");
-                    $rootScope.galletainfo = galleta;
+                    $rootScope.galletainfo = JSON.parse($cookies.get("usuarioseguimiento"));
                     $rootScope.permiso = true;
                 }
-            }
+            }).catch((e) => {
+                console.log(e)
+            })
+        };
 
-            function failed(response) {
-                console.log(response);
-            }
+        $rootScope.logout = () => {
+            services.myService($rootScope.identificacion, 'authenticationCtrl.php', 'logout').then((data) => {
+                $cookies.remove("usuarioseguimiento");
+                $location.path("/");
+                $rootScope.galletainfo = undefined;
+                $rootScope.permiso = false;
+            }).catch((e) => {
+                console.log(e)
+            })
         };
 
         $rootScope.SuperB = (d) => {
-            if (!d){
+            if (!d) {
                 Swal({
-                    type:'error',
+                    type: 'error',
                     title: 'Opps..',
                     text: 'Ingrese la tarea',
-                    timer:4000
+                    timer: 4000
                 })
                 return;
             }
 
-            services.myService(d,'authenticationCtrl.php', 'SuperB').then((data) => {
-                if (data.data.state){
+            services.myService(d, 'authenticationCtrl.php', 'SuperB').then((data) => {
+                if (data.data.state) {
                     $scope.d = data.data.data;
                     let modalInstance = $uibModal.open({
                         ariaLabelledBy: 'modal-title',
@@ -74,12 +78,12 @@
                     }, function () {
                         $log.info('Modal dismissed at: ' + new Date());
                     });
-                }else{
+                } else {
                     Swal({
-                        type:'error',
-                        title:'Oppss..',
-                        text:data.data.msj,
-                        timer:4000
+                        type: 'error',
+                        title: 'Oppss..',
+                        text: data.data.msj,
+                        timer: 4000
                     })
                 }
             }).catch((e) => {
@@ -91,7 +95,7 @@
     angular.module("seguimientopedidos").controller("ModalSuperBCtrl", ModalSuperBCtrl);
     ModalSuperBCtrl.$inject = ["$uibModalInstance", "items", "services", "$route", "$scope", "$timeout"];
 
-    function ModalSuperBCtrl($uibModalInstance, items, services, $route, $scope, $timeout) {
+    function ModalSuperBCtrl($uibModalInstance, items, services, $route) {
         var $ctrl = this;
         $ctrl.items = items;
 

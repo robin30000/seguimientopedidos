@@ -152,45 +152,8 @@ app.factory("services", [
         };
 
         /**
-         * authentication
-         */
-
-        obj.loginUser = function (datosAutenticacion) {
-            var data = {
-                method: "login",
-                data: datosAutenticacion,
-            };
-            return $http.post(serviceBase1 + "authenticationCtrl.php", data);
-        };
-
-        obj.cerrarsesion = function () {
-            var data = {
-                method: "logout",
-            };
-            return $http.post(serviceBase1 + "authenticationCtrl.php", data);
-        };
-
-        /**
          * usuario
          */
-
-        obj.editarUsuario = function (datosEdicion) {
-            var data = {
-                method: "editarUsuario",
-                data: datosEdicion,
-            };
-            return $http.post(serviceBase1 + "userCtrl.php", data);
-        };
-
-        obj.editarRegistro = function (datosEdicion) {
-            var data = {
-                method: "editarRegistro",
-                data: {
-                    datosEdicion: datosEdicion,
-                },
-            };
-            return $http.post(serviceBase1 + "userCtrl.php", data);
-        };
 
         obj.pedidoComercial = function (datospedidoComercial) {
             var data = {
@@ -242,14 +205,6 @@ app.factory("services", [
             return $http.post(serviceBase1 + "userCtrl.php", data);
         };
 
-        obj.creaUsuario = function (datosCrearUsuario) {
-            var data = {
-                method: "creaUsuario",
-                data: datosCrearUsuario,
-            };
-            return $http.post(serviceBase1 + "userCtrl.php", data);
-        };
-
         obj.creaTecnico = function (datosCrearTecnico, id_tecnico) {
             var data = {
                 method: "creaTecnico",
@@ -265,14 +220,6 @@ app.factory("services", [
             var data = {
                 method: "listadoUsuarios",
                 data: datos,
-            };
-            return $http.post(serviceBase1 + "userCtrl.php", data);
-        };
-
-        obj.deleteUsuario = function (id) {
-            var data = {
-                method: "borrarUsuario",
-                data: id,
             };
             return $http.post(serviceBase1 + "userCtrl.php", data);
         };
@@ -443,8 +390,7 @@ app.factory("services", [
         obj.getexporteContingencias = function (datos) {
             var data = {
                 method: "csvContingencias",
-                data: datos,
-                responseType: 'blob'
+                data: datos
             };
             return $http.post(serviceBase1 + "otherServicesDosCtrl.php", data);
         };
@@ -500,26 +446,10 @@ app.factory("services", [
             return $http.post(serviceBase1 + "otherServicesDosCtrl.php", data);
         };
 
-        obj.expCsvRegistros = function (datos) {
-            var data = {
-                method: "csvRegistros",
-                data: datos,
-            };
-            return $http.post(serviceBase1 + "otherServicesDosCtrl.php", data);
-        };
-
         obj.expBrutalForce = function (fechas) {
             var data = {
                 method: "expBrutal",
                 data: fechas,
-            };
-            return $http.post(serviceBase1 + "otherServicesDosCtrl.php", data);
-        };
-
-        obj.expCsvtecnico = function (datos) {
-            var data = {
-                method: "Csvtecnico",
-                data: datos,
             };
             return $http.post(serviceBase1 + "otherServicesDosCtrl.php", data);
         };
@@ -993,14 +923,6 @@ app.factory("services", [
             return $http.post(serviceBase1 + "novedadesTecnicoCtrl.php", data);
         };
 
-        obj.registrosOffline = function (datos) {
-            var data = {
-                method: "registrosOffline",
-                data: datos,
-            };
-            return $http.post(serviceBase1 + "contingenciaCtrl.php", data);
-        };
-
         obj.getgraficaDepartamento = function (mes) {
             var data = {
                 method: "graficaDepartamento",
@@ -1175,14 +1097,6 @@ app.factory("services", [
         obj.getProcesos = function () {
             var data = {
                 method: "procesos",
-            };
-            return $http.post(serviceBase1 + "formaAsesoresCtrl.php", data);
-        };
-
-        obj.registros = function (datos) {
-            var data = {
-                method: "registros",
-                data: datos,
             };
             return $http.post(serviceBase1 + "formaAsesoresCtrl.php", data);
         };
@@ -1586,24 +1500,6 @@ app.factory("services", [
             return $http.post(serviceBase1 + "soporteGponCtrl.php", data);
         };
 
-        obj.registrossoportegpon = function (datos) {
-            var data = {
-                method: "registrossoportegpon",
-                data: datos,
-            };
-            return $http.post(serviceBase1 + "soporteGponCtrl.php", data);
-        };
-
-        obj.expCsvRegistrosSoporteGpon = function (datos) {
-            var data = {
-                method: "csvRegistrosSoporteGpon",
-                data: {
-                    datos,
-                },
-            };
-            return $http.post(serviceBase1 + "soporteGponCtrl.php", data);
-        };
-
         obj.buscarhistoricoSoporteGpon = function (datos) {
             var data = {
                 method: "buscarhistoricoSoporteGpon",
@@ -1649,22 +1545,6 @@ app.factory("services", [
                     tipificacion: tipificacion,
                     observacion: observacion,
                 },
-            };
-            return $http.post(serviceBase1 + "codigoIncompletoCtrl.php", data);
-        };
-
-        obj.registroscodigoincompleto = function (datos) {
-            var data = {
-                method: "registroscodigoincompleto",
-                data: datos
-            };
-            return $http.post(serviceBase1 + "codigoIncompletoCtrl.php", data);
-        };
-
-        obj.expCsvRegistrosCodigoIncompleto = function (datos) {
-            var data = {
-                method: "csvRegistrosCodigoIncompleto",
-                data: datos,
             };
             return $http.post(serviceBase1 + "codigoIncompletoCtrl.php", data);
         };
@@ -1931,35 +1811,11 @@ app.factory("services", [
          * !nuevo quejas go
          */
 
-        obj.datosQuejasGo = function () {
-            data = {method: 'datosQuejasGo'}
-            return $http.post(serviceBase1 + 'gestionQuejasGoCtrl.php', data);
-        }
-
-        obj.datosQuejasGoTerminado = function (datos) {
-            data = {method: 'datosQuejasGoTerminado', data: datos}
-            return $http.post(serviceBase1 + 'gestionQuejasGoCtrl.php', data);
-        }
-
-        obj.marcarEnGestionQuejasGo = function (datos) {
-            data = {method: 'marcarEnGestionQuejasGo', data: datos}
-            return $http.post(serviceBase1 + 'gestionQuejasGoCtrl.php', data);
-        }
-
-        obj.guardaGestionQuejasGo = function (datos) {
-            data = {method: 'guardaGestionQuejasGo', data: datos}
-            return $http.post(serviceBase1 + 'gestionQuejasGoCtrl.php', data);
-        }
-
         obj.detalleNumeroQuejaGo = function (datos) {
             data = {method: 'detalleNumeroQuejaGo', data: datos}
             return $http.post(serviceBase1 + 'gestionQuejasGoCtrl.php', data);
         }
 
-        obj.csvQuejaGo = function (datos) {
-            data = {method: 'csvQuejaGo', data: datos}
-            return $http.post(serviceBase1 + 'gestionQuejasGoCtrl.php', data);
-        }
 
         /**
          * admin menu - perfil
@@ -2023,22 +1879,6 @@ app.factory("services", [
         /**
          * registroEquipos
          */
-
-        obj.registroEquipos = function (datos) {
-            let data = {
-                method: 'registroEquipos',
-                data: datos
-            }
-            return $http.post(serviceBase1 + 'registroEquiposCtrl.php', data);
-        }
-
-        obj.csvRegistroEquipos = function (datos) {
-            let data = {
-                method: 'csvRegistroEquipos',
-                data: datos
-            }
-            return $http.post(serviceBase1 + 'registroEquiposCtrl.php', data);
-        }
 
         obj.acualizaTecnicos = function (datos) {
             let data = {
@@ -2588,24 +2428,6 @@ app.run(function ($rootScope, services, i18nService) {
 });
 
 app.run([
-    "$location",
-    "$rootScope",
-    "$route",
-    "$cookies",
-    "services",
-    function ($location, $rootScope, $route, $cookies, services) {
-        $rootScope.executeCopy = function executeCopy(text) {
-            var input = document.createElement("textarea");
-            document.body.appendChild(input);
-            input.value = text;
-            input.select();
-            document.execCommand("Copy");
-            input.remove();
-        };
-    },
-]);
-
-app.run([
     "$rootScope",
     "services",
     function ($rootScope, services) {
@@ -2975,21 +2797,5 @@ app.run([
         $rootScope.pendientesBrutalIncial();
         $rootScope.ciudades();
         $rootScope.regionesTip();
-    },
-]);
-
-app.run([
-    "$location",
-    "$rootScope",
-    "$cookies",
-    "services",
-    function ($location, $rootScope, $cookies, services) {
-        $rootScope.logout = function () {
-            services.cerrarsesion();
-            $cookies.remove("usuarioseguimiento");
-            $location.path("/");
-            $rootScope.galletainfo = undefined;
-            $rootScope.permiso = false;
-        };
     },
 ]);

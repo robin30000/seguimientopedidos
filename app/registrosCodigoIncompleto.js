@@ -2,6 +2,7 @@
     "use strict";
     angular.module("seguimientopedidos").controller("registroscodigoincompletoCtrl", registroscodigoincompletoCtrl);
     registroscodigoincompletoCtrl.$inject = ["$scope", "$rootScope", "services"];
+
     function registroscodigoincompletoCtrl($scope, $rootScope, services) {
         $scope.listaRegistros = {};
         $scope.RegistrosCodigoIncompleto = {};
@@ -38,25 +39,21 @@
                 data = {'page': $scope.currentPage, 'size': $scope.pageSize}
             }
             services
-                .registroscodigoincompleto(data)
-                .then(
-                    function (data) {
-                        $scope.listaRegistros = data.data.data;
-                        $scope.cantidad = data.data.totalItems;
-                        $scope.counter = data.data.total_pages;
+                .myService(data, 'codigoIncompletoCtrl.php', 'registroscodigoincompleto')
+                .then((data) => {
+                    $scope.listaRegistros = data.data.data;
+                    $scope.cantidad = data.data.totalItems;
+                    $scope.counter = data.data.total_pages;
 
-                        $scope.totalItems = data.data.totalItems;
-                        $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
-                        $scope.endItem = $scope.currentPage * $scope.pageSize;
-                        if ($scope.endItem > data.data.totalItems) {
-                            $scope.endItem = data.data.totalItems;
-                        }
-                    },
-
-                    function errorCallback(response) {
-                        console.log(response);
+                    $scope.totalItems = data.data.totalItems;
+                    $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                    $scope.endItem = $scope.currentPage * $scope.pageSize;
+                    if ($scope.endItem > data.data.totalItems) {
+                        $scope.endItem = data.data.totalItems;
                     }
-                );
+                }).catch((e) => {
+                console.log(e)
+            })
 
         }
 
@@ -155,11 +152,7 @@
                     timer: 4000
                 })
             } else {
-                services
-                    .expCsvRegistrosCodigoIncompleto(
-                        $scope.RegistrosCodigoIncompleto,
-                        $rootScope.galletainfo
-                    )
+                services.myService($scope.RegistrosCodigoIncompleto, 'codigoIncompletoCtrl.php', 'csvRegistrosCodigoIncompleto')
                     .then((data) => {
                         if (data.data.state === 1) {
                             var wb = XLSX.utils.book_new();

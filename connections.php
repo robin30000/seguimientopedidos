@@ -7,6 +7,7 @@ function getConnPortalbd(){
 	$Host="10.100.82.125";
 	$User="root";
 	$Pwd="123456";
+    
 	$Bd="portalbd";
 
         $db = new mysqli($Host, $User, $Pwd, $Bd);

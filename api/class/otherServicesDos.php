@@ -4,7 +4,7 @@ require_once '../class/conection.php';
 /*error_reporting(E_ALL);
 ini_set('display_errors', 1);*/
 
-require '../../vendor/autoload.php';
+//require '../../vendor/autoload.php';
 
 
 class otherServicesDos
@@ -19,9 +19,6 @@ class otherServicesDos
     public function gestionBorrar($datosFinal)
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();
             $PedidoDespacho = $datosFinal['PedidoDespacho'];
 
             $stmt = $this->_DB->prepare("select idgestion id from BrutalForce where PedidoDespacho = :PedidoDespacho");
@@ -29,7 +26,7 @@ class otherServicesDos
 
             if ($stmt->rowCount()) {
                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $id     = $result['id'];
+                $id = $result['id'];
 
                 $stmt = $this->_DB->prepare("DELETE FROM BrutalForce WHERE idgestion = :id");
                 $stmt->execute([':id' => $id]);
@@ -54,9 +51,7 @@ class otherServicesDos
     public function desbloquear($datosFinal)
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();
+
             $PedidoDespacho = $datosFinal['PedidoDespacho'];
 
             $stmt = $this->_DB->prepare("select idgestion id from BrutalForce where PedidoDespacho = :PedidoDespacho");
@@ -64,7 +59,7 @@ class otherServicesDos
 
             if ($stmt->rowCount()) {
                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $id     = $result['id'];
+                $id = $result['id'];
                 $update = $this->_DB->prepare("update BrutalForce SET pedidobloqueado = '0' WHERE idgestion = :id");
                 $update->execute([':id' => $id]);
 
@@ -87,20 +82,18 @@ class otherServicesDos
     public function csvPreagen($data)
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();
-            $usuarioid   = $_SESSION['login'];
-            $datos       = $data['datos'];
-            $fecha       = $datos['fecha'];
-            $valor       = $data['valor'];
-            $uen         = $datos['uen'];
+
+            $usuarioid = $_SESSION['login'];
+            $datos = $data['datos'];
+            $fecha = $datos['fecha'];
+            $valor = $data['valor'];
+            $uen = $datos['uen'];
             $tipotrabajo = $datos['tipo_trabajo'];
-            $ciudad      = $datos['CIUDAD'];
-            $sep         = "";
-            $ciudades    = "";
-            $bandera     = 0;
-            $bandera1    = 0;
+            $ciudad = $datos['CIUDAD'];
+            $sep = "";
+            $ciudades = "";
+            $bandera = 0;
+            $bandera1 = 0;
 
             if ($ciudad == null) {
                 $ciudad = "";
@@ -109,7 +102,7 @@ class otherServicesDos
                 for ($i = 0; $i < $total; $i++) {
 
                     if ($valida = strpos($ciudad[$i], '_DEPA') !== false) {
-                        $bandera  = $bandera + 1;
+                        $bandera = $bandera + 1;
                         $ciudades = $ciudades . $sep . "'" . str_replace("_DEPA", "", $ciudad[$i]) . "'";
                     } else {
                         $bandera1 = $bandera1 + 1;
@@ -137,10 +130,10 @@ class otherServicesDos
                 $uen = "";
             }
             if ($tipotrabajo != "") {
-                $tipo_trabajo  = "and tipo_trabajo = '$tipotrabajo'";
+                $tipo_trabajo = "and tipo_trabajo = '$tipotrabajo'";
                 $tipo_trabajo1 = "and (select tipo_trabajo from carga_click where pro.pedido_id = pedido_id limit 1) = '$tipotrabajo'";
             } else {
-                $tipo_trabajo  = "";
+                $tipo_trabajo = "";
                 $tipo_trabajo1 = "";
             }
 
@@ -149,221 +142,221 @@ class otherServicesDos
             if ($valor == "Totalagendados") {
 
                 $query = "select pedido_id, cliente, departamento, ciudad, direccion, " .
-                         "productos, fecha_cita, jornada_cita, UEN, " .
-                         "(select estado_id from carga_click cl " .
-                         "where pro.pedido_id=cl.pedido_id limit 1) estado_click, " .
-                         "(select observacion from carga_click cl  " .
-                         "where pro.pedido_id=cl.pedido_id limit 1) observacion_click, " .
-                         "(select fecha_carga_click from carga_click cl  " .
-                         "where pro.pedido_id=cl.pedido_id limit 1) fecha_ingreso_click " .
-                         "from carga_agenda pro " .
-                         "where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
-                         "$uen $tipo_trabajo1 $ciudades";
+                    "productos, fecha_cita, jornada_cita, UEN, " .
+                    "(select estado_id from carga_click cl " .
+                    "where pro.pedido_id=cl.pedido_id limit 1) estado_click, " .
+                    "(select observacion from carga_click cl  " .
+                    "where pro.pedido_id=cl.pedido_id limit 1) observacion_click, " .
+                    "(select fecha_carga_click from carga_click cl  " .
+                    "where pro.pedido_id=cl.pedido_id limit 1) fecha_ingreso_click " .
+                    "from carga_agenda pro " .
+                    "where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
+                    "$uen $tipo_trabajo1 $ciudades";
 
 
             } elseif ($valor == "TotalVistaClick") {
 
                 $query = "select pedido_id, cliente, departamento, ciudad, direccion, productos, " .
-                         "fecha_cita, " .
-                         "jornada_cita, uen, estado_id,  " .
-                         "(select descripcion from codigo_pendientes_click " .
-                         "where codigo = pro.codigo_pendiente_incompleto) descripcion, " .
-                         "actividad_trabajo, observacion, fecha_carga_click, tipo_trabajo  " .
-                         "from carga_click pro  " .
-                         "where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
-                         "and pro.pedido_id in (select pedido_id from carga_agenda " .
-                         "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
-                         "$uen $tipo_trabajo $ciudades";
+                    "fecha_cita, " .
+                    "jornada_cita, uen, estado_id,  " .
+                    "(select descripcion from codigo_pendientes_click " .
+                    "where codigo = pro.codigo_pendiente_incompleto) descripcion, " .
+                    "actividad_trabajo, observacion, fecha_carga_click, tipo_trabajo  " .
+                    "from carga_click pro  " .
+                    "where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
+                    "and pro.pedido_id in (select pedido_id from carga_agenda " .
+                    "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
+                    "$uen $tipo_trabajo $ciudades";
 
             } elseif ($valor == "TotalConfirmados") {
 
                 $query = "select distinct pedido, cliente, departamento, ciudad, productos, " .
-                         "fecha_cita, jornada_cita, uen, accion " .
-                         "from (select reg.pedido, pro.cliente, pro.departamento, pro.ciudad,  " .
-                         "pro.productos, " .
-                         "pro.fecha_cita, pro.jornada_cita, pro.uen, reg.accion " .
-                         "from registros reg, carga_agenda pro   " .
-                         "where pro.pedido_id in (select pedido_id from carga_click " .
-                         "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
-                         "and pro.pedido_id = reg.pedido  " .
-                         "and accion = 'Visita confirmada' " .
-                         "and reg.fecha BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
-                         "and pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
-                         "$uen $tipo_trabajo1 $ciudades)b  ";
+                    "fecha_cita, jornada_cita, uen, accion " .
+                    "from (select reg.pedido, pro.cliente, pro.departamento, pro.ciudad,  " .
+                    "pro.productos, " .
+                    "pro.fecha_cita, pro.jornada_cita, pro.uen, reg.accion " .
+                    "from registros reg, carga_agenda pro   " .
+                    "where pro.pedido_id in (select pedido_id from carga_click " .
+                    "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
+                    "and pro.pedido_id = reg.pedido  " .
+                    "and accion = 'Visita confirmada' " .
+                    "and reg.fecha BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
+                    "and pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
+                    "$uen $tipo_trabajo1 $ciudades)b  ";
 
             } elseif ($valor == "TotalSinConfirmar") {
 
                 $query = "select pedido_id, cliente, departamento, ciudad, productos, fecha_cita, " .
-                         "jornada_cita, uen, descripcion, " .
-                         "estado_id " .
-                         "from (select distinct pro.pedido_id, pro.cliente, pro.departamento, " .
-                         "pro.ciudad, pro.productos, " .
-                         "pro.fecha_cita, pro.jornada_cita, pro.uen, (select descripcion from " .
-                         "codigo_pendientes_click " .
-                         "where codigo = pro.codigo_pendiente_incompleto) descripcion, estado_id " .
-                         "from carga_click pro " .
-                         "where pro.fecha_cita BETWEEN ('$fecha 00:00:00') " .
-                         "AND ('$fecha 23:59:59') " .
-                         "and pro.pedido_id in (select pedido_id from carga_agenda " .
-                         "where fecha_cita BETWEEN ('$fecha 00:00:00') " .
-                         "AND ('$fecha 23:59:59')) " .
-                         "and pro.pedido_id not in " .
-                         "(select reg.pedido " .
-                         "from registros reg, carga_agenda pro  " .
-                         "where pro.pedido_id in (select pedido_id from carga_click " .
-                         "where fecha_cita BETWEEN ('$fecha 00:00:00') " .
-                         "AND ('$fecha 23:59:59')) " .
-                         "and pro.pedido_id = reg.pedido " .
-                         "and accion = 'Visita confirmada' " .
-                         "and reg.fecha BETWEEN ('$fecha 00:00:00') " .
-                         "AND ('$fecha 23:59:59') " .
-                         "and pro.fecha_cita BETWEEN ('$fecha 00:00:00') " .
-                         "AND ('$fecha 23:59:59')) " .
-                         "and pro.pedido_id not in " .
-                         "(select pedido_id 	" .
-                         "from carga_agenda " .
-                         "where pedido_id not in " .
-                         "(select pedido from registros where fecha " .
-                         "BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
-                         "and fecha_cita BETWEEN ('$fecha 00:00:00') " .
-                         "AND ('$fecha 23:59:59') " .
-                         "and pedido_id in (select pedido_id from carga_click " .
-                         "where fecha_cita BETWEEN ('$fecha 00:00:00') " .
-                         "AND ('$fecha 23:59:59'))) $uen $tipo_trabajo $ciudades)a ";
+                    "jornada_cita, uen, descripcion, " .
+                    "estado_id " .
+                    "from (select distinct pro.pedido_id, pro.cliente, pro.departamento, " .
+                    "pro.ciudad, pro.productos, " .
+                    "pro.fecha_cita, pro.jornada_cita, pro.uen, (select descripcion from " .
+                    "codigo_pendientes_click " .
+                    "where codigo = pro.codigo_pendiente_incompleto) descripcion, estado_id " .
+                    "from carga_click pro " .
+                    "where pro.fecha_cita BETWEEN ('$fecha 00:00:00') " .
+                    "AND ('$fecha 23:59:59') " .
+                    "and pro.pedido_id in (select pedido_id from carga_agenda " .
+                    "where fecha_cita BETWEEN ('$fecha 00:00:00') " .
+                    "AND ('$fecha 23:59:59')) " .
+                    "and pro.pedido_id not in " .
+                    "(select reg.pedido " .
+                    "from registros reg, carga_agenda pro  " .
+                    "where pro.pedido_id in (select pedido_id from carga_click " .
+                    "where fecha_cita BETWEEN ('$fecha 00:00:00') " .
+                    "AND ('$fecha 23:59:59')) " .
+                    "and pro.pedido_id = reg.pedido " .
+                    "and accion = 'Visita confirmada' " .
+                    "and reg.fecha BETWEEN ('$fecha 00:00:00') " .
+                    "AND ('$fecha 23:59:59') " .
+                    "and pro.fecha_cita BETWEEN ('$fecha 00:00:00') " .
+                    "AND ('$fecha 23:59:59')) " .
+                    "and pro.pedido_id not in " .
+                    "(select pedido_id 	" .
+                    "from carga_agenda " .
+                    "where pedido_id not in " .
+                    "(select pedido from registros where fecha " .
+                    "BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
+                    "and fecha_cita BETWEEN ('$fecha 00:00:00') " .
+                    "AND ('$fecha 23:59:59') " .
+                    "and pedido_id in (select pedido_id from carga_click " .
+                    "where fecha_cita BETWEEN ('$fecha 00:00:00') " .
+                    "AND ('$fecha 23:59:59'))) $uen $tipo_trabajo $ciudades)a ";
 
             } elseif ($valor == "TotalNogestionados") {
 
                 $query = "select pedido_id, cliente, departamento, ciudad, productos, fecha_cita, " .
-                         "jornada_cita, uen " .
-                         "from carga_agenda pro " .
-                         "where pedido_id not in (select pedido from registros where fecha " .
-                         "BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
-                         "and fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
-                         "and pedido_id in (select pedido_id from carga_click  " .
-                         "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
-                         "$uen $tipo_trabajo1 $ciudades";
+                    "jornada_cita, uen " .
+                    "from carga_agenda pro " .
+                    "where pedido_id not in (select pedido from registros where fecha " .
+                    "BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
+                    "and fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
+                    "and pedido_id in (select pedido_id from carga_click  " .
+                    "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
+                    "$uen $tipo_trabajo1 $ciudades";
 
             } elseif ($valor == "TotalFinalClick") {
 
                 $query = "select pedido_id,cliente, departamento, ciudad, direccion, productos, " .
-                         "fecha_cita, jornada_cita, estado_id, uen, codigo_pendiente_incompleto,  " .
-                         "(select descripcion from codigo_pendientes_click " .
-                         "where codigo = pro.codigo_pendiente_incompleto) descripcion, tipo_trabajo, " .
-                         "observacion, fecha_carga_click " .
-                         "from carga_click pro " .
-                         "where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
-                         "and pro.pedido_id in (select pedido_id from carga_agenda " .
-                         "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
-                         "and pro.estado_id = 'Finalizada' " .
-                         "$uen $tipo_trabajo $ciudades";
+                    "fecha_cita, jornada_cita, estado_id, uen, codigo_pendiente_incompleto,  " .
+                    "(select descripcion from codigo_pendientes_click " .
+                    "where codigo = pro.codigo_pendiente_incompleto) descripcion, tipo_trabajo, " .
+                    "observacion, fecha_carga_click " .
+                    "from carga_click pro " .
+                    "where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
+                    "and pro.pedido_id in (select pedido_id from carga_agenda " .
+                    "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
+                    "and pro.estado_id = 'Finalizada' " .
+                    "$uen $tipo_trabajo $ciudades";
 
             } elseif ($valor == "Diferenciasagendados") {
 
                 $query = "select pedido_id, cliente, departamento, ciudad, direccion, " .
-                         "productos, fecha_cita, jornada_cita, UEN, " .
-                         "(select estado_id from carga_click cl  " .
-                         "where pro.pedido_id=cl.pedido_id limit 1) estado_click, " .
-                         "(select observacion from carga_click cl  " .
-                         "where pro.pedido_id=cl.pedido_id limit 1) observacion_click, " .
-                         "(select fecha_carga_click from carga_click cl " .
-                         "where pro.pedido_id=cl.pedido_id limit 1) fecha_ingreso_click " .
-                         "from carga_agenda pro " .
-                         "where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
-                         "and pro.pedido_id not in (select pedido_id from carga_click " .
-                         "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
-                         "$uen $tipo_trabajo1 $ciudades";
+                    "productos, fecha_cita, jornada_cita, UEN, " .
+                    "(select estado_id from carga_click cl  " .
+                    "where pro.pedido_id=cl.pedido_id limit 1) estado_click, " .
+                    "(select observacion from carga_click cl  " .
+                    "where pro.pedido_id=cl.pedido_id limit 1) observacion_click, " .
+                    "(select fecha_carga_click from carga_click cl " .
+                    "where pro.pedido_id=cl.pedido_id limit 1) fecha_ingreso_click " .
+                    "from carga_agenda pro " .
+                    "where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
+                    "and pro.pedido_id not in (select pedido_id from carga_click " .
+                    "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
+                    "$uen $tipo_trabajo1 $ciudades";
 
             } elseif ($valor == "DiferenciasVistaClick") {
 
                 $query = "select pedido_id, cliente, departamento, ciudad, direccion, productos, " .
-                         "fecha_cita, " .
-                         "jornada_cita, uen, estado_id,  " .
-                         "(select descripcion from codigo_pendientes_click " .
-                         "where codigo = pro.codigo_pendiente_incompleto) descripcion, " .
-                         "actividad_trabajo, observacion, fecha_carga_click, tipo_trabajo  " .
-                         "from carga_click pro  " .
-                         "where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
-                         "and pro.pedido_id not in (select pedido_id from carga_agenda " .
-                         "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
-                         "$uen $tipo_trabajo $ciudades";
+                    "fecha_cita, " .
+                    "jornada_cita, uen, estado_id,  " .
+                    "(select descripcion from codigo_pendientes_click " .
+                    "where codigo = pro.codigo_pendiente_incompleto) descripcion, " .
+                    "actividad_trabajo, observacion, fecha_carga_click, tipo_trabajo  " .
+                    "from carga_click pro  " .
+                    "where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
+                    "and pro.pedido_id not in (select pedido_id from carga_agenda " .
+                    "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
+                    "$uen $tipo_trabajo $ciudades";
 
                 $queryCount = "select count(pedido_id) Cantidad " .
-                              "from carga_click pro " .
-                              "where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')  " .
-                              "and pro.pedido_id not in (select pedido_id from carga_agenda " .
-                              "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59'))  " .
-                              "$uen $tipo_trabajo $ciudades";
+                    "from carga_click pro " .
+                    "where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')  " .
+                    "and pro.pedido_id not in (select pedido_id from carga_agenda " .
+                    "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59'))  " .
+                    "$uen $tipo_trabajo $ciudades";
             } elseif ($valor == "DiferenciasConfirmados") {
 
                 $query = "select pedido_id,cliente, departamento, ciudad, direccion, productos, " .
-                         "fecha_cita, jornada_cita,  " .
-                         "(select accion from registros " .
-                         "where pedido_id = pedido limit 1) accion, (select observaciones from registros " .
-                         "where pedido_id = pedido limit 1) accion " .
-                         "from carga_click pro " .
-                         "where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
-                         "and pro.pedido_id not in (select pedido_id from carga_agenda  " .
-                         "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
-                         "and pro.pedido_id in (select pedido from registros where  " .
-                         "accion = 'Visita confirmada'  " .
-                         "and fecha BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
-                         "and pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
-                         "$uen $tipo_trabajo $ciudades";
+                    "fecha_cita, jornada_cita,  " .
+                    "(select accion from registros " .
+                    "where pedido_id = pedido limit 1) accion, (select observaciones from registros " .
+                    "where pedido_id = pedido limit 1) accion " .
+                    "from carga_click pro " .
+                    "where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
+                    "and pro.pedido_id not in (select pedido_id from carga_agenda  " .
+                    "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
+                    "and pro.pedido_id in (select pedido from registros where  " .
+                    "accion = 'Visita confirmada'  " .
+                    "and fecha BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
+                    "and pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
+                    "$uen $tipo_trabajo $ciudades";
 
             } elseif ($valor == "DiferenciasSinConfirmar") {
 
                 $query = "select pedido_id, cliente, departamento, ciudad, productos, fecha_cita, " .
-                         "jornada_cita, uen, (select descripcion from " .
-                         "codigo_pendientes_click " .
-                         "where codigo = pro.codigo_pendiente_incompleto) descripcion, " .
-                         "estado_id " .
-                         "from carga_click pro   " .
-                         "where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
-                         "and pro.pedido_id not in (select pedido_id from carga_agenda  " .
-                         "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59'))  " .
-                         "and pro.pedido_id not in " .
-                         "(select pedido_id " .
-                         "from carga_click pro  " .
-                         "where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')  " .
-                         "and pro.pedido_id not in (select pedido_id from carga_agenda " .
-                         "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
-                         "and pro.pedido_id in (select pedido from registros where " .
-                         "accion = 'Visita confirmada' " .
-                         "and fecha BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
-                         "and pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
-                         "and pro.pedido_id not in " .
-                         "(select pedido_id " .
-                         "from carga_click  " .
-                         "where pedido_id not in (select pedido from registros  " .
-                         "where fecha BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
-                         "and fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')  " .
-                         "and pedido_id not in (select pedido_id from carga_agenda " .
-                         "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59'))) $uen $tipo_trabajo $ciudades";
+                    "jornada_cita, uen, (select descripcion from " .
+                    "codigo_pendientes_click " .
+                    "where codigo = pro.codigo_pendiente_incompleto) descripcion, " .
+                    "estado_id " .
+                    "from carga_click pro   " .
+                    "where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
+                    "and pro.pedido_id not in (select pedido_id from carga_agenda  " .
+                    "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59'))  " .
+                    "and pro.pedido_id not in " .
+                    "(select pedido_id " .
+                    "from carga_click pro  " .
+                    "where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')  " .
+                    "and pro.pedido_id not in (select pedido_id from carga_agenda " .
+                    "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
+                    "and pro.pedido_id in (select pedido from registros where " .
+                    "accion = 'Visita confirmada' " .
+                    "and fecha BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
+                    "and pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
+                    "and pro.pedido_id not in " .
+                    "(select pedido_id " .
+                    "from carga_click  " .
+                    "where pedido_id not in (select pedido from registros  " .
+                    "where fecha BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
+                    "and fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')  " .
+                    "and pedido_id not in (select pedido_id from carga_agenda " .
+                    "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59'))) $uen $tipo_trabajo $ciudades";
 
             } elseif ($valor == "Diferenciasnogestionados") {
 
                 $query = "select pedido_id, cliente, departamento, ciudad, productos, fecha_cita, " .
-                         "jornada_cita, uen " .
-                         "from carga_click " .
-                         "where pedido_id not in (select pedido from registros " .
-                         "where fecha BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
-                         "and fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
-                         "and pedido_id not in (select pedido_id from carga_agenda " .
-                         "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) $uen $tipo_trabajo $ciudades";
+                    "jornada_cita, uen " .
+                    "from carga_click " .
+                    "where pedido_id not in (select pedido from registros " .
+                    "where fecha BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
+                    "and fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
+                    "and pedido_id not in (select pedido_id from carga_agenda " .
+                    "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) $uen $tipo_trabajo $ciudades";
 
             } elseif ($valor == "DiferenciasFinalClick") {
 
                 $query = "select pedido_id,cliente, departamento, ciudad, direccion, productos, " .
-                         "fecha_cita, jornada_cita, estado_id, uen, codigo_pendiente_incompleto,  " .
-                         "(select descripcion from codigo_pendientes_click " .
-                         "where codigo = pro.codigo_pendiente_incompleto) descripcion, tipo_trabajo, " .
-                         "observacion, fecha_carga_click " .
-                         "from carga_click pro " .
-                         "where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
-                         "and pro.pedido_id not in (select pedido_id from carga_agenda " .
-                         "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
-                         "and pro.estado_id = 'Finalizada' " .
-                         "$uen $tipo_trabajo $ciudades";
+                    "fecha_cita, jornada_cita, estado_id, uen, codigo_pendiente_incompleto,  " .
+                    "(select descripcion from codigo_pendientes_click " .
+                    "where codigo = pro.codigo_pendiente_incompleto) descripcion, tipo_trabajo, " .
+                    "observacion, fecha_carga_click " .
+                    "from carga_click pro " .
+                    "where pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') " .
+                    "and pro.pedido_id not in (select pedido_id from carga_agenda " .
+                    "where fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59')) " .
+                    "and pro.estado_id = 'Finalizada' " .
+                    "$uen $tipo_trabajo $ciudades";
             }
 
             $stmt = $this->_DB->prepare($query);
@@ -478,10 +471,6 @@ class otherServicesDos
     public function csvContingencias($data)
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();
-
             if (!empty($data)) {
                 $fechaIni = $data['fechaupdateInical'];
                 $fechafin = $data['fechaupdateFinal'];
@@ -490,98 +479,27 @@ class otherServicesDos
                 $fechafin = date('Y-m-d');
             }
 
+            /*if ($fechaIni >= '2023-11-01' && $fechafin <= '2023-11-14') {
+                $response = ['state' => false, 'msj' => 'Ha ocurrido un error interno intentalo nuevamente en unos minutos'];
+                echo json_encode($response);
+                exit();
+            }*/
+
 
             $stmt = $this->_DB->prepare("SELECT C.accion, C.ciudad, C.correo, C.macEntra, C.macSale, C.motivo, C.observacion,
             C.paquetes, C.pedido, C.proceso, C.producto, C.remite, C.tecnologia, C.tipoEquipo, C.uen,
             C.contrato, C.perfil, C.logindepacho, C.logincontingencia, C.horagestion, C.horacontingencia,
             C.observContingencia, C.acepta, C.tipificacion, C.fechaClickMarca, C.loginContingenciaPortafolio,
-            C.horaContingenciaPortafolio, C.tipificacionPortafolio, C.observContingenciaPortafolio, C.generarcr 
+            C.horaContingenciaPortafolio, C.tipificacionPortafolio, C.observContingenciaPortafolio, C.generarcr, C.uneSourceSystem as crm
             FROM contingencias AS C
         WHERE C.horagestion BETWEEN ('$fechaIni 00:00:00') AND ('$fechafin 23:59:59')
         AND C.accion IN ('Cambio de equipo', 'Contingencia', 'Refresh', 'Registros ToIP', 'Reenvio de registros')");
             $stmt->execute();
 
-            if ($stmt->rowCount() > 0) {
-
-                $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                $encabezados = [
-                    'ACCION',
-                    'CIUDAD',
-                    'CORREO',
-                    'MAC_ENTRA',
-                    'MAC_SALE',
-                    'MOTIVO',
-                    'OBSERVACIONES',
-                    'PAQUETES',
-                    'PEDIDO',
-                    'PROCESO',
-                    'PRODUCTO',
-                    'REMITENTE',
-                    'TECNOLOGIA',
-                    'TIPO_EQUIPO',
-                    'UEN',
-                    'CONTRATO',
-                    'PERFIL',
-                    'LOGIN',
-                    'LOGIN_GESTION',
-                    'HORA_INGRESO',
-                    'HORA_GESTION',
-                    'OBSERVACIONES_GESTION',
-                    'ESTADO',
-                    'TIPIFICACION',
-                    'FECHA_CLICK_MARCA',
-                    'LOGIN_PORTAFOLIO',
-                    'HORA_GESTION_PORTAFOLIO',
-                    'TIPIFICACION_PORTAFOLIO',
-                    'OBSERVACIONES_GESTION_PORTAFOLIO',
-                    'GENERAR_CR',
-                ];
-
-                $output = "<table style='border: 1px solid black;'>";
-                $output .= "<tr><th>" . implode("</th><th>", $encabezados) . "</th></tr>";
-
-                foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                    $output .= '<tr>
-                                    <td>' . $row["accion"] . '</td>
-                                    <td>' . $row["ciudad"] . '</td>
-                                    <td>' . $row["correo"] . '</td>
-                                    <td>' . $row["macEntra"] . '</td>
-                                    <td>' . $row["macSale"] . '</td>
-                                    <td>' . $row["motivo"] . '</td>
-                                    <td>' . $row["observacion"] . '</td>
-                                    <td>' . $row["paquetes"] . '</td>
-                                    <td>' . $row["pedido"] . '</td>
-                                    <td>' . $row["proceso"] . '</td>
-                                    <td>' . $row["producto"] . '</td>
-                                    <td>' . $row["remite"] . '</td>
-                                    <td>' . $row["tecnologia"] . '</td>
-                                    <td>' . $row["tipoEquipo"] . '</td>
-                                    <td>' . $row["uen"] . '</td>
-                                    <td>' . $row["contrato"] . '</td>
-                                    <td>' . $row["perfil"] . '</td>
-                                    <td>' . $row["logindepacho"] . '</td>
-                                    <td>' . $row["logincontingencia"] . '</td>
-                                    <td>' . $row["horagestion"] . '</td>
-                                    <td>' . $row["horacontingencia"] . '</td>
-                                    <td>' . $row["observContingencia"] . '</td>
-                                    <td>' . $row["acepta"] . '</td>
-                                    <td>' . $row["tipificacion"] . '</td>
-                                    <td>' . $row["fechaClickMarca"] . '</td>
-                                    <td>' . $row["loginContingenciaPortafolio"] . '</td>
-                                    <td>' . $row["horaContingenciaPortafolio"] . '</td>
-                                    <td>' . $row["tipificacionPortafolio"] . '</td>
-                                    <td>' . $row["observContingenciaPortafolio"] . '</td>
-                                    <td>' . $row["generarcr"] . '</td>
-                                </tr>';
-                }
-                $output .= '</table>';
-            }
-
             if ($stmt->rowCount()) {
-                $response = ['state' => 1, 'data' => $data];
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = ['state' => 0, 'msj' => 'No se encontraron datos'];
+                $response = ['state' => false, 'msj' => 'No se encontraron datos'];
             }
 
         } catch (PDOException $e) {
@@ -594,12 +512,10 @@ class otherServicesDos
     public function csvEstadosClick($datos)
     {
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();
-            $usuarioid   = $_SESSION['login'];
-            $fecha       = $datos['fecha'];
-            $uen         = $datos['uen'];
+
+            $usuarioid = $_SESSION['login'];
+            $fecha = $datos['fecha'];
+            $uen = $datos['uen'];
             $tipotrabajo = $datos['tipo_trabajo'];
 
             if ($fecha == "") {
@@ -612,10 +528,10 @@ class otherServicesDos
                 $uen = "";
             }
             if ($tipotrabajo != "") {
-                $tipo_trabajo  = "and tipo_trabajo = '$tipotrabajo'";
+                $tipo_trabajo = "and tipo_trabajo = '$tipotrabajo'";
                 $tipo_trabajo1 = "and (select tipo_trabajo from carga_click where pro.pedido_id = pedido_id limit 1) = '$tipotrabajo'";
             } else {
-                $tipo_trabajo  = "";
+                $tipo_trabajo = "";
                 $tipo_trabajo1 = "";
             }
 
@@ -625,18 +541,18 @@ class otherServicesDos
             $filename = "Estados_click" . "_" . $fecha . "_" . $uen . "_" . $tipotrabajo . "_" . $usuarioid . ".csv";
 
             $query = "select pro.pedido_id,pro.cliente,pro.departamento, pro.ciudad, pro.direccion, pro.productos, " .
-                     "pro.fecha_cita, pro.jornada_cita, pro.estado_id, pro.uen, pro.codigo_pendiente_incompleto,  " .
-                     "(select descripcion from codigo_pendientes_click  " .
-                     "where codigo = pro.codigo_pendiente_incompleto) descripcion, pro.tipo_trabajo, " .
-                     "pro.observacion, pro.fecha_carga_click, c.id_tecnico, c.accion, c.tipo_pendiente, c.fecha, c.observaciones " .
-                     "from carga_click pro " .
-                     "left join (SELECT a.pedido, a.id_tecnico, a.accion, a.tipo_pendiente, a.fecha, a.observaciones " .
-                     "FROM registros a " .
-                     "where a.fecha BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') ) c  " .
-                     "on c.pedido = pro.pedido_id " .
-                     "where pro.estado_id is not null " .
-                     "and pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha  23:59:59') " .
-                     "$uen $tipotrabajo";
+                "pro.fecha_cita, pro.jornada_cita, pro.estado_id, pro.uen, pro.codigo_pendiente_incompleto,  " .
+                "(select descripcion from codigo_pendientes_click  " .
+                "where codigo = pro.codigo_pendiente_incompleto) descripcion, pro.tipo_trabajo, " .
+                "pro.observacion, pro.fecha_carga_click, c.id_tecnico, c.accion, c.tipo_pendiente, c.fecha, c.observaciones " .
+                "from carga_click pro " .
+                "left join (SELECT a.pedido, a.id_tecnico, a.accion, a.tipo_pendiente, a.fecha, a.observaciones " .
+                "FROM registros a " .
+                "where a.fecha BETWEEN ('$fecha 00:00:00') AND ('$fecha 23:59:59') ) c  " .
+                "on c.pedido = pro.pedido_id " .
+                "where pro.estado_id is not null " .
+                "and pro.fecha_cita BETWEEN ('$fecha 00:00:00') AND ('$fecha  23:59:59') " .
+                "$uen $tipotrabajo";
 
             $stmt = $this->_DB->query($query);
             $stmt->execute();
@@ -669,7 +585,7 @@ class otherServicesDos
 
                 fputcsv($fp, $columnas);
                 while ($row = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
-                    $row['observacion']   = $row['observacion'];
+                    $row['observacion'] = $row['observacion'];
                     $row['observaciones'] = $row['observaciones'];
                     fputcsv($fp, $row);
                 }
@@ -704,72 +620,72 @@ class otherServicesDos
             }
 
             $query = "SELECT PEDIDO_ID, " .
-                     "MUNICIPIO, " .
-                     "USUARIO_ID, " .
-                     "NOMBRE_CANAL, " .
-                     "RADICADO, " .
-                     "RUTA_TRABAJO, " .
-                     "TIPO_TRABAJO, " .
-                     "TEL_CELULAR, " .
-                     "DEPARTAMENTO, " .
-                     "REGIONAL, " .
-                     "INTERFAZ, " .
-                     "SUBZONA, " .
-                     "SEGM_PYMES, " .
-                     "AREA_TRABAJO, " .
-                     "FECHA_INGRESO, " .
-                     "FECHA_CONCEPTO, " .
-                     "FECHA_ACTUALIZACION, " .
-                     "DEPARTAMENTO_OPERACION, " .
-                     "DIRECCION, " .
-                     "CONCEPTO_ID_ATC, " .
-                     "CONCEPTO_ATC, " .
-                     "ESTADO_ID_ATC, " .
-                     "UEN_CALCULADA, " .
-                     "TIPO_DOCUMENTO, " .
-                     "CLIENTE_ID, " .
-                     "NOMBRE_CLIENTE, " .
-                     "CONCEPTO_ORACLE, " .
-                     "RESPONSABLE_GESTION, " .
-                     "AREA_RESPONSABLE, " .
-                     "RESPONSABLE_OPERATIVO, " .
-                     "RESPONSABLE_ACTIVITY, " .
-                     "TIPO_SOLICITUD, " .
-                     "TIPO_SOLICITUD_ORIG, " .
-                     "RANGO_INGRESO_DIAS, " .
-                     "RANGO_CONCEPTO_DIAS, " .
-                     "FECHA_CITA_CALC, " .
-                     "ESTADO_AGENDA, " .
-                     "PRODUCTOS, " .
-                     "CLIENTES, " .
-                     "DETALLE_PRODUCTOS, " .
-                     "DETALLE_ELEMENTOS, " .
-                     "DETALLE_PRODUCTOS1, " .
-                     "DETALLE_ESTADO_CN, " .
-                     "DETALLE_SUBPRODUCTOS, " .
-                     "REQUIEREAGENDA_ESTADOCN_ACTIVIDADCN, " .
-                     "DETALLE_ACTIVIDAD_CN, " .
-                     "DETALLE_CONCEPTOS, " .
-                     "DETALLE_USUARIO_ULT_CONC, " .
-                     "DETALLE_CONCEPTOS_ORA, " .
-                     "DETALLE_TIPO_SOLICITUD, " .
-                     "DETALLE_TECNOLOGIA, " .
-                     "DETALLE_COLAS, " .
-                     "DETALLE_ETAPA, " .
-                     "DIAS_INGRESO, " .
-                     "DIAS_CONCEPTO, " .
-                     "ESTRATO, " .
-                     "NRO_AGENDAMIENTOS, " .
-                     "FECHA, " .
-                     "HORAS_DE_CARGA, " .
-                     "NRO_PRODUCTOS_NUEVOS, UNIDAD_NEGOCIO " .
-                     "FROM pendi_insta " .
-                     "$regional ";
+                "MUNICIPIO, " .
+                "USUARIO_ID, " .
+                "NOMBRE_CANAL, " .
+                "RADICADO, " .
+                "RUTA_TRABAJO, " .
+                "TIPO_TRABAJO, " .
+                "TEL_CELULAR, " .
+                "DEPARTAMENTO, " .
+                "REGIONAL, " .
+                "INTERFAZ, " .
+                "SUBZONA, " .
+                "SEGM_PYMES, " .
+                "AREA_TRABAJO, " .
+                "FECHA_INGRESO, " .
+                "FECHA_CONCEPTO, " .
+                "FECHA_ACTUALIZACION, " .
+                "DEPARTAMENTO_OPERACION, " .
+                "DIRECCION, " .
+                "CONCEPTO_ID_ATC, " .
+                "CONCEPTO_ATC, " .
+                "ESTADO_ID_ATC, " .
+                "UEN_CALCULADA, " .
+                "TIPO_DOCUMENTO, " .
+                "CLIENTE_ID, " .
+                "NOMBRE_CLIENTE, " .
+                "CONCEPTO_ORACLE, " .
+                "RESPONSABLE_GESTION, " .
+                "AREA_RESPONSABLE, " .
+                "RESPONSABLE_OPERATIVO, " .
+                "RESPONSABLE_ACTIVITY, " .
+                "TIPO_SOLICITUD, " .
+                "TIPO_SOLICITUD_ORIG, " .
+                "RANGO_INGRESO_DIAS, " .
+                "RANGO_CONCEPTO_DIAS, " .
+                "FECHA_CITA_CALC, " .
+                "ESTADO_AGENDA, " .
+                "PRODUCTOS, " .
+                "CLIENTES, " .
+                "DETALLE_PRODUCTOS, " .
+                "DETALLE_ELEMENTOS, " .
+                "DETALLE_PRODUCTOS1, " .
+                "DETALLE_ESTADO_CN, " .
+                "DETALLE_SUBPRODUCTOS, " .
+                "REQUIEREAGENDA_ESTADOCN_ACTIVIDADCN, " .
+                "DETALLE_ACTIVIDAD_CN, " .
+                "DETALLE_CONCEPTOS, " .
+                "DETALLE_USUARIO_ULT_CONC, " .
+                "DETALLE_CONCEPTOS_ORA, " .
+                "DETALLE_TIPO_SOLICITUD, " .
+                "DETALLE_TECNOLOGIA, " .
+                "DETALLE_COLAS, " .
+                "DETALLE_ETAPA, " .
+                "DIAS_INGRESO, " .
+                "DIAS_CONCEPTO, " .
+                "ESTRATO, " .
+                "NRO_AGENDAMIENTOS, " .
+                "FECHA, " .
+                "HORAS_DE_CARGA, " .
+                "NRO_PRODUCTOS_NUEVOS, UNIDAD_NEGOCIO " .
+                "FROM pendi_insta " .
+                "$regional ";
 
             $stmt = $this->_DB->query($query);
 
             if ($stmt->rowCount()) {
-                $fp       = fopen("../tmp/$filename", 'w');
+                $fp = fopen("../tmp/$filename", 'w');
                 $columnas = [
                     'PEDIDO_ID',
                     'MUNICIPIO',
@@ -958,13 +874,66 @@ class otherServicesDos
             $url = $data->url . $data->pedidos;
 
             $json = file_get_contents($url);
-            $obj  = json_decode($json);
+            $obj = json_decode($json);
 
             var_dump($obj);
 
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+    }
+
+    public function buscarPedidoSegui($data)
+    {
+        try {
+
+            $pedido = $data['pedido'];
+            $producto = $data['producto'];
+            $remite = $data['remite'];
+
+            $sqlpedido = ("SELECT * FROM registros WHERE pedido = '$pedido'");
+
+            $stmt = $this->_DB->prepare("SELECT * FROM registros WHERE pedido = :pedido");
+            $stmt->execute([':pedido' => $pedido]);
+
+            if ($stmt->rowCount() == 1) {
+                $response = ['state' => 1, 'msj' => 'Pedido guardado'];
+            } else {
+                $response = ['state' => 0, 'msj' => 'Pedido no guardado'];
+            }
+
+            /* /*ORGANIZAR ESTE QUERY PORQUE ESTA DEJANDO DUPLICAR PEDIDO
+                     $sqlpedidocontingencia = ("	SELECT * FROM contingencias
+                                                 WHERE acepta IS NOT NULL
+                                                 AND aceptaPortafolio IS NOT NULL
+                                                 AND pedido = '$pedido'
+                                             ");
+
+                     $rstContingencia = $this->connseguimiento->query($sqlpedidocontingencia);
+
+                     if ($rstContingencia->num_rows > 0) {
+
+                         $this->response($this->json("Aceptado o rechazado"), 201);
+
+                     } else {
+
+                         /*qurey que permite dejas subir la info realiza validadcion para no dejar duplicar pedidos en gestion
+                         $sqlpedidoproducto = ("	SELECT * FROM contingencias
+                                                 WHERE acepta is null
+                                                 AND aceptaPortafolio IS NULL
+                                                 AND pedido = '$pedido'
+                                                 AND producto = '$producto'
+                                                 AND accion IN('Contingencia','Cambio de equipo','Refresh','Crear Espacio','crear cliente','Registros ToIP','mesaOffline', 'Cambio EID')
+                                             ");
+
+                         $rstpedidoProducto = $this->connseguimiento->query($sqlpedidoproducto); */
+
+
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+        $this->_DB = null;
+        echo json_encode($response);
     }
 
     public function csvRegistros($params)
@@ -978,7 +947,7 @@ class otherServicesDos
             $fechaini = $params['fechaini'];
             $fechafin = $params['fechafin'];
             $concepto = $params['concepto'];
-            $buscar   = $params['buscar'];
+            $buscar = $params['buscar'];
 
 
             if ($fechaini == "" && $fechafin == "") {
@@ -993,13 +962,13 @@ class otherServicesDos
             }
 
 
-/*            $query = "select a.pedido,a.id_tecnico,
-                a.empresa,a.asesor,a.despacho,a.observaciones,
-                a.accion,a.tipo_pendiente, a.fecha,
-                a.proceso, a.producto,a.duracion,a.llamada_id, a.prueba_integrada, a.pruebaSmnet, a.UNESourceSystem, a.pendiente, a.diagnostico
-                from registros a
-                where 1=1 :param a.fecha between :fechaini and :fechafin
-                and a.asesor <> 'IVR' ";*/
+            /*            $query = "select a.pedido,a.id_tecnico,
+                            a.empresa,a.asesor,a.despacho,a.observaciones,
+                            a.accion,a.tipo_pendiente, a.fecha,
+                            a.proceso, a.producto,a.duracion,a.llamada_id, a.prueba_integrada, a.pruebaSmnet, a.UNESourceSystem, a.pendiente, a.diagnostico
+                            from registros a
+                            where 1=1 :param a.fecha between :fechaini and :fechafin
+                            and a.asesor <> 'IVR' ";*/
 
 
             $stmt = $this->_DB->query("select a.pedido,a.id_tecnico, 
@@ -1033,11 +1002,11 @@ class otherServicesDos
             session_start();
             $usuarioid = $_SESSION['login'];
 
-            $fechas   = $datos['fechas'];
+            $fechas = $datos['fechas'];
             $fechaini = $fechas['fechaini'];
             $fechafin = $fechas['fechafin'];
             $concepto = $datos['concepto'];
-            $buscar   = $datos['buscar'];
+            $buscar = $datos['buscar'];
 
             $filename = "Registros" . "_" . $fechaini . "_" . $fechafin . "_" . $usuarioid . ".csv";
 
@@ -1073,7 +1042,7 @@ class otherServicesDos
             ]);
 
             if ($stmt->rowCount()) {
-                $fp       = fopen("../tmp/$filename", 'w');
+                $fp = fopen("../tmp/$filename", 'w');
                 $columnas = [
                     'PEDIDO',
                     'ACCION',
@@ -1105,16 +1074,16 @@ class otherServicesDos
                 while ($row = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
 
                     $row['ObservacionesDespacho'] = str_replace(",", ".", $row['ObservacionesDespacho']);
-                    $row['ObservacionAsesor']     = str_replace(",", ".", $row['ObservacionAsesor']);
-                    $row['ObservacionesFinales']  = str_replace(",", ".", $row['ObservacionesFinales']);
+                    $row['ObservacionAsesor'] = str_replace(",", ".", $row['ObservacionAsesor']);
+                    $row['ObservacionesFinales'] = str_replace(",", ".", $row['ObservacionesFinales']);
 
                     $row['ObservacionesDespacho'] = str_replace(";", ".", $row['ObservacionesDespacho']);
-                    $row['ObservacionAsesor']     = str_replace(";", ".", $row['ObservacionAsesor']);
-                    $row['ObservacionesFinales']  = str_replace(";", ".", $row['ObservacionesFinales']);
+                    $row['ObservacionAsesor'] = str_replace(";", ".", $row['ObservacionAsesor']);
+                    $row['ObservacionesFinales'] = str_replace(";", ".", $row['ObservacionesFinales']);
 
                     $row['ObservacionesDespacho'] = str_replace("\n", " ", $row['ObservacionesDespacho']);
-                    $row['ObservacionAsesor']     = str_replace("\n", " ", $row['ObservacionAsesor']);
-                    $row['ObservacionesFinales']  = str_replace("\n", " ", $row['ObservacionesFinales']);
+                    $row['ObservacionAsesor'] = str_replace("\n", " ", $row['ObservacionAsesor']);
+                    $row['ObservacionesFinales'] = str_replace("\n", " ", $row['ObservacionesFinales']);
 
                     fputcsv($fp, $row);
                 }
@@ -1143,9 +1112,9 @@ class otherServicesDos
         try {
             $usuarioid = $params['datosLogin'];
             $usuarioid = $usuarioid['LOGIN'];
-            $datos     = $params['datos'];
-            $fechaini  = $datos['fechaini'];
-            $fechafin  = $datos['fechafin'];
+            $datos = $params['datos'];
+            $fechaini = $datos['fechaini'];
+            $fechafin = $datos['fechafin'];
 
             if ($fechaini == "" && $fechafin == "") {
                 $fechaini = date("Y-m-d");
@@ -1223,32 +1192,32 @@ class otherServicesDos
                                                 from seguimientoClick pro
                                                 group by pro.razon ");
             $carga->execute([
-                ':fechaini'         => "$fecha 00:00:00",
-                ':fechafin'         => "$fecha 23:59:59",
-                ':fechaanteriror'   => "$fechaanterior 00:00:00",
+                ':fechaini' => "$fecha 00:00:00",
+                ':fechafin' => "$fecha 23:59:59",
+                ':fechaanteriror' => "$fechaanterior 00:00:00",
                 ':fechaanteriorfin' => "$fechaanterior 23:59:59",
             ]);
 
-            $total_actual   = '';
+            $total_actual = '';
             $total_anterior = '';
             if ($carga->rowCount()) {
 
                 while ($row = $carga->fetchAll(PDO::FETCH_ASSOC)) {
 
-                    $totalrazon_actual   = $row['total_actual'];
+                    $totalrazon_actual = $row['total_actual'];
                     $totalrazon_anterior = $row['total_anterior'];
-                    $razon               = $row['razon'];
-                    $total_actual        = $total_actual + $totalrazon_actual;
-                    $total_anterior      = $total_anterior + $totalrazon_anterior;
+                    $razon = $row['razon'];
+                    $total_actual = $total_actual + $totalrazon_actual;
+                    $total_anterior = $total_anterior + $totalrazon_anterior;
 
                     $update = $this->_DB->prepare("UPDATE view_diferencias_Click
                                                             SET `total_actual`='$totalrazon_actual',
                                                                 `total_anterior`='$totalrazon_anterior'
                                                             WHERE `razon` = '$razon'");
                     $update->execute([
-                        ':totalrazon_actual'   => $totalrazon_actual,
+                        ':totalrazon_actual' => $totalrazon_actual,
                         ':totalrazon_anterior' => $totalrazon_anterior,
-                        ':razon'               => $razon,
+                        ':razon' => $razon,
                     ]);
 
                 }
@@ -1258,7 +1227,7 @@ class otherServicesDos
 
                 if ($stmt->rowCount()) {
 
-                    $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     $response = [$result, $total_actual, $total_anterior, 201];
 
                 } else {
@@ -1283,11 +1252,11 @@ class otherServicesDos
             session_set_cookie_params(3600);
             session_start();
             $query = "SELECT ObservacionAsesor FROM BrutalForce where PedidoDespacho = :pedido";
-            $stmt  = $this->_DB->prepare($query);
+            $stmt = $this->_DB->prepare($query);
             $stmt->execute([':pedido' => $pedido]);
 
             if ($stmt->rowCount()) {
-                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $response = ['state' => 1, 'data' => $result];
             } else {
                 $response = ['state' => 0, 'msj' => 'No se encontraron registros'];
@@ -1314,7 +1283,7 @@ class otherServicesDos
             $stmt->execute();
 
             if ($stmt->rowCount()) {
-                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $response = [$result, 201];
             } else {
                 $response = ['No se encontraron datos', 400];
@@ -1334,11 +1303,11 @@ class otherServicesDos
         session_start();
         try {
             session_start();
-            $mes  = date("m", strtotime($fecha));
+            $mes = date("m", strtotime($fecha));
             $anio = date("Y", strtotime($fecha));
 
             $query = "TRUNCATE TABLE seguimiento_Click_resumen";
-            $stmt  = $this->_DB->query($query);
+            $stmt = $this->_DB->query($query);
             $stmt->execute();
 
             //insert jornadaID
@@ -1357,7 +1326,7 @@ class otherServicesDos
                     $this->_DB->beginTransaction();
 
                     $query = "INSERT INTO seguimiento_Click_resumen (`fecha`) VALUES (:fecha_cita)";
-                    $stmt  = $this->_DB->prepare($query);
+                    $stmt = $this->_DB->prepare($query);
                     $stmt->execute([':fecha_cita' => $fecha_cita]);
 
                     //Se visita y queda atendido
@@ -1370,7 +1339,7 @@ class otherServicesDos
 
                     if ($sqltotal->rowCount()) {
                         $result = $sqltotal->fetchAll(PDO::FETCH_ASSOC);
-                        $total  = $result['total'];
+                        $total = $result['total'];
                     } else {
                         echo 'Error';
                         exit();
@@ -1391,7 +1360,7 @@ class otherServicesDos
 
                     if ($stmt->rowCount()) {
                         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                        $total  = $result['total'];
+                        $total = $result['total'];
                     } else {
                         echo 'Error';
                         exit();
@@ -1411,7 +1380,7 @@ class otherServicesDos
 
                     if ($stmt->rowCount()) {
                         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                        $total  = $result['total'];
+                        $total = $result['total'];
                     } else {
                         echo 'Error';
                         exit();
@@ -1430,12 +1399,12 @@ class otherServicesDos
                     $stmt->execute([
                         ':fechaini' => "$fecha_cita 00:00:00",
                         ':fechafin' => "$fecha_cita 23:59:59",
-                        ':msj'      => "Reagendado",
+                        ':msj' => "Reagendado",
                     ]);
 
                     if ($stmt->rowCount()) {
                         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                        $total  = $result['total'];
+                        $total = $result['total'];
                     } else {
                         echo 'Error';
                         exit();
@@ -1456,12 +1425,12 @@ class otherServicesDos
                     $stmt->execute([
                         ':fechaini' => "$fecha_cita 00:00:00",
                         ':fechafin' => "$fecha_cita 23:59:59",
-                        ':msj'      => "Pedido mal agendado, no sube a Click",
+                        ':msj' => "Pedido mal agendado, no sube a Click",
                     ]);
 
                     if ($stmt->rowCount()) {
                         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                        $total  = $result['total'];
+                        $total = $result['total'];
                     } else {
                         echo 'Error';
                         exit();
@@ -1481,12 +1450,12 @@ class otherServicesDos
                     $stmt->execute([
                         ':fechaini' => "$fecha_cita 00:00:00",
                         ':fechafin' => "$fecha_cita 23:59:59",
-                        ':msj'      => "Se visito pero quedo incompleto",
+                        ':msj' => "Se visito pero quedo incompleto",
                     ]);
 
                     if ($stmt->rowCount()) {
                         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                        $total  = $result['total'];
+                        $total = $result['total'];
                     } else {
                         echo 'Error';
                         exit();
@@ -1506,12 +1475,12 @@ class otherServicesDos
                     $stmt->execute([
                         ':fechaini' => "$fecha_cita 00:00:00",
                         ':fechafin' => "$fecha_cita 23:59:59",
-                        ':msj'      => "No se visita pero se cambia estado",
+                        ':msj' => "No se visita pero se cambia estado",
                     ]);
 
                     if ($stmt->rowCount()) {
                         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                        $total  = $result['total'];
+                        $total = $result['total'];
                     } else {
                         echo 'Error';
                         exit();
@@ -1531,12 +1500,12 @@ class otherServicesDos
                     $stmt->execute([
                         ':fechaini' => "$fecha_cita 00:00:00",
                         ':fechafin' => "$fecha_cita 23:59:59",
-                        ':msj'      => "Visita cancelada",
+                        ':msj' => "Visita cancelada",
                     ]);
 
                     if ($stmt->rowCount()) {
                         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                        $total  = $result['total'];
+                        $total = $result['total'];
                     } else {
                         echo 'Error';
                         exit();
@@ -1562,37 +1531,37 @@ class otherServicesDos
                                                     where fecha BETWEEN (:fechaini) AND (:fechafin)");
                 $stmt->execute([':fechaini' => "$anio-$mes-01 00:00:00", ':fechafin' => "$anio-$mes-31 23:59:59"]);
                 if ($stmt->rowCount()) {
-                    $categorias              = [];
-                    $visita_atendido         = [];
-                    $sube_no_visita          = [];
-                    $no_sube                 = [];
-                    $reagendado              = [];
-                    $mal_agendado_no_sube    = [];
-                    $visita_incompleto       = [];
+                    $categorias = [];
+                    $visita_atendido = [];
+                    $sube_no_visita = [];
+                    $no_sube = [];
+                    $reagendado = [];
+                    $mal_agendado_no_sube = [];
+                    $visita_incompleto = [];
                     $no_visita_cambia_estado = [];
-                    $cancelada               = [];
-                    $i                       = 1;
+                    $cancelada = [];
+                    $i = 1;
                     while ($row = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
 
-                        $cate                 = $row['fecha'];
-                        $visita_aten          = $row['visita_atendido'];
-                        $sube_no_vis          = $row['sube_no_visita'];
-                        $no_su                = $row['no_sube'];
-                        $reage                = $row['reagendado'];
-                        $mal_agendado_no_su   = $row['mal_agendado_no_sube'];
-                        $visita_incom         = $row['visita_incompleto'];
+                        $cate = $row['fecha'];
+                        $visita_aten = $row['visita_atendido'];
+                        $sube_no_vis = $row['sube_no_visita'];
+                        $no_su = $row['no_sube'];
+                        $reage = $row['reagendado'];
+                        $mal_agendado_no_su = $row['mal_agendado_no_sube'];
+                        $visita_incom = $row['visita_incompleto'];
                         $no_visita_cambia_est = $row['no_visita_cambia_estado'];
-                        $cancel               = $row['cancelada'];
+                        $cancel = $row['cancelada'];
 
-                        $categorias[]              = ["label" => "$cate"];
-                        $visita_atendido[]         = ["value" => "$visita_aten"];
-                        $sube_no_visita[]          = ["value" => "$sube_no_vis"];
-                        $no_sube[]                 = ["value" => "$no_su"];
-                        $reagendado[]              = ["value" => "$reage"];
-                        $mal_agendado_no_sube[]    = ["value" => "$mal_agendado_no_su"];
-                        $visita_incompleto[]       = ["value" => "$visita_incom"];
+                        $categorias[] = ["label" => "$cate"];
+                        $visita_atendido[] = ["value" => "$visita_aten"];
+                        $sube_no_visita[] = ["value" => "$sube_no_vis"];
+                        $no_sube[] = ["value" => "$no_su"];
+                        $reagendado[] = ["value" => "$reage"];
+                        $mal_agendado_no_sube[] = ["value" => "$mal_agendado_no_su"];
+                        $visita_incompleto[] = ["value" => "$visita_incom"];
                         $no_visita_cambia_estado[] = ["value" => "$no_visita_cambia_est"];
-                        $cancelada[]               = ["value" => "$cancel"];
+                        $cancelada[] = ["value" => "$cancel"];
                         $i++;
                     }
                     $response = [
@@ -1628,11 +1597,11 @@ class otherServicesDos
         session_start();
         try {
             session_start();
-            $pagina   = $data['page'];
+            $pagina = $data['page'];
             $concepto = $data['concepto'];
-            $dato     = $data['dato'];
-            $inicial  = $data['inicial'];
-            $final    = $data['final'];
+            $dato = $data['dato'];
+            $inicial = $data['inicial'];
+            $final = $data['final'];
 
             if ($pagina == "undefined") {
                 $pagina = "0";
@@ -1682,7 +1651,7 @@ class otherServicesDos
             $stmt->execute();
 
             if ($stmt->rowCount()) {
-                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $response = [$result, $stmt->rowCount(), 201];
             } else {
                 $response = ['No se encontraron datos'];

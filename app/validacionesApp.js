@@ -7,8 +7,7 @@
             estadoActual();
 
             function estadoActual() {
-                //services.estadoActualValidacionApp().then(function (data) {
-                services.myService('', 'validacionesAppCtrl.php', 'estadoActualValidacionApp').then(function (data) {
+                services.myService('', 'validacionesAppCtrl.php', 'estadoActualValidacionApp').then((data) =>{
                     $scope.contingenciaSara = data.data.data[0].valida;
                     $scope.contingenciaEquipo = data.data.data[1].valida;
                     $scope.gponInfraestructura = data.data.data[2].valida;
@@ -17,12 +16,14 @@
                     $scope.gponEquipo = data.data.data[5].valida;
                     $scope.etpEquipo = data.data.data[6].valida;
                     $scope.etpInfraestructura = data.data.data[7].valida;
+                }).catch((e) => {
+                    console.log(e)
                 })
             }
 
             $scope.cambiaEstado = function (data, value) {
                 data = {'tipo': data, 'valor': value}
-                services.myService(data, 'validacionesAppCtrl.php', 'cambiaValidacionApp').then(function (response) {
+                services.myService(data, 'validacionesAppCtrl.php', 'cambiaValidacionApp').then((response) => {
                     if (response.data.state == 1) {
                         Swal({
                             type: 'success',
@@ -40,10 +41,10 @@
                             $route.reload();
                         })
                     }
+                }).catch((e) => {
+                    console.log(e)
                 })
             }
         }
     }
-
-)
-()
+)()

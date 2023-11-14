@@ -25,38 +25,30 @@
                 $scope.searchText = "";
                 data = {page: $scope.currentPage, size: $scope.pageSize};
             }
-            services.listadoUsuarios(data).then(
-                function (data) {
-                    if (data.data.state) {
-                        $scope.listaUsuarios = data.data.data;
-                        $scope.cantidad = data.data.length;
-                        $scope.counter = data.data.counter;
+            services.listadoUsuarios(data).then((data) => {
+                if (data.data.state) {
+                    $scope.listaUsuarios = data.data.data;
+                    $scope.cantidad = data.data.length;
+                    $scope.counter = data.data.counter;
 
-                        /*$scope.crearuser.NOMBRE = data.data.data[0].NOMBRE;
-                        $scope.crearuser.PASSWORD = data.data.data[0].PASSWORD;
-                        $scope.crearuser.IDENTIFICACION = data.data.data[0].IDENTIFICACION;
-                        $scope.crearuser.PERFIL = data.data.data[0].perfil;*/
-
-                        $scope.totalItems = data.data.counter;
-                        $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
-                        $scope.endItem = $scope.currentPage * $scope.pageSize;
-                        if ($scope.endItem > data.data.counter) {
-                            $scope.endItem = data.data.counter;
-                        }
-                    } else {
-                        Swal({
-                            type: 'error',
-                            title: 'Opss..',
-                            text: data.data.msj,
-                            timer: 4000
-                        })
+                    $scope.totalItems = data.data.counter;
+                    $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                    $scope.endItem = $scope.currentPage * $scope.pageSize;
+                    if ($scope.endItem > data.data.counter) {
+                        $scope.endItem = data.data.counter;
                     }
-
-                },
-                function errorCallback(response) {
-                    $scope.errorDatos = concepto + " " + usuario + " no existe.";
+                } else {
+                    Swal({
+                        type: 'error',
+                        title: 'Opss..',
+                        text: data.data.msj,
+                        timer: 4000
+                    })
                 }
-            );
+
+            }).catch((e) => {
+                console.log(e)
+            });
         }
 
         $scope.pageChanged = function () {
@@ -64,14 +56,12 @@
             listadoUsuarios(data);
         };
         $scope.pageSizeChanged = function () {
-            console.log(data);
             let data = {page: $scope.currentPage, size: $scope.pageSize};
             $scope.currentPage = 1;
             listadoUsuarios(data);
         };
 
         $scope.buscarUsuario = (d) => {
-            console.log(d)
             if (!d) {
                 Swal({
                     type: 'error',
@@ -105,15 +95,13 @@
         };
 
         $scope.editarUser = function (datos) {
-            console.log(datos)
             $scope.datosEditar = datos;
             $scope.datosEditar.PASSWORDC = datos.PASSWORD;
             $scope.datosEditar.perfil = parseInt(datos.perfil);
-            console.log($scope.datosEditar.perfil, ' kkkk')
         };
 
         $scope.editUserSave = (data) => {
-            if (data.PASSWORDC != data.PASSWORD) {
+            if (data.PASSWORDC !== data.PASSWORD) {
                 swal({
                     title: "Opps..",
                     text: "El campo Contraseña y Confirmar contraseña no son iguales.",
@@ -157,7 +145,6 @@
         };
 
         $scope.deleteUserC = (data) => {
-            console.log(data);
             swal({
                 title: "Esta seguro?",
                 text: "que desea eliminar este usuario?",
@@ -194,7 +181,6 @@
         }
 
         $scope.creaUser = (data) => {
-            console.log(data)
             if (!data.identificacion) {
                 swal({
                     title: "Opps..",

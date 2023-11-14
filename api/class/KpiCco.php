@@ -38,7 +38,7 @@ class KpiCco
             if ($stmt->rowCount()) {
                 $response = ['status' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = ['status' => false, 'msj' => 'No se encontraron registros'];
+                $response = ['status' => true, 'data' => '0'];
             }
             $this->_DB = null;
             return $response;
@@ -75,7 +75,7 @@ class KpiCco
             if ($stmt->rowCount()) {
                 $response = ['status' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = ['status' => false, 'msj' => 'No se encontraron registros'];
+                $response = ['status' => true, 'data' => '0'];
             }
             $this->_DB = null;
             return $response;
@@ -112,7 +112,7 @@ class KpiCco
             if ($stmt->rowCount()) {
                 $response = ['status' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = ['status' => false, 'msj' => 'No se encontraron registros'];
+                $response = ['status' => true, 'data' => '0'];
             }
             $this->_DB = null;
             return $response;
@@ -149,7 +149,7 @@ class KpiCco
             if ($stmt->rowCount()) {
                 $response = ['status' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = ['status' => false, 'msj' => 'No se encontraron registros'];
+                $response = ['status' => true, 'data' => '0'];
             }
             $this->_DB = null;
             return $response;
@@ -187,7 +187,7 @@ class KpiCco
             if ($stmt->rowCount()) {
                 $response = ['status' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = ['status' => false, 'msj' => 'No se encontraron registros'];
+                $response = ['status' => true, 'data' => '0'];
             }
             $this->_DB = null;
             return $response;
@@ -225,7 +225,7 @@ class KpiCco
             if ($stmt->rowCount()) {
                 $response = ['status' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = ['status' => false, 'msj' => 'No se encontraron registros'];
+                $response = ['status' => true, 'data' => '0'];
             }
             $this->_DB = null;
             return $response;

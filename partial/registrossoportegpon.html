@@ -1,312 +1,325 @@
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-xs-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <b><i class="fa fa-bars" aria-hidden="true"></i> Histórico de
-            Registros soporte Gpon</b>
-          <span style="color: red" class="pull-right"><i class="fa fa-exclamation-triangle warning" aria-hidden="true"
-              ng-hide="errorDatos==null"></i>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <b><i class="fa fa-bars" aria-hidden="true"></i> Histórico de
+                        Registros soporte Gpon</b>
+                    <span style="color: red" class="pull-right"><i class="fa fa-exclamation-triangle warning"
+                                                                   aria-hidden="true"
+                                                                   ng-hide="errorDatos==null"></i>
             {{errorDatos}}</span>
-          <ul class="nav navbar-nav navbar-right">
-            <div class="col-md-1 col-xs-1">
-              <div data-ng-if="loading">
-                <img title="Esperando respuesta" data-placement="top" src="img/loader.gif" />
-              </div>
-            </div>
-            &nbsp;
-          </ul>
-        </div>
-        <div class="panel-heading nav navbar-default">
-          <div class="col-lg-12 col-xs-10">
-            <ul class="nav navbar-nav navbar-right">
-              <li class="nav navbar-nav" ng-class="csvPend == false?'animated bounceOutRight':'animated bounceInRight'"
-                ng-show="csvPend==true">
-                <span class="label label-primary">Se exportaron: {{counter}} Registros</span>&nbsp;
-              </li>
-              <li>
-                Registros:
-                <span class="badge badge-default">{{totalItems}}</span>
-                &nbsp;
-              </li>
-              <li>
-                <input style="width: 130px" type="text" name="fechaini" id="fechaini"
-                  class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
-                  ng-model="RegistrosSoporteGpon.fechaini" placeholder="Fecha Inicial" datetime-picker=""
-                  date-format="yyyy-MM-dd" date-only autocomplete="off" />
-                <i class="fa fa-calendar fa-fw"></i>
-                <input style="width: 130px" placeholder="Fecha Final" type="text" name="fechafin" id="fechafin"
-                  class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
-                  ng-model="RegistrosSoporteGpon.fechafin" datetime-picker="" date-format="yyyy-MM-dd" date-only autocomplete="off" />
-                <i class="fa fa-calendar fa-fw"></i>
-                &nbsp;
-              </li>
-              <li>
-                <div class="btn-group">
-                  <button type="button" class="btn btn-default btn-xs" tooltip-placement="top" uib-tooltip="Buscar"
-                    ng-click="buscarRegistrosSoporteGpon(RegistrosSoporteGpon)" ng-disabled="loading">
-                    <i class="fa fa-search" aria-hidden="true"> </i>
-                  </button>
+                    <ul class="nav navbar-nav navbar-right">
+                        <div class="col-md-1 col-xs-1">
+                            <div data-ng-if="loading">
+                                <img title="Esperando respuesta" data-placement="top" src="img/loader.gif"/>
+                            </div>
+                        </div>
+                        &nbsp;
+                    </ul>
                 </div>
-                &nbsp;
-              </li>
+                <div class="panel-heading nav navbar-default">
+                    <div class="col-lg-12 col-xs-10">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="nav navbar-nav"
+                                ng-class="csvPend == false?'animated bounceOutRight':'animated bounceInRight'"
+                                ng-show="csvPend==true">
+                                <span class="label label-primary">Se exportaron: {{counter}} Registros</span>&nbsp;
+                            </li>
+                            <li>
+                                Registros:
+                                <span class="badge badge-default">{{totalItems}}</span>
+                                &nbsp;
+                            </li>
+                            <li>
+                                <input style="width: 130px" type="text" name="fechaini" id="fechaini"
+                                       class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                       ng-model="RegistrosSoporteGpon.fechaini" placeholder="Fecha Inicial"
+                                       datetime-picker=""
+                                       date-format="yyyy-MM-dd" date-only autocomplete="off"/>
+                                <i class="fa fa-calendar fa-fw"></i>
+                                <input style="width: 130px" placeholder="Fecha Final" type="text" name="fechafin"
+                                       id="fechafin"
+                                       class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                       ng-model="RegistrosSoporteGpon.fechafin" datetime-picker=""
+                                       date-format="yyyy-MM-dd" date-only autocomplete="off"/>
+                                <i class="fa fa-calendar fa-fw"></i>
+                                &nbsp;
+                            </li>
+                            <li>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default btn-xs" tooltip-placement="top"
+                                            uib-tooltip="Buscar"
+                                            ng-click="buscarRegistrosSoporteGpon(RegistrosSoporteGpon)"
+                                            ng-disabled="loading">
+                                        <i class="fa fa-search" aria-hidden="true"> </i>
+                                    </button>
+                                </div>
+                                &nbsp;
+                            </li>
 
-              <li>
-                <button type="button" ng-show="galletainfo.PERFIL !== '8'" class="btn btn-success btn-xs"
-                tooltip-placement="top" uib-tooltip="Exportar" ng-click="csvRegistros()" ng-disabled="loading">
-                  <i class="fa fa-cloud-download" aria-hidden="true"> </i>
-                </button>
-                &nbsp;
-              </li>
-              <b>
-                <input type="text" name="tarea" id="pedido" class="btn btn-default btn-xs" ng-model="tarea"
-                  placeholder="Buscar tarea" autocomplete="off" />&nbsp;
+                            <li>
+                                <button type="button" ng-show="galletainfo.PERFIL !== '8'"
+                                        class="btn btn-success btn-xs"
+                                        tooltip-placement="top" uib-tooltip="Exportar" ng-click="csvRegistros()"
+                                        ng-disabled="loading">
+                                    <i class="fa fa-cloud-download" aria-hidden="true"> </i>
+                                </button>
+                                &nbsp;
+                            </li>
+                            <b>
+                                <input type="text" name="tarea" id="pedido" class="btn btn-default btn-xs"
+                                       ng-model="tarea"
+                                       placeholder="Buscar tarea" autocomplete="off"/>&nbsp;
 
-                <button class="btn btn-default btn-xs" data-toggle="modal"
-                  tooltip-placement="top" uib-tooltip="Buscar"
-                  ng-click="buscarhistoricoSoporteGpon(tarea)" ng-disabled="loading">
-                  <i class="fa fa-search" aria-hidden="true"></i>
-                </button> </b>&nbsp;
-            </ul>
-          </div>
+                                <button class="btn btn-default btn-xs" data-toggle="modal"
+                                        tooltip-placement="top" uib-tooltip="Buscar"
+                                        ng-click="buscarhistoricoSoporteGpon(tarea)" ng-disabled="loading">
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                </button>
+                            </b>&nbsp;
+                        </ul>
+                    </div>
+                </div>
+                <div class="table-responsive animated bounceInRight">
+                    <table class="table small table-striped table-condensed table-bordered">
+                        <thead class="table-header">
+                        <tr>
+                            <th>Tarea</th>
+                            <th>Pedido</th>
+                            <th>Numero Contacto</th>
+                            <th>Nombre Contacto</th>
+                            <th>TaskTypeCategory</th>
+                            <th>Municipio</th>
+                            <th>Productos</th>
+                            <th>Datos cola</th>
+                            <th>Doc Técnico</th>
+                            <th>Nom Técnico</th>
+                            <th>Teléfono</th>
+                            <th>Tipo equipo</th>
+                            <th>Respuesta soporte</th>
+                            <th>Tipificación</th>
+                            <th>Login</th>
+                            <th>Fecha creación</th>
+                            <th>Fecha respuesta</th>
+                            <th>Fecha marca</th>
+                            <th>Acción</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="data in listaRegistros as results">
+                            <td>
+                                <button type="button" class="btn btn-default btn-xs"
+                                        ng-click="CopyPortaPapeles(data.tarea)"
+                                        tooltip-placement="top" uib-tooltip="Copiar tarea"
+                                        id=i{{$index}}>{{data.tarea}}
+                                </button>
+                            </td>
+                            <td><span>{{data.unepedido}}</span></td>
+                            <td><span>{{data.numero_contacto}}</span></td>
+                            <td><span>{{data.nombre_contacto}}</span></td>
+                            <td><span>{{data.tasktypecategory}}</span></td>
+                            <td><span>{{data.unemunicipio}}</span></td>
+                            <td><span>{{data.uneproductos}}</span></td>
+                            <td><span>{{data.datoscola}}</span></td>
+                            <td><span>{{data.engineer_id}}</span></td>
+                            <td><span>{{data.engineer_name}}</span></td>
+                            <td><span>{{data.mobile_phone}}</span></td>
+                            <td><span>{{data.tipo_equipo}}</span></td>
+                            <td><span>{{data.respuesta_soporte}}</span></td>
+                            <td>{{data.respuesta_tipificaciones}}</td>
+                            <td><span>{{data.login}}</span></td>
+                            <td><span>{{data.fecha_creado}}</span></td>
+                            <td><span>{{data.fecha_respuesta}}</span></td>
+                            <td><span>{{data.fecha_marca}}</span></td>
+                            <td>
+                                <button type="button" class="btn btn-default btn-xs" ng-click="muestraNotas(data)"
+                                        tooltip-placement="top" uib-tooltip="Ver notas">
+                                    <i class="fa fa-rss" aria-hidden="true"> </i>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center">
+                    <ul uib-pagination class="pagination-sm" total-items="totalItems" ng-model="currentPage"
+                        ng-change="pageChanged()" items-per-page="pageSize" max-size="5" boundary-links="true"
+                        rotate="true"
+                        previous-text="&#8672;" next-text="&#8674;" first-text="Primero" last-text="Último"></ul>
+                </div>
+            </div>
         </div>
-        <div class="table-responsive animated bounceInRight">
-          <table class="table small table-striped table-condensed table-bordered">
-            <thead class="table-header">
-              <tr>
-                <th>Tarea</th>
-                <th>Pedido</th>
-                <th>Numero Contacto</th>
-                <th>Nombre Contacto</th>
-                <th>TaskTypeCategory</th>
-                <th>Municipio</th>
-                <th>Productos</th>
-                <th>Datos cola</th>
-                <th>Doc Técnico</th>
-                <th>Nom Técnico</th>
-                <th>Teléfono</th>
-                <th>Tipo equipo</th>
-                <th>Respuesta soporte</th>
-                <th>Tipificación</th>
-                <th>Login</th>
-                <th>Fecha creación</th>
-                <th>Fecha respuesta</th>
-                <th>Fecha marca</th>
-                <th>Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="data in listaRegistros as results">
-                <td>
-                  <button type="button" class="btn btn-default btn-xs"
-                          ng-click="CopyPortaPapeles(data.tarea)"
-                          tooltip-placement="top" uib-tooltip="Copiar tarea"
-                          id=i{{$index}}>{{data.tarea}}
-                  </button>
-                </td>
-                <td><span>{{data.unepedido}}</span></td>
-                <td><span>{{data.numero_contacto}}</span></td>
-                <td><span>{{data.nombre_contacto}}</span></td>
-                <td><span>{{data.tasktypecategory}}</span></td>
-                <td><span>{{data.unemunicipio}}</span></td>
-                <td><span>{{data.uneproductos}}</span></td>
-                <td><span>{{data.datoscola}}</span></td>
-                <td><span>{{data.engineer_id}}</span></td>
-                <td><span>{{data.engineer_name}}</span></td>
-                <td><span>{{data.mobile_phone}}</span></td>
-                <td><span>{{data.tipo_equipo}}</span></td>
-                <td><span>{{data.respuesta_soporte}}</span></td>
-                <td>{{data.respuesta_tipificaciones}}</td>
-                <td><span>{{data.login}}</span></td>
-                <td><span>{{data.fecha_creado}}</span></td>
-                <td><span>{{data.fecha_respuesta}}</span></td>
-                <td><span>{{data.fecha_marca}}</span></td>
-                <td>
-                  <button type="button" class="btn btn-default btn-xs" ng-click="muestraNotas(data)" tooltip-placement="top" uib-tooltip="Ver notas">
-                    <i class="fa fa-rss" aria-hidden="true"> </i>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="text-center">
-          <ul uib-pagination class="pagination-sm" total-items="totalItems" ng-model="currentPage"
-            ng-change="pageChanged()" items-per-page="pageSize" max-size="5" boundary-links="true" rotate="true"
-            previous-text="&#8672;" next-text="&#8674;" first-text="Primero" last-text="Último"></ul>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <div id="NotasModal" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-md">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">
-            &times;
-          </button>
-          <h4 class="modal-title">
-            {{TituloModal}}<span class="label label-info">{{pedido}}</span>
-          </h4>
+    <div id="NotasModal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">
+                        {{TituloModal}}<span class="label label-info">{{pedido}}</span>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Tarea:</strong>
+                            <span class="label label-info">{{tarea}}</span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Pedido:</strong>
+                            <span class="label label-info">{{pedido}}</span>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <strong>Velocidad navegación:</strong>
+                            <span class="label label-info">{{velocidadnavegacion}}</span>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Arpon:</strong>
+                            <span class="label label-success">{{arpon}}</span>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Nap:</strong>
+                            <span class="label label-success">{{nap}}</span>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Hilo:</strong>
+                            <span class="label label-success">{{hilo}}</span>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th colspan="4">Internet</th>
+                                </tr>
+                                <tr>
+                                    <th>Puerto 1</th>
+                                    <th>Puerto 2</th>
+                                    <th>Puerto 3</th>
+                                    <th>Puerto 4</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{intenet1}}</td>
+                                    <td>{{intenet2}}</td>
+                                    <td>{{intenet3}}</td>
+                                    <td>{{intenet4}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th colspan="4">Television</th>
+                                </tr>
+                                <tr>
+                                    <th>Puerto 1</th>
+                                    <th>Puerto 2</th>
+                                    <th>Puerto 3</th>
+                                    <th>Puerto 4</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{television1}}</td>
+                                    <td>{{television2}}</td>
+                                    <td>{{television3}}</td>
+                                    <td>{{television4}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6"><strong>Serial</strong></div>
+                        <div class="col-md-6"><strong>MAC</strong></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6" ng-repeat="serial in listaSeriales as resultsSerial">
+                            <span class="label label-info">{{serial}}</span><br/>
+                        </div>
+                        <div class="col-md-6" ng-repeat="mac in listaMacs as resultsMac">
+                            <span class="label label-info">{{mac}}</span><br/>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="jumbotron fixed-panel">{{observaciones}}</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
         </div>
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-md-6">
-              <strong>Tarea:</strong>
-              <span class="label label-info">{{tarea}}</span>
-            </div>
-            <div class="col-md-6">
-              <strong>Pedido:</strong>
-              <span class="label label-info">{{pedido}}</span>
-            </div>
-          </div>
-          <br />
-          <div class="row">
-            <div class="col-md-12">
-              <strong>Velocidad navegación:</strong>
-              <span class="label label-info">{{velocidadnavegacion}}</span>
-            </div>
-          </div>
-          <br />
-          <div class="row">
-            <div class="col-md-4">
-              <strong>Arpon:</strong>
-              <span class="label label-success">{{arpon}}</span>
-            </div>
-            <div class="col-md-4">
-              <strong>Nap:</strong>
-              <span class="label label-success">{{nap}}</span>
-            </div>
-            <div class="col-md-4">
-              <strong>Hilo:</strong>
-              <span class="label label-success">{{hilo}}</span>
-            </div>
-          </div>
-          <br />
-          <div class="row">
-            <div class="col-md-12">
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th colspan="4">Internet</th>
-                  </tr>
-                  <tr>
-                    <th>Puerto 1</th>
-                    <th>Puerto 2</th>
-                    <th>Puerto 3</th>
-                    <th>Puerto 4</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>{{intenet1}}</td>
-                    <td>{{intenet2}}</td>
-                    <td>{{intenet3}}</td>
-                    <td>{{intenet4}}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th colspan="4">Television</th>
-                  </tr>
-                  <tr>
-                    <th>Puerto 1</th>
-                    <th>Puerto 2</th>
-                    <th>Puerto 3</th>
-                    <th>Puerto 4</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>{{television1}}</td>
-                    <td>{{television2}}</td>
-                    <td>{{television3}}</td>
-                    <td>{{television4}}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6"><strong>Serial</strong></div>
-            <div class="col-md-6"><strong>MAC</strong></div>
-          </div>
-          <div class="row">
-            <div class="col-md-6" ng-repeat="serial in listaSeriales as resultsSerial">
-              <span class="label label-info">{{serial}}</span><br />
-            </div>
-            <div class="col-md-6" ng-repeat="mac in listaMacs as resultsMac">
-              <span class="label label-info">{{mac}}</span><br />
-            </div>
-          </div>
-          <br />
-          <div class="jumbotron fixed-panel">{{observaciones}}</div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-info" data-dismiss="modal">
-            Cerrar
-          </button>
-        </div>
-      </div>
     </div>
-  </div>
-  <div id="HistoricoModal" class="modal fullscreen-modal fade" role="dialog">
-    <div class="modal-dialog modal-lg" style="width: 96%">
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">
-            &times;
-          </button>
-          <h4 class="modal-title">Histórico SoporteGpon</h4>
+    <div id="HistoricoModal" class="modal fullscreen-modal fade" role="dialog">
+        <div class="modal-dialog modal-lg" style="width: 96%">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">Histórico SoporteGpon</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table small table-hover table-condensed table-bordered">
+                        <thead class="table-header">
+                        <tr>
+                            <th>Tarea</th>
+                            <th>Pedido</th>
+                            <th>Velocidad navegación</th>
+                            <th>Arpón</th>
+                            <th>Nap</th>
+                            <th>Fecha creado</th>
+                            <th>Fecha respuesta</th>
+                            <th>Serial</th>
+                            <th>Mac</th>
+                            <th style="width: 30%;">Observación</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="data in historicoDatos">
+                            <td>{{data.tarea}}</td>
+                            <td>{{data.unepedido}}</td>
+                            <td>{{data.velocidad_navegacion}}</td>
+                            <td>{{data.arpon}}</td>
+                            <td>{{data.nap}}</td>
+                            <td>{{data.fecha_creado}}</td>
+                            <td>{{data.fecha_respuesta}}</td>
+                            <td>{{data.serial }}</td>
+                            <td>{{data.mac }}</td>
+                            <td>{{data.observacion}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" ng-disabled="contact_form.$invalid" class="btn btn-info" data-dismiss="modal">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
         </div>
-        <div class="modal-body">
-          <table class="table small table-hover table-condensed table-bordered">
-            <thead class="table-header">
-              <tr>
-                <th>Tarea</th>
-                <th>Pedido</th>
-                <th>Velocidad navegación</th>
-                <th>Arpón</th>
-                <th>Nap</th>
-                <th>Fecha creado</th>
-                <th>Fecha respuesta</th>
-                <th>Serial</th>
-                <th>Mac</th>
-                <th style="width: 30%;">Observación</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="data in historicoDatos">
-                <td>{{data.tarea}}</td>
-                <td>{{data.unepedido}}</td>
-                <td>{{data.velocidad_navegacion}}</td>
-                <td>{{data.arpon}}</td>
-                <td>{{data.nap}}</td>
-                <td>{{data.fecha_creado}}</td>
-                <td>{{data.fecha_respuesta}}</td>
-                <td>{{data.serial | replace: ',':'\n'}}</td>
-                <td>{{data.mac | replace: ',':'\n'}}</td>
-                <td>{{data.observacion}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="modal-footer">
-          <button type="button" ng-disabled="contact_form.$invalid" class="btn btn-info" data-dismiss="modal">
-            Cerrar
-          </button>
-        </div>
-      </div>
     </div>
-  </div>
 </div>
 <br><br><br>
 

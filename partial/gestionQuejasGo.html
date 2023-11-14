@@ -1,470 +1,514 @@
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="panel panel-default" style="margin-bottom: -2px">
-        <div class="panel-heading nav navbar-default">
-          <ul class="nav nav-tabs">
-            <li class="active">
-              <a data-toggle="tab" href="/#gestion"> Gestión</a>
-            </li>
-            <li>
-              <a data-toggle="tab" href="/#seguimiento">Seguimiento y auditoría</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="tab-content">
-        <div id="gestion" class="tab-pane fade in active">
-          <div class="panel panel-default">
-            <div class="panel-heading nav navbar-default">
-              <ul class="nav navbar-nav navbar-left">
-                <b>Gestión Solicitud QuejasGo</b>
-              </ul>
-              <ul class="nav navbar-nav navbar-right">
-                <li>
-                  <button type="button" class="btn btn-default btn-xs" ng-click="recargaPage()" tooltip-placement="top" uib-tooltip="Actualizar" ng-disabled="loading">
-                    <i class="fa fa-refresh" aria-hidden="true"></i>
-                  </button>
-                </li>
-                &nbsp;&nbsp;
-              </ul>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default" style="margin-bottom: -2px">
+                <div class="panel-heading nav navbar-default">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a data-toggle="tab" href="/#gestion"> Gestión</a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="/#seguimiento">Seguimiento y auditoría</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
-            <div class="table-responsive">
-              <table class="table small table-hover table-striped table-condensed table-bordered">
-                <thead class="table-header">
-                  <tr>
-                    <th class="text-center" style="width: 5%">Marcar</th>
-                    <th class="text-center" style="width: 8%">Login Gestión</th>
-                    <th class="text-center" style="width: 8%">Numero SS</th>
-                    <th class="text-center" style="width: 5%">Nom. técnico</th>
-                    <th class="text-center" style="width: 5%">Doc técnico</th>
-                    <th class="text-center" style="width: 5%">Fecha Ingreso</th>
-                    <th class="text-center" style="width: 8%">Nom. cliente</th>
-                    <th class="text-center" style="width: 8%">Ciudad</th>
-                    <th class="text-center" style="width: 8%">Dirección</th>
-                    <th class="text-center" style="width: 8%">Tel. contacto</th>
-                    <th class="text-center" style="width: 5%">Des. queja</th>
-                    <th class="text-center" style="width: 5%">Obs técnico</th>
-                    <th class="text-center" style="width: 8%">Acción</th>
-                    <th class="text-center" style="width: 5%">Gestión</th>
-                    <th class="text-center" style="width: 5%">Guardar</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr ng-repeat="data in listaQuejasGo">
-                    <td class="text-center">
-                      <input type="checkbox" ng-model="data.bloqueo" ng-checked="data.en_gestion == 1" name="bloqueo"
-                        id="bloqueo" ng-change="marcarEngestion(data.id, data.bloqueo)" />
-                      <div class="loadingio-spinner-ellipsis-3nun7cb96ao" ng-show="data.bloqueo == 1">
-                        <div class="ldio-pettsxrv7wj">
-                          <div></div>
-                          <div></div>
-                          <div></div>
-                          <div></div>
-                          <div></div>
+            <div class="tab-content">
+                <div id="gestion" class="tab-pane fade in active">
+                    <div class="panel panel-default">
+                        <div class="panel-heading nav navbar-default">
+                            <ul class="nav navbar-nav navbar-left">
+                                <b>Gestión Solicitud QuejasGo</b>
+                            </ul>
+                            <ul class="nav navbar-nav navbar-right">
+                                <li>
+                                    <button type="button" class="btn btn-default btn-xs" ng-click="recargaPage()"
+                                            tooltip-placement="top" uib-tooltip="Actualizar" ng-disabled="loading">
+                                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                                    </button>
+                                </li>
+                                &nbsp;&nbsp;
+                            </ul>
                         </div>
-                      </div>
-                    </td>
-                    <td class="text-center">
-                      <span>{{data.asesor}}</span>
-                    </td>
-                    <td class="text-center">{{data.pedido}}</td>
-                    <td class="text-center">{{data.tecnico}}</td>
-                    <td class="text-center">{{data.cedtecnico}}</td>
-                    <td class="text-center">{{data.fecha}}</td>
-                    <td class="text-center">{{data.cliente}}</td>
-                    <td class="text-center">{{data.region}}</td>
-                    <td class="text-center">{{data.direccion}}</td>
-                    <td class="text-center">{{data.movil_cliente}}</td>
-                    <td class="text-center">
-                      <button popover-placement="left" uib-popover="{{data.descripcion_queja}}"
-                      tooltip-placement="top" uib-tooltip="Descripción de la queja" type="button" class="btn btn-default btn-xs">
-                        <i class="fa fa-commenting" aria-hidden="true"></i>
-                      </button>
-                      <!-- <button type="button" class="btn btn-default btn-xs" title="Descripción de la queja" ng-click="ver_mas(data.descripcion_queja)">
-                        <i class="fa fa-commenting" aria-hidden="true"></i>
-                      </button> -->
-                    </td>
-                    <td class="text-center">
-                      <button popover-placement="left" uib-popover="{{data.observacion}}"
-                      tooltip-placement="top" uib-tooltip="Observación técnico" type="button" class="btn btn-default btn-xs">
-                        <i class="fa fa-commenting" aria-hidden="true"></i>
-                      </button>
-                      <!-- <button type="button" class="btn btn-default btn-xs" title="Observación técnico" ng-click="ver_mas(data.observacion)">
-                        <i class="fa fa-commenting" aria-hidden="true"></i>
-                      </button> -->
-                    </td>
-                    <td class="text-center">
-                      <select ng-model="data.accion" style="width: 120px" class="btn btn-default btn-xs grupo-select"
-                        name="tipificacion" id="tipificacion">
-                        <option value="Atendida">Atendida</option>
-                        <option value="Atendida con compromiso">Atendida con compromiso</option>
-                        <option value="Atendida escalado a facturación">Atendida escalado a facturación</option>
-                        <option value="Atendida escalado a la comercial">Atendida escalado a la comercial</option>
-                        <option value="Atendida sin solución">Atendida sin solución</option>
-                        <option value="Agenda">Agenda</option>
-                        <option value="Cliente Ilocalizado">Cliente Ilocalizado</option>
-                        <option value="Llamada colgada">Llamada colgada</option>
-                        <option value="Llamar de nuevo usuario">Llamar de nuevo usuario</option>
-                        <option value="Reagenda">Reagenda</option>
-                        <option value="Devolución queja a Nivel 1">Devolución queja a Nivel 1</option>
-                        <option value="Devolución queja a supervisor">Devolución queja a supervisor</option>
-                        <option value="Monitoreo técnico">Monitoreo técnico</option>
-                        <option value="Notas">Notas</option>
-                      </select>
-                    </td>
-                    <td class="text-center">
-                      <select ng-model="data.gestion" style="width: 120px" class="btn btn-default btn-xs grupo-select"
-                        name="tipificacion" id="tipificacion">
-                        <option value="Atención">Atención</option>
-                        <option value="Contactabilidad">Contactabilidad</option>
-                        <option value=" Devolución">Devolución</option>
-                        <option value="Monitoreo">Monitoreo</option>
-                      </select>
-                    </td>
-                    <td>
-                      <button type="button" class="btn btn-default btn-xs" data-toggle="modal" ng-click="abreModal(data)"
-                      tooltip-placement="top" uib-tooltip="Guardar gestión">
-                        <i class="fa fa-floppy-o" aria-hidden="true"> </i>
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+
+                        <div class="table-responsive">
+                            <table class="table small table-hover table-striped table-condensed table-bordered">
+                                <thead class="table-header">
+                                <tr>
+                                    <th class="text-center" style="width: 5%">Marcar</th>
+                                    <th class="text-center" style="width: 8%">Login Gestión</th>
+                                    <th class="text-center" style="width: 8%">Numero SS</th>
+                                    <th class="text-center" style="width: 5%">Nom. técnico</th>
+                                    <th class="text-center" style="width: 5%">Doc técnico</th>
+                                    <th class="text-center" style="width: 5%">Fecha Ingreso</th>
+                                    <th class="text-center" style="width: 8%">Nom. cliente</th>
+                                    <th class="text-center" style="width: 8%">Ciudad</th>
+                                    <th class="text-center" style="width: 8%">Dirección</th>
+                                    <th class="text-center" style="width: 8%">Tel. contacto</th>
+                                    <th class="text-center" style="width: 5%">Des. queja</th>
+                                    <th class="text-center" style="width: 5%">Obs técnico</th>
+                                    <th class="text-center" style="width: 8%">Acción</th>
+                                    <th class="text-center" style="width: 5%">Gestión</th>
+                                    <th class="text-center" style="width: 5%">Guardar</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="data in listaQuejasGo">
+                                    <td class="text-center">
+                                        <input type="checkbox" ng-model="data.bloqueo" ng-checked="data.en_gestion == 1"
+                                               name="bloqueo"
+                                               id="bloqueo" ng-click="marcarEngestion(data.id, data.bloqueo)"/>
+                                        <div class="loadingio-spinner-ellipsis-3nun7cb96ao" ng-show="data.bloqueo == 1">
+                                            <div class="ldio-pettsxrv7wj">
+                                                <div></div>
+                                                <div></div>
+                                                <div></div>
+                                                <div></div>
+                                                <div></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <span>{{data.asesor}}</span>
+                                    </td>
+                                    <td class="text-center">{{data.pedido}}</td>
+                                    <td class="text-center">{{data.tecnico}}</td>
+                                    <td class="text-center">{{data.cedtecnico}}</td>
+                                    <td class="text-center">{{data.fecha}}</td>
+                                    <td class="text-center">{{data.cliente}}</td>
+                                    <td class="text-center">{{data.region}}</td>
+                                    <td class="text-center">{{data.direccion}}</td>
+                                    <td class="text-center">{{data.movil_cliente}}</td>
+                                    <td class="text-center">
+                                        <button popover-placement="left" uib-popover="{{data.descripcion_queja}}"
+                                                tooltip-placement="top" uib-tooltip="Descripción de la queja"
+                                                type="button" class="btn btn-default btn-xs">
+                                            <i class="fa fa-commenting" aria-hidden="true"></i>
+                                        </button>
+                                        <!-- <button type="button" class="btn btn-default btn-xs" title="Descripción de la queja" ng-click="ver_mas(data.descripcion_queja)">
+                                          <i class="fa fa-commenting" aria-hidden="true"></i>
+                                        </button> -->
+                                    </td>
+                                    <td class="text-center">
+                                        <button popover-placement="left" uib-popover="{{data.observacion}}"
+                                                tooltip-placement="top" uib-tooltip="Observación técnico" type="button"
+                                                class="btn btn-default btn-xs">
+                                            <i class="fa fa-commenting" aria-hidden="true"></i>
+                                        </button>
+                                        <!-- <button type="button" class="btn btn-default btn-xs" title="Observación técnico" ng-click="ver_mas(data.observacion)">
+                                          <i class="fa fa-commenting" aria-hidden="true"></i>
+                                        </button> -->
+                                    </td>
+                                    <td class="text-center">
+                                        <select ng-model="data.accion" style="width: 120px"
+                                                class="btn btn-default btn-xs grupo-select"
+                                                name="tipificacion" id="tipificacion">
+                                            <option value="Atendida">Atendida</option>
+                                            <option value="Atendida con compromiso">Atendida con compromiso</option>
+                                            <option value="Atendida escalado a facturación">Atendida escalado a
+                                                facturación
+                                            </option>
+                                            <option value="Atendida escalado a la comercial">Atendida escalado a la
+                                                comercial
+                                            </option>
+                                            <option value="Atendida sin solución">Atendida sin solución</option>
+                                            <option value="Agenda">Agenda</option>
+                                            <option value="Cliente Ilocalizado">Cliente Ilocalizado</option>
+                                            <option value="Llamada colgada">Llamada colgada</option>
+                                            <option value="Llamar de nuevo usuario">Llamar de nuevo usuario</option>
+                                            <option value="Reagenda">Reagenda</option>
+                                            <option value="Devolución queja a Nivel 1">Devolución queja a Nivel 1
+                                            </option>
+                                            <option value="Devolución queja a supervisor">Devolución queja a
+                                                supervisor
+                                            </option>
+                                            <option value="Monitoreo técnico">Monitoreo técnico</option>
+                                            <option value="Notas">Notas</option>
+                                        </select>
+                                    </td>
+                                    <td class="text-center">
+                                        <select ng-model="data.gestion" style="width: 120px"
+                                                class="btn btn-default btn-xs grupo-select"
+                                                name="tipificacion" id="tipificacion">
+                                            <option value="Atención">Atención</option>
+                                            <option value="Contactabilidad">Contactabilidad</option>
+                                            <option value=" Devolución">Devolución</option>
+                                            <option value="Monitoreo">Monitoreo</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-xs" data-toggle="modal"
+                                                ng-click="abreModal(data)"
+                                                tooltip-placement="top" uib-tooltip="Guardar gestión">
+                                            <i class="fa fa-floppy-o" aria-hidden="true"> </i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="seguimiento" class="tab-pane fade">
+                    <div class="panel panel-default">
+                        <div class="panel-heading nav navbar-default">
+                            <ul class="nav navbar-nav navbar-left">
+                                <b>Registros Quejas-Go</b>
+                            </ul>
+                            <ul class="nav navbar-nav navbar-right">
+                                <li>
+                                    <div data-ng-if="loading">
+                                        <img title="Esperando respuesta" tooltip data-placement="top"
+                                             src="img/loader.gif"/>
+                                    </div>
+                                </li>
+                                <li>
+                                    <input style="width: 130px" type="text" name="fechaini" id="fechaini"
+                                           class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                           ng-model="quejago.fechaini"
+                                           placeholder="Fecha Inicial" datetime-picker="" date-only autocomplete="off"
+                                           date-format="yyyy-MM-dd"
+                                           autocomplete="off"/>
+                                    <i class="fa fa-calendar fa-fw"></i>
+                                    <input style="width: 130px" type="text" name="fechafin" id="fechafin"
+                                           class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                           ng-model="quejago.fechafin"
+                                           placeholder="Fecha Final" datetime-picker="" date-only autocomplete="off"
+                                           date-format="yyyy-MM-dd"
+                                           autocomplete="off"/>
+                                    <i class="fa fa-calendar fa-fw"></i>
+
+                                    <button type="button" class="btn btn-default btn-xs"
+                                            ng-click="registrosQuejasGo(quejago)"
+                                            ng-disabled="loading" tooltip-placement="top" uib-tooltip="Buscar">
+                                        <i class="fa fa-search" aria-hidden="true"></i>
+                                    </button>
+
+                                    <button type="button" class="btn btn-success btn-xs" title="Exportar Registros"
+                                            ng-click="csvQuejaGo(quejago)" ng-disabled="loading" tooltip-placement="top"
+                                            uib-tooltip="Exportar">
+                                        <i class="fa fa-cloud-download" aria-hidden="true"> </i>
+                                    </button>
+
+                                    <b>
+                                        <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs"
+                                               ng-model="pedido"
+                                               placeholder="Buscar numero SS" autocomplete="off"/>&nbsp;
+
+                                        <button type="button" class="btn btn-default btn-xs"
+                                                ng-click="detallePedidoQuejaGo(pedido)"
+                                                tooltip-placement="top" uib-tooltip="Buscar" ng-disabled="loading">
+                                            <i class="fa fa-search" aria-hidden="true"></i>
+                                        </button>
+                                    </b>&nbsp;
+                                </li>
+                                <li>
+                                    <button type="button" class="btn btn-default btn-xs" ng-click="recargaPage()"
+                                            tooltip-placement="top"
+                                            uib-tooltip="Actualizar" ng-disabled="loading">
+                                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                                    </button>
+                                </li>
+                                &nbsp;&nbsp;
+                            </ul>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table small table-hover table-striped table-condensed table-bordered">
+                                <thead class="table-header">
+                                <tr>
+                                    <th class="text-center" style="width: 8%">Login Gestión</th>
+                                    <th class="text-center" style="width: 8%">Numero SS</th>
+                                    <th class="text-center" style="width: 8%">Consecutivo</th>
+                                    <th class="text-center" style="width: 5%">Nom. técnico</th>
+                                    <th class="text-center" style="width: 5%">Doc técnico</th>
+                                    <th class="text-center" style="width: 5%">Fecha Ingreso</th>
+                                    <th class="text-center" style="width: 5%">Fecha marca</th>
+                                    <th class="text-center" style="width: 5%">Fecha gestion</th>
+                                    <th class="text-center" style="width: 8%">Nom. cliente</th>
+                                    <th class="text-center" style="width: 8%">Ciudad</th>
+                                    <th class="text-center" style="width: 8%">Dirección</th>
+                                    <th class="text-center" style="width: 8%">Tel. contacto</th>
+                                    <th class="text-center" style="width: 5%">Des. queja</th>
+                                    <th class="text-center" style="width: 5%">Obs. técnico</th>
+                                    <th class="text-center" style="width: 8%">Acción</th>
+                                    <th class="text-center" style="width: 5%">Gestión</th>
+                                    <th class="text-center" style="width: 5%">Obs. Asesor</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="data in dataQuejasTerminados">
+                                    <td class="text-center">
+                                        <span>{{data.asesor}}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-default btn-xs"
+                                                ng-click="CopyPortaPapeles(data.pedido)"
+                                                tooltip title="Copiar pedido" id="tv{{$index}}">
+                                            {{data.pedido}}
+                                        </button>
+                                    </td>
+                                    <td class="text-center">{{data.id}}</td>
+                                    <td class="text-center">{{data.tecnico}}</td>
+                                    <td class="text-center">{{data.cedtecnico}}</td>
+                                    <td class="text-center">{{data.fecha}}</td>
+                                    <td class="text-center">{{data.fecha_marca}}</td>
+                                    <td class="text-center">{{data.fecha_gestion}}</td>
+                                    <td class="text-center">{{data.cliente}}</td>
+                                    <td class="text-center">{{data.region}}</td>
+                                    <td class="text-center">{{data.direccion}}</td>
+                                    <td class="text-center">{{data.movil_cliente}}</td>
+                                    <td class="text-center">
+                                        <button popover-placement="left" uib-popover="{{data.descripcion_queja}}"
+                                                tooltip-placement="top"
+                                                uib-tooltip="Descripción de la queja" type="button"
+                                                class="btn btn-default btn-xs">
+                                            <i class="fa fa-commenting" aria-hidden="true"></i>
+                                        </button>
+                                        <!-- <button type="button" class="btn btn-default btn-xs" title="Descripción de la queja" ng-click="ver_mas(data.descripcion_queja)">
+                                          <i class="fa fa-commenting" aria-hidden="true"></i>
+                                        </button> -->
+                                    </td>
+                                    <td class="text-center">
+                                        <button popover-placement="left" uib-popover="{{data.observacion}}"
+                                                tooltip-placement="top"
+                                                uib-tooltip="Observaciones técnico" popover-title="Observación técnico"
+                                                type="button"
+                                                class="btn btn-default btn-xs">
+                                            <i class="fa fa-commenting" aria-hidden="true"></i>
+                                        </button>
+                                        <!-- <button type="button" class="btn btn-default btn-xs" title="Observación técnico" ng-click="ver_mas(data.observacion)">
+                                          <i class="fa fa-commenting" aria-hidden="true"></i>
+                                        </button> -->
+                                    </td>
+                                    <td class="text-center">
+                                        <select ng-model="data.accion" style="width: 120px" disabled="true"
+                                                class="btn btn-default btn-xs grupo-select">
+                                            <option value="Atendida">Atendida</option>
+                                            <option value="Atendida con compromiso">Atendida con compromiso</option>
+                                            <option value="Atendida escalado a facturación">Atendida escalado a
+                                                facturación
+                                            </option>
+                                            <option value="Atendida escalado a la comercial">Atendida escalado a la
+                                                comercial
+                                            </option>
+                                            <option value="Atendida sin solución">Atendida sin solución</option>
+                                            <option value="Agenda">Agenda</option>
+                                            <option value="Cliente Ilocalizado">Cliente Ilocalizado</option>
+                                            <option value="Llamada colgada">Llamada colgada</option>
+                                            <option value="Llamar de nuevo usuario">Llamar de nuevo usuario</option>
+                                            <option value="Reagenda">Reagenda</option>
+                                            <option value="Devolución queja a Nivel 1">Devolución queja a Nivel 1
+                                            </option>
+                                            <option value="Devolución queja a supervisor">Devolución queja a
+                                                supervisor
+                                            </option>
+                                            <option value="Monitoreo técnico">Monitoreo técnico</option>
+                                            <option value="Notas">Notas</option>
+                                        </select>
+                                    </td>
+                                    <td class="text-center">
+                                        <select ng-model="data.gestion_asesor" style="width: 120px" disabled="true"
+                                                class="btn btn-default btn-xs grupo-select">
+                                            <option value="Atención">Atención</option>
+                                            <option value="Contactabilidad">Contactabilidad</option>
+                                            <option value=" Devolución">Devolución</option>
+                                            <option value="Monitoreo">Monitoreo</option>
+                                        </select>
+                                    </td>
+                                    <td class="text-center">
+                                        <button popover-placement="left" uib-popover="{{data.observacion_gestion}}"
+                                                tooltip-placement="top" uib-tooltip="Observación asesor" type="button"
+                                                class="btn btn-default btn-xs">
+                                            <i class="fa fa-commenting" aria-hidden="true"></i>
+                                        </button>
+                                        <!--  <button type="button" class="btn btn-default btn-xs" title="Observación asesor" ng-click="ver_mas(data.observacion_gestion)">
+                                          <i class="fa fa-commenting" aria-hidden="true"></i>
+                                        </button> -->
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center">
+                            <ul uib-pagination class="pagination-sm" total-items="totalItems" ng-model="currentPage"
+                                ng-change="pageChanged()" items-per-page="pageSize" max-size="3" boundary-links="true"
+                                rotate="false"
+                                previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+                                last-text="&raquo;"></ul>
+                        </div>
+                        <br/>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-
-        <div id="seguimiento" class="tab-pane fade">
-          <div class="panel panel-default">
-            <div class="panel-heading nav navbar-default">
-              <ul class="nav navbar-nav navbar-left">
-                <b>Registros Quejas-Go</b>
-              </ul>
-              <ul class="nav navbar-nav navbar-right">
-                <li>
-                  <div data-ng-if="loading">
-                    <img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif" />
-                  </div>
-                </li>
-                <li>
-                  <input style="width: 130px" type="text" name="fechaini" id="fechaini"
-                    class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="quejago.fechaini"
-                    placeholder="Fecha Inicial" datetime-picker="" date-only autocomplete="off" date-format="yyyy-MM-dd"
-                    autocomplete="off" />
-                  <i class="fa fa-calendar fa-fw"></i>
-                  <input style="width: 130px" type="text" name="fechafin" id="fechafin"
-                    class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="quejago.fechafin"
-                    placeholder="Fecha Final" datetime-picker="" date-only autocomplete="off" date-format="yyyy-MM-dd"
-                    autocomplete="off" />
-                  <i class="fa fa-calendar fa-fw"></i>
-
-                  <button type="button" class="btn btn-default btn-xs" ng-click="registrosQuejasGo(quejago)"
-                    ng-disabled="loading" tooltip-placement="top" uib-tooltip="Buscar">
-                    <i class="fa fa-search" aria-hidden="true"></i>
-                  </button>
-
-                  <button type="button" class="btn btn-success btn-xs" title="Exportar Registros"
-                    ng-click="csvQuejaGo(quejago)" ng-disabled="loading" tooltip-placement="top" uib-tooltip="Exportar">
-                    <i class="fa fa-cloud-download" aria-hidden="true"> </i>
-                  </button>
-
-                  <b>
-                    <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs" ng-model="pedido"
-                      placeholder="Buscar numero SS" autocomplete="off" />&nbsp;
-
-                    <button type="button" class="btn btn-default btn-xs" ng-click="detallePedidoQuejaGo(pedido)"
-                    tooltip-placement="top" uib-tooltip="Buscar" ng-disabled="loading">
-                      <i class="fa fa-search" aria-hidden="true"></i>
-                    </button> </b>&nbsp;
-                </li>
-                <li>
-                  <button type="button" class="btn btn-default btn-xs" ng-click="recargaPage()" tooltip-placement="top"
-                    uib-tooltip="Actualizar" ng-disabled="loading">
-                    <i class="fa fa-refresh" aria-hidden="true"></i>
-                  </button>
-                </li>
-                &nbsp;&nbsp;
-              </ul>
-            </div>
-
-            <div class="table-responsive">
-              <table class="table small table-hover table-striped table-condensed table-bordered">
-                <thead class="table-header">
-                  <tr>
-                    <th class="text-center" style="width: 8%">Login Gestión</th>
-                    <th class="text-center" style="width: 8%">Numero SS</th>
-                    <th class="text-center" style="width: 8%">Consecutivo</th>
-                    <th class="text-center" style="width: 5%">Nom. técnico</th>
-                    <th class="text-center" style="width: 5%">Doc técnico</th>
-                    <th class="text-center" style="width: 5%">Fecha Ingreso</th>
-                    <th class="text-center" style="width: 5%">Fecha marca</th>
-                    <th class="text-center" style="width: 5%">Fecha gestion</th>
-                    <th class="text-center" style="width: 8%">Nom. cliente</th>
-                    <th class="text-center" style="width: 8%">Ciudad</th>
-                    <th class="text-center" style="width: 8%">Dirección</th>
-                    <th class="text-center" style="width: 8%">Tel. contacto</th>
-                    <th class="text-center" style="width: 5%">Des. queja</th>
-                    <th class="text-center" style="width: 5%">Obs. técnico</th>
-                    <th class="text-center" style="width: 8%">Acción</th>
-                    <th class="text-center" style="width: 5%">Gestión</th>
-                    <th class="text-center" style="width: 5%">Obs. Asesor</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr ng-repeat="data in dataQuejasTerminados">
-                    <td class="text-center">
-                      <span>{{data.asesor}}</span>
-                    </td>
-                    <td class="text-center">
-                      <button type="button" class="btn btn-default btn-xs" ng-click="CopyPortaPapeles(data.pedido)"
-                        tooltip title="Copiar pedido" id="tv{{$index}}">
-                        {{data.pedido}}
-                      </button>
-                    </td>
-                    <td class="text-center">{{data.id}}</td>
-                    <td class="text-center">{{data.tecnico}}</td>
-                    <td class="text-center">{{data.cedtecnico}}</td>
-                    <td class="text-center">{{data.fecha}}</td>
-                    <td class="text-center">{{data.fecha_marca}}</td>
-                    <td class="text-center">{{data.fecha_gestion}}</td>
-                    <td class="text-center">{{data.cliente}}</td>
-                    <td class="text-center">{{data.region}}</td>
-                    <td class="text-center">{{data.direccion}}</td>
-                    <td class="text-center">{{data.movil_cliente}}</td>
-                    <td class="text-center">
-                      <button popover-placement="left" uib-popover="{{data.descripcion_queja}}" tooltip-placement="top"
-                        uib-tooltip="Descripción de la queja" type="button" class="btn btn-default btn-xs">
-                        <i class="fa fa-commenting" aria-hidden="true"></i>
-                      </button>
-                      <!-- <button type="button" class="btn btn-default btn-xs" title="Descripción de la queja" ng-click="ver_mas(data.descripcion_queja)">
-                        <i class="fa fa-commenting" aria-hidden="true"></i>
-                      </button> -->
-                    </td>
-                    <td class="text-center">
-                      <button popover-placement="left" uib-popover="{{data.observacion}}" tooltip-placement="top"
-                        uib-tooltip="Observaciones técnico" popover-title="Observación técnico" type="button"
-                        class="btn btn-default btn-xs">
-                        <i class="fa fa-commenting" aria-hidden="true"></i>
-                      </button>
-                      <!-- <button type="button" class="btn btn-default btn-xs" title="Observación técnico" ng-click="ver_mas(data.observacion)">
-                        <i class="fa fa-commenting" aria-hidden="true"></i>
-                      </button> -->
-                    </td>
-                    <td class="text-center">
-                      <select ng-model="data.accion" style="width: 120px" disabled="true"
-                        class="btn btn-default btn-xs grupo-select">
-                        <option value="Atendida">Atendida</option>
-                        <option value="Atendida con compromiso">Atendida con compromiso</option>
-                        <option value="Atendida escalado a facturación">Atendida escalado a facturación</option>
-                        <option value="Atendida escalado a la comercial">Atendida escalado a la comercial</option>
-                        <option value="Atendida sin solución">Atendida sin solución</option>
-                        <option value="Agenda">Agenda</option>
-                        <option value="Cliente Ilocalizado">Cliente Ilocalizado</option>
-                        <option value="Llamada colgada">Llamada colgada</option>
-                        <option value="Llamar de nuevo usuario">Llamar de nuevo usuario</option>
-                        <option value="Reagenda">Reagenda</option>
-                        <option value="Devolución queja a Nivel 1">Devolución queja a Nivel 1</option>
-                        <option value="Devolución queja a supervisor">Devolución queja a supervisor</option>
-                        <option value="Monitoreo técnico">Monitoreo técnico</option>
-                        <option value="Notas">Notas</option>
-                      </select>
-                    </td>
-                    <td class="text-center">
-                      <select ng-model="data.gestion_asesor" style="width: 120px" disabled="true"
-                        class="btn btn-default btn-xs grupo-select">
-                        <option value="Atención">Atención</option>
-                        <option value="Contactabilidad">Contactabilidad</option>
-                        <option value=" Devolución">Devolución</option>
-                        <option value="Monitoreo">Monitoreo</option>
-                      </select>
-                    </td>
-                    <td class="text-center">
-                      <button popover-placement="left" uib-popover="{{data.observacion_gestion}}"
-                      tooltip-placement="top" uib-tooltip="Observación asesor" type="button" class="btn btn-default btn-xs">
-                        <i class="fa fa-commenting" aria-hidden="true"></i>
-                      </button>
-                      <!--  <button type="button" class="btn btn-default btn-xs" title="Observación asesor" ng-click="ver_mas(data.observacion_gestion)">
-                        <i class="fa fa-commenting" aria-hidden="true"></i>
-                      </button> -->
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="text-center">
-              <ul uib-pagination class="pagination-sm" total-items="totalItems" ng-model="currentPage"
-                ng-change="pageChanged()" items-per-page="pageSize" max-size="3" boundary-links="true" rotate="false"
-                previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
-            </div>
-            <br />
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
 </div>
 
 <br><br><br><br>
 
 <div class="modal fade" tabindex="-1" role="dialog" id="modalQuejasGo">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <h4 class="modal-title">Observación Gestión</h4>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" name="" ng-model="data" />
-        <textarea name="" id="" cols="30" rows="10" class="form-control" ng-model="data.observacion_gestion"></textarea>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">
-          Cancelar
-        </button>
-        <button type="button" class="btn btn-primary" ng-click="guardaSolicitudQuejasGo(data)">
-          Guardar Solicitud
-        </button>
-      </div>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Observación Gestión</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="" ng-model="data"/>
+                <textarea name="" id="" cols="30" rows="10" class="form-control"
+                          ng-model="data.observacion_gestion"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" ng-click="guardaSolicitudQuejasGo(data)">
+                    Guardar Solicitud
+                </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
     </div>
-    <!-- /.modal-content -->
-  </div>
-  <!-- /.modal-dialog -->
+    <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
 
 <div class="modal fade" tabindex="-1" role="dialog" id="detallePedidoQuejago">
-  <div class="modal-dialog modal-lg" role="document" style="width: 90%">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <h4 class="modal-title">
-          Detalle pedido {{detallePedidoVenta[0].pedido}}
-        </h4>
-      </div>
-      <div class="modal-body">
-        <div class="table-responsive">
-          <table class="table small table-hover table-striped table-condensed table-bordered">
-            <thead class="table-header">
-              <tr>
-                <th class="text-center" style="width: 8%">Login Gestión</th>
-                <th class="text-center" style="width: 8%">Numero SS</th>
-                <th class="text-center" style="width: 8%">Consecutivo</th>
-                <th class="text-center" style="width: 5%">Nom. técnico</th>
-                <th class="text-center" style="width: 5%">Doc técnico</th>
-                <th class="text-center" style="width: 5%">Fecha Ingreso</th>
-                <th class="text-center" style="width: 5%">Fecha marca</th>
-                <th class="text-center" style="width: 5%">Fecha gestion</th>
-                <th class="text-center" style="width: 8%">Nom. cliente</th>
-                <th class="text-center" style="width: 8%">Ciudad</th>
-                <th class="text-center" style="width: 8%">Dirección</th>
-                <th class="text-center" style="width: 8%">Tel. contacto</th>
-                <th class="text-center" style="width: 5%">Des. queja</th>
-                <th class="text-center" style="width: 5%">Obs. técnico</th>
-                <th class="text-center" style="width: 8%">Acción</th>
-                <th class="text-center" style="width: 5%">Gestión</th>
-                <th class="text-center" style="width: 5%">Obs. Asesor</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="data in dataQuejasTerminadosRegistro">
-                <td class="text-center">
-                  <span>{{data.asesor}}</span>
-                </td>
-                <td class="text-center">{{data.pedido}}</td>
-                <td class="text-center">{{data.id}}</td>
-                <td class="text-center">{{data.tecnico}}</td>
-                <td class="text-center">{{data.cedtecnico}}</td>
-                <td class="text-center">{{data.fecha}}</td>
-                <td class="text-center">{{data.fecha_marca}}</td>
-                <td class="text-center">{{data.fecha_gestion}}</td>
-                <td class="text-center">{{data.cliente}}</td>
-                <td class="text-center">{{data.region}}</td>
-                <td class="text-center">{{data.direccion}}</td>
-                <td class="text-center">{{data.movil_cliente}}</td>
-                <td class="text-center">
-                  <button type="button" class="btn btn-default btn-xs" title="Descripción de la queja"
-                    ng-click="ver_mas(data.descripcion_queja)">
-                    <i class="fa fa-commenting" aria-hidden="true"></i>
-                  </button>
-                </td>
-                <td class="text-center">
-                  <button type="button" class="btn btn-default btn-xs" title="Observación técnico"
-                    ng-click="ver_mas(data.observacion)">
-                    <i class="fa fa-commenting" aria-hidden="true"></i>
-                  </button>
-                </td>
-                <td class="text-center">
-                  <select ng-model="data.accion" style="width: 120px" disabled="true"
-                    class="btn btn-default btn-xs grupo-select">
-                    <option value="Atendida">Atendida</option>
-                    <option value="Atendida con compromiso">Atendida con compromiso</option>
-                    <option value="Atendida escalado a facturación">Atendida escalado a facturación</option>
-                    <option value="Atendida escalado a la comercial">Atendida escalado a la comercial</option>
-                    <option value="Atendida sin solución">Atendida sin solución</option>
-                    <option value="Agenda">Agenda</option>
-                    <option value="Cliente Ilocalizado">Cliente Ilocalizado</option>
-                    <option value="Llamada colgada">Llamada colgada</option>
-                    <option value="Llamar de nuevo usuario">Llamar de nuevo usuario</option>
-                    <option value="Reagenda">Reagenda</option>
-                    <option value="Devolución queja a Nivel 1">Devolución queja a Nivel 1</option>
-                    <option value="Devolución queja a supervisor">Devolución queja a supervisor</option>
-                    <option value="Monitoreo técnico">Monitoreo técnico</option>
-                    <option value="Notas">Notas</option>
-                  </select>
-                </td>
-                <td class="text-center">
-                  <select ng-model="data.gestion_asesor" style="width: 120px" disabled="true"
-                    class="btn btn-default btn-xs grupo-select">
-                    <option value="Atención">Atención</option>
-                    <option value="Contabilidad"">Contabilidad</option>
-                    <option value=" Devolución">Devolución</option>
-                    <option value="Monitoreo">Monitoreo</option>
-                  </select>
-                </td>
-                <td class="text-center">
-                  <button type="button" class="btn btn-default btn-xs" title="Observación asesor"
-                    ng-click="ver_mas(data.observacion_gestion)">
-                    <i class="fa fa-commenting" aria-hidden="true"></i>
-                  </button>
-              </tr>
-            </tbody>
-          </table>
+    <div class="modal-dialog modal-lg" role="document" style="width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">
+                    Detalle pedido {{detallePedidoVenta[0].pedido}}
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table small table-hover table-striped table-condensed table-bordered">
+                        <thead class="table-header">
+                        <tr>
+                            <th class="text-center" style="width: 8%">Login Gestión</th>
+                            <th class="text-center" style="width: 8%">Numero SS</th>
+                            <th class="text-center" style="width: 8%">Consecutivo</th>
+                            <th class="text-center" style="width: 5%">Nom. técnico</th>
+                            <th class="text-center" style="width: 5%">Doc técnico</th>
+                            <th class="text-center" style="width: 5%">Fecha Ingreso</th>
+                            <th class="text-center" style="width: 5%">Fecha marca</th>
+                            <th class="text-center" style="width: 5%">Fecha gestion</th>
+                            <th class="text-center" style="width: 8%">Nom. cliente</th>
+                            <th class="text-center" style="width: 8%">Ciudad</th>
+                            <th class="text-center" style="width: 8%">Dirección</th>
+                            <th class="text-center" style="width: 8%">Tel. contacto</th>
+                            <th class="text-center" style="width: 5%">Des. queja</th>
+                            <th class="text-center" style="width: 5%">Obs. técnico</th>
+                            <th class="text-center" style="width: 8%">Acción</th>
+                            <th class="text-center" style="width: 5%">Gestión</th>
+                            <th class="text-center" style="width: 5%">Obs. Asesor</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="data in dataQuejasTerminadosRegistro">
+                            <td class="text-center">
+                                <span>{{data.asesor}}</span>
+                            </td>
+                            <td class="text-center">{{data.pedido}}</td>
+                            <td class="text-center">{{data.id}}</td>
+                            <td class="text-center">{{data.tecnico}}</td>
+                            <td class="text-center">{{data.cedtecnico}}</td>
+                            <td class="text-center">{{data.fecha}}</td>
+                            <td class="text-center">{{data.fecha_marca}}</td>
+                            <td class="text-center">{{data.fecha_gestion}}</td>
+                            <td class="text-center">{{data.cliente}}</td>
+                            <td class="text-center">{{data.region}}</td>
+                            <td class="text-center">{{data.direccion}}</td>
+                            <td class="text-center">{{data.movil_cliente}}</td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-default btn-xs" title="Descripción de la queja"
+                                        ng-click="ver_mas(data.descripcion_queja)">
+                                    <i class="fa fa-commenting" aria-hidden="true"></i>
+                                </button>
+                            </td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-default btn-xs" title="Observación técnico"
+                                        ng-click="ver_mas(data.observacion)">
+                                    <i class="fa fa-commenting" aria-hidden="true"></i>
+                                </button>
+                            </td>
+                            <td class="text-center">
+                                <select ng-model="data.accion" style="width: 120px" disabled="true"
+                                        class="btn btn-default btn-xs grupo-select">
+                                    <option value="Atendida">Atendida</option>
+                                    <option value="Atendida con compromiso">Atendida con compromiso</option>
+                                    <option value="Atendida escalado a facturación">Atendida escalado a facturación
+                                    </option>
+                                    <option value="Atendida escalado a la comercial">Atendida escalado a la comercial
+                                    </option>
+                                    <option value="Atendida sin solución">Atendida sin solución</option>
+                                    <option value="Agenda">Agenda</option>
+                                    <option value="Cliente Ilocalizado">Cliente Ilocalizado</option>
+                                    <option value="Llamada colgada">Llamada colgada</option>
+                                    <option value="Llamar de nuevo usuario">Llamar de nuevo usuario</option>
+                                    <option value="Reagenda">Reagenda</option>
+                                    <option value="Devolución queja a Nivel 1">Devolución queja a Nivel 1</option>
+                                    <option value="Devolución queja a supervisor">Devolución queja a supervisor</option>
+                                    <option value="Monitoreo técnico">Monitoreo técnico</option>
+                                    <option value="Notas">Notas</option>
+                                </select>
+                            </td>
+                            <td class="text-center">
+                                <select ng-model="data.gestion_asesor" style="width: 120px" disabled="true"
+                                        class="btn btn-default btn-xs grupo-select">
+                                    <option value="Atención">Atención</option>
+                                    <option value="Contabilidad"
+                                    ">Contabilidad</option>
+                                    <option value=" Devolución">Devolución</option>
+                                    <option value="Monitoreo">Monitoreo</option>
+                                </select>
+                            </td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-default btn-xs" title="Observación asesor"
+                                        ng-click="ver_mas(data.observacion_gestion)">
+                                    <i class="fa fa-commenting" aria-hidden="true"></i>
+                                </button>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">
-          Cerrar
-        </button>
-      </div>
+        <!-- /.modal-content -->
     </div>
-    <!-- /.modal-content -->
-  </div>
-  <!-- /.modal-dialog -->
+    <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
 
 <div class="modal fade" id="modalObservaciones" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Observaciones</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        {{observacionQuejas}}
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-      </div>
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Observaciones</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {{observacionQuejas}}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>

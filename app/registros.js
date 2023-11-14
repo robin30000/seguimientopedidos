@@ -15,10 +15,7 @@
         $scope.pageSize = 15;
         $scope.searchText = "";
 
-        if (
-            $scope.Registros.fechaini == undefined ||
-            $scope.Registros.fechafin == undefined
-        ) {
+        if ($scope.Registros.fechaini === undefined || $scope.Registros.fechafin === undefined) {
             var tiempo = new Date().getTime();
             var date1 = new Date();
             var year = date1.getFullYear();
@@ -54,39 +51,35 @@
                 $scope.searchText = "";
                 data = {page: $scope.currentPage, size: $scope.pageSize, param: $scope.Registros};
             }
-            services.registros(data).then(
-                function (data) {
-                    if (data.data.state == 99) {
-                        swal({
-                            type: "error",
-                            title: data.data.title,
-                            text: data.data.text,
-                            timer: 4000,
-                        }).then(function () {
-                            $cookies.remove("usuarioseguimiento");
-                            $location.path("/");
-                            $rootScope.galletainfo = undefined;
-                            $rootScope.permiso = false;
-                            $route.reload();
-                        });
-                    } else {
-                        $scope.listaRegistros = data.data.data;
-                        $scope.cantidad = data.data.length;
-                        $scope.counter = data.data.counter;
+            services.myService(data, 'formaAsesoresCtrl.php', 'registros').then((data) => {
+                if (data.data.state === 99) {
+                    Swal({
+                        type: "error",
+                        title: data.data.title,
+                        text: data.data.text,
+                        timer: 4000,
+                    }).then(function () {
+                        $cookies.remove("usuarioseguimiento");
+                        $location.path("/");
+                        $rootScope.galletainfo = undefined;
+                        $rootScope.permiso = false;
+                        $route.reload();
+                    });
+                } else {
+                    $scope.listaRegistros = data.data.data;
+                    $scope.cantidad = data.data.length;
+                    $scope.counter = data.data.counter;
 
-                        $scope.totalItems = data.data.counter;
-                        $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
-                        $scope.endItem = $scope.currentPage * $scope.pageSize;
-                        if ($scope.endItem > data.data.counter) {
-                            $scope.endItem = data.data.counter;
-                        }
-                    }
-
-                    function errorCallback(response) {
-                        console.log(response);
+                    $scope.totalItems = data.data.counter;
+                    $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                    $scope.endItem = $scope.currentPage * $scope.pageSize;
+                    if ($scope.endItem > data.data.counter) {
+                        $scope.endItem = data.data.counter;
                     }
                 }
-            );
+            }).catch((e) => {
+                console.log(e)
+            });
         }
 
         $scope.buscarRegistro = (param) => {
@@ -101,8 +94,8 @@
                 return;
             }
 
-            if (param.concepto){
-                if (!param.buscar){
+            if (param.concepto) {
+                if (!param.buscar) {
                     Swal({
                         type: "info",
                         title: "Oops...",
@@ -118,8 +111,8 @@
                 }
             }
 
-            if (param.buscar){
-                if (!param.concepto){
+            if (param.buscar) {
+                if (!param.concepto) {
                     Swal({
                         type: "info",
                         title: "Oops...",
@@ -145,7 +138,6 @@
         };
 
         $scope.muestraNotas = function (datos) {
-
             $scope.pedido = datos.pedido;
             $scope.TituloModal = "Observaciones para el pedido:";
             $scope.observaciones = datos.observaciones;
@@ -158,7 +150,7 @@
 
             services.getSubAcciones(proceso, accion).then(
                 function (data) {
-                    if (data.data.state == 0) {
+                    if (data.data.state === 0) {
                         $scope.validarsubaccion = false;
                     } else {
                         $scope.validarsubaccion = true;
@@ -172,28 +164,26 @@
         };
 
         $scope.calcularAcciones = function (proceso) {
-            if (proceso == "") {
+            if (proceso === "") {
                 $scope.validaraccion = false;
                 $scope.validarsubaccion = false;
             } else {
-                services.getAcciones(proceso).then(function (data) {
-                    if (data.data.state == 0) {
+                services.myService(proceso, 'otrosServiciosDosCtrl.php', 'acciones').then((data) => {
+                    if (data.data.state === 0) {
                         $scope.validaraccion = false;
                     } else {
                         $scope.validaraccion = true;
                         $scope.listadoAcciones = data.data.data;
                     }
-                });
+                }).catch((e) => {
+                    console.log(e)
+                })
             }
         };
 
         $scope.editarRegistros = function (datos) {
             $scope.datosRegistros = datos;
-            if ($scope.datosRegistros.plantilla != "") {
-                $scope.verplantilla = true;
-            } else {
-                $scope.verplantilla = false;
-            }
+            $scope.verplantilla = $scope.datosRegistros.plantilla !== "";
             $scope.TituloModal = "Editar pedido:";
             $scope.pedido = datos.pedido;
             $scope.calcularAcciones($scope.datosRegistros.proceso);
@@ -209,30 +199,28 @@
             $scope.respuestaupdate = null;
             $scope.respuestadelete = null;
 
-            services.editarRegistro(datos, $rootScope.galletainfo).then(
-                function (data) {
-                    if (data.data.state != 1) {
-                        Swal({
-                            type: 'error',
-                            text: data.data.msj,
-                            timer: 4000
-                        })
-                    } else {
-                        Swal({
-                            type: 'success',
-                            text: data.data.msj,
-                            timer: 4000
-                        })
-                        data = {
-                            page: $scope.currentPage,
-                            size: $scope.pageSize
-                        };
-                        BuscarRegistros(data);
-                    }
-                },
-                function errorCallback(response) {
+            services.myService(datos, 'userCtrl.php', 'editarRegistro').then((data) => {
+                if (data.data.state !== 1) {
+                    Swal({
+                        type: 'error',
+                        text: data.data.msj,
+                        timer: 4000
+                    })
+                } else {
+                    Swal({
+                        type: 'success',
+                        text: data.data.msj,
+                        timer: 4000
+                    })
+                    data = {
+                        page: $scope.currentPage,
+                        size: $scope.pageSize
+                    };
+                    BuscarRegistros(data);
                 }
-            );
+            }).catch((e) => {
+                console.log(e)
+            });
         };
 
         $scope.csvRegistros = function () {
@@ -262,9 +250,9 @@
                 return;
             }
 
-            services.expCsvRegistros($scope.Registros, $rootScope.galletainfo)
+            services.myService($scope.Registros, 'otherServicesDosCtrl.php','csvRegistros')
                 .then(function (data) {
-                    if (data.data.state == 1) {
+                    if (data.data.state === 1) {
                         var wb = XLSX.utils.book_new();
                         var ws = XLSX.utils.json_to_sheet(data.data.data);
                         XLSX.utils.book_append_sheet(wb, ws, 'registros');
@@ -299,9 +287,9 @@
                     text: "La fecha final no puede ser menor que la inicial",
                 });
             } else {
-                services.expCsvtecnico($scope.Registros, $rootScope.galletainfo)
+                services.myService($scope.Registros, 'otherServicesDosCtrl.php', 'Csvtecnico')
                     .then(function (data) {
-                        if (data.data.state == 1) {
+                        if (data.data.state === 1) {
                             var wb = XLSX.utils.book_new();
                             var ws = XLSX.utils.json_to_sheet(data.data.data);
                             XLSX.utils.book_append_sheet(wb, ws, 'registros-equipos');
@@ -341,7 +329,7 @@
 
             var uploadUrl = "api/class/subeArchivo.php";
             cargaRegistros.uploadFileToUrl(file, uploadUrl).then((data) => {
-                if (data.data.state == 1) {
+                if (data.data.state === 1) {
                     Swal({
                         type: 'success',
                         title: 'Bien',

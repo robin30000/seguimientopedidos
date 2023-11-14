@@ -355,40 +355,34 @@ class soporteGpon
     {
 
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();
-            if (!$_SESSION) {
-                $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
+
+            $pagenum = $data['page'];
+            $pagesize = $data['size'];
+            $offset = ($pagenum - 1) * $pagesize;
+            $search = $data['search'];
+
+            $condicion = '';
+            if (!empty($data['data']['fechaini'])) {
+                $fechaini = $data['data']['fechaini'];
+                $fechafin = $data['data']['fechafin'];
+                $condicion = " AND fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
             } else {
+                $fechaini = date('Y-m-d');
+                $fechafin = date('Y-m-d');
+                $condicion = " AND fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
+            }
 
-                $pagenum = $data['page'];
-                $pagesize = $data['size'];
-                $offset = ($pagenum - 1) * $pagesize;
-                $search = $data['search'];
-
-                $condicion = '';
-                if (!empty($data['data']['fechaini'])) {
-                    $fechaini = $data['data']['fechaini'];
-                    $fechafin = $data['data']['fechafin'];
-                    $condicion = " AND fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
-                } else {
-                    $fechaini = date('Y-m-d');
-                    $fechafin = date('Y-m-d');
-                    $condicion = " AND fecha_respuesta BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
-                }
-
-                if ($data['pedido']) {
-                    $pedido = $data['pedido'];
-                    $condicion = " AND  tarea = '$pedido' ";
-                }
+            if ($data['pedido']) {
+                $pedido = $data['pedido'];
+                $condicion = " AND  tarea = '$pedido' ";
+            }
 
 
-                $stmt = $this->_DB->query("select * from soporte_gpon where 1=1 $condicion AND status_soporte = '1'");
-                $stmt->execute();
-                $counter = $stmt->rowCount();
+            $stmt = $this->_DB->query("select * from soporte_gpon where 1=1 $condicion AND status_soporte = '1'");
+            $stmt->execute();
+            $counter = $stmt->rowCount();
 
-                $stmt = $this->_DB->prepare("SELECT id_soporte,
+            $stmt = $this->_DB->prepare("SELECT id_soporte,
                                                tarea,
                                                arpon,
                                                nap,
@@ -431,14 +425,14 @@ class soporteGpon
                                         WHERE 1 = 1 $condicion AND status_soporte = '1'
                                         ORDER BY fecha_creado DESC
                                         limit $offset, $pagesize");
-                $stmt->execute();
-                if ($stmt->rowCount()) {
-                    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    $response = ['state' => 1, 'data' => $result, 'counter' => $counter];
-                } else {
-                    $response = ['state' => 0, 'msj' => 'No se encontraron registros'];
-                }
+            $stmt->execute();
+            if ($stmt->rowCount()) {
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $response = ['state' => 1, 'data' => $result, 'counter' => $counter];
+            } else {
+                $response = ['state' => 0, 'msj' => 'No se encontraron registros'];
             }
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }

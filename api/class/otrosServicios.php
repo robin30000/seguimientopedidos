@@ -1313,9 +1313,9 @@ class otrosServicios
                     if ($stmt->rowCount()) {
                         $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                        $response = array('state' => 1, 'data' => $resultado);
+                        $response = array('state' => true, 'data' => $resultado);
                     } else {
-                        $response = array('state' => 0, 'msj' => 'No se encontraron datos');
+                        $response = array('state' => false, 'msj' => 'No se encontraron datos');
                     }
                 /*} else {
                     $response = array('state' => 0, 'msj' => 'Ingrese un pedido');

@@ -49,7 +49,7 @@ class Toip
             $user = $data['usuario'];
             $id = $data['id'];
 
-            if (!$id) {
+            if (!$user) {
                 $response = ['state' => false, 'msj' => 'Inicia session nuevamente para continuar'];
             } else {
                 $stmt = $this->_DB->prepare("SELECT en_gestion, login_gestion FROM activacion_toip WHERE id = :id");

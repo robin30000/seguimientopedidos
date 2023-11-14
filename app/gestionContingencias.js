@@ -809,6 +809,11 @@
             }
         };
 
+        $scope.resumenContingencias = () => {
+            $scope.fecha = {};
+            resumenContingencias();
+        }
+
         $scope.pageChanged = function () {
             let data = {page: $scope.currentPage, size: $scope.pageSize, fecha: $scope.resumen};
             resumenContingencias(data);
@@ -979,10 +984,39 @@
         };
 
         $scope.descargarContingencias = function (data) {
+            if (!data){
+                Swal({
+                    type:'error',
+                    title:'Oppss...',
+                    text:'Ingresa la fecha inicial',
+                    timer:4000
+                })
+                return;
+            }
+            if (!data.fechaupdateFinal){
+                Swal({
+                    type:'error',
+                    title:'Oppss...',
+                    text:'Ingresa la fecha final',
+                    timer:4000
+                })
+                return;
+            }
+            if (data.fechaupdateFinal < data.fechaupdateInical){
+                Swal({
+                    type:'error',
+                    title:'Oppss...',
+                    text:'La fecha inicial no puede ser mayor que la fecha final',
+                    timer:4000
+                })
+                return;
+            }
+            $scope.loading = true;
             services
-                .getexporteContingencias(data)
+                .myService(data, 'otherServicesDosCtrl.php','csvContingencias')
                 .then(function (data) {
-                    if (data.data.state == 1) {
+                    if (data.data.state) {
+                        $scope.loading = false;
                         var wb = XLSX.utils.book_new();
                         var ws = XLSX.utils.json_to_sheet(data.data.data);
                         XLSX.utils.book_append_sheet(wb, ws, 'contingencias');

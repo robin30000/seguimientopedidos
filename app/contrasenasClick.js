@@ -13,33 +13,30 @@
             $scope.tecnicos = () => {
                 $scope.loading = 1;
                 services.windowsBridge("HCHV_DEV/tecnicos/s").then((data) => {
-                    services.acualizaTecnicos(data).then(
-                        function (data) {
-                            if (data.data.state == 1) {
-                                Swal({
-                                    type: "success",
-                                    title: 'Bien',
-                                    text: data.data.msj,
-                                    timer: 4000,
-                                }).then(function () {
-                                    $route.reload();
-                                });
-                            } else {
-                                Swal({
-                                    type: "info",
-                                    title: 'Ops..',
-                                    text: data.data.msj,
-                                    timer: 4000,
-                                }).then(function () {
-                                    $route.reload();
-                                });
-                            }
-
-                        },
-                        function errorCallback(error) {
-                            console.log(error);
+                    services.acualizaTecnicos(data).then((data) => {
+                        if (data.data.state === 1) {
+                            Swal({
+                                type: "success",
+                                title: 'Bien',
+                                text: data.data.msj,
+                                timer: 4000,
+                            }).then(function () {
+                                $route.reload();
+                            });
+                        } else {
+                            Swal({
+                                type: "info",
+                                title: 'Ops..',
+                                text: data.data.msj,
+                                timer: 4000,
+                            }).then(function () {
+                                $route.reload();
+                            });
                         }
-                    );
+
+                    }).catch((e) => {
+                        console.log(e)
+                    });
                 }).catch((e) => {
                     console.log(e)
                 })
@@ -78,51 +75,47 @@
                         variable: $scope.tecnico
                     };
                 }
-                services.listadoTecnicos(data).then(
-                    (data) => {
-                        if (data.data.state == 99) {
-                            swal({
-                                type: "error",
-                                title: data.data.title,
-                                text: data.data.text,
-                                timer: 4000,
-                            }).then(function () {
-                                $cookies.remove("usuarioseguimiento");
-                                $location.path("/");
-                                $rootScope.galletainfo = undefined;
-                                $rootScope.permiso = false;
-                                $route.reload();
-                            });
-                        } else {
-                            $scope.listaTecnicos = data.data.data;
-                            $scope.cantidad = data.data.data.length;
-                            $scope.counter = data.data.counter;
+                services.listadoTecnicos(data).then((data) => {
+                    if (data.data.state === 99) {
+                        swal({
+                            type: "error",
+                            title: data.data.title,
+                            text: data.data.text,
+                            timer: 4000,
+                        }).then(function () {
+                            $cookies.remove("usuarioseguimiento");
+                            $location.path("/");
+                            $rootScope.galletainfo = undefined;
+                            $rootScope.permiso = false;
+                            $route.reload();
+                        });
+                    } else {
+                        $scope.listaTecnicos = data.data.data;
+                        $scope.cantidad = data.data.data.length;
+                        $scope.counter = data.data.counter;
 
-                            $scope.totalItems = data.data.counter;
-                            $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
-                            $scope.endItem = $scope.currentPage * $scope.pageSize;
-                            if ($scope.endItem > data.data.counter) {
-                                $scope.endItem = data.data.counter;
-                            }
+                        $scope.totalItems = data.data.counter;
+                        $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
+                        $scope.endItem = $scope.currentPage * $scope.pageSize;
+                        if ($scope.endItem > data.data.counter) {
+                            $scope.endItem = data.data.counter;
                         }
+                    }
 
-                    })
-                    .catch((response) => {
-                        console.log(response);
-                        ;
-                    })
-
+                }).catch((response) => {
+                    console.log(response);
+                })
             }
 
             $scope.buscarTec = function (param, dato) {
-                if (param == undefined) {
+                if (param === undefined) {
                     Swal({
                         type: "info",
                         title: "Oops...",
                         text: "seleccione parametro a buscar",
                         timer: 4000,
                     });
-                } else if (dato == undefined) {
+                } else if (dato === undefined) {
                     Swal({
                         type: "info",
                         title: "Oops...",
@@ -130,7 +123,7 @@
                         timer: 4000,
                     });
                 } else {
-                    data = {
+                    let data = {
                         page: $scope.currentPage,
                         size: $scope.pageSize,
                         buscar: param,
@@ -145,15 +138,12 @@
                 $scope.errorDatos = null;
                 $scope.respuestaupdate = null;
                 $scope.respuestadelete = null;
-                services.creaTecnico($scope.crearTecnico, id_tecnico).then(
-                    function (data) {
-                        $scope.respuestaupdate = "Técnico creado.";
-                        return data.data;
-                    },
-                    function errorCallback(response) {
-                        console.log(response);
-                    }
-                );
+                services.creaTecnico($scope.crearTecnico, id_tecnico).then((data) => {
+                    $scope.respuestaupdate = "Técnico creado.";
+                    return data.data;
+                }).catch((e) => {
+                    console.log(e)
+                });
             };
 
             $scope.editarModal = function (datos) {
@@ -176,21 +166,19 @@
                 });
             };
 
-            $scope.borrarTecnico = function (id) {
+            $scope.borrarTecnico = (id) => {
                 $scope.idBorrar = id;
                 $scope.Tecnico = {};
                 $scope.errorDatos = null;
                 $scope.respuestaupdate = null;
                 $scope.respuestadelete = null;
-                services.deleteTecnico($scope.idBorrar).then(
-                    function (data) {
-                        $scope.respuestadelete =
-                            "Técnico " + $rootScope.datos.NOMBRE + " eliminado exitosamente";
-                    },
-                    function errorCallback(response) {
-                        $scope.errorDatos = "No se borro";
-                    }
-                );
+                services.deleteTecnico($scope.idBorrar).then((data) => {
+                    $scope.respuestadelete =
+                        "Técnico " + $rootScope.datos.NOMBRE + " eliminado exitosamente";
+                }).catch((e) => {
+                    console.log(e)
+                })
+
             };
         }
     }

@@ -131,4 +131,6 @@ class tiempos
         $this->_DB = '';
         echo json_encode($response);
     }
+
+
 }

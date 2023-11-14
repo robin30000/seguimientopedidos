@@ -302,7 +302,7 @@ class quejasGo
             //session_start();
              ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
-            session_start(); 
+            session_start();
             $datos = $params['dataquejago'];
 
             /*             if (!$_SESSION) {

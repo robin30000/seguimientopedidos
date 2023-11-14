@@ -116,7 +116,7 @@ class authentication
     public function updatesalida()
     {
 
-        session_start();
+/*        session_start();
         $today = date('Y-m-d');
         $stmt = $this->_DB->prepare("SELECT id, fecha_ingreso 
                  , date_format(fecha_ingreso,'%H:%i:%s') as hora_ingreso, SEC_TO_TIME((TIMESTAMPDIFF(second, fecha_ingreso, ? ))) total FROM 
@@ -138,40 +138,41 @@ class authentication
         $minutos = substr($total_dia, 3, 2);
         $segundos = substr($total_dia, 6, 2);
 
-        $totalminutos = round((($hora * 60) + $minutos + $segundos) / 60, 2);
+        $totalminutos = round((($hora * 60) + $minutos + $segundos) / 60, 2);*/
 
-        $stmt = $this->_DB->prepare("update registro_ingresoSeguimiento
-                        set status='logged off',
-                            fecha_salida = :fechaSal,
-                            salidas=salidas + 1,
-                            total_dia = :total_dia, hora = :hora, minutos = :minutos, segundos = :segundos, total_factura = :total_factura
-                        where id= :id");
-        $stmt->execute([
-            ':fechaSal' => date('Y-m-d H:i:s'),
-            ':total_dia' => $total_dia,
-            ':hora' => $hora,
-            ':minutos' => $minutos,
-            ':segundos' => $segundos,
-            ':total_factura' => $totalminutos,
-            ':id' => $result->id,
-        ]);
+        /*        $stmt = $this->_DB->prepare("update registro_ingresoSeguimiento
+                                set status='logged off',
+                                    fecha_salida = :fechaSal,
+                                    salidas=salidas + 1,
+                                    total_dia = :total_dia, hora = :hora, minutos = :minutos, segundos = :segundos, total_factura = :total_factura
+                                where id= :id");
+                $stmt->execute([
+                    ':fechaSal' => date('Y-m-d H:i:s'),
+                    ':total_dia' => $total_dia,
+                    ':hora' => $hora,
+                    ':minutos' => $minutos,
+                    ':segundos' => $segundos,
+                    ':total_factura' => $totalminutos,
+                    ':id' => $result->id,
+                ]);*/
 
-        if ($stmt->rowCount() == 1) {
-
-            if (isset($_COOKIE[session_name()])) {
-                setcookie(session_name(), "", time() - 3600, "/");
-            }
-            session_start();
-            $_SESSION = [];
-            session_destroy();
-            $response = ['logged out', 201];
-        } else {
-            $response = ['Error', 400];
+        //if ($stmt->rowCount() == 1) {
+        //session_start();
+        if (isset($_COOKIE[session_name()])) {
+            setcookie(session_name(), "", time() - 3600, "/");
         }
+        session_start();
+        $_SESSION = [];
+        session_destroy();
+        $response = ['logged out', 201];
+        /*} else {
+            $response = ['Error', 400];
+        }*/
         echo json_encode($response);
     }
 
-    public function SuperB($data){
+    public function SuperB($data)
+    {
         try {
 
             $this->_DB->beginTransaction();
@@ -189,7 +190,7 @@ class authentication
                                                         where tarea = :tarea");
             $stmt->execute(array(':tarea' => $data));
 
-            if ($stmt->rowCount() > 0){
+            if ($stmt->rowCount() > 0) {
                 array_push($response, $stmt->fetchAll(PDO::FETCH_ASSOC));
             }
 
@@ -204,7 +205,7 @@ class authentication
                                                 where tarea = :tarea");
             $stmt->execute(array(':tarea' => $data));
 
-            if ($stmt->rowCount() > 0){
+            if ($stmt->rowCount() > 0) {
                 array_push($response, $stmt->fetchAll(PDO::FETCH_ASSOC));
             }
 
@@ -214,12 +215,14 @@ class authentication
                                                        fecha_respuesta as fecha_fin,
                                                        observacion_terreno as observacion,
                                                        observacion as observacion_asesor,
-                                                       case status_soporte when '1' then 'En gestión' when '0' then 'Sin gestión' else 'Finalizado' end gestion
+                                                       -- case status_soporte when '1' then 'En gestión' when '0' then 'Sin gestión' else 'Finalizado' end gestion
+                                                       -- case status_soporte when '1' then 'Finalizado' WHEN '2' then 'En gestión' else  'Sin gestión' end gestion
+                                                        case status_soporte when 1 then 'Finalizado' WHEN 2 then 'En gestión' else 'Sin gestión' end gestion
                                                 from soporte_gpon
                                                 where tarea = :tarea");
             $stmt->execute(array(':tarea' => $data));
 
-            if ($stmt->rowCount() > 0){
+            if ($stmt->rowCount() > 0) {
                 array_push($response, $stmt->fetchAll(PDO::FETCH_ASSOC));
             }
 
@@ -234,7 +237,7 @@ class authentication
                                                             where tarea = :tarea");
             $stmt->execute(array(':tarea' => $data));
 
-            if ($stmt->rowCount() > 0){
+            if ($stmt->rowCount() > 0) {
                 array_push($response, $stmt->fetchAll(PDO::FETCH_ASSOC));
             }
 
@@ -249,21 +252,37 @@ class authentication
                                                             where tarea = :tarea");
             $stmt->execute(array(':tarea' => $data));
 
-            if ($stmt->rowCount() > 0){
+            if ($stmt->rowCount() > 0) {
                 array_push($response, $stmt->fetchAll(PDO::FETCH_ASSOC));
             }
 
-            if ($response){
+            $stmt = $this->_DB->prepare("select 'Código incompleto' as modulo,
+                                                                   'N/A' as logincontingencia,
+                                                                   fecha_creado as fecha_ingreso,
+                                                                   fecha_respuesta as fecha_fin,
+                                                                   observacion as observacion,
+                                                                   codigo as observacion_asesor,
+                                                                   case status_soporte when '1' then 'Finalizado' else 'En gestión' end gestion                                                            
+                                                            from gestion_codigo_incompleto
+                                                            where tarea = :tarea");
+            $stmt->execute(array(':tarea' => $data));
+
+            if ($stmt->rowCount() > 0) {
+                array_push($response, $stmt->fetchAll(PDO::FETCH_ASSOC));
+            }
+
+            if ($response) {
                 $res = array('state' => true, 'data' => $response);
-            }else{
+            } else {
                 $res = array('state' => false, 'msj' => 'No se encontraron registros');
             }
 
             return $res;
-        }catch (PDOException $e){
+        } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
     }
+
     private function getMenu($perfil)
     {
         try {
