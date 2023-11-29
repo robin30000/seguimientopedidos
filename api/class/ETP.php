@@ -210,9 +210,10 @@ class ETP
 
             if(isset($data['export'])){
                 $count = 1;
-                $stmt = $this->_DB->query("SELECT * FROM etp where 1=1 $con and status_soporte = '2' ORDER BY fecha_crea desc");
+                $stmt = $this->_DB->query("SELECT * FROM etp where 1=1 $con and status_soporte = '2' ORDER BY fecha_crea desc ");
+                $stmt->execute();
             }else{
-                $stmt = $this->_DB->query("SELECT * FROM etp where status_soporte = '2' ORDER BY fecha_crea");
+                $stmt = $this->_DB->query("SELECT * FROM etp where 1=1 $con and status_soporte = '2' ORDER BY fecha_crea");
                 $stmt->execute();
                 $count = $stmt->rowCount();
 

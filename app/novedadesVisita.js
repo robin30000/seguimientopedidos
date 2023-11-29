@@ -40,9 +40,8 @@
             let data = {'page': $scope.currentPage, 'size': $scope.pageSize}
             services
                 .novedadesTecnicoService(data)
-                .then(
-                    function (data) {
-                        console.log(data)
+                .then((data) => {
+                    if (data.data.state) {
                         $scope.novedadesVisitasTecnicos = data.data.data;
                         $scope.cantidad = $scope.novedadesVisitasTecnicos.length;
                         $scope.counter = data.data.contador;
@@ -53,11 +52,17 @@
                         if ($scope.endItem > data.data.counter) {
                             $scope.endItem = data.data.counter;
                         }
-                    },
-                    function errorCallback(response) {
-                        console.log(response);
+                    } else {
+                        Swal({
+                            type: 'error',
+                            title: 'Oppss...',
+                            text: data.data.msj,
+                            timer: 4000
+                        })
                     }
-                );
+                }).catch((e) => {
+                console.log(e)
+            })
         }
 
         $scope.pageChanged = function () {
@@ -125,9 +130,7 @@
 
         $scope.refrescarCamposNovedadesMotivos = () => {
             if (
-                $scope.novedadesVisitasSel.situaciontriangulo ==
-                "No cumple políticas de tiempos"
-            ) {
+                $scope.novedadesVisitasSel.situaciontriangulo === "No cumple políticas de tiempos") {
                 $scope.optionsMotivo = [
                     "Respuesta mesas de soporte",
                     "Retrasos premisas",
@@ -135,26 +138,16 @@
                     "Fallas fisicas en la red",
                 ];
             }
-            if (
-                $scope.novedadesVisitasSel.situaciontriangulo == "Malos procedimientos"
-            ) {
+            if ($scope.novedadesVisitasSel.situaciontriangulo === "Malos procedimientos") {
                 $scope.optionsMotivo = ["Logísticos", "Conocimiento"];
             }
-            if (
-                $scope.novedadesVisitasSel.situaciontriangulo ==
-                "Riesgo incumplimiento AM" ||
-                $scope.novedadesVisitasSel.situaciontriangulo ==
-                "Riesgo incumplimiento PM"
-            ) {
+            if ($scope.novedadesVisitasSel.situaciontriangulo === "Riesgo incumplimiento AM" || $scope.novedadesVisitasSel.situaciontriangulo === "Riesgo incumplimiento PM") {
                 $scope.optionsMotivo = ["Capacidad operativa", "Novedades Click"];
             }
         };
 
         $scope.refrescarCamposNovedadesSubmotivos = () => {
-            if (
-                $scope.novedadesVisitasSel.motivotriangulo ==
-                "Respuesta mesas de soporte"
-            ) {
+            if ($scope.novedadesVisitasSel.motivotriangulo === "Respuesta mesas de soporte") {
                 $scope.optionsSubmotivo = [
                     "Infraestructura AAA",
                     "Linea GPON",
@@ -164,7 +157,7 @@
                     "Contingencias",
                 ];
             }
-            if ($scope.novedadesVisitasSel.motivotriangulo == "Retrasos premisas") {
+            if ($scope.novedadesVisitasSel.motivotriangulo === "Retrasos premisas") {
                 $scope.optionsSubmotivo = [
                     "demora de escalera",
                     "distancia de la instalación",
@@ -180,18 +173,14 @@
                     "técnico y supervisor no contestan",
                 ];
             }
-            if (
-                $scope.novedadesVisitasSel.motivotriangulo ==
-                "Problemas en las plataformas"
-            ) {
+            if ($scope.novedadesVisitasSel.motivotriangulo === "Problemas en las plataformas") {
                 $scope.optionsSubmotivo = [];
             }
             if (
-                $scope.novedadesVisitasSel.motivotriangulo == "Fallas fisicas en la red"
-            ) {
+                $scope.novedadesVisitasSel.motivotriangulo === "Fallas fisicas en la red") {
                 $scope.optionsSubmotivo = [];
             }
-            if ($scope.novedadesVisitasSel.motivotriangulo == "Logísticos") {
+            if ($scope.novedadesVisitasSel.motivotriangulo === "Logísticos") {
                 $scope.optionsSubmotivo = [
                     "técnico no marca estado",
                     "técnico no finaliza",
@@ -200,7 +189,7 @@
                     "no sigue ruta asignada",
                 ];
             }
-            if ($scope.novedadesVisitasSel.motivotriangulo == "Conocimiento") {
+            if ($scope.novedadesVisitasSel.motivotriangulo === "Conocimiento") {
                 $scope.optionsSubmotivo = [
                     "Mal aprovisionamiento",
                     "No usó el bot Sara",
@@ -208,14 +197,14 @@
                     "Mal uso de click mobile",
                 ];
             }
-            if ($scope.novedadesVisitasSel.motivotriangulo == "Capacidad operativa") {
+            if ($scope.novedadesVisitasSel.motivotriangulo === "Capacidad operativa") {
                 $scope.optionsSubmotivo = [
                     "Sin tecnicos con la habilidad",
                     "Supervisor no aprueba desplazamiento",
                     "Supervisor garantiza visita",
                 ];
             }
-            if ($scope.novedadesVisitasSel.motivotriangulo == "Novedades Click") {
+            if ($scope.novedadesVisitasSel.motivotriangulo === "Novedades Click") {
                 $scope.optionsSubmotivo = ["Cargado tarde", "Microzona errada"];
             }
         };
@@ -223,14 +212,13 @@
         $scope.regiones = function () {
             $scope.validaraccion = false;
             services.getRegiones().then(function (data) {
-                if (data.data.state != 1) {
+                if (data.data.state !== 1) {
                     Swal({
                         type: 'error',
                         text: data.data.msj,
                         timer: 4000
                     })
                 } else {
-
                     $scope.listadoRegiones = data.data.data;
                     $scope.listadoMunicipios = {};
                 }
@@ -243,7 +231,7 @@
             services
                 .getMunicipios($scope.novedadesVisitasSel.region)
                 .then(function (data) {
-                    if (data.data.state != 1) {
+                    if (data.data.state !== 1) {
                         Swal({
                             type: 'error',
                             text: data.data.msj,
@@ -260,7 +248,7 @@
         $scope.situacion = function () {
             $scope.validaraccion = false;
             services.getSituacion().then(function (data) {
-                if (data.data.state != 1) {
+                if (!data.data.state) {
                     Swal({
                         type: 'error',
                         text: data.data.msj,
@@ -279,7 +267,7 @@
             services
                 .getDetalle($scope.novedadesVisitasSel.situacion)
                 .then(function (data) {
-                    if (data.data.state != 1) {
+                    if (data.data.state !== 1) {
                         Swal({
                             type: 'error',
                             text: data.data.msj,
@@ -299,7 +287,7 @@
             $scope.pedido = pedido;
             $scope.gestionmanual.producto = "";
 
-            if (pedido == "" || pedido == undefined) {
+            if (pedido === "" || pedido === undefined) {
                 Swal({
                     type: 'info',
                     title: 'Opss...',
@@ -315,7 +303,7 @@
                         $scope.infopedido = false;
                         $scope.errorconexion1 = false;
                         $scope.myWelcome = {};
-                    } else if ($scope.myWelcome.pEDIDO_UNE == "TIMEOUT") {
+                    } else if ($scope.myWelcome.pEDIDO_UNE === "TIMEOUT") {
                         $scope.infopedido = false;
                         $scope.errorconexion1 = true;
                         $scope.myWelcome = {};
@@ -387,7 +375,7 @@
                 services
                     .expCsvNovedadesTecnico($scope.Registros, $rootScope.galletainfo)
                     .then(function (data) {
-                        if (data.data.state == 1) {
+                        if (data.data.state === 1) {
                             var wb = XLSX.utils.book_new();
                             var ws = XLSX.utils.json_to_sheet(data.data.data);
                             XLSX.utils.book_append_sheet(wb, ws, 'nivedades_tecnico');

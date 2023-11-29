@@ -28,8 +28,10 @@
         $scope.contingenciasOTROS = [];
         $scope.cantidadContingenciasTV = 0;
         $scope.cantidadContingenciasINT = 0;
+        $scope.tipoTarea = 'Todos'
 
         resumenContingencias();
+
 
         $scope.bb8 = function (pedido) {
             $scope.bb8Internet = 0;
@@ -210,6 +212,33 @@
         $scope.fechaupdateInical = tiempo;
         $scope.fechaupdateFinal = tiempo;
 
+        $scope.damePedido = () => {
+            console.log('perr')
+            services.myService($rootScope.login, 'contingenciaCtrl.php', 'damePedido').then((data) => {
+                console.log(data)
+                if (data.data.state) {
+                    swal({
+                        type: "success",
+                        title: data.data.title,
+                        text: data.data.text,
+                        timer: 4000,
+                    }).then(() => {
+                        $scope.gestioncontingencias();
+                    })
+                } else {
+                    swal({
+                        type: "error",
+                        title: data.data.title,
+                        text: data.data.text,
+                        timer: 4000,
+                    })
+                }
+
+            }).catch((e) => {
+                console.log(e)
+            })
+        }
+
         $scope.gestioncontingencias = () => {
             $scope.loadingData = true;
 
@@ -231,20 +260,21 @@
                         });
                     } else {
                         $scope.loadingData = false;
+                        //console.log(data.data.data, ' pepe')
+                        $scope.contingenciasTV = data.data.data
+                        console.log($scope.contingenciasTV)
 
-                        $scope.contingenciasTV = $scope.contingenciesDataTV.concat(
-                            data.data.data[0]
-                        );
-                        $scope.contingenciasOTROS =
+                        /*$scope.contingenciasOTROS =
                             $scope.contingenciesDataInternetToIP.concat(data.data.data[1]);
 
-                        $scope.contingenciasPortafolio = data.data.data[2];
+                        $scope.contingenciasPortafolio = data.data.data[2];*/
 
                         var TV = $scope.contingenciasTV.map((doc) => doc.horagestion);
-                        var OTROS = $scope.contingenciasOTROS.map((doc) => doc.horagestion);
+
+                        /*var OTROS = $scope.contingenciasOTROS.map((doc) => doc.horagestion);
                         var CPORTAFOLIO = $scope.contingenciasPortafolio.map(
                             (doc) => doc.horagestion
-                        );
+                        );*/
 
                         function js_yyyy_mm_dd_hh_mm_ss() {
                             let now = new Date();
@@ -292,12 +322,12 @@
 
                             if ($scope.diferencia > 900000) {
                                 $scope.indice = indice;
-                                $scope.quinceminutos = new Array();
+                                $scope.quinceminutos = [];
                                 $scope.quinceminutos[$scope.indice] = TV[$scope.indice];
                             }
                         });
 
-                        OTROS.forEach(function (valor, indice) {
+                        /*OTROS.forEach(function (valor, indice) {
                             $scope.diferencia =
                                 new Date(js_yyyy_mm_dd_hh_mm_ss()) - new Date(OTROS[indice]);
 
@@ -318,7 +348,7 @@
                                 $scope.quinceminutos = new Array();
                                 $scope.quinceminutos[$scope.indice] = CPORTAFOLIO[$scope.indice];
                             }
-                        });
+                        });*/
 
                         if ($scope.contingenciasTV.length !== 0) {
                             $scope.haypedidoTV = true;
@@ -327,7 +357,7 @@
                             $scope.mensaje = "No hay pedidos para gestionar!!!";
                         }
 
-                        if ($scope.contingenciasOTROS.length !== 0) {
+                        /*if ($scope.contingenciasOTROS.length !== 0) {
                             $scope.haypedidoOtros = true;
                         } else {
                             $scope.haypedidoOtros = false;
@@ -339,7 +369,7 @@
                         } else {
                             $scope.haypedidoPortafolio = false;
                             $scope.mensajeotros = "No hay pedidos prioritarios!!!";
-                        }
+                        }*/
 
                         return data.data;
                     }
@@ -347,15 +377,20 @@
                 })
                 .catch(function (err) {
                     console.log(err);
-                    $scope.contingenciasTV = [];
-                    $scope.contingenciasOTROS = [];
-                    $scope.loadingData = false;
                 });
         };
 
         $scope.muestraModalObservacion = (data) => {
             $scope.observacionContingencia = data;
             $("#modalObservaciones").modal('show');
+        }
+
+        $scope.consultaTipoTarea = (d) => {
+            services.myService(d, 'contingenciaCtrl.php', 'consultaTipoTarea').then((data) => {
+                $scope.taskType = data.data;
+            }).catch((e) => {
+                console.log(e)
+            })
         }
 
         $scope.CopyPortaPapeles = function (data) {
@@ -840,6 +875,7 @@
                     $scope.estadosCP = data.data[3];
                     $scope.dia = data.data[2];
                     $scope.diaCP = data.data[4];
+                    $scope.taskType = data.data[9];
 
                     var tam = $scope.dataresumenContingencias.length;
                     $scope.Totaltotal_pedidos_aceptados = 0;
@@ -984,36 +1020,36 @@
         };
 
         $scope.descargarContingencias = function (data) {
-            if (!data){
+            if (!data) {
                 Swal({
-                    type:'error',
-                    title:'Oppss...',
-                    text:'Ingresa la fecha inicial',
-                    timer:4000
+                    type: 'error',
+                    title: 'Oppss...',
+                    text: 'Ingresa la fecha inicial',
+                    timer: 4000
                 })
                 return;
             }
-            if (!data.fechaupdateFinal){
+            if (!data.fechaupdateFinal) {
                 Swal({
-                    type:'error',
-                    title:'Oppss...',
-                    text:'Ingresa la fecha final',
-                    timer:4000
+                    type: 'error',
+                    title: 'Oppss...',
+                    text: 'Ingresa la fecha final',
+                    timer: 4000
                 })
                 return;
             }
-            if (data.fechaupdateFinal < data.fechaupdateInical){
+            if (data.fechaupdateFinal < data.fechaupdateInical) {
                 Swal({
-                    type:'error',
-                    title:'Oppss...',
-                    text:'La fecha inicial no puede ser mayor que la fecha final',
-                    timer:4000
+                    type: 'error',
+                    title: 'Oppss...',
+                    text: 'La fecha inicial no puede ser mayor que la fecha final',
+                    timer: 4000
                 })
                 return;
             }
             $scope.loading = true;
             services
-                .myService(data, 'otherServicesDosCtrl.php','csvContingencias')
+                .myService(data, 'contingenciaCtrl.php', 'csvContingencias')
                 .then(function (data) {
                     if (data.data.state) {
                         $scope.loading = false;
@@ -1077,7 +1113,7 @@
             Swal.fire({
                 title:
                     "¿Está seguro que desea cancelar de forma masiva las contigencias?",
-                text: "no prodrás revertir esto!",
+                text: "no podrás revertir esto!",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",

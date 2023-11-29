@@ -361,7 +361,7 @@ grid
 
 .table>.table-header>tr>th {
     vertical-align: middle;
-
+    
 }
 
 .table-header>tr>th,
@@ -551,8 +551,8 @@ input[type="checkbox"].switch_1{
 	-webkit-appearance: none;
 	   -moz-appearance: none;
 	        appearance: none;
-	width: 3.5em;
-	height: 1.5em;
+	width: 3em;
+	height: 1em;
 	background: #ddd;
 	border-radius: 3em;
 	position: relative;
@@ -561,16 +561,16 @@ input[type="checkbox"].switch_1{
 	-webkit-transition: all .2s ease-in-out;
 	transition: all .2s ease-in-out;
   }
-
+  
   input[type="checkbox"].switch_1:checked{
 	background: #18913c;
   }
-
+  
   input[type="checkbox"].switch_1:after{
 	position: absolute;
 	content: "";
-	width: 1.5em;
-	height: 1.5em;
+	width: 1em;
+	height: 1em;
 	border-radius: 50%;
 	background: #fff;
 	-webkit-box-shadow: 0 0 .25em rgba(0,0,0,.3);
@@ -581,9 +581,9 @@ input[type="checkbox"].switch_1{
 	-webkit-transition: all .2s ease-in-out;
 	transition: all .2s ease-in-out;
   }
-
+  
   input[type="checkbox"].switch_1:checked:after{
-	left: calc(100% - 1.5em);
+	left: calc(100% - 1em);
   }
 
 

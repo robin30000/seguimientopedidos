@@ -154,8 +154,8 @@
                             },
                             {
                                 label: 'Nacional',
-                                borderColor: 'rgb(55, 200, 70)',
-                                backgroundColor: 'rgb(55, 200, 70)',
+                                borderColor: 'rgb(0, 55, 123)',
+                                backgroundColor: 'rgb(0, 55, 123)',
                                 data: nacional,
                                 fill: false,
                                 borderDash: [5, 5],
@@ -204,8 +204,8 @@
                             },
                             {
                                 label: 'Sur',
-                                borderColor: 'rgb(0, 0, 85)',
-                                backgroundColor: 'rgb(0, 0, 85)',
+                                borderColor: 'rgb(116,116,212)',
+                                backgroundColor: 'rgb(116,116,212)',
                                 data: sur,
                                 fill: false,
                                 borderDash: [5, 5],

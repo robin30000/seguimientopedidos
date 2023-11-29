@@ -247,7 +247,7 @@
                     timer: 4000
                 })
             } else {
-                data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'pedido': pedido}
+                let data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'pedido': pedido}
                 dataQuejasGoTerminado(data);
             }
         }

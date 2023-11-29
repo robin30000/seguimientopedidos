@@ -68,15 +68,16 @@ class Contingencia
                                                 WHERE
                                                     pedido = :pedido 
                                                     AND producto = :producto
-                                                    AND finalizado IS NULL 
-                                                    AND acepta IS NULL 
-                                                    AND tipificacion IS NULL");
+                                                    AND finalizado IS NULL");
                 $stmt->execute([':pedido' => $pedido, ':producto' => $producto]);
 
-                if ($stmt->rowCount() >= 1) {
-                    $response = ['state' => false, 'msj' => 'Ya se encuentra esta tarea en gestión'];
-                } else {
-                    $stmt = $this->_DB->prepare("INSERT INTO contingencias (accion, ciudad, macEntra, macSale, motivo,
+                if ($stmt->rowCount()) {
+                    $res = ['state' => false, 'msj' => 'Ya se encuentra esta tarea en gestión'];
+                    echo json_encode($res);
+                    exit();
+                }
+
+                $stmt = $this->_DB->prepare("INSERT INTO contingencias (accion, ciudad, macEntra, macSale, motivo,
                            observacion, paquetes, pedido, proceso, producto,
                            remite, tecnologia, tipoEquipo, uen, contrato, perfil, grupo, logindepacho, id_terreno,
                            horagestion, engestion, uneSourceSystem, tarea)
@@ -84,39 +85,37 @@ class Contingencia
                                     :observacion, :paqueteconca, :pedido, :proceso, :producto,
                                     :remite, :tecnologia, :tipoEquipo, :uen, :contrato, :perfil, :grupo, :login, :idTerreno, :nuevaHora, 0,
                                     :uneSourceSystem, :tarea)");
-                    $stmt->execute([
-                        ':accion' => $accion,
-                        ':ciudad' => $ciudad,
-                        ':macEntra' => $macEntra,
-                        ':macSale' => $macSale,
-                        ':motivo' => $motivo,
-                        ':observacion' => $observacion,
-                        ':paqueteconca' => $paqueteconca,
-                        ':pedido' => $pedido,
-                        ':proceso' => $proceso,
-                        ':producto' => $producto,
-                        ':remite' => $remite,
-                        ':tecnologia' => $tecnologia,
-                        ':tipoEquipo' => $tipoEquipo,
-                        ':uen' => $uen,
-                        ':contrato' => $contrato,
-                        ':perfil' => $perfil,
-                        ':grupo' => $grupo,
-                        ':login' => $login,
-                        ':idTerreno' => $idTerreno,
-                        ':nuevaHora' => $nuevaHora,
-                        ':uneSourceSystem' => $uneSourceSystem,
-                        ':tarea' => $tarea,
-                    ]);
+                $stmt->execute([
+                    ':accion' => $accion,
+                    ':ciudad' => $ciudad,
+                    ':macEntra' => $macEntra,
+                    ':macSale' => $macSale,
+                    ':motivo' => $motivo,
+                    ':observacion' => $observacion,
+                    ':paqueteconca' => $paqueteconca,
+                    ':pedido' => $pedido,
+                    ':proceso' => $proceso,
+                    ':producto' => $producto,
+                    ':remite' => $remite,
+                    ':tecnologia' => $tecnologia,
+                    ':tipoEquipo' => $tipoEquipo,
+                    ':uen' => $uen,
+                    ':contrato' => $contrato,
+                    ':perfil' => $perfil,
+                    ':grupo' => $grupo,
+                    ':login' => $login,
+                    ':idTerreno' => $idTerreno,
+                    ':nuevaHora' => $nuevaHora,
+                    ':uneSourceSystem' => $uneSourceSystem,
+                    ':tarea' => $tarea,
+                ]);
 
-                    if ($stmt->rowCount() == 1) {
-                        $response = ['state' => true, 'msj' => 'Datos ingresados correctamente'];
-                    } else {
-                        $response = ['state' => false, 'msj' => 'Ha ocurrido un error intentalo nuevamente en unos minutos'];
-                    }
+                if ($stmt->rowCount() == 1) {
+                    $response = ['state' => true, 'msj' => 'Datos ingresados correctamente'];
+                } else {
+                    $response = ['state' => false, 'msj' => 'Ha ocurrido un error intentalo nuevamente en unos minutos'];
                 }
             }
-
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
@@ -154,7 +153,7 @@ class Contingencia
 
             $stmt = $this->_DB->prepare("SELECT count(*) counter
             FROM contingencias
-            WHERE horagestion BETWEEN ('2023-06-07 00:00:00') AND ('2023-06-07 23:59:59')
+            WHERE horagestion BETWEEN ('$fechaIni 00:00:00') AND ('$fechaFin 23:59:59')
             AND accion IN ('Cambio de equipo', 'Contingencia', 'Refresh', 'Registros ToIP', 'Reenvio de registros')
             AND pedido <> ''
             ORDER BY horagestion DESC");
@@ -328,6 +327,18 @@ class Contingencia
 								ORDER BY total DESC
 							");
 
+            $stmt = $this->_DB->prepare("SELECT
+                                                  COUNT(*) as cantidad,
+                                                  taskType
+                                                FROM
+                                                  contingencias
+                                                WHERE
+                                                  taskType IN ('Nuevo', 'Upgrade', 'Reparación') AND horagestion BETWEEN ('$fechaIni 00:00:00') AND ('$fechaFin 23:59:59')
+                                                GROUP BY
+                                                  taskType;");
+            $stmt->execute();
+            $taskType = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
             if (1 > 0) {
 
                 $resultadoestadosMesCP = [
@@ -358,6 +369,7 @@ class Contingencia
                     $resultadoTV,
                     $resultadoInTo,
                     $counter[0]['counter'],
+                    $taskType
                 ];
             } else {
                 $response = ['No se encontraron datos'];
@@ -606,29 +618,33 @@ class Contingencia
 					c.engestion, c.producto, c.grupo, c.horagestion, c.perfil, c.tipificacion, c.acepta, c.loginContingenciaPortafolio, c.aceptaPortafolio, c.tarea,
 					c.tipificacionPortafolio, c.enGestionPortafolio, c.fechaClickMarcaPortafolio, c.id_terreno, CASE WHEN (SELECT COUNT(*)
 					FROM contingencias c1
-					WHERE c1.pedido=c.pedido AND c1.horagestion >= DATE_SUB(CURDATE(), INTERVAL 10 DAY) AND c1.finalizado = 'OK') > 0 THEN 'TRUE' ELSE 'FALSE' END alerta
+					WHERE c1.pedido=c.pedido AND c1.horagestion >= DATE_SUB(CURDATE(), INTERVAL 10 DAY) AND c1.finalizado = 'OK') > 0 THEN 'TRUE' ELSE 'FALSE' END alerta 
 				FROM contingencias c
-				WHERE c.finalizado IS NULL AND c.finalizadoPortafolio IS NULL AND c.pedido <> ''
+				WHERE c.finalizado IS NULL AND c.finalizadoPortafolio IS NULL AND c.pedido <> '' and grupo in ('TV', 'INTER')
 				ORDER BY c.horagestion");
             $stmt->execute();
 
             if ($stmt->rowCount()) {
-                $resultadoTV = [];
+                $response = ['state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+
+                /*$resultadoTV = [];
                 $resultadoOTROS = [];
                 $resultadoPORTAFOLIO = [];
                 foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
-                    if ($row['grupo'] == "TV") {
+                    if ($row['grupo'] == "TV" || "INTER") {
                         $resultadoTV[] = $row;
                     } elseif ($row['grupo'] == "INTER") {
                         $resultadoOTROS[] = $row;
                     } elseif ($row['grupo'] == "PORTAFOLIO") {
                         $resultadoPORTAFOLIO[] = $row;
                     }
-                }
+                }*/
+            } else {
+                $response = ['state' => false, 'data' => 'No se encontraron registros'];
+
             }
 
-            $response = ['state' => 1, 'data' => [$resultadoTV, $resultadoOTROS, $resultadoPORTAFOLIO]];
             /* }*/
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -1645,7 +1661,7 @@ class Contingencia
 
                     if ($login == $logincontingencia || $login == 'cramiceb' || $login == 'cvasquor' || $login == 'garcila' || $login == 'jromang' || $login == 'mhuertas') {
 
-                        $stmt = $this->_DB->prepare("UPDATE contingencias SET engestion = 0, logincontingencia = '', fechaClickMarca = '' WHERE id = :id");
+                        $stmt = $this->_DB->prepare("UPDATE contingencias SET engestion = 0, logincontingencia = null, fechaClickMarca = '' WHERE id = :id");
                         $stmt->execute([':id' => $id]);
 
                         if ($stmt->rowCount() == 1) {
@@ -1665,38 +1681,191 @@ class Contingencia
         echo json_encode($response);
     }
 
-
-    public function csvContingencias($params)
+    public function csvContingencias($data)
     {
         try {
-            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();*/
-            $fechaIni = $params['fechaIni'];
-            $fechafin = $params['fechafin'];
-
-            $query = ("SELECT C.accion, C.ciudad, C.macEntra, C.macSale, C.motivo, C.observacion,
-					C.paquetes, C.pedido, C.proceso, C.producto, C.remite, C.tecnologia, C.tipoEquipo, C.uen,
-					C.contrato, C.perfil, C.logindepacho, C.logincontingencia, C.horagestion, C.horacontingencia,
-					C.observContingencia, C.acepta, C.tipificacion, C.fechaClickMarca, C.loginContingenciaPortafolio,
-					C.horaContingenciaPortafolio, C.tipificacionPortafolio, REPLACE(C.observContingenciaPortafolio, Char(10), '') as observContingenciaPortafolio, C.generarcr
-					FROM contingencias AS C
-				WHERE C.horagestion BETWEEN ('$fechaIni 00:00:00') AND ('$fechafin 23:59:59')
-				AND C.accion IN ('Cambio de equipo', 'Contingencia', 'Refresh', 'Registros ToIP', 'Reenvio de registros')");
-
-            $rst = $this->_DB->query($query);
-
-            if ($rst->rowCount()) {
-                $result = $rst->fetchAll(PDO::FETCH_ASSOC);
-
-                $response = [$result, 200];
+            if (!empty($data)) {
+                $fechaIni = $data['fechaupdateInical'];
+                $fechafin = $data['fechaupdateFinal'];
             } else {
-                $response = ['state' => 0];
+                $fechaIni = date('Y-m-d');
+                $fechafin = date('Y-m-d');
             }
-        } catch (PDOException $e) {
-            var_dump($e);
-        }
 
+            if ($fechaIni >= '2023-11-01' && $fechafin <= '2023-11-30') {
+                $response = ['state' => false, 'msj' => 'Ha ocurrido un error interno intentalo nuevamente en unos minutos'];
+                echo json_encode($response);
+                exit();
+            }
+
+
+            $stmt = $this->_DB->prepare("SELECT C.accion, C.ciudad, C.correo, C.macEntra, C.macSale, C.motivo, C.observacion,
+            C.paquetes, C.pedido, C.proceso, C.producto, C.remite, C.tecnologia, C.tipoEquipo, C.uen,
+            C.contrato, C.perfil, C.logindepacho, C.logincontingencia, C.horagestion, C.horacontingencia,
+            C.observContingencia, C.acepta, C.tipificacion, C.fechaClickMarca, C.loginContingenciaPortafolio,
+            C.horaContingenciaPortafolio, C.tipificacionPortafolio, C.observContingenciaPortafolio, C.generarcr, C.uneSourceSystem as crm
+            FROM contingencias AS C
+        WHERE C.horagestion BETWEEN ('$fechaIni 00:00:00') AND ('$fechafin 23:59:59')
+        AND C.accion IN ('Cambio de equipo', 'Contingencia', 'Refresh', 'Registros ToIP', 'Reenvio de registros')");
+            $stmt->execute();
+
+            if ($stmt->rowCount()) {
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+            } else {
+                $response = ['state' => false, 'msj' => 'No se encontraron datos'];
+            }
+
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+        $this->_DB = null;
         echo json_encode($response);
     }
+
+    public function consultaTipoTarea($data)
+    {
+        try {
+            $cond = "";
+            if ($data === 'Todos') {
+                $cond = " AND taskType IN ('Nuevo', 'Upgrade', 'Reparación') ";
+            } elseif ($data === 'Pendientes') {
+                $cond = " AND taskType IN ('Nuevo', 'Upgrade', 'Reparación') AND finalizado IS NULL ";
+            } elseif ($data === 'Aceptados') {
+                $cond = " AND taskType IN ('Nuevo', 'Upgrade', 'Reparación') AND tipificacion = 'Ok' ";
+            } elseif ($data === 'Rechazados') {
+                $cond = " AND taskType IN ('Nuevo', 'Upgrade', 'Reparación') AND tipificacion <> 'Ok' ";
+            }
+            $fechaIni = date('Y-m-d');
+            $stmt = $this->_DB->prepare("SELECT
+                                                  COUNT(*) as cantidad,
+                                                  taskType
+                                                FROM
+                                                  contingencias
+                                                WHERE 1=1
+                                                  $cond AND horagestion BETWEEN ('$fechaIni 00:00:00') AND ('$fechaIni 23:59:59')
+                                                GROUP BY
+                                                  taskType;");
+            $stmt->execute();
+
+            $taskType = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $this->_DB = null;
+            echo json_encode($taskType);
+
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+    }
+
+    public function damePedido($data)
+    {
+        try {
+            $login = $data;
+            if (!$login) {
+                $data = ['state' => 99, 'title' => 'Su session ha expirado', 'text' => 'Inicia session nuevamente para continuar'];
+                echo json_encode($data);
+                exit();
+            }
+
+            $stmt = $this->_DB->prepare("SELECT * FROM validaciones_apk");
+            $stmt->execute();
+            $valApp = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+            if ($valApp[8]['valida'] === 'activa') {
+                $stmt = $this->_DB->prepare("SELECT
+                                                    *
+                                                FROM
+                                                    contingencias 
+                                                WHERE
+                                                    1 = 1 
+                                                    AND finalizado IS NULL 
+                                                    AND grupo IN ( 'TV', 'INTER' ) 
+                                                    AND logincontingencia = :login");
+                $stmt->execute(array(':login' => $login));
+
+                if ($stmt->rowCount()) {
+                    $data = ['state' => false, 'title' => 'Oppss...', 'text' => 'Ya tienes un tarea en gestión terminala para tomar otra'];
+                    echo json_encode($data);
+                    exit();
+                }
+            }
+
+
+            $stmt = $this->_DB->query("SELECT
+                                                c.tarea,
+                                                c.pedido,
+                                                c.producto 
+                                            FROM
+                                                contingencias c 
+                                            WHERE
+                                                c.finalizado IS NULL 
+                                                AND c.finalizadoPortafolio IS NULL 
+                                                AND c.pedido <> '' 
+                                                AND grupo IN ( 'TV', 'INTER' ) 
+                                                AND logincontingencia IS NULL 
+                                            ORDER BY
+                                                c.horacontingencia limit 1");
+            $stmt->execute();
+
+            $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $today = date("Y-m-d H:i:s");
+            $pedido = $res[0]['pedido'];
+            $producto = $res[0]['producto'];
+            $tarea = $res[0]['tarea'];
+
+            /*            if ($gestion == true) {
+                            $gestion = 1;
+                        } else {
+                            $gestion = 0;
+                        }*/
+
+            $query = "SELECT id FROM contingencias where engestion = 0 and finalizado is null and pedido = '$pedido' and producto = '$producto' ";
+
+            $rst = $this->_DB->query($query);
+            $rst->execute();
+            $row = $rst->fetch(PDO::FETCH_OBJ);
+            $id = $row->id;
+
+            if ($rst->rowCount() === 1) {
+
+                $stmt = $this->_DB->prepare("UPDATE contingencias SET engestion = 1, logincontingencia = :login, fechaClickMarca = :today WHERE id = :id");
+                $stmt->execute([':login' => $login, ':today' => $today, ':id' => $id]);
+
+                if ($stmt->rowCount() == 1) {
+                    $response = ['state' => true, 'title' => 'Bien', 'text' => 'Se le asigna la ' . $tarea . ' al asesor ' . $login];
+                } else {
+                    $response = ['state' => false, 'title' => 'Opss..', 'text' => 'Ha ocurrido un error interno intentalo nuevamente'];
+                }
+            } else {
+                $query = "SELECT id, logincontingencia FROM contingencias where engestion = 1 and finalizado is null and pedido = '$pedido' and producto = '$producto' ";
+
+                $rst = $this->_DB->query($query);
+                $rst->execute();
+                $row = $rst->fetch(PDO::FETCH_OBJ);
+                $logincontingencia = $row->logincontingencia;
+                $id = $row->id;
+
+                if ($login == $logincontingencia || $login == 'cramiceb' || $login == 'cvasquor' || $login == 'garcila' || $login == 'jromang' || $login == 'mhuertas') {
+
+                    $stmt = $this->_DB->prepare("UPDATE contingencias SET engestion = 0, logincontingencia = NULL, fechaClickMarca = '' WHERE id = :id");
+                    $stmt->execute([':id' => $id]);
+
+                    if ($stmt->rowCount() == 1) {
+                        $response = ['state' => true, 'title' => 'Bien', 'text' => 'La tarea ' . $tarea . ' se encuentra desbloqueado'];
+                    } else {
+                        $response = ['state' => false, 'title' => 'Oppss..', 'text' => 'Ha ocurrido un error interno intentalo nuevamente'];
+                    }
+                } else {
+                    $response = ['state' => false, 'title' => 'Oppss..', 'text' => 'La tarea ' . $tarea . ' se encuentra en gestión por otro agente'];
+                }
+            }
+
+            $this->_DB = '';
+            return $response;
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+    }
+
 }

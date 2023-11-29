@@ -16,7 +16,8 @@ var app = angular.module("seguimientopedidos", [
     "chart.js",
     "angular.filter",
     "ui.bootstrap",
-    "ui.select2"
+    "ui.select2",
+    "ngTable"
 ]);
 
 app.service("fileUpload", [
@@ -2319,6 +2320,13 @@ function routesConfig($routeProvider, $locationProvider, $compileProvider) {
         title: "KPI CCO",
         templateUrl: "partial/graficos/kpi-cco.html",
         controller: "kpiCcoCtrl",
+        resolve: {
+            userData: loadUserData
+        }
+    }).when("/supervisor", {
+        title: "Supervisor",
+        templateUrl: "partial/supervisor.html",
+        controller: "SupervisorCtrl",
         resolve: {
             userData: loadUserData
         }

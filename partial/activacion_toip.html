@@ -69,18 +69,6 @@
                                             <tbody>
                                             <tr ng-repeat="data in datos">
                                                 <td>
-                                                    <!--<input type="checkbox" ng-model="data.bloqueo" ng-checked="data.en_gestion == 1" name="bloqueo"
-                                                           id="bloqueo" ng-change="marcarEngestion(data.id)"/>
-                                                    <div class="loadingio-spinner-ellipsis-3nun7cb96ao" ng-show="data.bloqueo == 1">
-                                                        <div class="ldio-pettsxrv7wj">
-                                                            <div></div>
-                                                            <div></div>
-                                                            <div></div>
-                                                            <div></div>
-                                                            <div></div>
-                                                        </div>
-                                                    </div>-->
-
                                                     <div>
                                                         <input type="checkbox" ng-model="data.bloqueo"
                                                                name="bloqueo" id="bloqueo"
@@ -98,7 +86,12 @@
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td>{{data.login_gestion}}</td>
+                                                <td>
+                                                    <span class="label label-primary label-xsmall"
+                                                          ng-if="data.login_gestion == galletainfo.login">{{data.login_gestion}}</span>
+                                                    <span class="label label-primary label-xsmall"
+                                                          ng-if="data.login_gestion != galletainfo.login">{{data.login_gestion}}</span>
+                                                </td>
                                                 <td>{{data.pedido}}</td>
                                                 <td>{{data.tarea}}</td>
                                                 <td>{{data.serial}}</td>
@@ -135,6 +128,15 @@
                                                             creado/No creado ims
                                                         </option>
                                                         <option value="Contingencia OK">Contingencia OK</option>
+                                                    </select>
+
+                                                    <select ng-show="data.tipificacion == 'Aprovisionamiento automático'"
+                                                            ng-model="data.subtipificacion" style="width: 150px"
+                                                            class="btn btn-default btn-xs grupo-select"
+                                                            name="subtipificacion" id="subtipificacion">
+                                                        <option value="" selected>Seleccione</option>
+                                                        <option value="Reenvío de registros">Reenvío de registros</option>
+                                                        <option value="Ninguno">Ninguno</option>
                                                     </select>
                                                 </td>
                                                 <td>

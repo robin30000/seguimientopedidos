@@ -113,7 +113,7 @@
                   <tr ng-repeat="data in dataVentas">
                     <td class="text-center">
                       <input type="checkbox" ng-model="data.bloqueo" ng-checked="data.en_gestion == 1" name="bloqueo"
-                        id="bloqueo" ng-change="marcarEngestion(data.id, data.bloqueo)" />
+                        id="bloqueo" ng-click="marcarEngestion(data.id, data.bloqueo)" />
                       <div class="loadingio-spinner-ellipsis-3nun7cb96ao" ng-show="data.bloqueo == 1">
                         <div class="ldio-pettsxrv7wj">
                         </div>

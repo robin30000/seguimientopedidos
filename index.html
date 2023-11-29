@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html ng-app="seguimientopedidos" lang="es">
+<html lang="es" ng-app="seguimientopedidos">
 <head>
     <meta charset="UTF-8">
-    <meta name="google" content="notranslate"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="notranslate" name="google"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <base href="/seguimientopedidos-dev/">
-    <link rel="stylesheet" href="css/select2.min.css"/>
+    <link href="css/select2.min.css" rel="stylesheet"/>
     <link href="css/font-awesome.min.css" rel="stylesheet">
-    <link rel="shortcut icon" type="image/ico" href="img/favicon.ico"/>
-    <link rel="stylesheet" href="css/angularjs-datetime-picker.css"/>
-    <link rel="stylesheet" type="text/css" href="css/ui-grid.min.css"/>
-    <link rel="stylesheet" href="plugins/sweetalert/sweetalert2.min.css">
+    <link href="img/favicon.ico" rel="shortcut icon" type="image/ico"/>
+    <link href="css/angularjs-datetime-picker.css" rel="stylesheet"/>
+    <link href="css/ui-grid.min.css" rel="stylesheet" type="text/css"/>
+    <link href="js/sweetalert/sweetalert2.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="css/style.css"/>
+    <link href="css/style.css" rel="stylesheet" type="text/css"/>
     <title>{{tituloPagina}}</title>
 </head>
 
@@ -25,7 +25,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
 <script src="js/select2.min.js"></script>
 
-<script src="plugins/sweetalert/sweetalert2.min.js"></script>
+<script src="js/sweetalert/sweetalert2.min.js"></script>
 
 <script src="js/angular/angular.min.js"></script>
 <script src="js/angular/angular-route.min.js"></script>
@@ -45,6 +45,9 @@
 <script ng-if="robcastro==1" src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
 <script src="js/angular-chart.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/ng-table@3.0.1/bundles/ng-table.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/ng-table@3.0.1/bundles/ng-table.min.css" rel="stylesheet">
+
 <!--app-->
 <script src="app/app.js?v=1"></script>
 <script src="app/login.js?v=11"></script>
@@ -55,7 +58,6 @@
 <script src="app/graficos/ruteo.js"></script>
 <script src="app/graficos/rgu.js"></script>
 <script src="app/graficos/tiempos.js"></script>
-<script src="app/graficos/kpi-cco.js"></script>
 <script src="app/usuarios.js"></script>
 <script src="app/mesas_nacionales.js?v=1"></script>
 <script src="app/validacionesApp.js"></script>
@@ -78,6 +80,7 @@
 <script src="app/sara.js"></script>
 <script src="app/novedadesVisita.js"></script>
 <script src="app/menuPerfil.js"></script>
+<script src="app/supervisor.js"></script>
 <!--fin app-->
 
 
@@ -102,7 +105,7 @@
 <script src="js/downloadify.min.js"></script>
 
 <script src="js/jcs-auto-validate.js"></script>
-<link href="css/font-awesome.min.css" rel="stylesheet">
+
 </body>
 
 </html>

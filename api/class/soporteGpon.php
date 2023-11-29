@@ -446,9 +446,9 @@ class soporteGpon
         ini_set('memory_limit', '256M');
 
         try {
-            $datos = $params['datos'];
-            $fechaini = $datos['fechaini'];
-            $fechafin = $datos['fechafin'];
+            //$datos = $params['datos'];
+            $fechaini = $params['fechaini'];
+            $fechafin = $params['fechafin'];
 
             if ($fechaini == "" && $fechafin == "") {
                 $fechaini = date("Y-m-d");

@@ -67,16 +67,16 @@
         };
 
         $scope.marcarEngestion = function (id) {
-            data = {id: id, login_gestion: $rootScope.galletainfo.LOGIN};
-            services.marcarEnGestionVentaInstale(data).then(function (data) {
-                if (data.data.state == 1) {
+            let d = {id: id, login_gestion: $rootScope.galletainfo.LOGIN};
+            services.marcarEnGestionVentaInstale(d).then(function (d) {
+                if (d.data.state == 1) {
                     Swal({
                         type: "success",
                         title: "Bien",
-                        text: data.data.msj,
+                        text: d.data.msj,
                         timer: 4000,
-                    }).then(function () {
-                        $route.reload();
+                    }).then(() => {
+                        data();
                     });
                 } else {
                     Swal({

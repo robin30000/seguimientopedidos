@@ -18,7 +18,7 @@ class registroEquipos
             $pagenum = $data['page'];
             $pagesize = $data['size'];
             $offset = ($pagenum - 1) * $pagesize;
-            $search = $data['search'];
+            $buscar = $data['buscar'];
 
             $condicion = '';
             if (!empty($data['fecha'])) {
@@ -30,10 +30,10 @@ class registroEquipos
                 $fechafin = date('Y-m-d');
                 $condicion = " BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
             }
-
+            
             if (!empty($data['buscar'])) {
                 $buscar = $data['buscar'];
-                $condicion .= " and re.pedido = '$buscar' ";
+                $condicion = " and re.pedido = '$buscar' ";
             }
 
             $stmt = $this->_DB->query("SELECT * FROM registro_equipo re  WHERE 1=1 and re.fecha_ingreso $condicion");
@@ -41,6 +41,8 @@ class registroEquipos
             $count = $stmt->rowCount();
 
             if (!empty($data['buscar'])) {
+                $buscar = $data['buscar'];
+                $condicion = " and re.pedido = '$buscar' ";
                 $stmt = $this->_DB->query("SELECT * FROM registro_equipo re WHERE 1=1 and re.fecha_ingreso $condicion ORDER BY fecha_ingreso DESC LIMIT $offset, $pagesize");
             }else{
                 $stmt = $this->_DB->query("SELECT

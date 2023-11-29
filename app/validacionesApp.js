@@ -16,6 +16,7 @@
                     $scope.gponEquipo = data.data.data[5].valida;
                     $scope.etpEquipo = data.data.data[6].valida;
                     $scope.etpInfraestructura = data.data.data[7].valida;
+                    $scope.multiTarea = data.data.data[8].valida;
                 }).catch((e) => {
                     console.log(e)
                 })

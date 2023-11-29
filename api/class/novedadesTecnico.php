@@ -47,9 +47,9 @@ class novedadesTecnico
             $stmt->execute();
             if ($stmt->rowCount()) {
                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $response = ['state' => 1, 'data' => $result, 'total' => $total_pages, 'counter' => $counter];
+                $response = ['state' => true, 'data' => $result, 'total' => $total_pages, 'counter' => $counter];
             } else {
-                $response = ['state' => 0];
+                $response = ['state' => false, 'msj' => 'No se encontraron registros'];
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());

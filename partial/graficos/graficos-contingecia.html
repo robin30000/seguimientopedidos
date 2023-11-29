@@ -1,1066 +1,1205 @@
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <b><i class="fa fa-bars" aria-hidden="true"></i> Gráficos
-            Contingencias</b>
-        </div>
-        <div class="panel-body">
-          <div class="row">
-            <div class="col-sm-6">
-              <div class="row">
-                <div class="col-sm-12">
-                  <span class="text-center"><b>Conteo contingencias por dia (últimos 15 días)</b></span>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <b><i class="fa fa-bars" aria-hidden="true"></i> Gráficos
+                        Contingencias</b>
                 </div>
-              </div>
-              <div class="row">
-                <div class="col-sm-4">
-                  <div class="form-floating">
-                    <label for="estado20">Estado</label>
-                    <select class="form-control input-sm" name="estado20" id="estado20" ng-model="estado20"
-                      data-placeholder="Seleccione estado...">
-                      <option value="" selected>Seleccione</option>
-                      <option value="Acepta">Acepta</option>
-                      <option value="Rechaza">Rechaza</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-sm-4">
-                  <div class="form-floating">
-                    <label for="producto20">Producto</label>
-
-                    <select class="form-control input-sm" name="producto20"
-                      id="producto20" ng-model="producto20" data-placeholder="Seleccione los producto...">
-                      <option value="" selected>Seleccione</option>
-                      <option value="Internet+Toip">Internet+Toip</option>
-                      <option value="TV">TV</option>
-                      <option value="Todos">Todos</option>
-                      <!-- <option ng-repeat="group1 in productoGrafico" value="{{group1.id}}">
-                        {{group1.concepto}}
-                      </option> -->
-                    </select>
-                  </div>
-                </div>
-
-                <div class="col-sm-4">
-                  <button type="button" class="btn btn-info btn-sm" ng-click="cunsultaproducto20()" tooltip-placement="top" uib-tooltip="Consultar"
-                    style="margin-top: 25px">
-                    Consultar
-                  </button>
-                </div>
-              </div>
-              <br />
-              <canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-series="series"
-                chart-colors="colors" chart-options="options">
-              </canvas>
-            </div>
-
-            <div class="col-sm-6">
-              <div class="row">
-                <div class="col-sm-12">
-                  <span class="text-center"><b>Conteo contingencias por agente (Dia actual)</b></span>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-sm-4">
-                  <div class="form-floating">
-                    <label for="estadoDia">Estado</label>
-                    <select class="input-sm form-control" name="estadoDia" id="estadoDia" ng-model="estadoDia"
-                      data-placeholder="Seleccione estado...">
-                      <option value="" selected>Seleccione</option>
-                      <option value="Acepta">Acepta</option>
-                      <option value="Rechaza">Rechaza</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="col-sm-4">
-                  <div class="form-floating">
-                    <label for="productoDia">Producto</label>
-                    <select class="form-control input-sm" name="productoDia"
-                      id="productoDia" ng-model="productoDia"  data-placeholder="Seleccione los producto...">
-                      <option value="" selected>Seleccione</option>
-                      <option value="Internet+Toip">Internet+Toip</option>
-                      <option value="TV">TV</option>
-                      <option value="Todos">Todos</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="col-sm-3 mt-5">
-                  <button type="button" class="btn btn-info btn-sm" ng-click="consultaproducto()" tooltip-placement="top" uib-tooltip="Consultar"
-                    style="margin-top: 25px">
-                    Consultar
-                  </button>
-                </div>
-              </div>
-              <br />
-              <canvas id="bar1" class="chart chart-bar" chart-data="data1" chart-labels="labels1" chart-colors="colors1"
-                chart-series="series1" chart-options="options1">
-              </canvas>
-
-            </div>
-            <br>
-
-
-
-          </div>
-
-          <br /><br />
-
-          <!--tabla principal-->
-          <div class="row">
-            <div class="col-sm-12">
-              <div class="col-md-12">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="panel panel-default">
-                      <div class="panel-heading nav navbar-default">
-                        <div class="row">
-                          <div class="col-md-6">
-                            <ul class="nav navbar-nav navbar-left">
-                              <b>Gestion Usuario Por Hora</b>
-                              <span style="color: red" class="pull-right"><i class="fa fa-exclamation-triangle warning"
-                                  aria-hidden="true" ng-hide="errorDatos==null"></i>
-                                {{errorDatos}}</span>
-                            </ul>
-                          </div>
-
-                          <div class="col-md-6">
-                            <ul class="nav navbar-nav navbar-right" style="width: 100%;
-                            display: flex;
-                            justify-content: flex-end;">
-                              <div class="col-md-1 col-xs-1">
-                                <div data-ng-if="loading">
-                                  <img title="Esperando respuesta" data-toggle="tooltip" data-placement="top"
-                                    src="img/loader.gif" height="16px" width="16px" />
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <span class="text-center"><b>Conteo contingencias por dia (últimos 15 días)</b></span>
                                 </div>
-                              </div>
-                              <li>
-                                <input style="width:130px" type="text" name="fechafin" id="fechafin"
-                                  class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
-                                  ng-model="fecha_gestion" placeholder="Fecha" datetime-picker="" date-only
-                                  date-format="yyyy-MM-dd" autocomplete="off"> <i class="fa fa-calendar fa-fw"></i>
-                              </li>
-
-                              <li>
-                                <div class="col-md-2 col-xs-6">
-                                  <div class="col-md-5">
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
                                     <div class="form-floating">
-                                      <select class="btn btn-default btn-xs grupo-select" name="estadoTabla"
-                                        id="estadoTabla" ng-model="estadoTabla" data-placeholder="Estado...">
-                                        <option value="" selected>Seleccione</option>
-                                        <option value="Acepta">Acepta</option>
-                                        <option value="Rechaza">Rechaza</option>
-                                        <option value="Todos">Todos</option>
-                                      </select>
+                                        <label for="estado20">Estado</label>
+                                        <select class="form-control input-sm" name="estado20" id="estado20"
+                                                ng-model="estado20"
+                                                data-placeholder="Seleccione estado...">
+                                            <option value="" selected>Seleccione</option>
+                                            <option value="Acepta">Acepta</option>
+                                            <option value="Rechaza">Rechaza</option>
+                                        </select>
                                     </div>
-                                  </div>
-                              </li>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-floating">
+                                        <label for="producto20">Producto</label>
 
-                              <li>
-                                <div class="col-md-1">
-                                  <button type="button" class="btn btn-default btn-xs" ng-click="consultaTabla()"
-                                    tooltip-placement="top" uib-tooltip="Buscar" ng-disabled="loading">
-                                    <i class="fa fa-search" aria-hidden="true"></i>
-                                  </button>
+                                        <select class="form-control input-sm" name="producto20"
+                                                id="producto20" ng-model="producto20"
+                                                data-placeholder="Seleccione los producto...">
+                                            <option value="" selected>Seleccione</option>
+                                            <option value="Internet+Toip">Internet+Toip</option>
+                                            <option value="TV">TV</option>
+                                            <option value="Todos">Todos</option>
+                                            <!-- <option ng-repeat="group1 in productoGrafico" value="{{group1.id}}">
+                                              {{group1.concepto}}
+                                            </option> -->
+                                        </select>
+                                    </div>
                                 </div>
 
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="table-responsive">
-                        <table class="table small table-striped table-hover table-bordered table-condensed">
-                          <thead class="table-header">
-                            <tr>
-                              <th class="text-center">Hora</th>
-                              <th class="text-center" rowspan="2" style="vertical-align: middle">
-                                TOTAL
-                              </th>
-                              <th class="text-center" colspan="2">06 am</th>
-                              <th class="text-center" colspan="2">07 am</th>
-                              <th class="text-center" colspan="2">08 am</th>
-                              <th class="text-center" colspan="2">09 am</th>
-                              <th class="text-center" colspan="2">10 am</th>
-                              <th class="text-center" colspan="2">11 am</th>
-                              <th class="text-center" colspan="2">12 am</th>
-                              <th class="text-center" colspan="2">01 pm</th>
-                              <th class="text-center" colspan="2">02 pm</th>
-                              <th class="text-center" colspan="2">03 pm</th>
-                              <th class="text-center" colspan="2">04 pm</th>
-                              <th class="text-center" colspan="2">05 pm</th>
-                              <th class="text-center" colspan="2">06 pm</th>
-                              <th class="text-center" colspan="2">07 pm</th>
-                              <th class="text-center" colspan="2">08 pm</th>
-                              <th class="text-center" colspan="2">09 pm</th>
-                              <th class="text-center" colspan="2">Más 09 pm</th>
-                            </tr>
-                            <tr>
-                              <th class="text-center">Usuario</th>
-                              <th class="text-center">TV</th>
-                              <th class="text-center">Inter</th>
-                              <th class="text-center">TV</th>
-                              <th class="text-center">Inter</th>
-                              <th class="text-center">TV</th>
-                              <th class="text-center">Inter</th>
-                              <th class="text-center">TV</th>
-                              <th class="text-center">Inter</th>
-                              <th class="text-center">TV</th>
-                              <th class="text-center">Inter</th>
-                              <th class="text-center">TV</th>
-                              <th class="text-center">Inter</th>
-                              <th class="text-center">TV</th>
-                              <th class="text-center">Inter</th>
-                              <th class="text-center">TV</th>
-                              <th class="text-center">Inter</th>
-                              <th class="text-center">TV</th>
-                              <th class="text-center">Inter</th>
-                              <th class="text-center">TV</th>
-                              <th class="text-center">Inter</th>
-                              <th class="text-center">TV</th>
-                              <th class="text-center">Inter</th>
-                              <th class="text-center">TV</th>
-                              <th class="text-center">Inter</th>
-                              <th class="text-center">TV</th>
-                              <th class="text-center">Inter</th>
-                              <th class="text-center">TV</th>
-                              <th class="text-center">Inter</th>
-                              <th class="text-center">TV</th>
-                              <th class="text-center">Inter</th>
-                              <th class="text-center">TV</th>
-                              <th class="text-center">Inter</th>
-                              <th class="text-center">TV</th>
-                              <th class="text-center">Inter</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <!--                        <tr ng-repeat="datar in robin">-->
-                            <tr ng-repeat="datar in robin | groupBy : 'USUARIO'">
-                              <td class="text-center">
-                                <span>{{datar[0].USUARIO}}</span>
-                              </td>
-                              <td style="font-weight: bolder" class="text-center">
-                                {{ total(datar[0].CANTIDAD,datar[1].CANTIDAD)}}
-
-                              </td>
-                              <!-- <td class="text-center"> data {{datar.lenght}}</td> -->
-                              <td class="text-center colorColumnTv">{{datar[0].producto == 'TV' ? datar[0].am06 : 0}}
-                              </td>
-                              <td class="text-center">{{datar[0].producto == 'Internet+Toip' ? datar[0].am06 :
-                                datar[1].producto == 'Internet+Toip' ? datar[1].am06 : 0}}</td>
-                              <td class="text-center colorColumnTv">{{datar[0].producto == 'TV' ? datar[0].am07 : 0}}
-                              </td>
-                              <td class="text-center">{{datar[0].producto == 'Internet+Toip' ? datar[0].am07 :
-                                datar[1].producto == 'Internet+Toip' ? datar[1].am07 : 0}}</td>
-                              <td class="text-center colorColumnTv">{{datar[0].producto == 'TV' ? datar[0].am08 : 0}}
-                              </td>
-                              <td class="text-center">{{datar[0].producto == 'Internet+Toip' ? datar[0].am08 :
-                                datar[1].producto == 'Internet+Toip' ? datar[1].am08 : 0}}</td>
-                              <td class="text-center colorColumnTv">{{datar[0].producto == 'TV' ? datar[0].am09 : 0}}
-                              </td>
-                              <td class="text-center">{{datar[0].producto == 'Internet+Toip' ? datar[0].am09 :
-                                datar[1].producto == 'Internet+Toip' ? datar[1].am09 : 0}}</td>
-                              <td class="text-center colorColumnTv">{{datar[0].producto == 'TV' ? datar[0].am10 : 0}}
-                              </td>
-                              <td class="text-center">{{datar[0].producto == 'Internet+Toip' ? datar[0].am10 :
-                                datar[1].producto == 'Internet+Toip' ? datar[1].am10 : 0}}</td>
-                              <td class="text-center colorColumnTv">{{datar[0].producto == 'TV' ? datar[0].am11 : 0}}
-                              </td>
-                              <td class="text-center">{{datar[0].producto == 'Internet+Toip' ? datar[0].am11 :
-                                datar[1].producto == 'Internet+Toip' ? datar[1].am11 : 0}}</td>
-                              <td class="text-center colorColumnTv">{{datar[0].producto == 'TV' ? datar[0].am12 : 0}}
-                              </td>
-                              <td class="text-center">{{datar[0].producto == 'Internet+Toip' ? datar[0].am12 :
-                                datar[1].producto == 'Internet+Toip' ? datar[1].am12 : 0}}</td>
-                              <td class="text-center colorColumnTv">{{datar[0].producto == 'TV' ? datar[0].pm01 : 0}}
-                              </td>
-                              <td class="text-center">{{datar[0].producto == 'Internet+Toip' ? datar[0].pm01 :
-                                datar[1].producto == 'Internet+Toip' ? datar[1].pm01 : 0}}</td>
-                              <td class="text-center colorColumnTv">{{datar[0].producto == 'TV' ? datar[0].pm02 : 0}}
-                              </td>
-                              <td class="text-center">{{datar[0].producto == 'Internet+Toip' ? datar[0].pm02 :
-                                datar[1].producto == 'Internet+Toip' ? datar[1].pm02 : 0}}</td>
-                              <td class="text-center colorColumnTv">{{datar[0].producto == 'TV' ? datar[0].pm03 : 0}}
-                              </td>
-                              <td class="text-center">{{datar[0].producto == 'Internet+Toip' ? datar[0].pm03 :
-                                datar[1].producto == 'Internet+Toip' ? datar[1].pm03 : 0}}</td>
-                              <td class="text-center colorColumnTv">{{datar[0].producto == 'TV' ? datar[0].pm04 : 0}}
-                              </td>
-                              <td class="text-center">{{datar[0].producto == 'Internet+Toip' ? datar[0].pm04 :
-                                datar[1].producto == 'Internet+Toip' ? datar[1].pm04 : 0}}</td>
-                              <td class="text-center colorColumnTv">{{datar[0].producto == 'TV' ? datar[0].pm05 : 0}}
-                              </td>
-                              <td class="text-center">{{datar[0].producto == 'Internet+Toip' ? datar[0].pm05 :
-                                datar[1].producto == 'Internet+Toip' ? datar[1].pm05 : 0}}</td>
-                              <td class="text-center colorColumnTv">{{datar[0].producto == 'TV' ? datar[0].pm06 : 0}}
-                              </td>
-                              <td class="text-center">{{datar[0].producto == 'Internet+Toip' ? datar[0].pm06 :
-                                datar[1].producto == 'Internet+Toip' ? datar[1].pm06 : 0}}</td>
-                              <td class="text-center colorColumnTv">{{datar[0].producto == 'TV' ? datar[0].pm07 : 0}}
-                              </td>
-                              <td class="text-center">{{datar[0].producto == 'Internet+Toip' ? datar[0].pm07 :
-                                datar[1].producto == 'Internet+Toip' ? datar[1].pm07 : 0}}</td>
-                              <td class="text-center colorColumnTv">{{datar[0].producto == 'TV' ? datar[0].pm08 : 0}}
-                              </td>
-                              <td class="text-center">{{datar[0].producto == 'Internet+Toip' ? datar[0].pm08 :
-                                datar[1].producto == 'Internet+Toip' ? datar[1].pm08 : 0}}</td>
-                              <td class="text-center colorColumnTv">{{datar[0].producto == 'TV' ? datar[0].pm09 : 0}}
-                              </td>
-                              <td class="text-center">{{datar[0].producto == 'Internet+Toip' ? datar[0].pm09 :
-                                datar[1].producto == 'Internet+Toip' ? datar[1].pm09 : 0}}</td>
-                              <td class="text-center colorColumnTv">{{datar[0].producto == 'TV' ? datar[0].Masde09 : 0}}
-                              </td>
-                              <td class="text-center">{{datar[0].producto == 'Internet+Toip' ? datar[0].Masde09 :
-                                datar[1].producto == 'Internet+Toip' ? datar[1].Masde09 : 0}}</td>
-                            </tr>
-                          </tbody>
-                          <tfoot>
-                            <tr>
-                              <th class="text-center">TOTALES</th>
-                              <th class="text-center">{{totales}}</th>
-                              <th class="text-center colorColumnTv">{{total06}}</th>
-                              <th class="text-center">{{total06Inter}}</th>
-                              <th class="text-center colorColumnTv">{{total07}}</th>
-                              <th class="text-center">{{total07Inter}}</th>
-                              <th class="text-center colorColumnTv">{{total08}}</th>
-                              <th class="text-center">{{total08Inter}}</th>
-                              <th class="text-center colorColumnTv">{{total09}}</th>
-                              <th class="text-center">{{total09Inter}}</th>
-                              <th class="text-center colorColumnTv">{{total10}}</th>
-                              <th class="text-center">{{total10Inter}}</th>
-                              <th class="text-center colorColumnTv">{{total11}}</th>
-                              <th class="text-center">{{total11Inter}}</th>
-                              <th class="text-center colorColumnTv">{{total12}}</th>
-                              <th class="text-center">{{total12Inter}}</th>
-                              <th class="text-center colorColumnTv">{{total13}}</th>
-                              <th class="text-center">{{total13Inter}}</th>
-                              <th class="text-center colorColumnTv">{{total14}}</th>
-                              <th class="text-center">{{total14Inter}}</th>
-                              <th class="text-center colorColumnTv">{{total15}}</th>
-                              <th class="text-center">{{total15Inter}}</th>
-                              <th class="text-center colorColumnTv">{{total16}}</th>
-                              <th class="text-center">{{total16Inter}}</th>
-                              <th class="text-center colorColumnTv">{{total17}}</th>
-                              <th class="text-center">{{total17Inter}}</th>
-                              <th class="text-center colorColumnTv">{{total18}}</th>
-                              <th class="text-center">{{total18Inter}}</th>
-                              <th class="text-center colorColumnTv">{{total19}}</th>
-                              <th class="text-center">{{total19Inter}}</th>
-                              <th class="text-center colorColumnTv">{{total20}}</th>
-                              <th class="text-center">{{total20Inter}}</th>
-                              <th class="text-center colorColumnTv">{{total21}}</th>
-                              <th class="text-center">{{total21Inter}}</th>
-                              <th class="text-center colorColumnTv">{{total22}}</th>
-                              <th class="text-center">{{total22Inter}}</th>
-                            </tr>
-                          </tfoot>
-                        </table>
-                      </div>
-
-                      <div class="panel-footer clearfix">
-                        <div class="col-md-8">
-                          <ul class="nav navbar-nav navbar-left"></ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!--tiempo completo-->
-          <div class="row">
-            <div class="col-sm-12">
-              <div class="col-md-12">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="panel panel-default">
-                      <div class="panel-heading nav navbar-default">
-                        <div class="row">
-                          <div class="col-md-6">
-                            <ul class="nav navbar-nav navbar-left">
-                              <b>Tiempo completo <button ng-show="galletainfo.perfil == 11" type="button"
-                                  class="btn btn-default btn-xs" tooltip-placement="top" uib-tooltip="Modificar usuarios"
-                                  ng-click="ModificarUsuarioTiempoCompleto(tiempoCompleto, 'Tiempo completo')">
-                                  <i class="fa fa-plus" aria-hidden="true"> </i>
-                                </button></b>
-
-                              <span style="color: red" class="pull-right"><i class="fa fa-exclamation-triangle warning"
-                                  aria-hidden="true" ng-hide="errorDatos==null"></i>
-                                {{errorDatos}}</span>
-                            </ul>
-                          </div>
-
-                          <div class="col-md-6">
-                            <ul class="nav navbar-nav navbar-right" style="width: 100%;
-                            display: flex;
-                            justify-content: flex-end;">
-                              <div class="col-md-1 col-xs-1">
-                                <div data-ng-if="loading">
-                                  <img title="Esperando respuesta" data-toggle="tooltip" data-placement="top"
-                                    src="img/loader.gif" height="16px" width="16px" />
-                                </div>
-                              </div>
-
-                              <li>
-                                <input style="width:130px" type="text" name="fechafin" id="fechafin"
-                                  class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="fechaTiempo"
-                                  placeholder="Fecha" datetime-picker="" date-only date-format="yyyy-MM-dd"
-                                  autocomplete="off"> <i class="fa fa-calendar fa-fw"></i>
-                              </li>
-
-                              <li>
-                                <div class="col-md-12 col-xs-6">
-                                  <div class="col-md-5">
-                                    <div class="form-floating">
-                                      <select class="btn btn-default btn-xs grupo-select" name="estadoTablaTiempo"
-                                        id="estadoTablaTiempo" ng-model="estadoTablaTiempo"
-                                        data-placeholder="Estado...">
-                                        <option value="" selected>Seleccione</option>
-                                        <option value="Acepta">Acepta</option>
-                                        <option value="Rechaza">Rechaza</option>
-                                        <option value="Todos">Todos</option>
-                                      </select>
-                                    </div>
-                                  </div>
-
-                                  <div class="col-md-5">
-                                    <div class="form-floating">
-                                      <select class="btn btn-default btn-xs grupo-select" name="productoTablaTiempo"
-                                        id="productoTablaTiempo" ng-model="productoTablaTiempo"
-                                        data-placeholder="Producto...">
-                                        <option value="" selected>Seleccione</option>
-                                        <option value="Internet+Toip">
-                                          Internet+Toip
-                                        </option>
-                                        <option value="TV">TV</option>
-                                        <option value="Todos">Todos</option>
-                                      </select>
-                                    </div>
-                                  </div>
-
-                                  <div class="col-md-1">
-                                    <button type="button" class="btn btn-default btn-xs"
-                                      ng-click="consultaTablaTiempo(fechaTiempo,estadoTablaTiempo,productoTablaTiempo)"
-                                      tooltip-placement="top" uib-tooltip="Consultar" ng-disabled="loading">
-                                      <i class="fa fa-search" aria-hidden="true"></i>
+                                <div class="col-sm-4">
+                                    <button type="button" class="btn btn-info btn-sm" ng-click="cunsultaproducto20()"
+                                            tooltip-placement="top" uib-tooltip="Consultar"
+                                            style="margin-top: 25px">
+                                        Consultar
                                     </button>
-                                  </div>
                                 </div>
-                              </li>
-                            </ul>
-                          </div>
+                            </div>
+                            <br/>
+                            <canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels"
+                                    chart-series="series"
+                                    chart-colors="colors" chart-options="options">
+                            </canvas>
                         </div>
-                      </div>
-                      <div class="table-responsive">
-                        <table class="table small table-striped table-hover table-bordered table-condensed">
-                          <thead class="table-header">
-                            <tr>
-                              <th class="text-center">Usuario</th>
-                              <th class="text-center">TOTAL</th>
 
-                              <th class="text-center">06 am</th>
-                              <th class="text-center">07 am</th>
-                              <th class="text-center">08 am</th>
-                              <th class="text-center">09 am</th>
-                              <th class="text-center">10 am</th>
-                              <th class="text-center">11 am</th>
-                              <th class="text-center">12 am</th>
-                              <th class="text-center">01 pm</th>
-                              <th class="text-center">02 pm</th>
-                              <th class="text-center">03 pm</th>
-                              <th class="text-center">04 pm</th>
-                              <th class="text-center">05 pm</th>
-                              <th class="text-center">06 pm</th>
-                              <th class="text-center">07 pm</th>
-                              <th class="text-center">08 pm</th>
-                              <th class="text-center">09 pm</th>
-                              <th class="text-center">Más 09 pm</th>
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <span class="text-center"><b>Conteo contingencias por agente (Dia actual)</b></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-floating">
+                                        <label for="estadoDia">Estado</label>
+                                        <select class="input-sm form-control" name="estadoDia" id="estadoDia"
+                                                ng-model="estadoDia"
+                                                data-placeholder="Seleccione estado...">
+                                            <option value="" selected>Seleccione</option>
+                                            <option value="Acepta">Acepta</option>
+                                            <option value="Rechaza">Rechaza</option>
+                                        </select>
+                                    </div>
+                                </div>
 
-                            </tr>
-                          </thead>
+                                <div class="col-sm-4">
+                                    <div class="form-floating">
+                                        <label for="productoDia">Producto</label>
+                                        <select class="form-control input-sm" name="productoDia"
+                                                id="productoDia" ng-model="productoDia"
+                                                data-placeholder="Seleccione los producto...">
+                                            <option value="" selected>Seleccione</option>
+                                            <option value="Internet+Toip">Internet+Toip</option>
+                                            <option value="TV">TV</option>
+                                            <option value="Todos">Todos</option>
+                                        </select>
+                                    </div>
+                                </div>
 
-                          <tbody>
-                            <tr ng-repeat="datar in tiempoCompleto">
-                              <td class="text-center">
-                                <span>{{datar.USUARIO}}</span>
-                              </td>
-                              <td style="font-weight: bolder" class="text-center">
-                                {{datar.CANTIDAD}}
-                              </td>
-                              <td class="text-center">{{datar.am06}}</td>
-                              <td class="text-center">{{datar.am07}}</td>
-                              <td class="text-center">{{datar.am08}}</td>
-                              <td class="text-center">{{datar.am09}}</td>
-                              <td class="text-center">{{datar.am10}}</td>
-                              <td class="text-center">{{datar.am11}}</td>
-                              <td class="text-center">{{datar.am12}}</td>
-                              <td class="text-center">{{datar.pm01}}</td>
-                              <td class="text-center">{{datar.pm02}}</td>
-                              <td class="text-center">{{datar.pm03}}</td>
-                              <td class="text-center">{{datar.pm04}}</td>
-                              <td class="text-center">{{datar.pm05}}</td>
-                              <td class="text-center">{{datar.pm06}}</td>
-                              <td class="text-center">{{datar.pm07}}</td>
-                              <td class="text-center">{{datar.pm08}}</td>
-                              <td class="text-center">{{datar.pm09}}</td>
-                              <td class="text-center">{{datar.Masde09}}</td>
+                                <div class="col-sm-3 mt-5">
+                                    <button type="button" class="btn btn-info btn-sm" ng-click="consultaproducto()"
+                                            tooltip-placement="top" uib-tooltip="Consultar"
+                                            style="margin-top: 25px">
+                                        Consultar
+                                    </button>
+                                </div>
+                            </div>
+                            <br/>
+                            <canvas id="bar1" class="chart chart-bar" chart-data="data1" chart-labels="labels1"
+                                    chart-colors="colors1"
+                                    chart-series="series1" chart-options="options1">
+                            </canvas>
 
-                            </tr>
-                          </tbody>
-                          <tfoot>
-                            <tr>
-                              <th class="text-center">TOTALES</th>
-                              <th class="text-center">{{totalesT}}</th>
-                              <th class="text-center">{{total06T}}</th>
-                              <th class="text-center">{{total07T}}</th>
-                              <th class="text-center">{{total08T}}</th>
-                              <th class="text-center">{{total09T}}</th>
-                              <th class="text-center">{{total10T}}</th>
-                              <th class="text-center">{{total11T}}</th>
-                              <th class="text-center">{{total12T}}</th>
-                              <th class="text-center">{{total13T}}</th>
-                              <th class="text-center">{{total14T}}</th>
-                              <th class="text-center">{{total15T}}</th>
-                              <th class="text-center">{{total16T}}</th>
-                              <th class="text-center">{{total17T}}</th>
-                              <th class="text-center">{{total18T}}</th>
-                              <th class="text-center">{{total19T}}</th>
-                              <th class="text-center">{{total20T}}</th>
-                              <th class="text-center">{{total21T}}</th>
-                              <th class="text-center">{{total22T}}</th>
-
-                            </tr>
-                          </tfoot>
-                        </table>
-                      </div>
-
-                      <div class="panel-footer clearfix">
-                        <div class="col-md-8">
-                          <ul class="nav navbar-nav navbar-left"></ul>
                         </div>
-                      </div>
+                        <br>
+
+
                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <!--mmss-->
-          <div class="row">
-            <div class="col-sm-12">
-              <div class="col-md-12">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="panel panel-default">
-                      <div class="panel-heading nav navbar-default">
-                        <div class="row">
-                          <div class="col-md-6">
-                            <ul class="nav navbar-nav navbar-left">
-                              <b>SSMM <button ng-show="galletainfo.perfil == 11" type="button"
-                                  class="btn btn-default btn-xs" tooltip-placement="top" uib-tooltip="Modificar usuarios"
-                                  ng-click="ModificarUsuarioTiempoCompleto(mmss, 'mmss')">
-                                  <i class="fa fa-plus" aria-hidden="true"> </i>
-                                </button></b>
-                              <span style="color: red" class="pull-right"><i class="fa fa-exclamation-triangle warning"
-                                  aria-hidden="true" ng-hide="errorDatos==null"></i>
+                    <br/><br/>
+
+                    <!--tabla principal-->
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading nav navbar-default">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <ul class="nav navbar-nav navbar-left">
+                                                            <b>Gestion Usuario Por Hora</b>
+                                                            <span style="color: red" class="pull-right"><i
+                                                                    class="fa fa-exclamation-triangle warning"
+                                                                    aria-hidden="true" ng-hide="errorDatos==null"></i>
                                 {{errorDatos}}</span>
-                            </ul>
-                          </div>
+                                                        </ul>
+                                                    </div>
 
-                          <div class="col-md-6">
-                            <ul class="nav navbar-nav navbar-right" style="width: 100%;
+                                                    <div class="col-md-6">
+                                                        <ul class="nav navbar-nav navbar-right" style="width: 100%;
                             display: flex;
                             justify-content: flex-end;">
-                              <div class="col-md-1 col-xs-1">
-                                <div data-ng-if="loading">
-                                  <img title="Esperando respuesta" data-toggle="tooltip" data-placement="top"
-                                    src="img/loader.gif" height="16px" width="16px" />
-                                </div>
-                              </div>
-                              <li>
-                                <input style="width:130px" type="text" name="fechafin" id="fechafin"
-                                  class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="fechammss"
-                                  placeholder="Fecha" datetime-picker="" date-only date-format="yyyy-MM-dd"
-                                  autocomplete="off"> <i class="fa fa-calendar fa-fw"></i>
-                              </li>
-                              <li>
-                                <div class="col-md-12 col-xs-6">
-                                  <div class="col-md-5">
-                                    <div class="form-floating">
-                                      <select class="btn btn-default btn-xs grupo-select" name="mmssEstado"
-                                        id="mmssEstado" ng-model="estadommss">
-                                        <option value="" selected>Seleccione</option>
-                                        <option value="Acepta">Acepta</option>
-                                        <option value="Rechaza">Rechaza</option>
-                                        <option value="Todos">Todos</option>
-                                      </select>
+                                                            <div class="col-md-1 col-xs-1">
+                                                                <div data-ng-if="loading">
+                                                                    <img title="Esperando respuesta"
+                                                                         data-toggle="tooltip" data-placement="top"
+                                                                         src="img/loader.gif" height="16px"
+                                                                         width="16px"/>
+                                                                </div>
+                                                            </div>
+                                                            <li>
+                                                                <input style="width:130px" type="text" name="fechafin"
+                                                                       id="fechafin"
+                                                                       class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                                                       ng-model="fecha_gestion" placeholder="Fecha"
+                                                                       datetime-picker="" date-only
+                                                                       date-format="yyyy-MM-dd" autocomplete="off"> <i
+                                                                    class="fa fa-calendar fa-fw"></i>
+                                                            </li>
+
+                                                            <li>
+                                                                <div class="col-md-2 col-xs-6">
+                                                                    <div class="col-md-5">
+                                                                        <div class="form-floating">
+                                                                            <select class="btn btn-default btn-xs grupo-select"
+                                                                                    name="estadoTabla"
+                                                                                    id="estadoTabla"
+                                                                                    ng-model="estadoTabla"
+                                                                                    data-placeholder="Estado...">
+                                                                                <option value="" selected>Seleccione
+                                                                                </option>
+                                                                                <option value="Acepta">Acepta</option>
+                                                                                <option value="Rechaza">Rechaza</option>
+                                                                                <option value="Todos">Todos</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                            </li>
+
+                                                            <li>
+                                                                <div class="col-md-1">
+                                                                    <button type="button" class="btn btn-default btn-xs"
+                                                                            ng-click="consultaTabla()"
+                                                                            tooltip-placement="top" uib-tooltip="Buscar"
+                                                                            ng-disabled="loading">
+                                                                        <i class="fa fa-search" aria-hidden="true"></i>
+                                                                    </button>
+                                                                </div>
+
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="table-responsive">
+                                                {{usersTable}}
+                                                <table class="table small table-striped table-hover table-bordered table-condensed" >
+                                                    <thead class="table-header">
+                                                    <tr>
+                                                        <th class="text-center">Hora</th>
+                                                        <th class="text-center" rowspan="2"
+                                                            style="vertical-align: middle"
+                                                            ng-click="orderByColumn('suma')">
+                                                            TOTAL
+                                                        </th>
+                                                        <th class="text-center" colspan="2">06 am</th>
+                                                        <th class="text-center" colspan="2">07 am</th>
+                                                        <th class="text-center" colspan="2">08 am</th>
+                                                        <th class="text-center" colspan="2">09 am</th>
+                                                        <th class="text-center" colspan="2">10 am</th>
+                                                        <th class="text-center" colspan="2">11 am</th>
+                                                        <th class="text-center" colspan="2">12 am</th>
+                                                        <th class="text-center" colspan="2">01 pm</th>
+                                                        <th class="text-center" colspan="2">02 pm</th>
+                                                        <th class="text-center" colspan="2">03 pm</th>
+                                                        <th class="text-center" colspan="2">04 pm</th>
+                                                        <th class="text-center" colspan="2">05 pm</th>
+                                                        <th class="text-center" colspan="2">06 pm</th>
+                                                        <th class="text-center" colspan="2">07 pm</th>
+                                                        <th class="text-center" colspan="2">08 pm</th>
+                                                        <th class="text-center" colspan="2">09 pm</th>
+                                                        <th class="text-center" colspan="2">Más 09 pm</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="text-center">Usuario</th>
+                                                        <th class="text-center">TV</th>
+                                                        <th class="text-center">Inter</th>
+                                                        <th class="text-center">TV</th>
+                                                        <th class="text-center">Inter</th>
+                                                        <th class="text-center">TV</th>
+                                                        <th class="text-center">Inter</th>
+                                                        <th class="text-center">TV</th>
+                                                        <th class="text-center">Inter</th>
+                                                        <th class="text-center">TV</th>
+                                                        <th class="text-center">Inter</th>
+                                                        <th class="text-center">TV</th>
+                                                        <th class="text-center">Inter</th>
+                                                        <th class="text-center">TV</th>
+                                                        <th class="text-center">Inter</th>
+                                                        <th class="text-center">TV</th>
+                                                        <th class="text-center">Inter</th>
+                                                        <th class="text-center">TV</th>
+                                                        <th class="text-center">Inter</th>
+                                                        <th class="text-center">TV</th>
+                                                        <th class="text-center">Inter</th>
+                                                        <th class="text-center">TV</th>
+                                                        <th class="text-center">Inter</th>
+                                                        <th class="text-center">TV</th>
+                                                        <th class="text-center">Inter</th>
+                                                        <th class="text-center">TV</th>
+                                                        <th class="text-center">Inter</th>
+                                                        <th class="text-center">TV</th>
+                                                        <th class="text-center">Inter</th>
+                                                        <th class="text-center">TV</th>
+                                                        <th class="text-center">Inter</th>
+                                                        <th class="text-center">TV</th>
+                                                        <th class="text-center">Inter</th>
+                                                        <th class="text-center">TV</th>
+                                                        <th class="text-center">Inter</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody ng-repeat="datar in robin | groupBy : 'USUARIO' ">
+
+                                                    <tr>
+                                                        <td class="text-center">
+                                                            <!--<pre>{{datar1}}</pre>-->
+                                                            <span>{{datar[0]['USUARIO']}}</span>
+                                                        </td>
+                                                        <td style="font-weight: bolder" class="text-center">
+                                                            <!--                              {{ total(datar[0].CANTIDAD, datar[1].CANTIDAD)}}-->
+                                                            {{ datar[0]['suma']}}
+                                                        </td>
+                                                        <!-- <td class="text-center"> data {{datar.lenght}}</td> -->
+                                                        <td class="text-center colorColumnTv">
+                                                            {{datar[0].producto == 'TV' ? datar[0].am06 : datar[1].producto == 'TV' ? datar[1].am06 : 0
+                                                            }}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].am06 : datar[1].producto == 'Internet+Toip' ? datar[1].am06 : 0}}
+                                                        </td>
+                                                        <td class="text-center colorColumnTv">
+                                                            {{datar[0].producto == 'TV' ? datar[0].am07 : datar[1].producto == 'TV' ? datar[1].am07 : 0
+                                                            }}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].am07 : datar[1].producto == 'Internet+Toip' ? datar[1].am07 : 0}}
+                                                        </td>
+                                                        <td class="text-center colorColumnTv">
+                                                            {{datar[0].producto == 'TV' ? datar[0].am08 : datar[1].producto == 'TV' ? datar[1].am08 : 0
+                                                            }}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].am08 : datar[1].producto == 'Internet+Toip' ? datar[1].am08 : 0}}
+                                                        </td>
+                                                        <td class="text-center colorColumnTv">
+                                                            {{datar[0].producto == 'TV' ? datar[0].am09 : datar[1].producto == 'TV' ? datar[1].am09 : 0
+                                                            }}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].am09 : datar[1].producto == 'Internet+Toip' ? datar[1].am09 : 0}}
+                                                        </td>
+                                                        <td class="text-center colorColumnTv">
+                                                            {{datar[0].producto == 'TV' ? datar[0].am10 : datar[1].producto == 'TV' ? datar[1].am10 : 0
+                                                            }}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].am10 : datar[1].producto == 'Internet+Toip' ? datar[1].am10 : 0}}
+                                                        </td>
+                                                        <td class="text-center colorColumnTv">
+                                                            {{datar[0].producto == 'TV' ? datar[0].am11 : datar[1].producto == 'TV' ? datar[1].am11 : 0
+                                                            }}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].am11 : datar[1].producto == 'Internet+Toip' ? datar[1].am11 : 0}}
+                                                        </td>
+                                                        <td class="text-center colorColumnTv">
+                                                            {{datar[0].producto == 'TV' ? datar[0].am12 : datar[1].producto == 'TV' ? datar[1].am12 : 0
+                                                            }}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].am12 : datar[1].producto == 'Internet+Toip' ? datar[1].am12 : 0}}
+                                                        </td>
+                                                        <td class="text-center colorColumnTv">
+                                                            {{datar[0].producto == 'TV' ? datar[0].pm01 : datar[1].producto == 'TV' ? datar[1].pm01 : 0
+                                                            }}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].pm01 : datar[1].producto == 'Internet+Toip' ? datar[1].pm01 : 0}}
+                                                        </td>
+                                                        <td class="text-center colorColumnTv">
+                                                            {{datar[0].producto == 'TV' ? datar[0].pm02 : datar[1].producto == 'TV' ? datar[1].pm02 : 0}}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].pm02 : datar[1].producto == 'Internet+Toip' ? datar[1].pm02 : 0}}
+                                                        </td>
+                                                        <td class="text-center colorColumnTv">
+                                                            {{datar[0].producto == 'TV' ? datar[0].pm03 : datar[1].producto == 'TV' ? datar[1].pm03 : 0}}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].pm03 : datar[1].producto == 'Internet+Toip' ? datar[1].pm03 : 0}}
+                                                        </td>
+                                                        <td class="text-center colorColumnTv">
+                                                            {{datar[0].producto == 'TV' ? datar[0].pm04 : datar[1].producto == 'TV' ? datar[1].pm04 : 0}}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].pm04 : datar[1].producto == 'Internet+Toip' ? datar[1].pm04 : 0}}
+                                                        </td>
+                                                        <td class="text-center colorColumnTv">
+                                                            {{datar[0].producto == 'TV' ? datar[0].pm05 : datar[1].producto == 'TV' ? datar[1].pm05 : 0}}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].pm05 : datar[1].producto == 'Internet+Toip' ? datar[1].pm05 : 0}}
+                                                        </td>
+                                                        <td class="text-center colorColumnTv">
+                                                            {{datar[0].producto == 'TV' ? datar[0].pm06 : datar[1].producto == 'TV' ? datar[1].pm06 : 0}}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].pm06 : datar[1].producto == 'Internet+Toip' ? datar[1].pm06 : 0}}
+                                                        </td>
+                                                        <td class="text-center colorColumnTv">
+                                                            {{datar[0].producto == 'TV' ? datar[0].pm07 : datar[1].producto == 'TV' ? datar[1].pm07 : 0}}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].pm07 : datar[1].producto == 'Internet+Toip' ? datar[1].pm07 : 0}}
+                                                        </td>
+                                                        <td class="text-center colorColumnTv">
+                                                            {{datar[0].producto == 'TV' ? datar[0].pm08 : datar[1].producto == 'TV' ? datar[1].pm08 : 0}}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].pm08 : datar[1].producto == 'Internet+Toip' ? datar[1].pm08 : 0}}
+                                                        </td>
+                                                        <td class="text-center colorColumnTv">
+                                                            {{datar[0].producto == 'TV' ? datar[0].pm09 : datar[1].producto == 'TV' ? datar[1].pm09 : 0}}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].pm09 : datar[1].producto == 'Internet+Toip' ? datar[1].pm09 : 0}}
+                                                        </td>
+                                                        <td class="text-center colorColumnTv">
+                                                            {{datar[0].producto == 'TV' ? datar[0].Masde09 : datar[1].producto == 'TV' ? datar[1].Masde09 : 0}}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].Masde09 : datar[1].producto == 'Internet+Toip' ? datar[1].Masde09 : 0}}
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                    <tfoot>
+                                                    <tr>
+                                                        <th class="text-center">TOTALES</th>
+                                                        <th class="text-center">{{totales}}</th>
+                                                        <th class="text-center colorColumnTv">{{total06}}</th>
+                                                        <th class="text-center">{{total06Inter}}</th>
+                                                        <th class="text-center colorColumnTv">{{total07}}</th>
+                                                        <th class="text-center">{{total07Inter}}</th>
+                                                        <th class="text-center colorColumnTv">{{total08}}</th>
+                                                        <th class="text-center">{{total08Inter}}</th>
+                                                        <th class="text-center colorColumnTv">{{total09}}</th>
+                                                        <th class="text-center">{{total09Inter}}</th>
+                                                        <th class="text-center colorColumnTv">{{total10}}</th>
+                                                        <th class="text-center">{{total10Inter}}</th>
+                                                        <th class="text-center colorColumnTv">{{total11}}</th>
+                                                        <th class="text-center">{{total11Inter}}</th>
+                                                        <th class="text-center colorColumnTv">{{total12}}</th>
+                                                        <th class="text-center">{{total12Inter}}</th>
+                                                        <th class="text-center colorColumnTv">{{total13}}</th>
+                                                        <th class="text-center">{{total13Inter}}</th>
+                                                        <th class="text-center colorColumnTv">{{total14}}</th>
+                                                        <th class="text-center">{{total14Inter}}</th>
+                                                        <th class="text-center colorColumnTv">{{total15}}</th>
+                                                        <th class="text-center">{{total15Inter}}</th>
+                                                        <th class="text-center colorColumnTv">{{total16}}</th>
+                                                        <th class="text-center">{{total16Inter}}</th>
+                                                        <th class="text-center colorColumnTv">{{total17}}</th>
+                                                        <th class="text-center">{{total17Inter}}</th>
+                                                        <th class="text-center colorColumnTv">{{total18}}</th>
+                                                        <th class="text-center">{{total18Inter}}</th>
+                                                        <th class="text-center colorColumnTv">{{total19}}</th>
+                                                        <th class="text-center">{{total19Inter}}</th>
+                                                        <th class="text-center colorColumnTv">{{total20}}</th>
+                                                        <th class="text-center">{{total20Inter}}</th>
+                                                        <th class="text-center colorColumnTv">{{total21}}</th>
+                                                        <th class="text-center">{{total21Inter}}</th>
+                                                        <th class="text-center colorColumnTv">{{total22}}</th>
+                                                        <th class="text-center">{{total22Inter}}</th>
+                                                    </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+
+                                            <div class="panel-footer clearfix">
+                                                <div class="col-md-8">
+                                                    <ul class="nav navbar-nav navbar-left"></ul>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                  </div>
-
-                                  <div class="col-md-5">
-                                    <div class="form-floating">
-                                      <select class="btn btn-default btn-xs grupo-select" name="mmssProducto"
-                                        id="mmssProducto" ng-model="productommss">
-                                        <option value="" selected>Seleccione</option>
-                                        <option value="Internet+Toip">
-                                          Internet+Toip
-                                        </option>
-                                        <option value="TV">TV</option>
-                                        <option value="Todos">Todos</option>
-                                      </select>
-                                    </div>
-                                  </div>
-
-                                  <div class="col-md-1">
-                                    <button type="button" class="btn btn-default btn-xs"
-                                      ng-click="mmssConsulta(fechammss,estadommss,productommss)" tooltip-placement="top" uib-tooltip="Consultar"
-                                      data-toggle="tooltip" data-placement="left" ng-disabled="loading">
-                                      <i class="fa fa-search" aria-hidden="true"></i>
-                                    </button>
-                                  </div>
                                 </div>
-                              </li>
-                            </ul>
-                          </div>
+                            </div>
                         </div>
-                      </div>
-                      <div class="table-responsive">
-                        <table class="table small table-striped table-hover table-bordered table-condensed">
-                          <thead class="table-header">
-                            <th class="text-center">Usuario</th>
-                            <th class="text-center">TOTAL</th>
-
-                            <th class="text-center">06 am</th>
-                            <th class="text-center">07 am</th>
-                            <th class="text-center">08 am</th>
-                            <th class="text-center">09 am</th>
-                            <th class="text-center">10 am</th>
-                            <th class="text-center">11 am</th>
-                            <th class="text-center">12 am</th>
-                            <th class="text-center">01 pm</th>
-                            <th class="text-center">02 pm</th>
-                            <th class="text-center">03 pm</th>
-                            <th class="text-center">04 pm</th>
-                            <th class="text-center">05 pm</th>
-                            <th class="text-center">06 pm</th>
-                            <th class="text-center">07 pm</th>
-                            <th class="text-center">08 pm</th>
-                            <th class="text-center">09 pm</th>
-                            <th class="text-center">Más 09 pm</th>
-
-                          </thead>
-                          <tbody>
-                            <tr ng-repeat="datar in mmss">
-                              <td class="text-center">
-                                <span>{{datar.USUARIO}}</span>
-                              </td>
-                              <td style="font-weight: bolder" class="text-center">
-                                {{datar.CANTIDAD}}
-                              </td>
-                              <td class="text-center">{{datar.am06}}</td>
-                              <td class="text-center">{{datar.am07}}</td>
-                              <td class="text-center">{{datar.am08}}</td>
-                              <td class="text-center">{{datar.am09}}</td>
-                              <td class="text-center">{{datar.am10}}</td>
-                              <td class="text-center">{{datar.am11}}</td>
-                              <td class="text-center">{{datar.am12}}</td>
-                              <td class="text-center">{{datar.pm01}}</td>
-                              <td class="text-center">{{datar.pm02}}</td>
-                              <td class="text-center">{{datar.pm03}}</td>
-                              <td class="text-center">{{datar.pm04}}</td>
-                              <td class="text-center">{{datar.pm05}}</td>
-                              <td class="text-center">{{datar.pm06}}</td>
-                              <td class="text-center">{{datar.pm07}}</td>
-                              <td class="text-center">{{datar.pm08}}</td>
-                              <td class="text-center">{{datar.pm09}}</td>
-                              <td class="text-center">{{datar.Masde09}}</td>
-
-                            </tr>
-                          </tbody>
-                          <tfoot>
-                            <tr>
-                              <th class="text-center">TOTALES</th>
-                              <th class="text-center">{{totalesM}}</th>
-                              <th class="text-center">{{total06M}}</th>
-                              <th class="text-center">{{total07M}}</th>
-                              <th class="text-center">{{total08M}}</th>
-                              <th class="text-center">{{total09M}}</th>
-                              <th class="text-center">{{total10M}}</th>
-                              <th class="text-center">{{total11M}}</th>
-                              <th class="text-center">{{total12M}}</th>
-                              <th class="text-center">{{total13M}}</th>
-                              <th class="text-center">{{total14M}}</th>
-                              <th class="text-center">{{total15M}}</th>
-                              <th class="text-center">{{total16M}}</th>
-                              <th class="text-center">{{total17M}}</th>
-                              <th class="text-center">{{total18M}}</th>
-                              <th class="text-center">{{total19M}}</th>
-                              <th class="text-center">{{total20M}}</th>
-                              <th class="text-center">{{total21M}}</th>
-                              <th class="text-center">{{total22M}}</th>
-
-                            </tr>
-                          </tfoot>
-                        </table>
-                      </div>
-
-                      <div class="panel-footer clearfix">
-                        <div class="col-md-8">
-                          <ul class="nav navbar-nav navbar-left"></ul>
-                        </div>
-                      </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <!--apoyo-->
-          <div class="row">
-            <div class="col-sm-12">
-              <div class="col-md-12">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="panel panel-default">
-                      <div class="panel-heading nav navbar-default">
-                        <div class="row">
-                          <div class="col-md-6">
-                            <ul class="nav navbar-nav navbar-left">
-                              <b>Apoyo <button ng-show="galletainfo.perfil == 11" type="button"
-                                  class="btn btn-default btn-xs" tooltip-placement="top" uib-tooltip="Modificar usuarios"
-                                  ng-click="ModificarUsuarioTiempoCompleto(apoyo, 'apoyo')">
-                                  <i class="fa fa-plus" aria-hidden="true"> </i>
-                                </button></b>
-                              <span style="color: red" class="pull-right"><i class="fa fa-exclamation-triangle warning"
-                                  aria-hidden="true" ng-hide="errorDatos==null"></i>
+                    <!--tiempo completo-->
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading nav navbar-default">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <ul class="nav navbar-nav navbar-left">
+                                                            <b>Tiempo completo
+                                                                <button ng-show="galletainfo.perfil == 11" type="button"
+                                                                        class="btn btn-default btn-xs"
+                                                                        tooltip-placement="top"
+                                                                        uib-tooltip="Modificar usuarios"
+                                                                        ng-click="ModificarUsuarioTiempoCompleto(tiempoCompletouser, 'Tiempo completo')">
+                                                                    <i class="fa fa-plus" aria-hidden="true"> </i>
+                                                                </button>
+                                                            </b>
+
+                                                            <span style="color: red" class="pull-right"><i
+                                                                    class="fa fa-exclamation-triangle warning"
+                                                                    aria-hidden="true" ng-hide="errorDatos==null"></i>
                                 {{errorDatos}}</span>
-                            </ul>
-                          </div>
-                          <div class="col-md-6">
-                            <ul class="nav navbar-nav navbar-right" style="width: 100%;
+                                                        </ul>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <ul class="nav navbar-nav navbar-right" style="width: 100%;
                             display: flex;
                             justify-content: flex-end;">
-                              <div class="col-md-1 col-xs-1">
-                                <div data-ng-if="loading">
-                                  <img title="Esperando respuesta" data-toggle="tooltip" data-placement="top"
-                                    src="img/loader.gif" height="16px" width="16px" />
-                                </div>
-                              </div>
-                              <li>
+                                                            <div class="col-md-1 col-xs-1">
+                                                                <div data-ng-if="loading">
+                                                                    <img title="Esperando respuesta"
+                                                                         data-toggle="tooltip" data-placement="top"
+                                                                         src="img/loader.gif" height="16px"
+                                                                         width="16px"/>
+                                                                </div>
+                                                            </div>
 
-                              <li>
-                                <input style="width:130px" type="text" name="fechafin" id="fechafin"
-                                  class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="fechaApoyo"
-                                  placeholder="Fecha" datetime-picker="" date-only date-format="yyyy-MM-dd"
-                                  autocomplete="off"> <i class="fa fa-calendar fa-fw"></i>
-                              </li>
+                                                            <li>
+                                                                <input style="width:130px" type="text" name="fechafin"
+                                                                       id="fechafin"
+                                                                       class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                                                       ng-model="fechaTiempo"
+                                                                       placeholder="Fecha" datetime-picker="" date-only
+                                                                       date-format="yyyy-MM-dd"
+                                                                       autocomplete="off"> <i
+                                                                    class="fa fa-calendar fa-fw"></i>
+                                                            </li>
 
-                              </li>
-                              <li>
-                                <div class="col-md-12 col-xs-6">
-                                  <div class="col-md-5">
-                                    <div class="form-floating">
-                                      <select class="btn btn-default btn-xs grupo-select" name="estadoTablaApoyo"
-                                        id="estadoTablaApoyo" ng-model="estadoTablaApoyo" data-placeholder="Estado...">
-                                        <option value="" selected>Seleccione</option>
-                                        <option value="Acepta">Acepta</option>
-                                        <option value="Rechaza">Rechaza</option>
-                                        <option value="Todos">Todos</option>
-                                      </select>
+                                                            <li>
+                                                                <div class="col-md-12 col-xs-6">
+                                                                    <div class="col-md-5">
+                                                                        <div class="form-floating">
+                                                                            <select class="btn btn-default btn-xs grupo-select"
+                                                                                    name="estadoTablaTiempo"
+                                                                                    id="estadoTablaTiempo"
+                                                                                    ng-model="estadoTablaTiempo"
+                                                                                    data-placeholder="Estado...">
+                                                                                <option value="" selected>Seleccione
+                                                                                </option>
+                                                                                <option value="Acepta">Acepta</option>
+                                                                                <option value="Rechaza">Rechaza</option>
+                                                                                <option value="Todos">Todos</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-5">
+                                                                        <div class="form-floating">
+                                                                            <select class="btn btn-default btn-xs grupo-select"
+                                                                                    name="productoTablaTiempo"
+                                                                                    id="productoTablaTiempo"
+                                                                                    ng-model="productoTablaTiempo"
+                                                                                    data-placeholder="Producto...">
+                                                                                <option value="" selected>Seleccione
+                                                                                </option>
+                                                                                <option value="Internet+Toip">
+                                                                                    Internet+Toip
+                                                                                </option>
+                                                                                <option value="TV">TV</option>
+                                                                                <option value="Todos">Todos</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-1">
+                                                                        <button type="button"
+                                                                                class="btn btn-default btn-xs"
+                                                                                ng-click="consultaTablaTiempo(fechaTiempo,estadoTablaTiempo,productoTablaTiempo)"
+                                                                                tooltip-placement="top"
+                                                                                uib-tooltip="Consultar"
+                                                                                ng-disabled="loading">
+                                                                            <i class="fa fa-search"
+                                                                               aria-hidden="true"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="table-responsive">
+                                                <table class="table small table-striped table-hover table-bordered table-condensed">
+                                                    <thead class="table-header">
+                                                    <tr>
+                                                        <th class="text-center">Usuario</th>
+                                                        <th class="text-center">TOTAL</th>
+
+                                                        <th class="text-center">06 am</th>
+                                                        <th class="text-center">07 am</th>
+                                                        <th class="text-center">08 am</th>
+                                                        <th class="text-center">09 am</th>
+                                                        <th class="text-center">10 am</th>
+                                                        <th class="text-center">11 am</th>
+                                                        <th class="text-center">12 am</th>
+                                                        <th class="text-center">01 pm</th>
+                                                        <th class="text-center">02 pm</th>
+                                                        <th class="text-center">03 pm</th>
+                                                        <th class="text-center">04 pm</th>
+                                                        <th class="text-center">05 pm</th>
+                                                        <th class="text-center">06 pm</th>
+                                                        <th class="text-center">07 pm</th>
+                                                        <th class="text-center">08 pm</th>
+                                                        <th class="text-center">09 pm</th>
+                                                        <th class="text-center">Más 09 pm</th>
+
+                                                    </tr>
+                                                    </thead>
+
+                                                    <tbody>
+                                                    <tr ng-repeat="datar in tiempoCompleto">
+                                                        <td class="text-center">
+                                                            <span>{{datar.USUARIO}}</span>
+                                                        </td>
+                                                        <td style="font-weight: bolder" class="text-center">
+                                                            {{datar.CANTIDAD}}
+                                                        </td>
+                                                        <td class="text-center">{{datar.am06}}</td>
+                                                        <td class="text-center">{{datar.am07}}</td>
+                                                        <td class="text-center">{{datar.am08}}</td>
+                                                        <td class="text-center">{{datar.am09}}</td>
+                                                        <td class="text-center">{{datar.am10}}</td>
+                                                        <td class="text-center">{{datar.am11}}</td>
+                                                        <td class="text-center">{{datar.am12}}</td>
+                                                        <td class="text-center">{{datar.pm01}}</td>
+                                                        <td class="text-center">{{datar.pm02}}</td>
+                                                        <td class="text-center">{{datar.pm03}}</td>
+                                                        <td class="text-center">{{datar.pm04}}</td>
+                                                        <td class="text-center">{{datar.pm05}}</td>
+                                                        <td class="text-center">{{datar.pm06}}</td>
+                                                        <td class="text-center">{{datar.pm07}}</td>
+                                                        <td class="text-center">{{datar.pm08}}</td>
+                                                        <td class="text-center">{{datar.pm09}}</td>
+                                                        <td class="text-center">{{datar.Masde09}}</td>
+
+                                                    </tr>
+                                                    </tbody>
+                                                    <tfoot>
+                                                    <tr>
+                                                        <th class="text-center">TOTALES</th>
+                                                        <th class="text-center">{{totalesT}}</th>
+                                                        <th class="text-center">{{total06T}}</th>
+                                                        <th class="text-center">{{total07T}}</th>
+                                                        <th class="text-center">{{total08T}}</th>
+                                                        <th class="text-center">{{total09T}}</th>
+                                                        <th class="text-center">{{total10T}}</th>
+                                                        <th class="text-center">{{total11T}}</th>
+                                                        <th class="text-center">{{total12T}}</th>
+                                                        <th class="text-center">{{total13T}}</th>
+                                                        <th class="text-center">{{total14T}}</th>
+                                                        <th class="text-center">{{total15T}}</th>
+                                                        <th class="text-center">{{total16T}}</th>
+                                                        <th class="text-center">{{total17T}}</th>
+                                                        <th class="text-center">{{total18T}}</th>
+                                                        <th class="text-center">{{total19T}}</th>
+                                                        <th class="text-center">{{total20T}}</th>
+                                                        <th class="text-center">{{total21T}}</th>
+                                                        <th class="text-center">{{total22T}}</th>
+
+                                                    </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+
+                                            <div class="panel-footer clearfix">
+                                                <div class="col-md-8">
+                                                    <ul class="nav navbar-nav navbar-left"></ul>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                  </div>
-                                  <div class="col-md-5">
-                                    <div class="form-floating">
-                                      <select class="btn btn-default btn-xs grupo-select" name="productoTablaApoyo"
-                                         id="productoTablaApoyo" ng-model="productoTablaApoyo"
-                                        data-placeholder="Producto...">
-                                        <option value="" selected>Seleccione</option>
-                                        <option value="Internet+Toip">Internet+Toip</option>
-                                        <option value="TV">TV</option>
-                                        <option value="Todos">Todos</option>
-                                      </select>
-                                    </div>
-                                  </div>
-                                  <div class="col-md-1">
-                                    <button type="button" class="btn btn-default btn-xs"
-                                      ng-click="consultaTablaApoyo(fechaApoyo,estadoTablaApoyo,productoTablaApoyo)"
-                                      tooltip-placement="top" uib-tooltip="Consultar" ng-disabled="loading">
-                                      <i class="fa fa-search" aria-hidden="true"></i>
-                                    </button>
-                                  </div>
                                 </div>
-                              </li>
-                            </ul>
-                          </div>
+                            </div>
                         </div>
-                      </div>
-                      <div class="table-responsive">
-                        <table class="table small table-striped table-hover table-bordered table-condensed">
-                          <thead class="table-header">
-                            <th class="text-center">TOTAL</th>
-                            <th class="text-center">Usuario</th>
-
-                            <th class="text-center">06 am</th>
-                            <th class="text-center">07 am</th>
-                            <th class="text-center">08 am</th>
-                            <th class="text-center">09 am</th>
-                            <th class="text-center">10 am</th>
-                            <th class="text-center">11 am</th>
-                            <th class="text-center">12 am</th>
-                            <th class="text-center">01 pm</th>
-                            <th class="text-center">02 pm</th>
-                            <th class="text-center">03 pm</th>
-                            <th class="text-center">04 pm</th>
-                            <th class="text-center">05 pm</th>
-                            <th class="text-center">06 pm</th>
-                            <th class="text-center">07 pm</th>
-                            <th class="text-center">08 pm</th>
-                            <th class="text-center">09 pm</th>
-                            <th class="text-center">Más 09 pm</th>
-
-                          </thead>
-
-                          <tbody>
-                            <tr ng-repeat="datar in apoyo">
-                              <td class="text-center">
-                                <span>{{datar.USUARIO}}</span>
-                              </td>
-                              <td style="font-weight: bolder" class="text-center">
-                                {{datar.CANTIDAD}}
-                              </td>
-                              <td class="text-center">{{datar.am06}}</td>
-                              <td class="text-center">{{datar.am07}}</td>
-                              <td class="text-center">{{datar.am08}}</td>
-                              <td class="text-center">{{datar.am09}}</td>
-                              <td class="text-center">{{datar.am10}}</td>
-                              <td class="text-center">{{datar.am11}}</td>
-                              <td class="text-center">{{datar.am12}}</td>
-                              <td class="text-center">{{datar.pm01}}</td>
-                              <td class="text-center">{{datar.pm02}}</td>
-                              <td class="text-center">{{datar.pm03}}</td>
-                              <td class="text-center">{{datar.pm04}}</td>
-                              <td class="text-center">{{datar.pm05}}</td>
-                              <td class="text-center">{{datar.pm06}}</td>
-                              <td class="text-center">{{datar.pm07}}</td>
-                              <td class="text-center">{{datar.pm08}}</td>
-                              <td class="text-center">{{datar.pm09}}</td>
-                              <td class="text-center">{{datar.Masde09}}</td>
-
-                            </tr>
-                          </tbody>
-                          <tfoot>
-                            <tr>
-                              <th class="text-center">TOTALES</th>
-                              <th class="text-center">{{totalesA}}</th>
-                              <th class="text-center">{{total06A}}</th>
-                              <th class="text-center">{{total07A}}</th>
-                              <th class="text-center">{{total08A}}</th>
-                              <th class="text-center">{{total09A}}</th>
-                              <th class="text-center">{{total10A}}</th>
-                              <th class="text-center">{{total11A}}</th>
-                              <th class="text-center">{{total12A}}</th>
-                              <th class="text-center">{{total13A}}</th>
-                              <th class="text-center">{{total14A}}</th>
-                              <th class="text-center">{{total15A}}</th>
-                              <th class="text-center">{{total16A}}</th>
-                              <th class="text-center">{{total17A}}</th>
-                              <th class="text-center">{{total18A}}</th>
-                              <th class="text-center">{{total19A}}</th>
-                              <th class="text-center">{{total20A}}</th>
-                              <th class="text-center">{{total21A}}</th>
-                              <th class="text-center">{{total22A}}</th>
-
-                            </tr>
-                          </tfoot>
-                        </table>
-                      </div>
-
-                      <div class="panel-footer clearfix">
-                        <div class="col-md-8">
-                          <ul class="nav navbar-nav navbar-left"></ul>
-                        </div>
-                      </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
 
-
-          <!--tabla emtelco-->
-          <div class="row">
-            <div class="col-sm-12">
-              <div class="col-md-12">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="panel panel-default">
-                      <div class="panel-heading nav navbar-default">
-                        <div class="row">
-                          <div class="col-md-6">
-                            <ul class="nav navbar-nav navbar-left">
-                              <b>Emtelco <button ng-show="galletainfo.perfil == 11" type="button"
-                                  class="btn btn-default btn-xs" tooltip-placement="top" uib-tooltip="Modificar usuarios"
-                                  ng-click="ModificarUsuarioTiempoCompleto(emtelco, 'emtelco')">
-                                  <i class="fa fa-plus" aria-hidden="true"> </i>
-                                </button></b>
-
-                              <span style="color: red" class="pull-right"><i class="fa fa-exclamation-triangle warning"
-                                  aria-hidden="true" ng-hide="errorDatos==null"></i>
+                    <!--mmss-->
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading nav navbar-default">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <ul class="nav navbar-nav navbar-left">
+                                                            <b>SSMM
+                                                                <button ng-show="galletainfo.perfil == 11" type="button"
+                                                                        class="btn btn-default btn-xs"
+                                                                        tooltip-placement="top"
+                                                                        uib-tooltip="Modificar usuarios"
+                                                                        ng-click="ModificarUsuarioTiempoCompleto(mmssuser, 'ssmm')">
+                                                                    <i class="fa fa-plus" aria-hidden="true"> </i>
+                                                                </button>
+                                                            </b>
+                                                            <span style="color: red" class="pull-right"><i
+                                                                    class="fa fa-exclamation-triangle warning"
+                                                                    aria-hidden="true" ng-hide="errorDatos==null"></i>
                                 {{errorDatos}}</span>
-                            </ul>
-                          </div>
+                                                        </ul>
+                                                    </div>
 
-                          <div class="col-md-6">
-                            <ul class="nav navbar-nav navbar-right" style="width: 100%;
+                                                    <div class="col-md-6">
+                                                        <ul class="nav navbar-nav navbar-right" style="width: 100%;
+                            display: flex;
+                            justify-content: flex-end;">
+                                                            <div class="col-md-1 col-xs-1">
+                                                                <div data-ng-if="loading">
+                                                                    <img title="Esperando respuesta"
+                                                                         data-toggle="tooltip" data-placement="top"
+                                                                         src="img/loader.gif" height="16px"
+                                                                         width="16px"/>
+                                                                </div>
+                                                            </div>
+                                                            <li>
+                                                                <input style="width:130px" type="text" name="fechafin"
+                                                                       id="fechafin"
+                                                                       class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                                                       ng-model="fechammss"
+                                                                       placeholder="Fecha" datetime-picker="" date-only
+                                                                       date-format="yyyy-MM-dd"
+                                                                       autocomplete="off"> <i
+                                                                    class="fa fa-calendar fa-fw"></i>
+                                                            </li>
+                                                            <li>
+                                                                <div class="col-md-12 col-xs-6">
+                                                                    <div class="col-md-5">
+                                                                        <div class="form-floating">
+                                                                            <select class="btn btn-default btn-xs grupo-select"
+                                                                                    name="mmssEstado"
+                                                                                    id="mmssEstado"
+                                                                                    ng-model="estadommss">
+                                                                                <option value="" selected>Seleccione
+                                                                                </option>
+                                                                                <option value="Acepta">Acepta</option>
+                                                                                <option value="Rechaza">Rechaza</option>
+                                                                                <option value="Todos">Todos</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-5">
+                                                                        <div class="form-floating">
+                                                                            <select class="btn btn-default btn-xs grupo-select"
+                                                                                    name="mmssProducto"
+                                                                                    id="mmssProducto"
+                                                                                    ng-model="productommss">
+                                                                                <option value="" selected>Seleccione
+                                                                                </option>
+                                                                                <option value="Internet+Toip">
+                                                                                    Internet+Toip
+                                                                                </option>
+                                                                                <option value="TV">TV</option>
+                                                                                <option value="Todos">Todos</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-1">
+                                                                        <button type="button"
+                                                                                class="btn btn-default btn-xs"
+                                                                                ng-click="mmssConsulta(fechammss,estadommss,productommss)"
+                                                                                tooltip-placement="top"
+                                                                                uib-tooltip="Consultar"
+                                                                                data-toggle="tooltip"
+                                                                                data-placement="left"
+                                                                                ng-disabled="loading">
+                                                                            <i class="fa fa-search"
+                                                                               aria-hidden="true"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="table-responsive">
+                                                <table class="table small table-striped table-hover table-bordered table-condensed">
+                                                    <thead class="table-header">
+                                                    <th class="text-center">Usuario</th>
+                                                    <th class="text-center">TOTAL</th>
+
+                                                    <th class="text-center">06 am</th>
+                                                    <th class="text-center">07 am</th>
+                                                    <th class="text-center">08 am</th>
+                                                    <th class="text-center">09 am</th>
+                                                    <th class="text-center">10 am</th>
+                                                    <th class="text-center">11 am</th>
+                                                    <th class="text-center">12 am</th>
+                                                    <th class="text-center">01 pm</th>
+                                                    <th class="text-center">02 pm</th>
+                                                    <th class="text-center">03 pm</th>
+                                                    <th class="text-center">04 pm</th>
+                                                    <th class="text-center">05 pm</th>
+                                                    <th class="text-center">06 pm</th>
+                                                    <th class="text-center">07 pm</th>
+                                                    <th class="text-center">08 pm</th>
+                                                    <th class="text-center">09 pm</th>
+                                                    <th class="text-center">Más 09 pm</th>
+
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr ng-repeat="datar in mmss">
+                                                        <td class="text-center">
+                                                            <span>{{datar.USUARIO}}</span>
+                                                        </td>
+                                                        <td style="font-weight: bolder" class="text-center">
+                                                            {{datar.CANTIDAD}}
+                                                        </td>
+                                                        <td class="text-center">{{datar.am06}}</td>
+                                                        <td class="text-center">{{datar.am07}}</td>
+                                                        <td class="text-center">{{datar.am08}}</td>
+                                                        <td class="text-center">{{datar.am09}}</td>
+                                                        <td class="text-center">{{datar.am10}}</td>
+                                                        <td class="text-center">{{datar.am11}}</td>
+                                                        <td class="text-center">{{datar.am12}}</td>
+                                                        <td class="text-center">{{datar.pm01}}</td>
+                                                        <td class="text-center">{{datar.pm02}}</td>
+                                                        <td class="text-center">{{datar.pm03}}</td>
+                                                        <td class="text-center">{{datar.pm04}}</td>
+                                                        <td class="text-center">{{datar.pm05}}</td>
+                                                        <td class="text-center">{{datar.pm06}}</td>
+                                                        <td class="text-center">{{datar.pm07}}</td>
+                                                        <td class="text-center">{{datar.pm08}}</td>
+                                                        <td class="text-center">{{datar.pm09}}</td>
+                                                        <td class="text-center">{{datar.Masde09}}</td>
+
+                                                    </tr>
+                                                    </tbody>
+                                                    <tfoot>
+                                                    <tr>
+                                                        <th class="text-center">TOTALES</th>
+                                                        <th class="text-center">{{totalesM}}</th>
+                                                        <th class="text-center">{{total06M}}</th>
+                                                        <th class="text-center">{{total07M}}</th>
+                                                        <th class="text-center">{{total08M}}</th>
+                                                        <th class="text-center">{{total09M}}</th>
+                                                        <th class="text-center">{{total10M}}</th>
+                                                        <th class="text-center">{{total11M}}</th>
+                                                        <th class="text-center">{{total12M}}</th>
+                                                        <th class="text-center">{{total13M}}</th>
+                                                        <th class="text-center">{{total14M}}</th>
+                                                        <th class="text-center">{{total15M}}</th>
+                                                        <th class="text-center">{{total16M}}</th>
+                                                        <th class="text-center">{{total17M}}</th>
+                                                        <th class="text-center">{{total18M}}</th>
+                                                        <th class="text-center">{{total19M}}</th>
+                                                        <th class="text-center">{{total20M}}</th>
+                                                        <th class="text-center">{{total21M}}</th>
+                                                        <th class="text-center">{{total22M}}</th>
+
+                                                    </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+
+                                            <div class="panel-footer clearfix">
+                                                <div class="col-md-8">
+                                                    <ul class="nav navbar-nav navbar-left"></ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--apoyo-->
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading nav navbar-default">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <ul class="nav navbar-nav navbar-left">
+                                                            <b>Apoyo
+                                                                <button ng-show="galletainfo.perfil == 11" type="button"
+                                                                        class="btn btn-default btn-xs"
+                                                                        tooltip-placement="top"
+                                                                        uib-tooltip="Modificar usuarios"
+                                                                        ng-click="ModificarUsuarioTiempoCompleto(apoyouser, 'apoyo')">
+                                                                    <i class="fa fa-plus" aria-hidden="true"> </i>
+                                                                </button>
+                                                            </b>
+                                                            <span style="color: red" class="pull-right"><i
+                                                                    class="fa fa-exclamation-triangle warning"
+                                                                    aria-hidden="true" ng-hide="errorDatos==null"></i>
+                                {{errorDatos}}</span>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <ul class="nav navbar-nav navbar-right" style="width: 100%;
+                            display: flex;
+                            justify-content: flex-end;">
+                                                            <div class="col-md-1 col-xs-1">
+                                                                <div data-ng-if="loading">
+                                                                    <img title="Esperando respuesta"
+                                                                         data-toggle="tooltip" data-placement="top"
+                                                                         src="img/loader.gif" height="16px"
+                                                                         width="16px"/>
+                                                                </div>
+                                                            </div>
+                                                            <li>
+
+                                                            <li>
+                                                                <input style="width:130px" type="text" name="fechafin"
+                                                                       id="fechafin"
+                                                                       class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                                                       ng-model="fechaApoyo"
+                                                                       placeholder="Fecha" datetime-picker="" date-only
+                                                                       date-format="yyyy-MM-dd"
+                                                                       autocomplete="off"> <i
+                                                                    class="fa fa-calendar fa-fw"></i>
+                                                            </li>
+
+                                                            </li>
+                                                            <li>
+                                                                <div class="col-md-12 col-xs-6">
+                                                                    <div class="col-md-5">
+                                                                        <div class="form-floating">
+                                                                            <select class="btn btn-default btn-xs grupo-select"
+                                                                                    name="estadoTablaApoyo"
+                                                                                    id="estadoTablaApoyo"
+                                                                                    ng-model="estadoTablaApoyo"
+                                                                                    data-placeholder="Estado...">
+                                                                                <option value="" selected>Seleccione
+                                                                                </option>
+                                                                                <option value="Acepta">Acepta</option>
+                                                                                <option value="Rechaza">Rechaza</option>
+                                                                                <option value="Todos">Todos</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-5">
+                                                                        <div class="form-floating">
+                                                                            <select class="btn btn-default btn-xs grupo-select"
+                                                                                    name="productoTablaApoyo"
+                                                                                    id="productoTablaApoyo"
+                                                                                    ng-model="productoTablaApoyo"
+                                                                                    data-placeholder="Producto...">
+                                                                                <option value="" selected>Seleccione
+                                                                                </option>
+                                                                                <option value="Internet+Toip">
+                                                                                    Internet+Toip
+                                                                                </option>
+                                                                                <option value="TV">TV</option>
+                                                                                <option value="Todos">Todos</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-1">
+                                                                        <button type="button"
+                                                                                class="btn btn-default btn-xs"
+                                                                                ng-click="consultaTablaApoyo(fechaApoyo,estadoTablaApoyo,productoTablaApoyo)"
+                                                                                tooltip-placement="top"
+                                                                                uib-tooltip="Consultar"
+                                                                                ng-disabled="loading">
+                                                                            <i class="fa fa-search"
+                                                                               aria-hidden="true"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="table-responsive">
+                                                <table class="table small table-striped table-hover table-bordered table-condensed">
+                                                    <thead class="table-header">
+                                                    <th class="text-center">TOTAL</th>
+                                                    <th class="text-center">Usuario</th>
+
+                                                    <th class="text-center">06 am</th>
+                                                    <th class="text-center">07 am</th>
+                                                    <th class="text-center">08 am</th>
+                                                    <th class="text-center">09 am</th>
+                                                    <th class="text-center">10 am</th>
+                                                    <th class="text-center">11 am</th>
+                                                    <th class="text-center">12 am</th>
+                                                    <th class="text-center">01 pm</th>
+                                                    <th class="text-center">02 pm</th>
+                                                    <th class="text-center">03 pm</th>
+                                                    <th class="text-center">04 pm</th>
+                                                    <th class="text-center">05 pm</th>
+                                                    <th class="text-center">06 pm</th>
+                                                    <th class="text-center">07 pm</th>
+                                                    <th class="text-center">08 pm</th>
+                                                    <th class="text-center">09 pm</th>
+                                                    <th class="text-center">Más 09 pm</th>
+
+                                                    </thead>
+
+                                                    <tbody>
+                                                    <tr ng-repeat="datar in apoyo">
+                                                        <td class="text-center">
+                                                            <span>{{datar.USUARIO}}</span>
+                                                        </td>
+                                                        <td style="font-weight: bolder" class="text-center">
+                                                            {{datar.CANTIDAD}}
+                                                        </td>
+                                                        <td class="text-center">{{datar.am06}}</td>
+                                                        <td class="text-center">{{datar.am07}}</td>
+                                                        <td class="text-center">{{datar.am08}}</td>
+                                                        <td class="text-center">{{datar.am09}}</td>
+                                                        <td class="text-center">{{datar.am10}}</td>
+                                                        <td class="text-center">{{datar.am11}}</td>
+                                                        <td class="text-center">{{datar.am12}}</td>
+                                                        <td class="text-center">{{datar.pm01}}</td>
+                                                        <td class="text-center">{{datar.pm02}}</td>
+                                                        <td class="text-center">{{datar.pm03}}</td>
+                                                        <td class="text-center">{{datar.pm04}}</td>
+                                                        <td class="text-center">{{datar.pm05}}</td>
+                                                        <td class="text-center">{{datar.pm06}}</td>
+                                                        <td class="text-center">{{datar.pm07}}</td>
+                                                        <td class="text-center">{{datar.pm08}}</td>
+                                                        <td class="text-center">{{datar.pm09}}</td>
+                                                        <td class="text-center">{{datar.Masde09}}</td>
+
+                                                    </tr>
+                                                    </tbody>
+                                                    <tfoot>
+                                                    <tr>
+                                                        <th class="text-center">TOTALES</th>
+                                                        <th class="text-center">{{totalesA}}</th>
+                                                        <th class="text-center">{{total06A}}</th>
+                                                        <th class="text-center">{{total07A}}</th>
+                                                        <th class="text-center">{{total08A}}</th>
+                                                        <th class="text-center">{{total09A}}</th>
+                                                        <th class="text-center">{{total10A}}</th>
+                                                        <th class="text-center">{{total11A}}</th>
+                                                        <th class="text-center">{{total12A}}</th>
+                                                        <th class="text-center">{{total13A}}</th>
+                                                        <th class="text-center">{{total14A}}</th>
+                                                        <th class="text-center">{{total15A}}</th>
+                                                        <th class="text-center">{{total16A}}</th>
+                                                        <th class="text-center">{{total17A}}</th>
+                                                        <th class="text-center">{{total18A}}</th>
+                                                        <th class="text-center">{{total19A}}</th>
+                                                        <th class="text-center">{{total20A}}</th>
+                                                        <th class="text-center">{{total21A}}</th>
+                                                        <th class="text-center">{{total22A}}</th>
+
+                                                    </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+
+                                            <div class="panel-footer clearfix">
+                                                <div class="col-md-8">
+                                                    <ul class="nav navbar-nav navbar-left"></ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!--tabla emtelco-->
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading nav navbar-default">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <ul class="nav navbar-nav navbar-left">
+                                                            <b>Emtelco</b>
+                                                        </ul>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <ul class="nav navbar-nav navbar-right" style="width: 100%;
                                       display: flex;
                                       justify-content: flex-end;">
-                              <div class="col-md-1 col-xs-1">
-                                <div data-ng-if="loading">
-                                  <img title="Esperando respuesta" data-toggle="tooltip" data-placement="top"
-                                    src="img/loader.gif" height="16px" width="16px" />
-                                </div>
-                              </div>
-                              <li>
+                                                            <div class="col-md-1 col-xs-1">
+                                                                <div data-ng-if="loading">
+                                                                    <img title="Esperando respuesta"
+                                                                         data-toggle="tooltip" data-placement="top"
+                                                                         src="img/loader.gif" height="16px"
+                                                                         width="16px"/>
+                                                                </div>
+                                                            </div>
+                                                            <li>
 
-                                <input style="width:130px" type="text" name="fechafin" id="fechafin"
-                                  class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
-                                  ng-model="fecha_gestion" placeholder="Fecha" datetime-picker="" date-only
-                                  date-format="yyyy-MM-dd" autocomplete="off"> <i class="fa fa-calendar fa-fw"></i>
-                              </li>
+                                                                <input style="width:130px" type="text" name="fechafin"
+                                                                       id="fechafin"
+                                                                       class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                                                       ng-model="fecha_gestion" placeholder="Fecha"
+                                                                       datetime-picker="" date-only
+                                                                       date-format="yyyy-MM-dd" autocomplete="off"> <i
+                                                                    class="fa fa-calendar fa-fw"></i>
+                                                            </li>
 
-                              <li>
+                                                            <li>
 
-                                <div class="col-md-2 col-xs-6">
-                                  <div class="col-md-5">
-                                    <div class="form-floating">
-                                      <select class="btn btn-default btn-xs grupo-select" name="estadoTabla"
-                                        id="estadoTabla" ng-model="estadoTabla" data-placeholder="Estado...">
-                                        <option value="" selected>Seleccione</option>
-                                        <option value="Acepta">Acepta</option>
-                                        <option value="Rechaza">Rechaza</option>
-                                        <option value="Todos">Todos</option>
-                                      </select>
+                                                                <div class="col-md-2 col-xs-6">
+                                                                    <div class="col-md-5">
+                                                                        <div class="form-floating">
+                                                                            <select class="btn btn-default btn-xs grupo-select"
+                                                                                    name="estadoTabla"
+                                                                                    id="estadoTabla"
+                                                                                    ng-model="estadoTabla"
+                                                                                    data-placeholder="Estado...">
+                                                                                <option value="" selected>Seleccione
+                                                                                </option>
+                                                                                <option value="Acepta">Acepta</option>
+                                                                                <option value="Rechaza">Rechaza</option>
+                                                                                <option value="Todos">Todos</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+
+                                                            </li>
+
+                                                            <li>
+                                                                <div class="col-md-1">
+                                                                    <button type="button" class="btn btn-default btn-xs"
+                                                                            ng-click="consultaTablaEmtelco()"
+                                                                            tooltip-placement="top"
+                                                                            uib-tooltip="Consultar"
+                                                                            ng-disabled="loading">
+                                                                        <i class="fa fa-search" aria-hidden="true"></i>
+                                                                    </button>
+                                                                </div>
+
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="table-responsive">
+                                                <table class="table small table-striped table-hover table-bordered table-condensed">
+                                                    <thead class="table-header">
+                                                    <tr>
+                                                        <th class="text-center">Usuario</th>
+                                                        <th class="text-center">TOTAL</th>
+
+                                                        <th class="text-center">06 am</th>
+                                                        <th class="text-center">07 am</th>
+                                                        <th class="text-center">08 am</th>
+                                                        <th class="text-center">09 am</th>
+                                                        <th class="text-center">10 am</th>
+                                                        <th class="text-center">11 am</th>
+                                                        <th class="text-center">12 am</th>
+                                                        <th class="text-center">01 pm</th>
+                                                        <th class="text-center">02 pm</th>
+                                                        <th class="text-center">03 pm</th>
+                                                        <th class="text-center">04 pm</th>
+                                                        <th class="text-center">05 pm</th>
+                                                        <th class="text-center">06 pm</th>
+                                                        <th class="text-center">07 pm</th>
+                                                        <th class="text-center">08 pm</th>
+                                                        <th class="text-center">09 pm</th>
+                                                        <th class="text-center">Más 09 pm</th>
+
+                                                    </tr>
+                                                    </thead>
+
+                                                    <tbody>
+                                                    <tr ng-repeat="datar in emtelco">
+                                                        <td class="text-center">
+                                                            <span>{{datar.USUARIO}}</span>
+                                                        </td>
+                                                        <td style="font-weight: bolder" class="text-center">
+                                                            {{datar.CANTIDAD}}
+                                                        </td>
+                                                        <td class="text-center">{{datar.am06}}</td>
+                                                        <td class="text-center">{{datar.am07}}</td>
+                                                        <td class="text-center">{{datar.am08}}</td>
+                                                        <td class="text-center">{{datar.am09}}</td>
+                                                        <td class="text-center">{{datar.am10}}</td>
+                                                        <td class="text-center">{{datar.am11}}</td>
+                                                        <td class="text-center">{{datar.am12}}</td>
+                                                        <td class="text-center">{{datar.pm01}}</td>
+                                                        <td class="text-center">{{datar.pm02}}</td>
+                                                        <td class="text-center">{{datar.pm03}}</td>
+                                                        <td class="text-center">{{datar.pm04}}</td>
+                                                        <td class="text-center">{{datar.pm05}}</td>
+                                                        <td class="text-center">{{datar.pm06}}</td>
+                                                        <td class="text-center">{{datar.pm07}}</td>
+                                                        <td class="text-center">{{datar.pm08}}</td>
+                                                        <td class="text-center">{{datar.pm09}}</td>
+                                                        <td class="text-center">{{datar.Masde09}}</td>
+
+                                                    </tr>
+                                                    </tbody>
+                                                    <tfoot>
+                                                    <tr>
+                                                        <th class="text-center">TOTALES</th>
+                                                        <th class="text-center">{{totalesEm}}</th>
+                                                        <th class="text-center">{{total06Em}}</th>
+                                                        <th class="text-center">{{total07Em}}</th>
+                                                        <th class="text-center">{{total08Em}}</th>
+                                                        <th class="text-center">{{total09Em}}</th>
+                                                        <th class="text-center">{{total10Em}}</th>
+                                                        <th class="text-center">{{total11Em}}</th>
+                                                        <th class="text-center">{{total12Em}}</th>
+                                                        <th class="text-center">{{total13Em}}</th>
+                                                        <th class="text-center">{{total14Em}}</th>
+                                                        <th class="text-center">{{total15Em}}</th>
+                                                        <th class="text-center">{{total16Em}}</th>
+                                                        <th class="text-center">{{total17Em}}</th>
+                                                        <th class="text-center">{{total18Em}}</th>
+                                                        <th class="text-center">{{total19Em}}</th>
+                                                        <th class="text-center">{{total20Em}}</th>
+                                                        <th class="text-center">{{total21Em}}</th>
+                                                        <th class="text-center">{{total22Em}}</th>
+
+                                                    </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                            <div class="panel-footer clearfix">
+                                                <div class="col-md-8">
+                                                    <ul class="nav navbar-nav navbar-left"></ul>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                  </div>
-
-                              </li>
-
-                              <li>
-                                <div class="col-md-1">
-                                  <button type="button" class="btn btn-default btn-xs" ng-click="consultaTabla()"
-                                  tooltip-placement="top" uib-tooltip="Consultar" ng-disabled="loading">
-                                    <i class="fa fa-search" aria-hidden="true"></i>
-                                  </button>
                                 </div>
-
-                              </li>
-                            </ul>
-                          </div>
+                            </div>
                         </div>
-                      </div>
-                      <table class="table small table-striped table-hover table-bordered table-condensed">
-                        <thead class="table-header">
-                          <tr>
-                            <th class="text-center">Usuario</th>
-                            <th class="text-center">TOTAL</th>
-
-                            <th class="text-center">06 am</th>
-                            <th class="text-center">07 am</th>
-                            <th class="text-center">08 am</th>
-                            <th class="text-center">09 am</th>
-                            <th class="text-center">10 am</th>
-                            <th class="text-center">11 am</th>
-                            <th class="text-center">12 am</th>
-                            <th class="text-center">01 pm</th>
-                            <th class="text-center">02 pm</th>
-                            <th class="text-center">03 pm</th>
-                            <th class="text-center">04 pm</th>
-                            <th class="text-center">05 pm</th>
-                            <th class="text-center">06 pm</th>
-                            <th class="text-center">07 pm</th>
-                            <th class="text-center">08 pm</th>
-                            <th class="text-center">09 pm</th>
-                            <th class="text-center">Más 09 pm</th>
-
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          <tr ng-repeat="datar in emtelco">
-                            <td class="text-center">
-                              <span>{{datar.USUARIO}}</span>
-                            </td>
-                            <td style="font-weight: bolder" class="text-center">
-                              {{datar.CANTIDAD}}
-                            </td>
-                            <td class="text-center">{{datar.am06}}</td>
-                            <td class="text-center">{{datar.am07}}</td>
-                            <td class="text-center">{{datar.am08}}</td>
-                            <td class="text-center">{{datar.am09}}</td>
-                            <td class="text-center">{{datar.am10}}</td>
-                            <td class="text-center">{{datar.am11}}</td>
-                            <td class="text-center">{{datar.am12}}</td>
-                            <td class="text-center">{{datar.pm01}}</td>
-                            <td class="text-center">{{datar.pm02}}</td>
-                            <td class="text-center">{{datar.pm03}}</td>
-                            <td class="text-center">{{datar.pm04}}</td>
-                            <td class="text-center">{{datar.pm05}}</td>
-                            <td class="text-center">{{datar.pm06}}</td>
-                            <td class="text-center">{{datar.pm07}}</td>
-                            <td class="text-center">{{datar.pm08}}</td>
-                            <td class="text-center">{{datar.pm09}}</td>
-                            <td class="text-center">{{datar.Masde09}}</td>
-
-                          </tr>
-                        </tbody>
-                        <tfoot>
-                          <tr>
-                            <th class="text-center">TOTALES</th>
-                            <th class="text-center">{{totalesEm}}</th>
-                            <th class="text-center">{{total06Em}}</th>
-                            <th class="text-center">{{total07Em}}</th>
-                            <th class="text-center">{{total08Em}}</th>
-                            <th class="text-center">{{total09Em}}</th>
-                            <th class="text-center">{{total10Em}}</th>
-                            <th class="text-center">{{total11Em}}</th>
-                            <th class="text-center">{{total12Em}}</th>
-                            <th class="text-center">{{total13Em}}</th>
-                            <th class="text-center">{{total14Em}}</th>
-                            <th class="text-center">{{total15Em}}</th>
-                            <th class="text-center">{{total16Em}}</th>
-                            <th class="text-center">{{total17Em}}</th>
-                            <th class="text-center">{{total18Em}}</th>
-                            <th class="text-center">{{total19Em}}</th>
-                            <th class="text-center">{{total20Em}}</th>
-                            <th class="text-center">{{total21Em}}</th>
-                            <th class="text-center">{{total22Em}}</th>
-
-                          </tr>
-                        </tfoot>
-                      </table>
-                      <div class="panel-footer clearfix">
-                        <div class="col-md-8">
-                          <ul class="nav navbar-nav navbar-left"></ul>
-                        </div>
-                      </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
 
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
 <br><br><br>

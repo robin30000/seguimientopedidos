@@ -24,11 +24,6 @@ if (isset($data['method'])) {
             $user = new otherServicesDos();
             $user->csvPreagen($data['data']);
             break;
-        case 'csvContingencias':
-            require_once '../class/otherServicesDos.php';
-            $user = new otherServicesDos();
-            $user->csvContingencias($data['data']);
-            break;
         case 'csvEstadosClick':
             require_once '../class/otherServicesDos.php';
             $user = new otherServicesDos();

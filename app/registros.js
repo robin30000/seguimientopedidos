@@ -34,11 +34,11 @@
         BuscarRegistros();
 
         $scope.pageChanged = function () {
-            data = {page: $scope.currentPage, size: $scope.pageSize, param: $scope.Registros};
+            let data = {page: $scope.currentPage, size: $scope.pageSize, param: $scope.Registros};
             BuscarRegistros(data);
         };
         $scope.pageSizeChanged = function () {
-            data = {page: $scope.currentPage, size: $scope.pageSize, param: $scope.Registros};
+            let data = {page: $scope.currentPage, size: $scope.pageSize, param: $scope.Registros};
             $scope.currentPage = 1;
             BuscarRegistros(data);
         };

@@ -95,8 +95,9 @@
                                             <td>{{data.login_gestion}}</td>
                                             <td>
                                                 <button type="button" class="btn btn-default btn-xs"
-                                                        ng-click="CopyPortaPapeles(data.unepedido)" tooltip-placement="top"
-                                                        uib-tooltip="Copiar pedido" id=p{{$index}}>{{data.unepedido}}
+                                                        ng-click="CopyPortaPapeles(data.unepedido)"
+                                                        tooltip title="Copiar pedido" id="tv{{$index}}">
+                                                    {{data.unepedido}}
                                                 </button>
                                             </td>
                                             <td>{{data.tarea}}</td>

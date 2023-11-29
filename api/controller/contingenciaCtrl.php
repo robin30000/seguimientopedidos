@@ -112,7 +112,22 @@ if (isset($data['method'])) {
             $user = new Contingencia();
             $user->savecontingencia($data['data']);
             break;
-
+        case 'csvContingencias':
+            require_once '../class/contingencia.php';
+            $user = new Contingencia();
+            $user->csvContingencias($data['data']);
+            break;
+        case 'consultaTipoTarea':
+            require_once '../class/contingencia.php';
+            $user = new Contingencia();
+            $user->consultaTipoTarea($data['data']);
+            break;
+        case 'damePedido':
+            require_once '../class/contingencia.php';
+            $user = new Contingencia();
+            $res = $user->damePedido($data['data']);
+            echo json_encode($res);
+            break;
         default:
             echo 'ninguna opción valida.';
             break;

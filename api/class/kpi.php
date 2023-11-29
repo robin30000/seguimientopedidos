@@ -1,5 +1,6 @@
 <?php
 require_once 'conection.php';
+
 /* error_reporting(E_ALL);
 ini_set('display_errors', 1); */
 
@@ -138,7 +139,8 @@ class kpi
         $stmt = $this->_BD->query("SELECT 
 		C2.USUARIO,
 		C2.prod AS producto
-		, COUNT(*) AS CANTIDAD
+		, CAST(COUNT(*) AS SIGNED) AS CANTIDAD,
+		SUM(COUNT(*)) OVER (PARTITION BY C2.USUARIO) AS 'suma'
 		, SUM(CASE WHEN (C2.RANGO_PENDIENTE) >= 0 AND (C2.RANGO_PENDIENTE) <= 6 THEN 1 ELSE 0 END) AS 'am06' 
 		, SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 6 AND (C2.RANGO_PENDIENTE) <= 7 THEN 1 ELSE 0 END) AS 'am07' 
 		, SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 7 AND (C2.RANGO_PENDIENTE) <= 8 THEN 1 ELSE 0 END) AS 'am08' 
@@ -159,12 +161,12 @@ class kpi
 		FROM(
 		SELECT 
 				p.logincontingencia AS USUARIO, DATE_FORMAT(p.horacontingencia, '%H') AS RANGO_PENDIENTE, 
-				CASE WHEN (p.producto = 'Internet+ToIP' OR p.producto = 'Internet' OR p.producto = 'ToIP') THEN 'Internet+Toip' WHEN p.producto = 'TV' THEN 'TV' END AS prod
+				CASE WHEN p.producto = 'TV' THEN 'TV' else 'Internet+Toip' END AS prod
+				-- CASE WHEN (p.producto = 'Internet+ToIP' OR p.producto = 'Internet' OR p.producto = 'ToIP') THEN 'Internet+Toip' WHEN p.producto = 'TV' THEN 'TV' END AS prod
 		FROM contingencias p
 		WHERE 1=1 $condicion AND p.horacontingencia BETWEEN '$today 00:00:00' AND '$today 23:59:59') C2
 		GROUP BY C2.USUARIO, producto
         ORDER BY CANTIDAD DESC");
-
 
         $stmt->execute();
         if ($stmt->rowCount()) {
@@ -253,7 +255,7 @@ class kpi
         } elseif (!empty($fecha)) {
             $today = $fecha;
         } else {
-            $condicion = " AND p.acepta = 'acepta' ";
+            $condicion = " AND p.acepta in ('Acepta', 'Rechaza') ";
         }
 
         $stmt = $this->_BD->query("SELECT usuario FROM usuario_kpi WHERE tabla = 'apoyo'");
@@ -292,11 +294,11 @@ class kpi
 		GROUP BY C2.USUARIO ORDER BY CANTIDAD DESC");
 
         $stmt->execute();
-        //if ($stmt->rowCount()) {
+        if ($stmt->rowCount()) {
             $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'user' => $res);
-        //} else {
-          //  $response = array('state' => 0, 'msj' => 'No se encontraron datos');
-        //}
+        } else {
+            $response = array('state' => 0, 'msj' => 'No se encontraron datos');
+        }
 
         echo json_encode($response);
     }
@@ -310,6 +312,7 @@ class kpi
         $producto = $data['producto'];
         $fecha = $data['fecha'];
         $today = date("Y-m-d");
+
 
         if (!empty($data['tabla'])) {
 
@@ -386,7 +389,7 @@ class kpi
         } elseif (!empty($fecha)) {
             $today = $fecha;
         } else {
-            $condicion = " AND p.acepta in ('Acepta', 'Rechaza') ";
+            $condicion = " AND p.acepta in ('Acepta', 'Rechaza') AND p.producto IN ('Internet+ToIP', 'Internet', 'ToIP', 'TV') ";
         }
 
         $stmt = $this->_BD->query("SELECT usuario FROM usuario_kpi WHERE tabla = 'tiempo_completo'");
@@ -508,7 +511,7 @@ class kpi
         } elseif (!empty($fecha)) {
             $today = $fecha;
         } else {
-            $condicion = " AND p.acepta = 'acepta' ";
+            $condicion = " AND p.acepta in ('Acepta', 'Rechaza') AND p.producto IN ('Internet+ToIP', 'Internet', 'ToIP', 'TV') ";
         }
 
         $stmt = $this->_BD->query("SELECT usuario FROM usuario_kpi WHERE tabla = 'ssmm'");
@@ -563,23 +566,22 @@ class kpi
         //$data = json_decode(file_get_contents('php://input'), true);
         $estado = $data['estado'];
         $fecha = $data['fecha'];
-        $today = date("Y-m-d");
 
-        if (empty($fecha)){
+        if (empty($fecha)) {
             $today = date("Y-m-d");
-        }else{
+        } else {
             $today = $data['fecha'];
         }
 
         $condicion = '';
-        if (($estado == 'Acepta')) {
+        if ($estado === 'Acepta') {
             $condicion = " AND p.acepta = 'Acepta' ";
-        } elseif (($estado == 'Rechaza')) {
+        } elseif ($estado === 'Rechaza') {
             $condicion = " AND p.acepta = 'Rechaza' ";
-        } elseif ($estado == '') {
-            $condicion = " AND p.acepta IN ('Rechaza', 'Acepta')";
+        } elseif ($estado === 'Todos') {
+            $condicion = " AND p.acepta IN ('Rechaza', 'Acepta') ";
         } else {
-            $condicion = " AND p.acepta = 'Acepta' ";
+            $condicion = "  ";
         }
 
         $stmt = $this->_BD->query("SELECT usuario FROM usuario_kpi");
@@ -618,7 +620,7 @@ class kpi
 
         $stmt1->execute();
         if ($stmt1->rowCount()) {
-            $res =  $stmt1->fetchAll(PDO::FETCH_ASSOC);
+            $res = $stmt1->fetchAll(PDO::FETCH_ASSOC);
             $response = array('state' => 1, 'data' => $res);
         } else {
             $response = array('state' => 0, 'msj' => 'No se encontraron datos');

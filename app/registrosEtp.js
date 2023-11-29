@@ -16,7 +16,7 @@
         tiempo = year + "-" + month + "-" + day;
 
         init();
-
+        console.log('pepino')
         function init() {
             gestionETPTerminado();
         }
@@ -204,7 +204,9 @@
                         timer: 4000
                     })
                 }
-            });
+            }).catch((e) => {
+                console.log(e)
+            })
         }
 
         $scope.ver_masss = (data) => {

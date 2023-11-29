@@ -30,19 +30,19 @@
         var idqueja;
 
         $scope.validarDatos = function (datos) {
-            if (datos.columnaBusqueda == undefined || datos.valorBusqueda == undefined) {
+            if (datos.columnaBusqueda === undefined || datos.valorBusqueda === undefined) {
                 datos.columnaBusqueda = "";
                 datos.valorBusqueda = "";
             }
 
-            if (datos.fechaini == undefined || datos.fechafin == undefined) {
+            if (datos.fechaini === undefined || datos.fechafin === undefined) {
                 Swal({
                     type: "error",
                     title: "Oops...",
                     text: "Debe seleccionar un rango de fecha!",
                 });
             } else {
-                data = {
+                let data = {
                     page: $scope.currentPage,
                     size: $scope.pageSize,
                     datos
@@ -72,7 +72,7 @@
 
                 $scope.tiempo = pad(horas) + ":" + pad(minutos) + ":" + pad(segundos);
             }, 1000);
-        };
+        }
 
         function pad(numero) {
             return numero < 10 ? "0" + numero : numero;
@@ -88,7 +88,7 @@
             }
 
             services.extraeQuejasGoDia(data).then((data) => {
-                if (data.data.state == 99) {
+                if (data.data.state === 99) {
                     swal({
                         type: "error",
                         title: data.data.title,
@@ -101,7 +101,7 @@
                         $rootScope.permiso = false;
                         $route.reload();
                     });
-                } else if (data.data.state == 1) {
+                } else if (data.data.state === 1) {
                     $scope.listaQuejasGo = data.data.data;
                     $scope.cantidad = data.data.length;
                     $scope.counterpag = data.data.counter;
@@ -119,14 +119,14 @@
             }).catch((e) => {
                 console.log(e)
             });
-        };
+        }
 
         $scope.pageChanged = function () {
-            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
+            let data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
             LoadQuejasGo(data);
         }
         $scope.pageSizeChanged = function () {
-            data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
+            let data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
             $scope.currentPage = 1;
             LoadQuejasGo(data);
         }
@@ -140,8 +140,8 @@
         };
 
         $scope.ciudadesQuejasGo = function () {
-            services.getCiudadesQuejasGo().then(function (data) {
-                if (data.data.state != 1) {
+            services.getCiudadesQuejasGo().then((data) => {
+                if (data.data.state !== 1) {
                     Swal({
                         type: 'error',
                         text: data.data.msj,
@@ -150,13 +150,15 @@
                 } else {
                     $scope.listadoCiudadesQGo = data.data.data;
                 }
-            });
+            }).catch((e) => {
+                console.log(e)
+            })
         };
 
         $scope.BuscarTecnico = function () {
             var cedula = $scope.quejasGoSel.cedtecnico;
 
-            if (cedula == undefined) {
+            if (cedula === undefined) {
                 Swal({
                     type: "error",
                     title: "Oops...",
@@ -166,106 +168,92 @@
                 return;
             }
 
-            services.traerTecnico(cedula).then(
-                function (data) {
-                    if (data.data.state != 1) {
-                        $scope.ciudadesQuejasGo();
-                        $('#crearTecnicoQuejasGo').modal('show');
-                        $scope.infoTecnico = false;
-                    } else {
-                        $scope.Tecnico = data.data.data;
-                        $scope.quejasGoSel.tecnico = $scope.Tecnico[0].nombre;
-                        $scope.quejasGoSel.region = $scope.Tecnico[0].ciudad;
-                        $scope.infoTecnico = true;
-                    }
-                },
-                function errorCallback(data) {
-                    console.log(data);
+            services.traerTecnico(cedula).then((data) => {
+                if (data.data.state !== 1) {
+                    $scope.ciudadesQuejasGo();
+                    $('#crearTecnicoQuejasGo').modal('show');
+                    $scope.infoTecnico = false;
+                } else {
+                    $scope.Tecnico = data.data.data;
+                    $scope.quejasGoSel.tecnico = $scope.Tecnico[0].nombre;
+                    $scope.quejasGoSel.region = $scope.Tecnico[0].ciudad;
+                    $scope.infoTecnico = true;
                 }
-            );
-        };
+            }).catch((e) => {
+                console.log(e)
+            })
+        }
 
         $scope.crearTecQuejasGo = function (
             crearTecnicoquejasGoSel,
             frmCrearTecnicoQuejasGo
         ) {
-            services.creaTecnicoQuejasGo(crearTecnicoquejasGoSel).then(
-                function (data) {
-                    if (data.data.state == 1) {
-                        $("#crearTecnicoQuejasGo").modal("hide");
-                        frmCrearTecnicoQuejasGo.autoValidateFormOptions.resetForm();
-                        Swal({
-                            type: 'success',
-                            title: 'Bien',
-                            text: data.data.msj,
-                            timer: 4000
-                        })
-                    } else {
-                        Swal({
-                            type: 'success',
-                            title: 'Bien',
-                            text: 'data.data.msj',
-                            timer: 4000
-                        })
-                    }
-                },
-
-                function errorCallback(response) {
-                    console.log(response)
+            services.creaTecnicoQuejasGo(crearTecnicoquejasGoSel).then((data) => {
+                if (data.data.state === 1) {
+                    $("#crearTecnicoQuejasGo").modal("hide");
+                    frmCrearTecnicoQuejasGo.autoValidateFormOptions.resetForm();
+                    Swal({
+                        type: 'success',
+                        title: 'Bien',
+                        text: data.data.msj,
+                        timer: 4000
+                    })
+                } else {
+                    Swal({
+                        type: 'success',
+                        title: 'Bien',
+                        text: data.data.msj,
+                        timer: 4000
+                    })
                 }
-            );
+            }).catch((e) => {
+                console.log(e)
+            })
+
+
         };
 
         $scope.guardar = function (quejasGoSel, frmQuejasGo) {
             services
                 .guardarQuejaGo(quejasGoSel, $scope.tiempo, $rootScope.galletainfo.login)
-                .then(
-                    function (respuesta) {
-                        if (respuesta.data.state == 1) {
-                            $("#modalQuejasGo").modal("hide");
-                            Swal({
-                                type: "success",
-                                title: "Bien",
-                                text: "Datos guardados correctamente",
-                                timer: 4000
-                            }).then(() => {
-                                setTimeout(() => {
-                                    $route.reload();
-                                }, 500);
+                .then((respuesta) => {
+                    if (respuesta.data.state === 1) {
+                        $("#modalQuejasGo").modal("hide");
+                        Swal({
+                            type: "success",
+                            title: "Bien",
+                            text: "Datos guardados correctamente",
+                            timer: 4000
+                        }).then(() => {
+                            setTimeout(() => {
+                                $route.reload();
+                            }, 500);
 
-                            })
+                        })
 
-                        } else {
-                            Swal({
-                                type: "error",
-                                title: "Oops...",
-                                text: "No fue posible guardar la queja!",
-                                timer: 4000
-                            });
-                        }
-                    },
-                    function errorCallback(response) {
-                        console.log(response);
+                    } else {
+                        Swal({
+                            type: "error",
+                            title: "Oops...",
+                            text: "No fue posible guardar la queja!",
+                            timer: 4000
+                        });
                     }
-                );
+                }).catch((e) => {
+                console.log(e)
+            })
 
         };
 
         $scope.csvQuejasGo = function () {
             $scope.csvPend = false;
 
-            if (
-                $scope.Registros.columnaBusqueda == undefined ||
-                $scope.Registros.valorBusqueda == undefined
-            ) {
+            if ($scope.Registros.columnaBusqueda === undefined || $scope.Registros.valorBusqueda === undefined) {
                 $scope.Registros.columnaBusqueda = "";
                 $scope.Registros.valorBusqueda = "";
             }
 
-            if (
-                $scope.Registros.fechaini == undefined ||
-                $scope.Registros.fechafin == undefined
-            ) {
+            if ($scope.Registros.fechaini === undefined || $scope.Registros.fechafin === undefined) {
                 $scope.Registros.fechaini = "";
                 $scope.Registros.fechafin = "";
             }
@@ -278,8 +266,8 @@
                 })
             } else {
                 services.expCsvQuejasGo($scope.Registros, $rootScope.galletainfo)
-                    .then(function (data) {
-                        if (data.data.state == 1) {
+                    .then((data) => {
+                        if (data.data.state === 1) {
                             var wb = XLSX.utils.book_new();
                             var ws = XLSX.utils.json_to_sheet(data.data.data);
                             XLSX.utils.book_append_sheet(wb, ws, 'QuejasGo');
@@ -310,49 +298,46 @@
             frmModObserQuejasGo,
             id
         ) {
-            services.modiObserQuejasGo(quejasGoSel, idqueja).then(
-                function (data) {
-                    if (data.data.state == 99) {
-                        swal({
-                            type: "error",
-                            title: data.data.title,
-                            text: data.data.text,
-                            timer: 4000,
-                        }).then(function () {
-                            $cookies.remove("usuarioseguimiento");
-                            $location.path("/");
-                            $rootScope.galletainfo = undefined;
-                            $rootScope.permiso = false;
+            services.modiObserQuejasGo(quejasGoSel, idqueja).then((data) => {
+                if (data.data.state === 99) {
+                    swal({
+                        type: "error",
+                        title: data.data.title,
+                        text: data.data.text,
+                        timer: 4000,
+                    }).then(function () {
+                        $cookies.remove("usuarioseguimiento");
+                        $location.path("/");
+                        $rootScope.galletainfo = undefined;
+                        $rootScope.permiso = false;
+                        $route.reload();
+                    });
+                } else if (data.data.state === 1) {
+                    $("#modObserQuejasGo").modal("hide");
+                    $scope.quejasGoSel = {};
+                    Swal({
+                        type: "success",
+                        title: "Bien",
+                        text: data.data.msj,
+                        timer: 4000
+                    }).then(() => {
+                        setTimeout(() => {
                             $route.reload();
-                        });
-                    } else if (data.data.state == 1) {
-                        $("#modObserQuejasGo").modal("hide");
-                        $scope.quejasGoSel = {};
-                        Swal({
-                            type: "success",
-                            title: "Bien",
-                            text: data.data.msj,
-                            timer: 4000
-                        }).then(() => {
-                            setTimeout(() => {
-                                $route.reload();
-                            }, 500);
-                        })
-                    } else if (data.data.state == 0) {
-                        Swal({
-                            type: "error",
-                            title: "Oops...",
-                            text: data.data.msj,
-                            timer: 4000
-                        });
-                    }
-
-                },
-                function errorCallback(response) {
-                    console.log(response);
+                        }, 500);
+                    })
+                } else if (data.data.state === 0) {
+                    Swal({
+                        type: "error",
+                        title: "Oops...",
+                        text: data.data.msj,
+                        timer: 4000
+                    });
                 }
-            );
-        };
+
+            }).catch((e) => {
+                console.log(e)
+            })
+        }
     }
 
 })();

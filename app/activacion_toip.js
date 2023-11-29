@@ -59,7 +59,7 @@
             } else {
                 datos = data;
             }
-            if(datos['recargar'] == 1){
+            if (datos['recargar'] == 1) {
                 $scope.toip = null;
             }
             $scope.loading = 1;
@@ -137,7 +137,6 @@
             }
 
 
-
             let datos = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': data}
             gestionToipTerminado(datos);
         }
@@ -157,7 +156,7 @@
         }
 
         $scope.recargaPage = () => {
-            let datos = {'page': $scope.currentPage, 'size': $scope.pageSize, 'recargar':1}
+            let datos = {'page': $scope.currentPage, 'size': $scope.pageSize, 'recargar': 1}
             $scope.loading = true;
             gestionToipTerminado(datos);
             $scope.loading = false;
@@ -172,7 +171,7 @@
             gestionToipTerminado(data);
         }
         $scope.pageSizeChanged = function () {
-           let data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.toip}
+            let data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.toip}
             gestionToip(data);
         }
 
@@ -195,7 +194,7 @@
                 })
                 return;
             }
-            let datos = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': data, 'export' :1}
+            let datos = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': data, 'export': 1}
             $scope.loading = 1;
             services.myService(datos, 'toipCtrl.php', 'datosTerminados').then((data) => {
                 $scope.loading = 0;
@@ -216,7 +215,7 @@
         }
 
         $scope.ver_masss = (data) => {
-            $(".popover").css('display','none !importan');
+            $(".popover").css('display', 'none !importan');
             $scope.dataContent = $sce.trustAsHtml('<div class="table-responsive" style="max-width: 380px;"><table class="table table-bordered table-hover table-condensed small" style="max-width: 350px;">' +
                 '<tbody><tr><td style="min-width: 80px">Hora cierre click</td><td>' + data.hora_cierre_click + '</td></tr>' +
                 '<tbody><tr><td style="min-width: 80px">Respuesta aprov</td><td>' + data.respuesta_aprov + '</td></tr>' +
@@ -254,15 +253,7 @@
                 })
                 return;
             }
-            if (data.verifica_tono == null) {
-                Swal({
-                    type: 'error',
-                    title: 'Oppss..',
-                    text: 'Debes seleccionar si verifica tono',
-                    timer: 4000
-                })
-                return;
-            }
+
             if (data.tipificacion == null) {
                 Swal({
                     type: 'error',
@@ -273,7 +264,27 @@
                 return;
             }
 
-            if ((data.tipificacion == 'Aprovisionado por contingencia') && (data.subtipificacion == '' || data.subtipificacion == null)){
+            if (data.subtipificacion == null) {
+                Swal({
+                    type: 'error',
+                    title: 'Oppss..',
+                    text: 'Debes seleccionar alguna subtipificación',
+                    timer: 4000
+                })
+                return;
+            }
+
+            if (data.verifica_tono == null) {
+                Swal({
+                    type: 'error',
+                    title: 'Oppss..',
+                    text: 'Debes seleccionar si verifica tono',
+                    timer: 4000
+                })
+                return;
+            }
+
+            /*if ((data.tipificacion == 'Aprovisionado por contingencia') && (data.subtipificacion == '' || data.subtipificacion == null)) {
                 Swal({
                     type: 'error',
                     title: 'Oppss..',
@@ -281,7 +292,7 @@
                     timer: 4000
                 })
                 return;
-            }
+            }*/
 
             if (data.cerrado_gtc == null) {
                 Swal({

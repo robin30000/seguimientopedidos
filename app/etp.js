@@ -326,7 +326,6 @@
     function ModalActivacionETPCtrl($uibModalInstance, items, services, $route, $scope, $timeout) {
         var $ctrl = this;
         $ctrl.items = items;
-        console.log(items)
 
         $ctrl.guardar = (data) => {
             if (!data) {
@@ -504,6 +503,38 @@
                         timer: 4000
                     })
                 }
+            }).catch((e) => {
+                console.log(e)
+            })
+        }
+
+        $scope.ver_mas2 = (data)  => {
+            $scope.dataContent = $sce.trustAsHtml('<div class="table-responsive" style="max-width: 380px;"><table class="table table-bordered table-hover table-condensed small" style="max-width: 350px;">' +
+                '<tbody><tr><td style="min-width: 80px">Pedido</td><td>' + data.unepedido + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Categoría</td><td>' + data.tasktypecategory + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Municipio</td><td>' + data.unemunicipio + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Productos</td><td>' + data.uneproductos + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Mac</td><td>' + data.mac + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Serial</td><td>' + data.serial.replace(/,/g, '\n') + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Sistema</td><td>' + data.uneSourceSystem + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Tecnología</td><td>' + data.UNETecnologias + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Observación</td><td>' + data.observacion_terreno + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Fecha solicitud</td><td>' + data.fecha_crea + '</td></tr>' +
+                '</tbody></table></div>');
+        }
+
+        $scope.CopyPortaPapeles = function (data) {
+            var copyTextTV = document.createElement("input");
+            copyTextTV.value = data;
+            document.body.appendChild(copyTextTV);
+            copyTextTV.select();
+            document.execCommand("copy");
+            document.body.removeChild(copyTextTV);
+            Swal({
+                type: 'info',
+                title: 'Aviso',
+                text: "El texto seleccionado fue copiado",
+                timer: 2000
             });
         }
     }

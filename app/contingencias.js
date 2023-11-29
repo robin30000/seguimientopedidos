@@ -87,6 +87,9 @@
                     let data = f.data
                     console.log(data.uNEProductos)
                     let productoSplit = data.uNEProductos.split(/\s|-/);
+                    if (data.uNETecnologias !== null) {
+                        let tecnologiaSplit = data.uNETecnologias.split('-');
+                    }
                     let tecnologiaSplit = data.uNETecnologias.split('-');
                     $scope.contingencias.prod = productoSplit[0];
 
@@ -126,9 +129,14 @@
                     $scope.contingencias.uen = data.uNEUENcalculada;
                     $scope.contingencias.proceso = proceso;
                     $scope.contingencias.ciudad = data.uNEMunicipio;
-                    $scope.contingencias.tecnologia = tecnologiaSplit[0] ?? tecnologiaSplit;
+                    if (data.uNETecnologias !== null) {
+                        $scope.contingencias.tecnologia = tecnologiaSplit[0] ?? tecnologiaSplit;
+                    }else{
+                        $scope.contingencias.tecnologia = '';
+                    }
                     $scope.contingencias.uneSourceSystem = data.sistema;
                     $scope.contingencias.tarea = data.tAREA_ID;
+                    $scope.contingencias.typeTask = data.taskType
 
                     services.windowsBridge("BB8/contingencias/Buscar/GetClick/" + pedido).then((d) => {
                         $scope.contingencias.contrato = d.data[0].EQIdentificadorServicio;

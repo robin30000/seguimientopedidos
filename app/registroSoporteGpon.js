@@ -19,11 +19,11 @@
         BuscarRegistrosSoporteGpon();
 
         $scope.pageChanged = function () {
-            data = {page: $scope.currentPage, size: $scope.pageSize, data: $scope.RegistrosSoporteGpon};
+            let data = {page: $scope.currentPage, size: $scope.pageSize, data: $scope.RegistrosSoporteGpon};
             BuscarRegistrosSoporteGpon(data);
         };
         $scope.pageSizeChanged = function () {
-            data = {page: $scope.currentPage, size: $scope.pageSize, data: $scope.RegistrosSoporteGpon};
+            let data = {page: $scope.currentPage, size: $scope.pageSize, data: $scope.RegistrosSoporteGpon};
             $scope.currentPage = 1;
             BuscarRegistrosSoporteGpon(data);
         };
