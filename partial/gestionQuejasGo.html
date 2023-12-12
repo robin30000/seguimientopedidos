@@ -69,9 +69,15 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="text-center">
-                                        <span>{{data.asesor}}</span>
+                                    <td>
+                                        <span class="label label-primary label-xsmall"
+                                                          ng-if="data.asesor == galletainfo.login">{{data.asesor}}</span>
+                                        <span class="label label-primary label-xsmall"
+                                              ng-if="data.asesor != galletainfo.login">{{data.asesor}}</span>
                                     </td>
+                                    <!--<td class="text-center">
+                                        <span>{{data.asesor}}</span>
+                                    </td>-->
                                     <td class="text-center">{{data.pedido}}</td>
                                     <td class="text-center">{{data.tecnico}}</td>
                                     <td class="text-center">{{data.cedtecnico}}</td>

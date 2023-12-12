@@ -198,8 +198,15 @@ class MesasNacionales
                 $stmt = $this->_DB->prepare("SELECT estado, login_gestion FROM mesas_nacionales WHERE id = :tarea");
                 $stmt->execute([':tarea' => $tarea]);
 
+
+
                 if ($stmt->rowCount()) {
                     $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                    $stmt = $this->_DB->query("SELECT login FROM usuarios WHERE perfil = '11'");
+                    $stmt->execute();
+                    $res1 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $usuarios_array = array_column($res1, 'login');
 
                     if ($res[0]['estado'] == 'Sin gestión') {
                         $stmt = $this->_DB->prepare("UPDATE mesas_nacionales SET estado = 'En gestión', login_gestion = :user, hora_marca = :fecha WHERE id = :tarea");
@@ -209,7 +216,7 @@ class MesasNacionales
                         } else {
                             $response = ['state' => false, 'msj' => 'Ha ocurrido un erro interno intentalo nuevamente en unos minutos'];
                         }
-                    } elseif (($res[0]['estado'] == 'En gestión') && ($res[0]['login_gestion'] == $user  || $user == 'cramiceb' || $user == 'cvasquor' || $user == 'garcila' || $user == 'jromang' || $user == 'mhuertas')) {
+                    } elseif (($res[0]['estado'] == 'En gestión') && ($res[0]['login_gestion'] == $user  || in_array($user, $usuarios_array))) {
                         $stmt = $this->_DB->prepare("UPDATE mesas_nacionales SET estado = 'Sin gestión', login_gestion = '' WHERE id = :tarea");
                         $stmt->execute([':tarea' => $tarea]);
                         if ($stmt->rowCount()) {

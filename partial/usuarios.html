@@ -59,6 +59,7 @@
                             <th class="text-center">Login</th>
                             <th class="text-center">Nombre</th>
                             <th class="text-center">Identificación</th>
+                            <th class="text-center">Correo</th>
                             <th class="text-center">Perfil</th>
                             <th class="text-center">Estado</th>
                             <th class="text-center" ng-show="galletainfo.perfil == 11">Acciones</th>
@@ -70,6 +71,7 @@
                             <td class="text-center">{{data.LOGIN}}</td>
                             <td class="text-center">{{data.NOMBRE}}</td>
                             <td class="text-center">{{data.IDENTIFICACION}}</td>
+                            <td class="text-center">{{data.correo}}</td>
                             <td class="text-center">{{data.PERFIL}}</td>
                             <td class="text-center">{{data.estado}}</td>
 
@@ -156,6 +158,16 @@
                                     <label for="login">Login</label>
                                     <input type="text" class="form-control input-sm"
                                            ng-model="crea.login" id="login" required autocomplete="off" minlength="5">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label for="correo">Correo</label>
+                                    <input ng-model="crea.correo" id="correo"
+                                           type="email" class="form-control input-sm" autocomplete="off" minlength="5" required>
                                 </div>
                             </div>
                         </div>
@@ -292,6 +304,16 @@
                                     <input type="text" ng-model="datosEditar.LOGIN"
                                            class="form-control input-sm" id="loginEdit" required
                                            autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label for="correoEdit">Correo</label>
+                                    <input ng-model="datosEditar.correo" id="correoEdit"
+                                           type="email" class="form-control input-sm" autocomplete="off" minlength="5" required>
                                 </div>
                             </div>
                         </div>

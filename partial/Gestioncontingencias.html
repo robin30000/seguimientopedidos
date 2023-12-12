@@ -25,7 +25,7 @@
                                 </li>
                                 <li>
                                     <div class="dameTarea" style="margin-left: 10px;margin-top: 5px;">
-                                        <button class="btn btn-sm btn-info" ng-click="damePedido()">Dame tarea <i class="fa fa-briefcase"
+                                        <button class="btn btn-sm btn-info" ng-click="damePedido()">Dame Contingencia <i class="fa fa-briefcase"
                                                                                           aria-hidden="true"></i>
                                         </button>
                                     </div>
@@ -80,7 +80,7 @@
                                                 class="table small table-striped table-hover table-condensed table-bordered animated bounceInRight">
                                             <thead class="table-header">
                                             <tr>
-                                                <th ng-if="perfil === '11'">Marcar</th>
+                                                <th ng-if="perfil === '11' || perfil === '16'">Marcar</th>
                                                 <th>Login</th>
                                                 <th>Tarea</th>
                                                 <th>Pedido</th>
@@ -102,7 +102,7 @@
                                             <tbody>
                                             <tr ng-repeat="data in contingenciasTV | orderBy : 'horagestion' : false track by $index "
                                                 ng-class="{'resaltado15min': data.horagestion <= quinceminutos[indice], 'warning': data.pedido.toLowerCase().indexOf('s') !== -1}">
-                                                <td ng-if="perfil === '11'">
+                                                <td ng-if="perfil === '11' || perfil === '16'">
                                                     <div>
                                                         <input type="checkbox" ng-model="data.bloqueo" name="bloqueo"
                                                                id="bloqueo" ng-change="marcarEngestion(data)"
@@ -121,22 +121,22 @@
 
                                                 </td>
 
-                                                <td
-                                                        ng-show="data.logincontingencia != galletainfo.login && data.engestion == 1">
-                                                    <span
-                                                            ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.logincontingencia != galletainfo.login}">En
+                                                <td ng-if="perfil == '11'">
+
+                                                    <span ng-show="data.engestion == 1" ng-class="{'label label-primary label-xsmall': data.engestion == 1}">{{data.logincontingencia}}</span>
+
+                                                    <span ng-show="data.engestion != 1"></span>
+
+                                                </td>
+
+
+                                                <td ng-if="perfil != '11'">
+                                                    <span ng-show="data.logincontingencia != galletainfo.login && data.engestion == 1" ng-class="{'label label-primary label-xsmall': data.engestion == 1, 'label label-primary label-xsmall': data.logincontingencia != galletainfo.login}">En
                                                         gestión</span>
-                                                </td>
 
-                                                <td
-                                                        ng-show="data.logincontingencia == galletainfo.login && data.engestion == 1">
-                                                    <span
-                                                            ng-class="{'label label-primary label-xsmall': data.engestion == 1}">{{data.logincontingencia}}</span>
-                                                </td>
+                                                    <span ng-show="data.logincontingencia == galletainfo.login && data.engestion == 1" ng-class="{'label label-primary label-xsmall': data.engestion == 1}">{{data.logincontingencia}}</span>
 
-                                                <td
-                                                        ng-show="data.logincontingencia != galletainfo.login && data.engestion != 1">
-                                                    <span></span>
+                                                    <span ng-show="data.logincontingencia != galletainfo.login && data.engestion != 1"></span>
                                                 </td>
 
                                                 <!-- Fin ocultar el login gestión -->
@@ -503,13 +503,13 @@
                                                 </button>
                                             </b>&nbsp;
                                         </li>
-                                        <!--<li>
+                                        <li>
                                             <button type="button" class="btn btn-success btn-xs" tooltip-placement="top"
                                                     uib-tooltip="Exportar Registros"
                                                     ng-click="descargarContingencias(fecha)" ng-disabled="loading">
                                                 <i class="fa fa-cloud-download" aria-hidden="true"> </i>
                                             </button>
-                                        </li>-->
+                                        </li>
 
                                     </ul>
                                 </div>

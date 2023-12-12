@@ -139,8 +139,7 @@ class kpi
         $stmt = $this->_BD->query("SELECT 
 		C2.USUARIO,
 		C2.prod AS producto
-		, CAST(COUNT(*) AS SIGNED) AS CANTIDAD,
-		SUM(COUNT(*)) OVER (PARTITION BY C2.USUARIO) AS 'suma'
+		, COUNT(*) AS CANTIDAD
 		, SUM(CASE WHEN (C2.RANGO_PENDIENTE) >= 0 AND (C2.RANGO_PENDIENTE) <= 6 THEN 1 ELSE 0 END) AS 'am06' 
 		, SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 6 AND (C2.RANGO_PENDIENTE) <= 7 THEN 1 ELSE 0 END) AS 'am07' 
 		, SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 7 AND (C2.RANGO_PENDIENTE) <= 8 THEN 1 ELSE 0 END) AS 'am08' 
@@ -295,9 +294,9 @@ class kpi
 
         $stmt->execute();
         if ($stmt->rowCount()) {
-            $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'user' => $res);
+        $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'user' => $res);
         } else {
-            $response = array('state' => 0, 'msj' => 'No se encontraron datos');
+          $response = array('state' => 0, 'msj' => 'No se encontraron datos');
         }
 
         echo json_encode($response);
@@ -566,6 +565,7 @@ class kpi
         //$data = json_decode(file_get_contents('php://input'), true);
         $estado = $data['estado'];
         $fecha = $data['fecha'];
+        $today = date("Y-m-d");
 
         if (empty($fecha)) {
             $today = date("Y-m-d");
@@ -574,14 +574,14 @@ class kpi
         }
 
         $condicion = '';
-        if ($estado === 'Acepta') {
+        if (($estado == 'Acepta')) {
             $condicion = " AND p.acepta = 'Acepta' ";
-        } elseif ($estado === 'Rechaza') {
+        } elseif (($estado == 'Rechaza')) {
             $condicion = " AND p.acepta = 'Rechaza' ";
-        } elseif ($estado === 'Todos') {
-            $condicion = " AND p.acepta IN ('Rechaza', 'Acepta') ";
+        } elseif ($estado == '') {
+            $condicion = " AND p.acepta IN ('Rechaza', 'Acepta')";
         } else {
-            $condicion = "  ";
+            $condicion = " AND p.acepta = 'Acepta' ";
         }
 
         $stmt = $this->_BD->query("SELECT usuario FROM usuario_kpi");

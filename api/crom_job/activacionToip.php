@@ -47,27 +47,29 @@ try {
 
         if ($stmt->rowCount()) {
             continue;
+        } elseif ($datos[$i]['UNEPedido'] === '1-65186215636876') {
+            continue;
         } else {
             $stmt = $conn->prepare("INSERT INTO activacion_toip (pedido, tarea, serial, mac, region, numero_toip, hora_ingreso, hora_cierre_click, respuesta_aprov, eq_producto, categoria, task_type, equipment_id, tipo_equipo, nombre_tecnico, cc_tecnico,identificador_servicio)
                                     VALUES (:pedido, :tarea, :serial, :mac, :region, :numero_toip, :hora_ingreso, :hora_respuesta, :respuesta_aprov, :eq_producto, :categoria, :task_type, :equipment_id, :tipo_equipo, :nom_tecnico, :cc_tecnico, :identificador_servicio)");
 
             $stmt->execute([
-                ':pedido'                 => $datos[$i]['UNEPedido'],
-                ':tarea'                  => $datos[$i]['CallID'],
-                ':serial'                 => $datos[$i]['SerialNo'],
-                ':mac'                    => $datos[$i]['MAC'],
-                ':region'                 => $datos[$i]['Region'],
-                ':numero_toip'            => $datos[$i]['NumeroToIP'],
-                ':hora_ingreso'           => date('Y-m-d H:i:s'),
-                ':hora_respuesta'         => $datos[$i]['Hora_Respuesta'],
-                ':respuesta_aprov'        => $datos[$i]['RespuestaAprov'],
-                ':eq_producto'            => $datos[$i]['EQProducto'],
-                ':categoria'              => $datos[$i]['Categoria'],
-                ':task_type'              => $datos[$i]['TaskType'],
-                ':equipment_id'           => $datos[$i]['EquipmentID'],
-                ':tipo_equipo'            => $datos[$i]['TipoEquipo'],
-                ':nom_tecnico'            => $datos[$i]['nom_tecnico'],
-                ':cc_tecnico'             => $datos[$i]['cc_tecnico'],
+                ':pedido' => $datos[$i]['UNEPedido'],
+                ':tarea' => $datos[$i]['CallID'],
+                ':serial' => $datos[$i]['SerialNo'],
+                ':mac' => $datos[$i]['MAC'],
+                ':region' => $datos[$i]['Region'],
+                ':numero_toip' => $datos[$i]['NumeroToIP'],
+                ':hora_ingreso' => date('Y-m-d H:i:s'),
+                ':hora_respuesta' => $datos[$i]['Hora_Respuesta'],
+                ':respuesta_aprov' => $datos[$i]['RespuestaAprov'],
+                ':eq_producto' => $datos[$i]['EQProducto'],
+                ':categoria' => $datos[$i]['Categoria'],
+                ':task_type' => $datos[$i]['TaskType'],
+                ':equipment_id' => $datos[$i]['EquipmentID'],
+                ':tipo_equipo' => $datos[$i]['TipoEquipo'],
+                ':nom_tecnico' => $datos[$i]['nom_tecnico'],
+                ':cc_tecnico' => $datos[$i]['cc_tecnico'],
                 ':identificador_servicio' => $datos[$i]['IdentificadorServicio'],
             ]);
 

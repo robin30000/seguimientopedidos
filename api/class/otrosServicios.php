@@ -744,7 +744,6 @@ class otrosServicios
             $mesenviado = $data['mes'];
 
 
-
             $fecha = date("Y-m-d");
             $dia = substr($fecha, 8, 2);
             $mes = substr($fecha, 5, 2);
@@ -1230,6 +1229,7 @@ class otrosServicios
 
     public function listadoTecnicos($data)
     {
+
         try {
             ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
@@ -1242,27 +1242,27 @@ class otrosServicios
                 $pagesize = $data['size'];
                 $offset = ($pagenum - 1) * $pagesize;
                 $search = $data['search'];
-
+                $limit = " limit $offset, $pagesize ";
                 $condicion = '';
                 if ($data['buscar']) {
                     $variable = $data['buscar'];
                     $param = $data['variable'];
-                    $condicion = " AND '$variable' = '$param' ";
+                    $limit = '';
                     switch ($variable) {
                         case 'identificacion':
-                            $condicion = " AND identificacion = '$param' ";
+                            $condicion = " AND identificacion like '$param%' ";
                             break;
                         case 'ciudad':
-                            $condicion = " AND ciudad = '$param' ";
+                            $condicion = " AND ciudad like '$param%' ";
                             break;
                         case 'celular':
-                            $condicion = " AND celular = '$param' ";
+                            $condicion = " AND celular like '$param%' ";
                             break;
                         case 'nombre':
-                            $condicion = " AND nombre = '$param' ";
+                            $condicion = " AND nombre like '$param%' ";
                             break;
                         case 'login':
-                            $condicion = " AND login_click = '$param' ";
+                            $condicion = " AND login_click like '$param%' ";
                             break;
 
                         default:
@@ -1271,16 +1271,22 @@ class otrosServicios
                     }
                 }
 
-                $stmt = $this->_DB->query("select * from tecnicos WHERE 1=1 $condicion");
+                $stmt = $this->_DB->query("select * from tecnicos WHERE 1=1 $condicion $limit");
                 $stmt->execute();
 
                 $counter = $stmt->rowCount();
+
+/*                echo "SELECT a.ID, a.IDENTIFICACION, a.NOMBRE, a.CIUDAD, a.CELULAR, a.empresa, a.password,a.pass_apk, a.login_Click,a.password_click as pass_clic,
+			 (SELECT b.nombre FROM empresas b WHERE b.id=a.empresa) AS NOM_EMPRESA
+			 FROM tecnicos a
+			 WHERE 1=1  $condicion $limit";
+                exit();*/
 
 
                 $query = $this->_DB->query("SELECT a.ID, a.IDENTIFICACION, a.NOMBRE, a.CIUDAD, a.CELULAR, a.empresa, a.password,a.pass_apk, a.login_Click,a.password_click as pass_clic,
 			 (SELECT b.nombre FROM empresas b WHERE b.id=a.empresa) AS NOM_EMPRESA
 			 FROM tecnicos a
-			 WHERE 1=1  $condicion limit $offset, $pagesize");
+			 WHERE 1=1  $condicion  $limit");
 
                 $query->execute();
 
@@ -1302,25 +1308,25 @@ class otrosServicios
     {
         try {
 
-                    $stmt = $this->_DB->prepare("SELECT pedido, accion, ciudad, correo, macEntra, macSale, paquetes, motivo, proceso, producto, contrato, perfil,
+            $stmt = $this->_DB->prepare("SELECT pedido, accion, ciudad, correo, macEntra, macSale, paquetes, motivo, proceso, producto, contrato, perfil,
 						horagestion, logindepacho,	logincontingencia, loginContingenciaPortafolio, horacontingencia, horaContingenciaPortafolio,
 						tipoEquipo, tecnologia, remite, tipificacion, tipificacionPortafolio, acepta, aceptaPortafolio, observacion, observContingencia,
 						observContingenciaPortafolio, ingresoEquipos, tarea
 						FROM contingencias WHERE (tarea = :pedido or pedido = :pedido)");
 
-                    $stmt->execute([':pedido' => $data]);
+            $stmt->execute([':pedido' => $data]);
 
-                    if ($stmt->rowCount()) {
-                        $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($stmt->rowCount()) {
+                $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                        $response = array('state' => true, 'data' => $resultado);
-                    } else {
-                        $response = array('state' => false, 'msj' => 'No se encontraron datos');
-                    }
-                /*} else {
-                    $response = array('state' => 0, 'msj' => 'Ingrese un pedido');
-                }*/
-           // }
+                $response = array('state' => true, 'data' => $resultado);
+            } else {
+                $response = array('state' => false, 'msj' => 'No se encontraron datos');
+            }
+            /*} else {
+                $response = array('state' => 0, 'msj' => 'Ingrese un pedido');
+            }*/
+            // }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }

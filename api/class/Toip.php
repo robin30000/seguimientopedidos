@@ -55,6 +55,11 @@ class Toip
                 $stmt = $this->_DB->prepare("SELECT en_gestion, login_gestion FROM activacion_toip WHERE id = :id");
                 $stmt->execute([':id' => $id]);
 
+                $stmt = $this->_DB->query("SELECT login FROM usuarios WHERE perfil = '11'");
+                $stmt->execute();
+                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $usuarios_array = array_column($res, 'login');
+
                 if ($stmt->rowCount()) {
                     $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     if ($res[0]['en_gestion'] == 0) {
@@ -65,7 +70,7 @@ class Toip
                         } else {
                             $response = ['state' => false, 'msj' => 'Ha ocurrido un erro interno intentalo nuevamente en unos minutos'];
                         }
-                    } elseif (($res[0]['en_gestion'] == 1) && ($res[0]['login_gestion'] == $user || $user == 'cramiceb' || $user == 'cvasquor' || $user == 'garcila' || $user == 'jromang' || $user == 'mhuertas')) {
+                    } elseif (($res[0]['en_gestion'] == 1) && ($res[0]['login_gestion'] == $user || in_array($user, $usuarios_array))) {
                         $stmt = $this->_DB->prepare("UPDATE activacion_toip SET en_gestion = '0', login_gestion = '' WHERE id = :id");
                         $stmt->execute([':id' => $id]);
                         if ($stmt->rowCount()) {

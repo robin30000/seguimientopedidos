@@ -46,18 +46,13 @@ if (isset($data['method'])) {
             $res = $user->chartEmt($data['data']);
             echo json_encode($res);
             break;
-        case 'charSiebel':
+        case 'graficoSiebel':
             require_once '../class/KpiCco.php';
             $user = new KpiCco();
             $res = $user->charSiebel($data['data']);
             echo json_encode($res);
             break;
-        case 'franja':
-            require_once '../class/KpiCco.php';
-            $user = new KpiCco();
-            $res = $user->franja($data['data']);
-            echo json_encode($res);
-            break;
+
         default:
             echo 'ninguna opción valida.';
             break;

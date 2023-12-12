@@ -55,6 +55,10 @@ class ETP
                 $stmt = $this->_DB->prepare("SELECT status_soporte, login_gestion FROM etp WHERE id_soporte = :id");
                 $stmt->execute([':id' => $id]);
 
+                $stmt = $this->_DB->query("SELECT login FROM usuarios WHERE perfil = '11'");
+                $stmt->execute();
+                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $usuarios_array = array_column($res, 'login');
 
                 if ($stmt->rowCount()) {
                     $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -67,7 +71,7 @@ class ETP
                         } else {
                             $response = ['state' => false, 'msj' => 'Ha ocurrido un erro interno intentalo nuevamente en unos minutos'];
                         }
-                    } elseif (($res[0]['status_soporte'] == '1') && ($res[0]['login_gestion'] == $user || $user == 'cramiceb' || $user == 'cvasquor' || $user == 'garcila' || $user == 'jromang' || $user == 'mhuertas')) {
+                    } elseif (($res[0]['status_soporte'] == '1') && ($res[0]['login_gestion'] == $user || in_array($user, $usuarios_array))) {
                         $stmt = $this->_DB->prepare("UPDATE etp SET status_soporte = '0', login_gestion = null WHERE id_soporte = :id");
                         $stmt->execute([':id' => $id]);
                         if ($stmt->rowCount()) {

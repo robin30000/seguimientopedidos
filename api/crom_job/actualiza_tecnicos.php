@@ -1,8 +1,8 @@
 <?php
 
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+error_reporting(0);
+ini_set('display_errors', 0);
 
 //echo  date('Y-m-d H:i:s');exit();
 
@@ -36,7 +36,7 @@ echo "</pre>";exit();*/
 $datos = $dataclick;
 $total = count($datos);
 $count = 0;
-echo $total;
+
 try {
 
     $stmt = $conn->query("DELETE FROM tecnicos_copy1");
@@ -44,8 +44,8 @@ try {
 
     for ($i = 0; $i < $total; $i++) {
 
-        $UDC   = substr($datos[$i]['ID'], -4);
-        $pass  = 'Colombia' . $UDC . '--++';
+        $UDC = substr($datos[$i]['ID'], -4);
+        $pass = 'Colombia' . $UDC . '--++';
         $passM = md5($pass);
 
         switch (strtoupper($datos[$i]['contrato'])) {
@@ -85,22 +85,21 @@ try {
         $stmt->execute([':identificacion' => $datos[$i]['ID']]);
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        $stmt = $conn->prepare("INSERT INTO tecnicos_copy1 (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk, fecha_actualiza)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk, :fecha)");
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
         $stmt->execute(
             [
                 ':identificacion' => $datos[$i]['ID'],
-                ':nombre'         => $datos[$i]['nombre'],
-                ':ciudad'         => $datos[$i]['ciudad'],
-                ':celular'        => $datos[$i]['MobilePhone'],
-                ':empresa'        => $empresa,
-                ':login_click'    => $datos[$i]['login'],
-                ':pass'           => $passM,
-                ':region'         => $datos[$i]['region'],
-                ':contrato'       => $datos[$i]['contrato'],
-                ':password_click' => $result[0]['password'],
-                ':pass_apk'       => $pass,
-                ':fecha'          => date('Y-m-d H:i:s'),
+                ':nombre' => $datos[$i]['nombre'],
+                ':ciudad' => $datos[$i]['ciudad'],
+                ':celular' => $datos[$i]['MobilePhone'],
+                ':empresa' => $empresa,
+                ':login_click' => $datos[$i]['login'],
+                ':pass' => $passM,
+                ':region' => $datos[$i]['region'],
+                ':contrato' => $datos[$i]['contrato'],
+                ':password_click' => $result[0]['password'] ?? 0,
+                ':pass_apk' => $pass
             ]
         );
 
@@ -113,10 +112,16 @@ try {
     var_dump($th->getMessage());
 }
 
-if ($count) {
+if ($conn) {
+    echo 'Se ingresaron en la fecha ' . date('Y-m-d H:i:s') . ' ' . $count . ' registros';
+} else {
+    echo 'No se ingresaron registros en bd sin gestionar fecha ' . date('Y-m-d H:i:s');
+}
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos_copy1 (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk, fecha_actualiza)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk, :fecha)");
+/*if ($count) {
+
+    $stmt = $conn->prepare("INSERT INTO tecnicos_copy1 (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
     $stmt->execute(
         [
             ':identificacion' => '71221973',
@@ -130,13 +135,12 @@ if ($count) {
             ':contrato'       => 'Emtelco',
             ':password_click' => '',
             ':pass_apk'       => 'Colombia1973--++',
-            ':fecha'          => date('Y-m-d H:i:s'),
         ]
     );
     echo 'Se ingresaron en la fecha ' . date('Y-m-d H:i:s') . ' ' . $count + 1 . ' registros';
 } else {
     echo 'No se ingresaron registros en bd sin gestionar fecha ' . date('Y-m-d H:i:s');
-}
+}*/
 
 
 

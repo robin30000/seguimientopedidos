@@ -79,14 +79,19 @@ class ventaInstale
                 $stmt = $this->_BD->prepare("SELECT en_gestion, pedido, login_gestion FROM ventasInstaleTiendas WHERE id = :id");
                 $stmt->execute(array(':id' => $id));
                 $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                //echo $response[0]['en_gestion'];exit();
+
+                $stmt = $this->_DB->query("SELECT login FROM usuarios WHERE perfil = '11'");
+                $stmt->execute();
+                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $usuarios_array = array_column($res, 'login');
+                
                 if ($response[0]['en_gestion'] == 0) {
                     $stmt = $this->_BD->prepare("UPDATE ventasInstaleTiendas SET en_gestion = 1, login_gestion = :login_gestion WHERE id = :id");
                     $stmt->execute(array(':id' => $id, ':login_gestion' => $login_gestion));
                     if ($stmt->rowCount() == 1) {
                         $res = array('state' => 1, 'msj' => 'Pedido ' . $response[0]['pedido'] . ' Ahora esta Bloqueado');
                     }
-                } elseif ((($response[0]['en_gestion'] == 1) && ($response[0]['login_gestion'] == $login_gestion)) || $login_gestion == 'cramiceb') {
+                } elseif ((($response[0]['en_gestion'] == 1) && ($response[0]['login_gestion'] == $login_gestion || in_array($login_gestion, $usuarios_array)))) {
                     $stmt = $this->_BD->prepare("UPDATE ventasInstaleTiendas SET en_gestion = 0, login_gestion = '' WHERE id = :id");
                     $stmt->execute(array(':id' => $id));
                     if ($stmt->rowCount() == 1) {

@@ -1,9 +1,9 @@
 (function () {
     "use strict";
     angular.module("seguimientopedidos").controller("GraficosContingeciaCtrl", GraficosContingeciaCtrl);
-    GraficosContingeciaCtrl.$inject = ["$scope", "$http", "$rootScope", "$route", "services", "$uibModal", "$log", "$filter", "ngTableParams"];
+    GraficosContingeciaCtrl.$inject = ["$scope", "$http", "$rootScope", "$route", "services", "$uibModal", "$log"];
 
-    function GraficosContingeciaCtrl($scope, $http, $rootScope, $route, services, $uibModal, $log, $filter, ngTableParams) {
+    function GraficosContingeciaCtrl($scope, $http, $rootScope, $route, services, $uibModal, $log) {
         init();
         $scope.listado_gestionUser = {};
 
@@ -119,22 +119,6 @@
             });
         }
 
-        $scope.ordenarPorTotal = function () {
-            console.log($scope.robin)
-            $scope.robin = $scope.datar.sort(function (a, b) {
-                console.log(a)
-                return $scope.total(a.CANTIDAD, b.CANTIDAD);
-                /*$scope.total = function (n, x) {
-                    if (n == "" || n == undefined) {
-                        n = 0;
-                    } else if (x == "" || x == undefined) {
-                        x = 0;
-                    }
-                    return parseInt(n) + parseInt(x);
-                };*/
-            });
-        };
-
         function contigenciaHoraAgente() {
             let data = {
                 estado: $scope.estadoTabla,
@@ -143,33 +127,39 @@
             };
             services.contigenciaHoraAgente(data).then(function (data) {
                 $scope.robin = data.data.data;
-                console.log($scope.robin, 1);
-
-                $scope.usersTable = new NgTableParams({}, {
-                    dataset: data});
-
-                $scope.orderColumn = 'suma';
-                $scope.reverseSort = false;
-
-                $scope.orderByColumn = function (column) {
-                    if ($scope.orderColumn === column) {
-                        $scope.reverseSort = !$scope.reverseSort;
-                    } else {
-                        $scope.orderColumn = column;
-                        $scope.reverseSort = false;
+                var datosAgrupados = data.data.data.reduce(function (acumulador, elemento) {
+                    var usuario = elemento.USUARIO;
+                    if (!acumulador[usuario]) {
+                        acumulador[usuario] = {
+                            usuario: usuario,
+                            productos: [],
+                            total: 0
+                        };
                     }
-                };
+                    acumulador[usuario].productos.push(elemento);
+                    if (elemento.producto === 'TV' || elemento.producto === 'Internet+Toip') {
+                        acumulador[usuario].total += parseInt(elemento.CANTIDAD);
+                    }
+                    return acumulador;
+                }, {});
 
-                $scope.groupAndSortBy = function (field) {
-                    var groupedData = $filter('groupBy')($scope.data, 'USUARIO');
-                    angular.forEach(groupedData, function (group) {
-                        group.items = $filter('orderBy')(group.items, field);
-                    });
-                    return groupedData;
-                };
+                $scope.datosAgrupadosArray = Object.values(datosAgrupados);
+                $scope.datosAgrupadosArray.sort(function (a, b) {
+                    return b.total - a.total;
+                });
 
-                // Inicialmente, ordena por la columna 'age'
-                $scope.groupedAndSortedData = $scope.groupAndSortBy('suma');
+                /*$scope.usersTable = new NgTableParams({
+                    //dataset: data.data.data,
+                    page: 1,
+                    count: 5
+                }, {
+                    total: $scope.robin.length,
+                    getData: function ($defer, params) {
+                        $scope.dataTabla = params.sorting() ? $filter('orderBy')($scope.robin, params.orderBy()) : $scope.robin;
+                        $scope.dataTabla = $scope.dataTabla.slice((params.page() - 1) * params.count(), params.page() * params.count());
+                        $defer.resolve($scope.dataTabla);
+                    }
+                });*/
 
                 $scope.listado_plazas = data.data[0];
                 $scope.listado_plazas_bogota = data.data[1];
@@ -225,6 +215,7 @@
                     }
                     return parseInt(n) + parseInt(x);
                 };
+
                 angular.forEach($scope.robin, function (value, key) {
                     $scope.totales = parseInt($scope.totales) + parseInt(value.CANTIDAD);
                     if (value.producto == "TV") {
@@ -564,7 +555,6 @@
 
     angular.module("seguimientopedidos").controller("ModalInstanceUsuarioKpiCtrl", ModalInstanceUsuarioKpiCtrl);
     ModalInstanceUsuarioKpiCtrl.$inject = ["$uibModalInstance", "items", "services", "$route", "$scope", "$timeout"];
-
     function ModalInstanceUsuarioKpiCtrl($uibModalInstance, items, services, $route, $scope, $timeout) {
         var $ctrl = this;
         $ctrl.items = items;

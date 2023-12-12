@@ -16,8 +16,7 @@ var app = angular.module("seguimientopedidos", [
     "chart.js",
     "angular.filter",
     "ui.bootstrap",
-    "ui.select2",
-    "ngTable"
+    "ui.select2"
 ]);
 
 app.service("fileUpload", [
@@ -2213,7 +2212,7 @@ function routesConfig($routeProvider, $locationProvider, $compileProvider) {
         }
     }).when("/KPI-Contingencia", {
         title: "KPI Contingecia",
-        templateUrl: "partial/graficos-contingecia.html",
+        templateUrl: "partial/graficos/graficos-contingecia.html",
         controller: "GraficosContingeciaCtrl",
         resolve: {
             userData: loadUserData

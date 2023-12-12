@@ -116,6 +116,15 @@
 
                     <br/><br/>
 
+                    <!--<table ng-table="usersTable" class="table table-bordered table-striped">
+                        <tr ng-repeat="user in dataTabla">
+                            <td data-title="'USUARIO'" sortable="'USUARIO'">{{user.USUARIO}}</td>
+                            <td data-title="'suma'" sortable="'suma'">{{user.suma}}</td>
+                            <td data-title="'producto'" sortable="'producto'">{{user.producto}}</td>
+                        </tr>
+                    </table>
+                    <br><br>-->
+
                     <!--tabla principal-->
                     <div class="row">
                         <div class="col-sm-12">
@@ -131,7 +140,7 @@
                                                             <span style="color: red" class="pull-right"><i
                                                                     class="fa fa-exclamation-triangle warning"
                                                                     aria-hidden="true" ng-hide="errorDatos==null"></i>
-                                {{errorDatos}}</span>
+                                                                {{errorDatos}}</span>
                                                         </ul>
                                                     </div>
 
@@ -192,17 +201,14 @@
                                                 </div>
                                             </div>
                                             <div class="table-responsive">
-                                                {{usersTable}}
-                                                <table class="table small table-striped table-hover table-bordered table-condensed" >
+                                                <table class="table small table-striped table-hover table-bordered table-condensed">
                                                     <thead class="table-header">
                                                     <tr>
                                                         <th class="text-center">Hora</th>
                                                         <th class="text-center" rowspan="2"
-                                                            style="vertical-align: middle"
-                                                            ng-click="orderByColumn('suma')">
+                                                            style="vertical-align: middle" ng-click="sortBy('suma')">
                                                             TOTAL
                                                         </th>
-                                                        <th class="text-center" colspan="2">06 am</th>
                                                         <th class="text-center" colspan="2">07 am</th>
                                                         <th class="text-center" colspan="2">08 am</th>
                                                         <th class="text-center" colspan="2">09 am</th>
@@ -217,8 +223,6 @@
                                                         <th class="text-center" colspan="2">06 pm</th>
                                                         <th class="text-center" colspan="2">07 pm</th>
                                                         <th class="text-center" colspan="2">08 pm</th>
-                                                        <th class="text-center" colspan="2">09 pm</th>
-                                                        <th class="text-center" colspan="2">Más 09 pm</th>
                                                     </tr>
                                                     <tr>
                                                         <th class="text-center">Usuario</th>
@@ -250,135 +254,94 @@
                                                         <th class="text-center">Inter</th>
                                                         <th class="text-center">TV</th>
                                                         <th class="text-center">Inter</th>
-                                                        <th class="text-center">TV</th>
-                                                        <th class="text-center">Inter</th>
-                                                        <th class="text-center">TV</th>
-                                                        <th class="text-center">Inter</th>
-                                                        <th class="text-center">TV</th>
-                                                        <th class="text-center">Inter</th>
                                                     </tr>
                                                     </thead>
-                                                    <tbody ng-repeat="datar in robin | groupBy : 'USUARIO' ">
-
-                                                    <tr>
-                                                        <td class="text-center">
-                                                            <!--<pre>{{datar1}}</pre>-->
-                                                            <span>{{datar[0]['USUARIO']}}</span>
-                                                        </td>
-                                                        <td style="font-weight: bolder" class="text-center">
-                                                            <!--                              {{ total(datar[0].CANTIDAD, datar[1].CANTIDAD)}}-->
-                                                            {{ datar[0]['suma']}}
-                                                        </td>
-                                                        <!-- <td class="text-center"> data {{datar.lenght}}</td> -->
+                                                    <tbody ng-repeat="datar in datosAgrupadosArray">
+                                                        <td>{{ datar.usuario }}</td>
+                                                        <td style="font-weight: bolder">{{ datar.total }}</td>
                                                         <td class="text-center colorColumnTv">
-                                                            {{datar[0].producto == 'TV' ? datar[0].am06 : datar[1].producto == 'TV' ? datar[1].am06 : 0
-                                                            }}
+                                                            {{datar.productos[0].producto == 'TV' ? datar.productos[0].am07 : datar.productos[1].producto == 'TV' ? datar.productos[1].am07 : 0}}
                                                         </td>
                                                         <td class="text-center">
-                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].am06 : datar[1].producto == 'Internet+Toip' ? datar[1].am06 : 0}}
+                                                            {{datar.productos[0].producto == 'Internet+Toip' ? datar.productos[0].am07 : datar.productos[1].producto == 'Internet+Toip' ? datar.productos[1].am07 : 0}}
                                                         </td>
                                                         <td class="text-center colorColumnTv">
-                                                            {{datar[0].producto == 'TV' ? datar[0].am07 : datar[1].producto == 'TV' ? datar[1].am07 : 0
-                                                            }}
+                                                            {{datar.productos[0].producto == 'TV' ? datar.productos[0].am08 : datar.productos[1].producto == 'TV' ? datar.productos[1].am08 : 0}}
                                                         </td>
                                                         <td class="text-center">
-                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].am07 : datar[1].producto == 'Internet+Toip' ? datar[1].am07 : 0}}
+                                                            {{datar.productos[0].producto == 'Internet+Toip' ? datar.productos[0].am08 : datar.productos[1].producto == 'Internet+Toip' ? datar.productos[1].am08 : 0}}
                                                         </td>
                                                         <td class="text-center colorColumnTv">
-                                                            {{datar[0].producto == 'TV' ? datar[0].am08 : datar[1].producto == 'TV' ? datar[1].am08 : 0
-                                                            }}
+                                                            {{datar.productos[0].producto == 'TV' ? datar.productos[0].am09 : datar.productos[1].producto == 'TV' ? datar.productos[1].am09 : 0}}
                                                         </td>
                                                         <td class="text-center">
-                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].am08 : datar[1].producto == 'Internet+Toip' ? datar[1].am08 : 0}}
+                                                            {{datar.productos[0].producto == 'Internet+Toip' ? datar.productos[0].am09 : datar.productos[1].producto == 'Internet+Toip' ? datar.productos[1].am09 : 0}}
                                                         </td>
                                                         <td class="text-center colorColumnTv">
-                                                            {{datar[0].producto == 'TV' ? datar[0].am09 : datar[1].producto == 'TV' ? datar[1].am09 : 0
-                                                            }}
+                                                            {{datar.productos[0].producto == 'TV' ? datar.productos[0].am10 : datar.productos[1].producto == 'TV' ? datar.productos[1].am10 : 0}}
                                                         </td>
                                                         <td class="text-center">
-                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].am09 : datar[1].producto == 'Internet+Toip' ? datar[1].am09 : 0}}
+                                                            {{datar.productos[0].producto == 'Internet+Toip' ? datar.productos[0].am10 : datar.productos[1].producto == 'Internet+Toip' ? datar.productos[1].am10 : 0}}
                                                         </td>
                                                         <td class="text-center colorColumnTv">
-                                                            {{datar[0].producto == 'TV' ? datar[0].am10 : datar[1].producto == 'TV' ? datar[1].am10 : 0
-                                                            }}
+                                                            {{datar.productos[0].producto == 'TV' ? datar.productos[0].am11 : datar.productos[1].producto == 'TV' ? datar.productos[1].am11 : 0}}
                                                         </td>
                                                         <td class="text-center">
-                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].am10 : datar[1].producto == 'Internet+Toip' ? datar[1].am10 : 0}}
+                                                            {{datar.productos[0].producto == 'Internet+Toip' ? datar.productos[0].am11 : datar.productos[1].producto == 'Internet+Toip' ? datar.productos[1].am11 : 0}}
                                                         </td>
                                                         <td class="text-center colorColumnTv">
-                                                            {{datar[0].producto == 'TV' ? datar[0].am11 : datar[1].producto == 'TV' ? datar[1].am11 : 0
-                                                            }}
+                                                            {{datar.productos[0].producto == 'TV' ? datar.productos[0].am12 : datar.productos[1].producto == 'TV' ? datar.productos[1].am12 : 0}}
                                                         </td>
                                                         <td class="text-center">
-                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].am11 : datar[1].producto == 'Internet+Toip' ? datar[1].am11 : 0}}
+                                                            {{datar.productos[0].producto == 'Internet+Toip' ? datar.productos[0].am12 : datar.productos[1].producto == 'Internet+Toip' ? datar.productos[1].am12 : 0}}
                                                         </td>
                                                         <td class="text-center colorColumnTv">
-                                                            {{datar[0].producto == 'TV' ? datar[0].am12 : datar[1].producto == 'TV' ? datar[1].am12 : 0
-                                                            }}
+                                                            {{datar.productos[0].producto == 'TV' ? datar.productos[0].pm01 : datar.productos[1].producto == 'TV' ? datar.productos[1].pm01 : 0}}
                                                         </td>
                                                         <td class="text-center">
-                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].am12 : datar[1].producto == 'Internet+Toip' ? datar[1].am12 : 0}}
+                                                            {{datar.productos[0].producto == 'Internet+Toip' ? datar.productos[0].pm01 : datar.productos[1].producto == 'Internet+Toip' ? datar.productos[1].pm01 : 0}}
                                                         </td>
                                                         <td class="text-center colorColumnTv">
-                                                            {{datar[0].producto == 'TV' ? datar[0].pm01 : datar[1].producto == 'TV' ? datar[1].pm01 : 0
-                                                            }}
+                                                            {{datar.productos[0].producto == 'TV' ? datar.productos[0].pm02 : datar.productos[1].producto == 'TV' ? datar.productos[1].pm02 : 0}}
                                                         </td>
                                                         <td class="text-center">
-                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].pm01 : datar[1].producto == 'Internet+Toip' ? datar[1].pm01 : 0}}
+                                                            {{datar.productos[0].producto == 'Internet+Toip' ? datar.productos[0].pm02 : datar.productos[1].producto == 'Internet+Toip' ? datar.productos[1].pm02 : 0}}
                                                         </td>
                                                         <td class="text-center colorColumnTv">
-                                                            {{datar[0].producto == 'TV' ? datar[0].pm02 : datar[1].producto == 'TV' ? datar[1].pm02 : 0}}
+                                                            {{datar.productos[0].producto == 'TV' ? datar.productos[0].pm03 : datar.productos[1].producto == 'TV' ? datar.productos[1].pm03 : 0}}
                                                         </td>
                                                         <td class="text-center">
-                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].pm02 : datar[1].producto == 'Internet+Toip' ? datar[1].pm02 : 0}}
+                                                            {{datar.productos[0].producto == 'Internet+Toip' ? datar.productos[0].pm03 : datar.productos[1].producto == 'Internet+Toip' ? datar.productos[1].pm03 : 0}}
                                                         </td>
                                                         <td class="text-center colorColumnTv">
-                                                            {{datar[0].producto == 'TV' ? datar[0].pm03 : datar[1].producto == 'TV' ? datar[1].pm03 : 0}}
+                                                            {{datar.productos[0].producto == 'TV' ? datar.productos[0].pm04 : datar.productos[1].producto == 'TV' ? datar.productos[1].pm04 : 0}}
                                                         </td>
                                                         <td class="text-center">
-                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].pm03 : datar[1].producto == 'Internet+Toip' ? datar[1].pm03 : 0}}
+                                                            {{datar.productos[0].producto == 'Internet+Toip' ? datar.productos[0].pm04 : datar.productos[1].producto == 'Internet+Toip' ? datar.productos[1].pm04 : 0}}
                                                         </td>
                                                         <td class="text-center colorColumnTv">
-                                                            {{datar[0].producto == 'TV' ? datar[0].pm04 : datar[1].producto == 'TV' ? datar[1].pm04 : 0}}
+                                                            {{datar.productos[0].producto == 'TV' ? datar.productos[0].pm05 : datar.productos[1].producto == 'TV' ? datar.productos[1].pm05 : 0}}
                                                         </td>
                                                         <td class="text-center">
-                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].pm04 : datar[1].producto == 'Internet+Toip' ? datar[1].pm04 : 0}}
+                                                            {{datar.productos[0].producto == 'Internet+Toip' ? datar.productos[0].pm05 : datar.productos[1].producto == 'Internet+Toip' ? datar.productos[1].pm05 : 0}}
                                                         </td>
                                                         <td class="text-center colorColumnTv">
-                                                            {{datar[0].producto == 'TV' ? datar[0].pm05 : datar[1].producto == 'TV' ? datar[1].pm05 : 0}}
+                                                            {{datar.productos[0].producto == 'TV' ? datar.productos[0].pm06 : datar.productos[1].producto == 'TV' ? datar.productos[1].pm06 : 0}}
                                                         </td>
                                                         <td class="text-center">
-                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].pm05 : datar[1].producto == 'Internet+Toip' ? datar[1].pm05 : 0}}
+                                                            {{datar.productos[0].producto == 'Internet+Toip' ? datar.productos[0].pm06 : datar.productos[1].producto == 'Internet+Toip' ? datar.productos[1].pm06 : 0}}
                                                         </td>
                                                         <td class="text-center colorColumnTv">
-                                                            {{datar[0].producto == 'TV' ? datar[0].pm06 : datar[1].producto == 'TV' ? datar[1].pm06 : 0}}
+                                                            {{datar.productos[0].producto == 'TV' ? datar.productos[0].pm07 : datar.productos[1].producto == 'TV' ? datar.productos[1].pm07 : 0}}
                                                         </td>
                                                         <td class="text-center">
-                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].pm06 : datar[1].producto == 'Internet+Toip' ? datar[1].pm06 : 0}}
+                                                            {{datar.productos[0].producto == 'Internet+Toip' ? datar.productos[0].pm07 : datar.productos[1].producto == 'Internet+Toip' ? datar.productos[1].pm07 : 0}}
                                                         </td>
                                                         <td class="text-center colorColumnTv">
-                                                            {{datar[0].producto == 'TV' ? datar[0].pm07 : datar[1].producto == 'TV' ? datar[1].pm07 : 0}}
+                                                            {{datar.productos[0].producto == 'TV' ? datar.productos[0].pm08 : datar.productos[1].producto == 'TV' ? datar.productos[1].pm08 : 0}}
                                                         </td>
                                                         <td class="text-center">
-                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].pm07 : datar[1].producto == 'Internet+Toip' ? datar[1].pm07 : 0}}
-                                                        </td>
-                                                        <td class="text-center colorColumnTv">
-                                                            {{datar[0].producto == 'TV' ? datar[0].pm08 : datar[1].producto == 'TV' ? datar[1].pm08 : 0}}
-                                                        </td>
-                                                        <td class="text-center">
-                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].pm08 : datar[1].producto == 'Internet+Toip' ? datar[1].pm08 : 0}}
-                                                        </td>
-                                                        <td class="text-center colorColumnTv">
-                                                            {{datar[0].producto == 'TV' ? datar[0].pm09 : datar[1].producto == 'TV' ? datar[1].pm09 : 0}}
-                                                        </td>
-                                                        <td class="text-center">
-                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].pm09 : datar[1].producto == 'Internet+Toip' ? datar[1].pm09 : 0}}
-                                                        </td>
-                                                        <td class="text-center colorColumnTv">
-                                                            {{datar[0].producto == 'TV' ? datar[0].Masde09 : datar[1].producto == 'TV' ? datar[1].Masde09 : 0}}
-                                                        </td>
-                                                        <td class="text-center">
-                                                            {{datar[0].producto == 'Internet+Toip' ? datar[0].Masde09 : datar[1].producto == 'Internet+Toip' ? datar[1].Masde09 : 0}}
+                                                            {{datar.productos[0].producto == 'Internet+Toip' ? datar.productos[0].pm08 : datar.productos[1].producto == 'Internet+Toip' ? datar.productos[1].pm08 : 0}}
                                                         </td>
                                                     </tr>
                                                     </tbody>
@@ -386,8 +349,6 @@
                                                     <tr>
                                                         <th class="text-center">TOTALES</th>
                                                         <th class="text-center">{{totales}}</th>
-                                                        <th class="text-center colorColumnTv">{{total06}}</th>
-                                                        <th class="text-center">{{total06Inter}}</th>
                                                         <th class="text-center colorColumnTv">{{total07}}</th>
                                                         <th class="text-center">{{total07Inter}}</th>
                                                         <th class="text-center colorColumnTv">{{total08}}</th>
@@ -416,10 +377,6 @@
                                                         <th class="text-center">{{total19Inter}}</th>
                                                         <th class="text-center colorColumnTv">{{total20}}</th>
                                                         <th class="text-center">{{total20Inter}}</th>
-                                                        <th class="text-center colorColumnTv">{{total21}}</th>
-                                                        <th class="text-center">{{total21Inter}}</th>
-                                                        <th class="text-center colorColumnTv">{{total22}}</th>
-                                                        <th class="text-center">{{total22Inter}}</th>
                                                     </tr>
                                                     </tfoot>
                                                 </table>
@@ -548,8 +505,6 @@
                                                     <tr>
                                                         <th class="text-center">Usuario</th>
                                                         <th class="text-center">TOTAL</th>
-
-                                                        <th class="text-center">06 am</th>
                                                         <th class="text-center">07 am</th>
                                                         <th class="text-center">08 am</th>
                                                         <th class="text-center">09 am</th>
@@ -564,9 +519,6 @@
                                                         <th class="text-center">06 pm</th>
                                                         <th class="text-center">07 pm</th>
                                                         <th class="text-center">08 pm</th>
-                                                        <th class="text-center">09 pm</th>
-                                                        <th class="text-center">Más 09 pm</th>
-
                                                     </tr>
                                                     </thead>
 
@@ -578,7 +530,6 @@
                                                         <td style="font-weight: bolder" class="text-center">
                                                             {{datar.CANTIDAD}}
                                                         </td>
-                                                        <td class="text-center">{{datar.am06}}</td>
                                                         <td class="text-center">{{datar.am07}}</td>
                                                         <td class="text-center">{{datar.am08}}</td>
                                                         <td class="text-center">{{datar.am09}}</td>
@@ -593,8 +544,6 @@
                                                         <td class="text-center">{{datar.pm06}}</td>
                                                         <td class="text-center">{{datar.pm07}}</td>
                                                         <td class="text-center">{{datar.pm08}}</td>
-                                                        <td class="text-center">{{datar.pm09}}</td>
-                                                        <td class="text-center">{{datar.Masde09}}</td>
 
                                                     </tr>
                                                     </tbody>
@@ -602,7 +551,6 @@
                                                     <tr>
                                                         <th class="text-center">TOTALES</th>
                                                         <th class="text-center">{{totalesT}}</th>
-                                                        <th class="text-center">{{total06T}}</th>
                                                         <th class="text-center">{{total07T}}</th>
                                                         <th class="text-center">{{total08T}}</th>
                                                         <th class="text-center">{{total09T}}</th>
@@ -617,8 +565,6 @@
                                                         <th class="text-center">{{total18T}}</th>
                                                         <th class="text-center">{{total19T}}</th>
                                                         <th class="text-center">{{total20T}}</th>
-                                                        <th class="text-center">{{total21T}}</th>
-                                                        <th class="text-center">{{total22T}}</th>
 
                                                     </tr>
                                                     </tfoot>
@@ -745,7 +691,6 @@
                                                     <th class="text-center">Usuario</th>
                                                     <th class="text-center">TOTAL</th>
 
-                                                    <th class="text-center">06 am</th>
                                                     <th class="text-center">07 am</th>
                                                     <th class="text-center">08 am</th>
                                                     <th class="text-center">09 am</th>
@@ -760,8 +705,6 @@
                                                     <th class="text-center">06 pm</th>
                                                     <th class="text-center">07 pm</th>
                                                     <th class="text-center">08 pm</th>
-                                                    <th class="text-center">09 pm</th>
-                                                    <th class="text-center">Más 09 pm</th>
 
                                                     </thead>
                                                     <tbody>
@@ -772,7 +715,6 @@
                                                         <td style="font-weight: bolder" class="text-center">
                                                             {{datar.CANTIDAD}}
                                                         </td>
-                                                        <td class="text-center">{{datar.am06}}</td>
                                                         <td class="text-center">{{datar.am07}}</td>
                                                         <td class="text-center">{{datar.am08}}</td>
                                                         <td class="text-center">{{datar.am09}}</td>
@@ -787,8 +729,6 @@
                                                         <td class="text-center">{{datar.pm06}}</td>
                                                         <td class="text-center">{{datar.pm07}}</td>
                                                         <td class="text-center">{{datar.pm08}}</td>
-                                                        <td class="text-center">{{datar.pm09}}</td>
-                                                        <td class="text-center">{{datar.Masde09}}</td>
 
                                                     </tr>
                                                     </tbody>
@@ -796,7 +736,6 @@
                                                     <tr>
                                                         <th class="text-center">TOTALES</th>
                                                         <th class="text-center">{{totalesM}}</th>
-                                                        <th class="text-center">{{total06M}}</th>
                                                         <th class="text-center">{{total07M}}</th>
                                                         <th class="text-center">{{total08M}}</th>
                                                         <th class="text-center">{{total09M}}</th>
@@ -811,9 +750,6 @@
                                                         <th class="text-center">{{total18M}}</th>
                                                         <th class="text-center">{{total19M}}</th>
                                                         <th class="text-center">{{total20M}}</th>
-                                                        <th class="text-center">{{total21M}}</th>
-                                                        <th class="text-center">{{total22M}}</th>
-
                                                     </tr>
                                                     </tfoot>
                                                 </table>
@@ -939,8 +875,6 @@
                                                     <thead class="table-header">
                                                     <th class="text-center">TOTAL</th>
                                                     <th class="text-center">Usuario</th>
-
-                                                    <th class="text-center">06 am</th>
                                                     <th class="text-center">07 am</th>
                                                     <th class="text-center">08 am</th>
                                                     <th class="text-center">09 am</th>
@@ -955,11 +889,7 @@
                                                     <th class="text-center">06 pm</th>
                                                     <th class="text-center">07 pm</th>
                                                     <th class="text-center">08 pm</th>
-                                                    <th class="text-center">09 pm</th>
-                                                    <th class="text-center">Más 09 pm</th>
-
                                                     </thead>
-
                                                     <tbody>
                                                     <tr ng-repeat="datar in apoyo">
                                                         <td class="text-center">
@@ -968,7 +898,6 @@
                                                         <td style="font-weight: bolder" class="text-center">
                                                             {{datar.CANTIDAD}}
                                                         </td>
-                                                        <td class="text-center">{{datar.am06}}</td>
                                                         <td class="text-center">{{datar.am07}}</td>
                                                         <td class="text-center">{{datar.am08}}</td>
                                                         <td class="text-center">{{datar.am09}}</td>
@@ -983,16 +912,12 @@
                                                         <td class="text-center">{{datar.pm06}}</td>
                                                         <td class="text-center">{{datar.pm07}}</td>
                                                         <td class="text-center">{{datar.pm08}}</td>
-                                                        <td class="text-center">{{datar.pm09}}</td>
-                                                        <td class="text-center">{{datar.Masde09}}</td>
-
                                                     </tr>
                                                     </tbody>
                                                     <tfoot>
                                                     <tr>
                                                         <th class="text-center">TOTALES</th>
                                                         <th class="text-center">{{totalesA}}</th>
-                                                        <th class="text-center">{{total06A}}</th>
                                                         <th class="text-center">{{total07A}}</th>
                                                         <th class="text-center">{{total08A}}</th>
                                                         <th class="text-center">{{total09A}}</th>
@@ -1007,9 +932,6 @@
                                                         <th class="text-center">{{total18A}}</th>
                                                         <th class="text-center">{{total19A}}</th>
                                                         <th class="text-center">{{total20A}}</th>
-                                                        <th class="text-center">{{total21A}}</th>
-                                                        <th class="text-center">{{total22A}}</th>
-
                                                     </tr>
                                                     </tfoot>
                                                 </table>
@@ -1109,8 +1031,6 @@
                                                     <tr>
                                                         <th class="text-center">Usuario</th>
                                                         <th class="text-center">TOTAL</th>
-
-                                                        <th class="text-center">06 am</th>
                                                         <th class="text-center">07 am</th>
                                                         <th class="text-center">08 am</th>
                                                         <th class="text-center">09 am</th>
@@ -1125,9 +1045,6 @@
                                                         <th class="text-center">06 pm</th>
                                                         <th class="text-center">07 pm</th>
                                                         <th class="text-center">08 pm</th>
-                                                        <th class="text-center">09 pm</th>
-                                                        <th class="text-center">Más 09 pm</th>
-
                                                     </tr>
                                                     </thead>
 
@@ -1139,7 +1056,6 @@
                                                         <td style="font-weight: bolder" class="text-center">
                                                             {{datar.CANTIDAD}}
                                                         </td>
-                                                        <td class="text-center">{{datar.am06}}</td>
                                                         <td class="text-center">{{datar.am07}}</td>
                                                         <td class="text-center">{{datar.am08}}</td>
                                                         <td class="text-center">{{datar.am09}}</td>
@@ -1154,16 +1070,12 @@
                                                         <td class="text-center">{{datar.pm06}}</td>
                                                         <td class="text-center">{{datar.pm07}}</td>
                                                         <td class="text-center">{{datar.pm08}}</td>
-                                                        <td class="text-center">{{datar.pm09}}</td>
-                                                        <td class="text-center">{{datar.Masde09}}</td>
-
                                                     </tr>
                                                     </tbody>
                                                     <tfoot>
                                                     <tr>
                                                         <th class="text-center">TOTALES</th>
                                                         <th class="text-center">{{totalesEm}}</th>
-                                                        <th class="text-center">{{total06Em}}</th>
                                                         <th class="text-center">{{total07Em}}</th>
                                                         <th class="text-center">{{total08Em}}</th>
                                                         <th class="text-center">{{total09Em}}</th>
@@ -1178,9 +1090,6 @@
                                                         <th class="text-center">{{total18Em}}</th>
                                                         <th class="text-center">{{total19Em}}</th>
                                                         <th class="text-center">{{total20Em}}</th>
-                                                        <th class="text-center">{{total21Em}}</th>
-                                                        <th class="text-center">{{total22Em}}</th>
-
                                                     </tr>
                                                     </tfoot>
                                                 </table>

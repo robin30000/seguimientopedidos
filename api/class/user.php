@@ -1,4 +1,7 @@
 <?php
+
+use PHPMailer\PHPMailer\PHPMailer;
+
 require_once '../class/conection.php';
 
 error_reporting(0);
@@ -25,17 +28,19 @@ class user
                                                     password       = :password,
                                                     perfil         = :perfil,
                                                     usuario_crea   = :usuario_crea,
-                                                    fecha_crea     = :fecha_crea
+                                                    fecha_crea     = :fecha_crea,
+                                                    correo         = :correo
                                                 where id = :id");
             $stmt->execute([
-                ':nombre'         => $data['NOMBRE'],
+                ':nombre' => $data['NOMBRE'],
                 ':identificacion' => $data['IDENTIFICACION'],
-                ':login'          => $data['LOGIN'],
-                ':password'       => $data['PASSWORD'],
-                ':perfil'         => $data['perfil'],
-                ':usuario_crea'   => $data['usuario_crea'],
-                ':fecha_crea'     => date('Y-m-d H:i:s'),
-                ':id'             => $data['ID'],
+                ':login' => $data['LOGIN'],
+                ':password' => $data['PASSWORD'],
+                ':perfil' => $data['perfil'],
+                ':usuario_crea' => $data['usuario_crea'],
+                ':fecha_crea' => date('Y-m-d H:i:s'),
+                ':correo' => $data['correo'],
+                ':id' => $data['ID'],
             ]);
 
             if ($stmt->rowCount() == 1) {
@@ -56,12 +61,12 @@ class user
             ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
             session_start();
-            $user           = $_SESSION['login'];
-            $datos          = $data['datosEdicion'];
-            $accion         = $datos['accion'];
+            $user = $_SESSION['login'];
+            $datos = $data['datosEdicion'];
+            $accion = $datos['accion'];
             $tipo_pendiente = $datos['tipo_pendiente'];
-            $observaciones  = $datos['observaciones'];
-            $id             = $datos['id'];
+            $observaciones = $datos['observaciones'];
+            $id = $datos['id'];
 
             $stmt = $this->_DB->prepare("update registros
                                                 set asesor         = :user,
@@ -70,11 +75,11 @@ class user
                                                     observaciones  = :observaciones
                                                 where id = :id");
             $stmt->execute([
-                ':user'           => $user,
-                ':accion'         => $accion,
+                ':user' => $user,
+                ':accion' => $accion,
                 ':tipo_pendiente' => $tipo_pendiente,
-                ':observaciones'  => $observaciones,
-                ':id'             => $id,
+                ':observaciones' => $observaciones,
+                ':id' => $id,
             ]);
 
             if ($stmt->rowCount() == 1) {
@@ -97,14 +102,14 @@ class user
             ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
             session_start();
-            $user          = $_SESSION['login'];
-            $crearpedido   = $data['datospedidoComercial'];
-            $ciudad        = $crearpedido['CIUDAD'];
-            $estado        = $crearpedido['ESTADO'];
-            $gestion       = $crearpedido['GESTION'];
+            $user = $_SESSION['login'];
+            $crearpedido = $data['datospedidoComercial'];
+            $ciudad = $crearpedido['CIUDAD'];
+            $estado = $crearpedido['ESTADO'];
+            $gestion = $crearpedido['GESTION'];
             $observaciones = $crearpedido['OBSERVACIONES'];
             $pedido_actual = $crearpedido['PEDIDO_ACTUAL'];
-            $pedido_nuevo  = $crearpedido['PEDIDO_NUEVO'];
+            $pedido_nuevo = $crearpedido['PEDIDO_NUEVO'];
             $clasificacion = $crearpedido['CLASIFICACION'];
 
             $stmt = $this->_DB->prepare("INSERT INTO registros_comercial (LOGIN_ASESOR,
@@ -119,13 +124,13 @@ class user
                                                         :gestion, :clasificacion, :estado, :observaciones)");
 
             $stmt->execute([
-                ':user'          => $user,
+                ':user' => $user,
                 ':pedido_actual' => $pedido_actual,
-                ':pedido_nuevo'  => $pedido_nuevo,
-                ':ciudad'        => $ciudad,
-                ':gestion'       => $gestion,
+                ':pedido_nuevo' => $pedido_nuevo,
+                ':ciudad' => $ciudad,
+                ':gestion' => $gestion,
                 ':clasificacion' => $clasificacion,
-                ':estado'        => $estado,
+                ':estado' => $estado,
                 ':observaciones' => $observaciones,
             ]);
 
@@ -146,12 +151,12 @@ class user
             ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
             session_start();
-            $login       = $_SESSION['login'];
-            $user        = $login['LOGIN'];
-            $planNPS     = $data;
+            $login = $_SESSION['login'];
+            $user = $login['LOGIN'];
+            $planNPS = $data;
             $responsable = $planNPS['responsable'];
-            $regional    = $planNPS['regional'];
-            $plan        = $planNPS['plan'];
+            $regional = $planNPS['regional'];
+            $plan = $planNPS['plan'];
 
             $stmt = $this->_DB->prepare("INSERT INTO npsPlanTrabajo (responsable,
                                                 regional,
@@ -162,9 +167,9 @@ class user
                                                         :user)");
             $stmt->execute([
                 ':responsable' => $responsable,
-                ':regional'    => $regional,
-                ':plan'        => $plan,
-                ':user'        => $user,
+                ':regional' => $regional,
+                ':plan' => $plan,
+                ':user' => $user,
             ]);
 
             if ($stmt->rowCount() == 1) {
@@ -202,14 +207,14 @@ class user
             } elseif (!isset($data['OBSERVACIONES']) || $data['OBSERVACIONES'] == '') {
                 $response = ['state' => 0, 'text' => 'El proceso es requerido'];
             } else {
-                $user          = $_SESSION['login'];
-                $login_asesor  = $data['LOGIN_ASESOR'];
-                $pedido        = $data['PEDIDO'];
-                $proceso       = $data['PROCESO'];
-                $producto      = $data['PRODUCTO'];
-                $accion        = $data['ACCION'];
-                $actividad     = $data['ACTIVIDAD'];
-                $actividad2    = $data['ACTIVIDAD2'] ?? "";
+                $user = $_SESSION['login'];
+                $login_asesor = $data['LOGIN_ASESOR'];
+                $pedido = $data['PEDIDO'];
+                $proceso = $data['PROCESO'];
+                $producto = $data['PRODUCTO'];
+                $accion = $data['ACCION'];
+                $actividad = $data['ACTIVIDAD'];
+                $actividad2 = $data['ACTIVIDAD2'] ?? "";
                 $observaciones = $data['OBSERVACIONES'];
                 $observaciones = str_replace("\n", "/", $observaciones);
 
@@ -224,14 +229,14 @@ class user
                                                         :proceso,
                                                         :producto, :accion, :actividad, :actividad2, :observaciones)");
                 $stmt->execute([
-                    ':user'          => $user,
-                    ':login_asesor'  => $login_asesor,
-                    ':pedido'        => $pedido,
-                    ':proceso'       => $proceso,
-                    ':producto'      => $producto,
-                    ':accion'        => $accion,
-                    ':actividad'     => $actividad,
-                    ':actividad2'    => $actividad2,
+                    ':user' => $user,
+                    ':login_asesor' => $login_asesor,
+                    ':pedido' => $pedido,
+                    ':proceso' => $proceso,
+                    ':producto' => $producto,
+                    ':accion' => $accion,
+                    ':actividad' => $actividad,
+                    ':actividad2' => $actividad2,
                     ':observaciones' => $observaciones,
                 ]);
 
@@ -444,45 +449,45 @@ echo 1;exit();
             if (!$_SESSION) {
                 $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
             } else {*/
-            $idcambioequipo   = $params['idcambioequipo'];
+            $idcambioequipo = $params['idcambioequipo'];
             $duracion_llamada = $params['duracion_llamada'];
-            $crearpedido      = $params['datospedido'];
+            $crearpedido = $params['datospedido'];
 
             //taskType
             //Area
             $plantilla = (isset($params['plantilla'])) ? $params['plantilla'] : '';
 
-            $datosClick     = (isset($params['datosClick'])) ? $params['datosClick'] : '';
-            $user           = $datosClick['login'];
-            $id_llamada     = (isset($crearpedido['id_llamada'])) ? $crearpedido['id_llamada'] : '';
-            $proceso        = (isset($crearpedido['proceso'])) ? $crearpedido['proceso'] : '';
-            $accion         = (isset($crearpedido['accion'])) ? $crearpedido['accion'] : '';
-            $subaccion      = (isset($crearpedido['subAccion'])) ? $crearpedido['subAccion'] : '';
-            $observaciones  = (isset($crearpedido['observaciones'])) ? $crearpedido['observaciones'] : '';
-            $cod_familiar   = (isset($crearpedido['cod_familiar'])) ? $crearpedido['cod_familiar'] : '';
+            $datosClick = (isset($params['datosClick'])) ? $params['datosClick'] : '';
+            $user = $datosClick['login'];
+            $id_llamada = (isset($crearpedido['id_llamada'])) ? $crearpedido['id_llamada'] : '';
+            $proceso = (isset($crearpedido['proceso'])) ? $crearpedido['proceso'] : '';
+            $accion = (isset($crearpedido['accion'])) ? $crearpedido['accion'] : '';
+            $subaccion = (isset($crearpedido['subAccion'])) ? $crearpedido['subAccion'] : '';
+            $observaciones = (isset($crearpedido['observaciones'])) ? $crearpedido['observaciones'] : '';
+            $cod_familiar = (isset($crearpedido['cod_familiar'])) ? $crearpedido['cod_familiar'] : '';
             $prueba_integra = (isset($crearpedido['prueba_integra'])) ? $crearpedido['prueba_integra'] : '';
-            $telefonia_tdm  = (isset($crearpedido['telefonia_tdm'])) ? $crearpedido['telefonia_tdm'] : '';
-            $telev_hfc      = (isset($crearpedido['telev_hfc'])) ? $crearpedido['telev_hfc'] : '';
-            $iptv           = (isset($crearpedido['iptv'])) ? $crearpedido['iptv'] : '';
-            $internet       = (isset($crearpedido['internet'])) ? $crearpedido['internet'] : '';
-            $toip           = (isset($crearpedido['toip'])) ? $crearpedido['toip'] : '';
-            $smartPlay      = (isset($crearpedido['smartPlay'])) ? $crearpedido['smartPlay'] : '';
-            $observaciones  = (isset($crearpedido['observaciones'])) ? $crearpedido['observaciones'] : '';
-            $observaciones  = str_replace("\n", "/", $observaciones);
-            $observaciones  = str_replace("'", " ", $observaciones);
-            $pruebaSMNET    = (isset($crearpedido['pruebaSMNET'])) ? $crearpedido['pruebaSMNET'] : '';
+            $telefonia_tdm = (isset($crearpedido['telefonia_tdm'])) ? $crearpedido['telefonia_tdm'] : '';
+            $telev_hfc = (isset($crearpedido['telev_hfc'])) ? $crearpedido['telev_hfc'] : '';
+            $iptv = (isset($crearpedido['iptv'])) ? $crearpedido['iptv'] : '';
+            $internet = (isset($crearpedido['internet'])) ? $crearpedido['internet'] : '';
+            $toip = (isset($crearpedido['toip'])) ? $crearpedido['toip'] : '';
+            $smartPlay = (isset($crearpedido['smartPlay'])) ? $crearpedido['smartPlay'] : '';
+            $observaciones = (isset($crearpedido['observaciones'])) ? $crearpedido['observaciones'] : '';
+            $observaciones = str_replace("\n", "/", $observaciones);
+            $observaciones = str_replace("'", " ", $observaciones);
+            $pruebaSMNET = (isset($crearpedido['pruebaSMNET'])) ? $crearpedido['pruebaSMNET'] : '';
             //$UNESourceSystem = (isset($crearpedido['UNESourceSystem'])) ? $crearpedido['UNESourceSystem'] : '';
             $UNESourceSystem = $plantilla['sistema'];
-            $area            = $plantilla['Area'];
-            $taskType        = $plantilla['taskType'];
-            $codigo          = (isset($crearpedido['pendiente'])) ? $crearpedido['pendiente'] : '';
+            $area = $plantilla['Area'];
+            $taskType = $plantilla['taskType'];
+            $codigo = (isset($crearpedido['pendiente'])) ? $crearpedido['pendiente'] : '';
             $tipointeraccion = (isset($crearpedido['interaccion'])) ? $crearpedido['interaccion'] : '';
-            $diagnostico     = (isset($crearpedido['diagnostico'])) ? $crearpedido['diagnostico'] : '';
+            $diagnostico = (isset($crearpedido['diagnostico'])) ? $crearpedido['diagnostico'] : '';
 
             $clienteContestaLlamada = (isset($crearpedido['clienteContestaLlamada'])) ? $crearpedido['clienteContestaLlamada'] : '';
-            $razonNoInstalacion     = (isset($crearpedido['razonNoInstalacion'])) ? $crearpedido['razonNoInstalacion'] : '';
-            $tecnicoVivienda        = (isset($crearpedido['tecnicoVivienda'])) ? $crearpedido['tecnicoVivienda'] : '';
-            $conocimientoAgenda     = (isset($crearpedido['conocimientoAgenda'])) ? $crearpedido['conocimientoAgenda'] : '';
+            $razonNoInstalacion = (isset($crearpedido['razonNoInstalacion'])) ? $crearpedido['razonNoInstalacion'] : '';
+            $tecnicoVivienda = (isset($crearpedido['tecnicoVivienda'])) ? $crearpedido['tecnicoVivienda'] : '';
+            $conocimientoAgenda = (isset($crearpedido['conocimientoAgenda'])) ? $crearpedido['conocimientoAgenda'] : '';
 
             if ($clienteContestaLlamada != '') {
                 $observaciones = '¿Técnico esta en la vivienda?: ' . $tecnicoVivienda . '||¿Tenia conocimiento de la agenda?: ' . $conocimientoAgenda . '||¿cliente contesta la llamada?: ' . $clienteContestaLlamada . '||¿Nos podría indicar por que no se puede instalar los servicios?: ' . $razonNoInstalacion . '||' . $observaciones;
@@ -494,10 +499,10 @@ echo 1;exit();
 
             if ($datosClick['pEDIDO_UNE'] == "" || $datosClick['pEDIDO_UNE'] == "TIMEOUT") {
 
-                $tecnico              = $crearpedido['tecnico'];
-                $despacho             = $crearpedido['CIUDAD'];
-                $producto             = $crearpedido['producto'];
-                $pedido               = $params['pedido'];
+                $tecnico = $crearpedido['tecnico'];
+                $despacho = $crearpedido['CIUDAD'];
+                $producto = $crearpedido['producto'];
+                $pedido = $params['pedido'];
                 $nombre_de_la_empresa = $params['empresa'];
             } else {
                 if ($datosClick['uNEProvisioner'] == "EMT") {
@@ -510,9 +515,9 @@ echo 1;exit();
                     $nombre_de_la_empresa = $datosClick['uNEProvisioner'];
                 }
                 $producto = $datosClick['uNETecnologias'];
-                $tecnico  = $datosClick['engineerID'];
+                $tecnico = $datosClick['engineerID'];
                 $despacho = $datosClick['uNEMunicipio'];
-                $pedido   = $datosClick['pEDIDO_UNE'];
+                $pedido = $datosClick['pEDIDO_UNE'];
             }
 
             if (
@@ -522,16 +527,16 @@ echo 1;exit();
                 ($proceso == 'Reparaciones' && $accion == 'Aprovisionar') ||
                 ($proceso == 'Reparaciones' && $accion == 'Contingencia')
             ) {
-                $patron        = [",", ", "];
+                $patron = [",", ", "];
                 $patronreplace = ["|", "|"];
-                $macEntra      = str_replace($patron, $patronreplace, trim(strtoupper($crearpedido['macEntra'])));
-                $macSale       = str_replace($patron, $patronreplace, trim(strtoupper($crearpedido['macSale'])));
+                $macEntra = str_replace($patron, $patronreplace, trim(strtoupper($crearpedido['macEntra'])));
+                $macSale = str_replace($patron, $patronreplace, trim(strtoupper($crearpedido['macSale'])));
 
                 $stmt = $this->_DB->prepare("INSERT INTO cambio_equipos (pedido, hfc_equipo_sale, hfc_equipo_entra)
                                                     VALUES (:pedido, :macSale, :macEntra)");
                 $stmt->execute([
-                    ':pedido'   => $pedido,
-                    ':macSale'  => $macSale,
+                    ':pedido' => $pedido,
+                    ':macSale' => $macSale,
                     ':macEntra' => $macEntra,
                 ]);
                 if (!$stmt->rowCount()) {
@@ -554,34 +559,34 @@ echo 1;exit();
                                 :UNESourceSystem, :codigo, :diagnostico, :area, :task_type)");
 
                 $stmt->execute([
-                    ':pedido'               => $pedido,
-                    ':tecnico'              => $tecnico,
+                    ':pedido' => $pedido,
+                    ':tecnico' => $tecnico,
                     ':nombre_de_la_empresa' => $nombre_de_la_empresa,
-                    ':user'                 => $user,
-                    ':observaciones'        => $observaciones,
-                    ':accion'               => $accion,
-                    ':subaccion'            => $subaccion,
-                    ':proceso'              => $proceso,
-                    ':producto'             => $producto,
-                    ':duracion_llamada'     => $duracion_llamada,
-                    ':id_llamada'           => $id_llamada,
-                    ':prueba_integra'       => $prueba_integra,
-                    ':cod_familiar'         => $cod_familiar,
-                    ':smartPlay'            => $smartPlay,
-                    ':toip'                 => $toip,
-                    ':internet'             => $internet,
-                    ':iptv'                 => $iptv,
-                    ':telev_hfc'            => $telev_hfc,
-                    ':telefonia_tdm'        => $telefonia_tdm,
+                    ':user' => $user,
+                    ':observaciones' => $observaciones,
+                    ':accion' => $accion,
+                    ':subaccion' => $subaccion,
+                    ':proceso' => $proceso,
+                    ':producto' => $producto,
+                    ':duracion_llamada' => $duracion_llamada,
+                    ':id_llamada' => $id_llamada,
+                    ':prueba_integra' => $prueba_integra,
+                    ':cod_familiar' => $cod_familiar,
+                    ':smartPlay' => $smartPlay,
+                    ':toip' => $toip,
+                    ':internet' => $internet,
+                    ':iptv' => $iptv,
+                    ':telev_hfc' => $telev_hfc,
+                    ':telefonia_tdm' => $telefonia_tdm,
                     //':plantilla' => $plantilla,
-                    ':despacho'             => $despacho,
-                    ':idcambioequipo'       => $idcambioequipo,
-                    ':pruebaSMNET'          => $pruebaSMNET,
-                    ':UNESourceSystem'      => $UNESourceSystem,
-                    ':codigo'               => $codigo,
-                    ':diagnostico'          => $diagnostico,
-                    ':area'                 => $area,
-                    ':task_type'            => $taskType,
+                    ':despacho' => $despacho,
+                    ':idcambioequipo' => $idcambioequipo,
+                    ':pruebaSMNET' => $pruebaSMNET,
+                    ':UNESourceSystem' => $UNESourceSystem,
+                    ':codigo' => $codigo,
+                    ':diagnostico' => $diagnostico,
+                    ':area' => $area,
+                    ':task_type' => $taskType,
                 ]);
                 if ($stmt->rowCount() == 1) {
                     $response = ['state' => 1, 'msj' => 'Registro ingresado'];
@@ -598,25 +603,25 @@ echo 1;exit();
                                 :UNESourceSystem, :codigo, :diagnostico, :area, :task_type)");
 
                 $stmt->execute([
-                    ':pedido'               => $pedido,
-                    ':tecnico'              => $tecnico,
+                    ':pedido' => $pedido,
+                    ':tecnico' => $tecnico,
                     ':nombre_de_la_empresa' => $nombre_de_la_empresa,
-                    ':user'                 => $user,
-                    ':observaciones'        => $observaciones,
-                    ':accion'               => $accion,
-                    ':subaccion'            => $subaccion,
-                    ':proceso'              => $proceso,
-                    ':producto'             => $producto,
-                    ':duracion_llamada'     => $duracion_llamada,
-                    ':id_llamada'           => $id_llamada,
+                    ':user' => $user,
+                    ':observaciones' => $observaciones,
+                    ':accion' => $accion,
+                    ':subaccion' => $subaccion,
+                    ':proceso' => $proceso,
+                    ':producto' => $producto,
+                    ':duracion_llamada' => $duracion_llamada,
+                    ':id_llamada' => $id_llamada,
                     //':plantilla' => $plantilla,
-                    ':despacho'             => $despacho,
-                    ':pruebaSMNET'          => $pruebaSMNET,
-                    ':UNESourceSystem'      => $UNESourceSystem,
-                    ':codigo'               => $codigo,
-                    ':diagnostico'          => $diagnostico,
-                    ':area'                 => $area,
-                    ':task_type'            => $taskType,
+                    ':despacho' => $despacho,
+                    ':pruebaSMNET' => $pruebaSMNET,
+                    ':UNESourceSystem' => $UNESourceSystem,
+                    ':codigo' => $codigo,
+                    ':diagnostico' => $diagnostico,
+                    ':area' => $area,
+                    ':task_type' => $taskType,
                 ]);
 
                 if ($stmt->rowCount() == 1) {
@@ -638,11 +643,12 @@ echo 1;exit();
         try {
 
             $identificacion = $data['identificacion'];
-            $nombre         = $data['nombre'];
-            $loginUser      = $data['login'];
-            $perfil         = $data['perfil'];
-            $password       = $data['password'];
-            $usuario_crea   = $data['usuario_crea'];
+            $nombre = $data['nombre'];
+            $loginUser = $data['login'];
+            $perfil = $data['perfil'];
+            $password = $data['password'];
+            $usuario_crea = $data['usuario_crea'];
+            $correo = $data['correo'];
 
             $stmt = $this->_DB->prepare("SELECT * FROM usuarios where identificacion = :identificacion ");
             $stmt->execute([':identificacion' => $identificacion]);
@@ -650,16 +656,17 @@ echo 1;exit();
             if ($stmt->rowCount() == 1) {
                 $response = ['state' => false, 'msj' => 'El documento de identidad ingresado ya se encuentra registrado'];
             } else {
-                $stmt = $this->_DB->prepare("insert into usuarios (login, nombre, password, identificacion, perfil, fecha_crea, usuario_crea)
-                                                values (:loginUser, :nombre, :password, :identificacion, :perfil, :fecha_crea, :usuario_crea)");
+                $stmt = $this->_DB->prepare("insert into usuarios (login, nombre, password, identificacion, perfil, fecha_crea, usuario_crea, correo)
+                                                values (:loginUser, :nombre, :password, :identificacion, :perfil, :fecha_crea, :usuario_crea, :correo)");
                 $stmt->execute([
-                    ':loginUser'      => $loginUser,
-                    ':nombre'         => $nombre,
-                    ':password'       => $password,
+                    ':loginUser' => $loginUser,
+                    ':nombre' => $nombre,
+                    ':password' => $password,
                     ':identificacion' => $identificacion,
-                    ':perfil'         => $perfil,
-                    ':fecha_crea'     => date('Y-m-d H:i:s'),
-                    ':usuario_crea'   => $usuario_crea,
+                    ':perfil' => $perfil,
+                    ':fecha_crea' => date('Y-m-d H:i:s'),
+                    ':usuario_crea' => $usuario_crea,
+                    ':correo' => $correo,
                 ]);
 
                 if ($stmt->rowCount() == 1) {
@@ -713,9 +720,9 @@ echo 1;exit();
                     $response = ['state' => 0, 'msj' => 'Ingrese el nombre'];
                 } else {
 
-                    $UDC      = substr($datos['IDENTIFICACION'], -4);
-                    $pass     = 'Colombia' . $UDC . '--++';
-                    $pass     = md5($pass);
+                    $UDC = substr($datos['IDENTIFICACION'], -4);
+                    $pass = 'Colombia' . $UDC . '--++';
+                    $pass = md5($pass);
                     $contrato = match ($datos['empresa']) {
                         "1" => 'UNE',
                         "0" => 'SIN EMPRESA',
@@ -735,14 +742,14 @@ echo 1;exit();
 
                     $stmt->execute([
                         ':identificacion' => $datos['IDENTIFICACION'],
-                        ':nombre'         => $datos['NOMBRE'],
-                        ':ciudad'         => $datos['CIUDAD'],
-                        ':celular'        => $datos['CELULAR'],
-                        ':empresa'        => $datos['empresa'],
-                        ':login_click'    => $datos['LOGIN'],
-                        ':pass'           => $pass,
-                        ':region'         => $datos['REGION'],
-                        ':contrato'       => $contrato,
+                        ':nombre' => $datos['NOMBRE'],
+                        ':ciudad' => $datos['CIUDAD'],
+                        ':celular' => $datos['CELULAR'],
+                        ':empresa' => $datos['empresa'],
+                        ':login_click' => $datos['LOGIN'],
+                        ':pass' => $pass,
+                        ':region' => $datos['REGION'],
+                        ':contrato' => $contrato,
                     ]);
 
                     if ($stmt->rowCount() == 1) {
@@ -771,21 +778,21 @@ echo 1;exit();
             } else {*/
 
             if (!$data['page']) {
-                $offset   = 0;
+                $offset = 0;
                 $pagesize = 1;
             } else {
-                $pagenum  = $data['page'];
+                $pagenum = $data['page'];
                 $pagesize = $data['size'];
-                $offset   = ($pagenum - 1) * $pagesize;
-                $search   = $data['search'];
+                $offset = ($pagenum - 1) * $pagesize;
+                $search = $data['search'];
             }
 
             $parametro = '';
             if ($data['concepto'] == 'identificacion') {
-                $usuario   = $data['usuario'];
+                $usuario = $data['usuario'];
                 $parametro = " and a.identificacion = '$usuario' ";
             } elseif ($data['concepto'] == 'login') {
-                $usuario   = $data['usuario'];
+                $usuario = $data['usuario'];
                 $parametro = " and a.login = '$usuario' ";
             }
 
@@ -800,13 +807,14 @@ echo 1;exit();
                                                        a.perfil,
                                                        a.estado,
                                                        (select b.nombre from perfiles b where b.perfil = a.perfil) as PERFIL,
-                                                       a.password AS PASSWORD
+                                                       a.password AS PASSWORD,
+                                                       a.correo
                                                 FROM usuarios a
                                                 where 1 = 1
                                                     $parametro LIMIT $offset, $pagesize");
 
             if ($stmt->rowCount()) {
-                $result   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $response = ['state' => true, 'data' => $result, 'counter' => $counter];
             } else {
                 $response = ['state' => false, 'msj' => 'No se encontraron registros'];
@@ -830,7 +838,7 @@ echo 1;exit();
             if ($stmt->rowCount() == 1) {
                 $response = ['state' => true, 'msj' => 'Usuario eliminado correctamente'];
             } else {
-                $response = ['state' => false, 'msj' =>  'Ha ocurrido un error interno intentalo nuevamente en unos minutos'];
+                $response = ['state' => false, 'msj' => 'Ha ocurrido un error interno intentalo nuevamente en unos minutos'];
             }
         } catch (PDOException $e) {
             var_dump($e->getMessage());
@@ -868,11 +876,11 @@ echo 1;exit();
             session_set_cookie_params(3600);
             session_start();*/
             $identificacion = $login['IDENTIFICACION'];
-            $nombre         = $login['NOMBRE'];
-            $ciudad         = $login['CIUDAD'];
-            $celular        = $login['CELULAR'];
-            $empresa        = $login['empresa'];
-            $id             = $login['ID'];
+            $nombre = $login['NOMBRE'];
+            $ciudad = $login['CIUDAD'];
+            $celular = $login['CELULAR'];
+            $empresa = $login['empresa'];
+            $id = $login['ID'];
 
             $stmt = $this->_DB->prepare("update tecnicos
                                                 set nombre         = :nombre,
@@ -882,12 +890,12 @@ echo 1;exit();
                                                     empresa        = :empresa
                                                 where id = :id");
             $stmt->execute([
-                ':nombre'         => $nombre,
+                ':nombre' => $nombre,
                 ':identificacion' => $identificacion,
-                ':ciudad'         => $ciudad,
-                ':celular'        => $celular,
-                ':empresa'        => $empresa,
-                ':id'             => $id,
+                ':ciudad' => $ciudad,
+                ':celular' => $celular,
+                ':empresa' => $empresa,
+                ':id' => $id,
             ]);
 
             if ($stmt->rowCount() == 1) {
@@ -912,8 +920,8 @@ echo 1;exit();
 
             for ($i = 0; $i < $total; $i++) {
 
-                $UDC   = substr($datos[$i]['ID'], -4);
-                $pass  = 'Colombia' . $UDC . '--++';
+                $UDC = substr($datos[$i]['ID'], -4);
+                $pass = 'Colombia' . $UDC . '--++';
                 $passM = md5($pass);
 
                 switch (strtoupper($datos[$i]['contrato'])) {
@@ -963,16 +971,16 @@ echo 1;exit();
                     $stmt->execute(
                         [
                             ':identificacion' => $datos[$i]['ID'],
-                            ':nombre'         => $datos[$i]['nombre'],
-                            ':ciudad'         => $datos[$i]['ciudad'],
-                            ':celular'        => $datos[$i]['MobilePhone'],
-                            ':empresa'        => $empresa,
-                            ':login_click'    => $datos[$i]['login'],
-                            ':pass'           => $passM,
-                            ':region'         => $datos[$i]['region'],
-                            ':contrato'       => $datos[$i]['contrato'],
+                            ':nombre' => $datos[$i]['nombre'],
+                            ':ciudad' => $datos[$i]['ciudad'],
+                            ':celular' => $datos[$i]['MobilePhone'],
+                            ':empresa' => $empresa,
+                            ':login_click' => $datos[$i]['login'],
+                            ':pass' => $passM,
+                            ':region' => $datos[$i]['region'],
+                            ':contrato' => $datos[$i]['contrato'],
                             ':password_click' => $result[0]['password'],
-                            ':pass_apk'       => $pass,
+                            ':pass_apk' => $pass,
                         ]
                     );
 
@@ -993,5 +1001,87 @@ echo 1;exit();
         }
         $this->_DB = '';
         echo json_encode($response);
+    }
+
+    public function recuperaPassword($data)
+    {
+        try {
+            $stmt = $this->_DB->prepare("SELECT * FROM usuarios where correo = :correo");
+            $stmt->execute(array(':correo' => $data));
+            if ($stmt->rowCount() == 1) {
+                $datos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $usuario = $datos[0]['login'];
+                require "../vendor/autoload.php";
+                $mail = new PHPMailer();
+                // Server settings
+                $mail->SMTPDebug = 2;                      // Enable verbose debug output
+                /* $mail->isSMTP();                                            // Send using SMTP
+                 $mail->Host = 'smtp.gmail.com';                    // Set the SMTP server to send through
+                 $mail->SMTPAuth = true;                                   // Enable SMTP authentication
+                 $mail->Username = 'racastro218@gmail.com';                     // SMTP username
+                 $mail->Password = 'Robin5000#*';           */                    // SMTP password
+                //$mail->SMTPSecure = 'tls';         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
+                //$mail->Port = 587;
+
+                $mail->isSMTP();
+                $mail->Host = 'localhost';
+                $mail->SMTPAuth = false;
+                $mail->SMTPAutoTLS = false;
+                $mail->Port = 25; // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+
+                // Recipients
+                $mail->setFrom('racastro218@gmail.com', 'Mailer');
+                $mail->addAddress('robin_3x@hotmail.com', 'Joe User');     // Add a recipient
+
+
+                // Content
+                $mail->isHTML(true);                                  // Set email format to HTML
+                $mail->Subject = 'Here is the subject';
+                $mail->Body = 'This is the HTML message body <b>in bold!</b>';
+                $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+
+                //$mail->send();
+                if (!$mail->Send()) {
+                    var_dump($mail->ErrorInfo);
+                } else {
+                    echo 'ok';
+                }
+
+                /*$datos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $usuario = $datos[0]['login'];
+
+                require "../vendor/autoload.php";
+                $mailer = new PHPMailer();
+                $mailer->IsSMTP();
+                $mailer->Host = "smtp.gmail.com";
+                $mailer->Port = 587;
+                $mailer->SMTPDebug = 0;
+                $mailer->From = "racastro218@gmail.com";
+                $mailer->FromName = "wplay";
+                $mailer->Subject = "inconvenientes de contactos";
+
+                ob_start();
+                require_once '../../partial/template_mail/recuperar_contrasena/mailer.php';
+                $message = ob_get_contents();
+                ob_end_clean();
+
+                $mailer->SetFrom('racastro218@gmail.com', $data);
+                $mailer->msgHTML($message, dirname(__FILE__));
+                $mailer->AddAddress('racastro218@gmail.com', $data);
+                $mailer->isHTML(true);
+                $mailer->CharSet = "utf-8";
+                $mailer->SMTPAuth = true;
+                $mailer->Username = "racastro218@gmail.com";
+                $mailer->Password = "Robin5000#*";
+
+                if (!$mailer->Send()) {
+                    var_dump($mailer->ErrorInfo);
+                } else {
+                    echo 'ok';
+                }*/
+            }
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
     }
 }

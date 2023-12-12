@@ -240,6 +240,15 @@
                 });
                 return;
             }
+            if (!data.correo) {
+                swal({
+                    title: "Opps..",
+                    text: "El campo Correo es obligatorio",
+                    type: "error",
+                    timer: 4000
+                });
+                return;
+            }
 
             data.usuario_crea = $rootScope.login;
             services.myService(data, 'userCtrl.php', 'creaUsuario').then((data) => {

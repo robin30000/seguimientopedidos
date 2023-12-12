@@ -59,18 +59,8 @@
         function gestionToip() {
 
             services.myService('', 'toipCtrl.php', 'datos').then((data) => {
-                if (data.data.state) {
-                    $scope.datosToip = data.data.data;
-                    $scope.ItemsToip = data.data.counter;
-
-                } else {
-                    Swal({
-                        type: 'error',
-                        title: 'Opps..',
-                        text: data.data.msj,
-                        timer: 4000
-                    })
-                }
+                $scope.datosToip = data.data.data;
+                $scope.ItemsToip = data.data.counter;
             }).catch((e) => {
                 console.log(e)
             })
@@ -80,17 +70,8 @@
         function gestionETP() {
 
             services.myService('', 'etpCtrl.php', 'datos').then((data) => {
-                if (data.data.state) {
-                    $scope.datosEtp = data.data.data;
-                    $scope.ItemsEtp = data.data.counter;
-                } else {
-                    Swal({
-                        type: 'error',
-                        title: 'Opps..',
-                        text: data.data.msj,
-                        timer: 4000
-                    })
-                }
+                $scope.datosEtp = data.data.data;
+                $scope.ItemsEtp = data.data.counter;
             }).catch((e) => {
                 console.log(e)
             })

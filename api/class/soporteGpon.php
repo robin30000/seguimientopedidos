@@ -504,6 +504,12 @@ class soporteGpon
 
                 $rst = $this->_DB->query("SELECT id_soporte, login FROM soporte_gpon WHERE id_soporte = '$id_soporte' AND status_soporte = 2");
                 $rst->execute();
+
+                $stmt = $this->_DB->query("SELECT login FROM usuarios WHERE perfil = '11'");
+                $stmt->execute();
+                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $usuarios_array = array_column($res, 'login');
+
                 if ($rst->rowCount() == 1) {
                     //echo 1;exit();
                     $row = $rst->fetchAll(PDO::FETCH_ASSOC);
@@ -512,7 +518,7 @@ class soporteGpon
 
                     //echo $loginsoportegpon.''.$login;exit();
 
-                    if ($login == $loginsoportegpon || $login == 'cramiceb' || $login == 'cvasquor' || $login == 'garcila' || $login == 'jromang' || $login == 'mhuertas') {
+                    if ($login == $loginsoportegpon || in_array($login, $usuarios_array)) {
                         $stmt = $this->_DB->query("UPDATE soporte_gpon SET status_soporte = 0, login = NULL, fecha_marca = NULL WHERE id_soporte ='$id'");
                         $stmt->execute();
                         $response = ['state' => 1, 'msj' => 'El pedido se encuentra desbloqueado'];

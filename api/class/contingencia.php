@@ -2,8 +2,8 @@
 
 require_once '../class/conection.php';
 
-error_reporting(1);
-ini_set('display_errors', E_ALL);
+error_reporting(0);
+ini_set('display_errors', 0);
 
 /* ini_set('session.gc_maxlifetime', 3600); // 1 hour
 session_set_cookie_params(3600); */
@@ -56,6 +56,9 @@ class Contingencia
                         $paqueteconca = $paqueteconca . $paquetes[$i] . "/";
                     }
                 }
+
+                $this->_DB->beginTransaction();
+
                 $stmt = $this->_DB->prepare("SELECT identificacion FROM usuarios WHERE id = :id");
                 $stmt->execute([':id' => $idUsuario]);
                 $id_usuario = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -111,8 +114,10 @@ class Contingencia
                 ]);
 
                 if ($stmt->rowCount() == 1) {
+                    $this->_DB->commit();
                     $response = ['state' => true, 'msj' => 'Datos ingresados correctamente'];
                 } else {
+                    $this->_DB->rollBack();
                     $response = ['state' => false, 'msj' => 'Ha ocurrido un error intentalo nuevamente en unos minutos'];
                 }
             }
@@ -1640,6 +1645,11 @@ class Contingencia
                 $row = $rst->fetch(PDO::FETCH_OBJ);
                 $id = $row->id;
 
+                $stmt = $this->_DB->query("SELECT login FROM usuarios WHERE perfil = '11'");
+                $stmt->execute();
+                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $usuarios_array = array_column($res, 'login');
+
                 if ($rst->rowCount() == 1) {
 
                     $stmt = $this->_DB->prepare("UPDATE contingencias SET engestion = 1, logincontingencia = :login, fechaClickMarca = :today WHERE id = :id");
@@ -1659,7 +1669,7 @@ class Contingencia
                     $logincontingencia = $row->logincontingencia;
                     $id = $row->id;
 
-                    if ($login == $logincontingencia || $login == 'cramiceb' || $login == 'cvasquor' || $login == 'garcila' || $login == 'jromang' || $login == 'mhuertas') {
+                    if ($login == $logincontingencia || in_array($login, $usuarios_array)) {
 
                         $stmt = $this->_DB->prepare("UPDATE contingencias SET engestion = 0, logincontingencia = null, fechaClickMarca = '' WHERE id = :id");
                         $stmt->execute([':id' => $id]);
@@ -1699,11 +1709,11 @@ class Contingencia
             }
 
 
-            $stmt = $this->_DB->prepare("SELECT C.accion, C.ciudad, C.correo, C.macEntra, C.macSale, C.motivo, C.observacion,
+            $stmt = $this->_DB->prepare("SELECT C.accion, C.ciudad, C.macEntra, C.macSale, C.motivo, C.observacion,
             C.paquetes, C.pedido, C.proceso, C.producto, C.remite, C.tecnologia, C.tipoEquipo, C.uen,
             C.contrato, C.perfil, C.logindepacho, C.logincontingencia, C.horagestion, C.horacontingencia,
             C.observContingencia, C.acepta, C.tipificacion, C.fechaClickMarca, C.loginContingenciaPortafolio,
-            C.horaContingenciaPortafolio, C.tipificacionPortafolio, C.observContingenciaPortafolio, C.generarcr, C.uneSourceSystem as crm
+            C.observContingenciaPortafolio, C.generarcr, C.uneSourceSystem as crm
             FROM contingencias AS C
         WHERE C.horagestion BETWEEN ('$fechaIni 00:00:00') AND ('$fechafin 23:59:59')
         AND C.accion IN ('Cambio de equipo', 'Contingencia', 'Refresh', 'Registros ToIP', 'Reenvio de registros')");
@@ -1827,6 +1837,11 @@ class Contingencia
             $row = $rst->fetch(PDO::FETCH_OBJ);
             $id = $row->id;
 
+            $stmt = $this->_DB->query("SELECT login FROM usuarios WHERE perfil = '11'");
+            $stmt->execute();
+            $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $usuarios_array = array_column($res, 'login');
+
             if ($rst->rowCount() === 1) {
 
                 $stmt = $this->_DB->prepare("UPDATE contingencias SET engestion = 1, logincontingencia = :login, fechaClickMarca = :today WHERE id = :id");
@@ -1846,7 +1861,7 @@ class Contingencia
                 $logincontingencia = $row->logincontingencia;
                 $id = $row->id;
 
-                if ($login == $logincontingencia || $login == 'cramiceb' || $login == 'cvasquor' || $login == 'garcila' || $login == 'jromang' || $login == 'mhuertas') {
+                if ($login == $logincontingencia || in_array($login, $usuarios_array)) {
 
                     $stmt = $this->_DB->prepare("UPDATE contingencias SET engestion = 0, logincontingencia = NULL, fechaClickMarca = '' WHERE id = :id");
                     $stmt->execute([':id' => $id]);
