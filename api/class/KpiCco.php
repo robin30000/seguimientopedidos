@@ -1,19 +1,13 @@
 <?php
 require_once 'conection.php';
-require_once 'ConnectionGestionOperativa.php';
-
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 
 class KpiCco
 {
     private $_DB;
-    private $_DBG;
 
     public function __construct()
     {
         $this->_DB = new Conection();
-        $this->_DBG = new ConnectionGestionOperativa();
     }
 
     public function chartContingencia($data)
@@ -21,7 +15,7 @@ class KpiCco
         try {
             if (!empty($data)) {
                 $fecha = $data;
-            } else {
+            }else{
                 $fecha = date('Y-m-d');
             }
             $stmt = $this->_DB->prepare("SELECT
@@ -58,7 +52,7 @@ class KpiCco
         try {
             if (!empty($data)) {
                 $fecha = $data;
-            } else {
+            }else{
                 $fecha = date('Y-m-d');
             }
             $stmt = $this->_DB->prepare("SELECT
@@ -95,7 +89,7 @@ class KpiCco
         try {
             if (!empty($data)) {
                 $fecha = $data;
-            } else {
+            }else{
                 $fecha = date('Y-m-d');
             }
             $stmt = $this->_DB->prepare("SELECT
@@ -132,7 +126,7 @@ class KpiCco
         try {
             if (!empty($data)) {
                 $fecha = $data;
-            } else {
+            }else{
                 $fecha = date('Y-m-d');
             }
             $stmt = $this->_DB->prepare("SELECT
@@ -169,7 +163,7 @@ class KpiCco
         try {
             if (!empty($data)) {
                 $fecha = $data;
-            } else {
+            }else{
                 $fecha = date('Y-m-d');
             }
             $stmt = $this->_DB->prepare("SELECT
@@ -207,7 +201,7 @@ class KpiCco
         try {
             if (!empty($data)) {
                 $fecha = $data;
-            } else {
+            }else{
                 $fecha = date('Y-m-d');
             }
             $stmt = $this->_DB->prepare("SELECT
@@ -232,44 +226,6 @@ class KpiCco
                 $response = ['status' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
                 $response = ['status' => true, 'data' => '0'];
-            }
-            $this->_DB = null;
-            return $response;
-        } catch (PDOException $e) {
-            var_dump($e->getMessage());
-        }
-    }
-    
-    public function charSiebel($data)
-    {
-        try {
-
-            if (!empty($data)) {
-                $fecha = $data;
-            } else {
-                $fecha = date('Y-m-d');
-            }
-
-            $url = "http://10.100.66.254/BB8/contingencias/Buscar/GraficoSiebel/" . $fecha;
-
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-
-            curl_setopt($ch, CURLOPT_URL, "$url");
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_HEADER, 0);
-
-            curl_setopt($ch, CURLOPT_TIMEOUT, 60);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
-            $data = curl_exec($ch);
-
-            $dataclick = json_decode($data, true);
-            
-            if ($dataclick) {
-                $response = ['status' => true, 'data' => $dataclick];
-            } else {
-                $response = ['status' => true, 'data' => 0];
             }
             $this->_DB = null;
             return $response;

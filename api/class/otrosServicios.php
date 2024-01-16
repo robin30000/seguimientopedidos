@@ -1242,7 +1242,7 @@ class otrosServicios
                 $pagesize = $data['size'];
                 $offset = ($pagenum - 1) * $pagesize;
                 $search = $data['search'];
-                $limit = " limit $offset, $pagesize ";
+
                 $condicion = '';
                 if ($data['buscar']) {
                     $variable = $data['buscar'];
@@ -1269,24 +1269,37 @@ class otrosServicios
                             $condicion = '';
                             break;
                     }
+
+                    $stmt = $this->_DB->query("select * from tecnicos WHERE 1=1 $condicion ");
+                    $stmt->execute();
+
+                    $counter = $stmt->rowCount();
+
+                    $query = $this->_DB->query("SELECT a.ID, a.IDENTIFICACION, a.NOMBRE, a.CIUDAD, a.CELULAR, a.empresa, a.password,a.pass_apk, a.login_Click,a.password_click as pass_clic,
+			 (SELECT b.nombre FROM empresas b WHERE b.id=a.empresa) AS NOM_EMPRESA
+			 FROM tecnicos a
+			 WHERE 1=1  $condicion  ");
+                } else {
+                    $stmt = $this->_DB->query("select * from tecnicos WHERE 1=1 $condicion");
+                    $stmt->execute();
+
+                    $counter = $stmt->rowCount();
+
+                    $query = $this->_DB->query("SELECT a.ID, a.IDENTIFICACION, a.NOMBRE, a.CIUDAD, a.CELULAR, a.empresa, a.password,a.pass_apk, a.login_Click,a.password_click as pass_clic,
+			 (SELECT b.nombre FROM empresas b WHERE b.id=a.empresa) AS NOM_EMPRESA
+			 FROM tecnicos a
+			 WHERE 1=1  $condicion limit $offset, $pagesize");
                 }
 
-                $stmt = $this->_DB->query("select * from tecnicos WHERE 1=1 $condicion $limit");
+                /*$stmt = $this->_DB->query("select * from tecnicos WHERE 1=1 $condicion limit $offset, $pagesize");
                 $stmt->execute();
 
                 $counter = $stmt->rowCount();
 
-/*                echo "SELECT a.ID, a.IDENTIFICACION, a.NOMBRE, a.CIUDAD, a.CELULAR, a.empresa, a.password,a.pass_apk, a.login_Click,a.password_click as pass_clic,
-			 (SELECT b.nombre FROM empresas b WHERE b.id=a.empresa) AS NOM_EMPRESA
-			 FROM tecnicos a
-			 WHERE 1=1  $condicion $limit";
-                exit();*/
-
-
                 $query = $this->_DB->query("SELECT a.ID, a.IDENTIFICACION, a.NOMBRE, a.CIUDAD, a.CELULAR, a.empresa, a.password,a.pass_apk, a.login_Click,a.password_click as pass_clic,
 			 (SELECT b.nombre FROM empresas b WHERE b.id=a.empresa) AS NOM_EMPRESA
 			 FROM tecnicos a
-			 WHERE 1=1  $condicion  $limit");
+			 WHERE 1=1  $condicion  $limit");*/
 
                 $query->execute();
 

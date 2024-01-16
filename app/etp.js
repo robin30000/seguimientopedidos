@@ -46,7 +46,31 @@
             })
 
         };
+		 $scope.damePedidoetp = () => {
+            services.myService($rootScope.login, 'etpCtrl.php', 'damePedidoetp').then((data) => {
+                console.log(data)
+                if (data.data.state) {
+                    swal({
+                        type: "success",
+                        title: data.data.title,
+                        text: data.data.text,
+                        timer: 4000,
+                    }).then(() => {
+                        gestionETP();
+                    })
+                } else {
+                    swal({
+                        type: "error",
+                        title: data.data.title,
+                        text: data.data.text,
+                        timer: 4000,
+                    })
+                }
 
+            }).catch((e) => {
+                console.log(e)
+            })
+        }
         function gestionETPTerminado(data) {
             let datos = '';
             if (!data) {

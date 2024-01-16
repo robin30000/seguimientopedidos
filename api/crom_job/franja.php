@@ -28,21 +28,25 @@ try {
     $dataclick = json_decode($data, true);
     $contador = 0;
     $count = count($dataclick);
+
     for ($i = 0; $i < $count; $i++) {
-        $stmt = $_DBG->prepare("SELECT
-                                        MOTIVE_ID,
-                                        HORA_CITA,
-                                        FECHA_CITA 
-                                    FROM
-                                        FacInstalaciones_Pendientes_ETP
+
+
+        $stmt = $_DBG->prepare("SELECT MOTIVO,
+									 HORARIO AS HORA_CITA, 	
+									FECHAAGENDA AS FECHA_CITA
+									FROM dbo.FacInstalaciones_Pendientes_Asignaciones_ETP
                                     WHERE
-                                        MOTIVE_ID = :pedido");
+                                        MOTIVO = :pedido");
+
         $stmt->execute(array(':pedido' => $dataclick[$i]['PEDIDO_ID']));
         $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if (!empty($res)) {
             if ($res[0]['HORA_CITA'] !== null) {
-                $variable = $res[0]['HORA_CITA'] . '-' . $res[0]['MOTIVE_ID'];
+                $variable = $res[0]['HORA_CITA'] . '-' . $res[0]['MOTIVO'];
+				
+				
                 $url = "http://10.100.66.254/BB8/contingencias/Buscar/FranjaAmarillaActualiza/" . $variable;
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -53,7 +57,9 @@ try {
                 curl_setopt($ch, CURLOPT_TIMEOUT, 60);
                 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
                 $data = curl_exec($ch);
-
+				
+				//var_dump($data,$res,$q);exit();
+				
                 if ($data){
                     $contador++;
                 }

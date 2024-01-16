@@ -24,6 +24,14 @@
                                             &nbsp;
                                             <b>Gestión ETP</b> <span class="badge badge-default">{{Items}}</span>
                                         </li>
+										  </li>
+										 <li>
+                                    <div class="dameTarea" style="margin-left: 7px;margin-top: -5px;">
+                                        <button class="btn btn-sm btn-info" ng-click="damePedidoetp()">Dame Tarea <i class="fa fa-briefcase"
+                                                                                          aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </li>
                                         <li>
                                             &nbsp;
                                             &nbsp;
@@ -32,8 +40,7 @@
                                             </div>
                                         </li>
                                         <li>
-                                            &nbsp;
-                                            &nbsp;
+                                            
                                             <button type="button" class="btn btn-default btn-xs" ng-click="recargaPageGestion()" title="Actualizar"
                                                     data-toggle="tooltip" data-placement="top" ng-disabled="loading">
                                                 <i class="fa fa-refresh" aria-hidden="true"></i>
@@ -46,7 +53,7 @@
                                         <table class="table table-bordered table-hover table-condensed small">
                                             <thead class="table-header">
                                             <tr>
-                                                <th class="text-center" rowspan="2"><span>Mar.</span></th>
+                                                <th class="text-center" rowspan="2" ng-if="perfil === '11' || perfil === '16'">Mar.</th>
                                                 <th class="text-center" rowspan="2"><span>Login</span></th>
                                                 <th class="text-center" rowspan="2"><span>Tarea</span></th>
                                                 <th class="text-center" rowspan="2"><span>Arpón</span></th>
@@ -77,7 +84,7 @@
                                             </thead>
                                             <tbody>
                                             <tr ng-repeat="data in datos">
-                                                <td>
+                                                <td ng-if="perfil === '11' || perfil === '16'">
                                                     <div ng-show="data.id_soporte">
                                                         <input type="checkbox" ng-model="data.bloqueo"
                                                                name="bloqueo" id="bloqueo"

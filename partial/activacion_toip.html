@@ -92,8 +92,22 @@
                                                     <span class="label label-primary label-xsmall"
                                                           ng-if="data.login_gestion != galletainfo.login">{{data.login_gestion}}</span>
                                                 </td>
-                                                <td>{{data.pedido}}</td>
-                                                <td>{{data.tarea}}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-default btn-xs"
+                                                            ng-click="CopyPortaPapeles(data.pedido)"
+                                                            tooltip-placement="top"
+                                                            uib-tooltip="Copiar pedido" id=tv{{$index}}>
+                                                        {{data.pedido}}
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-default btn-xs"
+                                                            ng-click="CopyPortaPapeles(data.tarea)"
+                                                            tooltip-placement="top"
+                                                            uib-tooltip="Copiar tarea" id=tv{{$index}}>
+                                                        {{data.tarea}}
+                                                    </button>
+                                                </td>
                                                 <td>{{data.serial}}</td>
                                                 <td>{{data.mac}}</td>
                                                 <td>{{data.region}}</td>
@@ -135,7 +149,8 @@
                                                             class="btn btn-default btn-xs grupo-select"
                                                             name="subtipificacion" id="subtipificacion">
                                                         <option value="" selected>Seleccione</option>
-                                                        <option value="Reenvío de registros">Reenvío de registros</option>
+                                                        <option value="Reenvío de registros">Reenvío de registros
+                                                        </option>
                                                         <option value="Ninguno">Ninguno</option>
                                                     </select>
                                                 </td>

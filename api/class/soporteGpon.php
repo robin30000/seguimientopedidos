@@ -422,7 +422,7 @@ class soporteGpon
                                                fecha_respuesta,
                                                fecha_marca
                                         FROM soporte_gpon
-                                        WHERE 1 = 1 $condicion AND status_soporte = '1'
+                                        WHERE 1 = 1 $condicion 
                                         ORDER BY fecha_creado DESC
                                         limit $offset, $pagesize");
             $stmt->execute();

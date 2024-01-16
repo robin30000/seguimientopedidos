@@ -41,6 +41,12 @@ if (isset($data['method'])) {
             $res  = $user->datosTerminadosRegistros($data['data']);
             echo json_encode($res);
             break;
+		case 'damePedidoetp':
+            require_once '../class/ETP.php';
+            $user = new ETP();
+            $res = $user->damePedidoetp($data['data']);
+            echo json_encode($res);
+            break;		
         default:
             echo 'ninguna opción valida.';
             break;

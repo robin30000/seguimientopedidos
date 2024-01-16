@@ -2644,6 +2644,7 @@ app.run([
             {ID: 13, PERFIL: "Quejas GO"},
             {ID: 14, PERFIL: "Nivelacion"},
             {ID: 15, PERFIL: "Venta Instale"},
+            {ID: 16, PERFIL: "Capacitación"},
         ];
 
         $rootScope.conceptosBuscartecnico = [

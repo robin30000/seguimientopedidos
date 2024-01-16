@@ -9,10 +9,28 @@ require_once '../class/conection.php';
 
 $conn = new Conection();
 
-//$val = 123;
-$url = "http://10.100.66.254/BB8/contingencias/Buscar/GetToip/MTA_VOZ";
+$stmt = $conn->prepare("SELECT
+                                a.equipment_id, a.respuesta_aprov,
+                                CASE
+                                    WHEN (SELECT COUNT(*) FROM activacion_toip b WHERE b.tarea = a.tarea AND b.en_gestion = '2') > 0 THEN
+                                        'TRUE' ELSE 'FALSE' 
+                                END alerta 
+                            FROM
+                                activacion_toip a 
+                            WHERE
+                                a.en_gestion != '2' AND
+                                (
+                                    (SELECT COUNT(*) FROM activacion_toip b WHERE b.tarea = a.tarea AND b.en_gestion = '2') > 0
+                                )
+                            ORDER BY
+                                a.hora_ingreso;");
+$stmt->execute();
+$resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//$dataclick = (array)$resultados;
+$res = json_encode($resultados);
 
-//echo $url;exit();
+$url = "http://10.100.66.254/BB8/contingencias/Buscar/GetToip/$res";
+
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
@@ -24,9 +42,28 @@ curl_setopt($ch, CURLOPT_HEADER, 0);
 curl_setopt($ch, CURLOPT_TIMEOUT, 60);
 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
 $data = curl_exec($ch);
+//var_dump($data);exit();
 curl_close($ch);
 
 $dataclick = json_decode($data, true);
+
+
+//echo $url;exit();
+/*$ch = curl_init();
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+curl_setopt($ch, CURLOPT_URL, "$url");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HEADER, 0);
+
+curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
+$data = curl_exec($ch);
+var_dump($data);exit();
+curl_close($ch);
+
+$dataclick = json_decode($data, true);*/
 
 /*echo "<pre>";
 print_r($dataclick);
@@ -46,8 +83,6 @@ try {
         $stmt->execute(['pedido' => $datos[$i]['UNEPedido']]);
 
         if ($stmt->rowCount()) {
-            continue;
-        } elseif ($datos[$i]['UNEPedido'] === '1-65186215636876') {
             continue;
         } else {
             $stmt = $conn->prepare("INSERT INTO activacion_toip (pedido, tarea, serial, mac, region, numero_toip, hora_ingreso, hora_cierre_click, respuesta_aprov, eq_producto, categoria, task_type, equipment_id, tipo_equipo, nombre_tecnico, cc_tecnico,identificador_servicio)
@@ -77,8 +112,16 @@ try {
                 $count++;
             }
         }
-
     }
+
+    /*$stmt = $conn->prepare("DELETE FROM activacion_toip
+                                    WHERE en_gestion != '2'
+                                      AND (
+                                        (SELECT COUNT(*) FROM activacion_toip b WHERE b.tarea = activacion_toip.tarea AND b.en_gestion = '2') > 0
+                                      );");
+    $stmt->execute();*/
+
+
 } catch (PDOException $e) {
     var_dump($e);
 }

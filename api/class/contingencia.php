@@ -145,6 +145,7 @@ class Contingencia
                 $fechaFin = $data['fecha']['fechafin'];
             } else {
                 $fechaIni = date('Y-m-d');
+                //$fechaIni = '2024-01-15';
                 $fechaFin = date('Y-m-d');
             }
 
@@ -612,39 +613,80 @@ class Contingencia
     public function datoscontingencias()
     {
         try {
-            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();
-            if (!$_SESSION) {
-                $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
-            } else {*/
 
-            $stmt = $this->_DB->query("SELECT c.pedido,  REPLACE (c.macEntra,CHAR(45),CONCAT(CHAR(10),CHAR(10),CHAR(10)))AS macEntra, REPLACE (c.macSale,CHAR(45),CONCAT(CHAR(10),CHAR(10),CHAR(10))) AS macSale, c.logincontingencia, REPLACE (c.paquetes,CHAR(47),CONCAT(CHAR(10),CHAR(10),CHAR(10)))AS paquetes, c.ciudad, c.proceso, c.accion, c.tipoEquipo, c.remite, c.observacion, 
-					c.engestion, c.producto, c.grupo, c.horagestion, c.perfil, c.tipificacion, c.acepta, c.loginContingenciaPortafolio, c.aceptaPortafolio, c.tarea,
-					c.tipificacionPortafolio, c.enGestionPortafolio, c.fechaClickMarcaPortafolio, c.id_terreno, CASE WHEN (SELECT COUNT(*)
-					FROM contingencias c1
-					WHERE c1.pedido=c.pedido AND c1.horagestion >= DATE_SUB(CURDATE(), INTERVAL 10 DAY) AND c1.finalizado = 'OK') > 0 THEN 'TRUE' ELSE 'FALSE' END alerta 
-				FROM contingencias c
-				WHERE c.finalizado IS NULL AND c.finalizadoPortafolio IS NULL AND c.pedido <> '' and grupo in ('TV', 'INTER')
-				ORDER BY c.horagestion");
+            $stmt = $this->_DB->query("SELECT
+                                        c.pedido,
+                                        REPLACE (
+                                            c.macEntra,
+                                            CHAR ( 45 ),
+                                            CONCAT(
+                                                CHAR ( 10 ),
+                                                CHAR ( 10 ),
+                                            CHAR ( 10 ))) AS macEntra,
+                                        REPLACE (
+                                            c.macSale,
+                                            CHAR ( 45 ),
+                                            CONCAT(
+                                                CHAR ( 10 ),
+                                                CHAR ( 10 ),
+                                            CHAR ( 10 ))) AS macSale,
+                                        c.logincontingencia,
+                                        REPLACE (
+                                            c.paquetes,
+                                            CHAR ( 47 ),
+                                            CONCAT(
+                                                CHAR ( 10 ),
+                                                CHAR ( 10 ),
+                                            CHAR ( 10 ))) AS paquetes,
+                                        c.ciudad,
+                                        c.proceso,
+                                        c.accion,
+                                        c.tipoEquipo,
+                                        c.remite,
+                                        c.observacion,
+                                        c.engestion,
+                                        c.producto,
+                                        c.grupo,
+                                        c.horagestion,
+                                        c.perfil,
+                                        c.tipificacion,
+                                        c.acepta,
+                                        c.loginContingenciaPortafolio,
+                                        c.aceptaPortafolio,
+                                        c.tarea,
+                                        c.tipificacionPortafolio,
+                                        c.enGestionPortafolio,
+                                        c.fechaClickMarcaPortafolio,
+                                        c.id_terreno,
+                                    CASE
+                                            
+                                            WHEN (
+                                            SELECT
+                                                COUNT(*) 
+                                            FROM
+                                                contingencias c1 
+                                            WHERE
+                                                c1.pedido = c.pedido 
+                                                AND c1.horagestion >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                AND c1.finalizado = 'OK' 
+                                                ) > 0 THEN
+                                                'TRUE' ELSE 'FALSE' 
+                                            END alerta 
+                                    FROM
+                                        contingencias c 
+                                    WHERE
+                                        c.finalizado IS NULL 
+                                        AND c.finalizadoPortafolio IS NULL 
+                                        AND c.pedido <> '' 
+                                        AND grupo IN ( 'TV', 'INTER' ) 
+                                    ORDER BY
+                                        c.horagestion");
+
             $stmt->execute();
 
             if ($stmt->rowCount()) {
                 $response = ['state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
 
-                /*$resultadoTV = [];
-                $resultadoOTROS = [];
-                $resultadoPORTAFOLIO = [];
-                foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
-
-                    if ($row['grupo'] == "TV" || "INTER") {
-                        $resultadoTV[] = $row;
-                    } elseif ($row['grupo'] == "INTER") {
-                        $resultadoOTROS[] = $row;
-                    } elseif ($row['grupo'] == "PORTAFOLIO") {
-                        $resultadoPORTAFOLIO[] = $row;
-                    }
-                }*/
             } else {
                 $response = ['state' => false, 'data' => 'No se encontraron registros'];
 
@@ -854,6 +896,7 @@ class Contingencia
                 $tipificacion = (isset($datosguardar['tipificacion'])) ? $datosguardar['tipificacion'] : '';
                 $generarCr = (isset($datosguardar['generarcr'])) ? $datosguardar['generarcr'] : 0;
                 $horacontingencia = date("Y-m-d H:i:s");
+                $tarea = $datosguardar['tarea'];
 
                 if ($tipificacion == 'Ok') {
                     $acepta = 'Acepta';
@@ -863,11 +906,11 @@ class Contingencia
 
                 $stmt = $this->_DB->prepare("SELECT id, logincontingencia
 					FROM contingencias
-					WHERE pedido = :pedido
+					WHERE tarea = :tarea
 					AND producto= :producto
 					AND finalizado IS NULL");
 
-                $stmt->execute([':pedido' => $pedido, ':producto' => $producto]);
+                $stmt->execute([':tarea' => $tarea, ':producto' => $producto]);
 
                 if ($stmt->rowCount()) {
 
@@ -1125,102 +1168,6 @@ class Contingencia
                 ]);
 
                 $response = ['Datos actualizados', 201];
-            } else {
-                $response = 0;
-            }
-        } catch (PDOException $e) {
-            var_dump($e->getMessage());
-        }
-        $this->_DB = null;
-        echo json_encode($response);
-    }
-
-    public function garantiasInstalaciones($data)
-    {
-
-        try {
-            /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();*/
-            $mes = $data;
-
-            $sqlDeparGarantias = $this->_DB->prepare("select Insta.departamento_dane,
-                                                                   count(Insta.departamento_dane)                                                                            as Total,
-                                                                   round((select count(departamento_dane) where departamento_dane = Insta.departamento_dane and mesInsta = Insta.mesInsta) /
-                                                                         (select count(departamento_dane) from garantias_insta where mesInsta = Insta.mesInsta) * 100, 1) as porcentaje
-                                                            from garantias_insta Insta
-                                                            where mesInsta = :mes
-                                                            group by Insta.departamento_dane
-                                                            order by Insta.departamento_dane");
-
-            $sqlDeparGarantias->execute([':mes' => $mes]);
-
-            $sqlTecnicos = $this->_DB->prepare("select cod_funcionario,
-                                                           (case
-                                                                when count(cod_funcionario) >= '30' then 'Mayores a 30'
-                                                                when count(cod_funcionario) >= '20' and count(cod_funcionario) < '30' then 'Entre 20-29'
-                                                                when count(cod_funcionario) >= '15' and count(cod_funcionario) < '20' then 'Entre 15-19'
-                                                                when count(cod_funcionario) >= '10' and count(cod_funcionario) < '15' then 'Entre 10-14'
-                                                                when count(cod_funcionario) >= '0' and count(cod_funcionario) < '10' then 'Entre 0-10' end) Totalfrom garantias_insta
-                                                    where mesInsta = :mes
-                                                    group by cod_funcionario
-                                                    order by count(cod_funcionario) DESC");
-
-            $sqlTecnicos->execute([':mes' => $mes]);
-
-            $sqlCausa = $this->_DB->prepare("select causa_falla, count(*) Total 
-            from garantias_insta 
-            where mesInsta = :mes
-            group by causa_falla 
-            order by count(*) DESC");
-
-            $sqlCausa->execute([':mes' => $mes]);
-
-            if ($sqlDeparGarantias->rowCount()) {
-
-                $resultado = $sqlDeparGarantias->fetchAll(PDO::FETCH_ASSOC);
-                $Rangostecnicos = [];
-                $RangosCausas = [];
-                $May30 = 0;
-                $Entre20_29 = 0;
-                $Entre15_19 = 0;
-                $Entre10_14 = 0;
-                $Entre0_10 = 0;
-
-                if ($sqlTecnicos->rowCount()) {
-
-                    while ($sqlTecnicos->fetchAll(PDO::FETCH_ASSOC)) {
-
-                        /* if ($sqlTecnicos['Total'] == 'Mayores a 30') {
-                            $May30 = $May30 + 1;
-                        } elseif ($sqlTecnicos['Total'] == 'Entre 20-29') {
-                            $Entre20_29 = $Entre20_29 + 1;
-                        } elseif ($sqlTecnicos['Total'] == 'Entre 15-19') {
-                            $Entre15_19 = $Entre15_19 + 1;
-                        } elseif ($sqlTecnicos['Total'] == 'Entre 10-14') {
-                            $Entre10_14 = $Entre10_14 + 1;
-                        } else {
-                            $Entre0_10 = $Entre0_10 + 1;
-                        } */
-                    }
-                    $Rangostecnicos[] = ["rango" => "Mayor 30", "total" => "$May30"];
-                    $Rangostecnicos[] = ["rango" => "Entre 20-29", "total" => "$Entre20_29"];
-                    $Rangostecnicos[] = ["rango" => "Entre 15-19", "total" => "$Entre15_19"];
-                    $Rangostecnicos[] = ["rango" => "Entre 10-14", "total" => "$Entre10_14"];
-                    $Rangostecnicos[] = ["rango" => "Entre 0-9", "total" => "$Entre0_10"];
-                }
-
-                /* if ($sqlCausa->rowCount()) {
-
-                    while ($sqlCausa->fetchAll([PDO::FETCH_ASSOC])) {
-
-                        if ($sqlCausa['Total'] >= '30') {
-                            $RangosCausas[] = $sqlCausa;
-                        }
-                    }
-                } */
-
-                $response = [$resultado, $Rangostecnicos, $RangosCausas, 201];
             } else {
                 $response = 0;
             }
@@ -1631,6 +1578,7 @@ class Contingencia
                 $pedido = $datosguardar['pedido'];
                 $gestion = $datosguardar['bloqueo'];
                 $producto = $datosguardar['producto'];
+                $tarea = $datosguardar['tarea'];
 
                 if ($gestion == true) {
                     $gestion = 1;
@@ -1638,7 +1586,7 @@ class Contingencia
                     $gestion = 0;
                 }
 
-                $query = "SELECT id FROM contingencias where engestion = 0 and finalizado is null and pedido = '$pedido' and producto = '$producto' ";
+                $query = "SELECT id FROM contingencias where engestion = 0 and finalizado is null and tarea = '$tarea' and producto = '$producto' ";
 
                 $rst = $this->_DB->query($query);
                 $rst->execute();
@@ -1661,7 +1609,7 @@ class Contingencia
                         $response = ['state' => 2, 'title' => 'Error', 'text' => 'Ha ocurrido un error interno intentalo nuevamente'];
                     }
                 } else {
-                    $query = "SELECT id, logincontingencia FROM contingencias where engestion = 1 and finalizado is null and pedido = '$pedido' and producto = '$producto' ";
+                    $query = "SELECT id, logincontingencia FROM contingencias where engestion = 1 and finalizado is null and tarea = '$tarea' and producto = '$producto' ";
 
                     $rst = $this->_DB->query($query);
                     $rst->execute();
@@ -1677,7 +1625,7 @@ class Contingencia
                         if ($stmt->rowCount() == 1) {
                             $response = ['state' => 1, 'title' => 'Desbloqueado', 'text' => 'El pedido se encuentra Desbloqueado'];
                         } else {
-                            $response = ['state' => 2, 'title' => 'Error', 'text' => 'Ha ocurrido un error interno intentalo nuevamente'];
+                            $response = ['state' => 2, 'title' => 'Error', 'text' => 'Ha ocurrido un error interno intentalo nuevamente .'];
                         }
                     } else {
                         $response = ['state' => 2, 'title' => 'Bloqueado', 'text' => 'El pedido se encuentra en gestión por otro agente'];
@@ -1824,23 +1772,21 @@ class Contingencia
             $producto = $res[0]['producto'];
             $tarea = $res[0]['tarea'];
 
-            /*            if ($gestion == true) {
-                            $gestion = 1;
-                        } else {
-                            $gestion = 0;
-                        }*/
-
-            $query = "SELECT id FROM contingencias where engestion = 0 and finalizado is null and pedido = '$pedido' and producto = '$producto' ";
+            $query = "SELECT id FROM contingencias where engestion = 0 and finalizado is null and tarea = '$tarea' and producto = '$producto' ";
 
             $rst = $this->_DB->query($query);
             $rst->execute();
             $row = $rst->fetch(PDO::FETCH_OBJ);
             $id = $row->id;
 
+            //echo $id;exit();
+
             $stmt = $this->_DB->query("SELECT login FROM usuarios WHERE perfil = '11'");
             $stmt->execute();
             $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $usuarios_array = array_column($res, 'login');
+
+            
 
             if ($rst->rowCount() === 1) {
 

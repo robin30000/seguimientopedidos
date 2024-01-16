@@ -979,7 +979,7 @@ echo 1;exit();
                             ':pass' => $passM,
                             ':region' => $datos[$i]['region'],
                             ':contrato' => $datos[$i]['contrato'],
-                            ':password_click' => $result[0]['password'],
+                            ':password_click' => $result[0]['password'] ?? 0,
                             ':pass_apk' => $pass,
                         ]
                     );

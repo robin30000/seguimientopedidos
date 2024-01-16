@@ -52,13 +52,14 @@ class ETP
             if (empty($user)) {
                 $response = ['state' => false, 'msj' => 'Su session ha caducado. Inicia session nuevamente para continuar'];
             }else {
-                $stmt = $this->_DB->prepare("SELECT status_soporte, login_gestion FROM etp WHERE id_soporte = :id");
-                $stmt->execute([':id' => $id]);
 
                 $stmt = $this->_DB->query("SELECT login FROM usuarios WHERE perfil = '11'");
                 $stmt->execute();
-                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $usuarios_array = array_column($res, 'login');
+                $res1 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $usuarios_array = array_column($res1, 'login');
+
+                $stmt = $this->_DB->prepare("SELECT status_soporte, login_gestion FROM etp WHERE id_soporte = :id");
+                $stmt->execute([':id' => $id]);
 
                 if ($stmt->rowCount()) {
                     $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -95,6 +96,54 @@ class ETP
 
         $this->_DB = null;
 
+    }
+	
+	  public function damePedidoetp($data)
+    {
+        try {
+            $login = $data;
+
+            if (!$login) {
+                $data = ['state' => 99, 'title' => 'Su session ha expirado', 'text' => 'Inicia session nuevamente para continuar'];
+                echo json_encode($data);
+                exit();
+            }
+
+            $stmt = $this->_DB->query("SELECT
+											c.id_soporte,
+											c.tarea
+										FROM
+											seguimientopedidos.etp c 
+										WHERE
+											 c.tarea <> '' 
+											AND login_gestion IS NULL 
+										ORDER BY
+											c.fecha_crea limit 1");
+            $stmt->execute();
+
+            if ($stmt->rowCount() === 1) {
+
+                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $id_soporte = $res[0]['id_soporte'];
+                $tarea = $res[0]['tarea'];
+
+                $stmt = $this->_DB->prepare("UPDATE etp SET status_soporte = '1', login_gestion = :login, fecha_marca = :fecha WHERE id_soporte = :id");
+                $stmt->execute([':login' => $login, ':fecha' => date('Y-m-d H:i:s'), ':id' => $id_soporte]);
+
+                if ($stmt->rowCount() == 1) {
+                    $response = ['state' => true, 'title' => 'Bien', 'text' => 'Se le asigna la ' . $tarea . ' al asesor ' . $login];
+                } else {
+                    $response = ['state' => false, 'title' => 'Opss..', 'text' => 'Ha ocurrido un error interno intentalo nuevamente'];
+                }
+            } else{
+                $response = ['state' => false, 'title' => 'Opss..', 'text' => 'No se encontrarón registros disponibles'];
+            }
+
+            $this->_DB = '';
+            return $response;
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
     }
 
     public function guarda($data)

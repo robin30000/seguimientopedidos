@@ -55,13 +55,14 @@ class Toip
                 $stmt = $this->_DB->prepare("SELECT en_gestion, login_gestion FROM activacion_toip WHERE id = :id");
                 $stmt->execute([':id' => $id]);
 
-                $stmt = $this->_DB->query("SELECT login FROM usuarios WHERE perfil = '11'");
-                $stmt->execute();
-                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $usuarios_array = array_column($res, 'login');
-
                 if ($stmt->rowCount()) {
                     $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                    $stmt = $this->_DB->query("SELECT login FROM usuarios WHERE perfil = '11'");
+                    $stmt->execute();
+                    $res1 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $usuarios_array = array_column($res1, 'login');
+                    
                     if ($res[0]['en_gestion'] == 0) {
                         $stmt = $this->_DB->prepare("UPDATE activacion_toip SET en_gestion = '1', login_gestion = :user, hora_marca = :fecha WHERE id = :id");
                         $stmt->execute([':user' => $user, ':fecha' => date('Y-m-d H:i:s'), ':id' => $id]);
