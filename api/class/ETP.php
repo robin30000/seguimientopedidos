@@ -217,9 +217,10 @@ class ETP
                 $stmt = $this->_DB->query("SELECT * FROM etp where 1=1 $con  ORDER BY fecha_crea desc");
                 $stmt->execute();
             }else{
-                $stmt = $this->_DB->query("SELECT * FROM etp  ORDER BY fecha_crea");
+                $stmt = $this->_DB->query("SELECT count(*) as counter FROM etp  ORDER BY fecha_crea");
                 $stmt->execute();
-                $count = $stmt->rowCount();
+                $res = $stmt->fetch(PDO::FETCH_OBJ);
+                $count = $res->counter;
 
                 $stmt = $this->_DB->query("SELECT * FROM etp where 1=1 $con  ORDER BY fecha_crea LIMIT $offset, $pagesize");
                 $stmt->execute();

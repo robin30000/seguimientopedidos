@@ -96,6 +96,7 @@
                                                 <th>Tipo equipo</th>
                                                 <th>Remitente</th>
                                                 <th>Tipificación</th>
+                                                <th>TaskType</th>
                                                 <th>Observaciones</th>
                                             </tr>
                                             </thead>
@@ -195,6 +196,7 @@
                                                         <option value="No uso SARA">No uso SARA</option>
                                                     </select>
                                                 </td>
+                                                <td>{{data.taskType}}</td>
                                                 <td class="icons_in_tables">
 
                                                     <button popover-placement="left" uib-popover="{{data.observacion}}"
@@ -410,7 +412,7 @@
                                 <ul class="list-group small">
                                         <span>
                                             <a href="" ng-repeat="data in taskType"
-                                               class="list-group-item animated slideInRight">{{data.taskType}}:
+                                               class="list-group-item animated slideInRight">{{data.resultado}}:
                                                 <span class="badge ">{{data.cantidad}}</span>
                                             </a>
                                         </span>

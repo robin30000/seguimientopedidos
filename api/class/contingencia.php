@@ -335,13 +335,17 @@ class Contingencia
 
             $stmt = $this->_DB->prepare("SELECT
                                                   COUNT(*) as cantidad,
-                                                  taskType
+                                                  CASE
+                                                    WHEN taskType LIKE '%REPARACI%' THEN 'Reparación'
+                                                    WHEN taskType LIKE '%NUEVO%' THEN 'Nuevo'
+                                                    ELSE 'Upgrade'
+                                                END AS resultado
                                                 FROM
                                                   contingencias
-                                                WHERE
-                                                  taskType IN ('Nuevo', 'Upgrade', 'Reparación') AND horagestion BETWEEN ('$fechaIni 00:00:00') AND ('$fechaFin 23:59:59')
+                                                WHERE 1 = 1
+                                                   AND horagestion BETWEEN ('$fechaIni 00:00:00') AND ('$fechaFin 23:59:59')
                                                 GROUP BY
-                                                  taskType;");
+                                                  resultado;");
             $stmt->execute();
             $taskType = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -615,6 +619,7 @@ class Contingencia
         try {
 
             $stmt = $this->_DB->query("SELECT
+                                        c.taskType,
                                         c.pedido,
                                         REPLACE (
                                             c.macEntra,
@@ -1682,27 +1687,41 @@ class Contingencia
 
     public function consultaTipoTarea($data)
     {
+        /*if (stripos($typeTask, 'NUEVO') !== false) {
+            $typeTask = 'Nuevo';
+        } elseif (stripos($typeTask, 'REPARACION') !== false) {
+            $typeTask = 'Reparación';
+        } else {
+            $typeTask = 'Upgrade';
+        }*/
+
+
         try {
             $cond = "";
             if ($data === 'Todos') {
-                $cond = " AND taskType IN ('Nuevo', 'Upgrade', 'Reparación') ";
+                $cond = "  ";
             } elseif ($data === 'Pendientes') {
-                $cond = " AND taskType IN ('Nuevo', 'Upgrade', 'Reparación') AND finalizado IS NULL ";
+                $cond = "  AND finalizado IS NULL ";
             } elseif ($data === 'Aceptados') {
-                $cond = " AND taskType IN ('Nuevo', 'Upgrade', 'Reparación') AND tipificacion = 'Ok' ";
+                $cond = " AND tipificacion = 'Ok' ";
             } elseif ($data === 'Rechazados') {
-                $cond = " AND taskType IN ('Nuevo', 'Upgrade', 'Reparación') AND tipificacion <> 'Ok' ";
+                $cond = " AND tipificacion <> 'Ok' ";
             }
             $fechaIni = date('Y-m-d');
             $stmt = $this->_DB->prepare("SELECT
                                                   COUNT(*) as cantidad,
-                                                  taskType
+                                                  CASE
+                                                      
+                                                    WHEN taskType LIKE '%REPARACI%' THEN 'Reparación'
+                                                    WHEN taskType LIKE '%NUEVO%' THEN 'Nuevo'
+                                                    ELSE 'Upgrade'
+                                                END AS resultado
                                                 FROM
                                                   contingencias
                                                 WHERE 1=1
                                                   $cond AND horagestion BETWEEN ('$fechaIni 00:00:00') AND ('$fechaIni 23:59:59')
                                                 GROUP BY
-                                                  taskType;");
+                                                  resultado;");
             $stmt->execute();
 
             $taskType = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -1786,7 +1805,6 @@ class Contingencia
             $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $usuarios_array = array_column($res, 'login');
 
-            
 
             if ($rst->rowCount() === 1) {
 

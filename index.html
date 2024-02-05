@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html ng-app="seguimientopedidos" lang="es">
+<html lang="es" ng-app="seguimientopedidos">
 <head>
     <meta charset="UTF-8">
-    <meta name="google" content="notranslate"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <base href="/seguimientopedidos/">
-    <link rel="stylesheet" href="css/select2.min.css"/>
+    <meta content="notranslate" name="google"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <base href="/seguimientopedidos-dev/">
+    <link href="css/select2.min.css" rel="stylesheet"/>
     <link href="css/font-awesome.min.css" rel="stylesheet">
-    <link rel="shortcut icon" type="image/ico" href="img/favicon.ico"/>
-    <link rel="stylesheet" href="css/angularjs-datetime-picker.css"/>
-    <link rel="stylesheet" type="text/css" href="css/ui-grid.min.css"/>
-    <link rel="stylesheet" href="js/sweetalert/sweetalert2.min.css">
+    <link href="img/favicon.ico" rel="shortcut icon" type="image/ico"/>
+    <link href="css/angularjs-datetime-picker.css" rel="stylesheet"/>
+    <link href="css/ui-grid.min.css" rel="stylesheet" type="text/css"/>
+    <link href="js/sweetalert/sweetalert2.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="css/style.css"/>
+    <link href="css/style.css" rel="stylesheet" type="text/css"/>
     <title>{{tituloPagina}}</title>
 </head>
 
@@ -47,6 +47,8 @@
 
 <!--app-->
 <script src="app/app.js?v=1"></script>
+<script src="routes.js"></script>
+<script src="app/constant.js"></script>
 <script src="app/login.js?v=11"></script>
 <script src="app/activacion_toip.js?v=1"></script>
 <script src="app/etp.js"></script>
@@ -78,9 +80,12 @@
 <script src="app/novedadesVisita.js"></script>
 <script src="app/menuPerfil.js"></script>
 <script src="app/supervisor.js"></script>
+<script src="app/recuperar-login.js"></script>
 <!--fin app-->
 
-
+<script src="js/angular/angular-recaptcha.min.js"></script>
+<script async
+        defer src="https://www.google.com/recaptcha/api.js?onload=vcRecaptchaApiLoaded&render=explicit"></script>
 <script src="js/angularjs-datetime-picker.min.js"></script>
 <script src="js/angular-file-upload.js"></script>
 <script src="js/angularjs-dropdown-multiselect.js"></script>

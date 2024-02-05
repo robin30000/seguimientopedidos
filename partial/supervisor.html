@@ -14,6 +14,12 @@
                             <a data-toggle="tab" href="/#mesa3">Mesa 8.9</a>
                         </li>
                         <li>
+                            <a data-toggle="tab" href="/#mesa5">Rescate Upgrades</a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="/#mesa6">BSC</a>
+                        </li>
+                        <li>
                             <a data-toggle="tab" href="/#mesa4">Premisas extendidas</a>
                         </li>
                         <li>
@@ -261,6 +267,175 @@
                                                     <span class="label label-primary label-xsmall"
                                                           ng-if="data.login_gestion != galletainfo.login">{{data.login_gestion}}</span>
                                                 </td>
+                                                <td>
+                                                    <button class="btn btn-default btn-xs" id=i{{$index}}
+                                                            ng-click="CopyPortaPapeles(data.tarea)"
+                                                            tooltip-placement="top" type="button"
+                                                            uib-tooltip="Copiar tarea">{{data.tarea}}
+                                                    </button>
+                                                </td>
+                                                <td>{{data.UneSourceSystem}}</td>
+                                                <td>{{data.num_contacto_tecnico}}</td>
+                                                <td>{{data.nombre_tecnico}}</td>
+                                                <td>{{data.TaskTypeCategory}}</td>
+                                                <td>{{data.pedido}}</td>
+                                                <td>{{data.hora_ingreso}}</td>
+                                                <td>
+                                                    <button class="btn btn-default btn-xs"
+                                                            popover-placement="left"
+                                                            tooltip-placement="top" type="button"
+                                                            uib-popover="{{data.observacion_tecnico}}"
+                                                            uib-tooltip="Observación técnico">
+                                                        <i aria-hidden="true" class="fa fa-commenting"></i>
+                                                    </button>
+                                                </td>
+                                                <td>{{data.accion_tecnico}}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="mesa5">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="table">
+                                    <br>
+                                    <ul class="nav navbar-nav pull-left">
+                                        <li>
+                                            &nbsp;
+                                            &nbsp;
+                                            <b>Rescate Upgrades</b> <span class="badge badge-default">{{Items5}}</span>
+                                        </li>
+                                        <li>
+                                            &nbsp;
+                                            &nbsp;
+                                            <div data-ng-if="loading">
+                                                <img data-placement="top" src="img/loader.gif"
+                                                     title="Esperando respuesta"
+                                                     tooltip/>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            &nbsp;
+                                            &nbsp;
+                                            <button class="btn btn-default btn-xs" data-placement="top"
+                                                    data-toggle="tooltip" ng-click="recargaPageGestion(5)"
+                                                    ng-disabled="loading" title="Actualizar" type="button">
+                                                <i aria-hidden="true" class="fa fa-refresh"></i>
+                                            </button>
+                                        </li>
+                                        &nbsp;
+                                    </ul>
+                                    <br><br>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover table-condensed small">
+                                            <thead class="table-header">
+                                            <tr>
+                                                <th class="text-center"><span>Login</span></th>
+                                                <th class="text-center"><span>Tarea</span></th>
+                                                <th class="text-center"><span>Sistema</span></th>
+                                                <th class="text-center"><span>Cel técnico</span></th>
+                                                <th class="text-center"><span>Nombre técnico</span></th>
+                                                <th class="text-center"><span>Categoría</span></th>
+                                                <th class="text-center"><span>Pedido</span></th>
+                                                <th class="text-center"><span>Fecha ingreso</span></th>
+                                                <th class="text-center"><span>Obs. técnico</span></th>
+                                                <th class="text-center"><span>Acción técnico</span></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr ng-repeat="data in mesa5">
+                                                <td>
+                                                    <span class="label label-primary label-xsmall"
+                                                          ng-if="data.login_gestion == galletainfo.login">{{data.login_gestion}}</span>
+                                                    <span class="label label-primary label-xsmall"
+                                                          ng-if="data.login_gestion != galletainfo.login">{{data.login_gestion}}</span>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-default btn-xs" id=i{{$index}}
+                                                            ng-click="CopyPortaPapeles(data.tarea)"
+                                                            tooltip-placement="top" type="button"
+                                                            uib-tooltip="Copiar tarea">{{data.tarea}}
+                                                    </button>
+                                                </td>
+                                                <td>{{data.UneSourceSystem}}</td>
+                                                <td>{{data.num_contacto_tecnico}}</td>
+                                                <td>{{data.nombre_tecnico}}</td>
+                                                <td>{{data.TaskTypeCategory}}</td>
+                                                <td>{{data.pedido}}</td>
+                                                <td>{{data.hora_ingreso}}</td>
+                                                <td>
+                                                    <button class="btn btn-default btn-xs"
+                                                            popover-placement="left"
+                                                            tooltip-placement="top" type="button"
+                                                            uib-popover="{{data.observacion_tecnico}}"
+                                                            uib-tooltip="Observación técnico">
+                                                        <i aria-hidden="true" class="fa fa-commenting"></i>
+                                                    </button>
+                                                </td>
+                                                <td>{{data.accion_tecnico}}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="mesa6">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="table">
+                                    <br>
+                                    <ul class="nav navbar-nav pull-left">
+                                        <li>
+                                            &nbsp;
+                                            &nbsp;
+                                            <b>Rescate Upgrades</b> <span class="badge badge-default">{{Items7}}</span>
+                                        </li>
+                                        <li>
+                                            &nbsp;
+                                            &nbsp;
+                                            <div data-ng-if="loading">
+                                                <img data-placement="top" src="img/loader.gif"
+                                                     title="Esperando respuesta"
+                                                     tooltip/>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            &nbsp;
+                                            &nbsp;
+                                            <button class="btn btn-default btn-xs" data-placement="top"
+                                                    data-toggle="tooltip" ng-click="recargaPageGestion(7)"
+                                                    ng-disabled="loading" title="Actualizar" type="button">
+                                                <i aria-hidden="true" class="fa fa-refresh"></i>
+                                            </button>
+                                        </li>
+                                        &nbsp;
+                                    </ul>
+                                    <br><br>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover table-condensed small">
+                                            <thead class="table-header">
+                                            <tr>
+                                                <th class="text-center"><span>Tarea</span></th>
+                                                <th class="text-center"><span>Sistema</span></th>
+                                                <th class="text-center"><span>Cel técnico</span></th>
+                                                <th class="text-center"><span>Nombre técnico</span></th>
+                                                <th class="text-center"><span>Categoría</span></th>
+                                                <th class="text-center"><span>Pedido</span></th>
+                                                <th class="text-center"><span>Fecha ingreso</span></th>
+                                                <th class="text-center"><span>Obs. técnico</span></th>
+                                                <th class="text-center"><span>Acción técnico</span></th>
+
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr ng-repeat="data in mesa7">
+
                                                 <td>
                                                     <button class="btn btn-default btn-xs" id=i{{$index}}
                                                             ng-click="CopyPortaPapeles(data.tarea)"

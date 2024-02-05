@@ -62,7 +62,7 @@ class Toip
                     $stmt->execute();
                     $res1 = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     $usuarios_array = array_column($res1, 'login');
-                    
+
                     if ($res[0]['en_gestion'] == 0) {
                         $stmt = $this->_DB->prepare("UPDATE activacion_toip SET en_gestion = '1', login_gestion = :user, hora_marca = :fecha WHERE id = :id");
                         $stmt->execute([':user' => $user, ':fecha' => date('Y-m-d H:i:s'), ':id' => $id]);
@@ -156,50 +156,42 @@ class Toip
             $offset = ($pagenum - 1) * $pagesize;
 
             $con = '';
+
             if (isset($data['data']['fechaini']) && isset($data['data']['fechafin'])) {
-                if ($data['data']['fechaini'] == '' && $data['data']['fechafin'] == '') {
-                    if (isset($data['data']['pedido'])) {
-                        $con;
-                    }
-                } else {
-                    if (isset($data['data']['pedido'])) {
-                    } else {
-                        $fechaini = $data['data']['fechaini'];
-                        $fechafin = $data['data']['fechafin'];
-
-                        $con = " and hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
-                    }
-                }
-
+                $fechaini = $data['data']['fechaini'];
+                $fechafin = $data['data']['fechafin'];
+                $con .= " and hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
+            } else {
+                $fechaini = date('Y-m-d');
+                $fechafin = date('Y-m-d');
+                $con .= " and hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
             }
 
             if (isset($data['data']['pedido'])) {
                 $pedido = $data['data']['pedido'];
-                $con .= " AND pedido = '$pedido' OR tarea = '$pedido'";
+                $con .= " AND pedido = '$pedido'";
             }
 
             if (isset($data['data']['filtro'])) {
                 if ($data['data']['filtro'] == 'Gestionados') {
-                    $con .= "AND en_gestion = 2 ";
+                    $con .= "AND en_gestion = '2' ";
                 } elseif ($data['data']['filtro'] == 'Sin gestionar') {
-                    $con .= "AND en_gestion IN (0,1)";
-                } elseif ($data['data']['filtro'] == 'Todos') {
-
+                    $con .= "AND en_gestion IN ('0','1')";
                 }
             } else {
-                $con .= "AND en_gestion = 2 ";
+                $con .= "AND en_gestion = '2' ";
             }
+
             if (isset($data['export'])) {
                 $count = 1;
-                $stmt = $this->_DB->query("SELECT * FROM activacion_toip where 1=1 $con  ORDER BY hora_ingreso desc");
+                $stmt = $this->_DB->prepare("SELECT * FROM activacion_toip where 1=1 $con  ORDER BY hora_ingreso desc");
                 $stmt->execute();
             } else {
-
-                $stmt = $this->_DB->query("SELECT * FROM activacion_toip where 1=1 $con ORDER BY hora_ingreso desc");
+                $stmt = $this->_DB->prepare("SELECT * FROM activacion_toip where 1=1 $con ORDER BY hora_ingreso desc");
                 $stmt->execute();
                 $count = $stmt->rowCount();
 
-                $stmt = $this->_DB->query("SELECT * FROM activacion_toip where 1=1 $con  ORDER BY hora_ingreso desc LIMIT $offset, $pagesize");
+                $stmt = $this->_DB->prepare("SELECT * FROM activacion_toip where 1=1 $con  ORDER BY hora_ingreso desc LIMIT $offset, $pagesize");
                 $stmt->execute();
             }
 

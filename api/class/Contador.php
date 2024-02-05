@@ -24,10 +24,12 @@ class Contador
                 $stmt = $this->_DB->prepare("INSERT INTO Contador (Modulo,Fecha,Contador) VALUES (:Modulo,:Fecha,1)");
                 $stmt->execute([':Fecha' => $fecha, ':Modulo' => $data]);
             }
+
+            $this->_BD = null;
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
-        $this->_BD = null;
     }
 
     public function conteoDatos($data)
@@ -49,8 +51,9 @@ class Contador
                 $response = ['state' => false, 'msj' => 'No se encontraron datos'];
             }
 
-            return $response;
             $this->_DB = null;
+            return $response;
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }

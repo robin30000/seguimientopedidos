@@ -73,28 +73,71 @@ class kpi
 
         if (($estado == 'Acepta') && ($producto == 'Internet+Toip')) {
             $condicion = " AND  acepta = 'acepta' AND producto IN ('Internet', 'Internet+ToIP', 'ToIP') ";
+            $grupby = ", c.acepta ";
+            $sel = " c.acepta, ";
+            $oder = " ORDER BY Internet DESC; ";
         } elseif (($estado == 'Acepta') && ($producto == 'TV')) {
             $condicion = " AND  acepta = 'acepta' AND producto = 'TV' ";
+            $grupby = ", c.acepta ";
+            $sel = " c.acepta, ";
+            $oder = " ORDER BY Internet DESC; ";
         } elseif (($estado == 'Acepta') && ($producto == 'Todos')) {
             $condicion = " AND  acepta = 'acepta' AND  producto IN ('TV', 'Internet', 'Internet+ToIP', 'ToIP') ";
+            $grupby = ", c.acepta ";
+            $sel = " c.acepta, ";
+            $oder = " ORDER BY Internet DESC; ";
         } elseif (($estado == 'Rechaza') && ($producto == 'Internet+Toip')) {
             $condicion = " AND  acepta = 'Rechaza' AND producto IN ('Internet', 'Internet+ToIP', 'ToIP') ";
+            $grupby = ", c.acepta ";
+            $sel = " c.acepta, ";
+            $oder = " ORDER BY Internet DESC; ";
         } elseif (($estado == 'Rechaza') && ($producto == 'TV')) {
             $condicion = " AND  acepta = 'Rechaza' AND producto = 'TV' ";
+            $grupby = ", c.acepta ";
+            $sel = " c.acepta, ";
+            $oder = " ORDER BY Internet DESC; ";
         } elseif (($estado == 'Rechaza') && ($producto == 'Todos')) {
-            $condicion = " AND  acepta = 'Rechaza' AND  producto IN ('TV', 'Internet', 'Internet+ToIP', 'ToIP') ";
+            $condicion = " AND  acepta = 'Rechaza' AND producto IN ('TV', 'Internet', 'Internet+ToIP', 'ToIP') ";
+            $grupby = ", c.acepta ";
+            $sel = " c.acepta, ";
+            $oder = " ORDER BY Internet DESC; ";
+        } elseif (($estado == 'Todos') && ($producto == 'TV')) {
+            $condicion = " AND acepta IN ('Rechaza', 'acepta') AND producto = 'TV'";
+            $grupby = " ";
+            $sel = " ";
+            $oder = " ORDER BY Internet DESC; ";
+        } elseif (($estado == 'Todos') && ($producto == 'Internet+Toip')) {
+            $condicion = " AND acepta IN ('Rechaza', 'acepta') AND producto IN ('Internet', 'Internet+ToIP', 'ToIP')";
+            $grupby = " ";
+            $sel = " ";
+            $oder = " ORDER BY Internet DESC; ";
+        } elseif (($estado == 'Todos') && ($producto == 'Todos')) {
+            $condicion = " AND acepta IN ('Rechaza', 'acepta') AND producto IN ('Internet', 'Internet+ToIP', 'ToIP', 'TV') ";
+            $grupby = " ";
+            $sel = " ";
+            $oder = " ORDER BY Internet DESC; ";
         } else {
-            $condicion = " AND  acepta = 'acepta' ";
+            $condicion = "  ";
+            $grupby = " ";
+            $sel = " ";
+            $oder = "  ";
         }
 
-
-        $stmt = $this->_BD->query("SELECT c.logincontingencia agente, c.acepta,
+/*        echo "SELECT c.logincontingencia agente, $sel
         SUM(CASE WHEN producto = 'TV' THEN 1 ELSE 0 END) AS 'TV',
         SUM(CASE WHEN producto IN ('Internet', 'Internet+ToIP','ToIP') THEN 1 ELSE 0 END ) AS 'Internet'
         FROM contingencias c
         INNER JOIN usuarios u ON u.login = c.logincontingencia
         WHERE c.horagestion BETWEEN '$today 00:00:00' AND '$today 23:59:59' $condicion
-        GROUP BY agente, c.acepta ORDER by Internet DESC;");
+        GROUP BY agente $grupby $oder";exit();exit();*/
+
+        $stmt = $this->_BD->query("SELECT c.logincontingencia agente, $sel
+        SUM(CASE WHEN producto = 'TV' THEN 1 ELSE 0 END) AS 'TV',
+        SUM(CASE WHEN producto IN ('Internet', 'Internet+ToIP','ToIP') THEN 1 ELSE 0 END ) AS 'Internet'
+        FROM contingencias c
+        INNER JOIN usuarios u ON u.login = c.logincontingencia
+        WHERE c.horagestion BETWEEN '$today 00:00:00' AND '$today 23:59:59' $condicion
+        GROUP BY agente $grupby $oder");
         $stmt->execute();
         if ($stmt->rowCount()) {
             $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC));
@@ -294,9 +337,9 @@ class kpi
 
         $stmt->execute();
         if ($stmt->rowCount()) {
-        $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'user' => $res);
+            $response = array('state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'user' => $res);
         } else {
-          $response = array('state' => 0, 'msj' => 'No se encontraron datos');
+            $response = array('state' => 0, 'msj' => 'No se encontraron datos');
         }
 
         echo json_encode($response);

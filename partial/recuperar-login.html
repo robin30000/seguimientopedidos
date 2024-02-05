@@ -1,0 +1,33 @@
+<br>
+<div class="container">
+
+    <div class="mi-heading col-sm-8 col-md-offset-2">
+        Formulario para reestablecer la contraseña
+    </div>
+    <br><br>
+    <br>
+    <div class="col-md-4">
+    </div>
+    <div class="col-md-4 recupera-pass">
+        <form name="recupera" ng-submit="guardarForm(data)" novalidate>
+            <div class="form-group">
+                <label for="pass">Contraseña</label>
+                <input class="form-control input-sm" id="pass" minlength="6" name="pass" ng-model="data.login"
+                       placeholder="Contraseña" required type="password">
+
+            </div>
+            <div class="form-group">
+                <label for="confirmPass">Confirmar contraseña</label>
+                <input class="form-control input-sm"  id="confirmPass"
+                       minlength="6"
+                       ng-model="data.confirmLogin" placeholder="Confirmar contraseña" required type="password">
+
+            </div>
+            <button class="btn btn-info" ng-disabled="(recupera.$invalid)" type="submit">
+                Guardar
+            </button>
+        </form>
+    </div>
+    <div class="col-md-4">
+    </div>
+</div>

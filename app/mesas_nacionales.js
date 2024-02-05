@@ -24,6 +24,8 @@
             mesa2();
             mesa3();
             mesa4();
+            mesa6();
+            mesa7();
             registros();
         }
 
@@ -58,6 +60,24 @@
             services.myService('', 'mesasNacionalesCtrl.php', 'mesa4').then((data) => {
                 $scope.mesa4 = data.data.data;
                 $scope.Items4 = data.data.counter;
+            }).catch((e) => {
+                console.log(e)
+            })
+        }
+
+        function mesa6() {
+            services.myService('', 'mesasNacionalesCtrl.php', 'mesa6').then((data) => {
+                $scope.mesa6 = data.data.data;
+                $scope.Items6 = data.data.counter;
+            }).catch((e) => {
+                console.log(e)
+            })
+        }
+
+        function mesa7() {
+            services.myService('', 'mesasNacionalesCtrl.php', 'mesa7').then((data) => {
+                $scope.mesa7 = data.data.data;
+                $scope.Items7 = data.data.counter;
             }).catch((e) => {
                 console.log(e)
             })
@@ -196,6 +216,12 @@
                                             case 'Mesa 4' :
                                                 mesa4();
                                                 break;
+                                            case 'Mesa 5' :
+                                                mesa6();
+                                                break;
+                                            case 'Mesa 6' :
+                                                mesa7();
+                                                break;
                                         }
                                     })
                                 } else {
@@ -278,6 +304,12 @@
                 case 4 :
                     mesa4();
                     break;
+                case 6 :
+                    mesa6();
+                    break;
+                case 7 :
+                    mesa7();
+                    break;
                 case 5 :
                     registros();
                     $scope.mn = '';
@@ -286,7 +318,7 @@
         }
 
         $scope.registrosMnTiempo = (data) => {
-            if (!data.mesas){
+            if (!data.mesas) {
                 Swal({
                     type: 'error',
                     title: 'Opps..',
@@ -327,7 +359,6 @@
             }
 
 
-
             data.page = $scope.currentPage;
             data.size = $scope.pageSize;
             services.myService(data, 'mesasNacionalesCtrl.php', 'detalleMesa').then((data) => {
@@ -346,7 +377,7 @@
         }
 
         $scope.csvToip = (data) => {
-            if (!data.mesas){
+            if (!data.mesas) {
                 Swal({
                     type: 'error',
                     title: 'Opps..',

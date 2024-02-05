@@ -5,7 +5,7 @@ header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
 header('Access-Control-Max-Age: 1000');
 header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token , Authorization');
 
-$data = json_decode(file_get_contents("php://input"),true);
+$data = json_decode(file_get_contents("php://input"), true);
 
 if (isset($data['method'])) {
     switch ($data['method']) {
@@ -73,6 +73,18 @@ if (isset($data['method'])) {
             require_once '../class/user.php';
             $user = new user();
             $user->acualizaTecnicos($data['data']);
+            break;
+        case 'recuperaPassword':
+            require_once '../class/user.php';
+            $user = new user();
+            $res = $user->recuperaPassword($data['data']);
+            echo json_encode($res);
+            break;
+        case 'restauraPassword':
+            require_once '../class/user.php';
+            $user = new user();
+            $res = $user->restauraPassword($data['data']);
+            echo json_encode($res);
             break;
 
 

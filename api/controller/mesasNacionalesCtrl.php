@@ -14,49 +14,61 @@ if (isset($data['method'])) {
         case 'mesa1':
             require_once '../class/MesasNacionales.php';
             $user = new MesasNacionales();
-            $res  = $user->mesa1($data['data']);
+            $res = $user->mesa1($data['data']);
             echo json_encode($res);
             break;
         case 'mesa2':
             require_once '../class/MesasNacionales.php';
             $user = new MesasNacionales();
-            $res  = $user->mesa2($data['data']);
+            $res = $user->mesa2($data['data']);
             echo json_encode($res);
             break;
         case 'mesa3':
             require_once '../class/MesasNacionales.php';
             $user = new MesasNacionales();
-            $res  = $user->mesa3($data['data']);
+            $res = $user->mesa3($data['data']);
             echo json_encode($res);
             break;
         case 'mesa4':
             require_once '../class/MesasNacionales.php';
             $user = new MesasNacionales();
-            $res  = $user->mesa4($data['data']);
+            $res = $user->mesa4($data['data']);
+            echo json_encode($res);
+            break;
+        case 'mesa6':
+            require_once '../class/MesasNacionales.php';
+            $user = new MesasNacionales();
+            $res = $user->mesa6($data['data']);
+            echo json_encode($res);
+            break;
+        case 'mesa7':
+            require_once '../class/MesasNacionales.php';
+            $user = new MesasNacionales();
+            $res = $user->mesa7($data['data']);
             echo json_encode($res);
             break;
         case 'registros':
             require_once '../class/MesasNacionales.php';
             $user = new MesasNacionales();
-            $res  = $user->registros($data['data']);
+            $res = $user->registros($data['data']);
             echo json_encode($res);
             break;
         case 'marca':
             require_once '../class/MesasNacionales.php';
             $user = new MesasNacionales();
-            $res  = $user->marca($data['data']);
+            $res = $user->marca($data['data']);
             echo json_encode($res);
             break;
         case 'guarda':
             require_once '../class/MesasNacionales.php';
             $user = new MesasNacionales();
-            $res  = $user->guarda($data['data']);
+            $res = $user->guarda($data['data']);
             echo json_encode($res);
             break;
         case 'detalleMesa':
             require_once '../class/MesasNacionales.php';
             $user = new MesasNacionales();
-            $res  = $user->detalleMesa($data['data']);
+            $res = $user->detalleMesa($data['data']);
             echo json_encode($res);
             break;
 

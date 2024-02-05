@@ -105,6 +105,52 @@ class MesasNacionales
         }
     }
 
+    public function mesa6($data)
+    {
+        try {
+
+            $stmt = $this->_DB->query("SELECT * FROM mesas_nacionales where estado != 'Gestionado' and mesa = 'Mesa 5' ORDER BY hora_ingreso");
+            $stmt->execute();
+
+            if ($stmt->rowCount()) {
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'counter' => $stmt->rowCount()];
+            } else {
+                $response = ['state' => false, 'msj' => 'No se encontraron registros'];
+            }
+
+            $this->_DB = null;
+
+            return $response;
+
+
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+    }
+
+    public function mesa7($data)
+    {
+        try {
+
+            $stmt = $this->_DB->query("SELECT * FROM mesas_nacionales where estado != 'Gestionado' and mesa = 'Mesa 6' ORDER BY hora_ingreso");
+            $stmt->execute();
+
+            if ($stmt->rowCount()) {
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'counter' => $stmt->rowCount()];
+            } else {
+                $response = ['state' => false, 'msj' => 'No se encontraron registros'];
+            }
+
+            $this->_DB = null;
+
+            return $response;
+
+
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+    }
+
     public function registros($data)
     {
         try {
@@ -131,9 +177,10 @@ class MesasNacionales
                 $con .= " AND mesa = '$mesa' ";
             }
 
-            $stmt = $this->_DB->query("SELECT * FROM mesas_nacionales where 1=1 $con AND estado = 'Gestionado' ORDER BY hora_ingreso desc");
+            $stmt = $this->_DB->query("SELECT count(*) as count FROM mesas_nacionales where 1=1 $con AND estado = 'Gestionado' ORDER BY hora_ingreso desc LIMIT $offset, $pagesize");
             $stmt->execute();
-            $count = $stmt->rowCount();
+            $count = $stmt->fetch(PDO::FETCH_OBJ);
+            $counter = $count->count;
 
             $stmt = $this->_DB->query("SELECT
                                                     hora_ingreso,
@@ -169,7 +216,7 @@ class MesasNacionales
             $stmt->execute();
 
             if ($stmt->rowCount()) {
-                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'counter' => $count];
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'counter' => $counter];
             } else {
                 $response = ['state' => false, 'msj' => 'No se encontraron registros'];
             }
@@ -199,7 +246,6 @@ class MesasNacionales
                 $stmt->execute([':tarea' => $tarea]);
 
 
-
                 if ($stmt->rowCount()) {
                     $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -216,7 +262,7 @@ class MesasNacionales
                         } else {
                             $response = ['state' => false, 'msj' => 'Ha ocurrido un erro interno intentalo nuevamente en unos minutos'];
                         }
-                    } elseif (($res[0]['estado'] == 'En gestión') && ($res[0]['login_gestion'] == $user  || in_array($user, $usuarios_array))) {
+                    } elseif (($res[0]['estado'] == 'En gestión') && ($res[0]['login_gestion'] == $user || in_array($user, $usuarios_array))) {
                         $stmt = $this->_DB->prepare("UPDATE mesas_nacionales SET estado = 'Sin gestión', login_gestion = '' WHERE id = :tarea");
                         $stmt->execute([':tarea' => $tarea]);
                         if ($stmt->rowCount()) {

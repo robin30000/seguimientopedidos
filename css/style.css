@@ -598,3 +598,27 @@ input[type="checkbox"].switch_1{
     color: #00377d;
   }
 
+.recupera-pass {
+    background-color: #f8f9fa; /* Fondo del contenedor */
+    border: 1px solid #d3d9de; /* Borde del contenedor */
+    padding: 20px; /* Espaciado interno */
+    border-radius: 5px; /* Bordes redondeados */
+    margin-top: 20px; /* Margen superior */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
+
+}
+
+.recupera-pass form {
+    max-width: 300px; /* Ancho máximo del formulario */
+    margin: 0 auto; /* Centrar el formulario */
+}
+
+.recupera-pass .form-group {
+    margin-bottom: 15px; /* Espaciado inferior entre grupos de formulario */
+}
+
+.recupera-pass label {
+    font-weight: bold; /* Texto en negrita para las etiquetas */
+}
+
+

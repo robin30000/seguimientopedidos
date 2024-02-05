@@ -16,10 +16,22 @@ if (isset($data['method'])) {
             $res = $user->chartContingencia($data['data']);
             echo json_encode($res);
             break;
+        case 'chartAllContingencia':
+            require_once '../class/KpiCco.php';
+            $user = new KpiCco();
+            $res = $user->chartAllContingencia($data['data']);
+            echo json_encode($res);
+            break;
         case 'chartToip':
             require_once '../class/KpiCco.php';
             $user = new KpiCco();
             $res = $user->chartToip($data['data']);
+            echo json_encode($res);
+            break;
+        case 'chartAllToip':
+            require_once '../class/KpiCco.php';
+            $user = new KpiCco();
+            $res = $user->chartAllToip($data['data']);
             echo json_encode($res);
             break;
         case 'chartEtp':
@@ -28,10 +40,22 @@ if (isset($data['method'])) {
             $res = $user->chartEtp($data['data']);
             echo json_encode($res);
             break;
+        case 'chartAllEtp':
+            require_once '../class/KpiCco.php';
+            $user = new KpiCco();
+            $res = $user->chartAllEtp($data['data']);
+            echo json_encode($res);
+            break;
         case 'chartGpon':
             require_once '../class/KpiCco.php';
             $user = new KpiCco();
             $res = $user->chartGpon($data['data']);
+            echo json_encode($res);
+            break;
+        case 'chartAllGpon':
+            require_once '../class/KpiCco.php';
+            $user = new KpiCco();
+            $res = $user->chartAllGpon($data['data']);
             echo json_encode($res);
             break;
         case 'chartValidacion':
@@ -40,10 +64,28 @@ if (isset($data['method'])) {
             $res = $user->chartValidacion($data['data']);
             echo json_encode($res);
             break;
+        case 'chartAllValidacion':
+            require_once '../class/KpiCco.php';
+            $user = new KpiCco();
+            $res = $user->chartAllValidacion($data['data']);
+            echo json_encode($res);
+            break;
         case 'chartEmt':
             require_once '../class/KpiCco.php';
             $user = new KpiCco();
             $res = $user->chartEmt($data['data']);
+            echo json_encode($res);
+            break;
+        case 'chartAllEmt':
+            require_once '../class/KpiCco.php';
+            $user = new KpiCco();
+            $res = $user->chartAllEmt($data['data']);
+            echo json_encode($res);
+            break;
+        case 'graficoSiebel':
+            require_once '../class/KpiCco.php';
+            $user = new KpiCco();
+            $res = $user->charSiebel($data['data']);
             echo json_encode($res);
             break;
         default:

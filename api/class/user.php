@@ -1,11 +1,11 @@
 <?php
 
-use PHPMailer\PHPMailer\PHPMailer;
-
 require_once '../class/conection.php';
 
-error_reporting(0);
-ini_set('display_errors', 0);
+
+/*error_reporting(0);
+ini_set('display_errors', 0);*/
+error_reporting(E_ALL);
 
 class user
 {
@@ -1006,82 +1006,120 @@ echo 1;exit();
     public function recuperaPassword($data)
     {
         try {
-            $stmt = $this->_DB->prepare("SELECT * FROM usuarios where correo = :correo");
-            $stmt->execute(array(':correo' => $data));
-            if ($stmt->rowCount() == 1) {
-                $datos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $usuario = $datos[0]['login'];
-                require "../vendor/autoload.php";
-                $mail = new PHPMailer();
-                // Server settings
-                $mail->SMTPDebug = 2;                      // Enable verbose debug output
-                /* $mail->isSMTP();                                            // Send using SMTP
-                 $mail->Host = 'smtp.gmail.com';                    // Set the SMTP server to send through
-                 $mail->SMTPAuth = true;                                   // Enable SMTP authentication
-                 $mail->Username = 'racastro218@gmail.com';                     // SMTP username
-                 $mail->Password = 'Robin5000#*';           */                    // SMTP password
-                //$mail->SMTPSecure = 'tls';         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
-                //$mail->Port = 587;
+            /*$postdata = http_build_query(
+                array(
+                    'secret' => '6Lc6cF4pAAAAAFW6BBbWYd3Fb8xPb-DcnoBR6p8R',
+                    'response' => $data['captcha'],
+                    'remoteip' => $_SERVER['REMOTE_ADDR']
+                )
+            );
 
-                $mail->isSMTP();
-                $mail->Host = 'localhost';
-                $mail->SMTPAuth = false;
-                $mail->SMTPAutoTLS = false;
-                $mail->Port = 25; // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+            $opts = array('http' =>
+                array(
+                    'method' => 'POST',
+                    'header' => 'Content-type: application/x-www-form-urlencoded',
+                    'content' => $postdata
+                )
+            );
 
-                // Recipients
-                $mail->setFrom('racastro218@gmail.com', 'Mailer');
-                $mail->addAddress('robin_3x@hotmail.com', 'Joe User');     // Add a recipient
+            $context = stream_context_create($opts);
+            $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify", false, $context);
+            $response = json_decode($response, true);
 
+            if ($response["success"] === false) {
+                $response = ['type' => 'error', 'msg' => 'Captcha no valida'];
+                return $response;
+            }*/
 
-                // Content
-                $mail->isHTML(true);                                  // Set email format to HTML
-                $mail->Subject = 'Here is the subject';
-                $mail->Body = 'This is the HTML message body <b>in bold!</b>';
-                $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
-
-                //$mail->send();
-                if (!$mail->Send()) {
-                    var_dump($mail->ErrorInfo);
+            $stmt = $this->_DB->prepare("SELECT id, cambio_login FROM usuarios where correo = :correo");
+            $stmt->execute(array(':correo' => $data['email']));
+            if ($stmt->rowCount() === 1) {
+                $res = $stmt->fetch(PDO::FETCH_OBJ);
+                if ($res->cambio_login === 'si') {
+                    $response = ['state' => false, 'msg' => 'Ya tiene una solicitud activa para restablecer su contraseña'];
                 } else {
-                    echo 'ok';
+                    if ($stmt->rowCount() == 1) {
+                        $datos = ['correo' => $data['email'], 'id' => $res->id];
+                        $id = json_encode($datos);
+                        $url = "http://10.100.66.254/BB8/contingencias/Buscar/olvidoPass/$id";
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+                        curl_setopt($ch, CURLOPT_URL, "$url");
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        curl_setopt($ch, CURLOPT_HEADER, 0);
+                        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+                        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
+                        $data = curl_exec($ch);
+                        curl_close($ch);
+                        $dataclick = json_decode($data, true);
+
+                        $data = (object)$dataclick;
+
+                        if ($data->state) {
+                            $stmt1 = $this->_DB->prepare("UPDATE usuarios 
+                                                    SET cambio_login = 'si',
+                                                    fecha_cambio_login = NOW() 
+                                                    WHERE
+                                                        id = :id");
+                            $stmt1->execute(array(':id' => $res->id));
+                            $response = $data;
+                        } else {
+                            $response = $data;
+                        }
+                    }
                 }
-
-                /*$datos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $usuario = $datos[0]['login'];
-
-                require "../vendor/autoload.php";
-                $mailer = new PHPMailer();
-                $mailer->IsSMTP();
-                $mailer->Host = "smtp.gmail.com";
-                $mailer->Port = 587;
-                $mailer->SMTPDebug = 0;
-                $mailer->From = "racastro218@gmail.com";
-                $mailer->FromName = "wplay";
-                $mailer->Subject = "inconvenientes de contactos";
-
-                ob_start();
-                require_once '../../partial/template_mail/recuperar_contrasena/mailer.php';
-                $message = ob_get_contents();
-                ob_end_clean();
-
-                $mailer->SetFrom('racastro218@gmail.com', $data);
-                $mailer->msgHTML($message, dirname(__FILE__));
-                $mailer->AddAddress('racastro218@gmail.com', $data);
-                $mailer->isHTML(true);
-                $mailer->CharSet = "utf-8";
-                $mailer->SMTPAuth = true;
-                $mailer->Username = "racastro218@gmail.com";
-                $mailer->Password = "Robin5000#*";
-
-                if (!$mailer->Send()) {
-                    var_dump($mailer->ErrorInfo);
-                } else {
-                    echo 'ok';
-                }*/
+            } else {
+                $response = ['state' => false, 'msg' => 'El correo ingresado no se encuentra registrado'];
             }
-        } catch (PDOException $e) {
+            $this->_DB = '';
+            return $response;
+        } catch
+        (PDOException $e) {
             var_dump($e->getMessage());
+        }
+    }
+
+    public function restauraPassword($data)
+    {
+        try {
+            $stmt = $this->_DB->prepare("SELECT cambio_login, fecha_cambio_login FROM usuarios where id = :cc");
+            $stmt->execute(array(':cc' => $data['id']));
+            if ($stmt->rowCount() === 1) {
+                $response = $stmt->fetch(PDO::FETCH_OBJ);
+
+                $fecha1 = new DateTime($response->fecha_cambio_login);
+                $fechaActual = new DateTime();
+                $diferencia = $fechaActual->diff($fecha1);
+                $horasDiferencia = $diferencia->h + ($diferencia->days * 24);
+
+                if ($response->cambio_login !== 'si') {
+                    $res = ['state' => false, 'msg' => 'No se encontró una solicitud para cambio de contraseña'];
+                } /*elseif ($horasDiferencia > 2) {
+                    $res = ['state' => false, 'msg' => 'Solicitud invalida ya pasaron mas de dos horas'];
+                }*/ else {
+                    $stmt = $this->_DB->prepare("UPDATE usuarios 
+                                                    SET cambio_login = 'no',
+                                                        password = :pass,
+                                                        fecha_cambio_login = NOW() 
+                                                    WHERE
+                                                        id = :id");
+                    $stmt->execute(array(':pass' => $data['login'], ':id' => $data['id']));
+                    if ($stmt->rowCount() === 1) {
+                        $res = ['state' => true, 'msg' => 'Contraseña actualizada correctamente'];
+                    } else {
+                        $res = ['state' => false, 'msg' => 'Ha ocurrido un error interno intentalo nuevamente en unos minutos'];
+                    }
+                }
+            } else {
+                $res = ['state' => false, 'msg' => 'Solicitud incorrecta no usuario valido'];
+            }
+
+            $this->_DB = '';
+            return $res;
+
+        } catch (PDOException $e) {
+            var_dump($e);
         }
     }
 }

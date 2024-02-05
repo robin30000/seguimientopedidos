@@ -15,6 +15,8 @@
             mesa2();
             mesa3();
             mesa4();
+            mesa5();
+            mesa6();
             gestionETP();
             gestionToip();
             listarsoportegpon();
@@ -51,6 +53,24 @@
             services.myService('', 'mesasNacionalesCtrl.php', 'mesa4').then((data) => {
                 $scope.mesa4 = data.data.data;
                 $scope.Items4 = data.data.counter;
+            }).catch((e) => {
+                console.log(e)
+            })
+        }
+
+        function mesa5() {
+            services.myService('', 'mesasNacionalesCtrl.php', 'mesa6').then((data) => {
+                $scope.mesa5 = data.data.data;
+                $scope.Items5 = data.data.counter;
+            }).catch((e) => {
+                console.log(e)
+            })
+        }
+
+        function mesa6() {
+            services.myService('', 'mesasNacionalesCtrl.php', 'mesa7').then((data) => {
+                $scope.mesa7 = data.data.data;
+                $scope.Items7 = data.data.counter;
             }).catch((e) => {
                 console.log(e)
             })
@@ -166,7 +186,7 @@
         }
 
         $scope.ver_masToip = (data) => {
-            $(".popover").css('display','none !importan');
+            $(".popover").css('display', 'none !importan');
             $scope.dataContent = $sce.trustAsHtml('<div class="table-responsive" style="max-width: 380px;"><table class="table table-bordered table-hover table-condensed small" style="max-width: 350px;">' +
                 '<tbody><tr><td style="min-width: 80px">Hora cierre click</td><td>' + data.hora_cierre_click + '</td></tr>' +
                 '<tbody><tr><td style="min-width: 80px">Respuesta aprov</td><td>' + data.respuesta_aprov + '</td></tr>' +

@@ -126,7 +126,7 @@ if ($conn) {
             ':pass' => md5('Colombia3738--++'),
             ':region' => 'Antioquia Oriente',
             ':contrato' => 'Emtelco',
-            ':password_click' =>  0,
+            ':password_click' => 0,
             ':pass_apk' => 'Colombia3738--++'
         ]
     );
@@ -144,7 +144,7 @@ if ($conn) {
             ':pass' => md5('Colombia9742--++'),
             ':region' => 'Antioquia Oriente',
             ':contrato' => 'Emtelco',
-            ':password_click' =>  0,
+            ':password_click' => 0,
             ':pass_apk' => 'Colombia9742--++'
         ]
     );
@@ -162,7 +162,7 @@ if ($conn) {
             ':pass' => md5('Colombia8771--++'),
             ':region' => 'Antioquia Oriente',
             ':contrato' => 'Emtelco',
-            ':password_click' =>  0,
+            ':password_click' => 0,
             ':pass_apk' => 'Colombia8771--++'
         ]
     );
@@ -180,10 +180,11 @@ if ($conn) {
             ':pass' => md5('Colombia0553--++'),
             ':region' => 'Antioquia Oriente',
             ':contrato' => 'Emtelco',
-            ':password_click' =>  0,
+            ':password_click' => 0,
             ':pass_apk' => 'Colombia0553--++'
         ]
     );
+
     $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
                                             values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
     $stmt->execute(
@@ -197,7 +198,7 @@ if ($conn) {
             ':pass' => md5('Colombia3345--++'),
             ':region' => 'Antioquia Oriente',
             ':contrato' => 'Emtelco',
-            ':password_click' =>  0,
+            ':password_click' => 0,
             ':pass_apk' => 'Colombia3345--++'
         ]
     );
@@ -215,7 +216,7 @@ if ($conn) {
             ':pass' => md5('Colombia7589--++'),
             ':region' => 'Antioquia Oriente',
             ':contrato' => 'Emtelco',
-            ':password_click' =>  0,
+            ':password_click' => 0,
             ':pass_apk' => 'Colombia7589--++'
         ]
     );
@@ -233,7 +234,7 @@ if ($conn) {
             ':pass' => md5('Colombia4337--++'),
             ':region' => 'Antioquia Oriente',
             ':contrato' => 'Emtelco',
-            ':password_click' =>  0,
+            ':password_click' => 0,
             ':pass_apk' => 'Colombia4337--++'
         ]
     );
@@ -251,7 +252,7 @@ if ($conn) {
             ':pass' => md5('Colombia4613--++'),
             ':region' => 'Antioquia Oriente',
             ':contrato' => 'Emtelco',
-            ':password_click' =>  0,
+            ':password_click' => 0,
             ':pass_apk' => 'Colombia4613--++'
         ]
     );
@@ -269,7 +270,7 @@ if ($conn) {
             ':pass' => md5('Colombia0080--++'),
             ':region' => 'Antioquia Oriente',
             ':contrato' => 'Emtelco',
-            ':password_click' =>  0,
+            ':password_click' => 0,
             ':pass_apk' => 'Colombia0080--++'
         ]
     );
@@ -287,7 +288,7 @@ if ($conn) {
             ':pass' => md5('Colombia5160--++'),
             ':region' => 'Antioquia Oriente',
             ':contrato' => 'Emtelco',
-            ':password_click' =>  0,
+            ':password_click' => 0,
             ':pass_apk' => 'Colombia5160--++'
         ]
     );
@@ -305,7 +306,7 @@ if ($conn) {
             ':pass' => md5('Colombia5292--++'),
             ':region' => 'Antioquia Oriente',
             ':contrato' => 'Emtelco',
-            ':password_click' =>  0,
+            ':password_click' => 0,
             ':pass_apk' => 'Colombia5292--++'
         ]
     );
@@ -323,7 +324,7 @@ if ($conn) {
             ':pass' => md5('Colombia8583--++'),
             ':region' => 'Antioquia Oriente',
             ':contrato' => 'Emtelco',
-            ':password_click' =>  0,
+            ':password_click' => 0,
             ':pass_apk' => 'Colombia8583--++'
         ]
     );
@@ -341,7 +342,7 @@ if ($conn) {
             ':pass' => md5('Colombia8092--++'),
             ':region' => 'Antioquia Oriente',
             ':contrato' => 'Emtelco',
-            ':password_click' =>  0,
+            ':password_click' => 0,
             ':pass_apk' => 'Colombia8092--++'
         ]
     );
@@ -359,7 +360,7 @@ if ($conn) {
             ':pass' => md5('Colombia9359--++'),
             ':region' => 'Antioquia Oriente',
             ':contrato' => 'Emtelco',
-            ':password_click' =>  0,
+            ':password_click' => 0,
             ':pass_apk' => 'Colombia9359--++'
         ]
     );
@@ -377,7 +378,7 @@ if ($conn) {
             ':pass' => md5('Colombia8224--++'),
             ':region' => 'Antioquia Oriente',
             ':contrato' => 'Emtelco',
-            ':password_click' =>  0,
+            ':password_click' => 0,
             ':pass_apk' => 'Colombia8224--++'
         ]
     );
@@ -395,7 +396,7 @@ if ($conn) {
             ':pass' => md5('Colombia3736--++'),
             ':region' => 'Antioquia Oriente',
             ':contrato' => 'Emtelco',
-            ':password_click' =>  0,
+            ':password_click' => 0,
             ':pass_apk' => 'Colombia3736--++'
         ]
     );
@@ -413,7 +414,7 @@ if ($conn) {
             ':pass' => md5('Colombia3109--++'),
             ':region' => 'Antioquia Oriente',
             ':contrato' => 'Emtelco',
-            ':password_click' =>  0,
+            ':password_click' => 0,
             ':pass_apk' => 'Colombia3109--++'
         ]
     );
@@ -431,7 +432,7 @@ if ($conn) {
             ':pass' => md5('Colombia7604--++'),
             ':region' => 'Antioquia Oriente',
             ':contrato' => 'Emtelco',
-            ':password_click' =>  0,
+            ':password_click' => 0,
             ':pass_apk' => 'Colombia7604--++'
         ]
     );
@@ -449,12 +450,12 @@ if ($conn) {
             ':pass' => md5('Colombia2166--++'),
             ':region' => 'Antioquia Oriente',
             ':contrato' => 'Emtelco',
-            ':password_click' =>  0,
+            ':password_click' => 0,
             ':pass_apk' => 'Colombia2166--++'
         ]
     );
-	
-	$stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+
+    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
                                             values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
     $stmt->execute(
         [
@@ -467,11 +468,10 @@ if ($conn) {
             ':pass' => md5('Colombia5051--++'),
             ':region' => 'Antioquia Oriente',
             ':contrato' => 'Emtelco',
-            ':password_click' =>  0,
+            ':password_click' => 0,
             ':pass_apk' => 'Colombia5051--++'
         ]
     );
-
 
     $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
                                             values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
@@ -486,7 +486,7 @@ if ($conn) {
             ':pass' => md5('Colombia8264--++'),
             ':region' => 'Antioquia Oriente',
             ':contrato' => 'Emtelco',
-            ':password_click' =>  0,
+            ':password_click' => 0,
             ':pass_apk' => 'Colombia8264--++'
         ]
     );
@@ -504,39 +504,69 @@ if ($conn) {
             ':pass' => md5('Colombia3427--++'),
             ':region' => 'Cundinamarca Sur',
             ':contrato' => 'Energia Integral Andina',
-            ':password_click' =>  0,
+            ':password_click' => 0,
             ':pass_apk' => 'Colombia3427--++'
         ]
     );
 
-    echo 'Se ingresaron en la fecha ' . date('Y-m-d H:i:s') . ' ' . $count + 20 . ' registros';
-} else {
-    echo 'No se ingresaron registros en bd sin gestionar fecha ' . date('Y-m-d H:i:s');
-}
-
-/*if ($count) {
-
-    $stmt = $conn->prepare("INSERT INTO tecnicos_copy1 (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
                                             values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
     $stmt->execute(
         [
-            ':identificacion' => '71221973',
-            ':nombre'         => 'RAMIREZ CEBALLOS CARLOS JULIO',
-            ':ciudad'         => 'Antioquia Centro',
-            ':celular'        => '3009999999',
-            ':empresa'        => 'EMTELCO',
-            ':login_click'    => 'cramiceb',
-            ':pass'           => md5('Colombia1973--++'),
-            ':region'         => 'Antioquia Centro',
-            ':contrato'       => 'Emtelco',
-            ':password_click' => '',
-            ':pass_apk'       => 'Colombia1973--++',
+            ':identificacion' => '1017154362',
+            ':nombre' => 'ZAPATA MORENO YEFERSON DANEVIS',
+            ':ciudad' => 'Medellin',
+            ':celular' => '30000000',
+            ':empresa' => '4',
+            ':login_click' => 'yzapamor',
+            ':pass' => md5('Colombia4362--++'),
+            ':region' => 'Antioquia',
+            ':contrato' => 'Energia Integral Andina',
+            ':password_click' => 0,
+            ':pass_apk' => 'Colombia4362--++'
         ]
     );
-    echo 'Se ingresaron en la fecha ' . date('Y-m-d H:i:s') . ' ' . $count + 1 . ' registros';
+
+    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+    $stmt->execute(
+        [
+            ':identificacion' => '1110510171',
+            ':nombre' => 'CORTES BRICEÑO ELDIS DE JESÚS',
+            ':ciudad' => 'Medellin',
+            ':celular' => '30000000',
+            ':empresa' => '4',
+            ':login_click' => 'Ecortebr  ',
+            ':pass' => md5('Colombia0171--++'),
+            ':region' => 'Antioquia',
+            ':contrato' => 'Energia Integral Andina',
+            ':password_click' => 0,
+            ':pass_apk' => 'Colombia0171--++'
+        ]
+    );
+
+    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+    $stmt->execute(
+        [
+            ':identificacion' => '1110510171',
+            ':nombre' => 'CORTES BRICEÑO ELDIS DE JESÚS',
+            ':ciudad' => 'Medellin',
+            ':celular' => '30000000',
+            ':empresa' => '4',
+            ':login_click' => 'Ecortebr  ',
+            ':pass' => md5('Colombia0171--++'),
+            ':region' => 'Antioquia',
+            ':contrato' => 'Energia Integral Andina',
+            ':password_click' => 0,
+            ':pass_apk' => 'Colombia0171--++'
+        ]
+    );
+
+    echo 'Se ingresaron en la fecha ' . date('Y-m-d H:i:s') . ' ' . $count + 24 . ' registros';
 } else {
     echo 'No se ingresaron registros en bd sin gestionar fecha ' . date('Y-m-d H:i:s');
-}*/
+}
 
 
 
