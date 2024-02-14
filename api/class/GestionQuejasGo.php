@@ -30,9 +30,36 @@ class GestionQuejasGo
                             FROM quejasgo
                             WHERE 1=1 and en_gestion != 2 ORDER BY fecha DESC"; */
 
-            $stmt = $this->_DB->query("SELECT *
+            /*$stmt = $this->_DB->query("SELECT *
 					FROM quejasgo
-					WHERE 1=1 and en_gestion = '0' OR en_gestion = '1' ORDER BY fecha");
+					WHERE 1=1 and en_gestion = '0' OR en_gestion = '1' ORDER BY fecha");*/
+
+            $stmt = $this->_DB->query("SELECT
+                                                    q.*,
+                                                CASE
+                                                        
+                                                        WHEN (
+                                                        SELECT
+                                                            COUNT(*) 
+                                                        FROM
+                                                            quejasgo c1 
+                                                        WHERE
+                                                            q.pedido = c1.pedido 
+                                                            AND c1.fecha >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                            AND c1.en_gestion = '2' 
+                                                            ) > 0 THEN
+                                                            'TRUE' ELSE 'FALSE' 
+                                                        END alerta 
+                                                FROM
+                                                    quejasgo q 
+                                                WHERE
+                                                    1 = 1 
+                                                    AND en_gestion = '0' 
+                                                    OR en_gestion = '1' 
+                                                ORDER BY
+                                                    q.fecha");
+
+
             $stmt->execute();
 
 
@@ -107,7 +134,20 @@ class GestionQuejasGo
                 $res = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
             } else {
 
-                $stmt = $this->_DB->prepare("SELECT en_gestion, asesor FROM quejasgo WHERE id = :id");
+                $stmt = $this->_DB->prepare("SELECT q.en_gestion, q.asesor, q.pedido,
+                                                    CASE
+                                                    WHEN (
+                                                    SELECT
+                                                        COUNT(*) 
+                                                    FROM
+                                                        quejasgo c1 
+                                                    WHERE
+                                                        q.pedido = c1.pedido 
+                                                        AND c1.fecha >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                        AND c1.en_gestion = '2' 
+                                                        ) > 0 THEN
+                                                        true ELSE false
+                                                    END alerta FROM quejasgo q WHERE q.id = :id");
                 $stmt->execute(array(':id' => $id));
                 $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -115,21 +155,22 @@ class GestionQuejasGo
                 $stmt->execute();
                 $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $usuarios_array = array_column($res, 'login');
+                $alerta = $response[0]['alerta'];
 
                 if ($response[0]['asesor'] == '' && $response[0]['en_gestion'] == 0) {
                     $stmt = $this->_DB->prepare("UPDATE quejasgo SET en_gestion = 1, asesor = :login_gestion, fecha_marca = :fecha_marca WHERE id = :id");
                     $stmt->execute(array(':id' => $id, ':login_gestion' => $login_gestion, ':fecha_marca' => date('Y-m-d H:i:s')));
                     if ($stmt->rowCount() == 1) {
-                        $res = array('state' => 1, 'msj' => 'Pedido ' . $response[0]['pedido'] . ' Ahora esta Bloqueado');
+                        $res = array('state' => 1, 'msj' => 'El pedido ' . $response[0]['pedido'] . ' Ahora esta bloqueado', 'alerta' => $alerta);
                     }
                 } elseif (($response[0]['en_gestion'] == 1) && ($response[0]['asesor'] == $login_gestion || in_array($login_gestion, $usuarios_array))) {
                     $stmt = $this->_DB->prepare("UPDATE quejasgo SET en_gestion = 0, asesor = '' WHERE id = :id");
                     $stmt->execute(array(':id' => $id));
                     if ($stmt->rowCount() == 1) {
-                        $res = array('state' => 1, 'msj' => 'Pedido ' . $response[0]['pedido'] . ' Ahora esta Desbloqueado');
+                        $res = array('state' => 1, 'msj' => 'El pedido ' . $response[0]['pedido'] . ' Ahora esta desbloqueado');
                     }
                 } else {
-                    $res = array('state' => 0, 'msj' => 'El pedido ' . $response[0]['pedido'] . ' se encuentra en gestion por otro agente');
+                    $res = array('state' => 0, 'msj' => 'El pedido ' . $response[0]['pedido'] . ' se encuentra en gestión por otro agente');
                 }
             }
 

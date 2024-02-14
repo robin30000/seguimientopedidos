@@ -6,7 +6,7 @@ header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
 header('Access-Control-Max-Age: 1000');
 header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token , Authorization');
 
-$data = json_decode(file_get_contents("php://input"),true);
+$data = json_decode(file_get_contents("php://input"), true);
 
 if (isset($data['method'])) {
     switch ($data['method']) {
@@ -47,6 +47,24 @@ if (isset($data['method'])) {
             require_once '../class/quejasGo.php';
             $user = new quejasGo();
             $user->ActualizarObserQuejasGo($data['data']);
+            break;
+        case 'graphic':
+            require_once '../class/quejasGo.php';
+            $user = new quejasGo();
+            $res = $user->graphic($data['data']);
+            echo json_encode($res);
+            break;
+        case 'graphicDetails':
+            require_once '../class/quejasGo.php';
+            $user = new quejasGo();
+            $res = $user->graphicDetails($data['data']);
+            echo json_encode($res);
+            break;
+        case 'gestionPorHora':
+            require_once '../class/quejasGo.php';
+            $user = new quejasGo();
+            $res = $user->gestionPorHora($data['data']);
+            echo json_encode($res);
             break;
         default:
             echo 'ninguna opción valida.';

@@ -239,6 +239,34 @@ function routesConfig($routeProvider, $locationProvider, $compileProvider) {
         resolve: {
             userData: loadUserData
         }
+    }).when("/kpi-etp", {
+        title: "KPI ETP",
+        templateUrl: "./partial/graficos/kpi-etp.html",
+        controller: "GraficoEtpCtrl",
+        resolve: {
+            userData: loadUserData
+        }
+    }).when("/kpi-gpon", {
+        title: "KPI GPON",
+        templateUrl: "./partial/graficos/kpi-gpon.html",
+        controller: "GraficoGponCtrl",
+        resolve: {
+            userData: loadUserData
+        }
+    }).when("/kpi-mesas-nacionales", {
+        title: "KPI MESAS NACIONALES",
+        templateUrl: "./partial/graficos/kpi-mesas-nacionales.html",
+        controller: "GraficoMnCtrl",
+        resolve: {
+            userData: loadUserData
+        }
+    }).when("/kpi-quejasgo", {
+        title: "KPI QuejasGo",
+        templateUrl: "./partial/graficos/kpi-quejasgo.html",
+        controller: "GraficoQuejasCtrl",
+        resolve: {
+            userData: loadUserData
+        }
     }).when("/mesas-nacionales", {
         title: "Mesas nacionales",
         templateUrl: "./partial/mesas-nacionales.html",

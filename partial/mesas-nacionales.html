@@ -179,6 +179,15 @@
                                                             type="button" uib-tooltip="Guardar">
                                                         <i aria-hidden="true" class="fa fa-edit"></i>
                                                     </button>
+                                                    <div style="display: inline-block;" ng-show="data.alerta === 'TRUE'">
+                                                        <button type="button" class="btn btn-default btn-xs"
+                                                                data-toggle="modal" data-backdrop="static"
+                                                                ng-hide="data.alerta == 'FALSE'" tooltip-placement="top"
+                                                                uib-tooltip="La tarea ya pasó por esta mesa anteriormente, por favor validar!">
+                                                            <i class="fa fa-exclamation" style="color:red"
+                                                               aria-hidden="true"> </i>
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -322,6 +331,15 @@
                                                             type="button" uib-tooltip="Guardar">
                                                         <i aria-hidden="true" class="fa fa-edit"></i>
                                                     </button>
+                                                    <div style="display: inline-block;" ng-show="data.alerta === 'TRUE'">
+                                                        <button type="button" class="btn btn-default btn-xs"
+                                                                data-toggle="modal" data-backdrop="static"
+                                                                ng-hide="data.alerta == 'FALSE'" tooltip-placement="top"
+                                                                uib-tooltip="La tarea ya pasó por esta mesa anteriormente, por favor validar!">
+                                                            <i class="fa fa-exclamation" style="color:red"
+                                                               aria-hidden="true"> </i>
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -468,6 +486,15 @@
                                                             type="button" uib-tooltip="Guardar">
                                                         <i aria-hidden="true" class="fa fa-edit"></i>
                                                     </button>
+                                                    <div style="display: inline-block;" ng-show="data.alerta === 'TRUE'">
+                                                        <button type="button" class="btn btn-default btn-xs"
+                                                                data-toggle="modal" data-backdrop="static"
+                                                                ng-hide="data.alerta == 'FALSE'" tooltip-placement="top"
+                                                                uib-tooltip="La tarea ya pasó por esta mesa anteriormente, por favor validar!">
+                                                            <i class="fa fa-exclamation" style="color:red"
+                                                               aria-hidden="true"> </i>
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -616,6 +643,15 @@
                                                             type="button" uib-tooltip="Guardar">
                                                         <i aria-hidden="true" class="fa fa-edit"></i>
                                                     </button>
+                                                    <div style="display: inline-block;" ng-show="data.alerta === 'TRUE'">
+                                                        <button type="button" class="btn btn-default btn-xs"
+                                                                data-toggle="modal" data-backdrop="static"
+                                                                ng-hide="data.alerta == 'FALSE'" tooltip-placement="top"
+                                                                uib-tooltip="La tarea ya pasó por esta mesa anteriormente, por favor validar!">
+                                                            <i class="fa fa-exclamation" style="color:red"
+                                                               aria-hidden="true"> </i>
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -674,7 +710,8 @@
                                                 <th class="text-center"><span>Fecha ingreso</span></th>
                                                 <th class="text-center"><span>Obs. técnico</span></th>
                                                 <th class="text-center"><span>Acción técnico</span></th>
-                                                <th class="text-center"><span>Activación ATA</span></th>
+                                                <th class="text-center"><span>ATA?</span></th>
+                                                <th class="text-center"><span>Tecnología</span></th>
                                                 <th class="text-center"><span>Respuesta</span></th>
 
                                             </tr>
@@ -687,15 +724,6 @@
                                                                ng-click="marcarEngestion(data.id)"
                                                                ng-model="data.estado"
                                                                type="checkbox">
-                                                        <!-- <div class="loadingio-spinner-ellipsis-3nun7cb96ao">
-                                                             <div class="ldio-pettsxrv7wj">
-                                                                 <div></div>
-                                                                 <div></div>
-                                                                 <div></div>
-                                                                 <div></div>
-                                                                 <div></div>
-                                                             </div>
-                                                         </div>-->
                                                     </div>
                                                 </td>
                                                 <td>
@@ -719,33 +747,115 @@
 
                                                 <td>
                                                     <select class="btn btn-default btn-xs grupo-select"
-                                                            ng-model="data.tipificaciones">
+                                                            ng-model="data.tipificaciones" style="width: 120px">
                                                         <option selected value="">Seleccione</option>
-                                                        <option value="Código de incompleto">Código de incompleto
+                                                        <option ng-if="data.tecnologia === 'GPON' || data.tecnologia !== 'GPON'"
+                                                                value="Aprovisionar">
+                                                            Aprovisionar
                                                         </option>
-                                                        <option value="No se entrega código">No se entrega código
+                                                        <option ng-if="data.tecnologia !== 'GPON'"
+                                                                value="Configurar wifi">Configurar wifi
+                                                        </option>
+                                                        <option ng-if="data.tecnologia !== 'GPON'"
+                                                                value="Configurar tarjetas">Configurar tarjetas
+                                                        </option>
+                                                        <option ng-if="data.tecnologia !== 'GPON'"
+                                                                value="Soporté técnico">Soporté técnico
+                                                        </option>
+                                                        <option ng-if="data.tecnologia !== 'GPON'"
+                                                                value="Código de geocerca">Código de geocerca
+                                                        </option>
+                                                        <option ng-if="data.tecnologia !== 'GPON'"
+                                                                value="Actividad no gestionable">Actividad no
+                                                            gestionable
+                                                        </option>
+                                                        <option ng-if="data.tecnologia !== 'GPON'"
+                                                                value="Reenvió de registros">Reenvió de registros
+                                                        </option>
+                                                        <option ng-if="data.tecnologia !== 'GPON'"
+                                                                value="Forzar cablemodem">Forzar cablemodem
+                                                        </option>
+                                                        <option ng-if="data.tecnologia !== 'GPON'"
+                                                                value="Información de portafolio">Información de
+                                                            portafolio
+                                                        </option>
+                                                        <option ng-if="data.UneSourceSystem == 'EDA'"
+                                                                value="Código de incompleto">Código de incompleto
+                                                        </option>
+                                                        <option ng-if="data.UneSourceSystem == 'EDA'"
+                                                                value="Código de completo">Código de completo
+                                                        </option>
+
+                                                        <option ng-if="data.tecnologia == 'GPON'"
+                                                                value="Actualizar Infra">Actualizar Infra
+                                                        </option>
+                                                        <option ng-if="data.tecnologia === 'GPON'"
+                                                                value="Estabilizar Pon">Estabilizar Pon
+                                                        </option>
+                                                        <option ng-if="data.tecnologia === 'GPON'"
+                                                                value="Configurar VLAN">Configurar VLAN
+                                                        </option>
+                                                        <option ng-if="data.tecnologia === 'GPON'" value="Cam_Eq">
+                                                            Cam_Eq
+                                                        </option>
+                                                        <option ng-if="data.tecnologia === 'GPON'" value="Contingencia">
+                                                            Contingencia
+                                                        </option>
+                                                        <option ng-if="data.tecnologia === 'GPON'" value="Red ocupada">
+                                                            Red ocupada
+                                                        </option>
+                                                        <option ng-if="data.tecnologia === 'GPON'" value="Puertos Lan">
+                                                            Puertos Lan
+                                                        </option>
+                                                        <option ng-if="data.tecnologia === 'GPON'"
+                                                                value="Cierre CBAPON">Cierre CBAPON
+                                                        </option>
+                                                        <option ng-if="data.tecnologia === 'GPON'"
+                                                                value="Validación general">Validación general
+                                                        </option>
+                                                        <option ng-if="data.tecnologia === 'GPON'" value="Nap Trocado">
+                                                            Nap Trocado
+                                                        </option>
+                                                        <option ng-if="data.tecnologia === 'GPON'" value="Cod_Comp">
+                                                            Cod_Comp
+                                                        </option>
+                                                        <option ng-if="data.tecnologia === 'GPON'"
+                                                                value="Reenvió Registros">Reenvió Registros
+                                                        </option>
+                                                        <option ng-if="data.tecnologia === 'GPON'"
+                                                                value="IP navegación">IP navegación
+                                                        </option>
+                                                        <option ng-if="data.tecnologia === 'GPON'"
+                                                                value="No navega la velocidad contratada">No navega la
+                                                            velocidad contratada
+                                                        </option>
+                                                        <option ng-if="data.tecnologia === 'GPON'"
+                                                                value="Pendiente por cobertura">Pendiente por
+                                                            cobertura
+                                                        </option>
+                                                        <option ng-if="data.tecnologia === 'GPON'" value="Crear CR">
+                                                            Crear CR
+                                                        </option>
+                                                        <option ng-if="data.tecnologia === 'GPON'"
+                                                                value="Solicitud innecesaria">Solicitud innecesaria
+                                                        </option>
+                                                        <option ng-if="data.tecnologia === 'GPON' || data.tecnologia !== 'GPON'"
+                                                                value="Validación de parámetros">Validación de
+                                                            parámetros
                                                         </option>
                                                     </select>
                                                 </td>
                                                 <td>
                                                     <select class="btn btn-default btn-xs grupo-select"
-                                                            ng-model="data.tipificaciones2">
+                                                            ng-model="data.tipificaciones2" style="width: 120px">
                                                         <option selected value="">Seleccione</option>
-                                                        <option ng-if="data.tipificaciones !== 'No se entrega código'"
-                                                                value="No desea el servicio">No desea el servicio
+                                                        <option value="Finalizado">Finalizado</option>
+                                                        <option value="No finalizado con éxito">No finalizado con
+                                                            éxito
                                                         </option>
-                                                        <option ng-if="data.tipificaciones !== 'No se entrega código'"
-                                                                value="Cliente no autoriza">Cliente no autoriza
+                                                        <option value="Devuelto al técnico por mal ingreso">Devuelto al
+                                                            técnico por mal ingreso
                                                         </option>
-                                                        <option ng-if="data.tipificaciones !== 'No se entrega código'"
-                                                                value="Cliente ilocalizado">Cliente ilocalizado
-                                                        </option>
-                                                        <option ng-if="data.tipificaciones === 'No se entrega código'"
-                                                                value="Cliente acepta el cambio">Cliente acepta el
-                                                            cambio
-                                                        </option>
-
-
                                                     </select>
                                                 </td>
                                                 <td>{{data.hora_ingreso}}</td>
@@ -763,11 +873,23 @@
                                                     {{data.activacion_ata}}
                                                 </td>
                                                 <td>
+                                                    {{data.tecnologia}}
+                                                </td>
+                                                <td>
                                                     <button class="btn btn-default btn-xs" ng-click="GuardarMn(data)"
                                                             tooltip-placement="top"
                                                             type="button" uib-tooltip="Guardar">
                                                         <i aria-hidden="true" class="fa fa-edit"></i>
                                                     </button>
+                                                    <div style="display: inline-block;" ng-show="data.alerta === 'TRUE'">
+                                                        <button type="button" class="btn btn-default btn-xs"
+                                                                data-toggle="modal" data-backdrop="static"
+                                                                ng-hide="data.alerta == 'FALSE'" tooltip-placement="top"
+                                                                uib-tooltip="La tarea ya pasó por esta mesa anteriormente, por favor validar!">
+                                                            <i class="fa fa-exclamation" style="color:red"
+                                                               aria-hidden="true"> </i>
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -913,6 +1035,15 @@
                                                             type="button" uib-tooltip="Guardar">
                                                         <i aria-hidden="true" class="fa fa-edit"></i>
                                                     </button>
+                                                    <div style="display: inline-block;" ng-show="data.alerta === 'TRUE'">
+                                                        <button type="button" class="btn btn-default btn-xs"
+                                                                data-toggle="modal" data-backdrop="static"
+                                                                ng-hide="data.alerta == 'FALSE'" tooltip-placement="top"
+                                                                uib-tooltip="La tarea ya pasó por esta mesa anteriormente, por favor validar!">
+                                                            <i class="fa fa-exclamation" style="color:red"
+                                                               aria-hidden="true"> </i>
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             </tbody>

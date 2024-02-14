@@ -214,6 +214,16 @@
                                                             uib-tooltip="Guardar" ng-click="GuardarETP(data)">
                                                         <i class="fa fa-edit" aria-hidden="true"></i>
                                                     </button>
+
+                                                    <div style="display: inline-block;" ng-show="data.alerta === 'TRUE'">
+                                                        <button type="button" class="btn btn-default btn-xs"
+                                                                data-toggle="modal" data-backdrop="static"
+                                                                ng-hide="data.alerta == 'FALSE'" tooltip-placement="top"
+                                                                uib-tooltip="La tarea ya pasó por etp anteriormente, por favor validar!">
+                                                            <i class="fa fa-exclamation" style="color:red"
+                                                               aria-hidden="true"> </i>
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             </tbody>

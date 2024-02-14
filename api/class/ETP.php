@@ -25,7 +25,28 @@ class ETP
             $stmt->execute();
             $count = $stmt->rowCount();
 
-            $stmt = $this->_DB->query("SELECT * FROM etp where status_soporte != '2' ORDER BY fecha_crea");
+            $stmt = $this->_DB->query("SELECT
+                                                e.*,
+                                                CASE
+                                                    
+                                                    WHEN (
+                                                    SELECT
+                                                        COUNT(*) 
+                                                    FROM
+                                                        etp c1 
+                                                    WHERE
+                                                        c1.tarea = e.tarea 
+                                                        AND c1.fecha_crea >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                        AND c1.status_soporte = '2' 
+                                                        ) > 0 THEN
+                                                        'TRUE' ELSE 'FALSE' 
+                                                    END alerta 
+                                            FROM
+                                                etp e
+                                            WHERE
+                                                e.status_soporte != '2' 
+                                            ORDER BY
+                                                e.fecha_crea");
             $stmt->execute();
 
             if ($stmt->rowCount()) {
@@ -51,7 +72,7 @@ class ETP
 
             if (empty($user)) {
                 $response = ['state' => false, 'msj' => 'Su session ha caducado. Inicia session nuevamente para continuar'];
-            }else {
+            } else {
 
                 $stmt = $this->_DB->query("SELECT login FROM usuarios WHERE perfil = '11'");
                 $stmt->execute();
@@ -97,8 +118,8 @@ class ETP
         $this->_DB = null;
 
     }
-	
-	  public function damePedidoetp($data)
+
+    public function damePedidoetp($data)
     {
         try {
             $login = $data;
@@ -135,7 +156,7 @@ class ETP
                 } else {
                     $response = ['state' => false, 'title' => 'Opss..', 'text' => 'Ha ocurrido un error interno intentalo nuevamente'];
                 }
-            } else{
+            } else {
                 $response = ['state' => false, 'title' => 'Opss..', 'text' => 'No se encontrarón registros disponibles'];
             }
 
@@ -152,14 +173,14 @@ class ETP
             $id = $data['id_soporte'];
             $fecha = date('Y-m-d H:i:s');
             $tipificaciones = $data['tipificaciones'];
-            $tipificaciones = implode(',',$tipificaciones);
+            $tipificaciones = implode(',', $tipificaciones);
             $tipificaciones2 = $data['tipificaciones2'];
             $observacion = $data['observacion'];
             $user = $data['login_gestion'];
 
-            if (!$user){
+            if (!$user) {
                 $response = ['state' => false, 'msj' => 'Su session e expirado inicia session nuevamente para continuar'];
-            }else{
+            } else {
                 //echo $id.$tipificaciones.$tipificaciones2.$observacion.$user;exit();
                 $stmt = $this->_DB->prepare("SELECT login_gestion FROM etp WHERE id_soporte = :id");
                 $stmt->execute([':id' => $id]);
@@ -167,7 +188,7 @@ class ETP
                     $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     if ($res[0]['login_gestion'] == $user) {
                         $stmt = $this->_DB->prepare("UPDATE etp SET fecha_gestion = :fecha, tipificaciones = :tipificaciones, tipificaciones2 = :tipificaiones2, observacionesGestion = :observacion,  status_soporte = '2' WHERE id_soporte = :id");
-                        $stmt->execute([':fecha' => $fecha, ':tipificaciones' => $tipificaciones,':tipificaiones2' => $tipificaciones2, ':observacion' => $observacion,':id'=>$id]);
+                        $stmt->execute([':fecha' => $fecha, ':tipificaciones' => $tipificaciones, ':tipificaiones2' => $tipificaciones2, ':observacion' => $observacion, ':id' => $id]);
                         if ($stmt->rowCount() == 1) {
                             $response = ['state' => true, 'msj' => 'Pedido guardado correctamente'];
                         } else {
@@ -212,11 +233,11 @@ class ETP
                 $con .= " AND tarea = '$pedido' ";
             }
 
-            if(isset($data['export'])){
+            if (isset($data['export'])) {
                 $count = 1;
                 $stmt = $this->_DB->query("SELECT * FROM etp where 1=1 $con  ORDER BY fecha_crea desc");
                 $stmt->execute();
-            }else{
+            } else {
                 $stmt = $this->_DB->query("SELECT count(*) as counter FROM etp  ORDER BY fecha_crea");
                 $stmt->execute();
                 $res = $stmt->fetch(PDO::FETCH_OBJ);
@@ -242,7 +263,8 @@ class ETP
         $this->_DB = null;
     }
 
-    public function datosTerminadosRegistros($data){
+    public function datosTerminadosRegistros($data)
+    {
         try {
 
             $pagenum = $data['page'];
@@ -262,11 +284,11 @@ class ETP
                 $con = " AND unepedido = '$pedido' ";
             }
 
-            if(isset($data['export'])){
+            if (isset($data['export'])) {
                 $count = 1;
                 $stmt = $this->_DB->query("SELECT * FROM etp where 1=1 $con and status_soporte = '2' ORDER BY fecha_crea desc ");
                 $stmt->execute();
-            }else{
+            } else {
                 $stmt = $this->_DB->query("SELECT * FROM etp where 1=1 $con and status_soporte = '2' ORDER BY fecha_crea");
                 $stmt->execute();
                 $count = $stmt->rowCount();
@@ -289,6 +311,133 @@ class ETP
 
         return $response;
         $this->_DB = null;
+    }
+
+    public function graphic($data)
+    {
+
+        if (isset($data['fecha'])) {
+            $fecha = $data['fecha'];
+        } else {
+            $fecha = date('Y-m-d');
+        }
+
+        try {
+            $stmt = $this->_DB->prepare("SELECT
+                                                    e.tipificaciones,
+                                                    COUNT(*) AS count 
+                                                FROM
+                                                    etp e 
+                                                WHERE 1 = 1
+                                                    AND e.fecha_gestion BETWEEN '$fecha 00:00:00' 
+                                                    AND '$fecha 23:59:59' 
+                                                GROUP BY
+                                                    tipificaciones
+                                                ORDER BY count DESC");
+            $stmt->execute();
+            if ($stmt->rowCount()) {
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+            } else {
+                $response = ['state' => false, 'msj' => 'No se encontraron datos'];
+            }
+            $this->_DB = '';
+            return $response;
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+    }
+
+    public function graphicDetails($data)
+    {
+
+        if (isset($data['fecha'])) {
+            $fecha = $data['fecha'];
+        } else {
+            $fecha = date('Y-m-d');
+        }
+
+        try {
+            $stmt = $this->_DB->prepare("SELECT
+                                                CASE
+                                                        e.tipificaciones2 
+                                                        WHEN 'Finalizado' THEN
+                                                        'Finalizado' 
+                                                        WHEN 'Devuelto al técnico' THEN
+                                                        'Devuelto al técnico' 
+                                                        WHEN 'Incompleto' THEN 'Incompleto'
+                                                        ELSE 'Sin gestión' 
+                                                    END AS tipificacion,
+                                                    COUNT(*) AS count 
+                                                FROM
+                                                    etp e 
+                                                WHERE
+                                                    e.fecha_crea BETWEEN '$fecha 00:00:00' 
+                                                    AND '$fecha 23:59:59' 
+                                                GROUP BY
+                                                    tipificaciones2;");
+            $stmt->execute();
+            if ($stmt->rowCount()) {
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+            } else {
+                $response = ['state' => false, 'msj' => 'No se encontraron datos'];
+            }
+            $this->_DB = '';
+
+            return $response;
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+    }
+
+    public function gestionPorHora($data)
+    {
+        try {
+            if (isset($data['fecha'])) {
+                $fecha = $data['fecha'];
+            } else {
+                $fecha = date('Y-m-d');
+            }
+
+            $stmt = $this->_DB->prepare("SELECT 
+                                                C2.USUARIO
+                                                , COUNT(*) AS CANTIDAD
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) >= 0 AND (C2.RANGO_PENDIENTE) <= 6 THEN 1 ELSE 0 END) AS 'am06' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 6 AND (C2.RANGO_PENDIENTE) <= 7 THEN 1 ELSE 0 END) AS 'am07' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 7 AND (C2.RANGO_PENDIENTE) <= 8 THEN 1 ELSE 0 END) AS 'am08' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 8 AND (C2.RANGO_PENDIENTE) <= 9 THEN 1 ELSE 0 END) AS 'am09' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 9 AND (C2.RANGO_PENDIENTE) <= 10 THEN 1 ELSE 0 END) AS 'am10' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 10 AND (C2.RANGO_PENDIENTE) <= 11 THEN 1 ELSE 0 END) AS 'am11' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 11 AND (C2.RANGO_PENDIENTE) <= 12 THEN 1 ELSE 0 END) AS 'am12' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 12 AND (C2.RANGO_PENDIENTE) <= 13 THEN 1 ELSE 0 END) AS 'pm01' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 13 AND (C2.RANGO_PENDIENTE) <= 14 THEN 1 ELSE 0 END) AS 'pm02' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 14 AND (C2.RANGO_PENDIENTE) <= 15 THEN 1 ELSE 0 END) AS 'pm03' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 15 AND (C2.RANGO_PENDIENTE) <= 16 THEN 1 ELSE 0 END) AS 'pm04' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 16 AND (C2.RANGO_PENDIENTE) <= 17 THEN 1 ELSE 0 END) AS 'pm05' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 17 AND (C2.RANGO_PENDIENTE) <= 18 THEN 1 ELSE 0 END) AS 'pm06' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 18 AND (C2.RANGO_PENDIENTE) <= 19 THEN 1 ELSE 0 END) AS 'pm07' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 19 AND (C2.RANGO_PENDIENTE) <= 20 THEN 1 ELSE 0 END) AS 'pm08' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 20 AND (C2.RANGO_PENDIENTE) <= 21 THEN 1 ELSE 0 END) AS 'pm09' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 21 THEN 1 ELSE 0 END) AS 'Masde09'
+                                                FROM(
+                                                SELECT 
+                                                        p.login_gestion AS USUARIO, DATE_FORMAT(p.fecha_gestion, '%H') AS RANGO_PENDIENTE, 
+                                                        p.tipificaciones AS prod
+                                                FROM etp p
+                                                WHERE 1=1 AND p.fecha_gestion BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59') C2
+                                                GROUP BY C2.USUARIO
+                                                ORDER BY  CANTIDAD DESC");
+            $stmt->execute();
+            if ($stmt->rowCount()) {
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+            } else {
+                $response = ['state' => false, 'msj' => 'No se encontraron datos'];
+            }
+            $this->_DB = '';
+
+            return $response;
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
     }
 
 }

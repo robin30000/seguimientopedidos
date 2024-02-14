@@ -1,9 +1,9 @@
 (function () {
     "use strict";
     angular.module("seguimientopedidos").controller("ActivacionToipCtrl", ActivacionToipCtrl);
-    ActivacionToipCtrl.$inject = ["$scope", "$rootScope", "services", "$route", "$sce", "$cookies", "$location", "$uibModal", "$log", "$interval"];
+    ActivacionToipCtrl.$inject = ["$scope", "$rootScope", "services", "$route", "$sce", "$cookies", "$location", "$uibModal", "$log", "$interval", "$timeout"];
 
-    function ActivacionToipCtrl($scope, $rootScope, services, $route, $sce, $cookies, $location, $uibModal, $log, $interval) {
+    function ActivacionToipCtrl($scope, $rootScope, services, $route, $sce, $cookies, $location, $uibModal, $log, $interval, $timeout) {
         var tiempo = new Date().getTime();
         var date1 = new Date();
         var year = date1.getFullYear();
@@ -74,35 +74,62 @@
                     if ($scope.endItem > data.data.counter) {
                         $scope.endItem = data.data.counter;
                     }
-                } else {
+                } /*else {
                     Swal({
                         type: 'error',
                         title: 'Opps..',
                         text: data.data.msj,
                         timer: 4000
                     })
-                }
+                }*/
             }).catch((e) => {
                 console.log(e)
             })
-
-        };
+        }
 
         $scope.marcarEngestion = (data) => {
             let user = $rootScope.login;
             let datos = {usuario: user, id: data.id, gestion: data.bloqueo}
 
             services.myService(datos, 'toipCtrl.php', 'marca').then((data) => {
-                console.log(data)
                 if (data.data.state) {
-                    Swal({
-                        type: 'success',
-                        title: 'Bien',
-                        text: data.data.msj,
-                        timer: 4000
-                    }).then(() => {
-                        gestionToip();
-                    })
+                    if (data.data.alerta === '1') {
+                        if (data.data.msj === "Pedido bloqueado correctamente") {
+                            $timeout(function () {
+                                mostrarSweetAlert();
+                            }, 600000);
+                        }
+                        swal({
+                            type: "warning",
+                            title: "Atención",
+                            text: "esta tarea ha ingresado mas de una vez a este modulo, por favor validar la solicitud en detalle, observaciones, interacción(es) anterior(es) para evitar que ingrese de nuevo. si crees pertinente escala a tu supervisor",
+                            showCancelButton: false,
+                            confirmButtonText: "Aceptar",
+                        }).then(() => {
+                            Swal({
+                                type: 'success',
+                                title: 'Bien',
+                                text: data.data.msj,
+                                timer: 4000
+                            }).then(() => {
+                                gestionToip();
+                            })
+                        })
+                    } else {
+                        if (data.data.msj === "Pedido bloqueado correctamente") {
+                            $timeout(function () {
+                                mostrarSweetAlert();
+                            }, 600000);
+                        }
+                        Swal({
+                            type: 'success',
+                            title: 'Bien',
+                            text: data.data.msj,
+                            timer: 4000
+                        }).then(() => {
+                            gestionToip();
+                        })
+                    }
                 } else {
                     Swal({
                         type: 'error',

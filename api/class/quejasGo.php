@@ -47,7 +47,6 @@ class quejasGo
                 $totalCount = $stmt->rowCount();
 
 
-
                 $pagenum = $data['page'];
                 $pagesize = $data['size'];
                 $offset = ($pagenum - 1) * $pagesize;
@@ -300,7 +299,7 @@ class quejasGo
     {
         try {
             //session_start();
-             ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
             session_start();
             $datos = $params['dataquejago'];
@@ -365,5 +364,137 @@ class quejasGo
         }
         $this->_DB = null;
         echo json_encode($response);
+    }
+
+    public function graphic($data)
+    {
+
+        if (isset($data['fecha'])) {
+            $fecha = $data['fecha'];
+        } else {
+            $fecha = date('Y-m-d');
+        }
+
+        try {
+            $stmt = $this->_DB->prepare("SELECT
+                                                    e.accion as tipificaciones,
+                                                    COUNT(*) AS count 
+                                                FROM
+                                                    quejasgo e 
+                                                WHERE
+                                                    1 = 1 
+                                                    AND e.fecha_gestion BETWEEN '$fecha 00:00:00' 
+                                                    AND '$fecha 23:59:59' 
+                                                GROUP BY
+                                                    accion 
+                                                ORDER BY
+                                                    count DESC");
+            $stmt->execute();
+            if ($stmt->rowCount()) {
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+            } else {
+                $response = ['state' => false, 'msj' => 'No se encontraron datos'];
+            }
+            $this->_DB = '';
+            return $response;
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+    }
+
+    public function graphicDetails($data)
+    {
+
+        if (isset($data['fecha'])) {
+            $fecha = $data['fecha'];
+        } else {
+            $fecha = date('Y-m-d');
+        }
+
+        try {
+            $stmt = $this->_DB->prepare("SELECT
+                                                CASE
+                                                        e.gestion_asesor 
+                                                        WHEN 'Atención' THEN
+                                                        'Atención' 
+                                                        WHEN 'Devolución' THEN
+                                                        'Devolución' 
+                                                        WHEN 'Contactabilidad' THEN
+                                                        'Contactabilidad' ELSE 'Sin Gestión' 
+                                                    END AS gestion,
+                                                    COUNT(*) AS count 
+                                                FROM
+                                                    quejasgo e 
+                                                WHERE
+                                                    1 = 1 
+                                                    AND e.fecha_gestion BETWEEN '$fecha 00:00:00' 
+                                                    AND '$fecha 23:59:59' 
+                                                GROUP BY
+                                                    gestion_asesor 
+                                                ORDER BY
+                                                    count DESC");
+            $stmt->execute();
+            if ($stmt->rowCount()) {
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+            } else {
+                $response = ['state' => false, 'msj' => 'No se encontraron datos'];
+            }
+            $this->_DB = '';
+
+            return $response;
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+    }
+
+    public function gestionPorHora($data)
+    {
+        try {
+            if (isset($data['fecha'])) {
+                $fecha = $data['fecha'];
+            } else {
+                $fecha = date('Y-m-d');
+            }
+
+            $stmt = $this->_DB->prepare("SELECT 
+                                                C2.USUARIO
+                                                , COUNT(*) AS CANTIDAD
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) >= 0 AND (C2.RANGO_PENDIENTE) <= 6 THEN 1 ELSE 0 END) AS 'am06' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 6 AND (C2.RANGO_PENDIENTE) <= 7 THEN 1 ELSE 0 END) AS 'am07' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 7 AND (C2.RANGO_PENDIENTE) <= 8 THEN 1 ELSE 0 END) AS 'am08' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 8 AND (C2.RANGO_PENDIENTE) <= 9 THEN 1 ELSE 0 END) AS 'am09' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 9 AND (C2.RANGO_PENDIENTE) <= 10 THEN 1 ELSE 0 END) AS 'am10' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 10 AND (C2.RANGO_PENDIENTE) <= 11 THEN 1 ELSE 0 END) AS 'am11' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 11 AND (C2.RANGO_PENDIENTE) <= 12 THEN 1 ELSE 0 END) AS 'am12' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 12 AND (C2.RANGO_PENDIENTE) <= 13 THEN 1 ELSE 0 END) AS 'pm01' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 13 AND (C2.RANGO_PENDIENTE) <= 14 THEN 1 ELSE 0 END) AS 'pm02' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 14 AND (C2.RANGO_PENDIENTE) <= 15 THEN 1 ELSE 0 END) AS 'pm03' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 15 AND (C2.RANGO_PENDIENTE) <= 16 THEN 1 ELSE 0 END) AS 'pm04' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 16 AND (C2.RANGO_PENDIENTE) <= 17 THEN 1 ELSE 0 END) AS 'pm05' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 17 AND (C2.RANGO_PENDIENTE) <= 18 THEN 1 ELSE 0 END) AS 'pm06' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 18 AND (C2.RANGO_PENDIENTE) <= 19 THEN 1 ELSE 0 END) AS 'pm07' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 19 AND (C2.RANGO_PENDIENTE) <= 20 THEN 1 ELSE 0 END) AS 'pm08' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 20 AND (C2.RANGO_PENDIENTE) <= 21 THEN 1 ELSE 0 END) AS 'pm09' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 21 THEN 1 ELSE 0 END) AS 'Masde09'
+                                                FROM(
+                                                SELECT 
+                                                        p.asesor AS USUARIO, DATE_FORMAT(p.fecha_gestion, '%H') AS RANGO_PENDIENTE, 
+                                                        p.gestion_asesor AS prod
+                                                FROM quejasgo p
+                                                WHERE 1=1 AND p.fecha_gestion BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59') C2
+                                                GROUP BY C2.USUARIO
+                                                ORDER BY  CANTIDAD DESC");
+            $stmt->execute();
+            if ($stmt->rowCount()) {
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+            } else {
+                $response = ['state' => false, 'msj' => 'No se encontraron datos'];
+            }
+            $this->_DB = '';
+
+            return $response;
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
     }
 }

@@ -1,7 +1,7 @@
 (function () {
     "use strict";
     angular.module("seguimientopedidos").controller("GestioncontingenciasCtrl", GestioncontingenciasCtrl);
-    GestioncontingenciasCtrl.$inject = ["$scope", "$rootScope", "services", "$http", "$route", "$cookies", "$location"];
+    GestioncontingenciasCtrl.$inject = ["$scope", "$rootScope", "services", "$http", "$route", "$cookies", "$location", "$timeout"];
 
     function GestioncontingenciasCtrl(
         $scope,
@@ -10,7 +10,8 @@
         $http,
         $route,
         $cookies,
-        $location
+        $location,
+        $timeout
     ) {
         $scope.rutaCierreMasivoContin =
             "partial/modals/cierreMasivoContingencias.html";
@@ -213,18 +214,43 @@
         $scope.fechaupdateFinal = tiempo;
 
         $scope.damePedido = () => {
-            console.log('perr')
             services.myService($rootScope.login, 'contingenciaCtrl.php', 'damePedido').then((data) => {
-                console.log(data)
+                console.log(data.data.reiterativo)
                 if (data.data.state) {
-                    swal({
-                        type: "success",
-                        title: data.data.title,
-                        text: data.data.text,
-                        timer: 4000,
-                    }).then(() => {
-                        $scope.gestioncontingencias();
-                    })
+                    if (data.data.reiterativo === 'TRUE') {
+                        swal({
+                            type: "warning",
+                            title: "Atención",
+                            text: "esta tarea ha ingresado mas de una vez a este modulo, por favor validar la solicitud en detalle, observaciones, interacción(es) anterior(es) para evitar que ingrese de nuevo. si crees pertinente escala a tu supervisor",
+                            showCancelButton: false,
+                            confirmButtonText: "Aceptar",
+                        }).then(() => {
+
+                            swal({
+                                type: "success",
+                                title: data.data.title,
+                                text: data.data.text,
+                                timer: 4000,
+                            }).then(() => {
+                                $scope.gestioncontingencias();
+                            })
+                        })
+                    } else {
+                        let indice = data.data.text.indexOf("Se le asigna la tarea");
+                        if (indice === 0) {
+                            $timeout(function () {
+                                mostrarSweetAlert();
+                            }, 600000);
+                        }
+                        swal({
+                            type: "success",
+                            title: data.data.title,
+                            text: data.data.text,
+                            timer: 4000,
+                        }).then(() => {
+                            $scope.gestioncontingencias();
+                        })
+                    }
                 } else {
                     swal({
                         type: "error",
@@ -233,7 +259,6 @@
                         timer: 4000,
                     })
                 }
-
             }).catch((e) => {
                 console.log(e)
             })
@@ -710,6 +735,11 @@
                             $scope.gestioncontingencias();
                         })
                     } else if (data.data.state == 1) {
+                        if (data.data.text === "El pedido se encuentra bloqueado") {
+                            $timeout(function () {
+                                mostrarSweetAlert();
+                            }, 600000);
+                        }
                         swal({
                             type: "success",
                             title: data.data.title,

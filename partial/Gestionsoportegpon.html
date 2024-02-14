@@ -62,8 +62,8 @@
                     <th class="text-center" rowspan="2"><span>Nombre Contacto</span></th>
                     <th rowspan="2"><span>Ver +</span></i></th>
                     <th class="text-center" rowspan="2"><span>Tipificación 1</span></th>
-                    <th class="text-center" rowspan="2"><span>Fecha Solicitud</span></th>
                     <th class="text-center" rowspan="2"><span>Tipificación 2</span></th>
+                    <th class="text-center" rowspan="2"><span>Fecha Solicitud</span></th>
                     <th class="text-center" rowspan="2"><span>Acción</span></th>
                   </tr>
                   <tr>
@@ -181,7 +181,7 @@
                         <option value="Validación de parámetros">Validación de parámetros</option>
                       </select>
                     </td>
-                    <td>{{data.fecha_solicitud_firebase}}</td>
+
                     <td>
                       <select ng-model="data.tipificacion" class="btn btn-default btn-xs grupo-select"
                         name="tipificacion" id="tipificacion{{data.id_soporte}}" style="width:100px">
@@ -191,11 +191,21 @@
                         <option value="Devuelto al técnico">Devuelto al técnico</option>
                       </select>
                     </td>
+                    <td>{{data.fecha_solicitud_firebase}}</td>
                     <td>
                       <button type="button" class="btn btn-default btn-xs" tooltip-placement="top"
                         uib-tooltip="Gestionar soporte gpon" ng-click="gestionarSoporteGpon(data.id_soporte)">
                         <i class="fa fa-edit" aria-hidden="true"></i>
                       </button>
+                      <div style="display: inline-block;" ng-show="data.alerta === 'TRUE'">
+                        <button type="button" class="btn btn-default btn-xs"
+                                data-toggle="modal" data-backdrop="static"
+                                ng-hide="data.alerta == 'FALSE'" tooltip-placement="top"
+                                uib-tooltip="La tarea ya pasó por Soporte gpon anteriormente, por favor validar!">
+                          <i class="fa fa-exclamation" style="color:red"
+                             aria-hidden="true"> </i>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 </tbody>

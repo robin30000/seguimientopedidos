@@ -1791,12 +1791,25 @@ class Contingencia
             $producto = $res[0]['producto'];
             $tarea = $res[0]['tarea'];
 
-            $query = "SELECT id FROM contingencias where engestion = 0 and finalizado is null and tarea = '$tarea' and producto = '$producto' ";
+            $query = "SELECT c.id, CASE          
+                        WHEN (
+                        SELECT
+                            COUNT(*) 
+                        FROM
+                            contingencias c1 
+                        WHERE
+                            c1.pedido = c.pedido 
+                            AND c1.horagestion >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                            AND c1.finalizado = 'OK' 
+                            ) > 0 THEN
+                            'TRUE' ELSE 'FALSE' 
+                        END alerta  FROM contingencias c where c.engestion = 0 and c.finalizado is null and c.tarea = '$tarea' and c.producto = '$producto' ";
 
             $rst = $this->_DB->query($query);
             $rst->execute();
             $row = $rst->fetch(PDO::FETCH_OBJ);
             $id = $row->id;
+            $alerta = $row->alerta;
 
             //echo $id;exit();
 
@@ -1807,17 +1820,18 @@ class Contingencia
 
 
             if ($rst->rowCount() === 1) {
-
                 $stmt = $this->_DB->prepare("UPDATE contingencias SET engestion = 1, logincontingencia = :login, fechaClickMarca = :today WHERE id = :id");
                 $stmt->execute([':login' => $login, ':today' => $today, ':id' => $id]);
 
                 if ($stmt->rowCount() == 1) {
-                    $response = ['state' => true, 'title' => 'Bien', 'text' => 'Se le asigna la ' . $tarea . ' al asesor ' . $login];
+                    $response = ['state' => true, 'title' => 'Bien', 'text' => 'Se le asigna la tarea ' . $tarea . ' al asesor ' . $login, 'reiterativo' => $alerta];
                 } else {
-                    $response = ['state' => false, 'title' => 'Opss..', 'text' => 'Ha ocurrido un error interno intentalo nuevamente'];
+                    $response = ['state' => false, 'title' => 'Opss..', 'text' => 'Ha ocurrido un error interno intentalo nuevamente.'];
                 }
             } else {
-                $query = "SELECT id, logincontingencia FROM contingencias where engestion = 1 and finalizado is null and pedido = '$pedido' and producto = '$producto' ";
+
+                $response = ['state' => false, 'title' => 'Opss..', 'text' => 'No se encontraron tareas disponible intenta nuevamente en unos minutos.'];
+                /*$query = "SELECT id, logincontingencia FROM contingencias where engestion = 1 and finalizado is null and pedido = '$pedido' and producto = '$producto' ";
 
                 $rst = $this->_DB->query($query);
                 $rst->execute();
@@ -1833,11 +1847,11 @@ class Contingencia
                     if ($stmt->rowCount() == 1) {
                         $response = ['state' => true, 'title' => 'Bien', 'text' => 'La tarea ' . $tarea . ' se encuentra desbloqueado'];
                     } else {
-                        $response = ['state' => false, 'title' => 'Oppss..', 'text' => 'Ha ocurrido un error interno intentalo nuevamente'];
+                        $response = ['state' => false, 'title' => 'Oppss..', 'text' => 'Ha ocurrido un error interno intentalo nuevamente.'];
                     }
                 } else {
                     $response = ['state' => false, 'title' => 'Oppss..', 'text' => 'La tarea ' . $tarea . ' se encuentra en gestión por otro agente'];
-                }
+                }*/
             }
 
             $this->_DB = '';

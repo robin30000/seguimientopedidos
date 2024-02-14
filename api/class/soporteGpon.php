@@ -249,13 +249,35 @@ class soporteGpon
 
     public function getListaPendientesSoporteGpon()
     {
-        ini_set('session.gc_maxlifetime', 3600); // 1 hour
-        session_set_cookie_params(3600);
-        session_start();
+
         $hoy = date("Y-m-d");
 
         /*LOGICA QUE LLEVA LA INFORMACION A TV, INTERNET-ToIp Y CORREGIR PORTAFOLIO*/
-        $query = "SELECT * FROM soporte_gpon WHERE fecha_creado BETWEEN '$hoy 00:00:00' AND '$hoy 23:59:59' AND status_soporte != '1' ORDER BY fecha_creado asc";
+        //$query = "SELECT s.* FROM soporte_gpon s WHERE fecha_creado BETWEEN '$hoy 00:00:00' AND '$hoy 23:59:59' AND s.status_soporte != '1' ORDER BY s.fecha_creado asc";
+        $query = "SELECT
+                        s.*,
+                    CASE
+                            
+                            WHEN (
+                            SELECT
+                                COUNT(*) 
+                            FROM
+                                soporte_gpon c1 
+                            WHERE
+                                s.tarea = c1.tarea 
+                                AND c1.fecha_creado >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                AND c1.status_soporte = '1' 
+                                ) > 0 THEN
+                                'TRUE' ELSE 'FALSE' 
+                            END alerta 
+                    FROM
+                        soporte_gpon s 
+                    WHERE
+                        fecha_creado BETWEEN '$hoy 00:00:00' 
+                        AND '$hoy 23:59:59' 
+                        AND s.status_soporte != '1' 
+                    ORDER BY
+                        s.fecha_creado ASC";
 
         $rst = $this->_DB->query($query);
         $rst->execute();
@@ -479,6 +501,67 @@ class soporteGpon
         echo json_encode($response);
     }
 
+    /*public function marcarEngestionGpon($params)
+    {
+        try {
+            ini_set('session.gc_maxlifetime', 3600); // 1 hour
+            session_set_cookie_params(3600);
+            session_start();
+
+            if (!$_SESSION) {
+                $response = ['state' => 99, 'title' => 'Su session ha expirado', 'text' => 'Inicia session nuevamente para continuar'];
+            } else {
+                $login = $_SESSION['login'];
+                $today = date("Y-m-d H:i:s");
+
+                $datosguardar = $params['datos'];
+                $id_soporte = $datosguardar['id_soporte'];
+                $status_soporte = $datosguardar['status_soporte'];
+
+                if ($status_soporte == '2') {
+                    $gestion = 1;
+                } else {
+                    $gestion = 0;
+                }
+
+                $rst = $this->_DB->query("SELECT id_soporte, login FROM soporte_gpon WHERE id_soporte = '$id_soporte' AND status_soporte = 2");
+                $rst->execute();
+
+                $stmt = $this->_DB->query("SELECT login FROM usuarios WHERE perfil = '11'");
+                $stmt->execute();
+                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $usuarios_array = array_column($res, 'login');
+
+                if ($rst->rowCount() == 1) {
+                    if ($login == $loginsoportegpon || in_array($login, $usuarios_array)) {
+                        $stmt = $this->_DB->query("UPDATE soporte_gpon SET status_soporte = 0, login = NULL, fecha_marca = NULL WHERE id_soporte ='$id'");
+                        $stmt->execute();
+                        $response = ['state' => 1, 'msj' => 'El pedido se encuentra desbloqueado'];
+                    } else {
+                        $response = ['state' => 0, 'msj' => 'El pedido se encuentra en gestión por otro asesor'];
+                    }
+                } else {
+
+                    $rst = $this->_DB->query("SELECT id_soporte, login FROM soporte_gpon WHERE id_soporte = '$id_soporte' AND status_soporte = 0");
+                    $rst->execute();
+                    if ($rst->rowCount() == 1) {
+                        $row = $rst->fetchAll(PDO::FETCH_ASSOC);
+                        $id = $row[0]['id_soporte'];
+                        //echo "UPDATE soporte_gpon SET status_soporte = 2, login = '$login', fecha_marca = '$today' WHERE id_soporte = '$id'";exit();
+                        $sqlupdate = $this->_DB->query("UPDATE soporte_gpon SET status_soporte = 2, login = '$login', fecha_marca = '$today' WHERE id_soporte = '$id'");
+                        $sqlupdate->execute();
+
+                        $response = ['state' => 1, 'msj' => 'El pedido se encuentra bloqueado', 'alerta' => $alerta];
+                    }
+                }
+            }
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+        $this->_DB = null;
+        echo json_encode($response);
+    }*/
+
     public function marcarEngestionGpon($params)
     {
         try {
@@ -527,16 +610,38 @@ class soporteGpon
                     }
                 } else {
 
-                    $rst = $this->_DB->query("SELECT id_soporte, login FROM soporte_gpon WHERE id_soporte = '$id_soporte' AND status_soporte = 0");
+                    $rst = $this->_DB->query("SELECT
+                                                        s.id_soporte,
+                                                        s.login,
+                                                    CASE
+                                                            
+                                                            WHEN (
+                                                            SELECT
+                                                                COUNT(*) 
+                                                            FROM
+                                                                soporte_gpon c1 
+                                                            WHERE
+                                                                s.tarea = c1.tarea 
+                                                                AND c1.fecha_creado >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                                AND c1.status_soporte = '1' 
+                                                                ) > 0 THEN
+                                                                'TRUE' ELSE 'FALSE' 
+                                                            END alerta 
+                                                    FROM
+                                                        soporte_gpon s
+                                                    WHERE
+                                                        s.id_soporte = '$id_soporte' 
+                                                        AND s.status_soporte = 0");
                     $rst->execute();
                     if ($rst->rowCount() == 1) {
                         $row = $rst->fetchAll(PDO::FETCH_ASSOC);
                         $id = $row[0]['id_soporte'];
+                        $alerta = $row[0]['alerta'];
                         //echo "UPDATE soporte_gpon SET status_soporte = 2, login = '$login', fecha_marca = '$today' WHERE id_soporte = '$id'";exit();
                         $sqlupdate = $this->_DB->query("UPDATE soporte_gpon SET status_soporte = 2, login = '$login', fecha_marca = '$today' WHERE id_soporte = '$id'");
                         $sqlupdate->execute();
 
-                        $response = ['state' => 1, 'msj' => 'El pedido se encuentra bloqueado'];
+                        $response = ['state' => 1, 'msj' => 'El pedido se encuentra bloqueado', 'alerta' => $alerta];
                     }
                 }
             }
@@ -576,5 +681,90 @@ class soporteGpon
 
         $this->_DB = null;
         echo json_encode($response);
+    }
+
+    public function graphic($data)
+    {
+
+        if (isset($data['fecha'])) {
+            $fecha = $data['fecha'];
+        } else {
+            $fecha = date('Y-m-d');
+        }
+
+        try {
+            $stmt = $this->_DB->prepare("SELECT
+                                                    respuesta_soporte tipificaciones,
+                                                    COUNT(*) AS count 
+                                                FROM
+                                                    soporte_gpon 
+                                                WHERE
+                                                    fecha_creado BETWEEN '$fecha 00:00:00' 
+                                                    AND '$fecha 23:59:59' 
+                                                GROUP BY
+                                                    tipificaciones;");
+            $stmt->execute();
+            if ($stmt->rowCount()) {
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+            } else {
+                $response = ['state' => false, 'msj' => 'No se encontraron datos'];
+            }
+            $this->_DB = '';
+
+            return $response;
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+    }
+
+    public function gestionPorHora($data)
+    {
+        try {
+            if (isset($data['fecha'])) {
+                $fecha = $data['fecha'];
+            } else {
+                $fecha = date('Y-m-d');
+            }
+
+            $stmt = $this->_DB->prepare("SELECT 
+                                                C2.USUARIO
+                                                , COUNT(*) AS CANTIDAD
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) >= 0 AND (C2.RANGO_PENDIENTE) <= 6 THEN 1 ELSE 0 END) AS 'am06' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 6 AND (C2.RANGO_PENDIENTE) <= 7 THEN 1 ELSE 0 END) AS 'am07' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 7 AND (C2.RANGO_PENDIENTE) <= 8 THEN 1 ELSE 0 END) AS 'am08' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 8 AND (C2.RANGO_PENDIENTE) <= 9 THEN 1 ELSE 0 END) AS 'am09' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 9 AND (C2.RANGO_PENDIENTE) <= 10 THEN 1 ELSE 0 END) AS 'am10' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 10 AND (C2.RANGO_PENDIENTE) <= 11 THEN 1 ELSE 0 END) AS 'am11' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 11 AND (C2.RANGO_PENDIENTE) <= 12 THEN 1 ELSE 0 END) AS 'am12' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 12 AND (C2.RANGO_PENDIENTE) <= 13 THEN 1 ELSE 0 END) AS 'pm01' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 13 AND (C2.RANGO_PENDIENTE) <= 14 THEN 1 ELSE 0 END) AS 'pm02' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 14 AND (C2.RANGO_PENDIENTE) <= 15 THEN 1 ELSE 0 END) AS 'pm03' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 15 AND (C2.RANGO_PENDIENTE) <= 16 THEN 1 ELSE 0 END) AS 'pm04' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 16 AND (C2.RANGO_PENDIENTE) <= 17 THEN 1 ELSE 0 END) AS 'pm05' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 17 AND (C2.RANGO_PENDIENTE) <= 18 THEN 1 ELSE 0 END) AS 'pm06' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 18 AND (C2.RANGO_PENDIENTE) <= 19 THEN 1 ELSE 0 END) AS 'pm07' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 19 AND (C2.RANGO_PENDIENTE) <= 20 THEN 1 ELSE 0 END) AS 'pm08' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 20 AND (C2.RANGO_PENDIENTE) <= 21 THEN 1 ELSE 0 END) AS 'pm09' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 21 THEN 1 ELSE 0 END) AS 'Masde09'
+                                                FROM(
+                                                SELECT 
+                                                        p.login AS USUARIO, DATE_FORMAT(p.fecha_respuesta, '%H') AS RANGO_PENDIENTE, 
+                                                        p.respuesta_tipificaciones AS prod
+                                                FROM soporte_gpon p
+                                                WHERE 1=1 AND p.fecha_respuesta BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59') C2
+                                                GROUP BY C2.USUARIO
+                                                ORDER BY  CANTIDAD DESC");
+            $stmt->execute();
+            if ($stmt->rowCount()) {
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+            } else {
+                $response = ['state' => false, 'msj' => 'No se encontraron datos'];
+            }
+            $this->_DB = '';
+
+            return $response;
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
     }
 }
