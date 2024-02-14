@@ -1051,6 +1051,7 @@ echo 1;exit();
                         curl_setopt($ch, CURLOPT_TIMEOUT, 60);
                         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
                         $data = curl_exec($ch);
+
                         curl_close($ch);
                         $dataclick = json_decode($data, true);
 

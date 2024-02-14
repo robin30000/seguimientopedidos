@@ -14,39 +14,57 @@ if (isset($data['method'])) {
         case 'datos':
             require_once '../class/ETP.php';
             $user = new ETP();
-            $res  = $user->datos($data['data']);
+            $res = $user->datos($data['data']);
             echo json_encode($res);
             break;
         case 'marca':
             require_once '../class/ETP.php';
             $user = new ETP();
-            $res  = $user->marca($data['data']);
+            $res = $user->marca($data['data']);
             echo json_encode($res);
             break;
         case 'guarda':
             require_once '../class/ETP.php';
             $user = new ETP();
-            $res  = $user->guarda($data['data']);
+            $res = $user->guarda($data['data']);
             echo json_encode($res);
             break;
         case 'datosTerminados':
             require_once '../class/ETP.php';
             $user = new ETP();
-            $res  = $user->datosTerminados($data['data']);
+            $res = $user->datosTerminados($data['data']);
             echo json_encode($res);
             break;
         case 'datosTerminadosRegistros':
             require_once '../class/ETP.php';
             $user = new ETP();
-            $res  = $user->datosTerminadosRegistros($data['data']);
+            $res = $user->datosTerminadosRegistros($data['data']);
             echo json_encode($res);
             break;
-		case 'damePedidoetp':
+        case 'damePedidoetp':
             require_once '../class/ETP.php';
             $user = new ETP();
             $res = $user->damePedidoetp($data['data']);
             echo json_encode($res);
-            break;		
+            break;
+        case 'graphic':
+            require_once '../class/ETP.php';
+            $user = new ETP();
+            $res = $user->graphic($data['data']);
+            echo json_encode($res);
+            break;
+        case 'graphicDetails':
+            require_once '../class/ETP.php';
+            $user = new ETP();
+            $res = $user->graphicDetails($data['data']);
+            echo json_encode($res);
+            break;
+        case 'gestionPorHora':
+            require_once '../class/ETP.php';
+            $user = new ETP();
+            $res = $user->gestionPorHora($data['data']);
+            echo json_encode($res);
+            break;
         default:
             echo 'ninguna opción valida.';
             break;

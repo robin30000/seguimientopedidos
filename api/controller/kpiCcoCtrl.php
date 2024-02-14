@@ -82,6 +82,12 @@ if (isset($data['method'])) {
             $res = $user->chartAllEmt($data['data']);
             echo json_encode($res);
             break;
+        case 'chartAllQuejas':
+            require_once '../class/KpiCco.php';
+            $user = new KpiCco();
+            $res = $user->chartAllQuejas($data['data']);
+            echo json_encode($res);
+            break;
         case 'graficoSiebel':
             require_once '../class/KpiCco.php';
             $user = new KpiCco();

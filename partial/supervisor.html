@@ -394,7 +394,7 @@
                                         <li>
                                             &nbsp;
                                             &nbsp;
-                                            <b>Rescate Upgrades</b> <span class="badge badge-default">{{Items7}}</span>
+                                            <b>BSC</b> <span class="badge badge-default">{{Items7}}</span>
                                         </li>
                                         <li>
                                             &nbsp;
@@ -421,6 +421,7 @@
                                         <table class="table table-bordered table-hover table-condensed small">
                                             <thead class="table-header">
                                             <tr>
+                                                <th class="text-center"><span>Login</span></th>
                                                 <th class="text-center"><span>Tarea</span></th>
                                                 <th class="text-center"><span>Sistema</span></th>
                                                 <th class="text-center"><span>Cel técnico</span></th>
@@ -435,7 +436,12 @@
                                             </thead>
                                             <tbody>
                                             <tr ng-repeat="data in mesa7">
-
+                                                <td>
+                                                    <span class="label label-primary label-xsmall"
+                                                          ng-if="data.login_gestion == galletainfo.login">{{data.login_gestion}}</span>
+                                                    <span class="label label-primary label-xsmall"
+                                                          ng-if="data.login_gestion != galletainfo.login">{{data.login_gestion}}</span>
+                                                </td>
                                                 <td>
                                                     <button class="btn btn-default btn-xs" id=i{{$index}}
                                                             ng-click="CopyPortaPapeles(data.tarea)"

@@ -44,12 +44,17 @@
             }).catch((e) => {
                 console.log(e)
             })
+        }
 
-        };
-		 $scope.damePedidoetp = () => {
+        $scope.damePedidoetp = () => {
             services.myService($rootScope.login, 'etpCtrl.php', 'damePedidoetp').then((data) => {
-                console.log(data)
                 if (data.data.state) {
+
+                    if (data.data.msj === "Pedido bloqueado correctamente") {
+                        $timeout(function () {
+                            mostrarSweetAlert();
+                        }, 600000);
+                    }
                     swal({
                         type: "success",
                         title: data.data.title,
@@ -71,6 +76,7 @@
                 console.log(e)
             })
         }
+
         function gestionETPTerminado(data) {
             let datos = '';
             if (!data) {
@@ -110,15 +116,17 @@
 
 
         $scope.marcarEngestion = (data) => {
-            console.log(data, ' TTTTT');
             let user = $rootScope.login;
             let datos = {usuario: user, id: data.id_soporte}
 
 
-
             services.myService(datos, 'etpCtrl.php', 'marca').then((data) => {
-                console.log(data)
                 if (data.data.state) {
+                    if (data.data.msj === "Pedido bloqueado correctamente") {
+                        $timeout(function () {
+                            mostrarSweetAlert();
+                        }, 600000);
+                    }
                     Swal({
                         type: 'success',
                         title: 'Bien',
@@ -165,7 +173,6 @@
         }
 
 
-
         $scope.detallePedido = (data) => {
             if (!data) {
                 Swal({
@@ -181,12 +188,10 @@
         }
 
 
-
         $scope.recargaPage = () => {
             let datos = {'page': $scope.currentPage, 'size': $scope.pageSize}
             gestionETPTerminado(datos);
         }
-
 
 
         $scope.recargaPageGestion = () => {
@@ -200,7 +205,7 @@
 
 
         $scope.pageSizeChanged = function () {
-           let data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.toip}
+            let data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.toip}
             gestionETP(data);
         }
 
@@ -222,7 +227,7 @@
                 })
                 return;
             }
-            let datos = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': data, 'export' : 1}
+            let datos = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': data, 'export': 1}
             services.myService(datos, 'etpCtrl.php', 'datosTerminados').then((data) => {
                 $scope.loading = false;
                 if (data.data.state) {
@@ -242,7 +247,6 @@
         }
 
 
-
         $scope.ver_masss = (data) => {
             $scope.dataContent = $sce.trustAsHtml('<div class="table-responsive" style="max-width: 380px;"><table class="table table-bordered table-hover table-condensed small" style="max-width: 350px;">' +
                 '<tbody><tr><td style="min-width: 80px">Pedido</td><td>' + data.unepedido + '</td></tr>' +
@@ -258,7 +262,7 @@
                 '</tbody></table></div>');
         }
 
-        $scope.ver_mas2 = (data)  => {
+        $scope.ver_mas2 = (data) => {
             $scope.dataContent = $sce.trustAsHtml('<div class="table-responsive" style="max-width: 380px;"><table class="table table-bordered table-hover table-condensed small" style="max-width: 350px;">' +
                 '<tbody><tr><td style="min-width: 80px">Pedido</td><td>' + data.unepedido + '</td></tr>' +
                 '<tr><td style="min-width: 80px">Categoría</td><td>' + data.tasktypecategory + '</td></tr>' +
@@ -300,7 +304,7 @@
                 return;
             }
 
-            if (data.tipificaciones == '' ||data.tipificaciones == null) {
+            if (data.tipificaciones == '' || data.tipificaciones == null) {
                 Swal({
                     type: 'error',
                     title: 'Oppss..',
@@ -310,7 +314,7 @@
                 return;
             }
 
-            if (data.tipificaciones2 == '' ||data.tipificaciones2 == null  ) {
+            if (data.tipificaciones2 == '' || data.tipificaciones2 == null) {
                 Swal({
                     type: 'error',
                     title: 'Oppss..',
@@ -410,9 +414,11 @@
         var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
 
         tiempo = year + "-" + month + "-" + day;
-        function init(){
+
+        function init() {
             gestionETPTerminadoRegistros();
         }
+
         function gestionETPTerminadoRegistros(data) {
             let datos = '';
             if (!data) {
@@ -493,7 +499,7 @@
             let data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.toip}
             gestionETPTerminadoRegistros(data);
         };
-        $scope.csvETPRegistros= (data) => {
+        $scope.csvETPRegistros = (data) => {
             if (!data) {
                 Swal({
                     type: 'error',
@@ -511,7 +517,7 @@
                 })
                 return;
             }
-            let datos = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': data, 'export' : 1}
+            let datos = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': data, 'export': 1}
             services.myService(datos, 'etpCtrl.php', 'datosTerminadosRegistros').then((data) => {
                 $scope.loading = false;
                 if (data.data.state) {
@@ -532,7 +538,7 @@
             })
         }
 
-        $scope.ver_mas2 = (data)  => {
+        $scope.ver_mas2 = (data) => {
             $scope.dataContent = $sce.trustAsHtml('<div class="table-responsive" style="max-width: 380px;"><table class="table table-bordered table-hover table-condensed small" style="max-width: 350px;">' +
                 '<tbody><tr><td style="min-width: 80px">Pedido</td><td>' + data.unepedido + '</td></tr>' +
                 '<tr><td style="min-width: 80px">Categoría</td><td>' + data.tasktypecategory + '</td></tr>' +

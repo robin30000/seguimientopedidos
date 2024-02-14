@@ -25,7 +25,29 @@ class Toip
             $stmt->execute();
             $count = $stmt->rowCount();
 
-            $stmt = $this->_DB->query("SELECT * FROM activacion_toip where en_gestion != '2' ORDER BY hora_ingreso");
+            //$stmt = $this->_DB->query("SELECT * FROM activacion_toip where en_gestion != '2' ORDER BY hora_ingreso");
+            $stmt = $this->_DB->query("SELECT
+                                                    a.*,
+                                                CASE
+                                                        
+                                                        WHEN (
+                                                        SELECT
+                                                            COUNT(*) 
+                                                        FROM
+                                                            activacion_toip c1 
+                                                        WHERE
+                                                            a.tarea = c1.tarea 
+                                                            AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                            AND c1.en_gestion = '2' 
+                                                            ) > 0 THEN
+                                                            'TRUE' ELSE 'FALSE' 
+                                                        END alerta 
+                                                FROM
+                                                    activacion_toip a 
+                                                WHERE
+                                                    a.en_gestion != '2' 
+                                                ORDER BY
+                                                    a.hora_ingreso");
             $stmt->execute();
 
             if ($stmt->rowCount()) {
@@ -52,7 +74,26 @@ class Toip
             if (!$user) {
                 $response = ['state' => false, 'msj' => 'Inicia session nuevamente para continuar'];
             } else {
-                $stmt = $this->_DB->prepare("SELECT en_gestion, login_gestion FROM activacion_toip WHERE id = :id");
+                $stmt = $this->_DB->prepare("SELECT
+                                                        a.en_gestion,
+                                                        a.login_gestion,
+                                                    CASE
+                                                        WHEN (
+                                                        SELECT
+                                                            COUNT(*) 
+                                                        FROM
+                                                            activacion_toip c1 
+                                                        WHERE
+                                                            a.tarea = c1.tarea 
+                                                            AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                            AND c1.en_gestion = '2' 
+                                                            ) > 0 THEN
+                                                            TRUE ELSE FALSE 
+                                                        END alerta 
+                                                    FROM
+                                                        activacion_toip a
+                                                    WHERE
+                                                        a.id = :id");
                 $stmt->execute([':id' => $id]);
 
                 if ($stmt->rowCount()) {
@@ -64,10 +105,11 @@ class Toip
                     $usuarios_array = array_column($res1, 'login');
 
                     if ($res[0]['en_gestion'] == 0) {
+                        $alerta = $res[0]['alerta'];
                         $stmt = $this->_DB->prepare("UPDATE activacion_toip SET en_gestion = '1', login_gestion = :user, hora_marca = :fecha WHERE id = :id");
                         $stmt->execute([':user' => $user, ':fecha' => date('Y-m-d H:i:s'), ':id' => $id]);
                         if ($stmt->rowCount()) {
-                            $response = ['state' => true, 'msj' => 'Pedido bloqueado correctamente'];
+                            $response = ['state' => true, 'msj' => 'Pedido bloqueado correctamente', 'alerta' => $alerta];
                         } else {
                             $response = ['state' => false, 'msj' => 'Ha ocurrido un erro interno intentalo nuevamente en unos minutos'];
                         }
@@ -169,7 +211,7 @@ class Toip
 
             if (isset($data['data']['pedido'])) {
                 $pedido = $data['data']['pedido'];
-                $con .= " AND pedido = '$pedido'";
+                $con .= " AND pedido = '$pedido' OR tarea = '$pedido'";
             }
 
             if (isset($data['data']['filtro'])) {

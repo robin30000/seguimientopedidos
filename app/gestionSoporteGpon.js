@@ -1,9 +1,9 @@
 (function () {
     "use strict";
     angular.module("seguimientopedidos").controller("GestionsoportegponCtrl", GestionsoportegponCtrl);
-    GestionsoportegponCtrl.$inject = ["$scope", "$rootScope", "services", "$route", "$sce", "$cookies", "$location"];
+    GestionsoportegponCtrl.$inject = ["$scope", "$rootScope", "services", "$route", "$sce", "$cookies", "$location", "$timeout"];
 
-    function GestionsoportegponCtrl($scope, $rootScope, services, $route, $sce, $cookies, $location) {
+    function GestionsoportegponCtrl($scope, $rootScope, services, $route, $sce, $cookies, $location, $timeout) {
         $scope.isSoporteGponFromField = false;
         $scope.isSoporteGponFromIntranet = false;
         $scope.isLoadingData = true;
@@ -116,14 +116,43 @@
                             $route.reload();
                         });
                     } else if (data.data.state == 1) {
-                        swal({
-                            title: "muy Bien",
-                            type: "success",
-                            text: data.data.msj,
-                            timer: 4000,
-                        }).then(function () {
-                            $scope.listarsoportegpon();
-                        })
+                        if (data.data.alerta === 'TRUE') {
+                            swal({
+                                type: "warning",
+                                title: "Atención",
+                                text: "esta tarea ha ingresado mas de una vez a este modulo, por favor validar la solicitud en detalle, observaciones, interacción(es) anterior(es) para evitar que ingrese de nuevo. si crees pertinente escala a tu supervisor",
+                                showCancelButton: false,
+                                confirmButtonText: "Aceptar",
+                            }).then(() => {
+                                if (data.data.msj === "El pedido se encuentra bloqueado") {
+                                    $timeout(function () {
+                                        mostrarSweetAlert();
+                                    }, 600000);
+                                }
+                                swal({
+                                    title: "muy Bien",
+                                    type: "success",
+                                    text: data.data.msj,
+                                    timer: 4000,
+                                }).then(function () {
+                                    $scope.listarsoportegpon();
+                                })
+                            })
+                        } else {
+                            if (data.data.msj === "El pedido se encuentra bloqueado") {
+                                $timeout(function () {
+                                    mostrarSweetAlert();
+                                }, 600000);
+                            }
+                            swal({
+                                title: "muy Bien",
+                                type: "success",
+                                text: data.data.msj,
+                                timer: 4000,
+                            }).then(function () {
+                                $scope.listarsoportegpon();
+                            })
+                        }
                     } else if (data.data.state == 0) {
                         swal({
                             title: "Ops...",
@@ -223,7 +252,7 @@
             } else {
                 Swal({
                     title: "Error",
-                    text: "Debes ingresar una observacion.",
+                    text: "Debes ingresar una observación.",
                     type: "error",
                 });
                 return false;

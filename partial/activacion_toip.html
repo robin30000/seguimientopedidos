@@ -13,7 +13,7 @@
                     </ul>
                 </div>
                 <div class="tab-content">
-                    <div id="gestion" class="tab-pane fade in active">
+                    <div class="tab-pane fade in active" id="gestion">
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="table">
@@ -28,24 +28,24 @@
                                             &nbsp;
                                             &nbsp;
                                             <div data-ng-if="loading">
-                                                <img title="Esperando respuesta" tooltip data-placement="top"
-                                                     src="img/loader.gif"/>
+                                                <img data-placement="top" src="img/loader.gif" title="Esperando respuesta"
+                                                     tooltip/>
                                             </div>
                                         </li>
                                         <li>
                                             &nbsp;
                                             &nbsp;
-                                            <button type="button" class="btn btn-default btn-xs"
-                                                    ng-click="recargaPageGestion()" title="Actualizar"
-                                                    data-toggle="tooltip" data-placement="top" ng-disabled="loading">
-                                                <i class="fa fa-refresh" aria-hidden="true"></i>
+                                            <button class="btn btn-default btn-xs" data-placement="top"
+                                                    data-toggle="tooltip" ng-click="recargaPageGestion()"
+                                                    ng-disabled="loading" title="Actualizar" type="button">
+                                                <i aria-hidden="true" class="fa fa-refresh"></i>
                                             </button>
                                         </li>
                                         &nbsp;
                                     </ul>
                                     <br><br>
                                     <div class="table-responsive">
-                                        <table class="table small table-striped table-hover table-condensed table-bordered">
+                                        <table class="table small table-hover table-condensed table-bordered">
                                             <thead class="table-header">
                                             <tr>
                                                 <th>Marca</th>
@@ -70,10 +70,10 @@
                                             <tr ng-repeat="data in datos">
                                                 <td>
                                                     <div>
-                                                        <input type="checkbox" ng-model="data.bloqueo"
-                                                               name="bloqueo" id="bloqueo"
-                                                               ng-click="marcarEngestion(data)"
-                                                               ng-checked="data.en_gestion == '1'">
+                                                        <input id="bloqueo" name="bloqueo"
+                                                               ng-checked="data.en_gestion == '1'" ng-click="marcarEngestion(data)"
+                                                               ng-model="data.bloqueo"
+                                                               type="checkbox">
                                                         <div class="loadingio-spinner-ellipsis-3nun7cb96ao"
                                                              ng-show="data.bloqueo == '1'">
                                                             <div class="ldio-pettsxrv7wj">
@@ -93,18 +93,18 @@
                                                           ng-if="data.login_gestion != galletainfo.login">{{data.login_gestion}}</span>
                                                 </td>
                                                 <td>
-                                                    <button type="button" class="btn btn-default btn-xs"
+                                                    <button class="btn btn-default btn-xs" id=tv{{$index}}
                                                             ng-click="CopyPortaPapeles(data.pedido)"
                                                             tooltip-placement="top"
-                                                            uib-tooltip="Copiar pedido" id=tv{{$index}}>
+                                                            type="button" uib-tooltip="Copiar pedido">
                                                         {{data.pedido}}
                                                     </button>
                                                 </td>
                                                 <td>
-                                                    <button type="button" class="btn btn-default btn-xs"
+                                                    <button class="btn btn-default btn-xs" id=tv{{$index}}
                                                             ng-click="CopyPortaPapeles(data.tarea)"
                                                             tooltip-placement="top"
-                                                            uib-tooltip="Copiar tarea" id=tv{{$index}}>
+                                                            type="button" uib-tooltip="Copiar tarea">
                                                         {{data.tarea}}
                                                     </button>
                                                 </td>
@@ -115,10 +115,10 @@
                                                 <td>{{data.hora_ingreso}}</td>
                                                 <td>{{data.identificador_servicio}}</td>
                                                 <td>
-                                                    <select ng-model="data.tipificacion" style="width: 150px"
-                                                            class="btn btn-default btn-xs grupo-select"
-                                                            name="tipificacion" id="tipificacion">
-                                                        <option value="" selected>Seleccione</option>
+                                                    <select class="btn btn-default btn-xs grupo-select" id="tipificacion"
+                                                            name="tipificacion"
+                                                            ng-model="data.tipificacion" style="width: 150px">
+                                                        <option selected value="">Seleccione</option>
                                                         <option value="Aprovisionamiento automático">Aprov. automático
                                                         </option>
                                                         <option value="Aprovisionado por contingencia">Aprov por
@@ -128,11 +128,11 @@
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <select ng-show="data.tipificacion == 'Aprovisionado por contingencia'"
-                                                            ng-model="data.subtipificacion" style="width: 150px"
-                                                            class="btn btn-default btn-xs grupo-select"
-                                                            name="subtipificacion" id="subtipificacion">
-                                                        <option value="" selected>Seleccione</option>
+                                                    <select class="btn btn-default btn-xs grupo-select"
+                                                            id="subtipificacion" name="subtipificacion"
+                                                            ng-model="data.subtipificacion"
+                                                            ng-show="data.tipificacion == 'Aprovisionado por contingencia'" style="width: 150px">
+                                                        <option selected value="">Seleccione</option>
                                                         <option value="Cm_offline">Cm_offline</option>
                                                         <option value="Se requiere reiniciar">Se requiere reiniciar
                                                         </option>
@@ -144,50 +144,60 @@
                                                         <option value="Contingencia OK">Contingencia OK</option>
                                                     </select>
 
-                                                    <select ng-show="data.tipificacion == 'Aprovisionamiento automático'"
-                                                            ng-model="data.subtipificacion" style="width: 150px"
-                                                            class="btn btn-default btn-xs grupo-select"
-                                                            name="subtipificacion" id="subtipificacion">
-                                                        <option value="" selected>Seleccione</option>
+                                                    <select class="btn btn-default btn-xs grupo-select"
+                                                            id="subtipificacion" name="subtipificacion"
+                                                            ng-model="data.subtipificacion"
+                                                            ng-show="data.tipificacion == 'Aprovisionamiento automático'" style="width: 150px">
+                                                        <option selected value="">Seleccione</option>
                                                         <option value="Reenvío de registros">Reenvío de registros
                                                         </option>
                                                         <option value="Ninguno">Ninguno</option>
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <select ng-model="data.verifica_tono" style="width: 80px"
-                                                            class="btn btn-default btn-xs grupo-select"
-                                                            name="verifica_tono" id="verifica_tono">
-                                                        <option value="" selected>Seleccione</option>
+                                                    <select class="btn btn-default btn-xs grupo-select" id="verifica_tono"
+                                                            name="verifica_tono"
+                                                            ng-model="data.verifica_tono" style="width: 80px">
+                                                        <option selected value="">Seleccione</option>
                                                         <option value="SI">SI</option>
                                                         <option value="NO">NO</option>
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <select ng-model="data.cerrado_gtc" style="width: 80px"
-                                                            class="btn btn-default btn-xs grupo-select"
-                                                            name="cerrado_gtc">
-                                                        <option value="" selected>Seleccione</option>
+                                                    <select class="btn btn-default btn-xs grupo-select" name="cerrado_gtc"
+                                                            ng-model="data.cerrado_gtc"
+                                                            style="width: 80px">
+                                                        <option selected value="">Seleccione</option>
                                                         <option value="SI">SI</option>
                                                         <option value="NO">NO</option>
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <button popover-placement="left" ng-click="ver_masss(data)"
-                                                            uib-popover-html="dataContent"
-                                                            popover-title="Ver mas" type="button"
-                                                            class="btn btn-default btn-xs" tooltip-placement="top"
+                                                    <button class="btn btn-default btn-xs" ng-click="ver_masss(data)"
+                                                            popover-placement="left"
+                                                            popover-title="Ver mas" tooltip-placement="top"
+                                                            type="button" uib-popover-html="dataContent"
                                                             uib-tooltip="Ver mas">
-                                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                                        <i aria-hidden="true" class="fa fa-plus"></i>
                                                     </button>
                                                 </td>
-                                                <td>
-                                                    <button type="button" class="btn btn-default btn-xs"
-                                                            data-toggle="modal"
+                                                <td style="display: flex; align-items: center; justify-content: center;">
+                                                    <button class="btn btn-default btn-xs" data-toggle="modal"
                                                             ng-click="GuardarActivacionToip(data)"
-                                                            tooltip-placement="top" uib-tooltip="Guardar gestión">
-                                                        <i class="fa fa-floppy-o" aria-hidden="true"> </i>
+                                                            tooltip-placement="top"
+                                                            type="button" uib-tooltip="Guardar gestión">
+                                                        <i aria-hidden="true" class="fa fa-floppy-o"> </i>
                                                     </button>
+                                                    <div ng-show="data.alerta === 'TRUE'"
+                                                         style="display: inline-block;">
+                                                        <button class="btn btn-default btn-xs" data-backdrop="static"
+                                                                data-toggle="modal" ng-hide="data.alerta == 'FALSE'"
+                                                                tooltip-placement="top" type="button"
+                                                                uib-tooltip="La tarea ya pasó por modulo, por favor validar!">
+                                                            <i aria-hidden="true" class="fa fa-exclamation"
+                                                               style="color:red"> </i>
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -200,7 +210,7 @@
                     </div>
 
                     <!-- MODULO DE REGISTROS -->
-                    <div id="registros" class="tab-pane fade">
+                    <div class="tab-pane fade" id="registros">
                         <div class="row">
                             <div class="col-sm-12">
                                 <br>
@@ -213,31 +223,31 @@
                                     </li>
                                     <li>
                                         <div data-ng-if="loading">
-                                            <img title="Esperando respuesta" tooltip data-placement="top"
-                                                 src="img/loader.gif"/>
+                                            <img data-placement="top" src="img/loader.gif" title="Esperando respuesta"
+                                                 tooltip/>
                                         </div>
                                     </li>
                                     <li>
                                         &nbsp;
-                                        <input style="width: 130px" type="text" name="fechaini" id="fechaini"
-                                               class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
-                                               ng-model="toip.fechaini"
-                                               placeholder="Fecha Inicial" datetime-picker="" date-only
-                                               date-format="yyyy-MM-dd"
-                                               autocomplete="off"/>
+                                        <input autocomplete="off" class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" date-format="yyyy-MM-dd" date-only
+                                               datetime-picker=""
+                                               id="fechaini"
+                                               name="fechaini" ng-model="toip.fechaini" placeholder="Fecha Inicial"
+                                               style="width: 130px"
+                                               type="text"/>
                                         <i class="fa fa-calendar fa-fw"></i>
-                                        <input style="width: 130px" type="text" name="fechafin" id="fechafin"
-                                               class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
-                                               ng-model="toip.fechafin"
-                                               placeholder="Fecha Final" datetime-picker="" date-only
-                                               date-format="yyyy-MM-dd"
-                                               autocomplete="off"/>
+                                        <input autocomplete="off" class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" date-format="yyyy-MM-dd" date-only
+                                               datetime-picker=""
+                                               id="fechafin"
+                                               name="fechafin" ng-model="toip.fechafin" placeholder="Fecha Final"
+                                               style="width: 130px"
+                                               type="text"/>
                                         <i class="fa fa-calendar fa-fw"></i>
                                         <select class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
-                                                style="width: 160px" name="filtro"
-                                                id="filtro" ng-model="toip.filtro"
-                                                data-placeholder="Seleccione el filtro">
-                                            <option value="" selected>Seleccione el filtro</option>
+                                                data-placeholder="Seleccione el filtro" id="filtro"
+                                                name="filtro" ng-model="toip.filtro"
+                                                style="width: 160px">
+                                            <option selected value="">Seleccione el filtro</option>
                                             <option value="Todos">Todos</option>
                                             <option value="Gestionados">Gestionados</option>
                                             <option value="Sin gestionar">Sin gestionar</option>
@@ -255,25 +265,25 @@
                                          </button> -->
 
                                         <b>
-                                            <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs"
+                                            <input autocomplete="off" class="btn btn-default btn-xs" id="pedido" name="pedido"
                                                    ng-model="toip.pedido"
-                                                   placeholder="Buscar tarea" autocomplete="off"/>&nbsp;
+                                                   placeholder="Buscar tarea/pedido" type="text"/>&nbsp;
 
-                                            <button type="button" class="btn btn-default btn-xs"
-                                                    ng-click="detallePedido(toip)"
-                                                    title="Buscar" data-toggle="tooltip" data-placement="top"
-                                                    ng-disabled="loading">
-                                                <i class="fa fa-search" aria-hidden="true"></i>
+                                            <button class="btn btn-default btn-xs" data-placement="top"
+                                                    data-toggle="tooltip"
+                                                    ng-click="detallePedido(toip)" ng-disabled="loading" title="Buscar"
+                                                    type="button">
+                                                <i aria-hidden="true" class="fa fa-search"></i>
                                             </button>
                                         </b>&nbsp;
 
                                         <b>
-                                            <button type="button" class="btn btn-success btn-xs"
-                                                    ng-click="csvToip(toip)"
-                                                    title="Exportar Registros" data-toggle="tooltip"
-                                                    data-placement="top"
-                                                    ng-disabled="loading">
-                                                <i class="fa fa-cloud-download" aria-hidden="true"> </i>
+                                            <button class="btn btn-success btn-xs" data-placement="top"
+                                                    data-toggle="tooltip"
+                                                    ng-click="csvToip(toip)" ng-disabled="loading"
+                                                    title="Exportar Registros"
+                                                    type="button">
+                                                <i aria-hidden="true" class="fa fa-cloud-download"> </i>
                                             </button>
                                         </b>
 
@@ -281,10 +291,10 @@
 
                                     <li>
                                         &nbsp;
-                                        <button type="button" class="btn btn-default btn-xs" ng-click="recargaPage()"
-                                                title="Actualizar"
-                                                data-toggle="tooltip" data-placement="top" ng-disabled="loading">
-                                            <i class="fa fa-refresh" aria-hidden="true"></i>
+                                        <button class="btn btn-default btn-xs" data-placement="top" data-toggle="tooltip"
+                                                ng-click="recargaPage()"
+                                                ng-disabled="loading" title="Actualizar" type="button">
+                                            <i aria-hidden="true" class="fa fa-refresh"></i>
                                         </button>
                                     </li>
                                     &nbsp;
@@ -317,15 +327,15 @@
                                         <tr ng-repeat="data in datosTerminados">
                                             <td>{{data.login_gestion}}</td>
                                             <td>
-                                                <button type="button" class="btn btn-default btn-xs"
+                                                <button class="btn btn-default btn-xs" id=p{{$index}}
                                                         ng-click="CopyPortaPapeles(data.pedido)" tooltip-placement="top"
-                                                        uib-tooltip="Copiar pedido" id=p{{$index}}>{{data.pedido}}
+                                                        type="button" uib-tooltip="Copiar pedido">{{data.pedido}}
                                                 </button>
                                             </td>
                                             <td>
-                                                <button type="button" class="btn btn-default btn-xs"
+                                                <button class="btn btn-default btn-xs" id=t{{$index}}
                                                         ng-click="CopyPortaPapeles(data.tarea)" tooltip-placement="top"
-                                                        uib-tooltip="Copiar pedido" id=t{{$index}}>{{data.tarea}}
+                                                        type="button" uib-tooltip="Copiar pedido">{{data.tarea}}
                                                 </button>
                                             </td>
                                             <td>{{data.serial}}</td>
@@ -337,10 +347,10 @@
                                             <td>{{data.hora_gestion}}</td>
                                             <td>{{data.identificador_servicio}}</td>
                                             <td>
-                                                <select ng-model="data.tipificacion" style="width: 150px"
-                                                        class="btn btn-default btn-xs grupo-select"
-                                                        name="tipificacion" disabled>
-                                                    <option value="" selected>No tiene</option>
+                                                <select class="btn btn-default btn-xs grupo-select" disabled
+                                                        name="tipificacion"
+                                                        ng-model="data.tipificacion" style="width: 150px">
+                                                    <option selected value="">No tiene</option>
                                                     <option value="Aprovisionamiento automático">Aprovisionamiento
                                                         automático
                                                     </option>
@@ -351,10 +361,10 @@
                                                 </select>
                                             </td>
                                             <td>
-                                                <select ng-model="data.subtipificacion" style="width: 150px"
-                                                        class="btn btn-default btn-xs grupo-select"
-                                                        name="subtipificacion" disabled>
-                                                    <option value="" selected>N/A</option>
+                                                <select class="btn btn-default btn-xs grupo-select" disabled
+                                                        name="subtipificacion"
+                                                        ng-model="data.subtipificacion" style="width: 150px">
+                                                    <option selected value="">N/A</option>
                                                     <option value="Cm_offline">Cm_offline</option>
                                                     <option value="Se requiere reiniciar">Se requiere reiniciar</option>
                                                     <option value="Garantía instalación">Garantía instalación</option>
@@ -365,28 +375,28 @@
                                                 </select>
                                             </td>
                                             <td>
-                                                <select ng-model="data.verifica_tono" style="width: 80px"
-                                                        class="btn btn-default btn-xs grupo-select"
-                                                        name="verifica_tono" disabled>
-                                                    <option value="" selected>No tiene</option>
+                                                <select class="btn btn-default btn-xs grupo-select" disabled
+                                                        name="verifica_tono"
+                                                        ng-model="data.verifica_tono" style="width: 80px">
+                                                    <option selected value="">No tiene</option>
                                                     <option value="SI">SI</option>
                                                     <option value="NO">NO</option>
                                                 </select>
                                             </td>
                                             <td>
-                                                <select ng-model="data.cerrado_gtc" style="width: 80px"
-                                                        class="btn btn-default btn-xs grupo-select"
-                                                        name="cerrado_gtc" disabled>
-                                                    <option value="" selected>No tiene</option>
+                                                <select class="btn btn-default btn-xs grupo-select" disabled
+                                                        name="cerrado_gtc"
+                                                        ng-model="data.cerrado_gtc" style="width: 80px">
+                                                    <option selected value="">No tiene</option>
                                                     <option value="SI">SI</option>
                                                     <option value="NO">NO</option>
                                                 </select>
                                             </td>
                                             <td class="text-center">
-                                                <button popover-placement="left" uib-popover="{{data.observacion}}"
-                                                        tooltip-placement="top" uib-tooltip="Observación asesor"
-                                                        type="button" class="btn btn-default btn-xs">
-                                                    <i class="fa fa-commenting" aria-hidden="true"></i>
+                                                <button class="btn btn-default btn-xs" popover-placement="left"
+                                                        tooltip-placement="top" type="button"
+                                                        uib-popover="{{data.observacion}}" uib-tooltip="Observación asesor">
+                                                    <i aria-hidden="true" class="fa fa-commenting"></i>
                                                 </button>
                                             </td>
                                         </tr>
@@ -394,12 +404,12 @@
                                     </table>
                                 </div>
                                 <div class="text-center">
-                                    <ul uib-pagination class="pagination-sm" total-items="totalItems"
-                                        ng-model="currentPage"
-                                        ng-change="pageChanged()" items-per-page="pageSize" max-size="5"
-                                        boundary-links="true" rotate="true"
-                                        previous-text="&#8672;" next-text="&#8674;" first-text="Primero"
-                                        last-text="Último"></ul>
+                                    <ul boundary-links="true" class="pagination-sm" first-text="Primero"
+                                        items-per-page="pageSize"
+                                        last-text="Último" max-size="5" next-text="&#8674;"
+                                        ng-change="pageChanged()" ng-model="currentPage"
+                                        previous-text="&#8672;" rotate="true" total-items="totalItems"
+                                        uib-pagination></ul>
                                 </div>
                             </div>
                         </div>

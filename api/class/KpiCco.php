@@ -1,6 +1,7 @@
 <?php
 require_once 'conection.php';
 require_once 'ConnectionGestionOperativa.php';
+
 class KpiCco
 {
     private $_DB;
@@ -50,18 +51,15 @@ class KpiCco
     public function chartAllContingencia($data)
     {
         try {
-            if (!empty($data)) {
-                $fecha = $data;
-            } else {
-                $fecha = date('Y-m-d');
-            }
+            $fechaIni = $data['dateInit'];
+            $fechaFin = $data['dateEnd'];
             $stmt = $this->_DB->prepare("SELECT
                                                     c.*
                                                 FROM
                                                     contingencias c
                                                 WHERE
                                                     1 = 1
-                                                        AND c.horagestion BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59'
+                                                        AND c.horagestion BETWEEN '$fechaIni 00:00:00' AND '$fechaFin 23:59:59'
                                                     AND HOUR(c.horagestion) BETWEEN 7 AND 20
                                                 ORDER BY
                                                     c.horacontingencia ASC;");
@@ -118,18 +116,15 @@ class KpiCco
     public function chartAllToip($data)
     {
         try {
-            if (!empty($data)) {
-                $fecha = $data;
-            } else {
-                $fecha = date('Y-m-d');
-            }
+            $fechaIni = $data['dateInit'];
+            $fechaFin = $data['dateEnd'];
             $stmt = $this->_DB->prepare("SELECT
                                                     a.*
                                                 FROM
                                                     activacion_toip a
                                                 WHERE
                                                     1 = 1
-                                                        AND a.hora_ingreso BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59'
+                                                        AND a.hora_ingreso BETWEEN '$fechaIni 00:00:00' AND '$fechaFin 23:59:59'
                                                     AND HOUR(a.hora_ingreso) BETWEEN 7 AND 20
                                                 ORDER BY
                                                     a.hora_ingreso ASC;");
@@ -186,18 +181,15 @@ class KpiCco
     public function chartAllEtp($data)
     {
         try {
-            if (!empty($data)) {
-                $fecha = $data;
-            } else {
-                $fecha = date('Y-m-d');
-            }
+            $fechaIni = $data['dateInit'];
+            $fechaFin = $data['dateEnd'];
             $stmt = $this->_DB->prepare("SELECT
                                                     e.*
                                                 FROM
                                                     etp e
                                                 WHERE
                                                     1 = 1
-                                                        AND e.fecha_crea BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59'
+                                                        AND e.fecha_crea BETWEEN '$fechaIni 00:00:00' AND '$fechaFin 23:59:59'
                                                     AND HOUR(e.fecha_crea) BETWEEN 7 AND 20
                                                 ORDER BY
                                                     e.fecha_crea ASC;");
@@ -254,21 +246,46 @@ class KpiCco
     public function chartAllGpon($data)
     {
         try {
-            if (!empty($data)) {
-                $fecha = $data;
-            } else {
-                $fecha = date('Y-m-d');
-            }
+            $fechaIni = $data['dateInit'];
+            $fechaFin = $data['dateEnd'];
             $stmt = $this->_DB->prepare("SELECT
                                                     s.*
                                                 FROM
                                                     soporte_gpon s
                                                 WHERE
                                                     1 = 1
-                                                        AND s.fecha_creado BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59'
+                                                        AND s.fecha_creado BETWEEN '$fechaIni 00:00:00' AND '$fechaFin 23:59:59'
                                                     AND HOUR(s.fecha_creado) BETWEEN 7 AND 20
                                                 ORDER BY
                                                     s.fecha_creado ASC;");
+            $stmt->execute();
+            if ($stmt->rowCount()) {
+                $response = ['status' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+            } else {
+                $response = ['status' => true, 'data' => '0'];
+            }
+            $this->_DB = null;
+            return $response;
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+    }
+
+    public function chartAllQuejas($data)
+    {
+        try {
+            $fechaIni = $data['dateInit'];
+            $fechaFin = $data['dateEnd'];
+            $stmt = $this->_DB->prepare("SELECT
+                                                    s.*
+                                                FROM
+                                                    quejasgo s
+                                                WHERE
+                                                    1 = 1
+                                                        AND s.fecha BETWEEN '$fechaIni 00:00:00' AND '$fechaFin 23:59:59'
+                                                    AND HOUR(s.fecha) BETWEEN 7 AND 20
+                                                ORDER BY
+                                                    s.fecha ASC;");
             $stmt->execute();
             if ($stmt->rowCount()) {
                 $response = ['status' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
@@ -323,18 +340,15 @@ class KpiCco
     public function chartAllValidacion($data)
     {
         try {
-            if (!empty($data)) {
-                $fecha = $data;
-            } else {
-                $fecha = date('Y-m-d');
-            }
+            $fechaIni = $data['dateInit'];
+            $fechaFin = $data['dateEnd'];
             $stmt = $this->_DB->prepare("SELECT
                                                     m.*
                                                 FROM
                                                     mesas_nacionales m
                                                 WHERE
                                                     1 = 1
-                                                        AND m.hora_ingreso BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59'
+                                                        AND m.hora_ingreso BETWEEN '$fechaIni 00:00:00' AND '$fechaFin 23:59:59'
                                                     AND HOUR(m.hora_ingreso) BETWEEN 7 AND 20
                                                 AND mesa = 'Mesa 3'
                                                 ORDER BY
@@ -393,18 +407,17 @@ class KpiCco
     public function chartAllEmt($data)
     {
         try {
-            if (!empty($data)) {
-                $fecha = $data;
-            } else {
-                $fecha = date('Y-m-d');
-            }
+
+            $fechaIni = $data['dateInit'];
+            $fechaFin = $data['dateEnd'];
+
             $stmt = $this->_DB->prepare("SELECT
                                                     m.*
                                                 FROM
                                                     mesas_nacionales m
                                                 WHERE
                                                     1 = 1
-                                                        AND m.hora_ingreso BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59'
+                                                        AND m.hora_ingreso BETWEEN '$fechaIni 00:00:00' AND '$fechaFin 23:59:59'
                                                     AND HOUR(m.hora_ingreso) BETWEEN 7 AND 20
                                                 AND mesa = 'Mesa 1'
                                                 ORDER BY

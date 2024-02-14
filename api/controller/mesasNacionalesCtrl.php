@@ -71,7 +71,24 @@ if (isset($data['method'])) {
             $res = $user->detalleMesa($data['data']);
             echo json_encode($res);
             break;
-
+        case 'graphic':
+            require_once '../class/MesasNacionales.php';
+            $user = new MesasNacionales();
+            $res = $user->graphic($data['data']);
+            echo json_encode($res);
+            break;
+        case 'graphicDetails':
+            require_once '../class/MesasNacionales.php';
+            $user = new MesasNacionales();
+            $res = $user->graphicDetails($data['data']);
+            echo json_encode($res);
+            break;
+        case 'gestionPorHora':
+            require_once '../class/MesasNacionales.php';
+            $user = new MesasNacionales();
+            $res = $user->gestionPorHora($data['data']);
+            echo json_encode($res);
+            break;
 
         default:
             echo 'ninguna opción valida.';

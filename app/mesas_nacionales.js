@@ -1,9 +1,9 @@
 (function () {
     "use strict";
     angular.module("seguimientopedidos").controller("MesasNacionalesCtrl", MesasNacionalesCtrl);
-    MesasNacionalesCtrl.$inject = ["$scope", "$rootScope", "services", "$route", "$sce", "$cookies", "$location", "$uibModal", "$log", "$interval"];
+    MesasNacionalesCtrl.$inject = ["$scope", "$rootScope", "services", "$route", "$sce", "$cookies", "$location", "$uibModal", "$log", "$interval", "$timeout"];
 
-    function MesasNacionalesCtrl($scope, $rootScope, services, $route, $sce, $cookies, $location, $uibModal, $log, $interval) {
+    function MesasNacionalesCtrl($scope, $rootScope, services, $route, $sce, $cookies, $location, $uibModal, $log, $interval, $timeout) {
 
         var tiempo = new Date().getTime();
         var date1 = new Date();
@@ -124,16 +124,110 @@
             let datos = {'tarea': data, 'usuario': $rootScope.login, 'id': data.id}
             services.myService(datos, 'mesasNacionalesCtrl.php', 'marca').then((data) => {
                 if (data.data.state) {
-                    Swal({
-                        type: 'success',
-                        title: 'Muy Bien',
-                        text: data.data.msj,
-                        timer: 4000
-                    }).then(() => {
-                        setTimeout(() => {
-                            init();
-                        }, 400);
-                    })
+                    let miIntervalo = setInterval(function () {
+                        mostrarSweetAlert();
+                    }, 100000);
+
+                    if (data.data.alerta === '1') {
+                        console.log(1);
+                        if (data.data.msj === "tarea Bloqueada correctamente") {
+                            swal({
+                                type: "warning",
+                                title: "Atención",
+                                text: "esta tarea ha ingresado mas de una vez a este modulo, por favor validar la solicitud en detalle, observaciones, interacción(es) anterior(es) para evitar que ingrese de nuevo. si crees pertinente escala a tu supervisor",
+                                showCancelButton: false,
+                                confirmButtonText: "Aceptar",
+                            }).then(() => {
+                                Swal({
+                                    type: 'success',
+                                    title: 'Muy Bien',
+                                    text: data.data.msj,
+                                    timer: 4000
+                                }).then(() => {
+                                    setTimeout(() => {
+                                        init();
+                                    }, 400);
+                                });
+                            });
+                        }
+                    } else if (data.data.msj === "tarea Bloqueada correctamente") {
+                        Swal({
+                            type: 'success',
+                            title: 'Muy Bien',
+                            text: data.data.msj,
+                            timer: 4000
+                        }).then(() => {
+                            setTimeout(() => {
+                                init();
+                            }, 400);
+                        });
+                    } else {
+                        console.log(3);
+                        clearInterval(miIntervalo);  // Cancelar el intervalo
+                        Swal({
+                            type: 'success',
+                            title: 'Muy Bien',
+                            text: data.data.msj,
+                            timer: 4000
+                        }).then(() => {
+                            setTimeout(() => {
+                                init();
+                            }, 400);
+                        });
+                    }
+
+
+                    /*if (data.data.alerta === '1') {
+                        if (data.data.msj === "tarea Bloqueada correctamente") {
+                            swal({
+                                type: "warning",
+                                title: "Atención",
+                                text: "esta tarea ha ingresado mas de una vez a este modulo, por favor validar la solicitud en detalle, observaciones, interacción(es) anterior(es) para evitar que ingrese de nuevo. si crees pertinente escala a tu supervisor",
+                                showCancelButton: false,
+                                confirmButtonText: "Aceptar",
+                            }).then(() => {
+                                let miTimeout = $timeout(function () {
+                                    mostrarSweetAlert();
+                                }, 600000);
+                                Swal({
+                                    type: 'success',
+                                    title: 'Muy Bien',
+                                    text: data.data.msj,
+                                    timer: 4000
+                                }).then(() => {
+                                    setTimeout(() => {
+                                        init();
+                                    }, 400);
+                                })
+                            })
+                        }
+                    } else if (data.data.msj === "tarea Bloqueada correctamente") {
+                        let miTimeout = $timeout(function () {
+                            mostrarSweetAlert();
+                        }, 600000);
+                        Swal({
+                            type: 'success',
+                            title: 'Muy Bien',
+                            text: data.data.msj,
+                            timer: 4000
+                        }).then(() => {
+                            setTimeout(() => {
+                                init();
+                            }, 400);
+                        })
+                    } else {
+                        $timeout.cancel(miTimeout);
+                        Swal({
+                            type: 'success',
+                            title: 'Muy Bien',
+                            text: data.data.msj,
+                            timer: 4000
+                        }).then(() => {
+                            setTimeout(() => {
+                                init();
+                            }, 400);
+                        })
+                    }*/
                 } else {
                     Swal({
                         type: 'error',

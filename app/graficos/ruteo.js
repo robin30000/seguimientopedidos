@@ -68,7 +68,6 @@
         }
 
         $scope.buscarFecha = (f) => {
-            console.log(f)
             if (!f) {
                 Swal({
                     type: 'error',
@@ -100,12 +99,11 @@
         }
 
 
-        $scope.getNombreMes = function (fecha) {
+        $scope.getNombreMes =  (fecha) => {
             var mesesEnEspanol = [
                 "enero", "febrero", "marzo", "abril", "mayo", "junio",
                 "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
             ];
-
             var partesFecha = fecha.split('-');
             var mes = parseInt(partesFecha[1]) - 1;
 
@@ -118,11 +116,11 @@
                 "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
             ];
 
-           var partesFecha = fecha.split('-');
-            var mes = parseInt(partesFecha[1]) - 1; // Restamos 1 para ajustar al índice del mes
+            var partesFecha = fecha.split('-');
+            var mes = parseInt(partesFecha[1]) - 1;
 
             return mesesEnEspanol[mes];
-        };
+        }
 
         function data(d) {
             $scope.areasBusca = d;

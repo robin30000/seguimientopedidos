@@ -12,6 +12,7 @@
         $scope.equiposEntran.push({});
         $scope.equiposSalen = [];
         $scope.equiposSalen.push({});
+        $scope.loader = 0;
         ciudadadesContingencia();
 
 
@@ -164,6 +165,7 @@
         }
 
         $scope.guardaContingencia = (f) => {
+            $scope.loader = 1;
             if (f.accion == 'mesaOffline') {
                 f.motivo = 'N/A';
                 f.tipoEquipo = 'N/A';
@@ -345,6 +347,7 @@
             f.macSale = equiposOut;
 
             services.myService(f, 'contingenciaCtrl.php', 'savecontingencia').then((data) => {
+                $scope.loader = 0;
                 if (data.data.state) {
                     Swal({
                         type: 'success',

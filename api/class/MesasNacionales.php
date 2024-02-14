@@ -17,7 +17,30 @@ class MesasNacionales
     {
         try {
 
-            $stmt = $this->_DB->query("SELECT * FROM mesas_nacionales where estado != 'Gestionado' and mesa = 'Mesa 1' ORDER BY hora_ingreso");
+            //$stmt = $this->_DB->query("SELECT * FROM mesas_nacionales where estado != 'Gestionado' and mesa = 'Mesa 1' ORDER BY hora_ingreso");
+            $stmt = $this->_DB->query("SELECT
+                                                    m.*,
+                                                CASE
+                                                        
+                                                        WHEN (
+                                                        SELECT
+                                                            COUNT(*) 
+                                                        FROM
+                                                            mesas_nacionales c1 
+                                                        WHERE
+                                                            m.tarea = c1.tarea 
+                                                            AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                            AND c1.estado = 'Gestionado' 
+                                                            ) > 0 THEN
+                                                            'TRUE' ELSE 'FALSE' 
+                                                        END alerta 
+                                                FROM
+                                                    mesas_nacionales m
+                                                WHERE
+                                                    m.estado != 'Gestionado' 
+                                                    AND m.mesa = 'Mesa 1' 
+                                                ORDER BY
+                                                    hora_ingreso");
             $stmt->execute();
 
             if ($stmt->rowCount()) {
@@ -40,7 +63,29 @@ class MesasNacionales
     {
         try {
 
-            $stmt = $this->_DB->query("SELECT * FROM mesas_nacionales where estado != 'Gestionado' and mesa = 'Mesa 2' ORDER BY hora_ingreso");
+            $stmt = $this->_DB->query("SELECT
+                                                    m.*,
+                                                CASE
+                                                        
+                                                        WHEN (
+                                                        SELECT
+                                                            COUNT(*) 
+                                                        FROM
+                                                            mesas_nacionales c1 
+                                                        WHERE
+                                                            m.tarea = c1.tarea 
+                                                            AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                            AND c1.estado = 'Gestionado' 
+                                                            ) > 0 THEN
+                                                            'TRUE' ELSE 'FALSE' 
+                                                        END alerta 
+                                                FROM
+                                                    mesas_nacionales m
+                                                WHERE
+                                                    m.estado != 'Gestionado' 
+                                                    AND m.mesa = 'Mesa 2' 
+                                                ORDER BY
+                                                    hora_ingreso");
             $stmt->execute();
 
             if ($stmt->rowCount()) {
@@ -63,7 +108,29 @@ class MesasNacionales
     {
         try {
 
-            $stmt = $this->_DB->query("SELECT * FROM mesas_nacionales where estado != 'Gestionado' and mesa = 'Mesa 3' ORDER BY hora_ingreso");
+            $stmt = $this->_DB->query("SELECT
+                                                    m.*,
+                                                CASE
+                                                        
+                                                        WHEN (
+                                                        SELECT
+                                                            COUNT(*) 
+                                                        FROM
+                                                            mesas_nacionales c1 
+                                                        WHERE
+                                                            m.tarea = c1.tarea 
+                                                            AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                            AND c1.estado = 'Gestionado' 
+                                                            ) > 0 THEN
+                                                            'TRUE' ELSE 'FALSE' 
+                                                        END alerta 
+                                                FROM
+                                                    mesas_nacionales m
+                                                WHERE
+                                                    m.estado != 'Gestionado' 
+                                                    AND m.mesa = 'Mesa 3' 
+                                                ORDER BY
+                                                    hora_ingreso");
             $stmt->execute();
 
             if ($stmt->rowCount()) {
@@ -86,7 +153,29 @@ class MesasNacionales
     {
         try {
 
-            $stmt = $this->_DB->query("SELECT * FROM mesas_nacionales where estado != 'Gestionado' and mesa = 'Mesa 4' ORDER BY hora_ingreso");
+            $stmt = $this->_DB->query("SELECT
+                                                    m.*,
+                                                CASE
+                                                        
+                                                        WHEN (
+                                                        SELECT
+                                                            COUNT(*) 
+                                                        FROM
+                                                            mesas_nacionales c1 
+                                                        WHERE
+                                                            m.tarea = c1.tarea 
+                                                            AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                            AND c1.estado = 'Gestionado' 
+                                                            ) > 0 THEN
+                                                            'TRUE' ELSE 'FALSE' 
+                                                        END alerta 
+                                                FROM
+                                                    mesas_nacionales m
+                                                WHERE
+                                                    m.estado != 'Gestionado' 
+                                                    AND m.mesa = 'Mesa 4' 
+                                                ORDER BY
+                                                    hora_ingreso");
             $stmt->execute();
 
             if ($stmt->rowCount()) {
@@ -109,7 +198,29 @@ class MesasNacionales
     {
         try {
 
-            $stmt = $this->_DB->query("SELECT * FROM mesas_nacionales where estado != 'Gestionado' and mesa = 'Mesa 5' ORDER BY hora_ingreso");
+            $stmt = $this->_DB->query("SELECT
+                                                    m.*,
+                                                CASE
+                                                        
+                                                        WHEN (
+                                                        SELECT
+                                                            COUNT(*) 
+                                                        FROM
+                                                            mesas_nacionales c1 
+                                                        WHERE
+                                                            m.tarea = c1.tarea 
+                                                            AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                            AND c1.estado = 'Gestionado' 
+                                                            ) > 0 THEN
+                                                            'TRUE' ELSE 'FALSE' 
+                                                        END alerta 
+                                                FROM
+                                                    mesas_nacionales m
+                                                WHERE
+                                                    m.estado != 'Gestionado' 
+                                                    AND m.mesa = 'Mesa 5' 
+                                                ORDER BY
+                                                    hora_ingreso");
             $stmt->execute();
 
             if ($stmt->rowCount()) {
@@ -132,7 +243,29 @@ class MesasNacionales
     {
         try {
 
-            $stmt = $this->_DB->query("SELECT * FROM mesas_nacionales where estado != 'Gestionado' and mesa = 'Mesa 6' ORDER BY hora_ingreso");
+            $stmt = $this->_DB->query("SELECT
+                                                    m.*,
+                                                CASE
+                                                        
+                                                        WHEN (
+                                                        SELECT
+                                                            COUNT(*) 
+                                                        FROM
+                                                            mesas_nacionales c1 
+                                                        WHERE
+                                                            m.tarea = c1.tarea 
+                                                            AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                            AND c1.estado = 'Gestionado' 
+                                                            ) > 0 THEN
+                                                            'TRUE' ELSE 'FALSE' 
+                                                        END alerta 
+                                                FROM
+                                                    mesas_nacionales m
+                                                WHERE
+                                                    m.estado != 'Gestionado' 
+                                                    AND m.mesa = 'Mesa 6' 
+                                                ORDER BY
+                                                    hora_ingreso");
             $stmt->execute();
 
             if ($stmt->rowCount()) {
@@ -242,13 +375,26 @@ class MesasNacionales
                 $response = ['state' => 99, 'title' => 'Su session ha expirado', 'text' => 'Inicia session nuevamente para continuar'];
             } else {
 
-                $stmt = $this->_DB->prepare("SELECT estado, login_gestion FROM mesas_nacionales WHERE id = :tarea");
+                $stmt = $this->_DB->prepare("SELECT m.estado, m.login_gestion, CASE
+                                                        WHEN (
+                                                        SELECT
+                                                            COUNT(*) 
+                                                        FROM
+                                                            mesas_nacionales c1 
+                                                        WHERE
+                                                            m.tarea = c1.tarea 
+                                                            AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                            AND c1.estado = 'Gestionado' 
+                                                            ) > 0 THEN
+                                                            TRUE ELSE FALSE 
+                                                        END alerta   
+                                                        FROM mesas_nacionales m WHERE m.id = :tarea");
                 $stmt->execute([':tarea' => $tarea]);
 
 
                 if ($stmt->rowCount()) {
                     $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+                    $alerta = $res[0]['alerta'];
                     $stmt = $this->_DB->query("SELECT login FROM usuarios WHERE perfil = '11'");
                     $stmt->execute();
                     $res1 = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -258,7 +404,7 @@ class MesasNacionales
                         $stmt = $this->_DB->prepare("UPDATE mesas_nacionales SET estado = 'En gestión', login_gestion = :user, hora_marca = :fecha WHERE id = :tarea");
                         $stmt->execute([':user' => $user, ':fecha' => date('Y-m-d H:i:s'), ':tarea' => $tarea]);
                         if ($stmt->rowCount()) {
-                            $response = ['state' => true, 'msj' => 'tarea Bloqueada correctamente'];
+                            $response = ['state' => true, 'msj' => 'tarea Bloqueada correctamente', 'alerta' => $alerta];
                         } else {
                             $response = ['state' => false, 'msj' => 'Ha ocurrido un erro interno intentalo nuevamente en unos minutos'];
                         }
@@ -466,12 +612,178 @@ class MesasNacionales
         }
     }
 
-    /*    public function buscar($data){
-            try {
-
-            }catch (PDOException $e){
-                var_dump($e->getMessage());
+    public function graphic($data)
+    {
+        $con = '';
+        /*if (isset($data['accion'])) {
+            if ($data['accion'] == 'no') {
+                $con = " AND tipificacion = 'No funciono' ";
+            } elseif ($data['accion'] == 'si') {
+                $con = " AND tipificacion != 'No funciono' AND subtipificacion in ('Cm_offline','Garantía instalación','Se requiere reiniciar')";
             }
+        } else {
+            $con = " AND tipificaciones != 'No funciono' ";
         }*/
+
+        $con = '';
+        if (isset($data['mesa'])) {
+            $mesa = $data['mesa'];
+            if ($mesa !== 'Todas') {
+                $con = " AND mesa = '$mesa' ";
+            } else {
+                $con = "  ";
+            }
+        } else {
+            $con = " AND mesa = 'Mesa 1' ";
+        }
+
+        if (isset($data['fecha'])) {
+            $fecha = $data['fecha'];
+        } else {
+            $fecha = date('Y-m-d');
+        }
+
+        try {
+            $stmt = $this->_DB->prepare("SELECT
+                                                    e.tipificacion,
+                                                    COUNT(*) AS count 
+                                                FROM
+                                                    mesas_nacionales e 
+                                                WHERE
+                                                    1 = 1 
+                                                    AND e.hora_gestion BETWEEN '$fecha 00:00:00' 
+                                                    AND '$fecha 23:59:59' $con
+                                                GROUP BY
+                                                    tipificacion;");
+            $stmt->execute();
+            if ($stmt->rowCount()) {
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+            } else {
+                $response = ['state' => false, 'msj' => 'No se encontraron datos'];
+            }
+            $this->_DB = '';
+
+            return $response;
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+    }
+
+    public function graphicDetails($data)
+    {
+
+
+        if (isset($data['mesa'])) {
+            $mesa = $data['mesa'];
+            if ($mesa !== 'Todas') {
+                $con = " AND mesa = '$mesa' ";
+            } else {
+                $con = "  ";
+            }
+        } else {
+            $con = " AND mesa = 'Mesa 1' ";
+        }
+
+        if (isset($data['fecha'])) {
+            $fecha = $data['fecha'];
+        } else {
+            $fecha = date('Y-m-d');
+        }
+
+        try {
+            $stmt = $this->_DB->prepare("SELECT
+                                                CASE
+                                                    tipificacion_2 
+                                                    WHEN 'Finalizado' THEN
+                                                    'Finalizado' 
+                                                    WHEN 'Devuelto al técnico por mal ingreso' THEN
+                                                    'Devuelto al técnico por mal ingreso' 
+                                                    WHEN 'No finalizado con éxito' THEN
+                                                    'No finalizado con éxito' ELSE 'Sin gestión' 
+                                                END AS tipificacion,
+                                                COUNT(*) AS count 
+                                                FROM
+                                                    mesas_nacionales 
+                                                WHERE
+                                                    hora_ingreso BETWEEN '$fecha 00:00:00' 
+                                                    AND '$fecha 23:59:59' 
+                                                    $con
+                                                GROUP BY
+                                                    tipificacion_2;");
+            $stmt->execute();
+            if ($stmt->rowCount()) {
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+            } else {
+                $response = ['state' => false, 'msj' => 'No se encontraron datos'];
+            }
+            $this->_DB = '';
+
+            return $response;
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+    }
+
+    public function gestionPorHora($data)
+    {
+        try {
+            if (isset($data['fecha'])) {
+                $fecha = $data['fecha'];
+            } else {
+                $fecha = date('Y-m-d');
+            }
+
+            if (isset($data['mesa'])) {
+                $mesa = $data['mesa'];
+                if ($mesa !== 'Todas') {
+                    $con = " AND mesa = '$mesa' ";
+                } else {
+                    $con = "  ";
+                }
+            } else {
+                $con = " AND mesa = 'Mesa 1' ";
+            }
+
+            $stmt = $this->_DB->prepare("SELECT 
+                                                C2.USUARIO
+                                                , COUNT(*) AS CANTIDAD
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) >= 0 AND (C2.RANGO_PENDIENTE) <= 6 THEN 1 ELSE 0 END) AS 'am06' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 6 AND (C2.RANGO_PENDIENTE) <= 7 THEN 1 ELSE 0 END) AS 'am07' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 7 AND (C2.RANGO_PENDIENTE) <= 8 THEN 1 ELSE 0 END) AS 'am08' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 8 AND (C2.RANGO_PENDIENTE) <= 9 THEN 1 ELSE 0 END) AS 'am09' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 9 AND (C2.RANGO_PENDIENTE) <= 10 THEN 1 ELSE 0 END) AS 'am10' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 10 AND (C2.RANGO_PENDIENTE) <= 11 THEN 1 ELSE 0 END) AS 'am11' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 11 AND (C2.RANGO_PENDIENTE) <= 12 THEN 1 ELSE 0 END) AS 'am12' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 12 AND (C2.RANGO_PENDIENTE) <= 13 THEN 1 ELSE 0 END) AS 'pm01' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 13 AND (C2.RANGO_PENDIENTE) <= 14 THEN 1 ELSE 0 END) AS 'pm02' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 14 AND (C2.RANGO_PENDIENTE) <= 15 THEN 1 ELSE 0 END) AS 'pm03' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 15 AND (C2.RANGO_PENDIENTE) <= 16 THEN 1 ELSE 0 END) AS 'pm04' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 16 AND (C2.RANGO_PENDIENTE) <= 17 THEN 1 ELSE 0 END) AS 'pm05' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 17 AND (C2.RANGO_PENDIENTE) <= 18 THEN 1 ELSE 0 END) AS 'pm06' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 18 AND (C2.RANGO_PENDIENTE) <= 19 THEN 1 ELSE 0 END) AS 'pm07' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 19 AND (C2.RANGO_PENDIENTE) <= 20 THEN 1 ELSE 0 END) AS 'pm08' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 20 AND (C2.RANGO_PENDIENTE) <= 21 THEN 1 ELSE 0 END) AS 'pm09' 
+                                                , SUM(CASE WHEN (C2.RANGO_PENDIENTE) > 21 THEN 1 ELSE 0 END) AS 'Masde09'
+                                                FROM(
+                                                SELECT 
+                                                        p.login_gestion AS USUARIO, DATE_FORMAT(p.hora_gestion, '%H') AS RANGO_PENDIENTE, 
+                                                        p.tipificacion AS prod
+                                                FROM mesas_nacionales p
+                                                WHERE 1=1 AND p.hora_gestion BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59' $con) C2
+                                                GROUP BY C2.USUARIO
+                                                ORDER BY  CANTIDAD DESC");
+            $stmt->execute();
+            if ($stmt->rowCount()) {
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+            } else {
+                $response = ['state' => false, 'msj' => 'No se encontraron datos'];
+            }
+            $this->_DB = '';
+
+            return $response;
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+    }
 
 }

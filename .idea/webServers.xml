@@ -9,7 +9,7 @@
           </advancedOptions>
         </fileTransfer>
       </webServer>
-      <webServer id="fa5982cc-cbcb-481e-ae89-46f240b649b1" name="seguimientos-app">
+      <webServer id="715a9be8-1e4c-48dd-82c2-aa033e434e78" name="seguimientos-prd">
         <fileTransfer rootFolder="/var/www/html/seguimientopedidos" accessType="SFTP" host="10.100.88.2" port="22" sshConfigId="e9973dfa-302c-4b15-8209-871176870e0d" sshConfig="pwebspd220323@10.100.88.2:22 password">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />

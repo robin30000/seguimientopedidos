@@ -1938,6 +1938,18 @@ app.service("LoadingInterceptor", [
     },
 ]);
 
+function mostrarSweetAlert() {
+    console.log('10 min')
+    /*Swal({
+        title: '¡Pasaron 10 minutos!',
+        type: 'error',
+        text: "La gestión de esta tarea esta tardando mas tiempo del esperado, requieres algún apoyo?",
+        timer: 400000,
+        showConfirmButton: true
+
+    })*/
+}
+
 function fn_ValidarObsoleto() {
     var CMobsoleto = document.getElementById("CMobsoleto").value;
     var CMobsoleto2 = document.getElementById("CMobsoleto2").value;
