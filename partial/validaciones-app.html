@@ -27,16 +27,14 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <b><i class="fa fa-bars" aria-hidden="true"></i> Validaciones App</b>
+                    <b><i aria-hidden="true" class="fa fa-bars"></i> Validaciones App</b>
                 </div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="page-header">
-                            <div class="col-md-12 text-center">
-                                <h3>Activa / inactiva validación <small>Estas corresponden a las
-                                    validaciones de contingencias(cable modem) y soporte gpon de la app
-                                    móvil</small></h3>
-                            </div>
+                        <div class="col-md-12 text-center">
+                            <h3>Activa / inactiva validación <small>Estas corresponden a las
+                                validaciones de contingencias(cable modem) y soporte gpon de la app
+                                móvil</small></h3>
                         </div>
                     </div>
                     <br>
@@ -56,13 +54,16 @@
                                 <tbody>
                                 <tr>
                                     <td class="middle"><span>Contingencias</span></td>
-                                    <td class="middle"><input type="checkbox" class="switch_1"
-                                                              ng-model="contingenciaSara" ng-checked="contingenciaSara == 'activa'"
-                                                              ng-click="cambiaEstado('contingenciaSara',contingenciaSara)"></td>
-                                    <td class="middle"><input type="checkbox" class="switch_1"
-                                                              ng-model="contingenciaEquipo"
+                                    <td class="middle"><input class="switch_1" ng-checked="contingenciaSara == 'activa'"
+                                                              ng-click="cambiaEstado('contingenciaSara',contingenciaSara)"
+                                                              ng-model="contingenciaSara"
+                                                              type="checkbox">
+                                    </td>
+                                    <td class="middle"><input class="switch_1"
                                                               ng-checked="contingenciaEquipo == 'activa'"
-                                                              ng-click="cambiaEstado('contingenciaEquipo',contingenciaEquipo)">
+                                                              ng-click="cambiaEstado('contingenciaEquipo',contingenciaEquipo)"
+                                                              ng-model="contingenciaEquipo"
+                                                              type="checkbox">
                                     </td>
                                     <td></td>
                                 </tr>
@@ -70,16 +71,16 @@
                                     <td class="middle"><span>Soporte Gpon</span></td>
                                     <td class="middle"></td>
                                     <td class="middle">
-                                        <input type="checkbox" class="switch_1"
+                                        <input class="switch_1" ng-checked="gponEquipo == 'activa'"
+                                               ng-click="cambiaEstado('gponEquipo',gponEquipo)"
                                                ng-model="gponEquipo"
-                                               ng-checked="gponEquipo == 'activa'"
-                                               ng-click="cambiaEstado('gponEquipo',gponEquipo)">
+                                               type="checkbox">
                                     </td>
                                     <td class="middle">
-                                        <input type="checkbox" class="switch_1"
+                                        <input class="switch_1" ng-checked="gponInfraestructura == 'activa'"
+                                               ng-click="cambiaEstado('gponInfraestructura',gponInfraestructura)"
                                                ng-model="gponInfraestructura"
-                                               ng-checked="gponInfraestructura == 'activa'"
-                                               ng-click="cambiaEstado('gponInfraestructura',gponInfraestructura)">
+                                               type="checkbox">
                                     </td>
                                     <td></td>
                                 </tr>
@@ -88,35 +89,36 @@
                                     <td class="middle"></td>
                                     <td class="middle"></td>
                                     <td class="middle"></td>
-                                    <td class="middle"><input type="checkbox" class="switch_1"
+                                    <td class="middle"><input class="switch_1" ng-checked="codigoIncompleto == 'activa'"
+                                                              ng-click="cambiaEstado('codigoIncompleto',codigoIncompleto)"
                                                               ng-model="codigoIncompleto"
-                                                              ng-checked="codigoIncompleto == 'activa'"
-                                                              ng-click="cambiaEstado('codigoIncompleto',codigoIncompleto)"></td>
+                                                              type="checkbox">
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="middle"><span>Encuesta terreno</span></td>
                                     <td class="middle"></td>
                                     <td class="middle"></td>
                                     <td class="middle"></td>
-                                    <td class="middle"><input type="checkbox" class="switch_1"
+                                    <td class="middle"><input class="switch_1" ng-checked="Encuesta == 'activa'"
+                                                              ng-click="cambiaEstado('Encuesta',Encuesta)"
                                                               ng-model="Encuesta"
-                                                              ng-checked="Encuesta == 'activa'"
-                                                              ng-click="cambiaEstado('Encuesta',Encuesta)"></td>
+                                                              type="checkbox"></td>
                                 </tr>
                                 <tr>
                                     <td class="middle"><span>ETP</span></td>
                                     <td class="middle"></td>
                                     <td class="middle">
-                                        <input type="checkbox" class="switch_1"
+                                        <input class="switch_1" ng-checked="etpEquipo == 'activa'"
+                                               ng-click="cambiaEstado('etpEquipo',etpEquipo)"
                                                ng-model="etpEquipo"
-                                               ng-checked="etpEquipo == 'activa'"
-                                               ng-click="cambiaEstado('etpEquipo',etpEquipo)">
+                                               type="checkbox">
                                     </td>
                                     <td class="middle">
-                                        <input type="checkbox" class="switch_1"
+                                        <input class="switch_1" ng-checked="etpInfraestructura == 'activa'"
+                                               ng-click="cambiaEstado('etpInfraestructura',etpInfraestructura)"
                                                ng-model="etpInfraestructura"
-                                               ng-checked="etpInfraestructura == 'activa'"
-                                               ng-click="cambiaEstado('etpInfraestructura',etpInfraestructura)">
+                                               type="checkbox">
                                     </td>
                                     <td class="middle"></td>
                                 </tr>
@@ -126,10 +128,22 @@
                                     <td class="middle"></td>
                                     <td class="middle"></td>
                                     <td class="middle">
-                                        <input type="checkbox" class="switch_1"
+                                        <input class="switch_1" ng-checked="multiTarea == 'activa'"
+                                               ng-click="cambiaEstado('multiTarea',multiTarea)"
                                                ng-model="multiTarea"
-                                               ng-checked="multiTarea == 'activa'"
-                                               ng-click="cambiaEstado('multiTarea',multiTarea)">
+                                               type="checkbox">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="middle"><span>Conexión click</span></td>
+                                    <td class="middle"></td>
+                                    <td class="middle"></td>
+                                    <td class="middle"></td>
+                                    <td class="middle">
+                                        <input class="switch_1" ng-checked="connexionClick == 'activa'"
+                                               ng-click="cambiaEstado('connexionClick',connexionClick)"
+                                               ng-model="connexionClick"
+                                               type="checkbox">
                                     </td>
                                 </tr>
                                 </tbody>
