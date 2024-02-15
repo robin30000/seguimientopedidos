@@ -19,7 +19,12 @@ if (isset($data['method'])) {
             $user = new Contingencia();
             $user->datoscontingencias();
             break;
-
+        case 'datosContingenciaTerminado':
+            require_once '../class/contingencia.php';
+            $user = new Contingencia();
+            $res = $user->datosContingenciaTerminado($data['data']);
+            echo json_encode($res);
+            break;
         case 'registrosOffline':
             require_once '../class/contingencia.php';
             $user = new Contingencia();

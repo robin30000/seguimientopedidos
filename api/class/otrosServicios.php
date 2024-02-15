@@ -1,6 +1,7 @@
 <?php
 require_once '../class/conection.php';
-
+//error_reporting(E_ALL);
+//ini_set('display_errors', 1);
 class otrosServicios
 {
     private $_DB;
@@ -1231,6 +1232,7 @@ class otrosServicios
     {
 
         try {
+            require_once 'constant.php';
             ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
             session_start();
@@ -1275,7 +1277,7 @@ class otrosServicios
 
                     $counter = $stmt->rowCount();
 
-                    $query = $this->_DB->query("SELECT a.ID, a.IDENTIFICACION, a.NOMBRE, a.CIUDAD, a.CELULAR, a.empresa, a.password,a.pass_apk, a.login_Click,a.password_click as pass_clic,
+                    $query = $this->_DB->query("SELECT a.ID, a.IDENTIFICACION, a.NOMBRE, a.CIUDAD, a.CELULAR, a.empresa, a.password,a.pass_apk, a.login_Click, aes_decrypt( a.password_click, '" . CLAVE_ENCRYPT . "') as pass_clic,
 			 (SELECT b.nombre FROM empresas b WHERE b.id=a.empresa) AS NOM_EMPRESA
 			 FROM tecnicos a
 			 WHERE 1=1  $condicion  ");
@@ -1285,7 +1287,12 @@ class otrosServicios
 
                     $counter = $stmt->rowCount();
 
-                    $query = $this->_DB->query("SELECT a.ID, a.IDENTIFICACION, a.NOMBRE, a.CIUDAD, a.CELULAR, a.empresa, a.password,a.pass_apk, a.login_Click,a.password_click as pass_clic,
+                    /*echo "SELECT a.ID, a.IDENTIFICACION, a.NOMBRE, a.CIUDAD, a.CELULAR, a.empresa, a.password,a.pass_apk, a.login_Click,aes_decrypt( a.password_click, '" . CLAVE_ENCRYPT . "') as pass_clic,
+			 (SELECT b.nombre FROM empresas b WHERE b.id=a.empresa) AS NOM_EMPRESA
+			 FROM tecnicos a
+			 WHERE 1=1  $condicion limit $offset, $pagesize";exit();*/
+
+                    $query = $this->_DB->query("SELECT a.ID, a.IDENTIFICACION, a.NOMBRE, a.CIUDAD, a.CELULAR, a.empresa, a.password,a.pass_apk, a.login_Click,aes_decrypt( a.password_click, '" . CLAVE_ENCRYPT . "') as pass_clic,
 			 (SELECT b.nombre FROM empresas b WHERE b.id=a.empresa) AS NOM_EMPRESA
 			 FROM tecnicos a
 			 WHERE 1=1  $condicion limit $offset, $pagesize");

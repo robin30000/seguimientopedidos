@@ -298,6 +298,11 @@ class MesasNacionales
                 $fechafin = $data['data']['fechafin'];
 
                 $con = " and hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
+            } else {
+                $fechaini = date('Y-m-d');
+                $fechafin = date('Y-m-d');
+
+                $con = " and hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
             }
 
             if (isset($data['data']['pedido'])) {
@@ -497,6 +502,10 @@ class MesasNacionales
                         $fechaini = $data['fechaini'];
                         $fechafin = $data['fechafin'];
                         $f = " AND hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:00:00' ";
+                    } else {
+                        $fechaini = date('Y-m-d');
+                        $fechafin = date('Y-m-d');
+                        $f = " AND hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:00:00' ";
                     }
                     $con = " AND estado = 'Gestionado' $f  ORDER BY hora_ingreso desc LIMIT $offset, $pagesize ";
                     $con1 = " AND estado = 'Gestionado' $f ORDER BY hora_ingreso desc";
@@ -512,6 +521,10 @@ class MesasNacionales
                         $fechaini = $data['fechaini'];
                         $fechafin = $data['fechafin'];
                         $f = " AND hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
+                    } else {
+                        $fechaini = date('Y-m-d');
+                        $fechafin = date('Y-m-d');
+                        $f = " AND hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:00:00' ";
                     }
                     $con = " AND mesa = '$mesa' AND estado = 'Gestionado' $f ORDER BY hora_ingreso desc LIMIT $offset, $pagesize ";
                     $con1 = " AND mesa = '$mesa' AND estado = 'Gestionado' $f ORDER BY hora_ingreso desc";

@@ -106,7 +106,8 @@
                                                 ng-repeat="data in contingenciasTV | orderBy : 'horagestion' : false track by $index ">
                                                 <td ng-if="perfil === '11' || perfil === '16'">
                                                     <div>
-                                                        <input id="bloqueo" name="bloqueo" ng-change="marcarEngestion(data)"
+                                                        <input id="bloqueo" name="bloqueo"
+                                                               ng-change="marcarEngestion(data)"
                                                                ng-model="data.bloqueo" ng-show="data.bloqueo != 1"
                                                                type="checkbox">
                                                         <div class="loadingio-spinner-ellipsis-3nun7cb96ao"
@@ -205,7 +206,8 @@
 
                                                     <button class="btn btn-default btn-xs" popover-placement="left"
                                                             tooltip-placement="top" type="button"
-                                                            uib-popover="{{data.observacion}}" uib-tooltip="Observaciones">
+                                                            uib-popover="{{data.observacion}}"
+                                                            uib-tooltip="Observaciones">
                                                         <i aria-hidden="true" class="fa fa-commenting"></i>
                                                     </button>
 
@@ -213,7 +215,8 @@
                                                         ng-click="muestraModalObservacion(data.observacion)">
 
                                                     </button> -->
-                                                    <button class="btn btn-default btn-xs" ng-click="guardarcontingencia(data)" ng-show="!data._id"
+                                                    <button class="btn btn-default btn-xs"
+                                                            ng-click="guardarcontingencia(data)" ng-show="!data._id"
                                                             tooltip-placement="top"
                                                             type="button"
                                                             uib-tooltip="Observaciones y guardar gestión">
@@ -252,7 +255,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- MODULO DE SEGUMIENTO -->
                 <div class="tab-pane fade" id="Kpis">
 
                     <div class="panel panel-default" ng-show="dataPedido">
@@ -341,7 +343,8 @@
                                             <i class="fa fa-commenting" aria-hidden="true"></i>
                                         </button> -->
                                         <button class="btn btn-default btn-xs" popover-placement="left"
-                                                tooltip-placement="top" type="button" uib-popover="{{data.observContingencia}}"
+                                                tooltip-placement="top" type="button"
+                                                uib-popover="{{data.observContingencia}}"
                                                 uib-tooltip="Observación gestión">
                                             <i aria-hidden="true" class="fa fa-commenting"></i>
                                         </button>
@@ -460,13 +463,15 @@
                                     </ul>
                                     <ul class="nav navbar-nav navbar-right" ng-hide="formulario">
                                         <li>
-                                            <input class="btn btn-default btn-xs" id="pedido" name="pedido" ng-model="buscarPedido"
+                                            <input class="btn btn-default btn-xs" id="pedido" name="pedido"
+                                                   ng-model="buscarPedido"
                                                    placeholder="Buscar tarea/pedido" type="text">
                                         </li>
                                         <li>
                                             <b>
                                                 <button class="btn btn-default btn-xs" data-placement="left"
-                                                        data-toggle="tooltip" ng-click="buscarPedidoContingencia(buscarPedido)"
+                                                        data-toggle="tooltip"
+                                                        ng-click="buscarPedidoContingencia(buscarPedido)"
                                                         ng-disabled="loading" title="Buscar"
                                                         type="button">
                                                     <i aria-hidden="true" class="fa fa-search"></i>
@@ -479,23 +484,30 @@
                                     <ul class="nav navbar-nav navbar-right">
                                         <li>
                                             <div data-ng-if="loading">
-                                                <img data-placement="top" src="img/loader.gif" title="Esperando respuesta"
+                                                <img data-placement="top" src="img/loader.gif"
+                                                     title="Esperando respuesta"
                                                      tooltip/>
                                             </div>
                                         </li>
                                         <li>
-                                            <input autocomplete="off" class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" date-format="yyyy-MM-dd"
+                                            <input autocomplete="off"
+                                                   class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                                   date-format="yyyy-MM-dd"
                                                    date-only
                                                    datetime-picker="" id="fechaupdateInical"
-                                                   name="fechaupdateInical" ng-model="fecha.fechaupdateInical" placeholder="Fecha Inicial"
+                                                   name="fechaupdateInical" ng-model="fecha.fechaupdateInical"
+                                                   placeholder="Fecha Inicial"
                                                    type="text">
                                             <i class="fa fa-calendar fa-fw"></i>
                                         </li>
                                         <li>
-                                            <input autocomplete="off" class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" date-format="yyyy-MM-dd"
+                                            <input autocomplete="off"
+                                                   class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                                   date-format="yyyy-MM-dd"
                                                    date-only
                                                    datetime-picker="" id="fechaupdateFinal"
-                                                   name="fechaupdateFinal" ng-model="fecha.fechaupdateFinal" placeholder="Fecha Final"
+                                                   name="fechaupdateFinal" ng-model="fecha.fechaupdateFinal"
+                                                   placeholder="Fecha Final"
                                                    type="text">
                                             <i class="fa fa-calendar fa-fw"></i>
                                         </li>
@@ -510,7 +522,8 @@
                                             </b>&nbsp;
                                         </li>
                                         <li>
-                                            <button class="btn btn-success btn-xs" ng-click="descargarContingencias(fecha)" ng-disabled="loading"
+                                            <button class="btn btn-success btn-xs"
+                                                    ng-click="descargarContingencias(fecha)" ng-disabled="loading"
                                                     tooltip-placement="top"
                                                     type="button" uib-tooltip="Exportar Registros">
                                                 <i aria-hidden="true" class="fa fa-cloud-download"> </i>
@@ -561,7 +574,8 @@
                                     <div class="text-center">
                                         <ul boundary-links="true" class="pagination-sm" first-text="Primero"
                                             items-per-page="pageSize" last-text="Último" max-size="5"
-                                            next-text="&#8674;" ng-change="pageChanged()" ng-model="currentPage" previous-text="&#8672;"
+                                            next-text="&#8674;" ng-change="pageChanged()" ng-model="currentPage"
+                                            previous-text="&#8672;"
                                             rotate="true" total-items="totalItems" uib-pagination>
                                         </ul>
                                     </div>
@@ -707,7 +721,8 @@
                                                 {{Total_Personas_GestionandoCP}}</span>&nbsp;&nbsp;&nbsp;
                                         </li>
                                         <li>
-                                            <button class="btn btn-danger btn-xs" ng-click="callModalCierreMasivoConti({})"
+                                            <button class="btn btn-danger btn-xs"
+                                                    ng-click="callModalCierreMasivoConti({})"
                                                     ng-show="galletainfo.perfil == 11"
                                                     type="button">Cierre Masivo
                                             </button>
@@ -839,7 +854,8 @@
                     <h4 class="modal-title">Observaciones contingencia para pedido {{gestioncontin.pedido}}</h4>
                 </div>
                 <div class="modal-body">
-                    <textarea cols="78" id="observaciones" name="observaciones" ng-model="gestioncontin.observacionescontingencia"
+                    <textarea cols="78" id="observaciones" name="observaciones"
+                              ng-model="gestioncontin.observacionescontingencia"
                               placeholder="observaciones contingencia"
                               rows="6"></textarea>
                     <div class="generar-cr">
@@ -873,7 +889,8 @@
                         {{gestioncontinPortafilio.pedido}}</h4>
                 </div>
                 <div class="modal-body">
-                    <textarea cols="78" id="observaciones" name="observaciones" ng-model="gestioncontinPortafilio.observContingenciaPortafolio"
+                    <textarea cols="78" id="observaciones" name="observaciones"
+                              ng-model="gestioncontinPortafilio.observContingenciaPortafolio"
                               placeholder="observaciones contingencia"
                               rows="6"></textarea>
                 </div>

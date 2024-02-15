@@ -2136,6 +2136,21 @@ app.run([
             });
         };
 
+        $rootScope.CopyPortaPapeles = function (data) {
+            var copyTextTV = document.createElement("input");
+            copyTextTV.value = data;
+            document.body.appendChild(copyTextTV);
+            copyTextTV.select();
+            document.execCommand("copy");
+            document.body.removeChild(copyTextTV);
+            Swal({
+                type: "info",
+                title: "Aviso",
+                text: "El texto seleccionado fue copiado",
+                timer: 2000,
+            });
+        };
+
         $rootScope.Listapreguntas = [
             {
                 ID: 1,

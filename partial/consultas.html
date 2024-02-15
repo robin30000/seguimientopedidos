@@ -12,12 +12,21 @@
                             <i class="fa fa-calendar fa-fw"></i>
                         </li>
                         <li>
+                            &nbsp;
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default btn-xs" ng-click="buscarRegistros(fecha)"
                                         ng-disabled="loading" tooltip-placement="top" uib-tooltip="Buscar">
                                     <i class="fa fa-search-plus" aria-hidden="true"> </i>
                                 </button>
                             </div>
+                            &nbsp;
+                        </li>
+                        <li>
+                            <button class="btn btn-default btn-xs" data-placement="top" data-toggle="tooltip"
+                                    ng-click="recargaPage()"
+                                    ng-disabled="loading" title="Actualizar" type="button">
+                                <i aria-hidden="true" class="fa fa-refresh"></i>
+                            </button>
                             &nbsp;
                         </li>
                     </ul>

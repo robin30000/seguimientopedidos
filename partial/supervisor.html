@@ -892,8 +892,6 @@
                                                 <th>Teléfono</th>
                                                 <th>Hora ingreso</th>
                                                 <th>Id servicio</th>
-                                                <th>Ver. Tono</th>
-                                                <th>Cerrado GTC</th>
                                                 <th>Ver +</th>
                                             </tr>
                                             </thead>
@@ -919,28 +917,6 @@
                                                 <td>{{data.numero_toip}}</td>
                                                 <td>{{data.hora_ingreso}}</td>
                                                 <td>{{data.identificador_servicio}}</td>
-                                                <td>
-                                                    <select ng-model="data.tipificacion" style="width: 150px"
-                                                            class="btn btn-default btn-xs grupo-select"
-                                                            name="tipificacion" id="tipificacion">
-                                                        <option value="" selected>Seleccione</option>
-                                                        <option value="Aprovisionamiento automático">Aprov. automático
-                                                        </option>
-                                                        <option value="Aprovisionado por contingencia">Aprov por
-                                                            contingencia
-                                                        </option>
-                                                        <!--<option value="No funciono">No funciono</option>-->
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <select ng-model="data.cerrado_gtc" style="width: 80px"
-                                                            class="btn btn-default btn-xs grupo-select"
-                                                            name="cerrado_gtc">
-                                                        <option value="" selected>Seleccione</option>
-                                                        <option value="SI">SI</option>
-                                                        <option value="NO">NO</option>
-                                                    </select>
-                                                </td>
                                                 <td>
                                                     <button popover-placement="left" ng-click="ver_masToip(data)"
                                                             uib-popover-html="dataContent"

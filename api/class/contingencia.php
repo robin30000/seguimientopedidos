@@ -705,6 +705,62 @@ class Contingencia
         echo json_encode($response);
     }
 
+    public function datosContingenciaTerminado($data)
+    {
+        $pagenum = $data['page'];
+        $pagesize = $data['size'];
+        $offset = ($pagenum - 1) * $pagesize;
+
+        if (isset($data['data']['fechaupdateInical']) && isset($data['data']['fechaupdateFinal'])) {
+            $fechaIni = $data['data']['fechaupdateInical'];
+            $fechaFin = $data['data']['fechaupdateFinal'];
+        } else {
+            $fechaIni = date('Y-m-d');
+            $fechaFin = date('Y-m-d');
+        }
+        $con = "";
+
+        if (isset($data['data']['tarea'])) {
+            $tarea = $data['data']['tarea'];
+            $con = " AND tarea = '$tarea' ";
+        }
+
+        try {
+
+            $count = $this->_DB->query("SELECT
+                                                    count(*) counter
+                                                FROM
+                                                    `contingencias` 
+                                                WHERE
+                                                    horagestion BETWEEN '$fechaIni 00:00:00' 
+                                                    AND '$fechaFin 23:59:59' AND finalizado = 'OK' $con");
+            $count->execute();
+            $res = $count->fetch(PDO::FETCH_OBJ);
+            $counter = $res->counter;
+
+            $stmt = $this->_DB->query("SELECT
+                                                    * 
+                                                FROM
+                                                    `contingencias` 
+                                                WHERE
+                                                    horagestion BETWEEN '$fechaIni 00:00:00' 
+                                                    AND '$fechaFin 23:59:59' AND finalizado = 'OK' $con LIMIT $offset, $pagesize");
+            $stmt->execute();
+            if ($stmt->rowCount()) {
+                $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                //var_dump($response);die();
+                $result = array('state' => true, 'data' => $response, 'counter' => $counter);
+            } else {
+                $result = array('state' => false, 'data' => 'No se encontraron registros');
+            }
+            $this->_DB = null;
+            return $result;
+
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+    }
+
     public function registrosOffline($data)
     {
         try {

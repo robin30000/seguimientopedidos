@@ -99,6 +99,13 @@ function routesConfig($routeProvider, $locationProvider, $compileProvider) {
         resolve: {
             userData: loadUserData
         }
+    }).when("/registros-contingencias", {
+        title: "Registros Contingencias",
+        templateUrl: "./partial/registros-contingencias.html",
+        controller: "RegistroContingenciasCtrl",
+        resolve: {
+            userData: loadUserData
+        }
     }).when("/gestionsoportegpon", {
         title: "Gestión Soporte Gpon",
         templateUrl: "./partial/Gestionsoportegpon.html",

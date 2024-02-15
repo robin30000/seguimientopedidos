@@ -39,12 +39,10 @@
             $scope.bb8Telefonia = 0;
             $scope.bb8Television = 0;
 
-            console.log(pedido);
             services.windowsBridge("BB8/contingencias/Buscar/GetClick/" + pedido)
                 //"http://10.100.66.254:8080/BB8/contingencias/Buscar/GetClick/" + pedido;
 
                 .then(function (data) {
-                    console.log('bb8', data);
                     $scope.clic = data.data[0];
                     $scope.UNEPedido = $scope.clic.UNEPedido;
                     $scope.Estado = $scope.clic.Estado;
@@ -60,11 +58,7 @@
                     $scope.paquete = '';
 
                     services.windowsBridge("BB8/contingencias/Buscar/GetPlanBaMSS/" + pedido)
-                        // "http://10.100.66.254:8080/BB8/contingencias/Buscar/GetPlanBaMSS/" +
-                        // pedido;
-
                         .then(function (data) {
-                            console.log('internet', data)
                             if (data.data.length > 0) {
                                 $scope.NAT = 'SI';
                                 $scope.bb8Internet = 1;
@@ -82,7 +76,6 @@
                             } else {
                                 services.windowsBridge("BB8/contingencias/Buscar/GetPlanBaMSS/" + $scope.ID_GIS)
                                     .then(function (data) {
-                                        console.log(data, " internet2 ");
                                         if (data.data.length > 0) {
                                             $scope.NAT = 'SI';
                                             $scope.bb8Internet = 1;
@@ -101,7 +94,6 @@
                             }
                             services.windowsBridge("BB8/contingencias/Buscar/GetPlanTOMSS/" + pedido)
                                 .then(function (data) {
-                                    console.log(data, " telefonia");
                                     if (data.data.length > 0) {
                                         $scope.bb8Telefonia = 1;
                                         $scope.recorretelefonia = data.data;
@@ -117,7 +109,6 @@
                                     } else {
                                         services.windowsBridge("BB8/contingencias/Buscar/GetPlanTOMSS/" + $scope.ID_GIS)
                                             .then(function (data) {
-                                                console.log(data, " telefonia2");
                                                 if (data.data.length > 0) {
                                                     $scope.bb8Telefonia = 1;
                                                     $scope.recorretelefonia = data.data;
@@ -136,7 +127,6 @@
                                     }
                                     services.windowsBridge("BB8/contingencias/Buscar/GetPlanTVMSS/" + pedido)
                                         .then(function (data) {
-                                            console.log(data, " tv");
                                             if (data.data.length > 0) {
                                                 $scope.bb8Television = 1;
                                                 $scope.recore = data.data;
@@ -158,7 +148,6 @@
                                             } else {
                                                 services.windowsBridge("BB8/contingencias/Buscar/GetPlanTVMSS/" + $scope.ID_GIS)
                                                     .then(function (data) {
-                                                        console.log(data, " tv2");
                                                         if (data.data.length > 0) {
                                                             $scope.bb8Television = 1;
                                                             $scope.recore = data.data;
@@ -215,7 +204,6 @@
 
         $scope.damePedido = () => {
             services.myService($rootScope.login, 'contingenciaCtrl.php', 'damePedido').then((data) => {
-                console.log(data.data.reiterativo)
                 if (data.data.state) {
                     if (data.data.reiterativo === 'TRUE') {
                         swal({
@@ -285,9 +273,7 @@
                         });
                     } else {
                         $scope.loadingData = false;
-                        //console.log(data.data.data, ' pepe')
                         $scope.contingenciasTV = data.data.data
-                        console.log($scope.contingenciasTV)
 
                         /*$scope.contingenciasOTROS =
                             $scope.contingenciesDataInternetToIP.concat(data.data.data[1]);
@@ -417,21 +403,6 @@
                 console.log(e)
             })
         }
-
-        $scope.CopyPortaPapeles = function (data) {
-            var copyTextTV = document.createElement("input");
-            copyTextTV.value = data;
-            document.body.appendChild(copyTextTV);
-            copyTextTV.select();
-            document.execCommand("copy");
-            document.body.removeChild(copyTextTV);
-            Swal({
-                type: "info",
-                title: "Aviso",
-                text: "El texto seleccionado fue copiado",
-                timer: 2000,
-            });
-        };
 
         $scope.autocompletarContingencia = async (data) => {
             var contingencia = {};
@@ -619,7 +590,6 @@
                     html: "No encontrado",
                     type: "warning",
                 });
-                console.log(error);
                 return;
             }
         };
@@ -1124,7 +1094,6 @@
                 dataCierreMasivoContin.Instalaciones != true &&
                 dataCierreMasivoContin.Reparaciones != true
             ) {
-                console.log("Punto " + dataCierreMasivoContin.Instalaciones);
                 swal("Debe seleccionar mínimo un proceso.");
                 return;
             }
@@ -1156,10 +1125,8 @@
                         frmCierreMasivoContin.TV.$modelValue == false
                     ) {
                         dataCierreMasivoContin.TV = "Sin Informacion";
-                        console.log("SIN SELECCIONAR: " + dataCierreMasivoContin.TV);
                     } else {
                         dataCierreMasivoContin.TV = $("#TV:checked").val();
-                        console.log("SELECCIONADO: " + dataCierreMasivoContin.TV);
                     }
 
                     if (
@@ -1255,22 +1222,14 @@
 
                     if (
                         frmCierreMasivoContin.RegistrosToIP.$modelValue == undefined ||
-                        frmCierreMasivoContin.RegistrosToIP.$modelValue == false
-                    ) {
+                        frmCierreMasivoContin.RegistrosToIP.$modelValue == false) {
                         dataCierreMasivoContin.RegistrosToIP = "Sin Informacion";
-                        console.log(
-                            "SIN SELECCIONART: " + dataCierreMasivoContin.RegistrosToIP
-                        );
                     } else {
                         dataCierreMasivoContin.RegistrosToIP = $(
                             "#RegistrosToIP:checked"
                         ).val();
-                        console.log(
-                            "SELECCIONADOT: " + dataCierreMasivoContin.RegistrosToIP
-                        );
-                    }
 
-                    console.log(dataCierreMasivoContin);
+                    }
 
                     services.cierreMasivoContingencia(dataCierreMasivoContin).then(
                         function (respuesta) {
