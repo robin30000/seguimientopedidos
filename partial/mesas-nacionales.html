@@ -179,13 +179,14 @@
                                                             type="button" uib-tooltip="Guardar">
                                                         <i aria-hidden="true" class="fa fa-edit"></i>
                                                     </button>
-                                                    <div style="display: inline-block;" ng-show="data.alerta === 'TRUE'">
-                                                        <button type="button" class="btn btn-default btn-xs"
-                                                                data-toggle="modal" data-backdrop="static"
-                                                                ng-hide="data.alerta == 'FALSE'" tooltip-placement="top"
+                                                    <div ng-show="data.alerta === 'TRUE'"
+                                                         style="display: inline-block;">
+                                                        <button class="btn btn-default btn-xs" data-backdrop="static"
+                                                                data-toggle="modal" ng-hide="data.alerta == 'FALSE'"
+                                                                tooltip-placement="top" type="button"
                                                                 uib-tooltip="La tarea ya pasó por esta mesa anteriormente, por favor validar!">
-                                                            <i class="fa fa-exclamation" style="color:red"
-                                                               aria-hidden="true"> </i>
+                                                            <i aria-hidden="true" class="fa fa-exclamation"
+                                                               style="color:red"> </i>
                                                         </button>
                                                     </div>
                                                 </td>
@@ -331,13 +332,14 @@
                                                             type="button" uib-tooltip="Guardar">
                                                         <i aria-hidden="true" class="fa fa-edit"></i>
                                                     </button>
-                                                    <div style="display: inline-block;" ng-show="data.alerta === 'TRUE'">
-                                                        <button type="button" class="btn btn-default btn-xs"
-                                                                data-toggle="modal" data-backdrop="static"
-                                                                ng-hide="data.alerta == 'FALSE'" tooltip-placement="top"
+                                                    <div ng-show="data.alerta === 'TRUE'"
+                                                         style="display: inline-block;">
+                                                        <button class="btn btn-default btn-xs" data-backdrop="static"
+                                                                data-toggle="modal" ng-hide="data.alerta == 'FALSE'"
+                                                                tooltip-placement="top" type="button"
                                                                 uib-tooltip="La tarea ya pasó por esta mesa anteriormente, por favor validar!">
-                                                            <i class="fa fa-exclamation" style="color:red"
-                                                               aria-hidden="true"> </i>
+                                                            <i aria-hidden="true" class="fa fa-exclamation"
+                                                               style="color:red"> </i>
                                                         </button>
                                                     </div>
                                                 </td>
@@ -486,13 +488,14 @@
                                                             type="button" uib-tooltip="Guardar">
                                                         <i aria-hidden="true" class="fa fa-edit"></i>
                                                     </button>
-                                                    <div style="display: inline-block;" ng-show="data.alerta === 'TRUE'">
-                                                        <button type="button" class="btn btn-default btn-xs"
-                                                                data-toggle="modal" data-backdrop="static"
-                                                                ng-hide="data.alerta == 'FALSE'" tooltip-placement="top"
+                                                    <div ng-show="data.alerta === 'TRUE'"
+                                                         style="display: inline-block;">
+                                                        <button class="btn btn-default btn-xs" data-backdrop="static"
+                                                                data-toggle="modal" ng-hide="data.alerta == 'FALSE'"
+                                                                tooltip-placement="top" type="button"
                                                                 uib-tooltip="La tarea ya pasó por esta mesa anteriormente, por favor validar!">
-                                                            <i class="fa fa-exclamation" style="color:red"
-                                                               aria-hidden="true"> </i>
+                                                            <i aria-hidden="true" class="fa fa-exclamation"
+                                                               style="color:red"> </i>
                                                         </button>
                                                     </div>
                                                 </td>
@@ -643,13 +646,14 @@
                                                             type="button" uib-tooltip="Guardar">
                                                         <i aria-hidden="true" class="fa fa-edit"></i>
                                                     </button>
-                                                    <div style="display: inline-block;" ng-show="data.alerta === 'TRUE'">
-                                                        <button type="button" class="btn btn-default btn-xs"
-                                                                data-toggle="modal" data-backdrop="static"
-                                                                ng-hide="data.alerta == 'FALSE'" tooltip-placement="top"
+                                                    <div ng-show="data.alerta === 'TRUE'"
+                                                         style="display: inline-block;">
+                                                        <button class="btn btn-default btn-xs" data-backdrop="static"
+                                                                data-toggle="modal" ng-hide="data.alerta == 'FALSE'"
+                                                                tooltip-placement="top" type="button"
                                                                 uib-tooltip="La tarea ya pasó por esta mesa anteriormente, por favor validar!">
-                                                            <i class="fa fa-exclamation" style="color:red"
-                                                               aria-hidden="true"> </i>
+                                                            <i aria-hidden="true" class="fa fa-exclamation"
+                                                               style="color:red"> </i>
                                                         </button>
                                                     </div>
                                                 </td>
@@ -762,7 +766,7 @@
                                                         <option ng-if="data.tecnologia !== 'GPON'"
                                                                 value="Soporté técnico">Soporté técnico
                                                         </option>
-                                                        <option ng-if="data.tecnologia !== 'GPON'"
+                                                        <option
                                                                 value="Código de geocerca">Código de geocerca
                                                         </option>
                                                         <option ng-if="data.tecnologia !== 'GPON'"
@@ -779,13 +783,15 @@
                                                                 value="Información de portafolio">Información de
                                                             portafolio
                                                         </option>
-                                                        <option ng-if="data.UneSourceSystem == 'EDA'"
+                                                        <option
                                                                 value="Código de incompleto">Código de incompleto
                                                         </option>
-                                                        <option ng-if="data.UneSourceSystem == 'EDA'"
+                                                        <option
                                                                 value="Código de completo">Código de completo
                                                         </option>
-
+                                                        <option
+                                                                value="Cambio equipo">Cambio equipo
+                                                        </option>
                                                         <option ng-if="data.tecnologia == 'GPON'"
                                                                 value="Actualizar Infra">Actualizar Infra
                                                         </option>
@@ -794,9 +800,6 @@
                                                         </option>
                                                         <option ng-if="data.tecnologia === 'GPON'"
                                                                 value="Configurar VLAN">Configurar VLAN
-                                                        </option>
-                                                        <option ng-if="data.tecnologia === 'GPON'" value="Cam_Eq">
-                                                            Cam_Eq
                                                         </option>
                                                         <option ng-if="data.tecnologia === 'GPON'" value="Contingencia">
                                                             Contingencia
@@ -816,9 +819,7 @@
                                                         <option ng-if="data.tecnologia === 'GPON'" value="Nap Trocado">
                                                             Nap Trocado
                                                         </option>
-                                                        <option ng-if="data.tecnologia === 'GPON'" value="Cod_Comp">
-                                                            Cod_Comp
-                                                        </option>
+
                                                         <option ng-if="data.tecnologia === 'GPON'"
                                                                 value="Reenvió Registros">Reenvió Registros
                                                         </option>
@@ -881,13 +882,14 @@
                                                             type="button" uib-tooltip="Guardar">
                                                         <i aria-hidden="true" class="fa fa-edit"></i>
                                                     </button>
-                                                    <div style="display: inline-block;" ng-show="data.alerta === 'TRUE'">
-                                                        <button type="button" class="btn btn-default btn-xs"
-                                                                data-toggle="modal" data-backdrop="static"
-                                                                ng-hide="data.alerta == 'FALSE'" tooltip-placement="top"
+                                                    <div ng-show="data.alerta === 'TRUE'"
+                                                         style="display: inline-block;">
+                                                        <button class="btn btn-default btn-xs" data-backdrop="static"
+                                                                data-toggle="modal" ng-hide="data.alerta == 'FALSE'"
+                                                                tooltip-placement="top" type="button"
                                                                 uib-tooltip="La tarea ya pasó por esta mesa anteriormente, por favor validar!">
-                                                            <i class="fa fa-exclamation" style="color:red"
-                                                               aria-hidden="true"> </i>
+                                                            <i aria-hidden="true" class="fa fa-exclamation"
+                                                               style="color:red"> </i>
                                                         </button>
                                                     </div>
                                                 </td>
@@ -1035,13 +1037,14 @@
                                                             type="button" uib-tooltip="Guardar">
                                                         <i aria-hidden="true" class="fa fa-edit"></i>
                                                     </button>
-                                                    <div style="display: inline-block;" ng-show="data.alerta === 'TRUE'">
-                                                        <button type="button" class="btn btn-default btn-xs"
-                                                                data-toggle="modal" data-backdrop="static"
-                                                                ng-hide="data.alerta == 'FALSE'" tooltip-placement="top"
+                                                    <div ng-show="data.alerta === 'TRUE'"
+                                                         style="display: inline-block;">
+                                                        <button class="btn btn-default btn-xs" data-backdrop="static"
+                                                                data-toggle="modal" ng-hide="data.alerta == 'FALSE'"
+                                                                tooltip-placement="top" type="button"
                                                                 uib-tooltip="La tarea ya pasó por esta mesa anteriormente, por favor validar!">
-                                                            <i class="fa fa-exclamation" style="color:red"
-                                                               aria-hidden="true"> </i>
+                                                            <i aria-hidden="true" class="fa fa-exclamation"
+                                                               style="color:red"> </i>
                                                         </button>
                                                     </div>
                                                 </td>

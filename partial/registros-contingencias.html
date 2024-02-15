@@ -1,0 +1,210 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading nav navbar-default">
+                    <ul class="nav nav-tabs">
+                        <li>
+                            <a data-toggle="tab" href="/#registros"> Registros contingencias <span
+                                    class="badge badge-default">{{totalItems}}</span></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane fade in active" id="registros">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <br>
+                                <ul class="nav navbar-nav pull-left">
+                                    <li>
+                                        <div data-ng-if="loading">
+                                            <img data-placement="top" src="img/loader.gif" title="Esperando respuesta"
+                                                 tooltip/>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        &nbsp;
+                                        <input autocomplete="off"
+                                               class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                               date-format="yyyy-MM-dd" date-only
+                                               datetime-picker=""
+                                               id="fechaIni"
+                                               name="fechaupdateInical" ng-model="buscar.fechaupdateInical"
+                                               placeholder="Fecha Inicial"
+                                               style="width: 130px"
+                                               type="text"/>
+                                        <i class="fa fa-calendar fa-fw"></i>
+                                        <input autocomplete="off"
+                                               class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                               date-format="yyyy-MM-dd" date-only
+                                               datetime-picker=""
+                                               id="fechaFin"
+                                               name="fechaupdateFinal" ng-model="buscar.fechaupdateFinal"
+                                               placeholder="Fecha Final"
+                                               style="width: 130px"
+                                               type="text"/>
+                                        <i class="fa fa-calendar fa-fw"></i>
+
+                                        <b>
+                                            <input autocomplete="off" class="btn btn-default btn-xs" id="tarea"
+                                                   name="pedido"
+                                                   ng-model="buscar.tarea"
+                                                   placeholder="Buscar tarea" type="text"/>&nbsp;
+
+                                            <button class="btn btn-default btn-xs" data-placement="top"
+                                                    data-toggle="tooltip"
+                                                    ng-click="buscaDetalle(buscar)" ng-disabled="loading" title="Buscar"
+                                                    type="button">
+                                                <i aria-hidden="true" class="fa fa-search"></i>
+                                            </button>
+                                        </b>&nbsp;
+
+                                        <b>
+                                            <button class="btn btn-success btn-xs" data-placement="top"
+                                                    data-toggle="tooltip"
+                                                    ng-click="descargarContingencias(buscar)" ng-disabled="loading"
+                                                    title="Exportar Registros"
+                                                    type="button">
+                                                <i aria-hidden="true" class="fa fa-cloud-download"> </i>
+                                            </button>
+                                        </b>
+
+                                    </li>
+                                    <li>
+                                        &nbsp;
+                                        <button class="btn btn-default btn-xs" data-placement="top" data-toggle="tooltip"
+                                                ng-click="recargaPage()"
+                                                ng-disabled="loading" title="Actualizar" type="button">
+                                            <i aria-hidden="true" class="fa fa-refresh"></i>
+                                        </button>
+                                    </li>
+                                    &nbsp;
+                                </ul>
+                                <br>
+                                <br>
+                                <div class="table-responsive">
+                                    <table
+                                            class="table small table-hover table-condensed table-bordered animated bounceInRight">
+                                        <thead class="table-header">
+                                        <tr>
+                                            <th>Tarea</th>
+                                            <th>Pedido</th>
+                                            <th>Mac Entra</th>
+                                            <th>Mac Sale</th>
+                                            <th>Paquetes</th>
+                                            <th>Perfil</th>
+                                            <th>Ciudad</th>
+                                            <th>Proceso</th>
+                                            <th>Acción</th>
+                                            <th>Fecha</th>
+                                            <th>Producto</th>
+                                            <th>Tipo equipo</th>
+                                            <th>Remitente</th>
+                                            <th>Tipificación</th>
+                                            <th>TaskType</th>
+                                            <th>Obser.</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-class="{'resaltado15min': data.horagestion <= quinceminutos[indice], 'warning': data.pedido.toLowerCase().indexOf('s') !== -1}"
+                                            ng-repeat="data in registroContingencia | orderBy : 'horagestion' : false track by $index ">
+
+                                            <!-- Fin ocultar el login gestión -->
+                                            <td class="icons_in_tables">
+                                                <button class="btn btn-default btn-xs" id=tv{{$index}}
+                                                        ng-click="CopyPortaPapeles(data.tarea)"
+                                                        tooltip-placement="top"
+                                                        type="button" uib-tooltip="Copiar tarea">
+                                                    {{data.tarea}}
+                                                </button>
+                                                <i aria-hidden="true" class="fa fa-info-circle"
+                                                   ng-click="bb8(data.pedido)" tooltip-placement="top"
+                                                   uib-tooltip="Datos bb8"></i>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-default btn-xs" id=tv{{$index}}
+                                                        ng-click="CopyPortaPapeles(data.pedido)"
+                                                        tooltip-placement="top"
+                                                        type="button" uib-tooltip="Copiar pedido">
+                                                    {{data.pedido}}
+                                                </button>
+                                            </td>
+                                            <td ng-show="!data._id">{{data.macEntra}}</td>
+                                            <td ng-show="!data._id">{{data.macSale}}</td>
+                                            <td ng-show="data._id"><span
+                                                    ng-repeat="mac in data.macIn">{{mac.name}}-</span></td>
+                                            <td ng-show="data._id"><span
+                                                    ng-repeat="mac in data.macOut">{{mac.name}}-</span></td>
+                                            <td>{{data.paquetes}}</td>
+                                            <td>{{data.perfil}}</td>
+                                            <td>{{data.ciudad}}</td>
+                                            <td>{{data.proceso}}</td>
+                                            <td>{{data.accion}}</td>
+                                            <td>{{data.horagestion}}</td>
+                                            <td>{{data.producto}}</td>
+                                            <td>{{data.tipoEquipo}}</td>
+                                            <td>{{data.remite}}</td>
+                                            <td>
+                                                <select class="btn btn-default btn-xs grupo-select"
+                                                        disabled
+                                                        name="tipificacion"
+                                                        ng-change="palancatv(data,$index)" ng-model="data.tipificacion"
+                                                        style="width:100px">
+                                                    <option value="Ok">Ok</option>
+                                                    <option value="Rechazado por posible fraude">Rechazado por
+                                                        posible fraude
+                                                    </option>
+                                                    <option value="Rechazado por mal ingreso">Rechazado por mal
+                                                        ingreso
+                                                    </option>
+                                                    <option value="Duplicado">Duplicado</option>
+                                                    <option value="Error de despacho(faltó gestión)">Error de
+                                                        despacho(faltó gestión)
+                                                    </option>
+                                                    <option value="Reenvio Falla">Reenvió Falla</option>
+                                                    <option value="error del sistema">Error del Sistema</option>
+                                                    <option value="No uso SARA">No uso SARA</option>
+                                                </select>
+                                            </td>
+                                            <td>{{data.taskType}}</td>
+                                            <td class="icons_in_tables">
+
+                                                <button class="btn btn-default btn-xs" popover-placement="left"
+                                                        tooltip-placement="top" type="button"
+                                                        uib-popover="{{data.observacion}}" uib-tooltip="Observaciones">
+                                                    <i aria-hidden="true" class="fa fa-commenting"></i>
+                                                </button>
+
+                                                <div ng-show="!data._id" style="display: inline-block;">
+                                                    <button class="btn btn-default btn-xs" data-backdrop="static"
+                                                            data-toggle="modal" ng-hide="data.alerta == 'FALSE'"
+                                                            tooltip-placement="top" type="button"
+                                                            uib-tooltip="El pedido ya pasó por contingencias anteriormente, por favor validar!">
+                                                        <i aria-hidden="true" class="fa fa-exclamation"
+                                                           style="color:red"> </i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="text-center">
+                                    <ul boundary-links="true" class="pagination-sm" first-text="Primero"
+                                        items-per-page="pageSize"
+                                        last-text="Último" max-size="5" next-text="&#8674;"
+                                        ng-change="pageChanged()" ng-model="currentPage"
+                                        previous-text="&#8672;" rotate="true" total-items="totalItems"
+                                        uib-pagination></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<br><br><br>
