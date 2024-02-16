@@ -226,6 +226,10 @@ class ETP
                 $fechafin = $data['data']['fechafin'];
 
                 $con = " and fecha_crea BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
+            } else {
+                $fechaini = date('Y-m-d');
+                $fechafin = date('Y-m-d');
+                $con = " and fecha_crea BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
             }
 
             if (isset($data['data']['pedido'])) {
@@ -238,7 +242,7 @@ class ETP
                 $stmt = $this->_DB->query("SELECT * FROM etp where 1=1 $con  ORDER BY fecha_crea desc");
                 $stmt->execute();
             } else {
-                $stmt = $this->_DB->query("SELECT count(*) as counter FROM etp  ORDER BY fecha_crea");
+                $stmt = $this->_DB->query("SELECT count(*) as counter FROM etp where 1 = 1 $con ORDER BY fecha_crea");
                 $stmt->execute();
                 $res = $stmt->fetch(PDO::FETCH_OBJ);
                 $count = $res->counter;
@@ -271,11 +275,14 @@ class ETP
             $pagesize = $data['size'];
             $offset = ($pagenum - 1) * $pagesize;
 
-            $con = '';
             if (isset($data['data']['fechaini']) && isset($data['data']['fechafin'])) {
                 $fechaini = $data['data']['fechaini'];
                 $fechafin = $data['data']['fechafin'];
 
+                $con = " and fecha_crea BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
+            } else {
+                $fechaini = date('Y-m-d');
+                $fechafin = date('Y-m-d');
                 $con = " and fecha_crea BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
             }
 

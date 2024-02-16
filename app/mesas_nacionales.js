@@ -352,8 +352,8 @@
                 })
                 return;
             }
-
-            let datos = {'buscar': data}
+            let datos = {'page': $scope.currentPage, 'size': $scope.pageSize, 'buscar': data, 'data': $scope.mn}
+            //let datos = {'buscar': data}
             services.myService(datos, 'mesasNacionalesCtrl.php', 'detalleMesa').then((data) => {
                 $scope.registros = data.data.data;
                 $scope.Items5 = data.data.counter;
@@ -406,13 +406,17 @@
                     break;
                 case 5 :
                     registros();
-                    $scope.mn = '';
+                    $scope.mn = {};
+                    $scope.mn.mesas = 'Mesa 1';
                     break;
             }
         }
 
         $scope.registrosMnTiempo = (data) => {
             if (!data.mesas) {
+                data.mesas = "Mesa 1"
+            }
+            /*if (!data.mesas) {
                 Swal({
                     type: 'error',
                     title: 'Opps..',
@@ -450,7 +454,7 @@
                     timer: 4000
                 })
                 return;
-            }
+            }*/
 
 
             data.page = $scope.currentPage;
@@ -532,6 +536,10 @@
             })
         }
 
+        $scope.mn = {
+            mesas: 'Mesa 1'
+        };
+
         $scope.detalleMesa = (data) => {
             if (!data) {
                 Swal({
@@ -542,6 +550,7 @@
                 })
                 return;
             }
+            $scope.mn.tarea = '';
             let datos = {'page': $scope.currentPage, 'size': $scope.pageSize, 'mesas': data};
             services.myService(datos, 'mesasNacionalesCtrl.php', 'detalleMesa').then((data) => {
                 $scope.registros = data.data.data;

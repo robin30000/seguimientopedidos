@@ -22,16 +22,18 @@
 
 
         function registroEquipos(data) {
-
+            let datos = '';
             if (data === '' || data === undefined) {
                 $scope.currentPage = 1;
                 $scope.totalItems = 0;
                 $scope.pageSize = 15;
                 $scope.searchText = '';
-                data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
+                datos = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.registroEq}
+            } else {
+                datos = data;
             }
 
-            services.myService(data, 'registroEquiposCtrl.php', 'registroEquipos').then((data) => {
+            services.myService(datos, 'registroEquiposCtrl.php', 'registroEquipos').then((data) => {
                 if (data.data.state == 1) {
                     $scope.registroEquipos = data.data.data;
 
@@ -55,11 +57,11 @@
 
 
         $scope.pageChanged = function () {
-            let data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
+            let data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'fecha': $scope.registroEq}
             registroEquipos(data);
         }
         $scope.pageSizeChanged = function () {
-            let data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'datos': $scope.Registros}
+            let data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'fecha': $scope.registroEq}
             registroEquipos(data);
         }
 
