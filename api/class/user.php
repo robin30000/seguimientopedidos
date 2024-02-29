@@ -2,10 +2,8 @@
 
 require_once '../class/conection.php';
 
-
-/*error_reporting(0);
-ini_set('display_errors', 0);*/
-error_reporting(E_ALL);
+error_reporting(0);
+ini_set('display_errors', 0);
 
 class user
 {
@@ -1121,6 +1119,18 @@ echo 1;exit();
 
         } catch (PDOException $e) {
             var_dump($e);
+        }
+    }
+
+    public function listaPerfil()
+    {
+        try {
+            $stmt = $this->_DB->query("SELECT * FROM perfiles");
+            $stmt->execute();
+            $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $res;
+        }catch (PDOException $e){
+            var_dump($e->getMessage());
         }
     }
 }

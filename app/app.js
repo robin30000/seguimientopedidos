@@ -2236,16 +2236,19 @@ app.run([
         ];
 
         $rootScope.empresas = [
-            {ID: 1, EMPRESA: "Une"},
             {ID: 0, EMPRESA: "Sin empresa"},
+            {ID: 1, EMPRESA: "Une"},
+            {ID: 2, EMPRESA: "Edatel"},
             {ID: 3, EMPRESA: "Redes y edificaciones"},
-            {ID: 4, EMPRESA: "Energia integral andina"},
+            {ID: 4, EMPRESA: "Energia Integral Andina"},
             {ID: 6, EMPRESA: "Eagle"},
             {ID: 7, EMPRESA: "Servtek"},
             {ID: 8, EMPRESA: "Furtelcom"},
             {ID: 9, EMPRESA: "Emtelco"},
             {ID: 10, EMPRESA: "Conavances"},
             {ID: 11, EMPRESA: "Techcom"},
+            {ID: 12, EMPRESA: "FSCR"},
+            {ID: 13, EMPRESA: "Conectar"},
         ];
 
         $rootScope.procesosoffline = [

@@ -85,6 +85,11 @@ if (isset($data['method'])) {
             $user = new user();
             $res = $user->restauraPassword($data['data']);
             echo json_encode($res);
+        case 'listaPerfil':
+            require_once '../class/user.php';
+            $user = new user();
+            $res = $user->listaPerfil($data['data']);
+            echo json_encode($res);
             break;
 
 

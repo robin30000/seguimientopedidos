@@ -15,7 +15,20 @@
         $scope.pageSize = 15;
         $scope.searchText = "";
         $scope.con = {};
-        listadoUsuarios();
+
+        init();
+        function init(){
+            listadoUsuarios();
+            listaPerfil()
+        }
+
+        function listaPerfil() {
+            services.myService('', 'userCtrl.php', 'listaPerfil').then((data) => {
+                $scope.listaPerfil = data.data;
+            }).catch((e) => {
+                console.log(e)
+            })
+        }
 
         function listadoUsuarios(data) {
             if (!data) {
@@ -97,7 +110,7 @@
         $scope.editarUser = function (datos) {
             $scope.datosEditar = datos;
             $scope.datosEditar.PASSWORDC = datos.PASSWORD;
-            $scope.datosEditar.perfil = parseInt(datos.perfil);
+            $scope.datosEditar.perfil = datos.perfil;
         };
 
         $scope.editUserSave = (data) => {

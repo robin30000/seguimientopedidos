@@ -1228,6 +1228,167 @@ class otrosServicios
         echo json_encode($response);
     }
 
+    public function regiones()
+    {
+        try {
+            $stmt = $this->_DB->query("SELECT * FROM regiones_click ORDER BY region ASC");
+            $stmt->execute();
+            $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $res;
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+    }
+
+    public function ciudades()
+    {
+        try {
+            $stmt = $this->_DB->query("SELECT * FROM ciudades ORDER BY ciudad ASC");
+            $stmt->execute();
+            $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $res;
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+    }
+
+    public function empresas()
+    {
+        try {
+            $stmt = $this->_DB->query("SELECT * FROM empresas ORDER BY id");
+            $stmt->execute();
+            $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $res;
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+    }
+
+    public function guardaTecnico($data)
+    {
+        try {
+            if ($data['password'] !== $data['passwordc']) {
+                $res = array('state' => false, 'msj' => 'El campo contraseña y confirmar contraseña no coinciden');
+                return $res;
+            }
+
+            $emp = $this->_DB->prepare("SELECT * FROM empresas where id = :i");
+            $emp->execute(array(':i' => $data['empresa']));
+            $r = $emp->fetch(PDO::FETCH_OBJ);
+            $contrato = $r->nombre;
+
+            $stmt = $this->_DB->prepare("SELECT * FROM tecnicos_sin_click WHERE identificacion = :i");
+            $stmt->execute(array(':i' => $data['identificacion']));
+
+            if ($stmt->rowCount() === 1) {
+                $res = array('state' => false, 'msj' => 'La identificación ya se encuentra registrada');
+
+            } else {
+                require_once 'constant.php';
+                $stmt = $this->_DB->prepare("INSERT INTO tecnicos_sin_click ( identificacion, nombre, empresa, ciudad, celular, contrato, region, login_click, PASSWORD, estado, password_click, pass_apk, perfil )
+                                                VALUES
+                                                    (:identificacion,
+                                                    upper( :nombre),
+                                                    :empresa,
+                                                    :ciudad,
+                                                    :celular,
+                                                    :contrato,
+                                                    :region,
+                                                    :login_click,
+                                                    :PASSWORD,
+                                                    :estado,
+                                                    aes_encrypt( :password_click, '" . CLAVE_ENCRYPT . "'),
+                                                    :pass_apk,
+                                                    :perfil)");
+                $stmt->execute(array(
+                    ':identificacion' => $data['identificacion'],
+                    ':nombre' => $data['nombre'],
+                    ':empresa' => $data['empresa'],
+                    ':ciudad' => $data['region'],
+                    ':celular' => $data['celular'],
+                    ':contrato' => $contrato,
+                    ':region' => $data['region'],
+                    ':login_click' => $data['login'],
+                    ':PASSWORD' => md5($data['password']),
+                    ':estado' => 1,
+                    ':password_click' => $data['psw_click'],
+                    ':pass_apk' => $data['password'],
+                    ':perfil' => $data['perfil']
+                ));
+
+                if ($stmt->rowCount() === 1) {
+                    $res = array('state' => true, 'msj' => 'El técnico se creo correctamente');
+                } else {
+                    $res = array('state' => false, 'msj' => 'Ha ocurrido un error interno intentalo nuevamente en unos minutos');
+                }
+            }
+            return $res;
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+    }
+
+    public function actualizaTecnico($data)
+    {
+        try {
+            switch ($data['estado']) {
+                case 'Inactivo':
+                    $estado = 2;
+                    break;
+                case 'Activo':
+                    $estado = 1;
+                    break;
+            }
+
+            $stmt = $this->_DB->prepare("SELECT COUNT(*) count FROM tecnicos_sin_click WHERE identificacion = :i");
+            $stmt->execute(array(':i' => $data['identificacion']));
+            $r = $stmt->fetch(PDO::FETCH_OBJ);
+
+            if (!$r->count) {
+                return array('state' => false, 'msj' => 'No es posible actualizar el técnico con identificación ' . $data['identificacion'] . ' este se actualiza desde click');
+            }
+
+            $emp = $this->_DB->prepare("SELECT * FROM empresas where id = :i");
+            $emp->execute(array(':i' => $data['empresa']));
+            $r = $emp->fetch(PDO::FETCH_OBJ);
+            $contrato = $r->nombre;
+
+            require_once 'constant.php';
+            $stmt = $this->_DB->prepare("UPDATE tecnicos_sin_click SET identificacion = :identificacion, nombre = upper( :nombre), 
+                              empresa = :empresa, ciudad = :ciudad, celular = :celular, contrato = :contrato, region = :region, login_click = :login_click, 
+                              PASSWORD = :PASSWORD, estado = :estado, password_click = aes_encrypt( :password_click, '" . CLAVE_ENCRYPT . "'), 
+                              pass_apk = :pass_apk, perfil = :perfil WHERE identificacion = :identificacion");
+            $stmt->execute(array(
+                ':identificacion' => $data['identificacion'],
+                ':nombre' => $data['nombre'],
+                ':empresa' => $data['empresa'],
+                ':ciudad' => $data['region'],
+                ':celular' => $data['celular'],
+                ':contrato' => $contrato,
+                ':region' => $data['region'],
+                ':login_click' => $data['login'],
+                ':PASSWORD' => md5($data['password']),
+                ':estado' => $estado,
+                ':password_click' => $data['psw_click'],
+                ':pass_apk' => $data['password'],
+                ':perfil' => $data['perfil']
+            ));
+
+            if ($stmt->rowCount() === 1) {
+                $res = array('state' => true, 'msj' => 'El técnico se ha actualizado correctamente');
+            } else {
+                $res = array('state' => false, 'msj' => 'Ha ocurrido un error interno intentalo nuevamente en unos minutos');
+            }
+            return $res;
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+
+    }
+
     public function listadoTecnicos($data)
     {
 
@@ -1245,7 +1406,12 @@ class otrosServicios
                 $offset = ($pagenum - 1) * $pagesize;
                 $search = $data['search'];
 
-                $condicion = '';
+                if (isset($data['perfil'])) {
+                    $perfil = $data['perfil'];
+                    $condicion = " AND perfil = '$perfil' ";
+                }
+
+
                 if ($data['buscar']) {
                     $variable = $data['buscar'];
                     $param = $data['variable'];
@@ -1277,36 +1443,95 @@ class otrosServicios
 
                     $counter = $stmt->rowCount();
 
-                    $query = $this->_DB->query("SELECT a.ID, a.IDENTIFICACION, a.NOMBRE, a.CIUDAD, a.CELULAR, a.empresa, a.password,a.pass_apk, a.login_Click, aes_decrypt( a.password_click, '" . CLAVE_ENCRYPT . "') as pass_clic,
-			 (SELECT b.nombre FROM empresas b WHERE b.id=a.empresa) AS NOM_EMPRESA
-			 FROM tecnicos a
-			 WHERE 1=1  $condicion  ");
-                } else {
-                    $stmt = $this->_DB->query("select * from tecnicos WHERE 1=1 $condicion");
-                    $stmt->execute();
+                    if (!$counter) {
+                        $stmt = $this->_DB->query("select * from tecnicos_sin_click WHERE 1=1 $condicion ");
+                        $stmt->execute();
 
+                        $counter = $stmt->rowCount();
+                    }
+
+                    $query = $this->_DB->query("SELECT
+                                                            a.ID,
+                                                            a.IDENTIFICACION,
+                                                            a.NOMBRE,
+                                                            a.CIUDAD,
+                                                            a.CELULAR,
+                                                            a.empresa,
+                                                            a.PASSWORD,
+                                                            a.pass_apk,
+                                                            a.login_Click,
+                                                            a.perfil,
+                                                            case a.estado when 1 then 'Activo' else 'Inactivo' end as estado,
+                                                            aes_decrypt( a.password_click, '" . CLAVE_ENCRYPT . "' ) AS pass_clic,
+                                                            ( SELECT b.nombre FROM empresas b WHERE b.id = a.empresa ) AS NOM_EMPRESA 
+                                                        FROM
+                                                            tecnicos a 
+                                                        WHERE
+                                                            1 = 1 $condicion UNION
+                                                        SELECT
+                                                            a.ID,
+                                                            a.IDENTIFICACION,
+                                                            a.NOMBRE,
+                                                            a.CIUDAD,
+                                                            a.CELULAR,
+                                                            a.empresa,
+                                                            a.PASSWORD,
+                                                            a.pass_apk,
+                                                            a.login_Click,
+                                                            a.perfil,
+                                                            case a.estado when 1 then 'Activo' else 'Inactivo' end as estado,
+                                                            aes_decrypt( a.password_click, 'b#4rBZ4n2024' ) AS pass_clic,
+                                                            ( SELECT b.nombre FROM empresas b WHERE b.id = a.empresa ) AS NOM_EMPRESA 
+                                                        FROM
+                                                            tecnicos_sin_click a 
+                                                        WHERE
+                                                            1 = 1 $condicion");
+                } else {
+                    $stmt = $this->_DB->query("select * from tecnicos 
+                                                        UNION 
+                                                      select * from tecnicos_sin_click");
+                    $stmt->execute();
                     $counter = $stmt->rowCount();
 
-                    /*echo "SELECT a.ID, a.IDENTIFICACION, a.NOMBRE, a.CIUDAD, a.CELULAR, a.empresa, a.password,a.pass_apk, a.login_Click,aes_decrypt( a.password_click, '" . CLAVE_ENCRYPT . "') as pass_clic,
-			 (SELECT b.nombre FROM empresas b WHERE b.id=a.empresa) AS NOM_EMPRESA
-			 FROM tecnicos a
-			 WHERE 1=1  $condicion limit $offset, $pagesize";exit();*/
+                    $query = $this->_DB->query("SELECT
+                                                            a.ID,
+                                                            a.IDENTIFICACION,
+                                                            a.perfil,
+                                                            a.NOMBRE,
+                                                            a.CIUDAD,
+                                                            a.CELULAR,
+                                                            a.empresa,
+                                                            a.PASSWORD,
+                                                            a.pass_apk,
+                                                            a.login_Click,
+                                                            case a.estado when 1 then 'Activo' else 'Inactivo' end as estado,
+                                                            aes_decrypt(a.password_click, '" . CLAVE_ENCRYPT . "') AS pass_clic,
+                                                            (SELECT b.nombre FROM empresas b WHERE b.id = a.empresa) AS NOM_EMPRESA 
+                                                        FROM
+                                                            tecnicos a 
 
-                    $query = $this->_DB->query("SELECT a.ID, a.IDENTIFICACION, a.NOMBRE, a.CIUDAD, a.CELULAR, a.empresa, a.password,a.pass_apk, a.login_Click,aes_decrypt( a.password_click, '" . CLAVE_ENCRYPT . "') as pass_clic,
-			 (SELECT b.nombre FROM empresas b WHERE b.id=a.empresa) AS NOM_EMPRESA
-			 FROM tecnicos a
-			 WHERE 1=1  $condicion limit $offset, $pagesize");
+                                                        UNION
+                                                        
+                                                        SELECT
+                                                            a.ID,
+                                                            a.IDENTIFICACION,
+                                                            a.perfil,
+                                                            a.NOMBRE,
+                                                            a.CIUDAD,
+                                                            a.CELULAR,
+                                                            a.empresa,
+                                                            a.PASSWORD,
+                                                            a.pass_apk,
+                                                            a.login_Click,
+                                                            case a.estado when 1 then 'Activo' else 'Inactivo' end as estado,
+                                                            aes_decrypt(a.password_click, '" . CLAVE_ENCRYPT . "') AS pass_clic,
+                                                            (SELECT b.nombre FROM empresas b WHERE b.id = a.empresa) AS NOM_EMPRESA 
+                                                        FROM
+                                                            tecnicos_sin_click a 
+                                                        LIMIT
+                                                            $offset, $pagesize;
+                                                        ");
                 }
-
-                /*$stmt = $this->_DB->query("select * from tecnicos WHERE 1=1 $condicion limit $offset, $pagesize");
-                $stmt->execute();
-
-                $counter = $stmt->rowCount();
-
-                $query = $this->_DB->query("SELECT a.ID, a.IDENTIFICACION, a.NOMBRE, a.CIUDAD, a.CELULAR, a.empresa, a.password,a.pass_apk, a.login_Click,a.password_click as pass_clic,
-			 (SELECT b.nombre FROM empresas b WHERE b.id=a.empresa) AS NOM_EMPRESA
-			 FROM tecnicos a
-			 WHERE 1=1  $condicion  $limit");*/
 
                 $query->execute();
 

@@ -111,11 +111,13 @@ class MenuPerfil
             $stmt->execute([':id' => $data]);
             $stmt->execute();
 
-            if ($stmt->rowCount()) {
+            $response = ['state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+
+            /*if ($stmt->rowCount()) {
                 $response = ['state' => 1, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
                 $response = ['state' => 0, 'msj' => 'No se encontraron datos'];
-            }
+            }*/
         } catch (PDOException $th) {
             var_dump($th->getMessage());
         }
@@ -130,8 +132,8 @@ class MenuPerfil
         session_start();*/
         try {
             $menu_id = $data['id'];
-            $perfil  = $data['perfil'];
-            $estado  = $data['estado'];
+            $perfil = $data['perfil'];
+            $estado = $data['estado'];
 
             if (!$estado) {
                 $stmt = $this->_DB->prepare("INSERT INTO submenu_perfil (perfil_id, submenu_id) VALUES (:perfil, :id)");
@@ -165,7 +167,7 @@ class MenuPerfil
         session_set_cookie_params(3600);
         session_start();*/
         try {
-            $id     = $data['id'];
+            $id = $data['id'];
             $estado = $data['estado'];
 
             if ($estado == 'Activo') {
@@ -194,10 +196,10 @@ class MenuPerfil
         session_set_cookie_params(3600);
         session_start();*/
         try {
-            $padre  = $data['padre'];
+            $padre = $data['padre'];
             $nombre = $data['nombre'];
-            $url    = $data['url'];
-            $stmt   = $this->_DB->prepare("INSERT INTO submenu (menu_id,nombre,estado,url,icon) VALUES(:menu_id, :nombre,'Activo',:url,'fa fa-list-alt')");
+            $url = $data['url'];
+            $stmt = $this->_DB->prepare("INSERT INTO submenu (menu_id,nombre,estado,url,icon) VALUES(:menu_id, :nombre,'Activo',:url,'fa fa-list-alt')");
             $stmt->execute([':menu_id' => $padre, ':nombre' => $nombre, ':url' => $url]);
             if ($stmt->rowCount() == 1) {
                 $response = ['state' => 1, 'msj' => 'Submenu creado correctamente'];
@@ -213,17 +215,16 @@ class MenuPerfil
 
     public function guardaPerfil($data)
     {
-        /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
-        session_set_cookie_params(3600);
-        session_start();*/
+        $menu = strtoupper($data['perfil']);
+
         try {
-            $stmt = $this->_DB->prepare("SELECT * FROM perfiles WHERE nombre = :nombre");
-            $stmt->execute([':nombre' => $data['nombre']]);
+            $stmt = $this->_DB->prepare("SELECT * FROM perfiles WHERE upper( nombre ) = :nombre");
+            $stmt->execute([':nombre' => $menu]);
             if ($stmt->rowCount() > 0) {
                 $response = ['state' => 0, 'msj' => 'Ya existe un perfil con ese nombre'];
             } else {
                 $stmt = $this->_DB->prepare("INSERT INTO perfiles (nombre) VALUE (:nombre)");
-                $stmt->execute([':nombre' => $data['nombre']]);
+                $stmt->execute([':nombre' => $menu]);
                 if ($stmt->rowCount() == 1) {
                     $response = ['state' => 1, 'msj' => 'Nuevo perfil creado correctamente'];
                 } else {

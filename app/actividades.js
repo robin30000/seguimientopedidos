@@ -24,6 +24,16 @@
         $scope.ipServer = "10.100.66.254";
         var timer;
         $scope.inicio = 0;
+        listaPerfil();
+
+        function listaPerfil() {
+            services.myService('', 'userCtrl.php', 'listaPerfil').then((data) => {
+                $scope.listaPerfil = data.data;
+            }).catch((e) => {
+                console.log(e)
+            })
+        }
+
 
         $scope.usuarios = function (editarUser) {
             $scope.update = false;

@@ -78,7 +78,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="data in dataSoporteGpon" ng-class="{'warning': data.tarea.toLowerCase().indexOf('s') !== -1}">
+                  <tr ng-repeat="data in dataSoporteGpon" ng-class="{'warning': data.tarea.toLowerCase().indexOf('s') !== -1, 'danger' : data.uneSourceSystem == 'OWS'}">
                     <td>
                       <div ng-show="data.id_soporte">
                         <input type="checkbox" ng-model="data.bloqueo" ng-change="marcarEngestionGpon(data)"

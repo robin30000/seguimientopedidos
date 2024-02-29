@@ -6,7 +6,7 @@ header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
 header('Access-Control-Max-Age: 1000');
 header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token , Authorization');
 
-$data = json_decode(file_get_contents("php://input"),true);
+$data = json_decode(file_get_contents("php://input"), true);
 
 if (isset($data['method'])) {
 
@@ -48,6 +48,36 @@ if (isset($data['method'])) {
             require_once '../class/otrosServicios.php';
             $user = new otrosServicios();
             $user->buscarPedidoContingencias($data['data']);
+            break;
+        case 'regiones':
+            require_once '../class/otrosServicios.php';
+            $user = new otrosServicios();
+            $res = $user->regiones();
+            echo json_encode($res);
+            break;
+        case 'ciudades':
+            require_once '../class/otrosServicios.php';
+            $user = new otrosServicios();
+            $res = $user->ciudades();
+            echo json_encode($res);
+            break;
+        case 'empresas':
+            require_once '../class/otrosServicios.php';
+            $user = new otrosServicios();
+            $res = $user->empresas();
+            echo json_encode($res);
+            break;
+        case 'guardaTecnico':
+            require_once '../class/otrosServicios.php';
+            $user = new otrosServicios();
+            $res = $user->guardaTecnico($data['data']);
+            echo json_encode($res);
+            break;
+        case 'actualizaTecnico':
+            require_once '../class/otrosServicios.php';
+            $user = new otrosServicios();
+            $res = $user->actualizaTecnico($data['data']);
+            echo json_encode($res);
             break;
         default:
             echo 'ninguna opción valida.';

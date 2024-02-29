@@ -4,7 +4,16 @@
     RegistroContingenciasCtrl.$inject = ["$scope", "$rootScope", "services"];
 
     function RegistroContingenciasCtrl($scope, $rootScope, services) {
+        var tiempo = new Date().getTime();
+        var date1 = new Date();
+        var year = date1.getFullYear();
+        var month =
+            date1.getMonth() + 1 <= 9
+                ? "0" + (date1.getMonth() + 1)
+                : date1.getMonth() + 1;
+        var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
 
+        tiempo = year + "-" + month + "-" + day;
 
         datosContingenciaTerminado();
         $scope.buscar = {};

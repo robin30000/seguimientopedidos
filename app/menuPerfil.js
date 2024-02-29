@@ -230,14 +230,10 @@
                 ariaLabelledBy: 'modal-title',
                 ariaDescribedBy: 'modal-body',
                 templateUrl: 'partial/modals/agregarPerfil.html',
-                controller: 'ModalInstanceCtrl',
+                controller: 'ModalInstancePerfilCtrl',
                 controllerAs: '$ctrl',
                 size: 'md',
-                resolve: {
-                    items: function () {
-                        return $scope.datosMenu;
-                    }
-                }
+
             });
 
             modalInstance.result.then(function () {
@@ -316,6 +312,44 @@
                 .catch((data) => {
                     console.log(data);
                 })
+        }
+    }
+
+    angular.module("seguimientopedidos").controller("ModalInstancePerfilCtrl", ModalInstancePerfilCtrl);
+    ModalInstancePerfilCtrl.$inject = ["$uibModalInstance", "services", "$route"];
+    function ModalInstancePerfilCtrl($uibModalInstance, services, $route) {
+        var $ctrl = this;
+        $ctrl.nuevoPerfil = {};
+
+        $ctrl.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+
+        $ctrl.guardaPerfil = (data) => {
+            services.myService(data,'MenuPerfilCtrl.php','guardaPerfil').then((data) => {
+                if (data.data.state) {
+                    Swal({
+                        type: 'success',
+                        title: 'Bien',
+                        text: data.data.msj,
+                        timer: 4000
+                    }).then(() => {
+                        $uibModalInstance.dismiss('cancel');
+                        setTimeout(() => {
+                            $route.reload();
+                        }, 400);
+                    })
+                } else {
+                    Swal({
+                        type: 'error',
+                        title: 'Opss...',
+                        text: data.data.msj,
+                        timer: 4000
+                    })
+                }
+            }).catch((e) => {
+                console.log(e);
+            })
         }
     }
 })();

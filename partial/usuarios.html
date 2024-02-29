@@ -3,18 +3,21 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <b><i class="fa fa-bars" aria-hidden="true"></i> Listado de usuarios</b>
-                    <span style="color:red" class="pull-right"><i class="fa fa-exclamation-triangle warning" aria-hidden="true"
+                    <b><i aria-hidden="true" class="fa fa-bars"></i> Listado de usuarios</b>
+                    <span class="pull-right" style="color:red"><i aria-hidden="true"
+                                                                  class="fa fa-exclamation-triangle warning"
                                                                   ng-hide="errorDatos==null"></i> {{errorDatos}}</span>
-                    <span style="color:green" class="pull-right"><i class="fa fa-check-circle" aria-hidden="true"
+                    <span class="pull-right" style="color:green"><i aria-hidden="true" class="fa fa-check-circle"
                                                                     ng-hide="respuestaupdate==null"></i> {{respuestaupdate}}</span>
-                    <span style="color:red" class="pull-right"><i class="fa fa-exclamation-triangle warning" aria-hidden="true"
+                    <span class="pull-right" style="color:red"><i aria-hidden="true"
+                                                                  class="fa fa-exclamation-triangle warning"
                                                                   ng-hide="respuestadelete==null"></i> {{respuestadelete}}</span>
                     <ul class="nav navbar-nav navbar-right">
                         <li>
                             <div class="col-md-1 col-xs-1 ">
                                 <div data-ng-if="loading">
-                                    <img title="Esperando respuesta" data-toggle="tooltip" data-placement="top" src="img/loader.gif"/>
+                                    <img data-placement="top" data-toggle="tooltip" src="img/loader.gif"
+                                         title="Esperando respuesta"/>
                                 </div>
                             </div>
                         </li>
@@ -25,25 +28,31 @@
                         <ul class="nav navbar-nav navbar-right">
                             <li>Registros:<span class="badge badge-default">{{totalItems}}</span>&nbsp;</li>
                             <li>
-                                <select ng-model="con.concepto" class="btn btn-default btn-xs grupo-select">
+                                <select class="btn btn-default btn-xs grupo-select" ng-model="con.concepto">
                                     <option ng-repeat="f in conceptosBuscar" value="{{f.ID}}">
                                         {{f.CONCEPTO}}
                                     </option>
                                 </select>
                                 <div class="btn-group">
-                                    <input style="width:140px" class="btn btn-default btn-xs " type="text" ng-model="con.usuario"
-                                           placeholder="Buscar..." tooltip data-placement="bottom" ng-disabled="loading" select-on-click
-                                           capitalize/>
-                                    <button type="button" class="btn btn-success btn-xs" ng-click="buscarUsuario(con)"
-                                            ng-disabled="loading" tooltip-placement="top" uib-tooltip="Buscar">
-                                        <i class="fa fa-search-plus" aria-hidden="true"> </i>
+                                    <input capitalize class="btn btn-default btn-xs " data-placement="bottom"
+                                           ng-disabled="loading"
+                                           ng-model="con.usuario" placeholder="Buscar..." select-on-click
+                                           style="width:140px"
+                                           tooltip
+                                           type="text"/>
+                                    <button class="btn btn-success btn-xs" ng-click="buscarUsuario(con)"
+                                            ng-disabled="loading"
+                                            tooltip-placement="top" type="button" uib-tooltip="Buscar">
+                                        <i aria-hidden="true" class="fa fa-search-plus"> </i>
                                     </button>
 
                                     &nbsp;
                                 </div>
-                                <button type="button" class="btn btn-default btn-xs" ng-click="crearModal()" data-toggle="modal" ng-show="galletainfo.perfil == 11"
-                                        data-target="#createUser" data-backdrop="static" ng-disabled="loading"
-                                        tooltip-placement="top" uib-tooltip="Crear usuario"><i class="fa fa-user-plus" aria-hidden="true">
+                                <button class="btn btn-default btn-xs" data-backdrop="static" data-target="#createUser"
+                                        data-toggle="modal" ng-click="crearModal()"
+                                        ng-disabled="loading" ng-show="galletainfo.perfil == 11" tooltip-placement="top"
+                                        type="button" uib-tooltip="Crear usuario"><i aria-hidden="true"
+                                                                                     class="fa fa-user-plus">
                                 </i>
                                 </button>
 
@@ -76,13 +85,17 @@
                             <td class="text-center">{{data.estado}}</td>
 
                             <td class="text-center" ng-show="galletainfo.perfil == 11">
-                                <button type="button" class="btn btn-default btn-xs" ng-click="editarUser(data)" data-toggle="modal"
-                                        data-target="#editarModal" data-backdrop="static" ng-disabled="loading" tooltip-placement="top" uib-tooltip="Editar usuario">
-                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                <button class="btn btn-default btn-xs" data-backdrop="static" data-target="#editarModal"
+                                        data-toggle="modal"
+                                        ng-click="editarUser(data)" ng-disabled="loading" tooltip-placement="top"
+                                        type="button" uib-tooltip="Editar usuario">
+                                    <i aria-hidden="true" class="fa fa-pencil-square-o"></i>
                                 </button>
-                                <button type="button" class="btn btn-default btn-xs" ng-click="deleteUser(data)" data-toggle="modal"
-                                        data-target="#deleteUser" data-backdrop="static" ng-disabled="loading" tooltip-placement="top" uib-tooltip="Eliminar usuario">
-                                    <i class="fa fa-remove" aria-hidden="true"></i>
+                                <button class="btn btn-default btn-xs" data-backdrop="static" data-target="#deleteUser"
+                                        data-toggle="modal"
+                                        ng-click="deleteUser(data)" ng-disabled="loading" tooltip-placement="top"
+                                        type="button" uib-tooltip="Eliminar usuario">
+                                    <i aria-hidden="true" class="fa fa-remove"></i>
                                 </button>
                             </td>
                         </tr>
@@ -90,19 +103,21 @@
                     </table>
                 </div>
                 <div class="text-center">
-                    <ul uib-pagination class="pagination-sm" total-items="totalItems" ng-model="currentPage"
-                        ng-change="pageChanged()" items-per-page="pageSize" max-size="5" boundary-links="true" rotate="true"
-                        previous-text="&#8672;" next-text="&#8674;" first-text="Primero" last-text="Último"></ul>
+                    <ul boundary-links="true" class="pagination-sm" first-text="Primero" items-per-page="pageSize"
+                        last-text="Último" max-size="5" next-text="&#8674;" ng-change="pageChanged()"
+                        ng-model="currentPage"
+                        previous-text="&#8672;" rotate="true" total-items="totalItems" uib-pagination></ul>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="createUser" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal fade" id="createUser" role="dialog" tabindex="-1">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <button aria-label="Close" class="close" data-dismiss="modal" type="button"><span
+                            aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">Crear usuario</h4>
                 </div>
                 <div class="modal-body">
@@ -112,8 +127,9 @@
                                 <div class="form-group"
                                      ng-class="{ 'has-error' : contact_form.nombre.$touched && contact_form.nombre.$invalid}">
                                     <label for="nombre">Nombre</label>
-                                    <input type="text" ng-model="crea.nombre"
-                                           class="form-control input-sm" id="nombre" required autocomplete="off" minlength="5">
+                                    <input autocomplete="off" class="form-control input-sm"
+                                           id="nombre" minlength="5" ng-model="crea.nombre" required
+                                           type="text">
                                 </div>
                             </div>
 
@@ -121,17 +137,18 @@
                                 <div class="form-group"
                                      ng-class="{ 'has-error' : contact_form.id.$touched && contact_form.id.$invalid}">
                                     <label for="Identificacion">Identificacion</label>
-                                    <input type="text"
-                                           ng-model="crea.identificacion" id="Identificacion"
-                                           class="form-control input-sm" required minlength="5">
+                                    <input class="form-control input-sm"
+                                           id="Identificacion" minlength="5"
+                                           ng-model="crea.identificacion" required type="text">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="Perfil">Perfil</label>
-                                    <select ng-model="crea.perfil" class="form-control input-sm" id="Perfil" autocomplete="off">
-                                        <option ng-repeat="f in perfiles" value="{{f.ID}}">
-                                            {{f.PERFIL}}
+                                    <select autocomplete="off" class="form-control input-sm" id="Perfil"
+                                            ng-model="crea.perfil">
+                                        <option ng-repeat="f in listaPerfil" value="{{f.perfil}}">
+                                            {{f.nombre}}
                                         </option>
                                     </select>
                                 </div>
@@ -142,22 +159,24 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="contraseña">Contraseña</label>
-                                    <input ng-model="crea.password" id="contraseña"
-                                           type="password" class="form-control input-sm" autocomplete="off" minlength="5">
+                                    <input autocomplete="off" class="form-control input-sm"
+                                           id="contraseña" minlength="5" ng-model="crea.password"
+                                           type="password">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="contrasenac">Confirmar contraseña</label>
-                                    <input ng-model="crea.passwordc" id="contrasenac"
-                                           type="password" class="form-control input-sm" autocomplete="off" minlength="5">
+                                    <input autocomplete="off" class="form-control input-sm"
+                                           id="contrasenac" minlength="5" ng-model="crea.passwordc"
+                                           type="password">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="login">Login</label>
-                                    <input type="text" class="form-control input-sm"
-                                           ng-model="crea.login" id="login" required autocomplete="off" minlength="5">
+                                    <input autocomplete="off" class="form-control input-sm"
+                                           id="login" minlength="5" ng-model="crea.login" required type="text">
                                 </div>
                             </div>
                         </div>
@@ -166,8 +185,9 @@
                             <div class="col-md-8">
                                 <div class="form-group">
                                     <label for="correo">Correo</label>
-                                    <input ng-model="crea.correo" id="correo"
-                                           type="email" class="form-control input-sm" autocomplete="off" minlength="5" required>
+                                    <input autocomplete="off" class="form-control input-sm"
+                                           id="correo" minlength="5" ng-model="crea.correo" required
+                                           type="email">
                                 </div>
                             </div>
                         </div>
@@ -176,18 +196,20 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-success" ng-click="creaUser(crea)" ng-disabled="creaUsuario.$invalid">Guardar</button>
+                    <button class="btn btn-default" data-dismiss="modal" type="button">Cerrar</button>
+                    <button class="btn btn-success" ng-click="creaUser(crea)" ng-disabled="creaUsuario.$invalid"
+                            type="submit">Guardar
+                    </button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
-    <div id="deleteUser" class="modal fade " role="dialog">
+    <div class="modal fade " id="deleteUser" role="dialog">
         <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button class="close" data-dismiss="modal" type="button">&times;</button>
                     <h4 class="modal-title">Eliminar el usuario</h4>
                 </div>
                 <div class="modal-body">
@@ -195,16 +217,18 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="logind">Login</label>
-                                <input type="text" class="form-control input-sm"
-                                       ng-model="datosDelete.login" id="logind" required autocomplete="off" minlength="5">
+                                <input autocomplete="off" class="form-control input-sm"
+                                       id="logind" minlength="5" ng-model="datosDelete.login" required
+                                       type="text">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="nombred">Login</label>
-                                <input type="text" class="form-control input-sm"
-                                       ng-model="datosDelete.nombre" id="nombred" required autocomplete="off" minlength="5">
+                                <input autocomplete="off" class="form-control input-sm"
+                                       id="nombred" minlength="5" ng-model="datosDelete.nombre" required
+                                       type="text">
                             </div>
                         </div>
                     </div>
@@ -213,35 +237,38 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="logind">Perfil</label>
-                                <input type="text" class="form-control input-sm"
-                                       ng-model="datosDelete.perfil" id="perfild" required autocomplete="off" minlength="5">
+                                <input autocomplete="off" class="form-control input-sm"
+                                       id="perfild" minlength="5" ng-model="datosDelete.perfil" required
+                                       type="text">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="identificaciond">Identificación</label>
-                                <input type="text" class="form-control input-sm"
-                                       ng-model="datosDelete.identificacion" id="identificaciond" required autocomplete="off" minlength="5">
+                                <input autocomplete="off" class="form-control input-sm"
+                                       id="identificaciond" minlength="5" ng-model="datosDelete.identificacion"
+                                       required type="text">
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger" ng-click="deleteUserC(datosDelete)"
-                            data-dismiss="modal">Eliminar
+                    <button class="btn btn-default" data-dismiss="modal" type="button">Cancelar</button>
+                    <button class="btn btn-danger" data-dismiss="modal" ng-click="deleteUserC(datosDelete)"
+                            type="button">Eliminar
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="editarModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal fade" id="editarModal" role="dialog" tabindex="-1">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <button aria-label="Close" class="close" data-dismiss="modal" type="button"><span
+                            aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">Editar usuario</h4>
                 </div>
                 <div class="modal-body">
@@ -251,28 +278,28 @@
                                 <div class="form-group"
                                      ng-class="{ 'has-error' : editUser.nombreEdit.$touched && editUser.nombreEdit.$invalid}">
                                     <label for="nombreEdit">Nombre</label>
-                                    <input type="text" ng-model="datosEditar.NOMBRE"
-                                           class="form-control input-sm" name="nombreEdit" id="nombreEdit"
-                                           required minlength="5">
+                                    <input class="form-control input-sm" id="nombreEdit"
+                                           minlength="5" name="nombreEdit" ng-model="datosEditar.NOMBRE"
+                                           required type="text">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group"
                                      ng-class="{ 'has-error' : editUser.pass.$touched && editUser.pass.$invalid}">
                                     <label for="pass">Contraseña</label>
-                                    <input ng-model="datosEditar.PASSWORD"
-                                           type="password" name="pass" class="form-control input-sm" id="pass"
-                                           required>
+                                    <input class="form-control input-sm"
+                                           id="pass" name="pass" ng-model="datosEditar.PASSWORD" required
+                                           type="password">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group"
                                      ng-class="{ 'has-error' : editUser.passc.$touched && editUser.passc.$invalid}">
                                     <label for="passc">Confirmar contraseña</label>
-                                    <input ng-model="datosEditar.PASSWORDC"
-                                           type="password" name="passc" class="form-control input-sm"
-                                           id="passc"
-                                           required>
+                                    <input class="form-control input-sm"
+                                           id="passc" name="passc" ng-model="datosEditar.PASSWORDC"
+                                           required
+                                           type="password">
                                 </div>
                             </div>
                         </div>
@@ -281,19 +308,24 @@
                                 <div class="form-group"
                                      ng-class="{ 'has-error' : editUser.indent.$touched && editUser.indent.$invalid}">
                                     <label for="indent">Identificación</label>
-                                    <input type="text" ng-model="datosEditar.IDENTIFICACION" placeholder="Identificación" id="indent"
-                                           class="form-control input-sm" required>
+                                    <input class="form-control input-sm" id="indent"
+                                           ng-model="datosEditar.IDENTIFICACION" placeholder="Identificación"
+                                           required type="text">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group"
                                      ng-class="{ 'has-error' : editUser.perfilEdit.$touched && editUser.perfilEdit.$invalid}">
                                     <label for="perfilEdit">Perfil</label>
-                                    <select ng-model="datosEditar.perfil" id="perfilEdit" name="perfilEdit" class="form-control input-sm"
+                                    <select class="form-control input-sm" id="perfilEdit" name="perfilEdit"
+                                            ng-model="datosEditar.perfil"
                                             required>
-                                        <option ng-repeat="f in perfiles" ng-value="f.ID">
-                                            {{f.PERFIL}}
+                                        <option ng-repeat="f in listaPerfil" ng-value="f.perfil">
+                                            {{f.nombre}}
                                         </option>
+                                        <!-- <option ng-repeat="f in listaPerfil" value="{{f.perfil}}">
+                                             {{f.nombre}}
+                                         </option>-->
                                     </select>
                                 </div>
                             </div>
@@ -301,9 +333,9 @@
                                 <div class="form-group"
                                      ng-class="{ 'has-error' : editUser.loginEdit.$touched && editUser.loginEdit.$invalid}">
                                     <label for="loginEdit">Login</label>
-                                    <input type="text" ng-model="datosEditar.LOGIN"
-                                           class="form-control input-sm" id="loginEdit" required
-                                           autocomplete="off">
+                                    <input autocomplete="off" class="form-control input-sm"
+                                           id="loginEdit" ng-model="datosEditar.LOGIN" required
+                                           type="text">
                                 </div>
                             </div>
                         </div>
@@ -312,16 +344,19 @@
                             <div class="col-md-8">
                                 <div class="form-group">
                                     <label for="correoEdit">Correo</label>
-                                    <input ng-model="datosEditar.correo" id="correoEdit"
-                                           type="email" class="form-control input-sm" autocomplete="off" minlength="5" required>
+                                    <input autocomplete="off" class="form-control input-sm"
+                                           id="correoEdit" minlength="5" ng-model="datosEditar.correo" required
+                                           type="email">
                                 </div>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-success" ng-click="editUserSave(datosEditar)" ng-disabled="editUser.$invalid">Guardar</button>
+                    <button class="btn btn-default" data-dismiss="modal" type="button">Cerrar</button>
+                    <button class="btn btn-success" ng-click="editUserSave(datosEditar)" ng-disabled="editUser.$invalid"
+                            type="button">Guardar
+                    </button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->

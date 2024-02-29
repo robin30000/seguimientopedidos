@@ -48,36 +48,45 @@ try {
         $pass = 'Colombia' . $UDC . '--++';
         $passM = md5($pass);
 
-        switch (strtoupper($datos[$i]['contrato'])) {
-            case "ENERGIA INTEGRAL ANDINA";
-                $empresa = 4;
+        switch ($datos[$i]['contrato']) {
+            case "SIN EMPRESA";
+                $empresa = 0;
                 break;
             case "UNE";
                 $empresa = 1;
                 break;
-            case "SIN EMPRESA";
-                $empresa = 0;
+            case "Edatel";
+                $empresa = 2;
                 break;
             case "REDES Y EDIFICACIONES";
                 $empresa = 3;
                 break;
-            case "EAGLE";
+            case "Energia Integral Andina";
+                $empresa = 4;
+                break;
+            case "Eagle";
                 $empresa = 6;
                 break;
-            case "SERVTEK";
+            case "Servtek";
                 $empresa = 7;
                 break;
-            case "FURTELCOM";
+            case "Furtelcom";
                 $empresa = 8;
                 break;
-            case "EMTELCO";
+            case "Emtelco";
                 $empresa = 9;
                 break;
-            case "CONAVANCES";
+            case "Conavances";
                 $empresa = 10;
                 break;
-            case "TECHCOM";
+            case "Techcom";
                 $empresa = 11;
+                break;
+            case "FSCR";
+                $empresa = 12;
+                break;
+            case "Conectar";
+                $empresa = 13;
                 break;
         }
 
@@ -113,457 +122,457 @@ try {
 }
 
 if ($conn) {
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '98773738',
-            ':nombre' => 'MONTES LOPEZ VICTOR HUGO',
-            ':ciudad' => 'Antioquia Oriente',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'vmontesl',
-            ':pass' => md5('Colombia3738--++'),
-            ':region' => 'Antioquia Oriente',
-            ':contrato' => 'Emtelco',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia3738--++'
-        ]
-    );
+    /*    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '98773738',
+                ':nombre' => 'MONTES LOPEZ VICTOR HUGO',
+                ':ciudad' => 'Antioquia Oriente',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'vmontesl',
+                ':pass' => md5('Colombia3738--++'),
+                ':region' => 'Antioquia Oriente',
+                ':contrato' => 'Emtelco',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia3738--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '79609742',
-            ':nombre' => 'ARÉVALO FRANCO JOSE GERMAN',
-            ':ciudad' => 'Antioquia Oriente',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'Jarevafr',
-            ':pass' => md5('Colombia9742--++'),
-            ':region' => 'Antioquia Oriente',
-            ':contrato' => 'Emtelco',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia9742--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '79609742',
+                ':nombre' => 'ARÉVALO FRANCO JOSE GERMAN',
+                ':ciudad' => 'Antioquia Oriente',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'Jarevafr',
+                ':pass' => md5('Colombia9742--++'),
+                ':region' => 'Antioquia Oriente',
+                ':contrato' => 'Emtelco',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia9742--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '70728771',
-            ':nombre' => 'ESTRADA JIMENEZ OSCAR ALBERTO',
-            ':ciudad' => 'Antioquia Oriente',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'oestraji',
-            ':pass' => md5('Colombia8771--++'),
-            ':region' => 'Antioquia Oriente',
-            ':contrato' => 'Emtelco',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia8771--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '70728771',
+                ':nombre' => 'ESTRADA JIMENEZ OSCAR ALBERTO',
+                ':ciudad' => 'Antioquia Oriente',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'oestraji',
+                ':pass' => md5('Colombia8771--++'),
+                ':region' => 'Antioquia Oriente',
+                ':contrato' => 'Emtelco',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia8771--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '1037570553',
-            ':nombre' => 'RUIZ GIRALDO JUAN MANUEL',
-            ':ciudad' => 'Antioquia Oriente',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'jruizgir',
-            ':pass' => md5('Colombia0553--++'),
-            ':region' => 'Antioquia Oriente',
-            ':contrato' => 'Emtelco',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia0553--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '1037570553',
+                ':nombre' => 'RUIZ GIRALDO JUAN MANUEL',
+                ':ciudad' => 'Antioquia Oriente',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'jruizgir',
+                ':pass' => md5('Colombia0553--++'),
+                ':region' => 'Antioquia Oriente',
+                ':contrato' => 'Emtelco',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia0553--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '1128393345',
-            ':nombre' => 'POSADA ARBOLEDA DIEGO LEON',
-            ':ciudad' => 'Antioquia Oriente',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'dposadar',
-            ':pass' => md5('Colombia3345--++'),
-            ':region' => 'Antioquia Oriente',
-            ':contrato' => 'Emtelco',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia3345--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '1128393345',
+                ':nombre' => 'POSADA ARBOLEDA DIEGO LEON',
+                ':ciudad' => 'Antioquia Oriente',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'dposadar',
+                ':pass' => md5('Colombia3345--++'),
+                ':region' => 'Antioquia Oriente',
+                ':contrato' => 'Emtelco',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia3345--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '71317589',
-            ':nombre' => 'URREGO TAMAYO PEDRO JULIO',
-            ':ciudad' => 'Antioquia Oriente',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'purregta',
-            ':pass' => md5('Colombia7589--++'),
-            ':region' => 'Antioquia Oriente',
-            ':contrato' => 'Emtelco',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia7589--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '71317589',
+                ':nombre' => 'URREGO TAMAYO PEDRO JULIO',
+                ':ciudad' => 'Antioquia Oriente',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'purregta',
+                ':pass' => md5('Colombia7589--++'),
+                ':region' => 'Antioquia Oriente',
+                ':contrato' => 'Emtelco',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia7589--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '71224337',
-            ':nombre' => 'BETANCUR AGUDELO HERNAN DARIO',
-            ':ciudad' => 'Antioquia Oriente',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'hbetanag',
-            ':pass' => md5('Colombia4337--++'),
-            ':region' => 'Antioquia Oriente',
-            ':contrato' => 'Emtelco',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia4337--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '71224337',
+                ':nombre' => 'BETANCUR AGUDELO HERNAN DARIO',
+                ':ciudad' => 'Antioquia Oriente',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'hbetanag',
+                ':pass' => md5('Colombia4337--++'),
+                ':region' => 'Antioquia Oriente',
+                ':contrato' => 'Emtelco',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia4337--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '70434613',
-            ':nombre' => 'TUBERQUIA URREGO WILLIAM ARBEY',
-            ':ciudad' => 'Antioquia Oriente',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'wtubeurr',
-            ':pass' => md5('Colombia4613--++'),
-            ':region' => 'Antioquia Oriente',
-            ':contrato' => 'Emtelco',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia4613--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '70434613',
+                ':nombre' => 'TUBERQUIA URREGO WILLIAM ARBEY',
+                ':ciudad' => 'Antioquia Oriente',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'wtubeurr',
+                ':pass' => md5('Colombia4613--++'),
+                ':region' => 'Antioquia Oriente',
+                ':contrato' => 'Emtelco',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia4613--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '71220080',
-            ':nombre' => 'GALLEGO DÍAZ JULIÁN ALBERTO',
-            ':ciudad' => 'Antioquia Oriente',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'jalbegal',
-            ':pass' => md5('Colombia0080--++'),
-            ':region' => 'Antioquia Oriente',
-            ':contrato' => 'Emtelco',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia0080--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '71220080',
+                ':nombre' => 'GALLEGO DÍAZ JULIÁN ALBERTO',
+                ':ciudad' => 'Antioquia Oriente',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'jalbegal',
+                ':pass' => md5('Colombia0080--++'),
+                ':region' => 'Antioquia Oriente',
+                ':contrato' => 'Emtelco',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia0080--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '71385160',
-            ':nombre' => 'BAENA HENAO HORACIO ALBERTO',
-            ':ciudad' => 'Antioquia Oriente',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'hbaenahe',
-            ':pass' => md5('Colombia5160--++'),
-            ':region' => 'Antioquia Oriente',
-            ':contrato' => 'Emtelco',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia5160--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '71385160',
+                ':nombre' => 'BAENA HENAO HORACIO ALBERTO',
+                ':ciudad' => 'Antioquia Oriente',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'hbaenahe',
+                ':pass' => md5('Colombia5160--++'),
+                ':region' => 'Antioquia Oriente',
+                ':contrato' => 'Emtelco',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia5160--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '1128275292',
-            ':nombre' => 'POSADA VELEZ JORGE ANDRES',
-            ':ciudad' => 'Antioquia Oriente',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'jandres',
-            ':pass' => md5('Colombia5292--++'),
-            ':region' => 'Antioquia Oriente',
-            ':contrato' => 'Emtelco',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia5292--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '1128275292',
+                ':nombre' => 'POSADA VELEZ JORGE ANDRES',
+                ':ciudad' => 'Antioquia Oriente',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'jandres',
+                ':pass' => md5('Colombia5292--++'),
+                ':region' => 'Antioquia Oriente',
+                ':contrato' => 'Emtelco',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia5292--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '98648583',
-            ':nombre' => 'GUTIERREZ MAURICIO ALEJANDRO',
-            ':ciudad' => 'Antioquia Oriente',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'mgutierz',
-            ':pass' => md5('Colombia8583--++'),
-            ':region' => 'Antioquia Oriente',
-            ':contrato' => 'Emtelco',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia8583--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '98648583',
+                ':nombre' => 'GUTIERREZ MAURICIO ALEJANDRO',
+                ':ciudad' => 'Antioquia Oriente',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'mgutierz',
+                ':pass' => md5('Colombia8583--++'),
+                ':region' => 'Antioquia Oriente',
+                ':contrato' => 'Emtelco',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia8583--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '71378092',
-            ':nombre' => 'AGUDELO AMAYA NILSON OSWALDO',
-            ':ciudad' => 'Antioquia Oriente',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'nagudeam',
-            ':pass' => md5('Colombia8092--++'),
-            ':region' => 'Antioquia Oriente',
-            ':contrato' => 'Emtelco',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia8092--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '71378092',
+                ':nombre' => 'AGUDELO AMAYA NILSON OSWALDO',
+                ':ciudad' => 'Antioquia Oriente',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'nagudeam',
+                ':pass' => md5('Colombia8092--++'),
+                ':region' => 'Antioquia Oriente',
+                ':contrato' => 'Emtelco',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia8092--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '1037619359',
-            ':nombre' => 'HÉCTOR ALONSO ROLDÁN GÁLLEGO',
-            ':ciudad' => 'Antioquia Oriente',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'hroldaga',
-            ':pass' => md5('Colombia9359--++'),
-            ':region' => 'Antioquia Oriente',
-            ':contrato' => 'Emtelco',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia9359--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '1037619359',
+                ':nombre' => 'HÉCTOR ALONSO ROLDÁN GÁLLEGO',
+                ':ciudad' => 'Antioquia Oriente',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'hroldaga',
+                ':pass' => md5('Colombia9359--++'),
+                ':region' => 'Antioquia Oriente',
+                ':contrato' => 'Emtelco',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia9359--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '71678224',
-            ':nombre' => 'HOLGUIN AMAYA BIBIANO DE JESUS',
-            ':ciudad' => 'Antioquia Oriente',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'bholguam',
-            ':pass' => md5('Colombia8224--++'),
-            ':region' => 'Antioquia Oriente',
-            ':contrato' => 'Emtelco',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia8224--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '71678224',
+                ':nombre' => 'HOLGUIN AMAYA BIBIANO DE JESUS',
+                ':ciudad' => 'Antioquia Oriente',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'bholguam',
+                ':pass' => md5('Colombia8224--++'),
+                ':region' => 'Antioquia Oriente',
+                ':contrato' => 'Emtelco',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia8224--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '98553736',
-            ':nombre' => 'VERGARA NIETO GIANNI MANFREY',
-            ':ciudad' => 'Antioquia Oriente',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'gvergnie',
-            ':pass' => md5('Colombia3736--++'),
-            ':region' => 'Antioquia Oriente',
-            ':contrato' => 'Emtelco',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia3736--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '98553736',
+                ':nombre' => 'VERGARA NIETO GIANNI MANFREY',
+                ':ciudad' => 'Antioquia Oriente',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'gvergnie',
+                ':pass' => md5('Colombia3736--++'),
+                ':region' => 'Antioquia Oriente',
+                ':contrato' => 'Emtelco',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia3736--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '98643109',
-            ':nombre' => 'PORRAS RIOS EDWING',
-            ':ciudad' => 'Antioquia Oriente',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'eporrari',
-            ':pass' => md5('Colombia3109--++'),
-            ':region' => 'Antioquia Oriente',
-            ':contrato' => 'Emtelco',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia3109--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '98643109',
+                ':nombre' => 'PORRAS RIOS EDWING',
+                ':ciudad' => 'Antioquia Oriente',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'eporrari',
+                ':pass' => md5('Colombia3109--++'),
+                ':region' => 'Antioquia Oriente',
+                ':contrato' => 'Emtelco',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia3109--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '10287604',
-            ':nombre' => 'ALZATE ROJAS JAMES WILSON',
-            ':ciudad' => 'Antioquia Oriente',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'jalzatro',
-            ':pass' => md5('Colombia7604--++'),
-            ':region' => 'Antioquia Oriente',
-            ':contrato' => 'Emtelco',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia7604--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '10287604',
+                ':nombre' => 'ALZATE ROJAS JAMES WILSON',
+                ':ciudad' => 'Antioquia Oriente',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'jalzatro',
+                ':pass' => md5('Colombia7604--++'),
+                ':region' => 'Antioquia Oriente',
+                ':contrato' => 'Emtelco',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia7604--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '71742166',
-            ':nombre' => 'SIERRA CASTRO MANUEL JOSE',
-            ':ciudad' => 'Antioquia Oriente',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'masierra',
-            ':pass' => md5('Colombia2166--++'),
-            ':region' => 'Antioquia Oriente',
-            ':contrato' => 'Emtelco',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia2166--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '71742166',
+                ':nombre' => 'SIERRA CASTRO MANUEL JOSE',
+                ':ciudad' => 'Antioquia Oriente',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'masierra',
+                ':pass' => md5('Colombia2166--++'),
+                ':region' => 'Antioquia Oriente',
+                ':contrato' => 'Emtelco',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia2166--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '1039465051',
-            ':nombre' => 'FRANCO VASQUEZ SANTIAGO',
-            ':ciudad' => 'Antioquia Oriente',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'sfrancva',
-            ':pass' => md5('Colombia5051--++'),
-            ':region' => 'Antioquia Oriente',
-            ':contrato' => 'Emtelco',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia5051--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '1039465051',
+                ':nombre' => 'FRANCO VASQUEZ SANTIAGO',
+                ':ciudad' => 'Antioquia Oriente',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'sfrancva',
+                ':pass' => md5('Colombia5051--++'),
+                ':region' => 'Antioquia Oriente',
+                ':contrato' => 'Emtelco',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia5051--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '98628264',
-            ':nombre' => 'GIRALDO ARROYAVE JORGE ANDRES',
-            ':ciudad' => 'Antioquia Oriente',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'jgiraldoar',
-            ':pass' => md5('Colombia8264--++'),
-            ':region' => 'Antioquia Oriente',
-            ':contrato' => 'Emtelco',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia8264--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '98628264',
+                ':nombre' => 'GIRALDO ARROYAVE JORGE ANDRES',
+                ':ciudad' => 'Antioquia Oriente',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'jgiraldoar',
+                ':pass' => md5('Colombia8264--++'),
+                ':region' => 'Antioquia Oriente',
+                ':contrato' => 'Emtelco',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia8264--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '80773427',
-            ':nombre' => 'CRISTANCHO PINZON LUIS CARIOS',
-            ':ciudad' => 'Bogota',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'lcristpi',
-            ':pass' => md5('Colombia3427--++'),
-            ':region' => 'Cundinamarca Sur',
-            ':contrato' => 'Energia Integral Andina',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia3427--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '80773427',
+                ':nombre' => 'CRISTANCHO PINZON LUIS CARIOS',
+                ':ciudad' => 'Bogota',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'lcristpi',
+                ':pass' => md5('Colombia3427--++'),
+                ':region' => 'Cundinamarca Sur',
+                ':contrato' => 'Energia Integral Andina',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia3427--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '1017154362',
-            ':nombre' => 'ZAPATA MORENO YEFERSON DANEVIS',
-            ':ciudad' => 'Medellin',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'yzapamor',
-            ':pass' => md5('Colombia4362--++'),
-            ':region' => 'Antioquia',
-            ':contrato' => 'Energia Integral Andina',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia4362--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '1017154362',
+                ':nombre' => 'ZAPATA MORENO YEFERSON DANEVIS',
+                ':ciudad' => 'Medellin',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'yzapamor',
+                ':pass' => md5('Colombia4362--++'),
+                ':region' => 'Antioquia',
+                ':contrato' => 'Energia Integral Andina',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia4362--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '1110510171',
-            ':nombre' => 'CORTES BRICEÑO ELDIS DE JESÚS',
-            ':ciudad' => 'Medellin',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'Ecortebr  ',
-            ':pass' => md5('Colombia0171--++'),
-            ':region' => 'Antioquia',
-            ':contrato' => 'Energia Integral Andina',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia0171--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '1110510171',
+                ':nombre' => 'CORTES BRICEÑO ELDIS DE JESÚS',
+                ':ciudad' => 'Medellin',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'Ecortebr  ',
+                ':pass' => md5('Colombia0171--++'),
+                ':region' => 'Antioquia',
+                ':contrato' => 'Energia Integral Andina',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia0171--++'
+            ]
+        );
 
-    $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
-                                            values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
-    $stmt->execute(
-        [
-            ':identificacion' => '1110510171',
-            ':nombre' => 'CORTES BRICEÑO ELDIS DE JESÚS',
-            ':ciudad' => 'Medellin',
-            ':celular' => '30000000',
-            ':empresa' => '4',
-            ':login_click' => 'Ecortebr  ',
-            ':pass' => md5('Colombia0171--++'),
-            ':region' => 'Antioquia',
-            ':contrato' => 'Energia Integral Andina',
-            ':password_click' => 0,
-            ':pass_apk' => 'Colombia0171--++'
-        ]
-    );
+        $stmt = $conn->prepare("INSERT INTO tecnicos (identificacion, nombre, ciudad, celular, empresa,login_click,password,region,contrato,password_click,pass_apk)
+                                                values (:identificacion, :nombre, :ciudad, :celular, :empresa,:login_click,:pass,:region,:contrato,:password_click,:pass_apk)");
+        $stmt->execute(
+            [
+                ':identificacion' => '18611494 ',
+                ':nombre' => 'RAMÍREZ ISAZA JOSÉ ALEXANDER',
+                ':ciudad' => 'Medellin',
+                ':celular' => '30000000',
+                ':empresa' => '4',
+                ':login_click' => 'jramiris  ',
+                ':pass' => md5('Colombia1494--++'),
+                ':region' => 'Antioquia',
+                ':contrato' => 'Energia Integral Andina',
+                ':password_click' => 0,
+                ':pass_apk' => 'Colombia1494--++'
+            ]
+        );*/
 
-    echo 'Se ingresaron en la fecha ' . date('Y-m-d H:i:s') . ' ' . $count + 24 . ' registros';
+    echo 'Se ingresaron en la fecha ' . date('Y-m-d H:i:s') . ' ' . $count . ' registros';
 } else {
     echo 'No se ingresaron registros en bd sin gestionar fecha ' . date('Y-m-d H:i:s');
 }
