@@ -1711,21 +1711,14 @@ class Contingencia
                 $fechafin = date('Y-m-d');
             }
 
-            if ($fechaIni >= '2023-11-01' && $fechafin <= '2023-11-30') {
-                $response = ['state' => false, 'msj' => 'Ha ocurrido un error interno intentalo nuevamente en unos minutos'];
-                echo json_encode($response);
-                exit();
-            }
-
-
             $stmt = $this->_DB->prepare("SELECT C.accion, C.ciudad, C.macEntra, C.macSale, C.motivo, C.observacion,
             C.paquetes, C.pedido, C.proceso, C.producto, C.remite, C.tecnologia, C.tipoEquipo, C.uen,
             C.contrato, C.perfil, C.logindepacho, C.logincontingencia, C.horagestion, C.horacontingencia,
             C.observContingencia, C.acepta, C.tipificacion, C.fechaClickMarca, C.loginContingenciaPortafolio,
             C.observContingenciaPortafolio, C.generarcr, C.uneSourceSystem as crm
             FROM contingencias AS C
-        WHERE C.horagestion BETWEEN ('$fechaIni 00:00:00') AND ('$fechafin 23:59:59')
-        AND C.accion IN ('Cambio de equipo', 'Contingencia', 'Refresh', 'Registros ToIP', 'Reenvio de registros')");
+        WHERE C.horagestion BETWEEN '$fechaIni 00:00:00' AND '$fechafin 23:59:59'
+         AND finalizado = 'OK'");
             $stmt->execute();
 
             if ($stmt->rowCount()) {

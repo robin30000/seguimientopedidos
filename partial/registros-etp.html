@@ -25,44 +25,55 @@
                                     </li>
                                     <li>
                                         <div data-ng-if="loading">
-                                            <img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif"/>
+                                            <img title="Esperando respuesta" tooltip data-placement="top"
+                                                 src="img/loader.gif"/>
                                         </div>
                                     </li>
                                     <li>
                                         &nbsp;
                                         <input style="width: 130px" type="text" name="fechaini" id="fechaini"
-                                               class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="ETP.fechaini"
-                                               placeholder="Fecha Inicial" datetime-picker="" date-only date-format="yyyy-MM-dd"
+                                               class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                               ng-model="ETP.fechaini"
+                                               placeholder="Fecha Inicial" datetime-picker="" date-only
+                                               date-format="yyyy-MM-dd"
                                                autocomplete="off"/>
                                         <i class="fa fa-calendar fa-fw"></i>
                                         <input style="width: 130px" type="text" name="fechafin" id="fechafin"
-                                               class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="ETP.fechafin"
-                                               placeholder="Fecha Final" datetime-picker="" date-only date-format="yyyy-MM-dd"
+                                               class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                               ng-model="ETP.fechafin"
+                                               placeholder="Fecha Final" datetime-picker="" date-only
+                                               date-format="yyyy-MM-dd"
                                                autocomplete="off"/>
                                         <i class="fa fa-calendar fa-fw"></i>
 
-                                        <button type="button" class="btn btn-default btn-xs" ng-click="registrosETPRegistros(ETP)"
+                                        <!--<button type="button" class="btn btn-default btn-xs" ng-click="registrosETP(ETP)"
                                                 ng-disabled="loading">
                                             <i class="fa fa-search-plus" aria-hidden="true"></i>
-                                        </button>
-
-                                        <button type="button" class="btn btn-success btn-xs" title="Exportar Registros"
-                                                ng-click="csvETPRegistros(ETP)" ng-disabled="loading" title="Exportar" tooltip data-placement="top">
-                                            <i class="fa fa-cloud-download" aria-hidden="true"> </i>
-                                        </button>
+                                        </button>-->
 
                                         <b>
-                                            <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs" ng-model="ETP.pedido"
+                                            <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs"
+                                                   ng-model="ETP.pedido"
                                                    placeholder="Buscar pedido" autocomplete="off"/>&nbsp;
-
-                                            <button type="button" class="btn btn-default btn-xs" ng-click="detallePedidoRegistros(ETP)"
-                                                    title="Buscar" data-toggle="tooltip" data-placement="left" ng-disabled="loading">
+                                            <button type="button" class="btn btn-default btn-xs"
+                                                    ng-click="detallePedido(ETP)"
+                                                    title="Buscar" data-toggle="tooltip" data-placement="left"
+                                                    ng-disabled="loading">
                                                 <i class="fa fa-search" aria-hidden="true"></i>
                                             </button>
-                                        </b>&nbsp;
+                                            <button type="button" class="btn btn-success btn-xs"
+                                                    title="Exportar Registros"
+                                                    ng-click="csvETP(ETP)" ng-disabled="loading" title="Exportar"
+                                                    tooltip data-placement="top">
+                                                <i class="fa fa-cloud-download" aria-hidden="true"> </i>
+                                            </button>&nbsp;
+
+
+                                        </b>
                                     </li>
                                     <li>
-                                        <button type="button" class="btn btn-default btn-xs" ng-click="recargaPageRegistros()" title="Actualizar"
+                                        <button type="button" class="btn btn-default btn-xs" ng-click="recargaPage()"
+                                                title="Actualizar"
                                                 data-toggle="tooltip" data-placement="top" ng-disabled="loading">
                                             <i class="fa fa-refresh" aria-hidden="true"></i>
                                         </button>
@@ -134,7 +145,7 @@
                                 </div>
                                 <div class="text-center">
                                     <ul uib-pagination class="pagination-sm" total-items="totalItems" ng-model="currentPage"
-                                        ng-change="pageChangedRegistro()" items-per-page="pageSize" max-size="5" boundary-links="true" rotate="true"
+                                        ng-change="pageChanged()" items-per-page="pageSize" max-size="5" boundary-links="true" rotate="true"
                                         previous-text="&#8672;" next-text="&#8674;" first-text="Primero" last-text="Último"></ul>
                                 </div>
                             </div>

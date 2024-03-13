@@ -340,13 +340,15 @@ class MesasNacionales
                                                 CASE
                                                         mesa 
                                                         WHEN 'Mesa 1' THEN
-                                                        '8.1' 
+                                                        'Soporte Siebel-Edatel-Elite' 
                                                         WHEN 'Mesa 2' THEN
-                                                        '8.3' 
+                                                        'Edatel- Soporte LB- Cambios Pto' 
                                                         WHEN 'Mesa 3' THEN
-                                                        '8.9' 
+                                                        'Mesa de Validaciones' 
                                                         WHEN 'Mesa 4' THEN
                                                         'P. ext.' 
+                                                        WHEN 'Mesa 6' THEN
+                                                        'BSC' 
                                                     END AS mesa,
                                                     accion_tecnico 
                                                 FROM
@@ -489,58 +491,66 @@ class MesasNacionales
     public function detalleMesa($data)
     {
         try {
-            $con = '';
             $pagenum = $data['page'];
             $pagesize = $data['size'];
             $offset = ($pagenum - 1) * $pagesize;
-            $count = '';
-            if (isset($data['mesas'])) {
-                $mesa = $data['mesas'];
-                if ($mesa == 'Todos') {
-                    $f = '';
-                    if (isset($data['fechaini'])) {
-                        $fechaini = $data['fechaini'];
-                        $fechafin = $data['fechafin'];
-                        $f = " AND hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:00:00' ";
-                    } else {
-                        $fechaini = date('Y-m-d');
-                        $fechafin = date('Y-m-d');
-                        $f = " AND hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:00:00' ";
-                    }
-                    $con = " AND estado = 'Gestionado' $f  ORDER BY hora_ingreso desc LIMIT $offset, $pagesize ";
-                    $con1 = " AND estado = 'Gestionado' $f ORDER BY hora_ingreso desc";
-                    if (isset($data['export'])) {
-                        $fechaini = $data['fechaini'];
-                        $fechafin = $data['fechafin'];
-                        $con = " AND estado = 'Gestionado' AND hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
-                        $con1 = " AND estado = 'Gestionado' AND hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
-                    }
+
+            $mesa = $data['buscar']['mesas'];
+            if ($mesa == 'Todos') {
+                if (isset($data['buscar']['fechaini'])) {
+                    $fechaini = $data['buscar']['fechaini'];
+                    $fechafin = $data['buscar']['fechafin'];
+                    $f = " AND hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
                 } else {
-                    $f = '';
-                    if (isset($data['fechaini'])) {
-                        $fechaini = $data['fechaini'];
-                        $fechafin = $data['fechafin'];
-                        $f = " AND hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
-                    } else {
-                        $fechaini = date('Y-m-d');
-                        $fechafin = date('Y-m-d');
-                        $f = " AND hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:00:00' ";
-                    }
-                    $con = " AND mesa = '$mesa' AND estado = 'Gestionado' $f ORDER BY hora_ingreso desc LIMIT $offset, $pagesize ";
-                    $con1 = " AND mesa = '$mesa' AND estado = 'Gestionado' $f ORDER BY hora_ingreso desc";
-                    if (isset($data['export'])) {
-                        $fechaini = $data['fechaini'];
-                        $fechafin = $data['fechafin'];
-                        $con = " AND mesa = '$mesa' AND estado = 'Gestionado' AND hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ORDER BY hora_ingreso desc ";
-                        $con1 = " AND mesa = '$mesa' AND estado = 'Gestionado' AND hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ORDER BY hora_ingreso desc ";
-                    }
+                    $fechaini = date('Y-m-d');
+                    $fechafin = date('Y-m-d');
+                    $f = " AND hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
+                }
+                if (isset($data['buscar']['concepto'])) {
+                    $concepto = $data['buscar']['concepto'];
+                    $buscar = $data['buscar']['buscar'];
+                    $f .= " AND $concepto = '$buscar' ";
+                }
+                $con = " AND estado = 'Gestionado' $f  ORDER BY hora_ingreso desc LIMIT $offset, $pagesize ";
+                $con1 = " AND estado = 'Gestionado' $f ORDER BY hora_ingreso desc";
+                if (isset($data['buscar']['export'])) {
+                    $fechaini = $data['buscar']['fechaini'];
+                    $fechafin = $data['buscar']['fechafin'];
+                    $con = " AND estado = 'Gestionado' AND hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ORDER BY hora_ingreso desc ";
+                    $con1 = " AND estado = 'Gestionado' AND hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ORDER BY hora_ingreso desc ";
                 }
 
-                $stmt = $this->_DB->query("SELECT * FROM mesas_nacionales where 1=1 $con1");
-                $stmt->execute();
-                $count = $stmt->rowCount();
+            } else {
 
-                $stmt = $this->_DB->prepare("SELECT
+                if (isset($data['buscar']['fechaini'])) {
+                    $fechaini = $data['buscar']['fechaini'];
+                    $fechafin = $data['buscar']['fechafin'];
+                    $f = " AND hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
+                } else {
+                    $fechaini = date('Y-m-d');
+                    $fechafin = date('Y-m-d');
+                    $f = " AND hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
+                }
+                if (isset($data['buscar']['concepto'])) {
+                    $concepto = $data['buscar']['concepto'];
+                    $buscar = $data['buscar']['buscar'];
+                    $f .= " AND $concepto = '$buscar' ";
+                }
+                $con = " AND mesa = '$mesa' AND estado = 'Gestionado' $f ORDER BY hora_ingreso desc LIMIT $offset, $pagesize ";
+                $con1 = " AND mesa = '$mesa' AND estado = 'Gestionado' $f ORDER BY hora_ingreso desc";
+                if (isset($data['buscar']['export'])) {
+                    $fechaini = $data['buscar']['fechaini'];
+                    $fechafin = $data['buscar']['fechafin'];
+                    $con = " AND mesa = '$mesa' AND estado = 'Gestionado' AND hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ORDER BY hora_ingreso desc ";
+                    $con1 = " AND mesa = '$mesa' AND estado = 'Gestionado' AND hora_ingreso BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ORDER BY hora_ingreso desc ";
+                }
+            }
+
+            $stmt = $this->_DB->query("SELECT * FROM mesas_nacionales where 1=1 $con1");
+            $stmt->execute();
+            $count = $stmt->rowCount();
+
+            /*echo "SELECT
                                                         hora_ingreso,
                                                         hora_marca,
                                                         hora_gestion,
@@ -559,56 +569,60 @@ class MesasNacionales
                                                         UneSourceSystem,
                                                     CASE
                                                         mesa 
-                                                        WHEN 'Mesa 1' THEN
-                                                        '8.1' 
+                                                       WHEN 'Mesa 1' THEN
+                                                        'Soporte Siebel-Edatel-Elite' 
                                                         WHEN 'Mesa 2' THEN
-                                                        '8.3' 
+                                                        'Edatel- Soporte LB- Cambios Pto' 
                                                         WHEN 'Mesa 3' THEN
-                                                        '8.9' 
+                                                        'Mesa de Validaciones' 
                                                         WHEN 'Mesa 4' THEN
                                                         'P. ext.' 
+                                                        WHEN 'Mesa 6' THEN
+                                                        'BSC' 
+                                                    END AS mesa,
+                                                        accion_tecnico,
+                                                        region,
+                                                        area
+                                                    FROM
+                                                        mesas_nacionales WHERE 1=1 $con";
+            exit();*/
+
+            $stmt = $this->_DB->prepare("SELECT
+                                                        hora_ingreso,
+                                                        hora_marca,
+                                                        hora_gestion,
+                                                        estado,
+                                                        login_gestion,
+                                                        nombre_tecnico,
+                                                        cc_tecnico,
+                                                        num_contacto_tecnico,
+                                                        tipificacion,
+                                                        tipificacion_2,
+                                                        observacion_tecnico,
+                                                        observacion_gestion,
+                                                        tarea,
+                                                        pedido,
+                                                        TaskTypeCategory,
+                                                        UneSourceSystem,
+                                                    CASE
+                                                        mesa 
+                                                       WHEN 'Mesa 1' THEN
+                                                        'Soporte Siebel-Edatel-Elite' 
+                                                        WHEN 'Mesa 2' THEN
+                                                        'Edatel- Soporte LB- Cambios Pto' 
+                                                        WHEN 'Mesa 3' THEN
+                                                        'Mesa de Validaciones' 
+                                                        WHEN 'Mesa 4' THEN
+                                                        'P. ext.' 
+                                                        WHEN 'Mesa 6' THEN
+                                                        'BSC' 
                                                     END AS mesa,
                                                         accion_tecnico,
                                                         region,
                                                         area
                                                     FROM
                                                         mesas_nacionales WHERE 1=1 $con");
-            } elseif (isset($data['buscar'])) {
-                $tarea = $data['buscar'];
-                $stmt = $this->_DB->prepare("SELECT
-                                                        hora_ingreso,
-                                                        hora_marca,
-                                                        hora_gestion,
-                                                        estado,
-                                                        login_gestion,
-                                                        nombre_tecnico,
-                                                        cc_tecnico,
-                                                        num_contacto_tecnico,
-                                                        tipificacion,
-                                                        tipificacion_2,
-                                                        observacion_tecnico,
-                                                        observacion_gestion,
-                                                        tarea,
-                                                        pedido,
-                                                        TaskTypeCategory,
-                                                        UneSourceSystem,
-                                                    CASE
-                                                        mesa 
-                                                        WHEN 'Mesa 1' THEN
-                                                        '8.1' 
-                                                        WHEN 'Mesa 2' THEN
-                                                        '8.3' 
-                                                        WHEN 'Mesa 3' THEN
-                                                        '8.9' 
-                                                        WHEN 'Mesa 4' THEN
-                                                        'P. ext.' 
-                                                    END AS mesa,
-                                                        accion_tecnico,
-                                                        region,
-                                                        area
-                                                    FROM
-                                                        mesas_nacionales WHERE 1=1 AND tarea = '$tarea'");
-            }
+
 
             $stmt->execute();
             if ($stmt->rowCount()) {

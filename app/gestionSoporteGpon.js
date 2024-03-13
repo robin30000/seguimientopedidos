@@ -93,7 +93,7 @@
                 '<tr><td style="min-width: 80px">Tipo equipo</td><td>' + data.tipo_equipo.replace(/,/g, '\n') + '</td></tr>' +
                 '<tr><td style="min-width: 80px">Velocidad navegación</td><td>' + data.velocidad_navegacion + '</td></tr>' +
                 '<tr><td style="min-width: 80px">Observación</td><td>' + data.observacion_terreno + '</td></tr>' +
-                '<tr><td style="min-width: 80px">Fecha solicitud</td><td>' + data.fecha_creado + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Tecnologia</td><td>' + data.task_type + '</td></tr>' +
                 '</tbody></table></div>');
         }
 

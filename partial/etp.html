@@ -24,24 +24,26 @@
                                             &nbsp;
                                             <b>Gestión ETP</b> <span class="badge badge-default">{{Items}}</span>
                                         </li>
-										  </li>
-										 <li>
-                                    <div class="dameTarea" style="margin-left: 7px;margin-top: -5px;">
-                                        <button class="btn btn-sm btn-info" ng-click="damePedidoetp()">Dame Tarea <i class="fa fa-briefcase"
-                                                                                          aria-hidden="true"></i>
-                                        </button>
-                                    </div>
-                                </li>
+                                        <li>
+                                            <div class="dameTarea" style="margin-left: 7px;margin-top: -5px;">
+                                                <button class="btn btn-sm btn-info" ng-click="damePedidoetp()">Dame
+                                                    Tarea <i class="fa fa-briefcase"
+                                                             aria-hidden="true"></i>
+                                                </button>
+                                            </div>
+                                        </li>
                                         <li>
                                             &nbsp;
                                             &nbsp;
                                             <div data-ng-if="loading">
-                                                <img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif"/>
+                                                <img title="Esperando respuesta" tooltip data-placement="top"
+                                                     src="img/loader.gif"/>
                                             </div>
                                         </li>
                                         <li>
-                                            
-                                            <button type="button" class="btn btn-default btn-xs" ng-click="recargaPageGestion()" title="Actualizar"
+
+                                            <button type="button" class="btn btn-default btn-xs"
+                                                    ng-click="recargaPageGestion()" title="Actualizar"
                                                     data-toggle="tooltip" data-placement="top" ng-disabled="loading">
                                                 <i class="fa fa-refresh" aria-hidden="true"></i>
                                             </button>
@@ -53,7 +55,9 @@
                                         <table class="table table-bordered table-hover table-condensed small">
                                             <thead class="table-header">
                                             <tr>
-                                                <th class="text-center" rowspan="2" ng-if="perfil === '11' || perfil === '16'">Mar.</th>
+                                                <th class="text-center" rowspan="2"
+                                                    ng-if="perfil === '11' || perfil === '16'">Mar.
+                                                </th>
                                                 <th class="text-center" rowspan="2"><span>Login</span></th>
                                                 <th class="text-center" rowspan="2"><span>Tarea</span></th>
                                                 <th class="text-center" rowspan="2"><span>Arpón</span></th>
@@ -90,7 +94,8 @@
                                                                name="bloqueo" id="bloqueo"
                                                                ng-click="marcarEngestion(data)"
                                                                ng-checked="data.status_soporte == 1">
-                                                        <div class="loadingio-spinner-ellipsis-3nun7cb96ao" ng-show="data.bloqueo == 1">
+                                                        <div class="loadingio-spinner-ellipsis-3nun7cb96ao"
+                                                             ng-show="data.bloqueo == 1">
                                                             <div class="ldio-pettsxrv7wj">
                                                                 <div></div>
                                                                 <div></div>
@@ -102,8 +107,10 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <span class="label label-primary label-xsmall" ng-if="data.login_gestion == galletainfo.login">{{data.login_gestion}}</span>
-                                                    <span class="label label-primary label-xsmall" ng-if="data.login_gestion != galletainfo.login">{{data.login_gestion}}</span>
+                                                    <span class="label label-primary label-xsmall"
+                                                          ng-if="data.login_gestion == galletainfo.login">{{data.login_gestion}}</span>
+                                                    <span class="label label-primary label-xsmall"
+                                                          ng-if="data.login_gestion != galletainfo.login">{{data.login_gestion}}</span>
                                                 </td>
                                                 <!-- En estas lineas se oculta el login gestión -->
                                                 <!-- <td ng-show="data.login_gestion === galletainfo.login">
@@ -158,15 +165,19 @@
                                                 <td>{{data.nombre_contacto}}</td>
                                                 <td>{{data.replanteo}}</td>
                                                 <td style="display: flex;justify-content: center;">
-                                                    <button popover-placement="left" ng-click="ver_masss(data)" uib-popover-html="dataContent"
-                                                            popover-title="Ver mas" type="button" class="btn btn-default btn-xs" tooltip-placement="top"
+                                                    <button popover-placement="left" ng-click="ver_masss(data)"
+                                                            uib-popover-html="dataContent"
+                                                            popover-title="Ver mas" type="button"
+                                                            class="btn btn-default btn-xs" tooltip-placement="top"
                                                             uib-tooltip="Ver mas">
                                                         <i class="fa fa-plus" aria-hidden="true"></i>
                                                     </button>
                                                 </td>
                                                 <td class="text-center">
-                                                    <select ng-model="data.tipificaciones" class="btn btn-default btn-xs grupo-select" multiple
-                                                            ui-select2="groupSetup" name="tipificaciones" id="tipificaciones{{data.id_soporte}}">
+                                                    <select ng-model="data.tipificaciones"
+                                                            class="btn btn-default btn-xs grupo-select" multiple
+                                                            ui-select2="groupSetup" name="tipificaciones"
+                                                            id="tipificaciones{{data.id_soporte}}">
                                                         <option value="">Seleccionar</option>
                                                         <option value="Actualizar Infra">Actualizar Infra</option>
                                                         <option value="Configurar VLAN">Configurar VLAN</option>
@@ -179,8 +190,11 @@
                                                         <option value="Nap Trocado">Nap Trocado</option>
                                                         <option value="Reenvió Registros">Reenvió Registros</option>
                                                         <option value="IP navegación">IP navegación</option>
-                                                        <option value="Pendiente por cobertura">Pendiente por cobertura</option>
-                                                        <option value="Solicitud innecesaria">Solicitud innecesaria</option>
+                                                        <option value="Pendiente por cobertura">Pendiente por
+                                                            cobertura
+                                                        </option>
+                                                        <option value="Solicitud innecesaria">Solicitud innecesaria
+                                                        </option>
                                                         <option value="Configurar WIFI">Configurar WIFI</option>
                                                         <option value="Código de completo">Código de completo</option>
                                                         <option value="Código incompleto">Código de incompleto</option>
@@ -191,8 +205,10 @@
                                                 </td>
 
                                                 <td>
-                                                    <select ng-model="data.tipificaciones2" class="btn btn-default btn-xs grupo-select"
-                                                            name="tipificaciones2" id="tipificacion{{data.id_soporte}}" style="width:100px">
+                                                    <select ng-model="data.tipificaciones2"
+                                                            class="btn btn-default btn-xs grupo-select"
+                                                            name="tipificaciones2" id="tipificacion{{data.id_soporte}}"
+                                                            style="width:100px">
                                                         <option value="">Seleccionar</option>
                                                         <option value="Finalizado">Finalizado</option>
                                                         <option value="Incompleto">Incompleto</option>
@@ -201,8 +217,10 @@
                                                 </td>
                                                 <td>{{data.fecha_crea}}</td>
                                                 <td class="text-center">
-                                                    <button popover-placement="left" uib-popover="{{data.observacion_terreno}}"
-                                                            tooltip-placement="top" uib-tooltip="Observación técnico" type="button" class="btn btn-default btn-xs">
+                                                    <button popover-placement="left"
+                                                            uib-popover="{{data.observacion_terreno}}"
+                                                            tooltip-placement="top" uib-tooltip="Observación técnico"
+                                                            type="button" class="btn btn-default btn-xs">
                                                         <i class="fa fa-commenting" aria-hidden="true"></i>
                                                     </button>
                                                     <!-- <button type="button" class="btn btn-default btn-xs" title="Observación técnico" ng-click="ver_mas(data.observacion)">
@@ -210,12 +228,14 @@
                                                     </button> -->
                                                 </td>
                                                 <td>
-                                                    <button type="button" class="btn btn-default btn-xs" tooltip-placement="top"
+                                                    <button type="button" class="btn btn-default btn-xs"
+                                                            tooltip-placement="top"
                                                             uib-tooltip="Guardar" ng-click="GuardarETP(data)">
                                                         <i class="fa fa-edit" aria-hidden="true"></i>
                                                     </button>
 
-                                                    <div style="display: inline-block;" ng-show="data.alerta === 'TRUE'">
+                                                    <div style="display: inline-block;"
+                                                         ng-show="data.alerta === 'TRUE'">
                                                         <button type="button" class="btn btn-default btn-xs"
                                                                 data-toggle="modal" data-backdrop="static"
                                                                 ng-hide="data.alerta == 'FALSE'" tooltip-placement="top"
@@ -249,44 +269,55 @@
                                     </li>
                                     <li>
                                         <div data-ng-if="loading">
-                                            <img title="Esperando respuesta" tooltip data-placement="top" src="img/loader.gif"/>
+                                            <img title="Esperando respuesta" tooltip data-placement="top"
+                                                 src="img/loader.gif"/>
                                         </div>
                                     </li>
                                     <li>
                                         &nbsp;
                                         <input style="width: 130px" type="text" name="fechaini" id="fechaini"
-                                               class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="ETP.fechaini"
-                                               placeholder="Fecha Inicial" datetime-picker="" date-only date-format="yyyy-MM-dd"
+                                               class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                               ng-model="ETP.fechaini"
+                                               placeholder="Fecha Inicial" datetime-picker="" date-only
+                                               date-format="yyyy-MM-dd"
                                                autocomplete="off"/>
                                         <i class="fa fa-calendar fa-fw"></i>
                                         <input style="width: 130px" type="text" name="fechafin" id="fechafin"
-                                               class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="ETP.fechafin"
-                                               placeholder="Fecha Final" datetime-picker="" date-only date-format="yyyy-MM-dd"
+                                               class="btn btn-default btn-xs ng-pristine ng-valid ng-touched"
+                                               ng-model="ETP.fechafin"
+                                               placeholder="Fecha Final" datetime-picker="" date-only
+                                               date-format="yyyy-MM-dd"
                                                autocomplete="off"/>
                                         <i class="fa fa-calendar fa-fw"></i>
 
-                                        <button type="button" class="btn btn-default btn-xs" ng-click="registrosETP(ETP)"
+                                        <!--<button type="button" class="btn btn-default btn-xs" ng-click="registrosETP(ETP)"
                                                 ng-disabled="loading">
                                             <i class="fa fa-search-plus" aria-hidden="true"></i>
-                                        </button>
-
-                                        <button type="button" class="btn btn-success btn-xs" title="Exportar Registros"
-                                                ng-click="csvETP(ETP)" ng-disabled="loading" title="Exportar" tooltip data-placement="top">
-                                            <i class="fa fa-cloud-download" aria-hidden="true"> </i>
-                                        </button>
+                                        </button>-->
 
                                         <b>
-                                            <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs" ng-model="ETP.pedido"
+                                            <input type="text" name="pedido" id="pedido" class="btn btn-default btn-xs"
+                                                   ng-model="ETP.pedido"
                                                    placeholder="Buscar pedido" autocomplete="off"/>&nbsp;
-
-                                            <button type="button" class="btn btn-default btn-xs" ng-click="detallePedido(ETP)"
-                                                    title="Buscar" data-toggle="tooltip" data-placement="left" ng-disabled="loading">
+                                            <button type="button" class="btn btn-default btn-xs"
+                                                    ng-click="detallePedido(ETP)"
+                                                    title="Buscar" data-toggle="tooltip" data-placement="left"
+                                                    ng-disabled="loading">
                                                 <i class="fa fa-search" aria-hidden="true"></i>
                                             </button>
-                                        </b>&nbsp;
+                                            <button type="button" class="btn btn-success btn-xs"
+                                                    title="Exportar Registros"
+                                                    ng-click="csvETP(ETP)" ng-disabled="loading" title="Exportar"
+                                                    tooltip data-placement="top">
+                                                <i class="fa fa-cloud-download" aria-hidden="true"> </i>
+                                            </button>&nbsp;
+
+
+                                        </b>
                                     </li>
                                     <li>
-                                        <button type="button" class="btn btn-default btn-xs" ng-click="recargaPage()" title="Actualizar"
+                                        <button type="button" class="btn btn-default btn-xs" ng-click="recargaPage()"
+                                                title="Actualizar"
                                                 data-toggle="tooltip" data-placement="top" ng-disabled="loading">
                                             <i class="fa fa-refresh" aria-hidden="true"></i>
                                         </button>
@@ -319,7 +350,8 @@
                                             <td>{{data.login_gestion}}</td>
                                             <td>
                                                 <button type="button" class="btn btn-default btn-xs"
-                                                        ng-click="CopyPortaPapeles(data.unepedido)" tooltip-placement="top"
+                                                        ng-click="CopyPortaPapeles(data.unepedido)"
+                                                        tooltip-placement="top"
                                                         uib-tooltip="Copiar pedido" id=p{{$index}}>{{data.unepedido}}
                                                 </button>
                                             </td>
@@ -332,20 +364,26 @@
                                             <td>{{data.tipificaciones2}}</td>
                                             <td>{{data.replanteo}}</td>
                                             <td class="text-center">
-                                                <button popover-placement="left" uib-popover="{{data.observacion_terreno}}"
-                                                        tooltip-placement="top" uib-tooltip="Observación técnico" type="button" class="btn btn-default btn-xs">
+                                                <button popover-placement="left"
+                                                        uib-popover="{{data.observacion_terreno}}"
+                                                        tooltip-placement="top" uib-tooltip="Observación técnico"
+                                                        type="button" class="btn btn-default btn-xs">
                                                     <i class="fa fa-commenting" aria-hidden="true"></i>
                                                 </button>
                                             </td>
                                             <td class="text-center">
-                                                <button popover-placement="left" uib-popover="{{data.observacionesGestion}}"
-                                                        tooltip-placement="top" uib-tooltip="Observación asesor" type="button" class="btn btn-default btn-xs">
+                                                <button popover-placement="left"
+                                                        uib-popover="{{data.observacionesGestion}}"
+                                                        tooltip-placement="top" uib-tooltip="Observación asesor"
+                                                        type="button" class="btn btn-default btn-xs">
                                                     <i class="fa fa-commenting" aria-hidden="true"></i>
                                                 </button>
                                             </td>
                                             <td>
-                                                <button popover-placement="left" ng-click="ver_mas2(data)" uib-popover-html="dataContent"
-                                                        popover-title="Ver mas" type="button" class="btn btn-default btn-xs" tooltip-placement="top"
+                                                <button popover-placement="left" ng-click="ver_mas2(data)"
+                                                        uib-popover-html="dataContent"
+                                                        popover-title="Ver mas" type="button"
+                                                        class="btn btn-default btn-xs" tooltip-placement="top"
                                                         uib-tooltip="Ver mas">
                                                     <i class="fa fa-plus" aria-hidden="true"></i>
                                                 </button>
@@ -356,9 +394,12 @@
                                     </table>
                                 </div>
                                 <div class="text-center">
-                                    <ul uib-pagination class="pagination-sm" total-items="totalItems" ng-model="currentPage"
-                                        ng-change="pageChanged()" items-per-page="pageSize" max-size="5" boundary-links="true" rotate="true"
-                                        previous-text="&#8672;" next-text="&#8674;" first-text="Primero" last-text="Último"></ul>
+                                    <ul uib-pagination class="pagination-sm" total-items="totalItems"
+                                        ng-model="currentPage"
+                                        ng-change="pageChanged()" items-per-page="pageSize" max-size="5"
+                                        boundary-links="true" rotate="true"
+                                        previous-text="&#8672;" next-text="&#8674;" first-text="Primero"
+                                        last-text="Último"></ul>
                                 </div>
                             </div>
                         </div>

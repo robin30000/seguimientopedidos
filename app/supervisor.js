@@ -15,7 +15,7 @@
             mesa2();
             mesa3();
             mesa4();
-            mesa5();
+            //mesa5();
             mesa6();
             gestionETP();
             gestionToip();
@@ -225,6 +225,9 @@
                     mesa3();
                     break;
                 case 4 :
+                    mesa4();
+                    break;
+                case 6 :
                     mesa4();
                     break;
                 case 5 :

@@ -235,7 +235,7 @@ function routesConfig($routeProvider, $locationProvider, $compileProvider) {
     }).when("/registros-etp", {
         title: "Registros ETP",
         templateUrl: "./partial/registros-etp.html",
-        controller: "RegistrosETPCtrl",
+        controller: "RegistrosEtpCtrl",
         resolve: {
             userData: loadUserData
         }

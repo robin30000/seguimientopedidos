@@ -254,30 +254,27 @@ class soporteGpon
 
         /*LOGICA QUE LLEVA LA INFORMACION A TV, INTERNET-ToIp Y CORREGIR PORTAFOLIO*/
         //$query = "SELECT s.* FROM soporte_gpon s WHERE fecha_creado BETWEEN '$hoy 00:00:00' AND '$hoy 23:59:59' AND s.status_soporte != '1' ORDER BY s.fecha_creado asc";
-        $query = "SELECT
+        $query = "	SELECT
                         s.*,
-                    CASE
-                            
+                        CASE
                             WHEN (
-                            SELECT
-                                COUNT(*) 
-                            FROM
-                                soporte_gpon c1 
-                            WHERE
-                                s.tarea = c1.tarea 
-                                AND c1.fecha_creado >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
-                                AND c1.status_soporte = '1' 
-                                ) > 0 THEN
-                                'TRUE' ELSE 'FALSE' 
-                            END alerta 
+                                SELECT
+                                    COUNT(*) 
+                                FROM
+                                    soporte_gpon c1 
+                                WHERE
+                                    s.tarea = c1.tarea 
+                                    AND c1.fecha_creado >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                    AND c1.status_soporte = '1' 
+                            ) > 0 THEN 'TRUE' ELSE 'FALSE' 
+                        END alerta
                     FROM
                         soporte_gpon s 
                     WHERE
-                        fecha_creado BETWEEN '$hoy 00:00:00' 
-                        AND '$hoy 23:59:59' 
+                        fecha_creado BETWEEN '$hoy 00:00:00' AND '$hoy 23:59:59' 
                         AND s.status_soporte != '1' 
                     ORDER BY
-                        s.fecha_creado ASC";
+                        s.fecha_creado ASC;";
 
         $rst = $this->_DB->query($query);
         $rst->execute();

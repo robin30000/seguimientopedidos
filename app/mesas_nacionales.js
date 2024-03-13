@@ -15,7 +15,6 @@
         var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
 
         tiempo = year + "-" + month + "-" + day;
-        $scope.mn = {};
 
         init();
 
@@ -110,7 +109,7 @@
         }
 
         $scope.pageChanged = function () {
-            let data = $scope.mn
+            let data = {'buscar': $scope.mn}
             //registros(data);
             $scope.registrosMnTiempo(data);
         }
@@ -175,59 +174,6 @@
                             }, 400);
                         });
                     }
-
-
-                    /*if (data.data.alerta === '1') {
-                        if (data.data.msj === "tarea Bloqueada correctamente") {
-                            swal({
-                                type: "warning",
-                                title: "Atención",
-                                text: "esta tarea ha ingresado mas de una vez a este modulo, por favor validar la solicitud en detalle, observaciones, interacción(es) anterior(es) para evitar que ingrese de nuevo. si crees pertinente escala a tu supervisor",
-                                showCancelButton: false,
-                                confirmButtonText: "Aceptar",
-                            }).then(() => {
-                                let miTimeout = $timeout(function () {
-                                    mostrarSweetAlert();
-                                }, 600000);
-                                Swal({
-                                    type: 'success',
-                                    title: 'Muy Bien',
-                                    text: data.data.msj,
-                                    timer: 4000
-                                }).then(() => {
-                                    setTimeout(() => {
-                                        init();
-                                    }, 400);
-                                })
-                            })
-                        }
-                    } else if (data.data.msj === "tarea Bloqueada correctamente") {
-                        let miTimeout = $timeout(function () {
-                            mostrarSweetAlert();
-                        }, 600000);
-                        Swal({
-                            type: 'success',
-                            title: 'Muy Bien',
-                            text: data.data.msj,
-                            timer: 4000
-                        }).then(() => {
-                            setTimeout(() => {
-                                init();
-                            }, 400);
-                        })
-                    } else {
-                        $timeout.cancel(miTimeout);
-                        Swal({
-                            type: 'success',
-                            title: 'Muy Bien',
-                            text: data.data.msj,
-                            timer: 4000
-                        }).then(() => {
-                            setTimeout(() => {
-                                init();
-                            }, 400);
-                        })
-                    }*/
                 } else {
                     Swal({
                         type: 'error',
@@ -343,14 +289,28 @@
         }
 
         $scope.registrosMn = (data) => {
-            if (!data) {
-                Swal({
-                    type: 'error',
-                    title: 'Opps..',
-                    text: 'Ingrese la tarea a consultar',
-                    timer: 4000
-                })
-                return;
+            if (data.concepto) {
+                if (!data.buscar) {
+                    Swal({
+                        type: 'error',
+                        title: 'Opps..',
+                        text: 'Ingrese el concepto a consultar',
+                        timer: 4000
+                    })
+                    return;
+                }
+            }
+
+            if (data.buscar) {
+                if (!data.concepto) {
+                    Swal({
+                        type: 'error',
+                        title: 'Opps..',
+                        text: 'Seleccione el concepto a consultar',
+                        timer: 4000
+                    })
+                    return;
+                }
             }
             let datos = {'page': $scope.currentPage, 'size': $scope.pageSize, 'buscar': data, 'data': $scope.mn}
             //let datos = {'buscar': data}
@@ -407,54 +367,25 @@
                 case 5 :
                     registros();
                     $scope.mn = {};
-                    $scope.mn.mesas = 'Mesa 1';
+                    $scope.mn.mesas = 'Todos';
                     break;
             }
         }
 
+        $scope.ver_masss = (data) => {
+            $scope.dataContent = $sce.trustAsHtml('<div class="table-responsive" style="max-width: 380px;"><table class="table table-bordered table-hover table-condensed small" style="max-width: 350px;">' +
+                '<tbody><tr><td style="min-width: 80px">Cel Técnico</td><td>' + data.num_contacto_tecnico + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Nombre Técnico</td><td>' + data.nombre_tecnico + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Hora Ingreso</td><td>' + data.hora_ingreso + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Hora Marca</td><td>' + data.hora_marca + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Hora Gestión</td><td>' + data.hora_gestion + '</td></tr>' +
+                '</tbody></table></div>');
+        }
+
         $scope.registrosMnTiempo = (data) => {
             if (!data.mesas) {
-                data.mesas = "Mesa 1"
+                data.mesas = "Todos"
             }
-            /*if (!data.mesas) {
-                Swal({
-                    type: 'error',
-                    title: 'Opps..',
-                    text: 'Seleccione un filtro de tipo mesa',
-                    timer: 4000
-                })
-                return;
-            }
-
-            if (!data.fechaini) {
-                Swal({
-                    type: 'error',
-                    title: 'Opps..',
-                    text: 'Ingrese la fecha inicial',
-                    timer: 4000
-                })
-                return;
-            }
-
-            if (!data.fechafin) {
-                Swal({
-                    type: 'error',
-                    title: 'Opps..',
-                    text: 'Ingrese la fecha final',
-                    timer: 4000
-                })
-                return;
-            }
-
-            if (data.fechafin < data.fechaini) {
-                Swal({
-                    type: 'error',
-                    title: 'Opps..',
-                    text: 'La final final no puede ser menor que fecha inicial',
-                    timer: 4000
-                })
-                return;
-            }*/
 
 
             data.page = $scope.currentPage;
@@ -515,9 +446,13 @@
                 return;
             }
             data.export = 1;
-            data.page = $scope.currentPage;
-            data.size = $scope.pageSize;
-            services.myService(data, 'mesasNacionalesCtrl.php', 'detalleMesa').then((data) => {
+            let page = $scope.currentPage;
+            let size = $scope.pageSize;
+
+            let datos = {'page': $scope.currentPage, 'size': $scope.pageSize, 'buscar': data}
+
+            //let datos = {'buscar': {data}, page, size}
+            services.myService(datos, 'mesasNacionalesCtrl.php', 'detalleMesa').then((data) => {
                 if (data.data.state) {
                     var wb = XLSX.utils.book_new();
                     var ws = XLSX.utils.json_to_sheet(data.data.data);
@@ -537,11 +472,11 @@
         }
 
         $scope.mn = {
-            mesas: 'Mesa 1'
+            mesas: 'Todos'
         };
 
-        $scope.detalleMesa = (data) => {
-            if (!data) {
+        $scope.detalleMesa = (mesa) => {
+            if (!mesa) {
                 Swal({
                     type: 'error',
                     title: 'Opps..',
@@ -550,8 +485,8 @@
                 })
                 return;
             }
-            $scope.mn.tarea = '';
-            let datos = {'page': $scope.currentPage, 'size': $scope.pageSize, 'mesas': data};
+            console.log(mesa)
+            let datos = {'page': $scope.currentPage, 'size': $scope.pageSize, 'buscar': {'mesas': mesa}};
             services.myService(datos, 'mesasNacionalesCtrl.php', 'detalleMesa').then((data) => {
                 $scope.registros = data.data.data;
                 $scope.Items5 = data.data.counter;

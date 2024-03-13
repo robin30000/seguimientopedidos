@@ -16,39 +16,12 @@
         tiempo = year + "-" + month + "-" + day;
 
         init();
-        console.log('pepino')
+        console.log('pepino222')
         function init() {
             gestionETPTerminado();
         }
 
         $scope.loading = false;
-
-        function gestionETP(data) {
-            if (data === '' || data === undefined) {
-                /*$scope.currentPage = 1;
-                $scope.totalItems = 0;
-                $scope.pageSize = 15;
-                $scope.searchText = '';*/
-                data = {'page': '', 'size': '', 'data': $scope.ETP}
-            }
-            services.myService('', 'etpCtrl.php', 'datos').then((data) => {
-                if (data.data.state) {
-                    $scope.datos = data.data.data;
-                    $scope.Items = data.data.counter;
-
-
-                } else {
-                    Swal({
-                        type: 'error',
-                        title: 'Opps..',
-                        text: data.data.msj,
-                        timer: 4000
-                    })
-                }
-            }).catch((e) => {
-                console.log(e)
-            })
-        }
 
         function gestionETPTerminado(data) {
             let datos = '';
@@ -62,10 +35,10 @@
                 datos = data;
             }
             $scope.loading = 1;
-            services.myService(datos, 'etpCtrl.php', 'datosTerminados').then((data) => {
+            services.myService(datos, 'etpCtrl.php', 'datosTerminadosRegistros').then((data) => {
                 $scope.loading = false;
                 if (data.data.state) {
-                    $scope.datosTerminados = data.data.data;
+                    $scope.datosTerminados2 = data.data.data;
 
                     $scope.totalItems = data.data.counter;
                     $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize + 1;
@@ -84,34 +57,6 @@
             }).catch((e) => {
                 console.log(e)
             })
-        }
-
-        $scope.marcarEngestion = (data) => {
-            let user = $rootScope.login;
-            let datos = {usuario: user, id: data.id_soporte}
-
-            services.myService(datos, 'etpCtrl.php', 'marca').then((data) => {
-                console.log(data)
-                if (data.data.state) {
-                    Swal({
-                        type: 'success',
-                        title: 'Bien',
-                        text: data.data.msj,
-                        timer: 4000
-                    }).then(() => {
-                        gestionETP();
-                    })
-                } else {
-                    Swal({
-                        type: 'error',
-                        title: 'Opps..',
-                        text: data.data.msj,
-                        timer: 4000
-                    })
-                }
-            }).catch((e) => {
-                console.log(e)
-            });
         }
 
         $scope.registrosETP = (data) => {
@@ -139,6 +84,7 @@
         }
 
         $scope.detallePedido = (data) => {
+            console.log('pepepe')
             if (!data) {
                 Swal({
                     type: 'error',
@@ -153,6 +99,7 @@
         }
 
         $scope.recargaPage = () => {
+            $scope.ETP = {};
             let datos = {'page': $scope.currentPage, 'size': $scope.pageSize}
             gestionETPTerminado(datos);
         }
@@ -162,11 +109,11 @@
         }
 
         $scope.pageChanged = function () {
-            let data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.toip}
+            let data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.ETP}
             gestionETPTerminado(data);
         }
         $scope.pageSizeChanged = function () {
-            let data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.toip}
+            let data = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.ETP}
             gestionETP(data);
         }
 

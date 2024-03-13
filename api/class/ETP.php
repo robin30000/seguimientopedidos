@@ -1,6 +1,6 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+error_reporting(0);
+ini_set('display_errors', 0);
 require_once 'conection.php';
 
 class ETP
@@ -220,34 +220,37 @@ class ETP
             $pagesize = $data['size'];
             $offset = ($pagenum - 1) * $pagesize;
 
-            $con = '';
+            //$con = " and fecha_crea BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ORDER BY fecha_crea LIMIT $offset, $pagesize ";
             if (isset($data['data']['fechaini']) && isset($data['data']['fechafin'])) {
                 $fechaini = $data['data']['fechaini'];
                 $fechafin = $data['data']['fechafin'];
 
-                $con = " and fecha_crea BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
+                $con = " and fecha_crea BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ORDER BY fecha_crea LIMIT $offset, $pagesize ";
             } else {
                 $fechaini = date('Y-m-d');
                 $fechafin = date('Y-m-d');
-                $con = " and fecha_crea BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ";
+                $con = " and fecha_crea BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ORDER BY fecha_crea LIMIT $offset, $pagesize ";
             }
 
             if (isset($data['data']['pedido'])) {
                 $pedido = $data['data']['pedido'];
-                $con .= " AND tarea = '$pedido' ";
+                $con = " AND unepedido = '$pedido' ";
             }
 
             if (isset($data['export'])) {
+                $fechaini = $data['data']['fechaini'];
+                $fechafin = $data['data']['fechafin'];
                 $count = 1;
-                $stmt = $this->_DB->query("SELECT * FROM etp where 1=1 $con  ORDER BY fecha_crea desc");
+                $stmt = $this->_DB->query("SELECT * FROM etp where 1=1 and fecha_crea BETWEEN '$fechaini 00:00:00' AND '$fechafin 23:59:59' ORDER BY fecha_crea");
                 $stmt->execute();
             } else {
-                $stmt = $this->_DB->query("SELECT count(*) as counter FROM etp where 1 = 1 $con ORDER BY fecha_crea");
+                //echo "SELECT count(*) as counter FROM etp where 1 = 1 $con";exit();
+                $stmt = $this->_DB->query("SELECT count(*) as counter FROM etp where 1 = 1 $con");
                 $stmt->execute();
-                $res = $stmt->fetch(PDO::FETCH_OBJ);
-                $count = $res->counter;
+                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $count = $res[0]['counter'];
 
-                $stmt = $this->_DB->query("SELECT * FROM etp where 1=1 $con  ORDER BY fecha_crea LIMIT $offset, $pagesize");
+                $stmt = $this->_DB->query("SELECT * FROM etp where 1=1 $con");
                 $stmt->execute();
             }
 
@@ -258,13 +261,14 @@ class ETP
                 $response = ['state' => false, 'msj' => 'No se encontraron registros'];
             }
 
+            $this->_DB = null;
 
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
 
         return $response;
-        $this->_DB = null;
+
     }
 
     public function datosTerminadosRegistros($data)
