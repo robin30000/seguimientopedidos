@@ -17,7 +17,8 @@ var app = angular.module("seguimientopedidos", [
     "angular.filter",
     "ui.bootstrap",
     "ui.select2",
-    "vcRecaptcha"
+    "vcRecaptcha",
+    "angular-jwt"
 ]);
 
 app.service("fileUpload", [

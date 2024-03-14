@@ -12,17 +12,18 @@
   </component>
   <component name="PhpIncludePathManager">
     <include_path>
-      <path value="$PROJECT_DIR$/api/vendor/composer" />
-      <path value="$PROJECT_DIR$/api/vendor/phpmailer/phpmailer" />
-      <path value="$PROJECT_DIR$/api/vendor/psr/http-client" />
-      <path value="$PROJECT_DIR$/api/vendor/psr/http-factory" />
-      <path value="$PROJECT_DIR$/api/vendor/psr/http-message" />
-      <path value="$PROJECT_DIR$/api/vendor/psr/simple-cache" />
+      <path value="$PROJECT_DIR$/api/vendor/firebase/php-jwt" />
       <path value="$PROJECT_DIR$/api/vendor/markbaker/complex" />
-      <path value="$PROJECT_DIR$/api/vendor/markbaker/matrix" />
-      <path value="$PROJECT_DIR$/api/vendor/phpoffice/phpspreadsheet" />
       <path value="$PROJECT_DIR$/api/vendor/maennchen/zipstream-php" />
+      <path value="$PROJECT_DIR$/api/vendor/phpmailer/phpmailer" />
+      <path value="$PROJECT_DIR$/api/vendor/markbaker/matrix" />
+      <path value="$PROJECT_DIR$/api/vendor/composer" />
+      <path value="$PROJECT_DIR$/api/vendor/phpoffice/phpspreadsheet" />
+      <path value="$PROJECT_DIR$/api/vendor/psr/http-client" />
+      <path value="$PROJECT_DIR$/api/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/api/vendor/psr/http-factory" />
       <path value="$PROJECT_DIR$/api/vendor/ezyang/htmlpurifier" />
+      <path value="$PROJECT_DIR$/api/vendor/psr/simple-cache" />
       <path value="$PROJECT_DIR$/api/vendor/myclabs/php-enum" />
     </include_path>
   </component>

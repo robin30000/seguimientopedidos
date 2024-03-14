@@ -1287,7 +1287,7 @@ class otrosServicios
                 $res = array('state' => false, 'msj' => 'La identificación ya se encuentra registrada');
 
             } else {
-                require_once 'constant.php';
+                require_once 'Constants.php';
                 $stmt = $this->_DB->prepare("INSERT INTO tecnicos_sin_click ( identificacion, nombre, empresa, ciudad, celular, contrato, region, login_click, PASSWORD, estado, password_click, pass_apk, perfil )
                                                 VALUES
                                                     (:identificacion,
@@ -1356,7 +1356,7 @@ class otrosServicios
             $r = $emp->fetch(PDO::FETCH_OBJ);
             $contrato = $r->nombre;
 
-            require_once 'constant.php';
+            require_once 'Constants.php';
             $stmt = $this->_DB->prepare("UPDATE tecnicos_sin_click SET identificacion = :identificacion, nombre = upper( :nombre), 
                               empresa = :empresa, ciudad = :ciudad, celular = :celular, contrato = :contrato, region = :region, login_click = :login_click, 
                               PASSWORD = :PASSWORD, estado = :estado, password_click = aes_encrypt( :password_click, '" . CLAVE_ENCRYPT . "'), 
@@ -1393,7 +1393,7 @@ class otrosServicios
     {
 
         try {
-            require_once 'constant.php';
+            require_once 'Constants.php';
             ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
             session_start();

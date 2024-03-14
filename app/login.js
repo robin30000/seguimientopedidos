@@ -1,12 +1,37 @@
 (function () {
     "use strict";
     angular.module("seguimientopedidos").controller("loginCtrl", loginCtrl);
-    loginCtrl.$inject = ["$scope", "$rootScope", "$location", "$cookies", "services", "$uibModal", "$log"];
+    loginCtrl.$inject = ["$scope", "$rootScope", "$location", "$cookies", "services", "$uibModal", "$log", "jwtHelper"];
 
-    function loginCtrl($scope, $rootScope, $location, $cookies, services, $uibModal, $log,) {
+    function loginCtrl($scope, $rootScope, $location, $cookies, services, $uibModal, $log, jwtHelper) {
         $scope.login = () => {
             services.myService($scope.autenticacion, 'authenticationCtrl.php', 'login').then((data) => {
-                if (data.data.state !== 1) {
+                if (data.data.state) {
+                    let token = data.data.jwt;
+                    localStorage.setItem('jwtToken', token);
+                    let decodedToken = jwtHelper.decodeToken(token);
+                    $rootScope.login = decodedToken.data.login;
+                    $rootScope.perfil = decodedToken.data.perfil;
+                    $rootScope.identificacion = decodedToken.data.identificacion;
+                    $rootScope.menu = decodedToken.data.menu;
+                    $rootScope.authenticated = true;
+                    $rootScope.permiso = true;
+                    const today = new Date();
+                    $rootScope.year = today.getFullYear();
+                    $location.path("/actividades");
+
+                    /*$rootScope.login = data.data.data.login;
+                    $rootScope.perfil = data.data.data.perfil;
+                    $rootScope.identificacion = data.data.data.identificacion;
+                    $rootScope.menu = data.data.data.menu;
+                    $rootScope.authenticated = true;
+                    $rootScope.permiso = true;
+                    $location.path("/actividades");
+                    $cookies.put("usuarioseguimiento", JSON.stringify(data.data.data));
+
+                    $rootScope.galletainfo = JSON.parse($cookies.get("usuarioseguimiento"));*/
+
+                } else {
                     Swal({
                         title: "Oops...",
                         text: "Usuario y/o contraseña no validos",
@@ -38,21 +63,6 @@
                             });
                         }
                     });
-                } else {
-                    const today = new Date();
-                    $rootScope.year = today.getFullYear();
-                    $rootScope.nombre = data.data.data.nombre;
-                    $rootScope.login = data.data.data.login;
-                    $rootScope.perfil = data.data.data.perfil;
-                    $rootScope.identificacion = data.data.data.identificacion;
-                    $rootScope.menu = data.data.data.menu;
-                    $rootScope.authenticated = true;
-                    $rootScope.permiso = true;
-                    $location.path("/actividades");
-                    $cookies.put("usuarioseguimiento", JSON.stringify(data.data.data));
-
-                    $rootScope.galletainfo = JSON.parse($cookies.get("usuarioseguimiento"));
-                    $rootScope.permiso = true;
                 }
             }).catch((e) => {
                 console.log(e)

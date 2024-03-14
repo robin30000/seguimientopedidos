@@ -1,7 +1,8 @@
 {
-    "require": {
-        "phpmailer/phpmailer": "^6.9",
-      "ext-pdo": "*",
-        "phpoffice/phpspreadsheet": "^1.29"
-    }
+  "require": {
+    "phpmailer/phpmailer": "^6.9",
+    "ext-pdo": "*",
+    "phpoffice/phpspreadsheet": "^1.29",
+    "firebase/php-jwt": "^6.10"
+  }
 }
