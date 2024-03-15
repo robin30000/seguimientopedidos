@@ -1,13 +1,13 @@
 <?php
 
-require_once 'conection.php';
+require_once '../class/conection.php';
+require_once '../vendor/autoload.php';
 require_once 'Constants.php';
-require '../vendor/autoload.php';
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+error_reporting(0);
+ini_set('display_errors', 0);
 
 use Firebase\JWT\JWT;
-
+use Firebase\JWT\Key;
 class authentication
 {
     private $_DB;
@@ -41,16 +41,16 @@ class authentication
                 $menus = [];
                 foreach ($menu as $key => $value) {
                     $stmt = $this->_DB->prepare("SELECT
-                                                            nombre AS sub,
-                                                            url,
-                                                            icon
-                                                        FROM
-                                                            submenu
-                                                        INNER JOIN submenu_perfil ON submenu.id = submenu_perfil.submenu_id
-                                                        WHERE
-                                                            menu_id = :menu
-                                                        AND submenu_perfil.perfil_id = :id
-                                                        AND estado = 'Activo' ORDER BY sub");
+                                                                                    nombre AS sub,
+                                                                                    url,
+                                                                                    icon
+                                                                                FROM
+                                                                                    submenu
+                                                                                INNER JOIN submenu_perfil ON submenu.id = submenu_perfil.submenu_id
+                                                                                WHERE
+                                                                                    menu_id = :menu
+                                                                                AND submenu_perfil.perfil_id = :id
+                                                                                AND estado = 'Activo' ORDER BY sub");
                     $stmt->execute(array(':menu' => $value['id'], ':id' => $resLogin->perfil));
                     $sub = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     $menus[$key]['tittle'] = $value['nombre'];
@@ -58,35 +58,30 @@ class authentication
                         $menus[$key]['n']['sub'][$i] = $sub[$i]['sub'];
                         $menus[$key]['n']['url'][$i] = $sub[$i]['url'];
                         $menus[$key]['n']['icon'][$i] = $sub[$i]['icon'];
+                        //$people[$i]['salt']
                     }
                 }
 
+                $key = SIGNATURE_JWT;
+                $payload = [
+                    'iss' => 'https://seguimientopedido.tigo.com.co/',
+                    'sub' => 'seguimientopedidos',
+                    'exp' => time() + 3600,
+                    'iat' => strtotime(date('Y-m-d H:i:s')),
+                    'data' => [
+                        'id' => $resLogin->id,
+                        'login' => $resLogin->login,
+                        'nombre' => $resLogin->nombre,
+                        'perfil' => $resLogin->perfil
+
+                    ]
+                ];
+                require '../vendor/autoload.php';
+                $jwt = JWT::encode($payload, $key, 'HS256');
+
                 $resLogin->menu = $menus;
+                $response = array('state' => 1, 'data' => $resLogin, 'jwt' => $jwt);
 
-                $secret_key = SIGNATURE_JWT;
-                $issuer_claim = "https://seguimientopedido.tigo.com.co/seguimientopedidos/";
-                $audience_claim = "localhost";
-                $issuedat_claim = time();
-                $expire_claim = $issuedat_claim + 3600; // Tiempo de expiración del token en segundos
-
-                $token = array(
-                    "iss" => $issuer_claim,
-                    "aud" => $audience_claim,
-                    "iat" => $issuedat_claim,
-                    "exp" => $expire_claim,
-                    "data" => array(
-                        "login" => $resLogin->login,
-                        "id" => $resLogin->id,
-                        "perfil" => $resLogin->perfil,
-                        "cc" => $resLogin->identificacion,
-                        "menu" => $menus
-                    )
-                );
-
-                $jwt = JWT::encode($token, $secret_key, 'HS256');
-
-                $response = array('state' => true, 'jwt' => $jwt);
-                /*session_start();
                 session_destroy();
                 ini_set('session.gc_maxlifetime', 86400); // 1 day
                 session_set_cookie_params(86400);
@@ -99,7 +94,7 @@ class authentication
                 $_SESSION['id'] = $resLogin->id;
                 $_SESSION['token_session'] = uniqid();
                 $_SESSION['fecha_ingreso'] = date('Y-m-d H:i:s');
-                $_SESSION['perfil'] = $resLogin->perfil;*/
+                $_SESSION['perfil'] = $resLogin->perfil;
 
                 $stmtIngreso = $this->_DB->prepare("SELECT id
                                                          , fecha_ingreso

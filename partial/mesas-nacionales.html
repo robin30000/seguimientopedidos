@@ -804,7 +804,7 @@
                                                         <option ng-if="data.tecnologia === 'GPON'"
                                                                 value="Configurar VLAN">Configurar VLAN
                                                         </option>
-                                                        <option ng-if="data.tecnologia === 'GPON'" value="Contingencia">
+                                                        <option ng-if="data.tecnologia === 'GPON' || data.tecnologia.indexOf('HFC') !== -1" value="Contingencia">
                                                             Contingencia
                                                         </option>
                                                         <option ng-if="data.tecnologia === 'GPON'" value="Red ocupada">
