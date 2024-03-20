@@ -19,7 +19,9 @@ if (isset($data['method'])) {
         case 'chartAllContingencia':
             require_once '../class/KpiCco.php';
             $user = new KpiCco();
-            $res = $user->chartAllContingencia($data['data']);
+            $dateInit = $data['dateInit'];
+            $dateEnd = $data['dateEnd'];
+            $res = $user->chartAllContingencia($dateInit, $dateEnd);
             echo json_encode($res);
             break;
         case 'chartToip':
@@ -31,7 +33,9 @@ if (isset($data['method'])) {
         case 'chartAllToip':
             require_once '../class/KpiCco.php';
             $user = new KpiCco();
-            $res = $user->chartAllToip($data['data']);
+            $dateInit = $data['dateInit'];
+            $dateEnd = $data['dateEnd'];
+            $res = $user->chartAllToip($dateInit, $dateEnd);
             echo json_encode($res);
             break;
         case 'chartEtp':
@@ -43,7 +47,9 @@ if (isset($data['method'])) {
         case 'chartAllEtp':
             require_once '../class/KpiCco.php';
             $user = new KpiCco();
-            $res = $user->chartAllEtp($data['data']);
+            $dateInit = $data['dateInit'];
+            $dateEnd = $data['dateEnd'];
+            $res = $user->chartAllEtp($dateInit, $dateEnd);
             echo json_encode($res);
             break;
         case 'chartGpon':
@@ -55,7 +61,9 @@ if (isset($data['method'])) {
         case 'chartAllGpon':
             require_once '../class/KpiCco.php';
             $user = new KpiCco();
-            $res = $user->chartAllGpon($data['data']);
+            $dateInit = $data['dateInit'];
+            $dateEnd = $data['dateEnd'];
+            $res = $user->chartAllGpon($dateInit, $dateEnd);
             echo json_encode($res);
             break;
         case 'chartValidacion':
@@ -67,7 +75,9 @@ if (isset($data['method'])) {
         case 'chartAllValidacion':
             require_once '../class/KpiCco.php';
             $user = new KpiCco();
-            $res = $user->chartAllValidacion($data['data']);
+            $dateInit = $data['dateInit'];
+            $dateEnd = $data['dateEnd'];
+            $res = $user->chartAllValidacion($dateInit, $dateEnd);
             echo json_encode($res);
             break;
         case 'chartEmt':
@@ -79,13 +89,18 @@ if (isset($data['method'])) {
         case 'chartAllEmt':
             require_once '../class/KpiCco.php';
             $user = new KpiCco();
-            $res = $user->chartAllEmt($data['data']);
+            $dateInit = $data['dateInit'];
+            $dateEnd = $data['dateEnd'];
+            $res = $user->chartAllEmt($dateInit, $dateEnd);
             echo json_encode($res);
             break;
+
         case 'chartAllQuejas':
             require_once '../class/KpiCco.php';
             $user = new KpiCco();
-            $res = $user->chartAllQuejas($data['data']);
+            $dateInit = $data['dateInit'];
+            $dateEnd = $data['dateEnd'];
+            $res = $user->chartAllQuejas($dateInit, $dateEnd);
             echo json_encode($res);
             break;
         case 'graficoSiebel':

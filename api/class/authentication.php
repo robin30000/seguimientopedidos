@@ -1,20 +1,22 @@
 <?php
 
 require_once '../class/conection.php';
+require_once '../class/Utilidades.php';
 require_once '../vendor/autoload.php';
-require_once 'Constants.php';
 error_reporting(0);
 ini_set('display_errors', 0);
 
 use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
+
 class authentication
 {
     private $_DB;
+    private $_Utilidades;
 
     public function __construct()
     {
         $this->_DB = new Conection();
+        $this->_Utilidades = new Utilidades();
     }
 
     public function loginUser($data)
@@ -62,26 +64,27 @@ class authentication
                     }
                 }
 
+                $resLogin->menu = $menus;
+
                 $key = SIGNATURE_JWT;
                 $payload = [
                     'iss' => 'https://seguimientopedido.tigo.com.co/',
-                    'sub' => 'seguimientopedidos',
-                    'exp' => time() + 3600,
+                    'sub' => 'seguimientopedidos/',
+                    'exp' => time() + 60,
                     'iat' => strtotime(date('Y-m-d H:i:s')),
                     'data' => [
                         'id' => $resLogin->id,
                         'login' => $resLogin->login,
-                        'nombre' => $resLogin->nombre,
                         'perfil' => $resLogin->perfil
-
                     ]
                 ];
-                require '../vendor/autoload.php';
+
+
                 $jwt = JWT::encode($payload, $key, 'HS256');
 
-                $resLogin->menu = $menus;
                 $response = array('state' => 1, 'data' => $resLogin, 'jwt' => $jwt);
 
+                session_start();
                 session_destroy();
                 ini_set('session.gc_maxlifetime', 86400); // 1 day
                 session_set_cookie_params(86400);
@@ -305,8 +308,8 @@ class authentication
 
     public function checkSession()
     {
-        $session = $this->getActualSession();
-        echo json_encode($session);
+        $jwt = $this->_Utilidades->validarJWT();
+        return $jwt;
     }
 
     private function getActualSession()

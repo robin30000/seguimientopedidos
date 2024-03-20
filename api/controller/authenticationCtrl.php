@@ -22,7 +22,7 @@ if (isset($data->method)) {
         case 'checkSession':
             require_once '../class/authentication.php';
             $user = new authentication();
-            $res = $user->checkSession($data->data);
+            $res = $user->checkSession();
             echo json_encode($res);
             break;
         case 'SuperB':

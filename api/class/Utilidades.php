@@ -11,13 +11,13 @@ class Utilidades
     public function validarJWT()
     {
         try {
-            $headers = apache_request_headers();
-            $arrayToken = explode(' ', $headers['Authorization']);
+
+            $arrayToken = explode(' ', $_SERVER["HTTP_AUTHORIZATION"]);
             $jwt = $arrayToken[1];
 
             $decoded = JWT::decode($jwt, new Key(SIGNATURE_JWT, 'HS256'));
-            // var_dump($decoded);exit();
-            if (isset($decoded->data->perfil) && isset($decoded->data->id) && isset($decoded->data->menu) && isset($decoded->data->login))
+            $decoded->exp = time() + 60;
+            if (isset($decoded->data->perfil) && isset($decoded->data->id) && isset($decoded->data->login))
                 return ['state' => true, 'jwt' => $jwt];
 
         } catch (\Firebase\JWT\ExpiredException $e) {

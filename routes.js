@@ -318,8 +318,76 @@ function routesConfig($routeProvider, $locationProvider, $compileProvider) {
     });
 }
 
+
 function loadUserData($rootScope, $q, $route, $location, services, $cookies, jwtHelper, $http) {
     let token = localStorage.getItem('jwtToken');
+    $http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+
+    return services.myService('', 'authenticationCtrl.php', 'checkSession').then((data) => {
+        if (!data.data.state) {
+            swal({
+                type: "error",
+                title: 'Su sesión ha caducado',
+                text: data.data.jwt,
+                timer: 4000,
+            }).then(function () {
+                $cookies.remove("usuarioseguimiento");
+                $location.path("/");
+                $rootScope.galletainfo = undefined;
+                $rootScope.permiso = false;
+                localStorage.removeItem('jwtToken');
+                $location.path("/");
+                $route.reload();
+            });
+        } else {
+            let decodedToken = jwtHelper.decodeToken(token);
+
+            $rootScope.login = decodedToken.data.login;
+            $rootScope.perfil = decodedToken.data.perfil;
+            $rootScope.identificacion = decodedToken.data.identificacion;
+            $rootScope.menu = decodedToken.data.menu;
+            $rootScope.authenticated = true;
+            $rootScope.permiso = true;
+            const today = new Date();
+            $rootScope.year = today.getFullYear();
+
+            // Verificar si el token está a punto de expirar (por ejemplo, en los próximos 5 minutos)
+            if (decodedToken.exp - Math.floor(Date.now() / 1000) < 300) {
+                console.log('pepe')
+                return refreshToken($rootScope, jwtHelper, $http)
+                    .then(function (newToken) {
+                        // Actualizar el token en el encabezado de autorización
+                        $http.defaults.headers.common['Authorization'] = 'Bearer ' + newToken;
+                    });
+            }
+        }
+    }).catch((e) => {
+        
+        console.log(e);
+    });
+}
+
+function refreshToken($rootScope, jwtHelper, $http) {
+    let token = localStorage.getItem('jwtToken');
+    return services.myService('', 'authenticationCtrl.php', 'checkSession').then((data) => {
+        let newToken = data.data.token;
+        localStorage.setItem('jwtToken', newToken);
+        let decodedToken = jwtHelper.decodeToken(newToken);
+        $rootScope.login = decodedToken.data.login;
+        $rootScope.perfil = decodedToken.data.perfil;
+        $rootScope.identificacion = decodedToken.data.identificacion;
+        $rootScope.menu = decodedToken.data.menu;
+        $rootScope.authenticated = true;
+        $rootScope.permiso = true;
+        const today = new Date();
+        $rootScope.year = today.getFullYear();
+        return newToken;
+    });
+}
+
+/*function loadUserData($rootScope, $q, $route, $location, services, $cookies, jwtHelper, $http) {
+    let token = localStorage.getItem('jwtToken');
+    console.log(token)
     $http.defaults.headers.common['Authorization'] = 'Bearer ' + token; // Agregar el token JWT al encabezado de autorización por defecto
 
     return services.myService('', 'authenticationCtrl.php', 'checkSession').then((data) => {
@@ -330,9 +398,12 @@ function loadUserData($rootScope, $q, $route, $location, services, $cookies, jwt
                 text: data.data.jwt,
                 timer: 4000,
             }).then(function () {
+                $cookies.remove("usuarioseguimiento");
+                $location.path("/");
+                $rootScope.galletainfo = undefined;
+                $rootScope.permiso = false;
                 localStorage.removeItem('jwtToken');
                 $location.path("/");
-                $rootScope = {};
                 $route.reload();
             });
         } else {
@@ -349,74 +420,75 @@ function loadUserData($rootScope, $q, $route, $location, services, $cookies, jwt
         }
     }).catch((e) => {
         console.log(e);
-    });
+    });*/
 
 
-    /*function loadUserData($rootScope, $q, $route, $location, services, $cookies, jwtHelper) {
-        let token = localStorage.getItem('jwtToken');
-        $http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+/*function loadUserData($rootScope, $q, $route, $location, services, $cookies, jwtHelper) {
+    let token = localStorage.getItem('jwtToken');
+    $http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
 
-        return services.myService(token, 'authenticationCtrl.php', 'checkSession').then((data) => {
-            if (!data.data.state) {
-                swal({
-                    type: "error",
-                    title: 'Su session ha caducado',
-                    text: 'Inicia session nuevamente para continuar www',
-                    timer: 4000,
-                }).then(function () {
-                    /!*$cookies.remove("usuarioseguimiento");
-                    $location.path("/");
-                    $rootScope.galletainfo = undefined;
-                    $rootScope.permiso = false;*!/
-                    localStorage.removeItem('jwtToken');
-                    $location.path("/");
-                    $rootScope = {};
-                    $route.reload();
-                    console.log($rootScope, ' FIN')
-                });
-            } else {
-                let decodedToken = jwtHelper.decodeToken(token);
+    return services.myService(token, 'authenticationCtrl.php', 'checkSession').then((data) => {
+        if (!data.data.state) {
+            swal({
+                type: "error",
+                title: 'Su session ha caducado',
+                text: 'Inicia session nuevamente para continuar www',
+                timer: 4000,
+            }).then(function () {
+                /!*$cookies.remove("usuarioseguimiento");
+                $location.path("/");
+                $rootScope.galletainfo = undefined;
+                $rootScope.permiso = false;*!/
+                localStorage.removeItem('jwtToken');
+                $location.path("/");
+                $rootScope = {};
+                $route.reload();
+                console.log($rootScope, ' FIN')
+            });
+        } else {
+            let decodedToken = jwtHelper.decodeToken(token);
 
-                $rootScope.login = decodedToken.data.login;
-                $rootScope.perfil = decodedToken.data.perfil;
-                $rootScope.identificacion = decodedToken.data.identificacion;
-                $rootScope.menu = decodedToken.data.menu;
-                $rootScope.authenticated = true;
-                $rootScope.permiso = true;
-                const today = new Date();
-                $rootScope.year = today.getFullYear();
+            $rootScope.login = decodedToken.data.login;
+            $rootScope.perfil = decodedToken.data.perfil;
+            $rootScope.identificacion = decodedToken.data.identificacion;
+            $rootScope.menu = decodedToken.data.menu;
+            $rootScope.authenticated = true;
+            $rootScope.permiso = true;
+            const today = new Date();
+            $rootScope.year = today.getFullYear();
 
-                console.log($rootScope)
-                //$location.path("/actividades");
-                /!*var today = new Date();
-                $rootScope.year = today.getFullYear();
-                $rootScope.nombre = data.data.nombre;
-                $rootScope.login = data.data.login;
-                $rootScope.perfil = data.data.perfil;
-                $rootScope.identificacion = data.data.identificacion;
-                $rootScope.menu = data.data.menu;
-                $rootScope.authenticated = true;
-                $rootScope.permiso = true;
+            console.log($rootScope)
+            //$location.path("/actividades");
+            /!*var today = new Date();
+            $rootScope.year = today.getFullYear();
+            $rootScope.nombre = data.data.nombre;
+            $rootScope.login = data.data.login;
+            $rootScope.perfil = data.data.perfil;
+            $rootScope.identificacion = data.data.identificacion;
+            $rootScope.menu = data.data.menu;
+            $rootScope.authenticated = true;
+            $rootScope.permiso = true;
 
-                $cookies.put("usuarioseguimiento", JSON.stringify(data.data));
-                var galleta = JSON.parse($cookies.get("usuarioseguimiento"));
-                $rootScope.galletainfo = galleta;*!/
-            }
-        }).catch((e) => {
-            console.log(e)
-        })*/
-
-    /*function failed(reason) {
-        $rootScope.authenticated = false;
-        if ($route.current.loginRequired) {
-            var error = {
-                status: 401,
-                message: "Unauthorized"
-            };
-            return $q.reject(error);
+            $cookies.put("usuarioseguimiento", JSON.stringify(data.data));
+            var galleta = JSON.parse($cookies.get("usuarioseguimiento"));
+            $rootScope.galletainfo = galleta;*!/
         }
-    }*/
-}
+    }).catch((e) => {
+        console.log(e)
+    })*/
+
+/*function failed(reason) {
+    $rootScope.authenticated = false;
+    if ($route.current.loginRequired) {
+        var error = {
+            status: 401,
+            message: "Unauthorized"
+        };
+        return $q.reject(error);
+    }
+}*/
+
+/*}*/
 
 function runConfig($rootScope, $location, services, $cookies, $q, $route) {
     $rootScope.$on('$routeChangeStart', function (e, curr, prev) {

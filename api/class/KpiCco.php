@@ -27,53 +27,51 @@ class KpiCco
                                                         COUNT(producto) AS cantidad
                                                 FROM
                                                     contingencias
-                                                WHERE
-                                                    1 = 1
-                                                        AND horagestion BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59'
+                                                WHERE horagestion BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59'
                                                     AND HOUR(horagestion) BETWEEN 7 AND 20
                                                 GROUP BY
                                                     hora
                                                 ORDER BY
-                                                    hora ASC;");
+                                                    hora");
             $stmt->execute();
             if ($stmt->rowCount()) {
-                $response = ['status' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = ['status' => true, 'data' => '0'];
+                $response = ['state' => true, 'data' => '0'];
             }
-            $this->_DB = null;
-            return $response;
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
+        return $response;
     }
 
-    public function chartAllContingencia($data)
+    public function chartAllContingencia($dateInit, $dateEnd)
     {
         try {
-            $fechaIni = $data['dateInit'];
-            $fechaFin = $data['dateEnd'];
+            $fechaIni = $dateInit;
+            $fechaFin = $dateEnd;
             $stmt = $this->_DB->prepare("SELECT
                                                     c.*
                                                 FROM
                                                     contingencias c
-                                                WHERE
-                                                    1 = 1
-                                                        AND c.horagestion BETWEEN '$fechaIni 00:00:00' AND '$fechaFin 23:59:59'
+                                                WHERE c.horagestion BETWEEN '$fechaIni 00:00:00' AND '$fechaFin 23:59:59'
                                                     AND HOUR(c.horagestion) BETWEEN 7 AND 20
                                                 ORDER BY
-                                                    c.horacontingencia ASC;");
+                                                    c.horacontingencia");
             $stmt->execute();
             if ($stmt->rowCount()) {
-                $response = ['status' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = ['status' => true, 'data' => '0'];
+                $response = ['state' => false, 'data' => '0'];
             }
-            $this->_DB = null;
-            return $response;
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
+        return $response;
     }
 
     public function chartToip($data)
@@ -92,53 +90,51 @@ class KpiCco
                                                         COUNT(tarea) AS cantidad
                                                 FROM
                                                     activacion_toip
-                                                WHERE
-                                                    1 = 1
-                                                        AND hora_ingreso BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59'
+                                                WHERE hora_ingreso BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59'
                                                     AND HOUR(hora_ingreso) BETWEEN 7 AND 20
                                                 GROUP BY
                                                     hora
                                                 ORDER BY
-                                                    hora ASC;");
+                                                    hora");
             $stmt->execute();
             if ($stmt->rowCount()) {
-                $response = ['status' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = ['status' => true, 'data' => '0'];
+                $response = ['state' => true, 'data' => '0'];
             }
-            $this->_DB = null;
-            return $response;
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
+        return $response;
     }
 
-    public function chartAllToip($data)
+    public function chartAllToip($dateInit, $dateEnd)
     {
         try {
-            $fechaIni = $data['dateInit'];
-            $fechaFin = $data['dateEnd'];
+            $fechaIni = $dateInit;
+            $fechaFin = $dateEnd;
             $stmt = $this->_DB->prepare("SELECT
                                                     a.*
                                                 FROM
                                                     activacion_toip a
-                                                WHERE
-                                                    1 = 1
-                                                        AND a.hora_ingreso BETWEEN '$fechaIni 00:00:00' AND '$fechaFin 23:59:59'
+                                                WHERE a.hora_ingreso BETWEEN '$fechaIni 00:00:00' AND '$fechaFin 23:59:59'
                                                     AND HOUR(a.hora_ingreso) BETWEEN 7 AND 20
                                                 ORDER BY
-                                                    a.hora_ingreso ASC;");
+                                                    a.hora_ingreso");
             $stmt->execute();
             if ($stmt->rowCount()) {
-                $response = ['status' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = ['status' => true, 'data' => '0'];
+                $response = ['state' => true, 'data' => '0'];
             }
-            $this->_DB = null;
-            return $response;
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
+        return $response;
     }
 
     public function chartEtp($data)
@@ -157,53 +153,51 @@ class KpiCco
                                                         COUNT(tarea) AS cantidad
                                                 FROM
                                                     etp
-                                                WHERE
-                                                    1 = 1
-                                                        AND fecha_crea BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59'
+                                                WHERE fecha_crea BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59'
                                                     AND HOUR(fecha_crea) BETWEEN 7 AND 20
                                                 GROUP BY
                                                     hora
                                                 ORDER BY
-                                                    hora ASC;");
+                                                    hora");
             $stmt->execute();
             if ($stmt->rowCount()) {
-                $response = ['status' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = ['status' => true, 'data' => '0'];
+                $response = ['state' => true, 'data' => '0'];
             }
-            $this->_DB = null;
-            return $response;
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
+        return $response;
     }
 
-    public function chartAllEtp($data)
+    public function chartAllEtp($dateInit, $dateEnd)
     {
         try {
-            $fechaIni = $data['dateInit'];
-            $fechaFin = $data['dateEnd'];
+            $fechaIni = $dateInit;
+            $fechaFin = $dateEnd;
             $stmt = $this->_DB->prepare("SELECT
                                                     e.*
                                                 FROM
                                                     etp e
-                                                WHERE
-                                                    1 = 1
-                                                        AND e.fecha_crea BETWEEN '$fechaIni 00:00:00' AND '$fechaFin 23:59:59'
+                                                WHERE e.fecha_crea BETWEEN '$fechaIni 00:00:00' AND '$fechaFin 23:59:59'
                                                     AND HOUR(e.fecha_crea) BETWEEN 7 AND 20
                                                 ORDER BY
-                                                    e.fecha_crea ASC;");
+                                                    e.fecha_crea");
             $stmt->execute();
             if ($stmt->rowCount()) {
-                $response = ['status' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = ['status' => true, 'data' => '0'];
+                $response = ['state' => true, 'data' => '0'];
             }
-            $this->_DB = null;
-            return $response;
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
+        return $response;
     }
 
     public function chartGpon($data)
@@ -222,81 +216,78 @@ class KpiCco
                                                         COUNT(tarea) AS cantidad
                                                 FROM
                                                     soporte_gpon
-                                                WHERE
-                                                    1 = 1
-                                                        AND fecha_creado BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59'
+                                                WHERE fecha_creado BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59'
                                                     AND HOUR(fecha_creado) BETWEEN 7 AND 20
                                                 GROUP BY
                                                     hora
                                                 ORDER BY
-                                                    hora ASC;");
+                                                    hora");
             $stmt->execute();
             if ($stmt->rowCount()) {
-                $response = ['status' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = ['status' => true, 'data' => '0'];
+                $response = ['state' => true, 'data' => '0'];
             }
-            $this->_DB = null;
-            return $response;
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
+        return $response;
     }
 
-    public function chartAllGpon($data)
+    public function chartAllGpon($dateInit, $dateEnd)
     {
         try {
-            $fechaIni = $data['dateInit'];
-            $fechaFin = $data['dateEnd'];
+            $fechaIni = $dateInit;
+            $fechaFin = $dateEnd;
             $stmt = $this->_DB->prepare("SELECT
                                                     s.*
                                                 FROM
                                                     soporte_gpon s
-                                                WHERE
-                                                    1 = 1
-                                                        AND s.fecha_creado BETWEEN '$fechaIni 00:00:00' AND '$fechaFin 23:59:59'
+                                                WHERE s.fecha_creado BETWEEN '$fechaIni 00:00:00' AND '$fechaFin 23:59:59'
                                                     AND HOUR(s.fecha_creado) BETWEEN 7 AND 20
                                                 ORDER BY
-                                                    s.fecha_creado ASC;");
+                                                    s.fecha_creado");
             $stmt->execute();
             if ($stmt->rowCount()) {
-                $response = ['status' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = ['status' => true, 'data' => '0'];
+                $response = ['state' => true, 'data' => '0'];
             }
-            $this->_DB = null;
-            return $response;
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
+        return $response;
     }
 
-    public function chartAllQuejas($data)
+    public function chartAllQuejas($dateInit, $dateEnd)
     {
         try {
-            $fechaIni = $data['dateInit'];
-            $fechaFin = $data['dateEnd'];
+            $fechaIni = $dateInit;
+            $fechaFin = $dateEnd;
             $stmt = $this->_DB->prepare("SELECT
                                                     s.*
                                                 FROM
                                                     quejasgo s
-                                                WHERE
-                                                    1 = 1
-                                                        AND s.fecha BETWEEN '$fechaIni 00:00:00' AND '$fechaFin 23:59:59'
+                                                WHERE s.fecha BETWEEN '$fechaIni 00:00:00' AND '$fechaFin 23:59:59'
                                                     AND HOUR(s.fecha) BETWEEN 7 AND 20
                                                 ORDER BY
-                                                    s.fecha ASC;");
+                                                    s.fecha");
             $stmt->execute();
             if ($stmt->rowCount()) {
-                $response = ['status' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = ['status' => true, 'data' => '0'];
+                $response = ['state' => true, 'data' => '0'];
             }
-            $this->_DB = null;
-            return $response;
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
+        return $response;
     }
 
     public function chartValidacion($data)
@@ -315,55 +306,53 @@ class KpiCco
                                                         COUNT(tarea) AS cantidad
                                                 FROM
                                                     mesas_nacionales
-                                                WHERE
-                                                    1 = 1
-                                                        AND hora_ingreso BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59'
+                                                WHERE hora_ingreso BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59'
                                                     AND HOUR(hora_ingreso) BETWEEN 7 AND 20
                                                 AND mesa = 'Mesa 3'
                                                 GROUP BY
                                                     hora
                                                 ORDER BY
-                                                    hora ASC;");
+                                                    hora");
             $stmt->execute();
             if ($stmt->rowCount()) {
-                $response = ['status' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = ['status' => true, 'data' => '0'];
+                $response = ['state' => true, 'data' => '0'];
             }
-            $this->_DB = null;
-            return $response;
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
+        return $response;
     }
 
-    public function chartAllValidacion($data)
+    public function chartAllValidacion($dateInit, $dateEnd)
     {
         try {
-            $fechaIni = $data['dateInit'];
-            $fechaFin = $data['dateEnd'];
+            $fechaIni = $dateInit;
+            $fechaFin = $dateEnd;
             $stmt = $this->_DB->prepare("SELECT
                                                     m.*
                                                 FROM
                                                     mesas_nacionales m
-                                                WHERE
-                                                    1 = 1
-                                                        AND m.hora_ingreso BETWEEN '$fechaIni 00:00:00' AND '$fechaFin 23:59:59'
+                                                WHERE m.hora_ingreso BETWEEN '$fechaIni 00:00:00' AND '$fechaFin 23:59:59'
                                                     AND HOUR(m.hora_ingreso) BETWEEN 7 AND 20
                                                 AND mesa = 'Mesa 3'
                                                 ORDER BY
-                                                    m.hora_ingreso ASC;");
+                                                    m.hora_ingreso");
             $stmt->execute();
             if ($stmt->rowCount()) {
-                $response = ['status' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = ['status' => true, 'data' => '0'];
+                $response = ['state' => true, 'data' => '0'];
             }
-            $this->_DB = null;
-            return $response;
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
+        return $response;
     }
 
     public function chartEmt($data)
@@ -382,57 +371,55 @@ class KpiCco
                                                         COUNT(tarea) AS cantidad
                                                 FROM
                                                     mesas_nacionales
-                                                WHERE
-                                                    1 = 1
-                                                        AND hora_ingreso BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59'
+                                                WHERE hora_ingreso BETWEEN '$fecha 00:00:00' AND '$fecha 23:59:59'
                                                     AND HOUR(hora_ingreso) BETWEEN 7 AND 20
                                                 AND mesa = 'Mesa 1'
                                                 GROUP BY
                                                     hora
                                                 ORDER BY
-                                                    hora ASC;");
+                                                    hora");
             $stmt->execute();
             if ($stmt->rowCount()) {
-                $response = ['status' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = ['status' => true, 'data' => '0'];
+                $response = ['state' => true, 'data' => '0'];
             }
-            $this->_DB = null;
-            return $response;
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
+        return $response;
     }
 
-    public function chartAllEmt($data)
+    public function chartAllEmt($dateInit, $dateEnd)
     {
         try {
 
-            $fechaIni = $data['dateInit'];
-            $fechaFin = $data['dateEnd'];
+            $fechaIni = $dateInit;
+            $fechaFin = $dateEnd;
 
             $stmt = $this->_DB->prepare("SELECT
                                                     m.*
                                                 FROM
                                                     mesas_nacionales m
-                                                WHERE
-                                                    1 = 1
-                                                        AND m.hora_ingreso BETWEEN '$fechaIni 00:00:00' AND '$fechaFin 23:59:59'
+                                                WHERE m.hora_ingreso BETWEEN '$fechaIni 00:00:00' AND '$fechaFin 23:59:59'
                                                     AND HOUR(m.hora_ingreso) BETWEEN 7 AND 20
                                                 AND mesa = 'Mesa 1'
                                                 ORDER BY
-                                                    m.hora_ingreso ASC;");
+                                                    m.hora_ingreso");
             $stmt->execute();
             if ($stmt->rowCount()) {
-                $response = ['status' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
             } else {
-                $response = ['status' => true, 'data' => '0'];
+                $response = ['state' => true, 'data' => '0'];
             }
-            $this->_DB = null;
-            return $response;
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
+        return $response;
     }
 
     public function charSiebel($data)
@@ -466,11 +453,12 @@ class KpiCco
             } else {
                 $response = ['status' => true, 'data' => 0];
             }
-            $this->_DB = null;
-            return $response;
+
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
+        $this->_DB = null;
+        return $response;
     }
 
 }
