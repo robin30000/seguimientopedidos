@@ -102,7 +102,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr ng-class="{'resaltado15min': data.horagestion <= quinceminutos[indice], 'warning': data.pedido.toLowerCase().indexOf('s') !== -1}"
+                                            <tr ng-class="{  'danger' : data.counter > 2}"
                                                 ng-repeat="data in contingenciasTV | orderBy : 'horagestion' : false track by $index ">
                                                 <td ng-if="perfil === '11' || perfil === '16'">
                                                     <div>
@@ -226,9 +226,9 @@
                                                         <button class="btn btn-default btn-xs" data-backdrop="static"
                                                                 data-toggle="modal" ng-hide="data.alerta == 'FALSE'"
                                                                 tooltip-placement="top" type="button"
-                                                                uib-tooltip="El pedido ya pasó por contingencias anteriormente, por favor validar!">
+                                                                uib-tooltip="El pedido ya pasó por contingencias anteriormente {{data.counter}} Veces, por favor validar!">
                                                             <i aria-hidden="true" class="fa fa-exclamation"
-                                                               style="color:red"> </i>
+                                                               ng-class="{'parpadeo-rojo': data.counter > 2, 'red': data.counter > 0}"> </i>
                                                         </button>
                                                     </div>
                                                 </td>

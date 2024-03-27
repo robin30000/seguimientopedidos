@@ -83,7 +83,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr ng-class="{'danger' : data.UneSourceSystem == 'EDA', 'warning': data.tarea.toLowerCase().indexOf('s') !== -1}"
+                                            <tr ng-class="{'danger' : data.counter > 2}"
                                                 ng-repeat="data in mesa1">
                                                 <td>
                                                     <div>
@@ -185,9 +185,9 @@
                                                         <button class="btn btn-default btn-xs" data-backdrop="static"
                                                                 data-toggle="modal" ng-hide="data.alerta == 'FALSE'"
                                                                 tooltip-placement="top" type="button"
-                                                                uib-tooltip="La tarea ya pasó por esta mesa anteriormente, por favor validar!">
+                                                                uib-tooltip="La tarea ya pasó por esta mesa anteriormente {{data.counter}} Veces, por favor validar!">
                                                             <i aria-hidden="true" class="fa fa-exclamation"
-                                                               style="color:red"> </i>
+                                                               ng-class="{'parpadeo-rojo': data.counter > 2, 'red': data.counter > 0}"> </i>
                                                         </button>
                                                     </div>
                                                 </td>
@@ -254,7 +254,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr ng-class="{'danger' : data.UneSourceSystem == 'EDA'}"
+                                            <tr ng-class="{'danger' : data.counter > 2}"
                                                 ng-repeat="data in mesa2">
                                                 <td>
                                                     <div>
@@ -339,9 +339,9 @@
                                                         <button class="btn btn-default btn-xs" data-backdrop="static"
                                                                 data-toggle="modal" ng-hide="data.alerta == 'FALSE'"
                                                                 tooltip-placement="top" type="button"
-                                                                uib-tooltip="La tarea ya pasó por esta mesa anteriormente, por favor validar!">
+                                                                uib-tooltip="La tarea ya pasó por esta mesa anteriormente {{data.counter}} Veces, por favor validar!">
                                                             <i aria-hidden="true" class="fa fa-exclamation"
-                                                               style="color:red"> </i>
+                                                               ng-class="{'parpadeo-rojo': data.counter > 2, 'red': data.counter > 0}"> </i>
                                                         </button>
                                                     </div>
                                                 </td>
@@ -408,7 +408,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr ng-repeat="data in mesa3">
+                                            <tr ng-repeat="data in mesa3" ng-class="{'danger' : data.counter > 2}">
                                                 <td>
                                                     <div>
                                                         <input ng-checked="data.estado == 'En gestión'"
@@ -496,9 +496,9 @@
                                                         <button class="btn btn-default btn-xs" data-backdrop="static"
                                                                 data-toggle="modal" ng-hide="data.alerta == 'FALSE'"
                                                                 tooltip-placement="top" type="button"
-                                                                uib-tooltip="La tarea ya pasó por esta mesa anteriormente, por favor validar!">
+                                                                uib-tooltip="La tarea ya pasó por esta mesa anteriormente {{data.counter}} Veces, por favor validar!">
                                                             <i aria-hidden="true" class="fa fa-exclamation"
-                                                               style="color:red"> </i>
+                                                               ng-class="{'parpadeo-rojo': data.counter > 2, 'red': data.counter > 0}"> </i>
                                                         </button>
                                                     </div>
                                                 </td>
@@ -724,7 +724,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr ng-repeat="data in mesa7">
+                                            <tr ng-repeat="data in mesa7" ng-class="{'danger' : data.counter > 2}">
                                                 <td>
                                                     <div>
                                                         <input ng-checked="data.estado == 'En gestión'"
@@ -890,9 +890,9 @@
                                                         <button class="btn btn-default btn-xs" data-backdrop="static"
                                                                 data-toggle="modal" ng-hide="data.alerta == 'FALSE'"
                                                                 tooltip-placement="top" type="button"
-                                                                uib-tooltip="La tarea ya pasó por esta mesa anteriormente, por favor validar!">
+                                                                uib-tooltip="La tarea ya pasó por esta mesa anteriormente {{data.counter}} Veces, por favor validar!">
                                                             <i aria-hidden="true" class="fa fa-exclamation"
-                                                               style="color:red"> </i>
+                                                               ng-class="{'parpadeo-rojo': data.counter > 2, 'red': data.counter > 0}"> </i>
                                                         </button>
                                                     </div>
                                                 </td>
@@ -959,7 +959,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr ng-repeat="data in mesa4">
+                                            <tr ng-repeat="data in mesa4" ng-class="{'danger' : data.counter > 2}">
                                                 <td>
                                                     <div>
                                                         <input ng-checked="data.estado == 'En gestión'"
@@ -1045,9 +1045,9 @@
                                                         <button class="btn btn-default btn-xs" data-backdrop="static"
                                                                 data-toggle="modal" ng-hide="data.alerta == 'FALSE'"
                                                                 tooltip-placement="top" type="button"
-                                                                uib-tooltip="La tarea ya pasó por esta mesa anteriormente, por favor validar!">
+                                                                uib-tooltip="La tarea ya pasó por esta mesa anteriormente {{data.counter}} veces, por favor validar!">
                                                             <i aria-hidden="true" class="fa fa-exclamation"
-                                                               style="color:red"> </i>
+                                                               ng-class="{'parpadeo-rojo': data.counter > 2, 'red': data.counter > 0}"> </i>
                                                         </button>
                                                     </div>
                                                 </td>

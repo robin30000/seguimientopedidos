@@ -33,7 +33,15 @@ class MesasNacionales
                                                             AND c1.estado = 'Gestionado' 
                                                             ) > 0 THEN
                                                             'TRUE' ELSE 'FALSE' 
-                                                        END alerta 
+                                                        END alerta,
+                                                        (SELECT
+                                                            COUNT(*) 
+                                                        FROM
+                                                            mesas_nacionales c1 
+                                                        WHERE
+                                                            m.tarea = c1.tarea 
+                                                            AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                            AND c1.estado = 'Gestionado') as counter
                                                 FROM
                                                     mesas_nacionales m
                                                 WHERE
@@ -78,7 +86,15 @@ class MesasNacionales
                                                             AND c1.estado = 'Gestionado' 
                                                             ) > 0 THEN
                                                             'TRUE' ELSE 'FALSE' 
-                                                        END alerta 
+                                                        END alerta,
+                                                        (SELECT
+                                                            COUNT(*) 
+                                                        FROM
+                                                            mesas_nacionales c1 
+                                                        WHERE
+                                                            m.tarea = c1.tarea 
+                                                            AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                            AND c1.estado = 'Gestionado') as counter
                                                 FROM
                                                     mesas_nacionales m
                                                 WHERE
@@ -123,7 +139,15 @@ class MesasNacionales
                                                             AND c1.estado = 'Gestionado' 
                                                             ) > 0 THEN
                                                             'TRUE' ELSE 'FALSE' 
-                                                        END alerta 
+                                                        END alerta,
+                                                        (SELECT
+                                                            COUNT(*) 
+                                                        FROM
+                                                            mesas_nacionales c1 
+                                                        WHERE
+                                                            m.tarea = c1.tarea 
+                                                            AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                            AND c1.estado = 'Gestionado') as counter
                                                 FROM
                                                     mesas_nacionales m
                                                 WHERE
@@ -168,7 +192,15 @@ class MesasNacionales
                                                             AND c1.estado = 'Gestionado' 
                                                             ) > 0 THEN
                                                             'TRUE' ELSE 'FALSE' 
-                                                        END alerta 
+                                                        END alerta,
+                                                        (SELECT
+                                                            COUNT(*) 
+                                                        FROM
+                                                            mesas_nacionales c1 
+                                                        WHERE
+                                                            m.tarea = c1.tarea 
+                                                            AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                            AND c1.estado = 'Gestionado') as counter
                                                 FROM
                                                     mesas_nacionales m
                                                 WHERE
@@ -213,7 +245,15 @@ class MesasNacionales
                                                             AND c1.estado = 'Gestionado' 
                                                             ) > 0 THEN
                                                             'TRUE' ELSE 'FALSE' 
-                                                        END alerta 
+                                                        END alerta,
+                                                        (SELECT
+                                                            COUNT(*) 
+                                                        FROM
+                                                            mesas_nacionales c1 
+                                                        WHERE
+                                                            m.tarea = c1.tarea 
+                                                            AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                            AND c1.estado = 'Gestionado') as counter
                                                 FROM
                                                     mesas_nacionales m
                                                 WHERE
@@ -258,7 +298,15 @@ class MesasNacionales
                                                             AND c1.estado = 'Gestionado' 
                                                             ) > 0 THEN
                                                             'TRUE' ELSE 'FALSE' 
-                                                        END alerta 
+                                                        END alerta,
+                                                        (SELECT
+                                                            COUNT(*) 
+                                                        FROM
+                                                            mesas_nacionales c1 
+                                                        WHERE
+                                                            m.tarea = c1.tarea 
+                                                            AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                            AND c1.estado = 'Gestionado') as counter
                                                 FROM
                                                     mesas_nacionales m
                                                 WHERE

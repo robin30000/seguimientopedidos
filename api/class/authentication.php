@@ -70,7 +70,7 @@ class authentication
                 $payload = [
                     'iss' => 'https://seguimientopedido.tigo.com.co/',
                     'sub' => 'seguimientopedidos/',
-                    'exp' => time() + 60,
+                    'exp' => time() + 3600,
                     'iat' => strtotime(date('Y-m-d H:i:s')),
                     'data' => [
                         'id' => $resLogin->id,

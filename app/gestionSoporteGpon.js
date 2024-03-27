@@ -115,8 +115,8 @@
                             $rootScope.permiso = false;
                             $route.reload();
                         });
-                    } else if (data.data.state == 1) {
-                        if (data.data.alerta === 'TRUE') {
+                    } else if (data.data.state == 1 ) {
+                        if (data.data.alerta === 'TRUE' && data.data.msj === 'El pedido se encuentra bloqueado') {
                             swal({
                                 type: "warning",
                                 title: "Atención",
@@ -139,11 +139,6 @@
                                 })
                             })
                         } else {
-                            if (data.data.msj === "El pedido se encuentra bloqueado") {
-                                $timeout(function () {
-                                    mostrarSweetAlert();
-                                }, 600000);
-                            }
                             swal({
                                 title: "muy Bien",
                                 type: "success",

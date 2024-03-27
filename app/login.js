@@ -11,33 +11,12 @@
                         title: "Oops...",
                         text: "Usuario y/o contraseña no validos",
                         type: "warning",
-                        showCancelButton: true,
+                        //showCancelButton: true,
                         confirmButtonClass: "btn-danger",
-                        confirmButtonText: "Ha olvidado su contraseña?",
-                        cancelButtonText: "Cancelar",
-                        allowOutsideClick: () => !Swal.isLoading(),
-                    }).then((result) => {
-                        if (result.value) {
-                            let modalInstance = $uibModal.open({
-                                ariaLabelledBy: 'modal-title',
-                                ariaDescribedBy: 'modal-body',
-                                templateUrl: 'partial/modals/olvidaPassword.html',
-                                controller: 'forgetPasswordController',
-                                controllerAs: '$ctrl',
-                                size: 'md',
-                                resolve: {
-                                    items: function () {
-                                        return $scope.d;
-                                    }
-                                }
-                            });
-
-                            modalInstance.result.then(function () {
-                            }, function () {
-                                $log.info('Modal dismissed at: ' + new Date());
-                            });
-                        }
-                    });
+                        confirmButtonText: "Aceptar",
+                        //cancelButtonText: "Cancelar",
+                        //allowOutsideClick: () => !Swal.isLoading(),
+                    })
                 } else {
                     localStorage.setItem('jwtToken', data.data.jwt);
                     const today = new Date();
