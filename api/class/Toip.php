@@ -41,7 +41,15 @@ class Toip
                                                             AND c1.en_gestion = '2' 
                                                             ) > 0 THEN
                                                             'TRUE' ELSE 'FALSE' 
-                                                        END alerta 
+                                                        END alerta,
+                                                        (SELECT
+                                                            COUNT(*) 
+                                                        FROM
+                                                            activacion_toip c1 
+                                                        WHERE
+                                                            a.tarea = c1.tarea 
+                                                            AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                            AND c1.en_gestion = '2') as counter
                                                 FROM
                                                     activacion_toip a 
                                                 WHERE

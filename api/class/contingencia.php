@@ -676,7 +676,16 @@ class Contingencia
                                                 AND c1.finalizado = 'OK' 
                                                 ) > 0 THEN
                                                 'TRUE' ELSE 'FALSE' 
-                                            END alerta 
+                                            END alerta,
+                                            (SELECT
+                                                COUNT(*) 
+                                            FROM
+                                                contingencias c1 
+                                            WHERE
+                                                c1.pedido = c.pedido 
+                                                AND c1.horagestion >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                AND c1.finalizado = 'OK' 
+                                            ) as counter
                                     FROM
                                         contingencias c 
                                     WHERE

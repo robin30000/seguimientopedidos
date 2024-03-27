@@ -254,7 +254,7 @@ class soporteGpon
 
         /*LOGICA QUE LLEVA LA INFORMACION A TV, INTERNET-ToIp Y CORREGIR PORTAFOLIO*/
         //$query = "SELECT s.* FROM soporte_gpon s WHERE fecha_creado BETWEEN '$hoy 00:00:00' AND '$hoy 23:59:59' AND s.status_soporte != '1' ORDER BY s.fecha_creado asc";
-        $query = "	SELECT
+        $query = "SELECT
                         s.*,
                         CASE
                             WHEN (
@@ -267,7 +267,17 @@ class soporteGpon
                                     AND c1.fecha_creado >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
                                     AND c1.status_soporte = '1' 
                             ) > 0 THEN 'TRUE' ELSE 'FALSE' 
-                        END alerta
+                        END alerta,
+                        (
+                            SELECT
+                                COUNT(*)
+                            FROM
+                                soporte_gpon c1 
+                            WHERE
+                                s.tarea = c1.tarea 
+                                AND c1.fecha_creado >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                AND c1.status_soporte = '1' 
+                        ) AS counter
                     FROM
                         soporte_gpon s 
                     WHERE
@@ -582,7 +592,20 @@ class soporteGpon
                     $gestion = 0;
                 }
 
-                $rst = $this->_DB->query("SELECT id_soporte, login FROM soporte_gpon WHERE id_soporte = '$id_soporte' AND status_soporte = 2");
+                $rst = $this->_DB->query("SELECT s.id_soporte, s.login, CASE
+                                                    WHEN (
+                                                        SELECT
+                                                            COUNT(*) 
+                                                        FROM
+                                                            soporte_gpon c1 
+                                                        WHERE
+                                                            s.tarea = c1.tarea 
+                                                            AND c1.fecha_creado >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                            AND c1.status_soporte = '1' 
+                                                    ) > 0 THEN 'TRUE' ELSE 'FALSE' 
+                                                    END AS alerta 
+                                                FROM soporte_gpon s 
+                                                WHERE s.id_soporte = '$id_soporte' AND s.status_soporte = 2");
                 $rst->execute();
 
                 $stmt = $this->_DB->query("SELECT login FROM usuarios WHERE perfil = '11'");
@@ -595,13 +618,14 @@ class soporteGpon
                     $row = $rst->fetchAll(PDO::FETCH_ASSOC);
                     $loginsoportegpon = $row[0]['login'];
                     $id = $row[0]['id_soporte'];
+                    $alerta = $row[0]['alerta'];
 
                     //echo $loginsoportegpon.''.$login;exit();
 
                     if ($login == $loginsoportegpon || in_array($login, $usuarios_array)) {
                         $stmt = $this->_DB->query("UPDATE soporte_gpon SET status_soporte = 0, login = NULL, fecha_marca = NULL WHERE id_soporte ='$id'");
                         $stmt->execute();
-                        $response = ['state' => 1, 'msj' => 'El pedido se encuentra desbloqueado'];
+                        $response = ['state' => 1, 'msj' => 'El pedido se encuentra desbloqueado', 'alerta' => $alerta];
                     } else {
                         $response = ['state' => 0, 'msj' => 'El pedido se encuentra en gestión por otro asesor'];
                     }
