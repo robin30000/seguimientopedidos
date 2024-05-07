@@ -78,7 +78,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="data in dataSoporteGpon" ng-class="{ 'danger': data.counter > 2 }">
+                  <tr ng-repeat="data in dataSoporteGpon" ng-class="{ 'danger': data.counter > 3, 'warning': data.proveedor == 'ETB' }">
                     <td>
                       <div ng-show="data.id_soporte">
                         <input type="checkbox" ng-model="data.bloqueo" ng-change="marcarEngestionGpon(data)"
@@ -170,7 +170,7 @@
                         <option value="Puertos Lan">Puertos Lan</option>
                         <option value="Cierre CBAPON">Cierre CBAPON</option>
                         <option value="Validación general">Validación general</option>
-                        <option value="Nap Trocado">Nap Trocado</option>
+                        <!--<option value="Nap Trocado">Nap Trocado</option>-->
                         <option value="Cod_Comp">Cod_Comp</option>
                         <option value="Reenvió Registros">Reenvió Registros</option>
                         <option value="IP navegación">IP navegación</option>
@@ -179,6 +179,8 @@
                         <option value="Crear CR">Crear CR</option>
                         <option value="Solicitud innecesaria">Solicitud innecesaria</option>
                         <option value="Validación de parámetros">Validación de parámetros</option>
+                        <option value="Slot trocado">Slot trocado</option>
+                        <option value="Puerto trocado">Puerto trocado</option>
                       </select>
                     </td>
 
@@ -202,7 +204,7 @@
                                 data-toggle="modal" data-backdrop="static"
                                 ng-hide="data.alerta == 'FALSE'" tooltip-placement="top"
                                 uib-tooltip="La tarea ya pasó por Soporte gpon anteriormente {{data.counter}} Veces, por favor validar!">
-                          <i class="fa fa-exclamation" ng-class="{'parpadeo-rojo': data.counter > 2, 'red': data.counter > 0}"
+                          <i class="fa fa-exclamation" ng-class="{'parpadeo-rojo': data.counter > 3, 'red': data.counter > 0}"
                              aria-hidden="true"> </i>
                         </button>
                       </div>

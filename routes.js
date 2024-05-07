@@ -309,10 +309,41 @@ function routesConfig($routeProvider, $locationProvider, $compileProvider) {
         resolve: {
             userData: loadUserData
         }
-    }).when("/recuperar-login/:mail", {
-        title: "Recuperar login",
-        templateUrl: "./partial/recuperar-login.html",
-        controller: "recuperarLoginCtrl",
+    }).when("/registro-fallas", {
+        title: "Registrar fallas",
+        templateUrl: "./partial/falla-sistema/registro-fallas.html",
+        controller: "registroFallasCtrl",
+        resolve: {
+            userData: loadUserData
+        }
+    }).when("/mi-registro-falla", {
+        title: "Mi Registro de Falla",
+        templateUrl: "./partial/falla-sistema/mi-registro-fallas.html",
+        controller: "miRegistroFallasCtrl",
+        resolve: {
+            userData: loadUserData
+        }
+    }).when("/todos-registros-fallas", {
+        title: "Registros Fallas",
+        templateUrl: "./partial/falla-sistema/registros-fallas-sistema.html",
+        controller: "registrosFallasCtrl",
+        resolve: {
+            userData: loadUserData
+        }
+    }).when("/kpi-fallas-sistemas", {
+        title: "KPI Fallas",
+        templateUrl: "./partial/falla-sistema/kpi-fallas-sistemas.html",
+        controller: "kpiFallasCtrl",
+        resolve: {
+            userData: loadUserData
+        }
+    }).when("/gestion-fallas", {
+        title: "Gestión Fallas",
+        templateUrl: "./partial/falla-sistema/gestion-fallas.html",
+        controller: "gestionFallasCtrl",
+        resolve: {
+            userData: loadUserData
+        }
     }).otherwise({
         redirectTo: "/",
     });

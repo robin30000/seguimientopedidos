@@ -40,7 +40,16 @@ class ETP
                                                         AND c1.status_soporte = '2' 
                                                         ) > 0 THEN
                                                         'TRUE' ELSE 'FALSE' 
-                                                    END alerta 
+                                                    END alerta,
+                                                    (SELECT
+                                                        COUNT(*) 
+                                                        FROM
+                                                            etp c1 
+                                                        WHERE
+                                                            c1.tarea = e.tarea 
+                                                            AND c1.fecha_crea >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                            AND c1.status_soporte = '2' 
+                                                    ) as counter
                                             FROM
                                                 etp e
                                             WHERE

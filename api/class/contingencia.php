@@ -1726,8 +1726,7 @@ class Contingencia
             C.observContingencia, C.acepta, C.tipificacion, C.fechaClickMarca, C.loginContingenciaPortafolio,
             C.observContingenciaPortafolio, C.generarcr, C.uneSourceSystem as crm
             FROM contingencias AS C
-        WHERE C.horagestion BETWEEN '$fechaIni 00:00:00' AND '$fechafin 23:59:59'
-         AND finalizado = 'OK'");
+        WHERE C.horagestion BETWEEN '$fechaIni 00:00:00' AND '$fechafin 23:59:59'");
             $stmt->execute();
 
             if ($stmt->rowCount()) {
@@ -1835,7 +1834,7 @@ class Contingencia
                                             WHERE
                                                 c.finalizado IS NULL 
                                                 AND c.finalizadoPortafolio IS NULL 
-                                                AND c.pedido <> '' 
+                                                -- AND c.pedido <> '' 
                                                 AND grupo IN ( 'TV', 'INTER' ) 
                                                 AND logincontingencia IS NULL 
                                             ORDER BY

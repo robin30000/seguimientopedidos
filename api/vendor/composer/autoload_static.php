@@ -18,6 +18,7 @@ class ComposerStaticInit2185d2f99bcd56787481d9357a5972d3
         'P' => 
         array (
             'Psr\\SimpleCache\\' => 16,
+            'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Http\\Client\\' => 16,
             'PhpOffice\\PhpSpreadsheet\\' => 25,
@@ -27,6 +28,14 @@ class ComposerStaticInit2185d2f99bcd56787481d9357a5972d3
         array (
             'MyCLabs\\Enum\\' => 13,
             'Matrix\\' => 7,
+        ),
+        'F' => 
+        array (
+            'Firebase\\JWT\\' => 13,
+        ),
+        'E' => 
+        array (
+            'ElephantIO\\' => 11,
         ),
         'C' => 
         array (
@@ -43,10 +52,14 @@ class ComposerStaticInit2185d2f99bcd56787481d9357a5972d3
         array (
             0 => __DIR__ . '/..' . '/psr/simple-cache/src',
         ),
+        'Psr\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -67,6 +80,16 @@ class ComposerStaticInit2185d2f99bcd56787481d9357a5972d3
         'Matrix\\' => 
         array (
             0 => __DIR__ . '/..' . '/markbaker/matrix/classes/src',
+        ),
+        'Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
+        'ElephantIO\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/wisembly/elephant.io/src',
+            1 => __DIR__ . '/..' . '/wisembly/elephant.io/test',
+            2 => __DIR__ . '/..' . '/elephantio/elephant.io/src',
         ),
         'Complex\\' => 
         array (

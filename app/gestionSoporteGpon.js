@@ -94,6 +94,7 @@
                 '<tr><td style="min-width: 80px">Velocidad navegación</td><td>' + data.velocidad_navegacion + '</td></tr>' +
                 '<tr><td style="min-width: 80px">Observación</td><td>' + data.observacion_terreno + '</td></tr>' +
                 '<tr><td style="min-width: 80px">Tecnologia</td><td>' + data.task_type + '</td></tr>' +
+                '<tr><td style="min-width: 80px">Proveedor</td><td>' + data.proveedor + '</td></tr>' +
                 '</tbody></table></div>');
         }
 
@@ -115,8 +116,8 @@
                             $rootScope.permiso = false;
                             $route.reload();
                         });
-                    } else if (data.data.state == 1) {
-                        if (data.data.alerta === 'TRUE') {
+                    } else if (data.data.state == 1 ) {
+                        if (data.data.alerta === 'TRUE' && data.data.msj === 'El pedido se encuentra bloqueado') {
                             swal({
                                 type: "warning",
                                 title: "Atención",
@@ -139,11 +140,6 @@
                                 })
                             })
                         } else {
-                            if (data.data.msj === "El pedido se encuentra bloqueado") {
-                                $timeout(function () {
-                                    mostrarSweetAlert();
-                                }, 600000);
-                            }
                             swal({
                                 title: "muy Bien",
                                 type: "success",

@@ -22,9 +22,10 @@
             mesa1();
             mesa2();
             mesa3();
-            mesa4();
+            //mesa4();
+            //mesa5();
             mesa6();
-            mesa7();
+            /*mesa7();*/
             registros();
         }
 
@@ -113,6 +114,7 @@
             //registros(data);
             $scope.registrosMnTiempo(data);
         }
+
         $scope.pageSizeChanged = function () {
             let data = $scope.mn
             //registros(data);
@@ -253,12 +255,12 @@
                                             case 'Mesa 3' :
                                                 mesa3();
                                                 break;
-                                            case 'Mesa 4' :
+                                            /*case 'Mesa 4' :
                                                 mesa4();
                                                 break;
                                             case 'Mesa 5' :
                                                 mesa6();
-                                                break;
+                                                break;*/
                                             case 'Mesa 6' :
                                                 mesa7();
                                                 break;
@@ -355,15 +357,15 @@
                 case 3 :
                     mesa3();
                     break;
-                case 4 :
+                /*case 4 :
                     mesa4();
-                    break;
+                    break;*/
                 case 6 :
                     mesa6();
                     break;
-                case 7 :
+                /*case 7 :
                     mesa7();
-                    break;
+                    break;*/
                 case 5 :
                     registros();
                     $scope.mn = {};

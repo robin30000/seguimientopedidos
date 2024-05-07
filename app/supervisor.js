@@ -14,9 +14,10 @@
             mesa1();
             mesa2();
             mesa3();
-            mesa4();
+            //mesa4();
             //mesa5();
             mesa6();
+            //mesa7();
             gestionETP();
             gestionToip();
             listarsoportegpon();
@@ -68,6 +69,15 @@
         }
 
         function mesa6() {
+            services.myService('', 'mesasNacionalesCtrl.php', 'mesa6').then((data) => {
+                $scope.mesa6 = data.data.data;
+                $scope.Items6 = data.data.counter;
+            }).catch((e) => {
+                console.log(e)
+            })
+        }
+
+        function mesa7() {
             services.myService('', 'mesasNacionalesCtrl.php', 'mesa7').then((data) => {
                 $scope.mesa7 = data.data.data;
                 $scope.Items7 = data.data.counter;
@@ -102,7 +112,6 @@
             services
                 .getListaPendientesSoporteGpon()
                 .then(function (data) {
-                    console.log(data)
                     if (data.data.length > 0) {
                         $scope.dataSoporteGpon = data.data[0];
                         $scope.itemGpon = $scope.dataSoporteGpon.length
@@ -224,11 +233,11 @@
                 case 3 :
                     mesa3();
                     break;
-                case 4 :
+                /*case 4 :
                     mesa4();
-                    break;
+                    break;*/
                 case 6 :
-                    mesa4();
+                    mesa6();
                     break;
                 case 5 :
                     registros();

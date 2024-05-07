@@ -23,7 +23,7 @@ class tiempos
                 $fecha_anterior = $data['fechaini'];
             } else {
                 $today          = date("Y-m-d");
-                $fecha_anterior = date("Y-m-d", strtotime($today . "- 30 days"));
+                $fecha_anterior = date("Y-m-d", strtotime($today . "- 20 days"));
             }
 
             $condicion = " AND horagestion BETWEEN '$fecha_anterior' AND '$today' ";

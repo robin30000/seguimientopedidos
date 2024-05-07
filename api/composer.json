@@ -1,7 +1,12 @@
 {
-    "require": {
-        "phpmailer/phpmailer": "^6.9",
-      "ext-pdo": "*",
-        "phpoffice/phpspreadsheet": "^1.29"
-    }
+  "require": {
+    "phpmailer/phpmailer": "^6.9",
+    "ext-pdo": "*",
+    "phpoffice/phpspreadsheet": "^1.29",
+    "wisembly/elephant.io": "v3.3.1",
+    "firebase/php-jwt": "^5.0",
+    "elephantio/elephant.io": "^4.7",
+    "ext-curl": "*",
+    "ext-ldap": "*"
+  }
 }

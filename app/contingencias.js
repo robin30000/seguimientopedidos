@@ -109,12 +109,12 @@
                     let producto = (productoSplit[0].toLowerCase() === 'internet' ||
                         productoSplit[0].toLowerCase() === 'inter') ? 'Internet' :
                         (productoSplit[0].toLowerCase() === 'internet+toip') ? 'Internet+ToIP' :
-                        (productoSplit[0].toLowerCase() === 'toip'
-                            || productoSplit[0].toLowerCase() === 'to' ||
-                            productoSplit[0].toLowerCase() === 'telefonía') ? 'ToIP' :
-                            (productoSplit[0].toLowerCase() === 'televisión' ||
-                                productoSplit[0].toLowerCase() === 'television'
-                                || productoSplit[0].toLowerCase() === 'tv') ? 'TV' : 'Other';
+                            (productoSplit[0].toLowerCase() === 'toip'
+                                || productoSplit[0].toLowerCase() === 'to' ||
+                                productoSplit[0].toLowerCase() === 'telefonía') ? 'ToIP' :
+                                (productoSplit[0].toLowerCase() === 'televisión' ||
+                                    productoSplit[0].toLowerCase() === 'television'
+                                    || productoSplit[0].toLowerCase() === 'tv') ? 'TV' : 'Other';
 
                     let proceso = '';
 
@@ -132,7 +132,7 @@
                     $scope.contingencias.ciudad = data.uNEMunicipio;
                     if (data.uNETecnologias !== null) {
                         $scope.contingencias.tecnologia = tecnologiaSplit[0] ?? tecnologiaSplit;
-                    }else{
+                    } else {
                         $scope.contingencias.tecnologia = '';
                     }
                     $scope.contingencias.uneSourceSystem = data.sistema;
@@ -165,6 +165,10 @@
         }
 
         $scope.guardaContingencia = (f) => {
+            if (!f.pedido) {
+                f.pedido = $scope.tareaAutocomplete;
+            }
+
             $scope.loader = 1;
             if (f.accion == 'mesaOffline') {
                 f.motivo = 'N/A';
@@ -184,8 +188,6 @@
                 })
                 return;
             }
-
-            console.log(f, ' este')
 
             if (!f.pedido) {
                 Swal({

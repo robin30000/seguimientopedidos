@@ -32,7 +32,7 @@
                 return;
             }
 
-            graphic(data);
+            //graphic(data);
             graphicDetails(data);
             gestionPorHora(data);
         }

@@ -13,6 +13,11 @@ class MesasNacionales
         $this->_DB = new Conection();
     }
 
+    /**
+     * @param $data
+     * @return array|void
+     * mesa Soporte Siebel-Edatel-Elite
+     */
     public function mesa1($data)
     {
         try {
@@ -67,6 +72,11 @@ class MesasNacionales
         }
     }
 
+    /**
+     * @param $data
+     * @return array|void
+     * mesa Edatel- Soporte LB- Cambios Pto
+     */
     public function mesa2($data)
     {
         try {
@@ -120,6 +130,11 @@ class MesasNacionales
         }
     }
 
+    /**
+     * @param $data
+     * @return array|void
+     * mesa Mesa de Validaciones
+     */
     public function mesa3($data)
     {
         try {
@@ -173,7 +188,16 @@ class MesasNacionales
         }
     }
 
-    public function mesa4($data)
+    /**
+     * @param $data
+     * @return array|void
+     * mesa Premisas extendidas
+     */
+
+    /**
+     * mesa 5 Rescate Upgrades
+     */
+    /*public function mesa4($data)
     {
         try {
 
@@ -224,8 +248,13 @@ class MesasNacionales
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
-    }
+    }*/
 
+    /**
+     * @param $data
+     * @return array|void
+     * mesa BSC
+     */
     public function mesa6($data)
     {
         try {
@@ -393,8 +422,8 @@ class MesasNacionales
                                                         'Edatel- Soporte LB- Cambios Pto' 
                                                         WHEN 'Mesa 3' THEN
                                                         'Mesa de Validaciones' 
-                                                        WHEN 'Mesa 4' THEN
-                                                        'P. ext.' 
+                                                        -- WHEN 'Mesa 4' THEN
+                                                        -- 'P. ext.' 
                                                         WHEN 'Mesa 6' THEN
                                                         'BSC' 
                                                     END AS mesa,
@@ -559,8 +588,8 @@ class MesasNacionales
                     $buscar = $data['buscar']['buscar'];
                     $f .= " AND $concepto = '$buscar' ";
                 }
-                $con = " AND estado = 'Gestionado' $f  ORDER BY hora_ingreso desc LIMIT $offset, $pagesize ";
-                $con1 = " AND estado = 'Gestionado' $f ORDER BY hora_ingreso desc";
+                $con = "  $f  ORDER BY hora_ingreso desc LIMIT $offset, $pagesize ";
+                $con1 = "  $f ORDER BY hora_ingreso desc";
                 if (isset($data['buscar']['export'])) {
                     $fechaini = $data['buscar']['fechaini'];
                     $fechafin = $data['buscar']['fechafin'];

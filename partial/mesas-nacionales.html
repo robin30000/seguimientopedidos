@@ -19,9 +19,9 @@
                         <li>
                             <a data-toggle="tab" href="/#mesa6">BSC</a>
                         </li>
-                        <li>
+                        <!--<li>
                             <a data-toggle="tab" href="/#mesa4">Premisas extendidas</a>
-                        </li>
+                        </li>-->
                         <li>
                             <a data-toggle="tab" href="/#registros">Registro y auditoria</a>
                         </li>
@@ -83,7 +83,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr ng-class="{'danger' : data.counter > 2}"
+                                            <tr ng-class="{'danger' : data.counter > 3}"
                                                 ng-repeat="data in mesa1">
                                                 <td>
                                                     <div>
@@ -187,7 +187,7 @@
                                                                 tooltip-placement="top" type="button"
                                                                 uib-tooltip="La tarea ya pasó por esta mesa anteriormente {{data.counter}} Veces, por favor validar!">
                                                             <i aria-hidden="true" class="fa fa-exclamation"
-                                                               ng-class="{'parpadeo-rojo': data.counter > 2, 'red': data.counter > 0}"> </i>
+                                                               ng-class="{'parpadeo-rojo': data.counter > 3, 'red': data.counter > 0}"> </i>
                                                         </button>
                                                     </div>
                                                 </td>
@@ -254,7 +254,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr ng-class="{'danger' : data.counter > 2}"
+                                            <tr ng-class="{'danger' : data.counter > 3}"
                                                 ng-repeat="data in mesa2">
                                                 <td>
                                                     <div>
@@ -341,7 +341,7 @@
                                                                 tooltip-placement="top" type="button"
                                                                 uib-tooltip="La tarea ya pasó por esta mesa anteriormente {{data.counter}} Veces, por favor validar!">
                                                             <i aria-hidden="true" class="fa fa-exclamation"
-                                                               ng-class="{'parpadeo-rojo': data.counter > 2, 'red': data.counter > 0}"> </i>
+                                                               ng-class="{'parpadeo-rojo': data.counter > 3, 'red': data.counter > 0}"> </i>
                                                         </button>
                                                     </div>
                                                 </td>
@@ -408,7 +408,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr ng-repeat="data in mesa3" ng-class="{'danger' : data.counter > 2}">
+                                            <tr ng-class="{'danger' : data.counter > 3}" ng-repeat="data in mesa3">
                                                 <td>
                                                     <div>
                                                         <input ng-checked="data.estado == 'En gestión'"
@@ -498,7 +498,7 @@
                                                                 tooltip-placement="top" type="button"
                                                                 uib-tooltip="La tarea ya pasó por esta mesa anteriormente {{data.counter}} Veces, por favor validar!">
                                                             <i aria-hidden="true" class="fa fa-exclamation"
-                                                               ng-class="{'parpadeo-rojo': data.counter > 2, 'red': data.counter > 0}"> </i>
+                                                               ng-class="{'parpadeo-rojo': data.counter > 3, 'red': data.counter > 0}"> </i>
                                                         </button>
                                                     </div>
                                                 </td>
@@ -692,7 +692,7 @@
                                             &nbsp;
                                             &nbsp;
                                             <button class="btn btn-default btn-xs" data-placement="top"
-                                                    data-toggle="tooltip" ng-click="recargaPageGestion(7)"
+                                                    data-toggle="tooltip" ng-click="recargaPageGestion(6)"
                                                     ng-disabled="loading" title="Actualizar" type="button">
                                                 <i aria-hidden="true" class="fa fa-refresh"></i>
                                             </button>
@@ -724,7 +724,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr ng-repeat="data in mesa7" ng-class="{'danger' : data.counter > 2}">
+                                            <tr ng-class="{'danger' : data.counter > 3}" ng-repeat="data in mesa7">
                                                 <td>
                                                     <div>
                                                         <input ng-checked="data.estado == 'En gestión'"
@@ -804,7 +804,8 @@
                                                         <option ng-if="data.tecnologia === 'GPON'"
                                                                 value="Configurar VLAN">Configurar VLAN
                                                         </option>
-                                                        <option ng-if="data.tecnologia === 'GPON' || data.tecnologia.indexOf('HFC') !== -1" value="Contingencia">
+                                                        <option ng-if="data.tecnologia === 'GPON' || data.tecnologia.indexOf('HFC') !== -1"
+                                                                value="Contingencia">
                                                             Contingencia
                                                         </option>
                                                         <option ng-if="data.tecnologia === 'GPON'" value="Red ocupada">
@@ -892,7 +893,7 @@
                                                                 tooltip-placement="top" type="button"
                                                                 uib-tooltip="La tarea ya pasó por esta mesa anteriormente {{data.counter}} Veces, por favor validar!">
                                                             <i aria-hidden="true" class="fa fa-exclamation"
-                                                               ng-class="{'parpadeo-rojo': data.counter > 2, 'red': data.counter > 0}"> </i>
+                                                               ng-class="{'parpadeo-rojo': data.counter > 3, 'red': data.counter > 0}"> </i>
                                                         </button>
                                                     </div>
                                                 </td>
@@ -904,7 +905,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="mesa4">
+                    <!--<div class="tab-pane fade" id="mesa4">
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="table">
@@ -959,14 +960,14 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr ng-repeat="data in mesa4" ng-class="{'danger' : data.counter > 2}">
+                                            <tr ng-class="{'danger' : data.counter > 3}" ng-repeat="data in mesa4">
                                                 <td>
                                                     <div>
                                                         <input ng-checked="data.estado == 'En gestión'"
                                                                ng-click="marcarEngestion(data.id)"
                                                                ng-model="data.estado"
                                                                type="checkbox">
-                                                        <!-- <div class="loadingio-spinner-ellipsis-3nun7cb96ao">
+                                                        &lt;!&ndash; <div class="loadingio-spinner-ellipsis-3nun7cb96ao">
                                                              <div class="ldio-pettsxrv7wj">
                                                                  <div></div>
                                                                  <div></div>
@@ -974,7 +975,7 @@
                                                                  <div></div>
                                                                  <div></div>
                                                              </div>
-                                                         </div>-->
+                                                         </div>&ndash;&gt;
                                                     </div>
                                                 </td>
                                                 <td>
@@ -1047,7 +1048,7 @@
                                                                 tooltip-placement="top" type="button"
                                                                 uib-tooltip="La tarea ya pasó por esta mesa anteriormente {{data.counter}} veces, por favor validar!">
                                                             <i aria-hidden="true" class="fa fa-exclamation"
-                                                               ng-class="{'parpadeo-rojo': data.counter > 2, 'red': data.counter > 0}"> </i>
+                                                               ng-class="{'parpadeo-rojo': data.counter > 3, 'red': data.counter > 0}"> </i>
                                                         </button>
                                                     </div>
                                                 </td>
@@ -1058,7 +1059,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
                     <div class="tab-pane fade" id="registros">
                         <div class="row">
                             <div class="col-sm-12">
@@ -1090,7 +1091,7 @@
                                             <option value="Mesa 1">Soporte Siebel-Edatel-Elite</option>
                                             <option value="Mesa 2">Edatel- Soporte LB- Cambios Pto</option>
                                             <option value="Mesa 3">Mesa de Validaciones</option>
-                                            <option value="Mesa 4">Premisas extendidas</option>
+                                            <!--<option value="Mesa 4">Premisas extendidas</option>-->
                                             <option value="Mesa 6">BSC</option>
                                         </select>
                                     </li>

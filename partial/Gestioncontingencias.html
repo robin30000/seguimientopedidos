@@ -102,7 +102,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr ng-class="{  'danger' : data.counter > 2}"
+                                            <tr ng-class="{  'danger' : data.counter > 3}"
                                                 ng-repeat="data in contingenciasTV | orderBy : 'horagestion' : false track by $index ">
                                                 <td ng-if="perfil === '11' || perfil === '16'">
                                                     <div>
@@ -146,16 +146,19 @@
                                                 </td>
 
                                                 <!-- Fin ocultar el login gestión -->
-                                                <td class="icons_in_tables">
-                                                    <button class="btn btn-default btn-xs" id=tv{{$index}}
-                                                            ng-click="CopyPortaPapeles(data.tarea)"
-                                                            tooltip-placement="top"
-                                                            type="button" uib-tooltip="Copiar tarea">
-                                                        {{data.tarea}}
-                                                    </button>
-                                                    <i aria-hidden="true" class="fa fa-info-circle"
-                                                       ng-click="bb8(data.pedido)" tooltip-placement="top"
-                                                       uib-tooltip="Datos bb8"></i>
+                                                <td >
+                                                    <div style="display: flex; align-items: center; gap: 1px; height: 100%;">
+                                                        <button class="btn btn-default btn-xs" id=tv{{$index}}
+                                                                ng-click="CopyPortaPapeles(data.tarea)"
+                                                                tooltip-placement="top"
+                                                                type="button" uib-tooltip="Copiar tarea">
+                                                            {{data.tarea}}
+                                                        </button>
+                                                        <i aria-hidden="true" class="fa fa-info-circle"
+                                                           ng-click="bb8(data.pedido)" tooltip-placement="top"
+                                                           uib-tooltip="Datos bb8"></i>
+                                                    </div>
+
                                                 </td>
                                                 <td>
                                                     <button class="btn btn-default btn-xs" id=tv{{$index}}
@@ -202,35 +205,33 @@
                                                     </select>
                                                 </td>
                                                 <td>{{data.taskType}}</td>
-                                                <td class="icons_in_tables">
-
-                                                    <button class="btn btn-default btn-xs" popover-placement="left"
-                                                            tooltip-placement="top" type="button"
-                                                            uib-popover="{{data.observacion}}"
-                                                            uib-tooltip="Observaciones">
-                                                        <i aria-hidden="true" class="fa fa-commenting"></i>
-                                                    </button>
-
-                                                    <!-- <button type="button" class="btn btn-default btn-xs"
-                                                        ng-click="muestraModalObservacion(data.observacion)">
-
-                                                    </button> -->
-                                                    <button class="btn btn-default btn-xs"
-                                                            ng-click="guardarcontingencia(data)" ng-show="!data._id"
-                                                            tooltip-placement="top"
-                                                            type="button"
-                                                            uib-tooltip="Observaciones y guardar gestión">
-                                                        <i aria-hidden="true" class="fa fa-list-alt"> </i>
-                                                    </button>
-                                                    <div ng-show="!data._id" style="display: inline-block;">
-                                                        <button class="btn btn-default btn-xs" data-backdrop="static"
-                                                                data-toggle="modal" ng-hide="data.alerta == 'FALSE'"
+                                                <td >
+                                                    <div style="display: flex; justify-content: center; gap: 1px; height: 100%;">
+                                                        <button class="btn btn-default btn-xs" popover-placement="left"
                                                                 tooltip-placement="top" type="button"
-                                                                uib-tooltip="El pedido ya pasó por contingencias anteriormente {{data.counter}} Veces, por favor validar!">
-                                                            <i aria-hidden="true" class="fa fa-exclamation"
-                                                               ng-class="{'parpadeo-rojo': data.counter > 2, 'red': data.counter > 0}"> </i>
+                                                                uib-popover="{{data.observacion}}"
+                                                                uib-tooltip="Observaciones">
+                                                            <i aria-hidden="true" class="fa fa-commenting"></i>
                                                         </button>
+                                                        <button class="btn btn-default btn-xs"
+                                                                ng-click="guardarcontingencia(data)" ng-show="!data._id"
+                                                                tooltip-placement="top"
+                                                                type="button"
+                                                                uib-tooltip="Observaciones y guardar gestión">
+                                                            <i aria-hidden="true" class="fa fa-list-alt"> </i>
+                                                        </button>
+                                                        <div ng-show="!data._id" style="display: inline-block;">
+                                                            <button class="btn btn-default btn-xs"
+                                                                    data-backdrop="static"
+                                                                    data-toggle="modal" ng-hide="data.alerta == 'FALSE'"
+                                                                    tooltip-placement="top" type="button"
+                                                                    uib-tooltip="El pedido ya pasó por contingencias anteriormente {{data.counter}} Veces, por favor validar!">
+                                                                <i aria-hidden="true" class="fa fa-exclamation"
+                                                                   ng-class="{'parpadeo-rojo': data.counter > 3, 'red': data.counter > 0}"> </i>
+                                                            </button>
+                                                        </div>
                                                     </div>
+
                                                 </td>
                                             </tr>
 

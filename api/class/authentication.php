@@ -1,6 +1,7 @@
 <?php
 
 require_once '../class/conection.php';
+require_once 'Ldap.php';
 error_reporting(0);
 ini_set('display_errors', 0);
 
@@ -24,9 +25,33 @@ class authentication
         $aplicacion = "Seguimiento";
 
         try {
-            $stmt = $this->_DB->prepare("SELECT id, login, nombre, identificacion, perfil FROM usuarios WHERE login = ? AND password = ? AND estado = 'Activo'");
+
+            /*$stmt = $this->_DB->prepare("SELECT estado FROM usuarios WHERE login = ? AND password = ?");
             $stmt->bindParam(1, $data->username, PDO::PARAM_STR);
             $stmt->bindParam(2, $data->password, PDO::PARAM_STR);
+            $stmt->execute();
+
+
+            if ($stmt->rowCount() == 1) {
+                $res = $stmt->fetch(PDO::FETCH_OBJ);
+
+                if ($res->estado == 'Inactivo') {
+                    $response =  array('state' => 0, 'msj' => 'Su cuenta se encuentra inactiva, comuníquese con el administrador');
+                    echo json_encode($response);
+                    die();
+                }
+            }*/
+
+            $ldapAuthenticator = new LdapAuthenticator();
+            $result = $ldapAuthenticator->authenticate($data->username, $data->password);
+            if ($result != "Login exitoso.") {
+                echo json_encode(['state' => 0, 'msj' => $result]);
+                die();
+            }
+
+            $stmt = $this->_DB->prepare("SELECT id, login, nombre, identificacion, perfil FROM usuarios WHERE login = ? AND estado = 'Activo'");
+            $stmt->bindParam(1, $data->username, PDO::PARAM_STR);
+            //$stmt->bindParam(2, $data->password, PDO::PARAM_STR);
             $stmt->execute();
 
             if ($stmt->rowCount() == 1) {
@@ -70,7 +95,7 @@ class authentication
                 $_SESSION["logueado"] = true;
                 $_SESSION['timeOnline'] = time() * 1000;
                 $_SESSION['online'] = date("H:i:s");
-                $_SESSION["login"] = $resLogin->login;
+                $_SESSION["login"] = $data->username;
                 $_SESSION['id'] = $resLogin->id;
                 $_SESSION['token_session'] = uniqid();
                 $_SESSION['fecha_ingreso'] = date('Y-m-d H:i:s');
@@ -185,7 +210,11 @@ class authentication
                                                                horacontingencia as fecha_fin,
                                                                observacion as observacion,
                                                                observContingencia as observacion_asesor,
-                                                               case engestion when 1 then 'Finalizado' else 'Sin gestión' end gestion
+                                                               CASE
+                                                                    WHEN engestion = 1 AND Finalizado = 'ok' THEN 'Finalizado'
+                                                                        WHEN engestion = 1 AND finalizado IS NULL THEN 'En Gestión'
+                                                                    ELSE 'Sin gestión'
+                                                                END AS gestion
                                                         from contingencias
                                                         where tarea = :tarea");
             $stmt->execute(array(':tarea' => $data));
@@ -241,15 +270,39 @@ class authentication
                 array_push($response, $stmt->fetchAll(PDO::FETCH_ASSOC));
             }
 
-            $stmt = $this->_DB->prepare("select 'Mesas nacionales' as modulo,
-                                                                   login_gestion as logincontingencia,
-                                                                   hora_ingreso as fecha_ingreso,
-                                                                   hora_gestion as fecha_fin,
-                                                                   observacion_tecnico as observacion,
-                                                                   observacion_gestion as observacion_asesor,
-                                                                   case estado when 'Gestionado' then 'Finalizado' else estado end gestion                                                            
-                                                            from mesas_nacionales
-                                                            where tarea = :tarea");
+            $stmt = $this->_DB->prepare("SELECT
+                                                CONCAT(
+                                                    'Mesas nacionales - ',
+                                                CASE
+                                                        mesa 
+                                                        WHEN 'Mesa 1' THEN
+                                                        'Siebel-Edatel-Elite' 
+                                                        WHEN 'Mesa 2' THEN
+                                                        'Edatel' 
+                                                        WHEN 'Mesa 3' THEN
+                                                        'Validacion' 
+                                                        WHEN 'Mesa 4' THEN
+                                                        'Premisas' 
+                                                        WHEN 'Mesa 5' THEN
+                                                        'd' 
+                                                        WHEN 'Mesa 6' THEN
+                                                        'Bsc' 
+                                                    END 
+                                                    ) AS modulo,
+                                                    login_gestion AS logincontingencia,
+                                                    hora_ingreso AS fecha_ingreso,
+                                                    hora_gestion AS fecha_fin,
+                                                    observacion_tecnico AS observacion,
+                                                    observacion_gestion AS observacion_asesor,
+                                                CASE
+                                                        estado 
+                                                        WHEN 'Gestionado' THEN
+                                                        'Finalizado' ELSE estado 
+                                                    END AS gestion 
+                                                FROM
+                                                    mesas_nacionales 
+                                            WHERE
+                                                tarea = :tarea");
             $stmt->execute(array(':tarea' => $data));
 
             if ($stmt->rowCount() > 0) {

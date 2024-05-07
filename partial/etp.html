@@ -87,7 +87,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr ng-repeat="data in datos">
+                                            <tr ng-repeat="data in datos" ng-class="{  'danger' : data.counter > 3}">
                                                 <td ng-if="perfil === '11' || perfil === '16'">
                                                     <div ng-show="data.id_soporte">
                                                         <input type="checkbox" ng-model="data.bloqueo"
@@ -217,7 +217,7 @@
                                                 </td>
                                                 <td>{{data.fecha_crea}}</td>
                                                 <td class="text-center">
-                                                    <button popover-placement="left"
+                                                    <button popover-placement="left" ng-disabled="!data.login_gestion"
                                                             uib-popover="{{data.observacion_terreno}}"
                                                             tooltip-placement="top" uib-tooltip="Observación técnico"
                                                             type="button" class="btn btn-default btn-xs">
@@ -239,8 +239,8 @@
                                                         <button type="button" class="btn btn-default btn-xs"
                                                                 data-toggle="modal" data-backdrop="static"
                                                                 ng-hide="data.alerta == 'FALSE'" tooltip-placement="top"
-                                                                uib-tooltip="La tarea ya pasó por etp anteriormente, por favor validar!">
-                                                            <i class="fa fa-exclamation" style="color:red"
+                                                                uib-tooltip="La tarea ya pasó por etp anteriormente {{data.counter }} Veces, por favor validar!">
+                                                            <i class="fa fa-exclamation" ng-class="{'parpadeo-rojo': data.counter > 3, 'red': data.counter > 0}"
                                                                aria-hidden="true"> </i>
                                                         </button>
                                                     </div>

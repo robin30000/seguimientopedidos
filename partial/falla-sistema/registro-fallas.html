@@ -1,0 +1,104 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <b><i aria-hidden="true" class="fa fa-bars"></i> Formulario Registro Fallas</b>
+                    <div class="navbar-right" style="margin-right: 5px">
+                        <a class="btn btn-xs btn-success" href="/seguimientopedidos-dev/mi-registro-falla">Mis
+                            Solicitudes de Fallas</a>
+
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <form id="formfalla" name="formfalla" ng-submit="guardar(falla)">
+                        <div class="row">
+                            <div class="col-md-3 col-md-offset-2">
+
+                                <div class="form-group"
+                                     ng-class="{'has-error' : formfalla.plataforma.$touched && formfalla.plataforma.$invalid}">
+                                    <label for="plataforma">Plataforma</label>
+                                    <select class="form-control input-sm" id="plataforma" name="plataforma"
+                                            ng-model="falla.plataforma"
+                                            ng-options="p.valor as p.valor for p in plataforma_1" required>
+                                        <option disabled value="">Seleccione</option>
+                                        <option value="otra_opcion">Otra opción</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group"
+                                     ng-class="{'has-error' : formfalla.servicios.$touched && formfalla.servicios.$invalid}">
+                                    <label for="servicios">Servicios Impactados</label>
+                                    <select class="form-control input-sm" id="servicios" name="servicios"
+                                            ng-model="falla.servicios"
+                                            ng-options="p.valor as p.valor for p in servicios_impactados" required>
+                                        <option disabled value="">Seleccione</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group"
+                                     ng-class="{'has-error' : formfalla.tecnologia.$touched && formfalla.tecnologia.$invalid}">
+                                    <label for="tecnologia">Tecnologia</label>
+                                    <select class="form-control input-sm" id="tecnologia" name="tecnologia"
+                                            ng-model="falla.tecnologia"
+                                            ng-options="p.valor as p.valor for p in tecnologia"
+                                            required>
+                                        <option disabled value="">Seleccione</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group"
+                                     ng-class="{'has-error' : formfalla.proceso.$touched && formfalla.proceso.$invalid}">
+                                    <label for="proceso">Procesos Afectados</label>
+                                    <select class="form-control input-sm" id="proceso" name="proceso"
+                                            ng-model="falla.proceso"
+                                            ng-options="p.valor as p.valor for p in procesos_afectados" required>
+                                        <option disabled value="">Seleccione</option>
+                                    </select>
+                                </div>
+                                <div class="form-group"
+                                     ng-class="{'has-error' : formfalla.image.$touched && formfalla.image.$invalid}">
+                                    <label for="imagen">Adjuntar Archivo / Imagen</label>
+                                    <input class="btn btn-info btn-sm" file-model="myFile" id="imagen" name="image"
+                                           type="file"/>
+                                </div>
+
+                                <div style="clear:both"></div>
+                                <br/>
+                                <div class="col-md-3" ng-repeat="image in uploaded_images">
+                                    <img class="show_images" height="200" ng-src="upload/{{image.file_name}}"
+                                         width="200"/>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-5">
+
+                                <div class="form-group"
+                                     ng-class="{'has-error' : formfalla.descripcion.$touched && formfalla.descripcion.$invalid}">
+                                    <label for="descripcion">Descripcion Falla</label>
+                                    <textarea class="form-control input-sm" id="descripcion" name="descripcion"
+                                              ng-model="falla.descripcion" required rows="16"></textarea>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row text-center">
+                            <button class="btn btn-info btn-sm" ng-disabled="formfalla.$invalid || loading"
+                                    type="submit">Guardar
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+<br>
+<br>
+<br>

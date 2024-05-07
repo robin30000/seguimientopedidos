@@ -1,7 +1,11 @@
 (function () {
     "use strict";
-    angular.module("seguimientopedidos").filter("mapNivelacion");
-    mapNivelacion.$inject = [];
+
+    angular.module("seguimientopedidos")
+        .filter("mapNivelacion", mapNivelacion)
+        .filter("groupBy", groupBy)
+        .filter("replace", replace)
+        .filter("padWithZeros", padWithZeros);
 
     function mapNivelacion() {
         var genderHash = {
@@ -18,9 +22,7 @@
         };
     }
 
-    angular.module("seguimientopedidos").filter("groupBy");
     function groupBy() {
-        console.log('pepe')
         return function (data, key) {
             if (!(data && key)) return;
             var result = [];
@@ -37,11 +39,6 @@
         };
     }
 
-
-
-    angular.module("seguimientopedidos").filter("replace");
-    replace.$inject = [];
-
     function replace() {
         return function (input, from, to) {
             if (input === undefined) {
@@ -50,6 +47,12 @@
 
             var regex = new RegExp(from, "g");
             return input.replace(regex, to);
+        };
+    }
+
+    function padWithZeros() {
+        return function (input) {
+            return String(input).padStart(8, '0');
         };
     }
 

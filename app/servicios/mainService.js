@@ -23,6 +23,27 @@
                 return $q.reject(response.data)
             }
         };
+        obj.myServiceImagen = function (datos, controller, method) {
+            let data = {
+                method: method,
+                data: datos,
+            }
+            $http({
+                method: 'POST',
+                url: serviceBase + controller,
+                data: data,
+                headers: {
+                    'Content-Type': undefined
+                },
+                transformRequest: angular.identity
+            })
+                .then(function (response) {
+                    console.log(response.data);
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+        }
 
         /**
          * authentication

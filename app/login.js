@@ -9,14 +9,20 @@
                 if (data.data.state !== 1) {
                     Swal({
                         title: "Oops...",
-                        text: "Usuario y/o contraseña no validos",
+                        text: data.data.msj,
                         type: "warning",
-                        //showCancelButton: true,
+                        showCancelButton: true,
                         confirmButtonClass: "btn-danger",
                         confirmButtonText: "Aceptar",
-                        //cancelButtonText: "Cancelar",
-                        //allowOutsideClick: () => !Swal.isLoading(),
-                    })
+                        cancelButtonText: "Olvidé mi contraseña",
+                        allowOutsideClick: () => !Swal.isLoading(),
+                    }).then((result) => {
+                        if (result.dismiss === Swal.DismissReason.cancel) {
+                            //window.location.href = "https://gestionatucuenta.tigoune.com/sigma/app/index?breakGlass=true#/forgot-password";
+                            window.open("https://gestionatucuenta.tigoune.com/sigma/app/index?breakGlass=true#/forgot-password", "_blank");
+
+                        }
+                    });
                 } else {
                     const today = new Date();
                     $rootScope.year = today.getFullYear();
@@ -145,7 +151,7 @@
 
     }
 
-    angular.module("seguimientopedidos").controller("forgetPasswordController", forgetPasswordController);
+    /*angular.module("seguimientopedidos").controller("forgetPasswordController", forgetPasswordController);
     forgetPasswordController.$inject = ["$uibModalInstance", "items", "services", "$route", "$scope", "$timeout", "REST", "vcRecaptchaService"];
 
     function forgetPasswordController($uibModalInstance, items, services, $route, $scope, $timeout, REST, vcRecaptchaService) {
@@ -200,5 +206,5 @@
             $uibModalInstance.dismiss('cancel');
         };
 
-    }
+    }*/
 })();

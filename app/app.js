@@ -17,7 +17,7 @@ var app = angular.module("seguimientopedidos", [
     "angular.filter",
     "ui.bootstrap",
     "ui.select2",
-    "vcRecaptcha"
+    /*"vcRecaptcha"*/
 ]);
 
 app.service("fileUpload", [
@@ -91,9 +91,9 @@ app.service("cargaRegistros", [
             var deffered = $q.defer();
             var fd = new FormData();
             var user = login;
-            file["user"] = user + "6666666";
+            //file["user"] = user + "6666666";
 
-            fd.append("user", user);
+            //fd.append("user", user);
             fd.append("fileUpload", file);
 
             $http.post("api/class/subeArchivo.php", fd, {
@@ -151,6 +151,21 @@ app.factory("services", [
             return $http.post(serviceBase1 + controller, data);
 
         };
+
+        obj.myServiceImagen = function (datos, controller, method) {
+            let data = {
+                method: method,
+                data: datos,
+            };
+            let config = {
+                headers: {
+                    'Content-Type': undefined,
+                },
+                transformRequest: angular.identity
+            };
+            return $http.post(serviceBase1 + controller, data, config);
+
+        }
 
         /**
          * usuario
@@ -2330,6 +2345,7 @@ app.run([
             {ID: 14, PERFIL: "Nivelacion"},
             {ID: 15, PERFIL: "Venta Instale"},
             {ID: 16, PERFIL: "Capacitación"},
+            {ID: 17, PERFIL: "SSMM"},
         ];
 
         $rootScope.conceptosBuscartecnico = [

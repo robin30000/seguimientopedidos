@@ -1,0 +1,314 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row" style="margin: 0 0">
+                        <b> Registros Fallas <span
+                                class="badge badge-default">{{totalItems}}</span></b>
+                        <ul class="nav navbar-nav pull-right">
+
+                            <li>
+                                &nbsp;
+                                <input style="width: 130px" type="text" name="fechaini" id="fechaini"
+                                       class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="f.fechaini"
+                                       placeholder="Fecha Inicial" datetime-picker="" date-only autocomplete="off" date-format="yyyy-MM-dd"
+                                       autocomplete="off"/>
+                                <i class="fa fa-calendar fa-fw"></i>
+
+                                <input style="width: 130px" type="text" name="fechafin" id="fechafin"
+                                       class="btn btn-default btn-xs ng-pristine ng-valid ng-touched" ng-model="f.fechafin"
+                                       placeholder="Fecha Inicial" datetime-picker="" date-only autocomplete="off" date-format="yyyy-MM-dd"
+                                       autocomplete="off"/>
+                                <i class="fa fa-calendar fa-fw"></i>
+                            </li>
+                            <li>
+                                &nbsp;
+                                <select class="btn btn-default btn-xs"
+                                        ng-model="f.concepto">
+                                    <option value="">Seleccione concepto</option>
+                                    <option value="login_gestion">Asesor</option>
+                                    <option value="login_solicita">Usu. Solicita</option>
+                                    <option value="tt">TT</option>
+
+                                </select>
+                            </li>
+                            <li>
+                                &nbsp;
+                                <input autocomplete="off" class="btn btn-default btn-xs" ng-model="f.buscar"
+                                       placeholder="Buscar concepto" type="text"/>&nbsp;
+                                <button class="btn btn-default btn-xs" ng-click="buscaRegistrosFalla(f)"
+                                        ng-disabled="loading"
+                                        type="button">
+                                    <i aria-hidden="true" class="fa fa-search"></i>
+                                </button>
+
+                            </li>
+                            <li>
+                                &nbsp;
+                                <button class="btn btn-success btn-xs" data-placement="top"
+                                        ng-click="csvFallas(f)"
+                                        ng-disabled="loading" title="Exportar Registros"
+                                        tooltip type="button">
+                                    <i aria-hidden="true" class="fa fa-cloud-download"> </i>
+                                </button>
+                            </li>
+                            <li>
+                                &nbsp;
+                                <button class="btn btn-default btn-xs" data-placement="top"
+                                        data-toggle="tooltip" ng-click="recarga()"
+                                        ng-disabled="loading" title="Actualizar" type="button">
+                                    <i aria-hidden="true" class="fa fa-refresh"></i>
+                                </button>
+                            </li>
+                            &nbsp;
+                        </ul>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover table-condensed small">
+                        <thead class="table-header">
+                        <tr>
+                            <th class="text-center"><span>TT</span></th>
+                            <th class="text-center"><span>Plataforma</span></th>
+                            <th class="text-center"><span>Proceso Afectado</span></th>
+                            <th class="text-center"><span>Impacto</span></th>
+                            <th class="text-center"><span>Tecnología</span></th>
+                            <th class="text-center"><span>Des. Falla</span></th>
+                            <th class="text-center"><span>Adjunto</span></th>
+                            <th class="text-center"><span>Fecha Ingreso</span></th>
+                            <th class="text-center"><span>Fecha Marca</span></th>
+                            <th class="text-center"><span>Fecha Gestión</span></th>
+                            <th>Usu. Solicita</th>
+                            <th>Usu. Gestión</th>
+                            <th>Obs. Avance</th>
+                            <th>Obs. Asesor</th>
+                            <th class="text-center"><span>Duración</span></th>
+                            <th>Respuesta</th>
+                            <th>Criticidad</th>
+                            <th>ver</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="data in fallas">
+                            <td>
+                                <button class="btn btn-default btn-xs" id="i{{$index}}"
+                                        ng-click="CopyPortaPapeles(data.tt || data.id)"
+                                        tooltip-placement="top" type="button"
+                                        uib-tooltip="Copiar tarea">
+                                    {{ (data.tt || data.id) | padWithZeros }}
+                                </button>
+                            </td>
+                            <td>{{data.plataforma}}</td>
+                            <td>{{data.proceso_afectado}}</td>
+                            <td>{{data.servicio_impactado}}</td>
+                            <td>{{data.tecnologia}}</td>
+                            <td>
+                                <button class="btn btn-default btn-xs" popover-placement="left"
+                                        tooltip-placement="top" type="button"
+                                        uib-popover="{{data.descripcion}}"
+                                        uib-tooltip="Descripción">
+                                    <i aria-hidden="true" class="fa fa-commenting"
+                                       ng-class="{ 'disabled-icon': data.descripcion ==='' }"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="btn btn-default btn-xs" type="button" uib-tooltip="Adjunto">
+                                    <i class="fa fa-archive" ng-class="{ 'disabled-icon': data.imagen ==='' }"
+                                       ng-click="mostrarImagen(data.imagen)"
+                                       ng-if="!noImg"></i>
+                                    <i class="fa fa-archive" ng-class="{ 'disabled-icon': data.imagen ==='' }"
+                                       ng-click="descargarArchivo(data.imagen)"
+                                       ng-if="noImg"></i>
+                                </button>
+                            </td>
+                            <td>
+                                {{data.fecha_ingreso}}
+                            </td>
+                            <td>{{data.fecha_marca}}</td>
+                            <td>
+                                {{data.fecha_gestion}}
+                            </td>
+                            <td>{{data.login_solicita}}</td>
+                            <td>{{data.login_gestion}}</td>
+                            <td>
+                                <button class="btn btn-default btn-xs" ng-click="ObservacioAvance(data)"
+                                        ng-disabled="!data.login_gestion"
+                                        type="button"
+                                        uib-tooltip="Observaciones Avance">
+                                    <i aria-hidden="true" class="fa fa-comments"> </i>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="btn btn-default btn-xs" ng-class="{ 'disabled-icon': data.observacion_asesor ==='' }"
+                                        ng-disabled="!data.observacion_asesor" popover-placement="left"
+                                        tooltip-placement="top"
+                                        type="button"
+                                        uib-popover="{{data.observacion_asesor}}"
+                                        uib-tooltip="Observaciones asesor">
+                                    <i aria-hidden="true" class="fa fa-commenting"
+                                       ng-class="{ 'disabled-icon': data.observacion_asesor ==='' }"></i>
+                                </button>
+                            </td>
+                            <td>{{ data.tiempo_diferencia}}</td>
+                            <td>
+                                        <span class="label"
+                                              ng-class="{'label-success': data.respuesta === 'Aceptado' || data.respuesta === 'Escalado', 'label-danger': data.respuesta === 'Rechazado'}">{{data.respuesta}}</span>
+                            </td>
+                            <td>
+                                        <span class="label"
+                                              ng-class="{'label-danger': data.criticidad === 'Alto', 'label-warning': data.criticidad === 'Medio', 'label-success': data.criticidad === 'Bajo'}">{{data.criticidad}}</span>
+                            </td>
+                            <td>
+                                <button class="btn btn-xs" data-placement="top" ng-click="verFalla(data)"
+                                        ng-disabled="loading"
+                                        ng-show="data.respuesta" title="Ver Falla"
+                                        type="button">
+                                    <i aria-hidden="true" class="fa fa-image" ng-if="data.respuesta"> </i>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="text-center">
+                        <ul boundary-links="true" class="pagination-sm" first-text="Primero"
+                            items-per-page="pageSize"
+                            last-text="Último" max-size="5" next-text="&#8674;"
+                            ng-change="pageChanged()" ng-model="currentPage"
+                            previous-text="&#8672;" rotate="true" total-items="totalItems"
+                            uib-pagination></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="imagenModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <img alt="imagen" id="imagenModalContenido" src="" style="width:100%">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="observacionesModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <h4>Observaciones / Avances </h4>
+                <table class="table table-bordered table-hover table-condensed small" ng-if="observaciones.length > 0">
+                    <thead class="table-header">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Observación</th>
+                        <th>Asesor / Solicitante</th>
+                    </tr>
+                    </thead>
+                    <tbody class="scroll-table">
+                    <tr ng-class="{'danger': data.visto === 'No'}" ng-repeat="data in observaciones">
+                        <td>{{data.fecha}}</td>
+                        <td>{{data.observacion}}</td>
+                        <td>{{data.usuario}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="verFallaModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Detalle TT {{(falla.tt || falla.id) | padWithZeros}}</h4>
+            </div>
+            <div class="modal-body" id="table-container">
+                <table class="table table-bordered table-hover table-condensed small">
+                    <tbody>
+                    <tr>
+                        <td>TT</td>
+                        <td>{{(falla.tt || falla.id) | padWithZeros}}</td>
+                    </tr>
+                    <tr>
+                        <td>Estado</td>
+                        <td>{{falla.estado}}</td>
+                    </tr>
+                    <tr>
+                        <td>Fecha ingreso</td>
+                        <td>{{falla.fecha_ingreso}}</td>
+                    </tr>
+                    <tr>
+                        <td>Descripción</td>
+                        <td>{{falla.descripcion}}</td>
+                    </tr>
+                    <tr>
+                        <td>Plataforma</td>
+                        <td>{{falla.plataforma}}</td>
+                    </tr>
+                    <tr>
+                        <td>Proceso afectado</td>
+                        <td>{{falla.proceso_afectado}}</td>
+                    </tr>
+                    <tr>
+                        <td>Impacto</td>
+                        <td>{{falla.servicio_impactado}}</td>
+                    </tr>
+                    <tr>
+                        <td>Tecnología</td>
+                        <td>{{falla.tecnologia}}</td>
+                    </tr>
+                    <tr>
+                        <td>Fecha Solicitud</td>
+                        <td>{{falla.fecha_ingreso}}</td>
+                    </tr>
+                    <tr ng-show="falla.criticidad">
+                        <td>Criticidad</td>
+                        <td>{{falla.criticidad}}</td>
+                    </tr>
+                    <tr>
+                        <td>Avance</td>
+                        <td style="padding: 0">
+                            <table class="table table-bordered table-hover table-condensed small"
+                                   ng-if="observaciones.length > 0" style="margin: 0">
+                                <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Observación</th>
+                                    <th>Asesor / Solicitante</th>
+                                </tr>
+                                </thead>
+                                <tbody class="scroll-table">
+                                <tr ng-repeat="data in observaciones">
+                                    <td>{{data.fecha}}</td>
+                                    <td>{{data.observacion}}</td>
+                                    <td>{{data.usuario}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default btn-xs" data-dismiss="modal" type="button">Cerrar</button>
+                <button class="btn btn-primary btn-xs" ng-click="descargaFalla((falla.tt || falla.id) | padWithZeros)"
+                        type="button"><i
+                        class="fa fa-download"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<br>
+<br>
+<br>
