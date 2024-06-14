@@ -21,9 +21,12 @@ class Toip
             $pagesize = $data['size'];
             $offset   = ($pagenum - 1) * $pagesize;*/
 
-            $stmt = $this->_DB->query("SELECT * FROM activacion_toip where en_gestion != '2'");
+            $stmt = $this->_DB->query("SELECT count(* ) count FROM activacion_toip where en_gestion != '2'");
             $stmt->execute();
-            $count = $stmt->rowCount();
+            $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $counter = $res[0]['count'];
+
+
 
             //$stmt = $this->_DB->query("SELECT * FROM activacion_toip where en_gestion != '2' ORDER BY hora_ingreso");
             $stmt = $this->_DB->query("SELECT
@@ -59,18 +62,17 @@ class Toip
             $stmt->execute();
 
             if ($stmt->rowCount()) {
-                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'counter' => $count];
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'counter' => $counter];
             } else {
                 $response = ['state' => false, 'msj' => 'No se encontraron registros'];
             }
 
+            $this->_DB = null;
+            return $response;
 
         } catch (PDOException $e) {
             var_dump($e->getMessage());
         }
-
-        return $response;
-        $this->_DB = null;
     }
 
     public function marca($data)

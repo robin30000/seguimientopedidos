@@ -18,6 +18,7 @@
                     $scope.etpInfraestructura = data.data.data[7].valida;
                     $scope.multiTarea = data.data.data[8].valida;
                     $scope.connexionClick = data.data.data[9].valida;
+                    $scope.Estado = data.data.data[10].valida;
                 }).catch((e) => {
                     console.log(e)
                 })

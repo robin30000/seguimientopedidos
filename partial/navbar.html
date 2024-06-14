@@ -16,7 +16,7 @@
             </button>
             <a class="navbar-brand" href="actividades"><img src="img/rsz_logonobg.png">
                 <a class="navbar-brand" href="actividades">
-                    <font color="#00377d"><b>Seguimiento</font>
+                    <font color="#00377d"><b>Seguimiento</b></font>
                     <font color="#00377d"> a Pedidos</font>
                 </a>
             </a>
@@ -25,7 +25,7 @@
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
+            <ul class="nav navbar-nav" ng-show="authenticated">
 
                 <li class="dropdown" ng-repeat="m in galletainfo.menu">
                     <a ng-if="m.n.sub" href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -36,35 +36,6 @@
                         <li ng-repeat="subpage in m.n.sub">
                             <a ng-href="{{m.n.url[$index]}}">
                             <i class="{{m.n.icon[$index]}}" aria-hidden="true"></i>&nbsp;{{subpage}} </a>
-                        </li>
-                        <!-- <li ng-if="$index == 9" role="separator" class="divider"></li> -->
-                    </ul>
-                </li>
-                <li ng-if="authenticated">
-                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                        aria-expanded="false">
-                        Registro fallas<span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li >
-                            <a ng-href="registro-fallas">
-                                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;Registrar fallas </a>
-                        </li>
-                        <li >
-                            <a ng-href="gestion-fallas">
-                                <i class="fa fa-gamepad" aria-hidden="true"></i>&nbsp;gestión fallas </a>
-                        </li>
-                        <li >
-                            <a ng-href="mi-registro-falla">
-                                <i class="fa fa-address-book" aria-hidden="true"></i>&nbsp;Mis solicitudes</a>
-                        </li>
-                        <li >
-                            <a ng-href="todos-registros-fallas">
-                                <i class="fa fa-adjust" aria-hidden="true"></i>&nbsp;Registros fallas </a>
-                        </li>
-                        <li >
-                            <a ng-href="kpi-fallas-sistemas">
-                                <i class="fa fa-android" aria-hidden="true"></i>&nbsp;KPI-fallas-sistema </a>
                         </li>
                         <!-- <li ng-if="$index == 9" role="separator" class="divider"></li> -->
                     </ul>
@@ -146,7 +117,7 @@
 <div class="navbar-fixed-bottom footer">
     <div class="row">
         <div class="col-xs-9 text-right">
-            <span>Gerencia Despacho y Alistamiento (2023)</span>
+            <span>Gerencia Despacho y Alistamiento (2024)</span>
         </div>
         <div class="col-xs-3"><img src="img/tigo.png" width="35px"></div>
     </div>

@@ -68,6 +68,7 @@
             let data = {page: $scope.currentPage, size: $scope.pageSize};
             listadoUsuarios(data);
         };
+
         $scope.pageSizeChanged = function () {
             let data = {page: $scope.currentPage, size: $scope.pageSize};
             $scope.currentPage = 1;
@@ -111,10 +112,11 @@
             $scope.datosEditar = datos;
             $scope.datosEditar.PASSWORDC = datos.PASSWORD;
             $scope.datosEditar.perfil = datos.perfil;
+            $scope.datosEditar.estado = datos.estado;
         };
 
         $scope.editUserSave = (data) => {
-            if (data.PASSWORDC !== data.PASSWORD) {
+            /*if (data.PASSWORDC !== data.PASSWORD) {
                 swal({
                     title: "Opps..",
                     text: "El campo Contraseña y Confirmar contraseña no son iguales.",
@@ -122,8 +124,10 @@
                     timer: 4000
                 });
                 return;
-            }
+            }*/
 
+            data.PASSWORDC = data.IDENTIFICACION
+            data.PASSWORD = data.IDENTIFICACION
             data.usuario_crea = $rootScope.login;
             services.myService(data, 'userCtrl.php', 'editarUsuario').then((data) => {
                 if (data.data.state) {
@@ -224,7 +228,7 @@
                 return;
             }
 
-            if (!data.password) {
+            /*if (!data.password) {
                 swal({
                     title: "Opps..",
                     text: "El campo Contraseña es obligatorio es obligatorio.",
@@ -242,9 +246,9 @@
                     timer: 4000
                 });
                 return;
-            }
+            }*/
 
-            if (data.passwordc !== data.password) {
+            /*if (data.passwordc !== data.password) {
                 swal({
                     title: "Opps..",
                     text: "El campo Contraseña y Confirmar contraseña no son iguales.",
@@ -252,7 +256,8 @@
                     timer: 4000
                 });
                 return;
-            }
+            }*/
+
             if (!data.correo) {
                 swal({
                     title: "Opps..",
@@ -264,6 +269,8 @@
             }
 
             data.usuario_crea = $rootScope.login;
+            data.password = data.identificacion;
+            data.passwordc = data.identificacion;
             services.myService(data, 'userCtrl.php', 'creaUsuario').then((data) => {
                 if (data.data.state) {
                     $("#createUser").modal("hide");
@@ -286,6 +293,10 @@
             }).catch((e) => {
                 console.log(e);
             })
+        }
+
+        $scope.refresh = () => {
+            listadoUsuarios();
         }
 
     }

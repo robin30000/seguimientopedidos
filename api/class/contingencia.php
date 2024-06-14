@@ -663,6 +663,7 @@ class Contingencia
                                         c.enGestionPortafolio,
                                         c.fechaClickMarcaPortafolio,
                                         c.id_terreno,
+                                        c.region,
                                     CASE
                                             
                                             WHEN (
@@ -1630,7 +1631,7 @@ class Contingencia
         echo json_encode($response);
     }
 
-    public function marcarengestion($params)
+    /*public function marcarengestion($params)
     {
 
         try {
@@ -1707,7 +1708,79 @@ class Contingencia
         }
         $this->_DB = null;
         echo json_encode($response);
+    }*/
+
+    public function marcarengestion($params)
+    {
+
+        try {
+
+            $datosLogin = $params['login'];
+            $login = $datosLogin['login'];
+
+            if (!$login) {
+                $response = ['state' => 99, 'title' => 'Su session ha expirado', 'text' => 'Inicia session nuevamente para continuar'];
+            } else {
+
+                $today = date("Y-m-d H:i:s");
+
+                $datosguardar = $params['datos'];
+                $pedido = $datosguardar['pedido'];
+                $gestion = $datosguardar['bloqueo'];
+                $producto = $datosguardar['producto'];
+                $tarea = $datosguardar['tarea'];
+
+                if ($gestion == true) {
+                    $gestion = 1;
+                } else {
+                    $gestion = 0;
+                }
+
+                $query = "SELECT id, engestion, logincontingencia FROM contingencias where finalizado is null and tarea = '$tarea' and producto = '$producto' ";
+
+                $rst = $this->_DB->query($query);
+                $rst->execute();
+                $row = $rst->fetch(PDO::FETCH_OBJ);
+                $id = $row->id;
+                $engestion = $row->engestion;
+                $logincontingencia = $row->logincontingencia;
+
+                $stmt = $this->_DB->query("SELECT login FROM usuarios WHERE perfil = '11'");
+                $stmt->execute();
+                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $usuarios_array = array_column($res, 'login');
+
+                if ($rst->rowCount() == 1) {
+
+                    if ($engestion) {
+                        if ($login == $logincontingencia || in_array($login, $usuarios_array)) {
+                            $stmt = $this->_DB->prepare("UPDATE contingencias SET engestion = 0, logincontingencia = null, fechaClickMarca = '' WHERE id = :id");
+                            $stmt->execute([':id' => $id]);
+
+                            if ($stmt->rowCount() == 1) {
+                                $response = ['state' => 1, 'title' => 'Desbloqueado', 'text' => 'La tarea se encuentra desbloqueada'];
+                            } else {
+                                $response = ['state' => 2, 'title' => 'Error', 'text' => 'Ha ocurrido un error interno intentalo nuevamente .'];
+                            }
+                        }
+                    } else {
+                        $stmt = $this->_DB->prepare("UPDATE contingencias SET engestion = 1, logincontingencia = :login, fechaClickMarca = :today WHERE id = :id");
+                        $stmt->execute([':login' => $login, ':today' => $today, ':id' => $id]);
+                        if ($stmt->rowCount() == 1) {
+                            $response = ['state' => 1, 'title' => 'Bloqueado', 'text' => 'La tarea se encuentra bloqueada'];
+                        } else {
+                            $response = ['state' => 2, 'title' => 'Error', 'text' => 'Ha ocurrido un error interno intentalo nuevamente'];
+                        }
+                    }
+                }
+            }
+        } catch (PDOException $e) {
+            var_dump($e);
+        }
+        $this->_DB = null;
+        echo json_encode($response);
     }
+
 
     public function csvContingencias($data)
     {
@@ -1724,7 +1797,7 @@ class Contingencia
             C.paquetes, C.pedido, C.proceso, C.producto, C.remite, C.tecnologia, C.tipoEquipo, C.uen,
             C.contrato, C.perfil, C.logindepacho, C.logincontingencia, C.horagestion, C.horacontingencia,
             C.observContingencia, C.acepta, C.tipificacion, C.fechaClickMarca, C.loginContingenciaPortafolio,
-            C.observContingenciaPortafolio, C.generarcr, C.uneSourceSystem as crm
+            C.observContingenciaPortafolio, C.generarcr, C.uneSourceSystem as crm, C.tarea
             FROM contingencias AS C
         WHERE C.horagestion BETWEEN '$fechaIni 00:00:00' AND '$fechafin 23:59:59'");
             $stmt->execute();
@@ -1834,11 +1907,11 @@ class Contingencia
                                             WHERE
                                                 c.finalizado IS NULL 
                                                 AND c.finalizadoPortafolio IS NULL 
-                                                -- AND c.pedido <> '' 
+                                                AND c.pedido <> '' 
                                                 AND grupo IN ( 'TV', 'INTER' ) 
                                                 AND logincontingencia IS NULL 
                                             ORDER BY
-                                                c.horacontingencia limit 1");
+                                                c.horagestion limit 1");
             $stmt->execute();
 
             $res = $stmt->fetchAll(PDO::FETCH_ASSOC);

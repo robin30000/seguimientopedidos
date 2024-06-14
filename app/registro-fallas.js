@@ -92,7 +92,6 @@
         $scope.falla = {};
         $scope.noImg = 0
         init();
-        console.log($rootScope.galletainfo.login)
 
         function init() {
             miRegistrosFallas();
@@ -123,6 +122,9 @@
                     if ($scope.endItem > data.data.counter) {
                         $scope.endItem = data.data.counter;
                     }
+                }else{
+                    $scope.totalItems = 0
+                    $scope.miRegistrosFallas = '';
                 }
             }).catch((e) => {
                 console.log(e);
@@ -183,7 +185,6 @@
 
             let datos = {id: data.id, observacion: data.observaciones, usuario: $rootScope.galletainfo.login}
             services.myService(datos, 'RegistroFallasCtrl.php', 'ObservacioAvance').then((data) => {
-                console.log(data)
                 if (data.data.status === 1) {
                     $('#observacionesModal').modal('hide');
                     Swal({
@@ -209,7 +210,6 @@
         }
 
         $scope.mostrarImagen = (nombreArchivo) => {
-            console.log(nombreArchivo)
             $scope.archivoUrl = '';
             if (nombreArchivo === '') {
                 Swal({
@@ -326,14 +326,7 @@
                     if ($scope.endItem > data.data.counter) {
                         $scope.endItem = data.data.counter;
                     }
-                } else {
-                    Swal({
-                        type: 'error',
-                        title: 'Ops...',
-                        text: data.data.msj,
-                        timer: 4000
-                    })
-                }
+                } 
 
             }).catch((e) => {
                 console.log(e);
@@ -409,7 +402,6 @@
         }
 
         $scope.buscaRegistrosFalla = (f) => {
-            console.log(f)
             if (!f) {
                 Swal({
                     type: 'error',
@@ -436,7 +428,6 @@
         }
 
         $scope.csvFallas = (data) => {
-            console.log(data)
             if (!data) {
                 Swal({
                     type: 'error',
@@ -482,7 +473,6 @@
                     $scope.observaciones = data.data.data
                     $scope.data = d;
                     $scope.falla = d;
-                    console.log($scope.falla)
                     $('#verFallaModal').modal('show');
                 }
 
@@ -1069,7 +1059,6 @@
         }
 
         $scope.guardaImpactoFalla = (data) => {
-            console.log(data)
             $scope.guarda = 0;
             $scope.actualiza = 1;
             if (!data.criticidad) {

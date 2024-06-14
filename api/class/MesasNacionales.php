@@ -13,16 +13,15 @@ class MesasNacionales
         $this->_DB = new Conection();
     }
 
-    /**
-     * @param $data
-     * @return array|void
-     * mesa Soporte Siebel-Edatel-Elite
-     */
     public function mesa1($data)
     {
         try {
 
-            //$stmt = $this->_DB->query("SELECT * FROM mesas_nacionales where estado != 'Gestionado' and mesa = 'Mesa 1' ORDER BY hora_ingreso");
+            $stmt = $this->_DB->query("SELECT COUNT(*) as counter FROM mesas_nacionales where estado != 'Gestionado' and mesa = 'Mesa 1'");
+            $stmt->execute();
+            $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $counter = $res[0]['counter'];
+
             $stmt = $this->_DB->query("SELECT
                                                     m.*,
                                                 CASE
@@ -35,7 +34,7 @@ class MesasNacionales
                                                         WHERE
                                                             m.tarea = c1.tarea 
                                                             AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
-                                                            AND c1.estado = 'Gestionado' 
+                                                            AND c1.estado = 'Gestionado' and c1.mesa = 'Mesa 1'
                                                             ) > 0 THEN
                                                             'TRUE' ELSE 'FALSE' 
                                                         END alerta,
@@ -46,7 +45,7 @@ class MesasNacionales
                                                         WHERE
                                                             m.tarea = c1.tarea 
                                                             AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
-                                                            AND c1.estado = 'Gestionado') as counter
+                                                            AND c1.estado = 'Gestionado' and c1.mesa = 'Mesa 1') as counter
                                                 FROM
                                                     mesas_nacionales m
                                                 WHERE
@@ -57,7 +56,7 @@ class MesasNacionales
             $stmt->execute();
 
             if ($stmt->rowCount()) {
-                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'counter' => $stmt->rowCount()];
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'counter' => $counter];
             } else {
                 $response = ['state' => false, 'msj' => 'No se encontraron registros'];
             }
@@ -72,14 +71,14 @@ class MesasNacionales
         }
     }
 
-    /**
-     * @param $data
-     * @return array|void
-     * mesa Edatel- Soporte LB- Cambios Pto
-     */
     public function mesa2($data)
     {
         try {
+
+            $stmt = $this->_DB->query("SELECT COUNT(*) as counter FROM mesas_nacionales where estado != 'Gestionado' and mesa = 'Mesa 2'");
+            $stmt->execute();
+            $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $counter = $res[0]['counter'];
 
             $stmt = $this->_DB->query("SELECT
                                                     m.*,
@@ -93,7 +92,7 @@ class MesasNacionales
                                                         WHERE
                                                             m.tarea = c1.tarea 
                                                             AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
-                                                            AND c1.estado = 'Gestionado' 
+                                                            AND c1.estado = 'Gestionado' and c1.mesa = 'Mesa 2'
                                                             ) > 0 THEN
                                                             'TRUE' ELSE 'FALSE' 
                                                         END alerta,
@@ -104,7 +103,7 @@ class MesasNacionales
                                                         WHERE
                                                             m.tarea = c1.tarea 
                                                             AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
-                                                            AND c1.estado = 'Gestionado') as counter
+                                                            AND c1.estado = 'Gestionado' and c1.mesa = 'Mesa 2') as counter
                                                 FROM
                                                     mesas_nacionales m
                                                 WHERE
@@ -115,7 +114,7 @@ class MesasNacionales
             $stmt->execute();
 
             if ($stmt->rowCount()) {
-                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'counter' => $stmt->rowCount()];
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'counter' => $counter];
             } else {
                 $response = ['state' => false, 'msj' => 'No se encontraron registros'];
             }
@@ -130,14 +129,14 @@ class MesasNacionales
         }
     }
 
-    /**
-     * @param $data
-     * @return array|void
-     * mesa Mesa de Validaciones
-     */
     public function mesa3($data)
     {
         try {
+
+            $stmt = $this->_DB->query("SELECT COUNT(*) as counter FROM mesas_nacionales where estado != 'Gestionado' and mesa = 'Mesa 3'");
+            $stmt->execute();
+            $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $counter = $res[0]['counter'];
 
             $stmt = $this->_DB->query("SELECT
                                                     m.*,
@@ -151,7 +150,7 @@ class MesasNacionales
                                                         WHERE
                                                             m.tarea = c1.tarea 
                                                             AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
-                                                            AND c1.estado = 'Gestionado' 
+                                                            AND c1.estado = 'Gestionado' and c1.mesa = 'Mesa 3'
                                                             ) > 0 THEN
                                                             'TRUE' ELSE 'FALSE' 
                                                         END alerta,
@@ -162,7 +161,7 @@ class MesasNacionales
                                                         WHERE
                                                             m.tarea = c1.tarea 
                                                             AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
-                                                            AND c1.estado = 'Gestionado') as counter
+                                                            AND c1.estado = 'Gestionado' and c1.mesa = 'Mesa 3') as counter
                                                 FROM
                                                     mesas_nacionales m
                                                 WHERE
@@ -173,7 +172,7 @@ class MesasNacionales
             $stmt->execute();
 
             if ($stmt->rowCount()) {
-                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'counter' => $stmt->rowCount()];
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'counter' => $counter];
             } else {
                 $response = ['state' => false, 'msj' => 'No se encontraron registros'];
             }
@@ -188,129 +187,14 @@ class MesasNacionales
         }
     }
 
-    /**
-     * @param $data
-     * @return array|void
-     * mesa Premisas extendidas
-     */
-
-    /**
-     * mesa 5 Rescate Upgrades
-     */
-    /*public function mesa4($data)
-    {
-        try {
-
-            $stmt = $this->_DB->query("SELECT
-                                                    m.*,
-                                                CASE
-                                                        
-                                                        WHEN (
-                                                        SELECT
-                                                            COUNT(*) 
-                                                        FROM
-                                                            mesas_nacionales c1 
-                                                        WHERE
-                                                            m.tarea = c1.tarea 
-                                                            AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
-                                                            AND c1.estado = 'Gestionado' 
-                                                            ) > 0 THEN
-                                                            'TRUE' ELSE 'FALSE' 
-                                                        END alerta,
-                                                        (SELECT
-                                                            COUNT(*) 
-                                                        FROM
-                                                            mesas_nacionales c1 
-                                                        WHERE
-                                                            m.tarea = c1.tarea 
-                                                            AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
-                                                            AND c1.estado = 'Gestionado') as counter
-                                                FROM
-                                                    mesas_nacionales m
-                                                WHERE
-                                                    m.estado != 'Gestionado' 
-                                                    AND m.mesa = 'Mesa 4' 
-                                                ORDER BY
-                                                    hora_ingreso");
-            $stmt->execute();
-
-            if ($stmt->rowCount()) {
-                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'counter' => $stmt->rowCount()];
-            } else {
-                $response = ['state' => false, 'msj' => 'No se encontraron registros'];
-            }
-
-            $this->_DB = null;
-
-            return $response;
-
-
-        } catch (PDOException $e) {
-            var_dump($e->getMessage());
-        }
-    }*/
-
-    /**
-     * @param $data
-     * @return array|void
-     * mesa BSC
-     */
     public function mesa6($data)
     {
         try {
 
-            $stmt = $this->_DB->query("SELECT
-                                                    m.*,
-                                                CASE
-                                                        
-                                                        WHEN (
-                                                        SELECT
-                                                            COUNT(*) 
-                                                        FROM
-                                                            mesas_nacionales c1 
-                                                        WHERE
-                                                            m.tarea = c1.tarea 
-                                                            AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
-                                                            AND c1.estado = 'Gestionado' 
-                                                            ) > 0 THEN
-                                                            'TRUE' ELSE 'FALSE' 
-                                                        END alerta,
-                                                        (SELECT
-                                                            COUNT(*) 
-                                                        FROM
-                                                            mesas_nacionales c1 
-                                                        WHERE
-                                                            m.tarea = c1.tarea 
-                                                            AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
-                                                            AND c1.estado = 'Gestionado') as counter
-                                                FROM
-                                                    mesas_nacionales m
-                                                WHERE
-                                                    m.estado != 'Gestionado' 
-                                                    AND m.mesa = 'Mesa 5' 
-                                                ORDER BY
-                                                    hora_ingreso");
+            $stmt = $this->_DB->query("SELECT COUNT(*) as counter FROM mesas_nacionales where estado != 'Gestionado' and mesa = 'Mesa 6'");
             $stmt->execute();
-
-            if ($stmt->rowCount()) {
-                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'counter' => $stmt->rowCount()];
-            } else {
-                $response = ['state' => false, 'msj' => 'No se encontraron registros'];
-            }
-
-            $this->_DB = null;
-
-            return $response;
-
-
-        } catch (PDOException $e) {
-            var_dump($e->getMessage());
-        }
-    }
-
-    public function mesa7($data)
-    {
-        try {
+            $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $counter = $res[0]['counter'];
 
             $stmt = $this->_DB->query("SELECT
                                                     m.*,
@@ -324,7 +208,7 @@ class MesasNacionales
                                                         WHERE
                                                             m.tarea = c1.tarea 
                                                             AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
-                                                            AND c1.estado = 'Gestionado' 
+                                                            AND c1.estado = 'Gestionado' and mesa = 'Mesa 6'
                                                             ) > 0 THEN
                                                             'TRUE' ELSE 'FALSE' 
                                                         END alerta,
@@ -335,7 +219,7 @@ class MesasNacionales
                                                         WHERE
                                                             m.tarea = c1.tarea 
                                                             AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
-                                                            AND c1.estado = 'Gestionado') as counter
+                                                            AND c1.estado = 'Gestionado' and mesa = 'Mesa 6') as counter
                                                 FROM
                                                     mesas_nacionales m
                                                 WHERE
@@ -346,7 +230,73 @@ class MesasNacionales
             $stmt->execute();
 
             if ($stmt->rowCount()) {
-                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'counter' => $stmt->rowCount()];
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'counter' => $counter];
+            } else {
+                $response = ['state' => false, 'msj' => 'No se encontraron registros'];
+            }
+
+            $this->_DB = null;
+
+            return $response;
+
+
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+    }
+
+    public function Geco($data)
+    {
+        try {
+
+            $stmt = $this->_DB->query("SELECT COUNT(*) as counter FROM mesas_nacionales where estado != 'Gestionado' and mesa = 'Geco'");
+            $stmt->execute();
+            $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $counter = $res[0]['counter'];
+
+            $stmt = $this->_DB->query("SELECT
+                                                    m.*,
+                                                        CASE 
+                                                            WHEN m.accion_tecnico = 'Actividad requiere escalera' OR m.accion_tecnico = 'Requiere escalera (Realizar acometida)' OR m.accion_tecnico = 'No corresp. a precableado o extensión' THEN 'Nivelar Técnico Completo' 
+                                                            WHEN m.accion_tecnico = 'Actividad requiere herramientas' OR m.accion_tecnico = 'Actividad requiere Materiales' OR m.accion_tecnico = 'No corresponde a cambio de equipo' THEN 'Nivelar Técnico Medio' 
+                                                            WHEN m.accion_tecnico = 'Sin trabajo' THEN 'Cargar trabajo' 
+                                                            WHEN m.accion_tecnico = 'Nivelar ruta lejana' THEN 'Cambiar técnico' 
+                                                            WHEN m.accion_tecnico = 'Cambio de distrito' THEN 'Solicitar cambio distrito' 
+                                                            WHEN m.accion_tecnico = 'Asignar' THEN 'Asignar ETB' 
+                                                            ELSE 'Ubicar usuario' 
+                                                        END AS tipificaciones,                                                
+                                                        CASE
+                                                        WHEN (
+                                                        SELECT
+                                                            COUNT(*) 
+                                                        FROM
+                                                            mesas_nacionales c1 
+                                                        WHERE
+                                                            m.tarea = c1.tarea 
+                                                            AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                            AND c1.estado = 'Gestionado' and mesa = 'Geco'
+                                                            ) > 0 THEN
+                                                            'TRUE' ELSE 'FALSE' 
+                                                        END alerta,
+                                                        (SELECT
+                                                            COUNT(*) 
+                                                        FROM
+                                                            mesas_nacionales c1 
+                                                        WHERE
+                                                            m.tarea = c1.tarea 
+                                                            AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                                            AND c1.estado = 'Gestionado' and mesa = 'Geco') as counter
+                                                FROM
+                                                    mesas_nacionales m
+                                                WHERE
+                                                    m.estado != 'Gestionado' 
+                                                    AND m.mesa = 'Geco' 
+                                                ORDER BY
+                                                    hora_ingreso");
+            $stmt->execute();
+
+            if ($stmt->rowCount()) {
+                $response = ['state' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'counter' => $counter];
             } else {
                 $response = ['state' => false, 'msj' => 'No se encontraron registros'];
             }
@@ -414,19 +364,20 @@ class MesasNacionales
                                                     pedido,
                                                     TaskTypeCategory,
                                                     UneSourceSystem,
+                                                    region,
                                                 CASE
-                                                        mesa 
-                                                        WHEN 'Mesa 1' THEN
+                                                    mesa 
+                                                    WHEN 'Mesa 1' THEN
                                                         'Soporte Siebel-Edatel-Elite' 
-                                                        WHEN 'Mesa 2' THEN
+                                                    WHEN 'Mesa 2' THEN
                                                         'Edatel- Soporte LB- Cambios Pto' 
-                                                        WHEN 'Mesa 3' THEN
+                                                    WHEN 'Mesa 3' THEN
                                                         'Mesa de Validaciones' 
-                                                        -- WHEN 'Mesa 4' THEN
-                                                        -- 'P. ext.' 
-                                                        WHEN 'Mesa 6' THEN
-                                                        'BSC' 
-                                                    END AS mesa,
+                                                    -- WHEN 'Mesa 4' THEN
+                                                    --    'P. ext.' 
+                                                    WHEN 'Mesa 6' THEN
+                                                        'BSC' ELSE mesa
+                                                END AS mesa,
                                                     accion_tecnico 
                                                 FROM
                                                     mesas_nacionales WHERE 1=1 $con AND estado = 'Gestionado' ORDER BY hora_ingreso desc LIMIT $offset, $pagesize");
@@ -459,26 +410,13 @@ class MesasNacionales
                 $response = ['state' => 99, 'title' => 'Su session ha expirado', 'text' => 'Inicia session nuevamente para continuar'];
             } else {
 
-                $stmt = $this->_DB->prepare("SELECT m.estado, m.login_gestion, CASE
-                                                        WHEN (
-                                                        SELECT
-                                                            COUNT(*) 
-                                                        FROM
-                                                            mesas_nacionales c1 
-                                                        WHERE
-                                                            m.tarea = c1.tarea 
-                                                            AND c1.hora_ingreso >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
-                                                            AND c1.estado = 'Gestionado' 
-                                                            ) > 0 THEN
-                                                            TRUE ELSE FALSE 
-                                                        END alerta   
+                $stmt = $this->_DB->prepare("SELECT m.estado, m.login_gestion
                                                         FROM mesas_nacionales m WHERE m.id = :tarea");
                 $stmt->execute([':tarea' => $tarea]);
 
 
                 if ($stmt->rowCount()) {
                     $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    $alerta = $res[0]['alerta'];
                     $stmt = $this->_DB->query("SELECT login FROM usuarios WHERE perfil = '11'");
                     $stmt->execute();
                     $res1 = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -488,12 +426,12 @@ class MesasNacionales
                         $stmt = $this->_DB->prepare("UPDATE mesas_nacionales SET estado = 'En gestión', login_gestion = :user, hora_marca = :fecha WHERE id = :tarea");
                         $stmt->execute([':user' => $user, ':fecha' => date('Y-m-d H:i:s'), ':tarea' => $tarea]);
                         if ($stmt->rowCount()) {
-                            $response = ['state' => true, 'msj' => 'tarea Bloqueada correctamente', 'alerta' => $alerta];
+                            $response = ['state' => true, 'msj' => 'tarea Bloqueada correctamente'];
                         } else {
                             $response = ['state' => false, 'msj' => 'Ha ocurrido un erro interno intentalo nuevamente en unos minutos'];
                         }
                     } elseif (($res[0]['estado'] == 'En gestión') && ($res[0]['login_gestion'] == $user || in_array($user, $usuarios_array))) {
-                        $stmt = $this->_DB->prepare("UPDATE mesas_nacionales SET estado = 'Sin gestión', login_gestion = '' WHERE id = :tarea");
+                        $stmt = $this->_DB->prepare("UPDATE mesas_nacionales SET estado = 'Sin gestión', login_gestion = NULL WHERE id = :tarea");
                         $stmt->execute([':tarea' => $tarea]);
                         if ($stmt->rowCount()) {
                             $response = ['state' => true, 'msj' => 'tarea Desbloqueado correctamente'];
@@ -588,8 +526,8 @@ class MesasNacionales
                     $buscar = $data['buscar']['buscar'];
                     $f .= " AND $concepto = '$buscar' ";
                 }
-                $con = "  $f  ORDER BY hora_ingreso desc LIMIT $offset, $pagesize ";
-                $con1 = "  $f ORDER BY hora_ingreso desc";
+                $con = " AND estado = 'Gestionado' $f  ORDER BY hora_ingreso desc LIMIT $offset, $pagesize ";
+                $con1 = " AND estado = 'Gestionado' $f ORDER BY hora_ingreso desc";
                 if (isset($data['buscar']['export'])) {
                     $fechaini = $data['buscar']['fechaini'];
                     $fechafin = $data['buscar']['fechafin'];
@@ -689,8 +627,8 @@ class MesasNacionales
                                                         'Edatel- Soporte LB- Cambios Pto' 
                                                         WHEN 'Mesa 3' THEN
                                                         'Mesa de Validaciones' 
-                                                        WHEN 'Mesa 4' THEN
-                                                        'P. ext.' 
+                                                        WHEN 'Geco' THEN
+                                                        'Geco' 
                                                         WHEN 'Mesa 6' THEN
                                                         'BSC' 
                                                     END AS mesa,

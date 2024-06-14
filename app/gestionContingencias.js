@@ -31,7 +31,69 @@
         $scope.cantidadContingenciasINT = 0;
         $scope.tipoTarea = 'Todos'
 
-        resumenContingencias();
+        init();
+
+        function init() {
+            resumenContingencias();
+            datosContingenciaTerminado();
+        }
+
+        $scope.pageChanged1 = function () {
+            let data = {page: $scope.currentPage1, size: $scope.pageSize1, fecha: $scope.buscar};
+            datosContingenciaTerminado(data);
+        };
+        $scope.pageSizeChanged = function () {
+            let data = {page: $scope.currentPage1, size: $scope.pageSize1, fecha: $scope.buscar};
+            datosContingenciaTerminado(data);
+        };
+
+        function datosContingenciaTerminado(data) {
+            let datos = '';
+            if (!data) {
+                $scope.currentPage1 = 1;
+                $scope.totalItems1 = 0;
+                $scope.pageSize1 = 15;
+                $scope.searchText = '';
+                datos = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.buscar}
+            } else {
+                datos = data;
+            }
+            $scope.loadingData = true;
+
+            services.myService(datos, 'contingenciaCtrl.php', 'datosContingenciaTerminado').then((data) => {
+                $scope.loadingData = false;
+                $scope.registroContingencia = data.data.data;
+            }).catch((e) => {
+                console.log(e)
+            })
+        }
+
+        $scope.buscar = {};
+
+        $scope.buscaDetalle = (data) => {
+            let datos = '';
+            if (!data) {
+                $scope.currentPage1 = 1;
+                $scope.totalItems1 = 0;
+                $scope.pageSize1 = 15;
+                $scope.searchText = '';
+                datos = {'page': $scope.currentPage, 'size': $scope.pageSize, 'data': $scope.ETP}
+            } else {
+                datos = data;
+            }
+            services.myService(datos, 'contingenciaCtrl.php', 'datosContingenciaTerminado').then((data) => {
+                $scope.loadingData = false;
+                $scope.registroContingencia = data.data.data;
+                $scope.totalItems1 = data.data.counter;
+                $scope.startItem = ($scope.currentPage - 1) * $scope.pageSize1 + 1;
+                $scope.endItem = $scope.currentPage1 * $scope.pageSize1;
+                if ($scope.endItem > data.data.counter) {
+                    $scope.endItem = data.data.counter;
+                }
+            }).catch((e) => {
+                console.log(e)
+            })
+        }
 
 
         $scope.bb8 = function (pedido) {
@@ -403,6 +465,21 @@
                 console.log(e)
             })
         }
+
+        $scope.CopyPortaPapeles = function (data) {
+            var copyTextTV = document.createElement("input");
+            copyTextTV.value = data;
+            document.body.appendChild(copyTextTV);
+            copyTextTV.select();
+            document.execCommand("copy");
+            document.body.removeChild(copyTextTV);
+            Swal({
+                type: "info",
+                title: "Aviso",
+                text: "El texto seleccionado fue copiado",
+                timer: 2000,
+            });
+        };
 
         $scope.autocompletarContingencia = async (data) => {
             var contingencia = {};

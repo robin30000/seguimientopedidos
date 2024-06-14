@@ -60,3 +60,16 @@ angular.module("seguimientopedidos").directive("fileModel", [
         };
     },
 ]);
+
+angular.module("seguimientopedidos").directive("compileHtml", function ($compile) {
+    return {
+        restrict: "A",
+        link: function (scope, element, attrs) {
+            scope.$watch(attrs.compileHtml, function (newVal) {
+                element.html(newVal);
+                $compile(element.contents())(scope);
+            });
+        },
+    };
+})
+

@@ -34,12 +34,7 @@
                     $scope.datos = data.data.data;
                     $scope.Items = data.data.counter;
                 } else {
-                    Swal({
-                        type: 'error',
-                        title: 'Opps..',
-                        text: data.data.msj,
-                        timer: 4000
-                    })
+                    console.log('No hay datos');
                 }
             }).catch((e) => {
                 console.log(e)
@@ -101,12 +96,7 @@
                         $scope.endItem = data.data.counter;
                     }
                 } else {
-                    Swal({
-                        type: 'error',
-                        title: 'Opps..',
-                        text: data.data.msj,
-                        timer: 4000
-                    })
+                    console.log('No hay datos');
                 }
             }).catch((e) => {
                 console.log(e)

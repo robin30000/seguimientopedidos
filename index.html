@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta content="notranslate" name="google"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <base href="/seguimientopedidos/">
+    <base href="/seguimientopedidos-dev/">
     <link href="css/select2.min.css" rel="stylesheet"/>
     <link href="css/font-awesome.min.css" rel="stylesheet">
     <link href="img/favicon.ico" rel="shortcut icon" type="image/ico"/>
@@ -13,7 +13,7 @@
     <link href="js/sweetalert/sweetalert2.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet" type="text/css"/>
-    <title>{{tituloPagina}}</title>
+    <title ng-bind="tituloPagina"></title>
 </head>
 
 <body class="bodis">
@@ -47,6 +47,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
 <script ng-if="robcastro==1" src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+
 <script src="node_modules/html2canvas/dist/html2canvas.js"></script>
 <script src="js/angular-chart.min.js"></script>
 
@@ -54,6 +57,8 @@
 <script src="app/app.js?v=2"></script>
 <script src="routes.js"></script>
 <script src="app/constant.js"></script>
+<script src="app/directives/directives.js"></script>
+<script src="app/filter/filter.js"></script>
 <script src="app/login.js?v=11"></script>
 <script src="app/activacion_toip.js?v=1"></script>
 <script src="app/etp.js"></script>
@@ -92,6 +97,7 @@
 <script src="app/menuPerfil.js"></script>
 <script src="app/supervisor.js"></script>
 <script src="app/recuperar-login.js"></script>
+<script src="app/registro-fallas.js"></script>
 <!--fin app-->
 
 <!--<script src="js/angular/angular-recaptcha.min.js"></script>

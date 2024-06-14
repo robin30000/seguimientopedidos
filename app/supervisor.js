@@ -14,10 +14,8 @@
             mesa1();
             mesa2();
             mesa3();
-            //mesa4();
-            //mesa5();
             mesa6();
-            //mesa7();
+            mesaGeco();
             gestionETP();
             gestionToip();
             listarsoportegpon();
@@ -50,24 +48,6 @@
             })
         }
 
-        function mesa4() {
-            services.myService('', 'mesasNacionalesCtrl.php', 'mesa4').then((data) => {
-                $scope.mesa4 = data.data.data;
-                $scope.Items4 = data.data.counter;
-            }).catch((e) => {
-                console.log(e)
-            })
-        }
-
-        function mesa5() {
-            services.myService('', 'mesasNacionalesCtrl.php', 'mesa6').then((data) => {
-                $scope.mesa5 = data.data.data;
-                $scope.Items5 = data.data.counter;
-            }).catch((e) => {
-                console.log(e)
-            })
-        }
-
         function mesa6() {
             services.myService('', 'mesasNacionalesCtrl.php', 'mesa6').then((data) => {
                 $scope.mesa6 = data.data.data;
@@ -77,10 +57,10 @@
             })
         }
 
-        function mesa7() {
-            services.myService('', 'mesasNacionalesCtrl.php', 'mesa7').then((data) => {
-                $scope.mesa7 = data.data.data;
-                $scope.Items7 = data.data.counter;
+        function mesaGeco() {
+            services.myService('', 'mesasNacionalesCtrl.php', 'Geco').then((data) => {
+                $scope.mesa8 = data.data.data;
+                $scope.Items8 = data.data.counter;
             }).catch((e) => {
                 console.log(e)
             })
@@ -112,6 +92,7 @@
             services
                 .getListaPendientesSoporteGpon()
                 .then(function (data) {
+                    console.log(data)
                     if (data.data.length > 0) {
                         $scope.dataSoporteGpon = data.data[0];
                         $scope.itemGpon = $scope.dataSoporteGpon.length
@@ -233,29 +214,22 @@
                 case 3 :
                     mesa3();
                     break;
-                /*case 4 :
-                    mesa4();
-                    break;*/
                 case 6 :
                     mesa6();
                     break;
-                case 5 :
-                    registros();
-                    $scope.mn = '';
+                case 8 :
+                    mesaGeco();
+                    break;
+                case 9 :
+                    listarsoportegpon();
+                    break;
+                case 10 :
+                    gestionETP();
+                    break;
+                case 11 :
+                    gestionToip();
                     break;
             }
-        }
-
-        $scope.recargaGpon = () => {
-            listarsoportegpon();
-        }
-
-        $scope.recargaEtp = () => {
-            gestionETP();
-        }
-
-        $scope.recargaToip = () => {
-            gestionToip();
         }
 
         $scope.CopyPortaPapeles = function (data) {

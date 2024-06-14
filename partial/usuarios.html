@@ -50,11 +50,20 @@
                                 </div>
                                 <button class="btn btn-default btn-xs" data-backdrop="static" data-target="#createUser"
                                         data-toggle="modal" ng-click="crearModal()"
-                                        ng-disabled="loading" ng-show="galletainfo.perfil == 11" tooltip-placement="top"
+                                        ng-disabled="loading" tooltip-placement="top"
                                         type="button" uib-tooltip="Crear usuario"><i aria-hidden="true"
                                                                                      class="fa fa-user-plus">
                                 </i>
                                 </button>
+
+                                <button class="btn btn-default btn-xs"
+                                        ng-click="refresh()"
+                                        ng-disabled="loading" tooltip-placement="top"
+                                        type="button" uib-tooltip="refrescar"><i aria-hidden="true"
+                                                                                 class="fa fa-refresh">
+                                </i>
+                                </button>
+
 
                             </li>
                         </ul>
@@ -128,7 +137,7 @@
                                      ng-class="{ 'has-error' : contact_form.nombre.$touched && contact_form.nombre.$invalid}">
                                     <label for="nombre">Nombre</label>
                                     <input autocomplete="off" class="form-control input-sm"
-                                           id="nombre" minlength="5" ng-model="crea.nombre" required
+                                           id="nombre" minlength="4" ng-model="crea.nombre" required
                                            type="text">
                                 </div>
                             </div>
@@ -158,30 +167,12 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="contraseña">Contraseña</label>
-                                    <input autocomplete="off" class="form-control input-sm"
-                                           id="contraseña" minlength="5" ng-model="crea.password"
-                                           type="password">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="contrasenac">Confirmar contraseña</label>
-                                    <input autocomplete="off" class="form-control input-sm"
-                                           id="contrasenac" minlength="5" ng-model="crea.passwordc"
-                                           type="password">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
                                     <label for="login">Login</label>
                                     <input autocomplete="off" class="form-control input-sm"
                                            id="login" minlength="5" ng-model="crea.login" required type="text">
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="row">
                             <div class="col-md-8">
                                 <div class="form-group">
                                     <label for="correo">Correo</label>
@@ -191,7 +182,6 @@
                                 </div>
                             </div>
                         </div>
-
 
                     </form>
                 </div>
@@ -285,27 +275,6 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group"
-                                     ng-class="{ 'has-error' : editUser.pass.$touched && editUser.pass.$invalid}">
-                                    <label for="pass">Contraseña</label>
-                                    <input class="form-control input-sm"
-                                           id="pass" name="pass" ng-model="datosEditar.PASSWORD" required
-                                           type="password">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group"
-                                     ng-class="{ 'has-error' : editUser.passc.$touched && editUser.passc.$invalid}">
-                                    <label for="passc">Confirmar contraseña</label>
-                                    <input class="form-control input-sm"
-                                           id="passc" name="passc" ng-model="datosEditar.PASSWORDC"
-                                           required
-                                           type="password">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group"
                                      ng-class="{ 'has-error' : editUser.indent.$touched && editUser.indent.$invalid}">
                                     <label for="indent">Identificación</label>
                                     <input class="form-control input-sm" id="indent"
@@ -329,6 +298,10 @@
                                     </select>
                                 </div>
                             </div>
+
+                        </div>
+                        <div class="row">
+
                             <div class="col-md-4">
                                 <div class="form-group"
                                      ng-class="{ 'has-error' : editUser.loginEdit.$touched && editUser.loginEdit.$invalid}">
@@ -338,15 +311,27 @@
                                            type="text">
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="row">
                             <div class="col-md-8">
                                 <div class="form-group">
                                     <label for="correoEdit">Correo</label>
                                     <input autocomplete="off" class="form-control input-sm"
                                            id="correoEdit" minlength="5" ng-model="datosEditar.correo" required
                                            type="email">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="estado" style="margin-right: 5px">Estado</label>
+                                    <input name="estado" ng-if="!datosEditar.estado" type="hidden" value="Inactivo">
+                                    <input class="switch_1" id="estado" name="estado"
+                                           ng-checked="datosEditar.estado == 'Activo'" ng-false-value="'Inactivo'"
+                                           ng-model="datosEditar.estado" ng-true-value="'Activo'"
+                                           style="font-size: 15px; margin-bottom: -6px;" type="checkbox">
+
                                 </div>
                             </div>
                         </div>

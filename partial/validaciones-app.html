@@ -27,128 +27,166 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <b><i aria-hidden="true" class="fa fa-bars"></i> Validaciones App</b>
+                    <b><i aria-hidden="true" class="fa fa-bars"></i> Validaciones App</b> <small><em>Los switches
+                    corresponden a las
+                    validaciones especiales de la app
+                    móvil</em></small>
                 </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-12 text-center">
-                            <h3>Activa / inactiva validación <small>Estas corresponden a las
-                                validaciones de contingencias(cable modem) y soporte gpon de la app
-                                móvil</small></h3>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="table-responsive">
-                            <table class="table table table-bordered table-hover">
-                                <thead class="table-header">
-                                <tr>
-                                    <th>Validación</th>
-                                    <th>Sara</th>
-                                    <th>Equipos</th>
-                                    <th>Infraestructura</th>
-                                    <th>Estado</th>
-                                </tr>
-                                </thead>
+                <div class="">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover" style="margin-bottom: 0">
+                            <thead class="table-header">
+                            <tr>
+                                <th>Validación</th>
+                                <th>Sara</th>
+                                <th>Equipos</th>
+                                <th>Infraestructura</th>
+                                <th>Encendida</th>
+                            </tr>
+                            </thead>
 
-                                <tbody>
-                                <tr>
-                                    <td class="middle"><span>Contingencias</span></td>
-                                    <td class="middle"><input class="switch_1" ng-checked="contingenciaSara == 'activa'"
-                                                              ng-click="cambiaEstado('contingenciaSara',contingenciaSara)"
-                                                              ng-model="contingenciaSara"
-                                                              type="checkbox">
-                                    </td>
-                                    <td class="middle"><input class="switch_1"
-                                                              ng-checked="contingenciaEquipo == 'activa'"
-                                                              ng-click="cambiaEstado('contingenciaEquipo',contingenciaEquipo)"
-                                                              ng-model="contingenciaEquipo"
-                                                              type="checkbox">
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class="middle"><span>Soporte Gpon</span></td>
-                                    <td class="middle"></td>
-                                    <td class="middle">
-                                        <input class="switch_1" ng-checked="gponEquipo == 'activa'"
-                                               ng-click="cambiaEstado('gponEquipo',gponEquipo)"
-                                               ng-model="gponEquipo"
-                                               type="checkbox">
-                                    </td>
-                                    <td class="middle">
-                                        <input class="switch_1" ng-checked="gponInfraestructura == 'activa'"
-                                               ng-click="cambiaEstado('gponInfraestructura',gponInfraestructura)"
-                                               ng-model="gponInfraestructura"
-                                               type="checkbox">
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class="middle"><span>Código incompleto</span></td>
-                                    <td class="middle"></td>
-                                    <td class="middle"></td>
-                                    <td class="middle"></td>
-                                    <td class="middle"><input class="switch_1" ng-checked="codigoIncompleto == 'activa'"
-                                                              ng-click="cambiaEstado('codigoIncompleto',codigoIncompleto)"
-                                                              ng-model="codigoIncompleto"
-                                                              type="checkbox">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="middle"><span>Encuesta terreno</span></td>
-                                    <td class="middle"></td>
-                                    <td class="middle"></td>
-                                    <td class="middle"></td>
-                                    <td class="middle"><input class="switch_1" ng-checked="Encuesta == 'activa'"
-                                                              ng-click="cambiaEstado('Encuesta',Encuesta)"
-                                                              ng-model="Encuesta"
-                                                              type="checkbox"></td>
-                                </tr>
-                                <tr>
-                                    <td class="middle"><span>ETP</span></td>
-                                    <td class="middle"></td>
-                                    <td class="middle">
-                                        <input class="switch_1" ng-checked="etpEquipo == 'activa'"
-                                               ng-click="cambiaEstado('etpEquipo',etpEquipo)"
-                                               ng-model="etpEquipo"
-                                               type="checkbox">
-                                    </td>
-                                    <td class="middle">
-                                        <input class="switch_1" ng-checked="etpInfraestructura == 'activa'"
-                                               ng-click="cambiaEstado('etpInfraestructura',etpInfraestructura)"
-                                               ng-model="etpInfraestructura"
-                                               type="checkbox">
-                                    </td>
-                                    <td class="middle"></td>
-                                </tr>
-                                <tr>
-                                    <td class="middle"><span>MultiTarea asesor</span></td>
-                                    <td class="middle"></td>
-                                    <td class="middle"></td>
-                                    <td class="middle"></td>
-                                    <td class="middle">
-                                        <input class="switch_1" ng-checked="multiTarea == 'activa'"
-                                               ng-click="cambiaEstado('multiTarea',multiTarea)"
-                                               ng-model="multiTarea"
-                                               type="checkbox">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="middle"><span>Conexión click</span></td>
-                                    <td class="middle"></td>
-                                    <td class="middle"></td>
-                                    <td class="middle"></td>
-                                    <td class="middle">
-                                        <input class="switch_1" ng-checked="connexionClick == 'activa'"
-                                               ng-click="cambiaEstado('connexionClick',connexionClick)"
-                                               ng-model="connexionClick"
-                                               type="checkbox">
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                            <tbody>
+                            <tr>
+                                <td class="middle"><span>Contingencias</span></td>
+                                <td class="middle"><input class="switch_1" ng-checked="contingenciaSara == 'activa'"
+                                                          ng-click="cambiaEstado('contingenciaSara',contingenciaSara)"
+                                                          ng-model="contingenciaSara"
+                                                          type="checkbox">
+                                </td>
+                                <td class="middle"><input class="switch_1"
+                                                          ng-checked="contingenciaEquipo == 'activa'"
+                                                          ng-click="cambiaEstado('contingenciaEquipo',contingenciaEquipo)"
+                                                          ng-model="contingenciaEquipo"
+                                                          type="checkbox">
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td class="middle"><span>Soporte Gpon</span></td>
+                                <td class="middle"></td>
+                                <td class="middle">
+                                    <input class="switch_1" ng-checked="gponEquipo == 'activa'"
+                                           ng-click="cambiaEstado('gponEquipo',gponEquipo)"
+                                           ng-model="gponEquipo"
+                                           type="checkbox">
+                                </td>
+                                <td class="middle">
+                                    <input class="switch_1" ng-checked="gponInfraestructura == 'activa'"
+                                           ng-click="cambiaEstado('gponInfraestructura',gponInfraestructura)"
+                                           ng-model="gponInfraestructura"
+                                           type="checkbox">
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td class="middle"><span>Código incompleto</span></td>
+                                <td class="middle"></td>
+                                <td class="middle"></td>
+                                <td class="middle"></td>
+                                <td class="middle"><input class="switch_1" ng-checked="codigoIncompleto == 'activa'"
+                                                          ng-click="cambiaEstado('codigoIncompleto',codigoIncompleto)"
+                                                          ng-model="codigoIncompleto"
+                                                          type="checkbox">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="middle"><span>Encuesta terreno</span>
+                                    <button
+                                            class="btn btn-default btn-xs"
+                                            data-backdrop="static"
+                                            tooltip-placement="top" type="button"
+                                            uib-tooltip="Habilita o deshabilita la encuesta de los técnicos en la app">
+
+                                        <i class="fa fa-comment-o"></i></button>
+                                </td>
+                                <td class="middle"></td>
+                                <td class="middle"></td>
+                                <td class="middle"></td>
+                                <td class="middle"><input class="switch_1" ng-checked="Encuesta == 'activa'"
+                                                          ng-click="cambiaEstado('Encuesta',Encuesta)"
+                                                          ng-model="Encuesta"
+                                                          type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td class="middle"><span>ETP</span></td>
+                                <td class="middle"></td>
+                                <td class="middle">
+                                    <input class="switch_1" ng-checked="etpEquipo == 'activa'"
+                                           ng-click="cambiaEstado('etpEquipo',etpEquipo)"
+                                           ng-model="etpEquipo"
+                                           type="checkbox">
+                                </td>
+                                <td class="middle">
+                                    <input class="switch_1" ng-checked="etpInfraestructura == 'activa'"
+                                           ng-click="cambiaEstado('etpInfraestructura',etpInfraestructura)"
+                                           ng-model="etpInfraestructura"
+                                           type="checkbox">
+                                </td>
+                                <td class="middle"></td>
+                            </tr>
+                            <tr>
+                                <td class="middle"><span>MultiTarea asesor</span>
+                                    <button
+                                            class="btn btn-default btn-xs"
+                                            data-backdrop="static"
+                                            tooltip-placement="top" type="button"
+                                            uib-tooltip="Permite la asignación de multiples tareas en los módulos deme tarea ">
+
+                                        <i class="fa fa-comment-o"></i></button>
+                                </td>
+                                <td class="middle"></td>
+                                <td class="middle"></td>
+                                <td class="middle"></td>
+                                <td class="middle">
+                                    <input class="switch_1" ng-checked="multiTarea == 'activa'"
+                                           ng-click="cambiaEstado('multiTarea',multiTarea)"
+                                           ng-model="multiTarea"
+                                           type="checkbox">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="middle">
+                                    <span>Conexión click </span>
+                                    <button
+                                            class="btn btn-default btn-xs"
+                                            data-backdrop="static"
+                                            tooltip-placement="top" type="button"
+                                            uib-tooltip="Los pedidos ingresan al sistema sin ninguna validación">
+
+                                        <i class="fa fa-comment-o"></i></button>
+                                </td>
+                                <td class="middle"></td>
+                                <td class="middle"></td>
+                                <td class="middle"></td>
+                                <td class="middle">
+                                    <input class="switch_1" ng-checked="connexionClick == 'activa'"
+                                           ng-click="cambiaEstado('connexionClick',connexionClick)"
+                                           ng-model="connexionClick"
+                                           type="checkbox">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="middle"><span>Estado </span>
+                                    <button
+                                            class="btn btn-default btn-xs"
+                                            data-backdrop="static"
+                                            tooltip-placement="top" type="button"
+                                            uib-tooltip="Los pedidos ingresan al sistema sin la validación de estado">
+
+                                        <i class="fa fa-comment-o"></i></button>
+                                </td>
+                                <td class="middle"></td>
+                                <td class="middle"></td>
+                                <td class="middle"></td>
+                                <td class="middle">
+                                    <input class="switch_1" ng-checked="Estado == 'activa'"
+                                           ng-click="cambiaEstado('Estado',Estado)"
+                                           ng-model="Estado"
+                                           type="checkbox">
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

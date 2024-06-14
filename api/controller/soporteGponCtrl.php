@@ -72,6 +72,18 @@ if (isset($data['method'])) {
             $res = $user->gestionPorHora($data['data']);
             echo json_encode($res);
             break;
+        case 'datosEtb':
+            require_once '../class/soporteGpon.php';
+            $user = new soporteGpon();
+            $res = $user->datosEtb();
+            echo json_encode($res);
+            break;
+        case 'datosGpon':
+            require_once '../class/soporteGpon.php';
+            $user = new soporteGpon();
+            $res = $user->datosGpon();
+            echo json_encode($res);
+            break;
         default:
             echo 'ninguna opción valida.';
             break;

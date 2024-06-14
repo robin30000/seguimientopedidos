@@ -1,319 +1,508 @@
-<style>
-  .popover {
-    max-width: 100%;
-  }
-
-  /* .popover-content,
-  .popover {
-    max-width: 400px;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    left: 40% !important;
-  } */
-</style>
-
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-md-12">
-      <div id="home" class="tab-pane fade in active">
-        <div class="panel panel-default">
-          <div class="panel-heading nav navbar-default">
-            <ul class="nav navbar-nav navbar-left">
-              <b>Soporte GPON</b>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-              <b>
-                <!-- <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-backdrop="static" ng-click="contadorGpon()"
-                tooltip-placement="top" uib-tooltip="Contador"
-                  data-target="#infomodal" data-placement="top" data-html="true"> Contador</button> -->
-                <button type="button" class="btn btn-info btn-xs" data-backdrop="static" ng-click="contadorGpon()"
-                  popover-placement="bottom" popover-title="Contador" uib-popover-html="contadorGpon">Contador</button>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading nav navbar-default">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a data-toggle="tab" href="/#soporte_gpon">Soporte GPON</a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="/#soporte_etb">Soporte ETB</a>
+                        </li>
 
-                &nbsp;&nbsp;&nbsp;&nbsp;
-              </b>
-
-              <b>
-                <button type="button" class="btn btn-default btn-xs" ng-click="listarsoportegpon()"
-                  tooltip-placement="top" uib-tooltip="Actualizar" ng-disabled="loading">
-                  <i class="fa fa-refresh" aria-hidden="true"></i>
-                </button>
-              </b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            </ul>
-          </div>
-          <div class="">
-            <div class="container-fluid" ng-show="isLoadingData">
-              <div class="jumbotron">
-                <h3>Gestión Soporte GPON</h3>
-              </div>
-            </div>
-            <div class="table-responsive" ng-show="!isLoadingData">
-              <table class="table table-bordered table-hover table-condensed small">
-                <thead class="table-header">
-                  <tr>
-                    <th class="text-center" rowspan="2"><span>Mar.</span> </th>
-                    <th class="text-center" rowspan="2"><span>Login</span></th>
-                    <th class="text-center" rowspan="2"><span>Tarea</span></th>
-                    <th class="text-center" rowspan="2"><span>Arpón</span></th>
-                    <th class="text-center" rowspan="2"><span>Nap</span></th>
-                    <th class="text-center" rowspan="2"><span>Hilo</span></th>
-                    <th class="text-center" colspan="4"><span>Internet</span></th>
-                    <th class="text-center" colspan="4"><span>Televisión</span></th>
-                    <th class="text-center" rowspan="2"><span>Número Contacto</span></th>
-                    <th class="text-center" rowspan="2"><span>Nombre Contacto</span></th>
-                    <th rowspan="2"><span>Ver +</span></i></th>
-                    <th class="text-center" rowspan="2"><span>Tipificación 1</span></th>
-                    <th class="text-center" rowspan="2"><span>Tipificación 2</span></th>
-                    <th class="text-center" rowspan="2"><span>Fecha Solicitud</span></th>
-                    <th class="text-center" rowspan="2"><span>Acción</span></th>
-                  </tr>
-                  <tr>
-                    <th class="text-center">1</th>
-                    <th class="text-center">2</th>
-                    <th class="text-center">3</th>
-                    <th class="text-center">4</th>
-                    <th class="text-center">1</th>
-                    <th class="text-center">2</th>
-                    <th class="text-center">3</th>
-                    <th class="text-center">4</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr ng-repeat="data in dataSoporteGpon" ng-class="{ 'danger': data.counter > 3, 'warning': data.proveedor == 'ETB' }">
-                    <td>
-                      <div ng-show="data.id_soporte">
-                        <input type="checkbox" ng-model="data.bloqueo" ng-change="marcarEngestionGpon(data)"
-                          name="bloqueo" id="bloqueo" ng-show="data.bloqueo != 1">
-                        <div class="loadingio-spinner-ellipsis-3nun7cb96ao" ng-show="data.bloqueo == 1">
-                          <div class="ldio-pettsxrv7wj">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div ng-show="!data.id_soporte">
-                        <input type="checkbox" ng-model="data.bloqueo" name="bloqueo" id="bloqueo"
-                          ng-change="marcarEngestionGpon(data)">
-                      </div>
-                    </td>
-                    <!-- En estas lineas se oculta el login gestión -->
-                    <td ng-show="data.login == galletainfo.login">
-                      <span
-                        ng-class="{'label label-primary label-xsmall': data.status_soporte == 2, 'label label-primary label-xsmall': data.login == galletainfo.login}">{{data.login}}</span>
-                    </td>
-
-                    <td ng-show="data.login != galletainfo.login && data.status_soporte == 2">
-                      <span
-                        ng-class="{'label label-primary label-xsmall': data.status_soporte == 2, 'label label-primary label-xsmall': data.login != galletainfo.login}">{{data.login}}</span>
-                    </td>
-
-                    <td ng-show="data.login != galletainfo.login && data.status_soporte == 0">
-                      <span ng-class="{'label label-primary label-xsmall': data.status_soporte == 0}"></span>
-                    </td>
-                    <!-- Fin ocultar el login gestión -->
-                    <td>{{data.tarea}}</td>
-                    <td>{{data.arpon}}</td>
-                    <td>{{data.nap}}</td>
-                    <td>{{data.hilo}}</td>
-                    <td>
-                      <span ng-if="data.port_internet_1 == '1'">X</span>
-                      <span ng-else></span>
-                    </td>
-                    <td><span ng-if="data.port_internet_2 == '1'">X</span>
-                      <span ng-else></span>
-                    </td>
-                    <td>
-                      <span ng-if="data.port_internet_3 == '1'">X</span>
-                      <span ng-else></span>
-                    </td>
-                    <td>
-                      <span ng-if="data.port_internet_4 == '1'">X</span>
-                      <span ng-else></span>
-                    </td>
-                    <td>
-                      <span ng-if="data.port_television_1 == '1'">X</span>
-                      <span ng-else></span>
-                    </td>
-                    <td>
-                      <span ng-if="data.port_television_2 == '1'">X</span>
-                      <span ng-else></span>
-                    </td>
-                    <td>
-                      <span ng-if="data.port_television_3 == '1'">X</span>
-                      <span ng-else></span>
-                    </td>
-                    <td>
-                      <span ng-if="data.port_television_4 == '1'">X</span>
-                      <span ng-else></span>
-                    </td>
-                    <td>{{data.numero_contacto}}</td>
-                    <td>{{data.nombre_contacto}}</td>
-                    <td>
-                      <button style="margin-top: 5px" popover-placement="left" ng-click="ver_masss(data)" uib-popover-html="dataContent"
-                        popover-title="Ver mas" type="button" class="btn btn-default btn-xs" tooltip-placement="top"
-                        uib-tooltip="Ver mas">
-                        <i class="fa fa-plus" aria-hidden="true"></i>
-                      </button>
-                    </td>
-                    <td class="text-center">
-                      <select ng-model="data.tipificaciones" class="btn btn-default btn-xs grupo-select" multiple
-                        ui-select2="groupSetup" name="tipificaciones" id="tipificaciones{{data.id_soporte}}">
-                        <option value="Actualizar Infra">Actualizar Infra</option>
-                        <option value="Estabilizar Pon">Estabilizar Pon</option>
-                        <option value="Configurar VLAN">Configurar VLAN</option>
-                        <option value="Aprovisionar">Aprovisionar</option>
-                        <option value="Cam_Eq">Cam_Eq</option>
-                        <option value="Contingencia">Contingencia</option>
-                        <option value="Red ocupada">Red ocupada</option>
-                        <option value="Puertos Lan">Puertos Lan</option>
-                        <option value="Cierre CBAPON">Cierre CBAPON</option>
-                        <option value="Validación general">Validación general</option>
-                        <!--<option value="Nap Trocado">Nap Trocado</option>-->
-                        <option value="Cod_Comp">Cod_Comp</option>
-                        <option value="Reenvió Registros">Reenvió Registros</option>
-                        <option value="IP navegación">IP navegación</option>
-                        <option value="No navega la velocidad contratada">No navega la velocidad contratada</option>
-                        <option value="Pendiente por cobertura">Pendiente por cobertura</option>
-                        <option value="Crear CR">Crear CR</option>
-                        <option value="Solicitud innecesaria">Solicitud innecesaria</option>
-                        <option value="Validación de parámetros">Validación de parámetros</option>
-                        <option value="Slot trocado">Slot trocado</option>
-                        <option value="Puerto trocado">Puerto trocado</option>
-                      </select>
-                    </td>
-
-                    <td>
-                      <select ng-model="data.tipificacion" class="btn btn-default btn-xs grupo-select"
-                        name="tipificacion" id="tipificacion{{data.id_soporte}}" style="width:100px">
-                        <option value="">Seleccionar</option>
-                        <option value="Finalizado">Finalizado</option>
-                        <option value="Incompleto">Incompleto</option>
-                        <option value="Devuelto al técnico">Devuelto al técnico</option>
-                      </select>
-                    </td>
-                    <td>{{data.fecha_solicitud_firebase}}</td>
-                    <td>
-                      <button type="button" class="btn btn-default btn-xs" tooltip-placement="top"
-                        uib-tooltip="Gestionar soporte gpon" ng-click="gestionarSoporteGpon(data.id_soporte)">
-                        <i class="fa fa-edit" aria-hidden="true"></i>
-                      </button>
-                      <div style="display: inline-block;" ng-show="data.alerta === 'TRUE'">
-                        <button type="button" class="btn btn-default btn-xs"
-                                data-toggle="modal" data-backdrop="static"
-                                ng-hide="data.alerta == 'FALSE'" tooltip-placement="top"
-                                uib-tooltip="La tarea ya pasó por Soporte gpon anteriormente {{data.counter}} Veces, por favor validar!">
-                          <i class="fa fa-exclamation" ng-class="{'parpadeo-rojo': data.counter > 3, 'red': data.counter > 0}"
-                             aria-hidden="true"> </i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <!-- Loading Circle -->
-            <div class="loading-circle" ng-show="loadingData">
-              <div class="loadingio-spinner-ripple">
-                <div class="ldio">
-                  <div></div>
-                  <div></div>
+                    </ul>
                 </div>
-              </div>
+                <div class="tab-content">
+                    <div class="tab-pane fade in active" id="soporte_gpon">
+                        <ul class="nav navbar-nav pull-left heading-nav">
+                            <li>
+                                &nbsp;
+                                &nbsp;
+                                <b>Soporte GPON</b> <span
+                                    class="badge badge-default">{{Items}}</span>
+                            </li>
+                            <li>
+                                &nbsp;
+                                &nbsp;
+                                <button type="button" class="btn btn-default btn-xs"
+                                        ng-click="recargaGpon()"
+                                        tooltip-placement="top" uib-tooltip="Actualizar"
+                                        ng-disabled="loading">
+                                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                                </button>
+                            </li>
+                            <li>
+                                &nbsp;
+                                &nbsp;
+                                <button type="button" class="btn btn-info btn-xs" data-backdrop="static"
+                                        ng-click="contadorGpon()"
+                                        popover-placement="bottom" popover-title="Detalle Gpon"
+                                        uib-popover-html="contadorGpon">Detalle Gpon
+                                </button>
+                            </li>
+                            &nbsp;
+                        </ul>
+                        <div class="table">
+                            <br><br>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-condensed small">
+                                    <thead class="table-header">
+                                    <tr>
+                                        <th class="text-center" rowspan="2"><span>Mar.</span></th>
+                                        <th class="text-center" rowspan="2"><span>Login</span></th>
+                                        <th class="text-center" rowspan="2"><span>Tarea</span></th>
+                                        <th class="text-center" rowspan="2"><span>Arpón</span></th>
+                                        <th class="text-center" rowspan="2"><span>Nap</span></th>
+                                        <th class="text-center" rowspan="2"><span>Hilo</span></th>
+                                        <th class="text-center" colspan="4"><span>Internet</span></th>
+                                        <th class="text-center" colspan="4"><span>Televisión</span></th>
+                                        <th class="text-center" rowspan="2"><span>Número Contacto</span></th>
+                                        <th class="text-center" rowspan="2"><span>Nombre Contacto</span></th>
+                                        <th rowspan="2"><span>Ver +</span></i></th>
+                                        <th class="text-center" rowspan="2"><span>Tipificación 1</span></th>
+                                        <th class="text-center" rowspan="2"><span>Tipificación 2</span></th>
+                                        <th class="text-center" rowspan="2"><span>Fecha Solicitud</span></th>
+                                        <th class="text-center" rowspan="2"><span>Acción</span></th>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center">1</th>
+                                        <th class="text-center">2</th>
+                                        <th class="text-center">3</th>
+                                        <th class="text-center">4</th>
+                                        <th class="text-center">1</th>
+                                        <th class="text-center">2</th>
+                                        <th class="text-center">3</th>
+                                        <th class="text-center">4</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="data in dataGpon"
+                                        ng-class="{ 'danger': data.counter > 3, 'warning': data.proveedor == 'ETB' }">
+                                        <td>
+                                            <div ng-show="data.id_soporte">
+                                                <input type="checkbox" ng-model="data.bloqueo"
+                                                       ng-change="marcarEngestionGpon(data,1)"
+                                                       name="bloqueo" id="bloqueo" ng-show="data.bloqueo != 1">
+                                            </div>
+                                            <div ng-show="!data.id_soporte">
+                                                <input type="checkbox" ng-model="data.bloqueo" name="bloqueo"
+                                                       id="bloqueo"
+                                                       ng-change="marcarEngestionGpon(data,1)">
+                                            </div>
+                                        </td>
+                                        <!-- En estas lineas se oculta el login gestión -->
+                                        <td ng-show="data.login == galletainfo.login">
+                                            <span ng-class="{'label label-primary label-xsmall': data.status_soporte == 2, 'label label-primary label-xsmall':
+                                            data.login == galletainfo.login}">{{data.login}}</span>
+                                        </td>
+
+                                        <td ng-show="data.login != galletainfo.login && data.status_soporte == 2">
+                                            <span ng-class="{'label label-primary label-xsmall': data.status_soporte == 2, 'label label-primary label-xsmall':
+                                            data.login != galletainfo.login}">{{data.login}}</span>
+                                        </td>
+
+                                        <td ng-show="data.login != galletainfo.login && data.status_soporte == 0">
+                                            <span ng-class="{'label label-primary label-xsmall': data.status_soporte == 0}"></span>
+                                        </td>
+                                        <!-- Fin ocultar el login gestión -->
+                                        <td>{{data.tarea}}</td>
+                                        <td>{{data.arpon}}</td>
+                                        <td>{{data.nap}}</td>
+                                        <td>{{data.hilo}}</td>
+                                        <td>
+                                            <span ng-if="data.port_internet_1 == '1'">X</span>
+                                            <span ng-else></span>
+                                        </td>
+                                        <td><span ng-if="data.port_internet_2 == '1'">X</span>
+                                            <span ng-else></span>
+                                        </td>
+                                        <td>
+                                            <span ng-if="data.port_internet_3 == '1'">X</span>
+                                            <span ng-else></span>
+                                        </td>
+                                        <td>
+                                            <span ng-if="data.port_internet_4 == '1'">X</span>
+                                            <span ng-else></span>
+                                        </td>
+                                        <td>
+                                            <span ng-if="data.port_television_1 == '1'">X</span>
+                                            <span ng-else></span>
+                                        </td>
+                                        <td>
+                                            <span ng-if="data.port_television_2 == '1'">X</span>
+                                            <span ng-else></span>
+                                        </td>
+                                        <td>
+                                            <span ng-if="data.port_television_3 == '1'">X</span>
+                                            <span ng-else></span>
+                                        </td>
+                                        <td>
+                                            <span ng-if="data.port_television_4 == '1'">X</span>
+                                            <span ng-else></span>
+                                        </td>
+                                        <td>{{data.numero_contacto}}</td>
+                                        <td>{{data.nombre_contacto}}</td>
+                                        <td>
+                                            <button style="margin-top: 5px" popover-placement="left"
+                                                    ng-click="ver_masss(data)" uib-popover-html="dataContent"
+                                                    popover-title="Ver mas" type="button"
+                                                    class="btn btn-default btn-xs"
+                                                    tooltip-placement="top"
+                                                    uib-tooltip="Ver mas">
+                                                <i class="fa fa-plus" aria-hidden="true"></i>
+                                            </button>
+                                        </td>
+                                        <td class="text-center">
+                                            <select ng-model="data.tipificaciones"
+                                                    class="btn btn-default btn-xs grupo-select" multiple
+                                                    ui-select2="groupSetup" name="tipificaciones"
+                                                    id="tipificaciones{{data.id_soporte}}">
+                                                <option value="Actualizar Infra">Actualizar Infra</option>
+                                                <option value="Estabilizar Pon">Estabilizar Pon</option>
+                                                <option value="Configurar VLAN">Configurar VLAN</option>
+                                                <option value="Aprovisionar">Aprovisionar</option>
+                                                <option value="Cam_Eq">Cam_Eq</option>
+                                                <option value="Contingencia">Contingencia</option>
+                                                <option value="Red ocupada">Red ocupada</option>
+                                                <option value="Puertos Lan">Puertos Lan</option>
+                                                <option value="Cierre CBAPON">Cierre CBAPON</option>
+                                                <option value="Validación general">Validación general</option>
+                                                <!--<option value="Nap Trocado">Nap Trocado</option>-->
+                                                <option value="Cod_Comp">Cod_Comp</option>
+                                                <option value="Reenvió Registros">Reenvió Registros</option>
+                                                <option value="IP navegación">IP navegación</option>
+                                                <option value="No navega la velocidad contratada">No navega la
+                                                    velocidad
+                                                    contratada
+                                                </option>
+                                                <option value="Pendiente por cobertura">Pendiente por
+                                                    cobertura
+                                                </option>
+                                                <option value="Crear CR">Crear CR</option>
+                                                <option value="Solicitud innecesaria">Solicitud innecesaria
+                                                </option>
+                                                <option value="Validación de parámetros">Validación de
+                                                    parámetros
+                                                </option>
+                                                <option value="Slot trocado">Slot trocado</option>
+                                                <option value="Puerto trocado">Puerto trocado</option>
+                                            </select>
+                                        </td>
+
+                                        <td>
+                                            <select ng-model="data.tipificacion"
+                                                    class="btn btn-default btn-xs grupo-select"
+                                                    name="tipificacion" id="tipificacion{{data.id_soporte}}"
+                                                    style="width:100px">
+                                                <option value="">Seleccionar</option>
+                                                <option value="Finalizado">Finalizado</option>
+                                                <option value="Incompleto">Incompleto</option>
+                                                <option value="Escalar a ETB">Escalar a ETB</option>
+                                                <option value="Devuelto al técnico">Devuelto al técnico</option>
+                                            </select>
+                                        </td>
+                                        <td>{{data.fecha_solicitud_firebase}}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-default btn-xs"
+                                                    tooltip-placement="top"
+                                                    uib-tooltip="Gestionar soporte gpon"
+                                                    ng-click="gestionarSoporteGpon(data,1)">
+                                                <i class="fa fa-edit" aria-hidden="true"></i>
+                                            </button>
+                                            <div style="display: inline-block;"
+                                                 ng-show="data.alerta === 'TRUE'">
+                                                <button type="button" class="btn btn-default btn-xs"
+                                                        data-toggle="modal" data-backdrop="static"
+                                                        ng-hide="data.alerta == 'FALSE'" tooltip-placement="top"
+                                                        uib-tooltip="La tarea ya pasó por Soporte gpon anteriormente {{data.counter}} Veces, por favor validar!">
+                                                    <i class="fa fa-exclamation"
+                                                       ng-class="{'parpadeo-rojo': data.counter > 3, 'red': data.counter > 0}"
+                                                       aria-hidden="true"> </i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="soporte_etb">
+                        <ul class="nav navbar-nav pull-left heading-nav">
+                            <li>
+                                &nbsp;
+                                &nbsp;
+                                <b>Soporte ETB</b> <span
+                                    class="badge badge-default">{{Items1}}</span>
+                            </li>
+                            <li>
+                                &nbsp;
+                                &nbsp;
+                                <button type="button" class="btn btn-default btn-xs"
+                                        ng-click="recargaEtb()"
+                                        tooltip-placement="top" uib-tooltip="Actualizar ETB"
+                                        ng-disabled="loading">
+                                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                                </button>
+                            </li>
+                            &nbsp;
+                        </ul>
+                        <div class="table">
+                            <br><br>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-condensed small">
+                                    <thead class="table-header">
+                                    <tr>
+                                        <th class="text-center" rowspan="2"><span>Mar.</span></th>
+                                        <th class="text-center" rowspan="2"><span>Login</span></th>
+                                        <th class="text-center" rowspan="2"><span>Tarea</span></th>
+                                        <th class="text-center" rowspan="2"><span>Arpón</span></th>
+                                        <th class="text-center" rowspan="2"><span>Nap</span></th>
+                                        <th class="text-center" rowspan="2"><span>Hilo</span></th>
+                                        <th class="text-center" colspan="4"><span>Internet</span></th>
+                                        <th class="text-center" colspan="4"><span>Televisión</span></th>
+                                        <th class="text-center" rowspan="2"><span>Número Contacto</span></th>
+                                        <th class="text-center" rowspan="2"><span>Nombre Contacto</span></th>
+                                        <th rowspan="2"><span>Ver +</span></i></th>
+                                        <th class="text-center" rowspan="2"><span>Tipificación 1</span></th>
+                                        <th class="text-center" rowspan="2"><span>Fecha Solicitud</span></th>
+                                        <th class="text-center" rowspan="2"><span>Acción</span></th>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center">1</th>
+                                        <th class="text-center">2</th>
+                                        <th class="text-center">3</th>
+                                        <th class="text-center">4</th>
+                                        <th class="text-center">1</th>
+                                        <th class="text-center">2</th>
+                                        <th class="text-center">3</th>
+                                        <th class="text-center">4</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="data in dataEtb" ng-class="{ 'danger': data.counter > 3 }">
+                                        <td>
+                                            <div ng-show="data.id_soporte">
+                                                <input type="checkbox" ng-model="data.bloqueo"
+                                                       ng-change="marcarEngestionGpon(data,2)"
+                                                       name="bloqueo" id="bloqueo" ng-show="data.bloqueo != 1">
+                                            </div>
+                                            <div ng-show="!data.id_soporte">
+                                                <input type="checkbox" ng-model="data.bloqueo" name="bloqueo"
+                                                       id="bloqueo"
+                                                       ng-change="marcarEngestionGpon(data,2)">
+                                            </div>
+                                        </td>
+                                        <!-- En estas lineas se oculta el login gestión -->
+                                        <td ng-show="data.login == galletainfo.login">
+                                            <span ng-class="{'label label-primary label-xsmall': data.status_soporte == 2, 'label label-primary label-xsmall':
+                                            data.login == galletainfo.login}">{{data.login}}</span>
+                                        </td>
+
+                                        <td ng-show="data.login != galletainfo.login && data.status_soporte == 2">
+                                            <span ng-class="{'label label-primary label-xsmall': data.status_soporte == 2, 'label label-primary label-xsmall':
+                                            data.login != galletainfo.login}">{{data.login}}</span>
+                                        </td>
+
+                                        <td ng-show="data.login != galletainfo.login && data.status_soporte == 0">
+                                            <span ng-class="{'label label-primary label-xsmall': data.status_soporte == 0}"></span>
+                                        </td>
+                                        <!-- Fin ocultar el login gestión -->
+                                        <td>{{data.tarea}}</td>
+                                        <td>{{data.arpon}}</td>
+                                        <td>{{data.nap}}</td>
+                                        <td>{{data.hilo}}</td>
+                                        <td>
+                                            <span ng-if="data.port_internet_1 == '1'">X</span>
+                                            <span ng-else></span>
+                                        </td>
+                                        <td><span ng-if="data.port_internet_2 == '1'">X</span>
+                                            <span ng-else></span>
+                                        </td>
+                                        <td>
+                                            <span ng-if="data.port_internet_3 == '1'">X</span>
+                                            <span ng-else></span>
+                                        </td>
+                                        <td>
+                                            <span ng-if="data.port_internet_4 == '1'">X</span>
+                                            <span ng-else></span>
+                                        </td>
+                                        <td>
+                                            <span ng-if="data.port_television_1 == '1'">X</span>
+                                            <span ng-else></span>
+                                        </td>
+                                        <td>
+                                            <span ng-if="data.port_television_2 == '1'">X</span>
+                                            <span ng-else></span>
+                                        </td>
+                                        <td>
+                                            <span ng-if="data.port_television_3 == '1'">X</span>
+                                            <span ng-else></span>
+                                        </td>
+                                        <td>
+                                            <span ng-if="data.port_television_4 == '1'">X</span>
+                                            <span ng-else></span>
+                                        </td>
+                                        <td>{{data.numero_contacto}}</td>
+                                        <td>{{data.nombre_contacto}}</td>
+                                        <td>
+                                            <button style="margin-top: 5px" popover-placement="left"
+                                                    ng-click="ver_masss(data)" uib-popover-html="dataContent"
+                                                    popover-title="Ver mas" type="button"
+                                                    class="btn btn-default btn-xs"
+                                                    tooltip-placement="top"
+                                                    uib-tooltip="Ver mas">
+                                                <i class="fa fa-plus" aria-hidden="true"></i>
+                                            </button>
+                                        </td>
+                                        <td class="text-center">
+                                            <select ng-model="data.respuesta_tipificaciones"
+                                                    class="btn btn-default btn-xs grupo-select"
+                                                    name="respuesta_tipificaciones" id="tipificaciones{{data.id_soporte}}">
+                                                <option value="">Seleccionar</option>
+                                                <option value="Escalado ETB">Escalado ETB</option>
+                                                <option value="Escalar terreno">Escalar terreno</option>
+                                                <option value="Finalizado">Finalizado</option>
+
+                                            </select>
+
+                                            <!--<select ng-model="data.tipificacion" ng-hide="true"
+                                                    class="btn btn-default btn-xs grupo-select"
+                                                    name="tipificacion" id="tipificacion{{data.id_soporte}}"
+                                                    style="width:100px">
+                                                <option ng-if="data.tipificaciones == 'Escalado ETB'" value="N/A">N/A</option>
+                                                <option ng-if="data.tipificaciones == 'Escalar terreno'" value="N/A">N/A</option>
+                                                <option ng-if="data.tipificaciones == 'Finalizado'" value="N/A">N/A</option>
+                                            </select>-->
+                                        </td>
+
+                                        <td>
+                                            {{data.fecha_solicitud_firebase}}
+                                            <button type="button" class="btn btn-default btn-xs"
+                                                    data-toggle="modal" data-backdrop="static"
+                                                    ng-show="data.respuesta_tipificaciones == 'Escalado ETB'" tooltip-placement="top"
+                                                    uib-tooltip="{{data.tiempo_transcurrido}}">
+                                                <i class="fa fa-clock-o"
+                                                   aria-hidden="true"></i>
+                                            </button>
+                                        <td>
+                                            <button type="button" class="btn btn-default btn-xs"
+                                                    tooltip-placement="top"
+                                                    uib-tooltip="Gestionar soporte gpon"
+                                                    ng-click="gestionarSoporteGpon(data,2)">
+                                                <i class="fa fa-edit" aria-hidden="true"></i>
+                                            </button>
+                                            <div style="display: inline-block;"
+                                                 ng-show="data.alerta === 'TRUE'">
+                                                <button type="button" class="btn btn-default btn-xs"
+                                                        data-toggle="modal" data-backdrop="static"
+                                                        ng-hide="data.alerta == 'FALSE'" tooltip-placement="top"
+                                                        uib-tooltip="La tarea ya pasó por Soporte gpon anteriormente {{data.counter}} Veces, por favor validar!">
+                                                    <i class="fa fa-exclamation"
+                                                       ng-class="{'parpadeo-rojo': data.counter > 3, 'red': data.counter > 0}"
+                                                       aria-hidden="true"> </i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <!-- / Loading Circle -->
-          </div>
         </div>
-      </div>
     </div>
-  </div>
+</div>
 
-  <div ng-include="rutaCierreMasivoContin"></div>
+<div ng-include="rutaCierreMasivoContin"></div>
 
-  <div id="modalPedidoGpon" class="modal fullscreen-modal fade" role="dialog">
+<div id="modalPedidoGpon" class="modal fullscreen-modal fade" role="dialog">
     <div class="modal-dialog modal-lg" style="width: 90%">
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">
-            &times;
-          </button>
-          <h4 class="modal-title">Pedido GPON:</h4>
-        </div>
-        <div class="modal-body">
-          <div class="panel panel-default">
-            <div class="panel-heading nav navbar-default">
-              <table class="table table-striped table-hover table-condensed">
-                <thead class="table-header">
-                  <tr>
-                    <th>Pedido</th>
-                    <th>Tarea</th>
-                    <th>Fecha Ingreso</th>
-                    <th>Técnico</th>
-                    <th>Contacto</th>
-                    <th>Login Gestiona</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr ng-repeat="data in gpon.databsucarPedido">
-                    <td>{{data.unepedido}}</td>
-                    <td>{{data.tarea}}</td>
-                    <td>{{data.fecha_creado}}</td>
-                    <td>{{data.engineer_name}}</td>
-                    <td>{{data.mobile_phone}}</td>
-                    <td>{{data.login}}</td>
-                  </tr>
-                </tbody>
-              </table>
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    &times;
+                </button>
+                <h4 class="modal-title">Pedido GPON:</h4>
             </div>
-          </div>
+            <div class="modal-body">
+                <div class="panel panel-default">
+                    <div class="panel-heading nav navbar-default">
+                        <table class="table table-striped table-hover table-condensed">
+                            <thead class="table-header">
+                            <tr>
+                                <th>Pedido</th>
+                                <th>Tarea</th>
+                                <th>Fecha Ingreso</th>
+                                <th>Técnico</th>
+                                <th>Contacto</th>
+                                <th>Login Gestiona</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="data in gpon.databsucarPedido">
+                                <td>{{data.unepedido}}</td>
+                                <td>{{data.tarea}}</td>
+                                <td>{{data.fecha_creado}}</td>
+                                <td>{{data.engineer_name}}</td>
+                                <td>{{data.mobile_phone}}</td>
+                                <td>{{data.login}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" ng-disabled="contact_form.$invalid" class="btn btn-default"
+                        data-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" ng-disabled="contact_form.$invalid" class="btn btn-default" data-dismiss="modal">
-            Cerrar
-          </button>
-        </div>
-      </div>
     </div>
-  </div>
+</div>
 
-  <div id="infomodal" class="modal fade" role="dialog">
+<div id="infomodal" class="modal fade" role="dialog">
     <div class="modal-dialog modal-lg" style="
       width: 18%;
       float: right;
       margin-right: 30px;
       top: 200px;
     ">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">
-            &times;
-          </button>
-          <h4 class="modal-title">En gestión</h4>
-        </div>
-        <div class="modal-body">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>Login Analista</th>
-                <th>Cantidad Marcadas</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="data in datacount">
-                <td class="filterable-cell">
-                  <i class="fa fa-user" aria-hidden="true"></i> {{data.login}}
-                </td>
-                <td class="filterable-cell">{{data.Conteo}}</td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="row">
-            <h5 class="subtitulo2" style="text-align: center">
-              <b>Detalles hoy</b>
-            </h5>
-            <ul style="
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    &times;
+                </button>
+                <h4 class="modal-title">En gestión</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Login Analista</th>
+                        <th>Cantidad Marcadas</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="data in datacount">
+                        <td class="filterable-cell">
+                            <i class="fa fa-user" aria-hidden="true"></i> {{data.login}}
+                        </td>
+                        <td class="filterable-cell">{{data.Conteo}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="row">
+                    <h5 class="subtitulo2" style="text-align: center">
+                        <b>Detalles hoy</b>
+                    </h5>
+                    <ul style="
               display: flex;
               list-style: none;
               flex-direction: row;
@@ -321,16 +510,16 @@
               align-items: center;
               padding: 0;
             ">
-              <li>
+                        <li>
                 <span class="label label-success">
                   Finalizados: {{finalizado}}</span>&nbsp;&nbsp;&nbsp;
-              </li>
-              <li>
+                        </li>
+                        <li>
                 <span class="label label-warning">
                   Devueltos al técnico: {{devuelto}}</span>&nbsp;&nbsp;&nbsp;
-              </li>
-            </ul>
-            <ul style="
+                        </li>
+                    </ul>
+                    <ul style="
               display: flex;
               list-style: none;
               flex-direction: row;
@@ -338,200 +527,195 @@
               align-items: center;
               padding: 0;
             ">
-              <li>
+                        <li>
                 <span class="label label-danger">
                   Incompletos: {{incompleto}}</span>
-              </li>
-              &nbsp;&nbsp;
-              <li>
+                        </li>
+                        &nbsp;&nbsp;
+                        <li>
                 <span class="label label-info">
                   Sin respuesta: {{sinrespuesta}}</span>
-              </li>
-            </ul>
-          </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
+</div>
 
-
-  <div class="modal-dialog modal-lg modal fade"
-    style="width: 25%; float: right;margin-right: 30px; top: 200px; heigth:50%">
+<div class="modal-dialog modal-lg modal fade"
+     style="width: 25%; float: right;margin-right: 30px; top: 200px; heigth:50%">
     <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">En gestión </h4>
-      </div>
-      <div class="modal-body">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>Login Analista</th>
-              <th>Cantidad Marcadas</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="data in datacount">
-              <td class="filterable-cell"><i class="fa fa-user" aria-hidden="true"></i> {{data.login}}</td>
-              <td class="filterable-cell">{{data.Conteo}}</td>
-            </tr>
-          </tbody>
-        </table>
-        <ul style="display: flex;
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">En gestión </h4>
+        </div>
+        <div class="modal-body">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Login Analista</th>
+                    <th>Cantidad Marcadas</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="data in datacount">
+                    <td class="filterable-cell"><i class="fa fa-user" aria-hidden="true"></i> {{data.login}}</td>
+                    <td class="filterable-cell">{{data.Conteo}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <ul style="display: flex;
                             list-style: none;
                             flex-direction: row;
                             justify-content: flex-start;
                             align-items: center;">
-          <h6 class="subtitulo2">Total hoy</h6>
-          <li>
-            <span class="label label-success"> Finalizados: {{finalizado}}</span>&nbsp;&nbsp;&nbsp;
-          </li>
-          <li>
-            <span class="label label-warning"> Devueltos al técnico: {{devuelto}}</span>&nbsp;&nbsp;&nbsp;
-          </li>
-          <li>
-            <span class="label label-danger"> Incompletos: {{incompleto}}</span>
-          </li>
-        </ul>
-      </div>
+                <h6 class="subtitulo2">Total hoy</h6>
+                <li>
+                    <span class="label label-success"> Finalizados: {{finalizado}}</span>&nbsp;&nbsp;&nbsp;
+                </li>
+                <li>
+                    <span class="label label-warning"> Devueltos al técnico: {{devuelto}}</span>&nbsp;&nbsp;&nbsp;
+                </li>
+                <li>
+                    <span class="label label-danger"> Incompletos: {{incompleto}}</span>
+                </li>
+            </ul>
+        </div>
 
 
     </div>
-  </div>
-
-  <div class="modal fade" id="ver_mas" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document" style="width: 350px;">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Mas datos</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class='table-responsive' style='max-width: 380px;'>
-            <table class='table table-bordered table-hover table-condensed small style=' max-width: 350px;'>
-              <tbody>
-                <tr>
-                  <td style='min-width: 80px'>Pedido</td>
-                  <td>{{data.unepedido}}</td>
-                </tr>
-                <tr>
-                  <td style='min-width: 80px'>Categoría</td>
-                  <td>{{data.tasktypecategory}}</td>
-                </tr>
-                <tr>
-                  <td style='min-width: 80px'>Municipio</td>
-                  <td>{{ data.unemunicipio}}</td>
-                </tr>
-                <tr>
-                  <td style='min-width: 80px'>Productos</td>
-                  <td>{{ data.uneproductos}}</td>
-                </tr>
-                <tr>
-                  <td style='min-width: 80px'>Datos cola</td>
-                  <td>{{ data.datoscola}}</td>
-                </tr>
-                <tr>
-                  <td style='min-width: 80px'>Mac</td>
-                  <td>{{ data.mac }}</td>
-                </tr>
-                <tr>
-                  <td style='min-width: 80px'>Serial</td>
-                  <td>{{ data.serial }}</td>
-                </tr>
-                <tr>
-                  <td style='min-width: 80px'>Sistema</td>
-                  <td>{{ data.uneSourceSystem }}</td>
-                </tr>
-                <tr>
-                  <td style='min-width: 80px'>Tipo equipo</td>
-                  <td>{{ data.tipo_equipo }}</td>
-                </tr>
-                <tr>
-                  <td style='min-width: 80px'>Velocidad navegación</td>
-                  <td>{{ data.velocidad_navegacion }}</td>
-                </tr>
-                <tr>
-                  <td style='min-width: 80px'>Observación</td>
-                  <td>{{ data.observacion_terreno }}</td>
-                </tr>
-                <tr>
-                  <td style='min-width: 80px'>Fecha solicitud</td>
-                  <td>{{ data.fecha_creado }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>;
-          <!--<table class="table table-bordered table-condensed table-hover">
-
-            <tbody>
-              <tr>
-                <td>Pedido</td>
-                <td>{{mas_datos.unepedido}}</td>
-              </tr>
-              <tr>
-                <td>Categoría</td>
-                <td>{{mas_datos.tasktypecategory}}</td>
-              </tr>
-              <tr>
-                <td>Municipio</td>
-                <td>{{mas_datos.unemunicipio}}</td>
-              </tr>
-              <tr>
-                <td>Productos</td>
-                <td>{{mas_datos.uneproductos}}</td>
-              </tr>
-              <tr>
-                <td>Datos cola</td>
-                <td>{{mas_datos.datoscola}}</td>
-              </tr>
-              <tr>
-                <td>Serial</td>
-                <td>{{mas_datos.serial | replace: ',':'\n'}}</td>
-              </tr>
-              <tr>
-                <td>Mac</td>
-                <td>{{mas_datos.mac | replace: ',':'\n'}}</td>
-              </tr>
-              <tr>
-                <td>Sistema</td>
-                <td>{{mas_datos.uneSourceSystem}}</td>
-              </tr>
-              <tr>
-                <td>Tipo equipo</td>
-                <td>{{mas_datos.tipo_equipo}}</td>
-              </tr>
-              <tr>
-                <td>Velocidad navegación</td>
-                <td>{{mas_datos.velocidad_navegacion}}</td>
-              </tr>
-              <tr>
-                <td>Observación</td>
-                <td>{{mas_datos.observacion_terreno}}</td>
-              </tr>
-              <tr>
-                <td>Fecha solicitud</td>
-                <td>{{mas_datos.fecha_creado}}</td>
-              </tr>
-
-
-            </tbody>
-          </table>-->
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 
-<script>
-  function cerrapopover() {
-    $(".popover").hide();
-  }
+<div class="modal fade" id="ver_mas" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="width: 350px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Mas datos</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class='table-responsive' style='max-width: 380px;'>
+                    <table class='table table-bordered table-hover table-condensed small style=' max-width: 350px;
+                    '>
+                    <tbody>
+                    <tr>
+                        <td style='min-width: 80px'>Pedido</td>
+                        <td>{{data.unepedido}}</td>
+                    </tr>
+                    <tr>
+                        <td style='min-width: 80px'>Categoría</td>
+                        <td>{{data.tasktypecategory}}</td>
+                    </tr>
+                    <tr>
+                        <td style='min-width: 80px'>Municipio</td>
+                        <td>{{ data.unemunicipio}}</td>
+                    </tr>
+                    <tr>
+                        <td style='min-width: 80px'>Productos</td>
+                        <td>{{ data.uneproductos}}</td>
+                    </tr>
+                    <tr>
+                        <td style='min-width: 80px'>Datos cola</td>
+                        <td>{{ data.datoscola}}</td>
+                    </tr>
+                    <tr>
+                        <td style='min-width: 80px'>Mac</td>
+                        <td>{{ data.mac }}</td>
+                    </tr>
+                    <tr>
+                        <td style='min-width: 80px'>Serial</td>
+                        <td>{{ data.serial }}</td>
+                    </tr>
+                    <tr>
+                        <td style='min-width: 80px'>Sistema</td>
+                        <td>{{ data.uneSourceSystem }}</td>
+                    </tr>
+                    <tr>
+                        <td style='min-width: 80px'>Tipo equipo</td>
+                        <td>{{ data.tipo_equipo }}</td>
+                    </tr>
+                    <tr>
+                        <td style='min-width: 80px'>Velocidad navegación</td>
+                        <td>{{ data.velocidad_navegacion }}</td>
+                    </tr>
+                    <tr>
+                        <td style='min-width: 80px'>Observación</td>
+                        <td>{{ data.observacion_terreno }}</td>
+                    </tr>
+                    <tr>
+                        <td style='min-width: 80px'>Fecha solicitud</td>
+                        <td>{{ data.fecha_creado }}</td>
+                    </tr>
+                    </tbody>
+                    </table>
+                </div>
+                ;
+                <!--<table class="table table-bordered table-condensed table-hover">
 
-</script>
+                  <tbody>
+                    <tr>
+                      <td>Pedido</td>
+                      <td>{{mas_datos.unepedido}}</td>
+                    </tr>
+                    <tr>
+                      <td>Categoría</td>
+                      <td>{{mas_datos.tasktypecategory}}</td>
+                    </tr>
+                    <tr>
+                      <td>Municipio</td>
+                      <td>{{mas_datos.unemunicipio}}</td>
+                    </tr>
+                    <tr>
+                      <td>Productos</td>
+                      <td>{{mas_datos.uneproductos}}</td>
+                    </tr>
+                    <tr>
+                      <td>Datos cola</td>
+                      <td>{{mas_datos.datoscola}}</td>
+                    </tr>
+                    <tr>
+                      <td>Serial</td>
+                      <td>{{mas_datos.serial | replace: ',':'\n'}}</td>
+                    </tr>
+                    <tr>
+                      <td>Mac</td>
+                      <td>{{mas_datos.mac | replace: ',':'\n'}}</td>
+                    </tr>
+                    <tr>
+                      <td>Sistema</td>
+                      <td>{{mas_datos.uneSourceSystem}}</td>
+                    </tr>
+                    <tr>
+                      <td>Tipo equipo</td>
+                      <td>{{mas_datos.tipo_equipo}}</td>
+                    </tr>
+                    <tr>
+                      <td>Velocidad navegación</td>
+                      <td>{{mas_datos.velocidad_navegacion}}</td>
+                    </tr>
+                    <tr>
+                      <td>Observación</td>
+                      <td>{{mas_datos.observacion_terreno}}</td>
+                    </tr>
+                    <tr>
+                      <td>Fecha solicitud</td>
+                      <td>{{mas_datos.fecha_creado}}</td>
+                    </tr>
+
+
+                  </tbody>
+                </table>-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <br><br><br>
+

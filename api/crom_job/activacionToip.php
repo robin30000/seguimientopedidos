@@ -9,7 +9,7 @@ require_once '../class/conection.php';
 
 $conn = new Conection();
 
-$stmt = $conn->prepare("SELECT
+/*$stmt = $conn->prepare("SELECT
                                 a.equipment_id, a.respuesta_aprov,
                                 CASE
                                     WHEN (SELECT COUNT(*) FROM activacion_toip b WHERE b.tarea = a.tarea AND b.en_gestion = '2') > 0 THEN
@@ -27,9 +27,9 @@ $stmt = $conn->prepare("SELECT
 $stmt->execute();
 $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 //$dataclick = (array)$resultados;
-$res = json_encode($resultados);
+$res = json_encode($resultados);*/
 
-$url = "http://10.100.66.254/BB8/contingencias/Buscar/GetToip/$res";
+$url = "http://10.100.66.254/BB8/contingencias/Buscar/GetToip/G";
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -42,7 +42,7 @@ curl_setopt($ch, CURLOPT_HEADER, 0);
 curl_setopt($ch, CURLOPT_TIMEOUT, 60);
 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
 $data = curl_exec($ch);
-//var_dump($data);exit();
+/*var_dump($data);exit();*/
 curl_close($ch);
 
 $dataclick = json_decode($data, true);
