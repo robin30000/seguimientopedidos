@@ -1,0 +1,20 @@
+{
+  "name": "seguimientopedidos",
+  "version": "1.0.0",
+  "description": "",
+  "main": "routes.js",
+  "dependencies": {
+    "angular": "^1.8.2",
+    "angular-jwt": "^0.1.11",
+    "cors": "^2.8.5",
+    "html2canvas": "^1.4.1",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

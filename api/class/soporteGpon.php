@@ -1,7 +1,8 @@
 <?php
 require_once '../class/conection.php';
-//error_reporting(E_ALL);
-//ini_set('display_errors', 1);
+error_reporting(0);
+ini_set('display_errors', 0);
+
 class soporteGpon
 {
 
@@ -250,11 +251,9 @@ class soporteGpon
     public function getListaPendientesSoporteGpon()
     {
 
-        $hoy = date("Y-m-d");
-
-        /*LOGICA QUE LLEVA LA INFORMACION A TV, INTERNET-ToIp Y CORREGIR PORTAFOLIO*/
-        //$query = "SELECT s.* FROM soporte_gpon s WHERE fecha_creado BETWEEN '$hoy 00:00:00' AND '$hoy 23:59:59' AND s.status_soporte != '1' ORDER BY s.fecha_creado asc";
-        $query = "SELECT
+        try {
+            $hoy = date("Y-m-d");
+            $query = "SELECT
                         s.*,
                         CASE
                             WHEN (
@@ -286,91 +285,307 @@ class soporteGpon
                     ORDER BY
                         s.fecha_creado ASC;";
 
-        $rst = $this->_DB->query($query);
-        $rst->execute();
-        $resultSoporteGpon = $rst->fetchAll(PDO::FETCH_ASSOC);
+            $rst = $this->_DB->query($query);
+            $rst->execute();
+            $resultSoporteGpon = $rst->fetchAll(PDO::FETCH_ASSOC);
 
-        $query2 = "SELECT login, COUNT(*) as 'Conteo' FROM soporte_gpon WHERE fecha_creado BETWEEN ('$hoy 00:00:00') AND ('$hoy 23:59:59') AND status_soporte = '2' GROUP BY login ";
-        $rst2 = $this->_DB->query($query2);
+            $query2 = "SELECT login, COUNT(*) as 'Conteo' FROM soporte_gpon WHERE fecha_creado BETWEEN ('$hoy 00:00:00') 
+                        AND ('$hoy 23:59:59') AND status_soporte = '2' GROUP BY login ";
+            $rst2 = $this->_DB->query($query2);
 
-        $resultCount = $rst2->fetchAll(PDO::FETCH_ASSOC);
+            $resultCount = $rst2->fetchAll(PDO::FETCH_ASSOC);
 
-        $query3 = "SELECT SUM(CASE WHEN respuesta_soporte = 'Finalizado' THEN 1 ELSE 0 END) AS 'Finalizado',
-		SUM(CASE WHEN respuesta_soporte = 'Devuelto al tecnico' THEN 1 ELSE 0 END) AS 'Devuelto al tecnico', 
-		SUM(CASE WHEN respuesta_soporte = 'Incompleto' THEN 1 ELSE 0 END) AS 'Incompleto', 
-		SUM(CASE WHEN status_soporte = 0 THEN 1 WHEN status_soporte = 2 THEN 1 ELSE 0 END) AS 'sinrespuesta'
-		FROM soporte_gpon WHERE fecha_creado BETWEEN ('$hoy 00:00:00') AND ('$hoy 23:59:59')";
-        $rst3 = $this->_DB->query($query3);
-        $rst3->execute();
-        $resultCount2 = $rst3->fetchAll(PDO::FETCH_ASSOC);
+            $query3 = "SELECT SUM(CASE WHEN respuesta_soporte = 'Finalizado' THEN 1 ELSE 0 END) AS 'Finalizado',
+                        SUM(CASE WHEN respuesta_soporte = 'Devuelto al tecnico' THEN 1 ELSE 0 END) AS 'Devuelto al tecnico', 
+                        SUM(CASE WHEN respuesta_soporte = 'Incompleto' THEN 1 ELSE 0 END) AS 'Incompleto', 
+                        SUM(CASE WHEN status_soporte = 0 THEN 1 WHEN status_soporte = 2 THEN 1 ELSE 0 END) AS 'sinrespuesta'
+                        FROM soporte_gpon WHERE fecha_creado BETWEEN ('$hoy 00:00:00') AND ('$hoy 23:59:59')";
 
-        $data = array($resultSoporteGpon, $resultCount, $resultCount2);
+            $rst3 = $this->_DB->query($query3);
+            $rst3->execute();
+            $resultCount2 = $rst3->fetchAll(PDO::FETCH_ASSOC);
 
-        echo json_encode($data);
+            $data = array($resultSoporteGpon, $resultCount, $resultCount2);
+            $this->_DB = null;
+            echo json_encode($data);
 
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
 
+    }
+
+    public function datosEtb()
+    {
+        try {
+            $hoy = date("Y-m-d");
+
+            $stmt = $this->_DB->query("SELECT count(*) count FROM soporte_gpon where status_soporte != '1' 
+                                                and proveedor = 'ETB' and fecha_creado BETWEEN '$hoy 00:00:00' AND '$hoy 23:59:59'");
+            $stmt->execute();
+            $count = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $counter = $count[0]['count'];
+
+            $query = "SELECT
+                        s.*,
+                        CASE
+                            WHEN (
+                                SELECT
+                                    COUNT(*) 
+                                FROM
+                                    soporte_gpon c1 
+                                WHERE
+                                    s.tarea = c1.tarea 
+                                    AND c1.fecha_creado >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                    AND c1.status_soporte = '1' and c1.proveedor = 'ETB'
+                            ) > 0 THEN 'TRUE' ELSE 'FALSE' 
+                        END alerta,
+                        (
+                            SELECT
+                                COUNT(*)
+                            FROM
+                                soporte_gpon c1 
+                            WHERE
+                                s.tarea = c1.tarea 
+                                AND c1.fecha_creado >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                AND c1.status_soporte = '1' and c1.proveedor = 'ETB'
+                        ) AS counter,
+                        TIMEDIFF(NOW(), s.fecha_creado) AS tiempo_transcurrido
+                    FROM
+                        soporte_gpon s 
+                    WHERE
+                        fecha_creado BETWEEN '$hoy 00:00:00' AND '$hoy 23:59:59' 
+                        AND s.status_soporte != '1' and proveedor = 'ETB'
+                    ORDER BY
+                        s.fecha_creado";
+
+            $rst = $this->_DB->query($query);
+            $rst->execute();
+            $this->_DB = null;
+            return ['state' => true, 'data' => $rst->fetchAll(PDO::FETCH_ASSOC), 'counter' => $counter];
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
+    }
+
+    public function datosGpon()
+    {
+        try {
+            $hoy = date("Y-m-d");
+            $stmt = $this->_DB->query("SELECT count(*) count FROM soporte_gpon where status_soporte != '1' 
+                                                and proveedor != 'ETB' and fecha_creado BETWEEN '$hoy 00:00:00' AND '$hoy 23:59:59'");
+            $stmt->execute();
+            $count = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $counter = $count[0]['count'];
+
+            $query = "SELECT
+                        s.*,
+                        CASE
+                            WHEN (
+                                SELECT
+                                    COUNT(*) 
+                                FROM
+                                    soporte_gpon c1 
+                                WHERE
+                                    s.tarea = c1.tarea 
+                                    AND c1.fecha_creado >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                    AND c1.status_soporte = '1' and c1.proveedor != 'ETB'
+                            ) > 0 THEN 'TRUE' ELSE 'FALSE' 
+                        END alerta,
+                        (
+                            SELECT
+                                COUNT(*)
+                            FROM
+                                soporte_gpon c1 
+                            WHERE
+                                s.tarea = c1.tarea 
+                                AND c1.fecha_creado >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
+                                AND c1.status_soporte = '1' and c1.proveedor != 'ETB'
+                        ) AS counter
+                    FROM
+                        soporte_gpon s 
+                    WHERE
+                        fecha_creado BETWEEN '$hoy 00:00:00' AND '$hoy 23:59:59' 
+                        AND s.status_soporte != '1' and proveedor != 'ETB'
+                    ORDER BY
+                        s.fecha_creado";
+
+            $rst = $this->_DB->query($query);
+            $rst->execute();
+            $this->_DB = null;
+            return ['state' => true, 'data' => $rst->fetchAll(PDO::FETCH_ASSOC), 'counter' => $counter];
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
     }
 
     public function gestionarSoporteGpon($params)
     {
 
         try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();
-            if (!$_SESSION) {
-                $response = ['state' => 99, 'title' => 'Su session ha caducado', 'text' => 'Inicia session nuevamente para continuar'];
-            } else {
-                $id_soporte = $params['id_soporte'];
-                $tipificacion = $params['tipificacion'];
-                $tipificaciones = $params['tipificaciones'];
-                $observacion = $params['observacion'];
-                $login = $_SESSION['login'];
 
+            $id_soporte = $params['id_soporte'];
+            $tipificacion = $params['tipificacion'] ?? 'N/A';
+            $tipificaciones = $params['tipificaciones'];
+            $observacion = $params['observacion'];
+            $login = $params['login'];
+            $fecha_respuesta = date('Y-m-d H:i:s');
+            $state = '1';
+
+            switch ($tipificaciones) {
+
+                case 'Escalado ETB':
+                    $tipificacion = 'N/A';
+                    $state = '2';
+                    break;
+                case 'Finalizado':
+                case 'Escalar terreno':
+                    $tipificacion = 'N/A';
+                    break;
+            }
+
+            if (is_array($tipificaciones)) {
                 $tip = '';
                 foreach ($tipificaciones as $key => $value) {
                     $tip .= $value . ', ';
                 }
+            } else {
+                $tip = $tipificaciones;
+            }
 
-                $fecha_respuesta = date('Y-m-d H:i:s');
+            $stmt = $this->_DB->prepare("SELECT login, tarea, nombre_contacto, numero_contacto, user_identification_firebase, observacion_terreno FROM soporte_gpon WHERE id_soporte = :id");
+            $stmt->execute(array(':id' => $id_soporte));
 
-                $stmt = $this->_DB->prepare("SELECT login FROM soporte_gpon WHERE id_soporte = :id");
-                $stmt->execute(array(':id' => $id_soporte));
+            if ($stmt->rowCount() == 1) {
+                $res_soporte = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $login_gestion = $res_soporte[0]['login'];
+                $tarea = $res_soporte[0]['tarea'];
 
-                if ($stmt->rowCount() == 1) {
-                    $res_soporte = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    $login_gestion = $res_soporte[0]['login'];
-
-                    if ($login != $login_gestion) {
-                        $response = array('state' => 3, 'msg' => 'El pedido se encuentra en gestión por otro agente');
-                    } else {
-                        $stmt = $this->_DB->prepare("UPDATE soporte_gpon
+                if ($login != $login_gestion) {
+                    $response = array('state' => false, 'msg' => 'El pedido se encuentra en gestión por otro agente');
+                } else {
+                    $stmt = $this->_DB->prepare("UPDATE soporte_gpon
                                                     SET respuesta_soporte = :tipificacion,
                                                         respuesta_tipificaciones = :respuesta_tipificaciones,
                                                         observacion       = :observacion,
                                                         login             = :login,
                                                         fecha_respuesta   = :fecha_respuesta,
-                                                        status_soporte    = '1'
+                                                        status_soporte    = :state
                                                     WHERE id_soporte = :id_soporte");
-                        $stmt->execute([
-                            ':tipificacion' => $tipificacion,
-                            ':respuesta_tipificaciones' => $tip,
-                            ':observacion' => $observacion,
-                            ':login' => $login,
-                            ':fecha_respuesta' => $fecha_respuesta,
-                            ':id_soporte' => $id_soporte,
-                        ]);
+                    $stmt->execute([
+                        ':tipificacion' => $tipificacion,
+                        ':respuesta_tipificaciones' => $tip,
+                        ':observacion' => $observacion,
+                        ':login' => $login,
+                        ':state' => $state,
+                        ':fecha_respuesta' => $fecha_respuesta,
+                        ':id_soporte' => $id_soporte,
+                    ]);
 
-                        if ($stmt->rowCount()) {
-                            $response = array('state' => 1, 'msg' => 'El registro se guardo exitosamente');
-                        } else {
-                            $response = array('state' => 0, 'msg' => 'Ha ocurrido un error interno inténtalo nuevamente en unos minutos');
+                    if ($tipificaciones == 'Escalar terreno') {
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, "http://10.100.66.254/HCHV_DEV/validaPedidoMn/$tarea");
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        curl_setopt($ch, CURLOPT_HEADER, 0);
+                        $data = curl_exec($ch);
+                        curl_close($ch);
+
+                        $dataclick1 = json_decode($data, true);
+
+                        $unepedido = $dataclick1[0]['UNEPedido'];
+                        $tasktypecategory = $dataclick1[0]['TaskTypeCategory'];
+                        $uneSourceSystem = $dataclick1[0]['UneSourceSystem'];
+                        $UNETecnologias = $dataclick1[0]['UNETecnologias'];
+                        $region = $dataclick1[0]['region'];
+
+                        $nombre_contacto = $res_soporte[0]['nombre_contacto'];
+                        $numero_contacto = $res_soporte[0]['numero_contacto'];
+                        $cc_tecnico = $res_soporte[0]['user_identification_firebase'];
+                        $observacion = $res_soporte[0]['observacion_terreno'];
+
+                        $patron = '/GPON/';
+                        if (preg_match_all($patron, $UNETecnologias)) {
+                            $UNETecnologias = 'GPON';
                         }
-                    }
-                } else {
-                    $response = array('state' => 3, 'msg' => 'El pedido no se encuentra en gestión');
-                }
 
+                        switch ($region) {
+                            case 'Antioquia Centro':
+                            case 'Antioquia Norte':
+                            case 'Antioquia Oriente':
+                            case 'Antioquia Sur':
+                            case 'Antioquia_Edatel':
+                            case 'Boyaca':
+                            case 'Norte de Santander':
+                            case 'Santander':
+                            case 'Boyaca_Edatel':
+                            case 'Santander_Edatel':
+                                $area = 'Andina';
+                                break;
+                            case 'Atlantico':
+                            case 'Bolivar':
+                            case 'Magdalena':
+                            case 'Cesar':
+                            case 'Cordoba':
+                            case 'Sucre':
+                            case 'Bolivar_Edatel':
+                            case 'Cesar_Edatel':
+                            case 'Cordoba_Edatel':
+                            case 'Guajira':
+                            case 'Sucre_Edatel':
+                                $area = 'Costa';
+                                break;
+                            case 'Cundinamarca':
+                            case 'Cundinamarca Sur':
+                            case 'Cundinamarca Norte':
+                            case 'Bogota':
+                                $area = 'Bogota';
+                                break;
+                            case 'Meta':
+                            case 'Valle':
+                            case 'Cauca':
+                            case 'Nariño':
+                            case 'Caldas':
+                            case 'Quindio':
+                            case 'Risaralda':
+                            case 'Valle Quindío':
+                            case 'Tolima':
+                                $area = 'Sur';
+                                break;
+                        }
+
+                        $resMesa = $this->postPedidoMn(
+                            $nombre_contacto,
+                            $numero_contacto,
+                            $cc_tecnico,
+                            $observacion,
+                            $tarea,
+                            $unepedido,
+                            $tasktypecategory,
+                            $uneSourceSystem,
+                            'Geco',
+                            'Asignar',
+                            $region,
+                            $area,
+                            'NO',
+                            $UNETecnologias,
+                            'N/A');
+
+                        if ($resMesa) {
+                            $response = array('state' => true, 'msg' => 'El registro se guardo exitosamente');
+                        } else {
+                            $response = array('state' => false, 'msg' => 'Ha ocurrido un error interno inténtalo nuevamente en unos minutos');
+                        }
+
+                    }
+
+                    if ($stmt->rowCount()) {
+                        $response = array('state' => true, 'msg' => 'El registro se guardo exitosamente');
+                    } else {
+                        $response = array('state' => false, 'msg' => 'Ha ocurrido un error interno inténtalo nuevamente en unos minutos');
+                    }
+                }
+            } else {
+                $response = array('state' => false, 'msg' => 'El pedido no se encuentra en gestión');
             }
 
         } catch (PDOException $e) {
@@ -378,6 +593,60 @@ class soporteGpon
         }
         $this->_DB = null;
         echo json_encode($response);
+    }
+
+    public function postPedidoMn(
+        $nombre_contacto,
+        $numero_contacto,
+        $cc_tecnico,
+        $observacion,
+        $tarea,
+        $unepedido,
+        $TaskTypeCategory,
+        $UneSourceSystem,
+        $mesa,
+        $accion,
+        $region,
+        $area,
+        $ata,
+        $UNETecnologias,
+        $tipoSolicitud
+    )
+    {
+        try {
+            $stmt = $this->_DB->prepare("insert into mesas_nacionales(hora_ingreso, estado, nombre_tecnico, num_contacto_tecnico, cc_tecnico,
+                             observacion_tecnico, tarea, pedido, TaskTypeCategory, UneSourceSystem, mesa, accion_tecnico, region, area, activacion_ata, tecnologia, tipo_solicitud)
+			VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            $stmt->execute(
+                [
+                    date('Y-m-d H:i:s'),
+                    'Sin gestión',
+                    $nombre_contacto,
+                    $numero_contacto,
+                    $cc_tecnico,
+                    $observacion,
+                    $tarea,
+                    $unepedido,
+                    $TaskTypeCategory,
+                    $UneSourceSystem,
+                    $mesa,
+                    $accion,
+                    $region,
+                    $area,
+                    $ata,
+                    $UNETecnologias,
+                    $tipoSolicitud
+                ]
+            );
+
+            if ($stmt->rowCount()) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            var_dump($e->getMessage());
+        }
     }
 
     public function registrossoportegpon($data)
@@ -449,7 +718,8 @@ class soporteGpon
                                                observacion_terreno,
                                                login,
                                                fecha_respuesta,
-                                               fecha_marca
+                                               fecha_marca,
+                                               respuesta_tipificaciones
                                         FROM soporte_gpon
                                         WHERE 1 = 1 $condicion 
                                         ORDER BY fecha_creado DESC
@@ -508,67 +778,6 @@ class soporteGpon
         echo json_encode($response);
     }
 
-    /*public function marcarEngestionGpon($params)
-    {
-        try {
-            ini_set('session.gc_maxlifetime', 3600); // 1 hour
-            session_set_cookie_params(3600);
-            session_start();
-
-            if (!$_SESSION) {
-                $response = ['state' => 99, 'title' => 'Su session ha expirado', 'text' => 'Inicia session nuevamente para continuar'];
-            } else {
-                $login = $_SESSION['login'];
-                $today = date("Y-m-d H:i:s");
-
-                $datosguardar = $params['datos'];
-                $id_soporte = $datosguardar['id_soporte'];
-                $status_soporte = $datosguardar['status_soporte'];
-
-                if ($status_soporte == '2') {
-                    $gestion = 1;
-                } else {
-                    $gestion = 0;
-                }
-
-                $rst = $this->_DB->query("SELECT id_soporte, login FROM soporte_gpon WHERE id_soporte = '$id_soporte' AND status_soporte = 2");
-                $rst->execute();
-
-                $stmt = $this->_DB->query("SELECT login FROM usuarios WHERE perfil = '11'");
-                $stmt->execute();
-                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $usuarios_array = array_column($res, 'login');
-
-                if ($rst->rowCount() == 1) {
-                    if ($login == $loginsoportegpon || in_array($login, $usuarios_array)) {
-                        $stmt = $this->_DB->query("UPDATE soporte_gpon SET status_soporte = 0, login = NULL, fecha_marca = NULL WHERE id_soporte ='$id'");
-                        $stmt->execute();
-                        $response = ['state' => 1, 'msj' => 'El pedido se encuentra desbloqueado'];
-                    } else {
-                        $response = ['state' => 0, 'msj' => 'El pedido se encuentra en gestión por otro asesor'];
-                    }
-                } else {
-
-                    $rst = $this->_DB->query("SELECT id_soporte, login FROM soporte_gpon WHERE id_soporte = '$id_soporte' AND status_soporte = 0");
-                    $rst->execute();
-                    if ($rst->rowCount() == 1) {
-                        $row = $rst->fetchAll(PDO::FETCH_ASSOC);
-                        $id = $row[0]['id_soporte'];
-                        //echo "UPDATE soporte_gpon SET status_soporte = 2, login = '$login', fecha_marca = '$today' WHERE id_soporte = '$id'";exit();
-                        $sqlupdate = $this->_DB->query("UPDATE soporte_gpon SET status_soporte = 2, login = '$login', fecha_marca = '$today' WHERE id_soporte = '$id'");
-                        $sqlupdate->execute();
-
-                        $response = ['state' => 1, 'msj' => 'El pedido se encuentra bloqueado', 'alerta' => $alerta];
-                    }
-                }
-            }
-        } catch (PDOException $e) {
-            var_dump($e->getMessage());
-        }
-        $this->_DB = null;
-        echo json_encode($response);
-    }*/
-
     public function marcarEngestionGpon($params)
     {
         try {
@@ -592,18 +801,7 @@ class soporteGpon
                     $gestion = 0;
                 }
 
-                $rst = $this->_DB->query("SELECT s.id_soporte, s.login, CASE
-                                                    WHEN (
-                                                        SELECT
-                                                            COUNT(*) 
-                                                        FROM
-                                                            soporte_gpon c1 
-                                                        WHERE
-                                                            s.tarea = c1.tarea 
-                                                            AND c1.fecha_creado >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
-                                                            AND c1.status_soporte = '1' 
-                                                    ) > 0 THEN 'TRUE' ELSE 'FALSE' 
-                                                    END AS alerta 
+                $rst = $this->_DB->query("SELECT s.id_soporte, s.login
                                                 FROM soporte_gpon s 
                                                 WHERE s.id_soporte = '$id_soporte' AND s.status_soporte = 2");
                 $rst->execute();
@@ -614,40 +812,22 @@ class soporteGpon
                 $usuarios_array = array_column($res, 'login');
 
                 if ($rst->rowCount() == 1) {
-                    //echo 1;exit();
                     $row = $rst->fetchAll(PDO::FETCH_ASSOC);
                     $loginsoportegpon = $row[0]['login'];
                     $id = $row[0]['id_soporte'];
-                    $alerta = $row[0]['alerta'];
-
-                    //echo $loginsoportegpon.''.$login;exit();
 
                     if ($login == $loginsoportegpon || in_array($login, $usuarios_array)) {
                         $stmt = $this->_DB->query("UPDATE soporte_gpon SET status_soporte = 0, login = NULL, fecha_marca = NULL WHERE id_soporte ='$id'");
                         $stmt->execute();
-                        $response = ['state' => 1, 'msj' => 'El pedido se encuentra desbloqueado', 'alerta' => $alerta];
+                        $response = ['state' => true, 'msj' => 'El pedido se encuentra desbloqueado'];
                     } else {
-                        $response = ['state' => 0, 'msj' => 'El pedido se encuentra en gestión por otro asesor'];
+                        $response = ['state' => false, 'msj' => 'El pedido se encuentra en gestión por otro asesor'];
                     }
                 } else {
 
                     $rst = $this->_DB->query("SELECT
                                                         s.id_soporte,
-                                                        s.login,
-                                                    CASE
-                                                            
-                                                            WHEN (
-                                                            SELECT
-                                                                COUNT(*) 
-                                                            FROM
-                                                                soporte_gpon c1 
-                                                            WHERE
-                                                                s.tarea = c1.tarea 
-                                                                AND c1.fecha_creado >= DATE_SUB( CURDATE(), INTERVAL 10 DAY ) 
-                                                                AND c1.status_soporte = '1' 
-                                                                ) > 0 THEN
-                                                                'TRUE' ELSE 'FALSE' 
-                                                            END alerta 
+                                                        s.login
                                                     FROM
                                                         soporte_gpon s
                                                     WHERE
@@ -657,12 +837,12 @@ class soporteGpon
                     if ($rst->rowCount() == 1) {
                         $row = $rst->fetchAll(PDO::FETCH_ASSOC);
                         $id = $row[0]['id_soporte'];
-                        $alerta = $row[0]['alerta'];
-                        //echo "UPDATE soporte_gpon SET status_soporte = 2, login = '$login', fecha_marca = '$today' WHERE id_soporte = '$id'";exit();
-                        $sqlupdate = $this->_DB->query("UPDATE soporte_gpon SET status_soporte = 2, login = '$login', fecha_marca = '$today' WHERE id_soporte = '$id'");
+                        $sqlupdate = $this->_DB->query("UPDATE soporte_gpon SET status_soporte = 2, 
+                                                                login = '$login', 
+                                                                fecha_marca = '$today' WHERE id_soporte = '$id'");
                         $sqlupdate->execute();
 
-                        $response = ['state' => 1, 'msj' => 'El pedido se encuentra bloqueado', 'alerta' => $alerta];
+                        $response = ['state' => true, 'msj' => 'El pedido se encuentra bloqueado'];
                     }
                 }
             }

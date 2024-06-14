@@ -85,6 +85,19 @@ if (isset($data['method'])) {
             $user = new user();
             $res = $user->restauraPassword($data['data']);
             echo json_encode($res);
+            break;
+        case 'solicitaAcceso':
+            require_once '../class/user.php';
+            $user = new user();
+            $res = $user->solicitaAcceso($data['data']);
+            echo json_encode($res);
+            break;
+        case 'guardaSolicitud':
+            require_once '../class/user.php';
+            $user = new user();
+            $res = $user->guardaSolicitud($data['data']);
+            echo json_encode($res);
+            break;
         case 'listaPerfil':
             require_once '../class/user.php';
             $user = new user();

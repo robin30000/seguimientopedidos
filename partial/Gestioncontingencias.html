@@ -95,7 +95,7 @@
                                                 <th>Fecha</th>
                                                 <th>Producto</th>
                                                 <th>Tipo equipo</th>
-                                                <th>Remitente</th>
+                                                <th>Region</th>
                                                 <th>Tipificación</th>
                                                 <th>TaskType</th>
                                                 <th>Obser.</th>
@@ -182,7 +182,7 @@
                                                 <td>{{data.horagestion}}</td>
                                                 <td>{{data.producto}}</td>
                                                 <td>{{data.tipoEquipo}}</td>
-                                                <td>{{data.remite}}</td>
+                                                <td>{{data.region}}</td>
                                                 <td>
                                                     <select class="btn btn-default btn-xs grupo-select"
                                                             name="tipificacion"
@@ -218,7 +218,7 @@
                                                                 tooltip-placement="top"
                                                                 type="button"
                                                                 uib-tooltip="Observaciones y guardar gestión">
-                                                            <i aria-hidden="true" class="fa fa-list-alt"> </i>
+                                                            <i aria-hidden="true" class="fa fa-save"> </i>
                                                         </button>
                                                         <div ng-show="!data._id" style="display: inline-block;">
                                                             <button class="btn btn-default btn-xs"
@@ -722,7 +722,7 @@
                                                 {{Total_Personas_GestionandoCP}}</span>&nbsp;&nbsp;&nbsp;
                                         </li>
                                         <li>
-                                            <button class="btn btn-danger btn-xs"
+                                            <button class="label btn btn-danger btn-xs"
                                                     ng-click="callModalCierreMasivoConti({})"
                                                     ng-show="galletainfo.perfil == 11"
                                                     type="button">Cierre Masivo

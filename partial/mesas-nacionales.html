@@ -13,15 +13,12 @@
                         <li>
                             <a data-toggle="tab" href="/#mesa3">Mesa de Validaciones</a>
                         </li>
-                        <!--<li>
-                            <a data-toggle="tab" href="/#mesa5">Rescate Upgrades</a>
-                        </li>-->
                         <li>
                             <a data-toggle="tab" href="/#mesa6">BSC</a>
                         </li>
-                        <!--<li>
-                            <a data-toggle="tab" href="/#mesa4">Premisas extendidas</a>
-                        </li>-->
+                        <li>
+                            <a data-toggle="tab" href="/#mesa8">Geco</a>
+                        </li>
                         <li>
                             <a data-toggle="tab" href="/#registros">Registro y auditoria</a>
                         </li>
@@ -39,15 +36,6 @@
                                             &nbsp;
                                             <b>Soporte Siebel-Edatel-Elite</b> <span
                                                 class="badge badge-default">{{Items1}}</span>
-                                        </li>
-                                        <li>
-                                            &nbsp;
-                                            &nbsp;
-                                            <div data-ng-if="loading">
-                                                <img data-placement="top" src="img/loader.gif"
-                                                     title="Esperando respuesta"
-                                                     tooltip/>
-                                            </div>
                                         </li>
                                         <li>
                                             &nbsp;
@@ -75,10 +63,11 @@
                                                 <th class="text-center"><span>Pedido</span></th>
                                                 <th class="text-center"><span>Tipificacion</span></th>
                                                 <th class="text-center"><span>Tipificacion 2</span></th>
+                                                <th class="text-center"><span>Region</span></th>
                                                 <th class="text-center"><span>Fecha ingreso</span></th>
-                                                <th class="text-center"><span>Obs. técnico</span></th>
+                                                <th class="text-center"><span>Obs. t.</span></th>
                                                 <th class="text-center"><span>Acción técnico</span></th>
-                                                <th class="text-center"><span>Respuesta</span></th>
+                                                <th class="text-center"><span>Acción</span></th>
 
                                             </tr>
                                             </thead>
@@ -88,18 +77,9 @@
                                                 <td>
                                                     <div>
                                                         <input ng-checked="data.estado == 'En gestión'"
-                                                               ng-click="marcarEngestion(data.id)"
+                                                               ng-click="marcarEngestion(data.id,1)"
                                                                ng-model="data.estado"
                                                                type="checkbox">
-                                                        <!-- <div class="loadingio-spinner-ellipsis-3nun7cb96ao">
-                                                             <div class="ldio-pettsxrv7wj">
-                                                                 <div></div>
-                                                                 <div></div>
-                                                                 <div></div>
-                                                                 <div></div>
-                                                                 <div></div>
-                                                             </div>
-                                                         </div>-->
                                                     </div>
                                                 </td>
                                                 <td>
@@ -123,7 +103,8 @@
 
                                                 <td>
                                                     <select class="btn btn-default btn-xs grupo-select"
-                                                            ng-model="data.tipificaciones">
+                                                            ng-disabled="data.login_gestion == null"
+                                                            ng-model="data.tipificaciones" style="width: 120px">
                                                         <option selected value="">Seleccione</option>
                                                         <option value="Aprovisionar">Aprovisionar</option>
                                                         <option value="Configurar wifi">Configurar wifi</option>
@@ -152,7 +133,8 @@
                                                 </td>
                                                 <td>
                                                     <select class="btn btn-default btn-xs grupo-select"
-                                                            ng-model="data.tipificaciones2">
+                                                            ng-disabled="data.login_gestion == null"
+                                                            ng-model="data.tipificaciones2" style="width: 140px">
                                                         <option selected value="">Seleccione</option>
                                                         <option value="Finalizado">Finalizado</option>
                                                         <option value="No finalizado con éxito">No finalizado con
@@ -163,9 +145,11 @@
                                                         </option>
                                                     </select>
                                                 </td>
+                                                <td>{{data.region}}</td>
                                                 <td>{{data.hora_ingreso}}</td>
                                                 <td>
                                                     <button class="btn btn-default btn-xs"
+                                                            ng-disabled="data.login_gestion == null"
                                                             popover-placement="left"
                                                             tooltip-placement="top" type="button"
                                                             uib-popover="{{data.observacion_tecnico}}"
@@ -174,11 +158,12 @@
                                                     </button>
                                                 </td>
                                                 <td>{{data.accion_tecnico}}</td>
-                                                <td>
-                                                    <button class="btn btn-default btn-xs" ng-click="GuardarMn(data)"
+                                                <td style="display: flex;justify-content: center;">
+                                                    <button class="btn btn-default btn-xs" ng-click="GuardarMn(data,1)"
+                                                            ng-disabled="data.login_gestion == null"
                                                             tooltip-placement="top"
                                                             type="button" uib-tooltip="Guardar">
-                                                        <i aria-hidden="true" class="fa fa-edit"></i>
+                                                        <i aria-hidden="true" class="fa fa-save"></i>
                                                     </button>
                                                     <div ng-show="data.alerta === 'TRUE'"
                                                          style="display: inline-block;">
@@ -214,15 +199,6 @@
                                         <li>
                                             &nbsp;
                                             &nbsp;
-                                            <div data-ng-if="loading">
-                                                <img data-placement="top" src="img/loader.gif"
-                                                     title="Esperando respuesta"
-                                                     tooltip/>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            &nbsp;
-                                            &nbsp;
                                             <button class="btn btn-default btn-xs" data-placement="top"
                                                     data-toggle="tooltip" ng-click="recargaPageGestion(2)"
                                                     ng-disabled="loading" title="Actualizar" type="button">
@@ -246,10 +222,11 @@
                                                 <th class="text-center"><span>Pedido</span></th>
                                                 <th class="text-center"><span>Tipificacion</span></th>
                                                 <th class="text-center"><span>Tipificacion 2</span></th>
+                                                <th class="text-center"><span>Region</span></th>
                                                 <th class="text-center"><span>Fecha ingreso</span></th>
-                                                <th class="text-center"><span>Obs. técnico</span></th>
+                                                <th class="text-center"><span>Obs. t.</span></th>
                                                 <th class="text-center"><span>Acción técnico</span></th>
-                                                <th class="text-center"><span>Respuesta</span></th>
+                                                <th class="text-center"><span>Acción</span></th>
 
                                             </tr>
                                             </thead>
@@ -259,18 +236,9 @@
                                                 <td>
                                                     <div>
                                                         <input ng-checked="data.estado == 'En gestión'"
-                                                               ng-click="marcarEngestion(data.id)"
+                                                               ng-click="marcarEngestion(data.id, 2)"
                                                                ng-model="data.estado"
                                                                type="checkbox">
-                                                        <!-- <div class="loadingio-spinner-ellipsis-3nun7cb96ao">
-                                                             <div class="ldio-pettsxrv7wj">
-                                                                 <div></div>
-                                                                 <div></div>
-                                                                 <div></div>
-                                                                 <div></div>
-                                                                 <div></div>
-                                                             </div>
-                                                         </div>-->
                                                     </div>
                                                 </td>
                                                 <td>
@@ -294,7 +262,8 @@
 
                                                 <td>
                                                     <select class="btn btn-default btn-xs grupo-select"
-                                                            ng-model="data.tipificaciones">
+                                                            ng-disabled="data.login_gestion == null"
+                                                            ng-model="data.tipificaciones" style="width: 120px">
                                                         <option selected value="">Seleccione</option>
                                                         <option value="Cambio de puerto/Actualizar infra / replanteo">
                                                             Cambio de puerto/Actualizar infra / replanteo
@@ -306,7 +275,8 @@
                                                 </td>
                                                 <td>
                                                     <select class="btn btn-default btn-xs grupo-select"
-                                                            ng-model="data.tipificaciones2">
+                                                            ng-disabled="data.login_gestion == null"
+                                                            ng-model="data.tipificaciones2" style="width: 140px">
                                                         <option selected value="">Seleccione</option>
                                                         <option value="Finalizado">Finalizado</option>
                                                         <option value="No finalizado con éxito">No finalizado con
@@ -317,9 +287,11 @@
                                                         </option>
                                                     </select>
                                                 </td>
+                                                <td>{{data.region}}</td>
                                                 <td>{{data.hora_ingreso}}</td>
                                                 <td>
                                                     <button class="btn btn-default btn-xs"
+                                                            ng-disabled="data.login_gestion == null"
                                                             popover-placement="left"
                                                             tooltip-placement="top" type="button"
                                                             uib-popover="{{data.observacion_tecnico}}"
@@ -328,11 +300,12 @@
                                                     </button>
                                                 </td>
                                                 <td>{{data.accion_tecnico}}</td>
-                                                <td>
-                                                    <button class="btn btn-default btn-xs" ng-click="GuardarMn(data)"
+                                                <td style="display: flex;justify-content: center;">
+                                                    <button class="btn btn-default btn-xs" ng-click="GuardarMn(data,2)"
+                                                            ng-disabled="data.login_gestion == null"
                                                             tooltip-placement="top"
                                                             type="button" uib-tooltip="Guardar">
-                                                        <i aria-hidden="true" class="fa fa-edit"></i>
+                                                        <i aria-hidden="true" class="fa fa-save"></i>
                                                     </button>
                                                     <div ng-show="data.alerta === 'TRUE'"
                                                          style="display: inline-block;">
@@ -368,15 +341,6 @@
                                         <li>
                                             &nbsp;
                                             &nbsp;
-                                            <div data-ng-if="loading">
-                                                <img data-placement="top" src="img/loader.gif"
-                                                     title="Esperando respuesta"
-                                                     tooltip/>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            &nbsp;
-                                            &nbsp;
                                             <button class="btn btn-default btn-xs" data-placement="top"
                                                     data-toggle="tooltip" ng-click="recargaPageGestion(3)"
                                                     ng-disabled="loading" title="Actualizar" type="button">
@@ -400,10 +364,11 @@
                                                 <th class="text-center"><span>Pedido</span></th>
                                                 <th class="text-center"><span>Tipificacion</span></th>
                                                 <th class="text-center"><span>Tipificacion 2</span></th>
+                                                <th class="text-center"><span>Region</span></th>
                                                 <th class="text-center"><span>Fecha ingreso</span></th>
-                                                <th class="text-center"><span>Obs. técnico</span></th>
+                                                <th class="text-center"><span>Obs. t.</span></th>
                                                 <th class="text-center"><span>Acción técnico</span></th>
-                                                <th class="text-center"><span>Respuesta</span></th>
+                                                <th class="text-center"><span>Acción</span></th>
 
                                             </tr>
                                             </thead>
@@ -412,18 +377,9 @@
                                                 <td>
                                                     <div>
                                                         <input ng-checked="data.estado == 'En gestión'"
-                                                               ng-click="marcarEngestion(data.id)"
+                                                               ng-click="marcarEngestion(data.id,3)"
                                                                ng-model="data.estado"
                                                                type="checkbox">
-                                                        <!-- <div class="loadingio-spinner-ellipsis-3nun7cb96ao">
-                                                             <div class="ldio-pettsxrv7wj">
-                                                                 <div></div>
-                                                                 <div></div>
-                                                                 <div></div>
-                                                                 <div></div>
-                                                                 <div></div>
-                                                             </div>
-                                                         </div>-->
                                                     </div>
                                                 </td>
                                                 <td>
@@ -447,7 +403,8 @@
 
                                                 <td>
                                                     <select class="btn btn-default btn-xs grupo-select"
-                                                            ng-model="data.tipificaciones">
+                                                            ng-disabled="data.login_gestion == null"
+                                                            ng-model="data.tipificaciones" style="width: 120px">
                                                         <option selected value="">Seleccione</option>
                                                         <option value="Cierre con llamada">Cierre con llamada</option>
                                                         <option value="Validación de parámetros">Validación de
@@ -463,7 +420,8 @@
                                                 </td>
                                                 <td>
                                                     <select class="btn btn-default btn-xs grupo-select"
-                                                            ng-model="data.tipificaciones2">
+                                                            ng-disabled="data.login_gestion == null"
+                                                            ng-model="data.tipificaciones2" style="width: 140px">
                                                         <option selected value="">Seleccione</option>
                                                         <option value="Finalizado">Finalizado</option>
                                                         <option value="No finalizado con éxito">No finalizado con
@@ -474,9 +432,11 @@
                                                         </option>
                                                     </select>
                                                 </td>
+                                                <td>{{data.region}}</td>
                                                 <td>{{data.hora_ingreso}}</td>
                                                 <td>
                                                     <button class="btn btn-default btn-xs"
+                                                            ng-disabled="data.login_gestion == null"
                                                             popover-placement="left"
                                                             tooltip-placement="top" type="button"
                                                             uib-popover="{{data.observacion_tecnico}}"
@@ -485,11 +445,12 @@
                                                     </button>
                                                 </td>
                                                 <td>{{data.accion_tecnico}}</td>
-                                                <td>
-                                                    <button class="btn btn-default btn-xs" ng-click="GuardarMn(data)"
+                                                <td style="display: flex;justify-content: center;">
+                                                    <button class="btn btn-default btn-xs" ng-click="GuardarMn(data,3)"
+                                                            ng-disabled="data.login_gestion == null"
                                                             tooltip-placement="top"
                                                             type="button" uib-tooltip="Guardar">
-                                                        <i aria-hidden="true" class="fa fa-edit"></i>
+                                                        <i aria-hidden="true" class="fa fa-save"></i>
                                                     </button>
                                                     <div ng-show="data.alerta === 'TRUE'"
                                                          style="display: inline-block;">
@@ -510,164 +471,6 @@
                             </div>
                         </div>
                     </div>
-                    <!--<div class="tab-pane fade" id="mesa5">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="table">
-                                    <br>
-                                    <ul class="nav navbar-nav pull-left">
-                                        <li>
-                                            &nbsp;
-                                            &nbsp;
-                                            <b>Rescate Upgrades</b> <span class="badge badge-default">{{Items6}}</span>
-                                        </li>
-                                        <li>
-                                            &nbsp;
-                                            &nbsp;
-                                            <div data-ng-if="loading">
-                                                <img data-placement="top" src="img/loader.gif"
-                                                     title="Esperando respuesta"
-                                                     tooltip/>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            &nbsp;
-                                            &nbsp;
-                                            <button class="btn btn-default btn-xs" data-placement="top"
-                                                    data-toggle="tooltip" ng-click="recargaPageGestion(6)"
-                                                    ng-disabled="loading" title="Actualizar" type="button">
-                                                <i aria-hidden="true" class="fa fa-refresh"></i>
-                                            </button>
-                                        </li>
-                                        &nbsp;
-                                    </ul>
-                                    <br><br>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover table-condensed small">
-                                            <thead class="table-header">
-                                            <tr>
-                                                <th class="text-center"><span>Mar.</span></th>
-                                                <th class="text-center"><span>Login</span></th>
-                                                <th class="text-center"><span>Tarea</span></th>
-                                                <th class="text-center"><span>Sistema</span></th>
-                                                <th class="text-center"><span>Cel técnico</span></th>
-                                                <th class="text-center"><span>Nombre técnico</span></th>
-                                                <th class="text-center"><span>Categoría</span></th>
-                                                <th class="text-center"><span>Pedido</span></th>
-                                                <th class="text-center"><span>Tipificacion</span></th>
-                                                <th class="text-center"><span>Tipificacion 2</span></th>
-                                                <th class="text-center"><span>Fecha ingreso</span></th>
-                                                <th class="text-center"><span>Obs. técnico</span></th>
-                                                <th class="text-center"><span>Acción técnico</span></th>
-                                                <th class="text-center"><span>Respuesta</span></th>
-
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr ng-repeat="data in mesa6">
-                                                <td>
-                                                    <div>
-                                                        <input ng-checked="data.estado == 'En gestión'"
-                                                               ng-click="marcarEngestion(data.id)"
-                                                               ng-model="data.estado"
-                                                               type="checkbox">
-                                                        &lt;!&ndash; <div class="loadingio-spinner-ellipsis-3nun7cb96ao">
-                                                             <div class="ldio-pettsxrv7wj">
-                                                                 <div></div>
-                                                                 <div></div>
-                                                                 <div></div>
-                                                                 <div></div>
-                                                                 <div></div>
-                                                             </div>
-                                                         </div>&ndash;&gt;
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <span class="label label-primary label-xsmall"
-                                                          ng-if="data.login_gestion == galletainfo.login">{{data.login_gestion}}</span>
-                                                    <span class="label label-primary label-xsmall"
-                                                          ng-if="data.login_gestion != galletainfo.login">{{data.login_gestion}}</span>
-                                                </td>
-                                                <td>
-                                                    <button class="btn btn-default btn-xs" id=i{{$index}}
-                                                            ng-click="CopyPortaPapeles(data.tarea)"
-                                                            tooltip-placement="top" type="button"
-                                                            uib-tooltip="Copiar tarea">{{data.tarea}}
-                                                    </button>
-                                                </td>
-                                                <td>{{data.UneSourceSystem}}</td>
-                                                <td>{{data.num_contacto_tecnico}}</td>
-                                                <td>{{data.nombre_tecnico}}</td>
-                                                <td>{{data.TaskTypeCategory}}</td>
-                                                <td>{{data.pedido}}</td>
-
-                                                <td>
-                                                    <select class="btn btn-default btn-xs grupo-select"
-                                                            ng-model="data.tipificaciones">
-                                                        <option selected value="">Seleccione</option>
-                                                        <option value="Código de incompleto">Código de incompleto
-                                                        </option>
-                                                        <option value="No se entrega código">No se entrega código
-                                                        </option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <select class="btn btn-default btn-xs grupo-select"
-                                                            ng-model="data.tipificaciones2">
-                                                        <option selected value="">Seleccione</option>
-                                                        <option ng-if="data.tipificaciones !== 'No se entrega código'"
-                                                                value="No desea el servicio">No desea el servicio
-                                                        </option>
-                                                        <option ng-if="data.tipificaciones !== 'No se entrega código'"
-                                                                value="Cliente no autoriza">Cliente no autoriza
-                                                        </option>
-                                                        <option ng-if="data.tipificaciones !== 'No se entrega código'"
-                                                                value="Cliente ilocalizado">Cliente ilocalizado
-                                                        </option>
-                                                        <option ng-if="data.tipificaciones === 'No se entrega código'"
-                                                                value="Cliente acepta el cambio">Cliente acepta el
-                                                            cambio
-                                                        </option>
-
-
-                                                    </select>
-                                                </td>
-                                                <td>{{data.hora_ingreso}}</td>
-                                                <td>
-                                                    <button class="btn btn-default btn-xs"
-                                                            popover-placement="left"
-                                                            tooltip-placement="top" type="button"
-                                                            uib-popover="{{data.observacion_tecnico}}"
-                                                            uib-tooltip="Observación técnico">
-                                                        <i aria-hidden="true" class="fa fa-commenting"></i>
-                                                    </button>
-                                                </td>
-                                                <td>{{data.accion_tecnico}}</td>
-                                                <td>
-                                                    <button class="btn btn-default btn-xs" ng-click="GuardarMn(data)"
-                                                            tooltip-placement="top"
-                                                            type="button" uib-tooltip="Guardar">
-                                                        <i aria-hidden="true" class="fa fa-edit"></i>
-                                                    </button>
-                                                    <div ng-show="data.alerta === 'TRUE'"
-                                                         style="display: inline-block;">
-                                                        <button class="btn btn-default btn-xs" data-backdrop="static"
-                                                                data-toggle="modal" ng-hide="data.alerta == 'FALSE'"
-                                                                tooltip-placement="top" type="button"
-                                                                uib-tooltip="La tarea ya pasó por esta mesa anteriormente, por favor validar!">
-                                                            <i aria-hidden="true" class="fa fa-exclamation"
-                                                               style="color:red"> </i>
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>-->
                     <div class="tab-pane fade" id="mesa6">
                         <div class="row">
                             <div class="col-sm-12">
@@ -677,16 +480,7 @@
                                         <li>
                                             &nbsp;
                                             &nbsp;
-                                            <b>BSC</b> <span class="badge badge-default">{{Items7}}</span>
-                                        </li>
-                                        <li>
-                                            &nbsp;
-                                            &nbsp;
-                                            <div data-ng-if="loading">
-                                                <img data-placement="top" src="img/loader.gif"
-                                                     title="Esperando respuesta"
-                                                     tooltip/>
-                                            </div>
+                                            <b>BSC</b> <span class="badge badge-default">{{Items6}}</span>
                                         </li>
                                         <li>
                                             &nbsp;
@@ -714,21 +508,22 @@
                                                 <th class="text-center"><span>Pedido</span></th>
                                                 <th class="text-center"><span>Tipificación</span></th>
                                                 <th class="text-center"><span>Tipificación 2</span></th>
+                                                <th class="text-center"><span>Region</span></th>
                                                 <th class="text-center"><span>Fecha ingreso</span></th>
-                                                <th class="text-center"><span>Obs. técnico</span></th>
+                                                <th class="text-center"><span>Obs. t.</span></th>
                                                 <th class="text-center"><span>Acción técnico</span></th>
                                                 <th class="text-center"><span>ATA?</span></th>
                                                 <th class="text-center"><span>Tecnología</span></th>
-                                                <th class="text-center"><span>Respuesta</span></th>
+                                                <th class="text-center"><span>Acción</span></th>
 
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr ng-class="{'danger' : data.counter > 3}" ng-repeat="data in mesa7">
+                                            <tr ng-class="{'danger' : data.counter > 3}" ng-repeat="data in mesa6">
                                                 <td>
                                                     <div>
                                                         <input ng-checked="data.estado == 'En gestión'"
-                                                               ng-click="marcarEngestion(data.id)"
+                                                               ng-click="marcarEngestion(data.id,6)"
                                                                ng-model="data.estado"
                                                                type="checkbox">
                                                     </div>
@@ -754,6 +549,7 @@
 
                                                 <td>
                                                     <select class="btn btn-default btn-xs grupo-select"
+                                                            ng-disabled="data.login_gestion == null"
                                                             ng-model="data.tipificaciones" style="width: 120px">
                                                         <option selected value="">Seleccione</option>
                                                         <option
@@ -852,6 +648,7 @@
                                                 </td>
                                                 <td>
                                                     <select class="btn btn-default btn-xs grupo-select"
+                                                            ng-disabled="data.login_gestion == null"
                                                             ng-model="data.tipificaciones2" style="width: 120px">
                                                         <option selected value="">Seleccione</option>
                                                         <option value="Finalizado">Finalizado</option>
@@ -863,9 +660,11 @@
                                                         </option>
                                                     </select>
                                                 </td>
+                                                <td>{{data.region}}</td>
                                                 <td>{{data.hora_ingreso}}</td>
                                                 <td>
                                                     <button class="btn btn-default btn-xs"
+                                                            ng-disabled="data.login_gestion == null"
                                                             popover-placement="left"
                                                             tooltip-placement="top" type="button"
                                                             uib-popover="{{data.observacion_tecnico}}"
@@ -880,11 +679,12 @@
                                                 <td>
                                                     {{data.tecnologia}}
                                                 </td>
-                                                <td>
-                                                    <button class="btn btn-default btn-xs" ng-click="GuardarMn(data)"
+                                                <td style="display: flex;justify-content: center;">
+                                                    <button class="btn btn-default btn-xs" ng-click="GuardarMn(data,6)"
+                                                            ng-disabled="data.login_gestion == null"
                                                             tooltip-placement="top"
                                                             type="button" uib-tooltip="Guardar">
-                                                        <i aria-hidden="true" class="fa fa-edit"></i>
+                                                        <i aria-hidden="true" class="fa fa-save"></i>
                                                     </button>
                                                     <div ng-show="data.alerta === 'TRUE'"
                                                          style="display: inline-block;">
@@ -905,7 +705,7 @@
                             </div>
                         </div>
                     </div>
-                    <!--<div class="tab-pane fade" id="mesa4">
+                    <div class="tab-pane fade" id="mesa8">
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="table">
@@ -914,23 +714,15 @@
                                         <li>
                                             &nbsp;
                                             &nbsp;
-                                            <b>Premisas extendidas</b> <span
-                                                class="badge badge-default">{{Items4}}</span>
+                                            <b>Geco</b> <span
+                                                class="badge badge-default">{{Items8}}</span>
                                         </li>
-                                        <li>
-                                            &nbsp;
-                                            &nbsp;
-                                            <div data-ng-if="loading">
-                                                <img data-placement="top" src="img/loader.gif"
-                                                     title="Esperando respuesta"
-                                                     tooltip/>
-                                            </div>
-                                        </li>
+
                                         <li>
                                             &nbsp;
                                             &nbsp;
                                             <button class="btn btn-default btn-xs" data-placement="top"
-                                                    data-toggle="tooltip" ng-click="recargaPageGestion(4)"
+                                                    data-toggle="tooltip" ng-click="recargaPageGestion(8)"
                                                     ng-disabled="loading" title="Actualizar" type="button">
                                                 <i aria-hidden="true" class="fa fa-refresh"></i>
                                             </button>
@@ -949,106 +741,115 @@
                                                 <th class="text-center"><span>Cel técnico</span></th>
                                                 <th class="text-center"><span>Nombre técnico</span></th>
                                                 <th class="text-center"><span>Categoría</span></th>
-                                                <th class="text-center"><span>Pedido</span></th>
-                                                <th class="text-center"><span>Tipificacion</span></th>
-                                                <th class="text-center"><span>Tipificacion 2</span></th>
+                                                <th class="text-center"><span>T. Solicitud</span></th>
                                                 <th class="text-center"><span>Fecha ingreso</span></th>
-                                                <th class="text-center"><span>Obs. técnico</span></th>
+                                                <th class="text-center"><span>Obs. t.</span></th>
+                                                <th class="text-center"><span>Region</span></th>
                                                 <th class="text-center"><span>Acción técnico</span></th>
-                                                <th class="text-center"><span>Respuesta</span></th>
+                                                <th class="text-center"><span>Acción asesor</span></th>
+                                                <th class="text-center"><span>Acción asesor 2</span></th>
+                                                <th class="text-center"><span>Acción</span></th>
 
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr ng-class="{'danger' : data.counter > 3}" ng-repeat="data in mesa4">
+                                            <tr ng-class="{'danger' : data.counter > 3}" ng-repeat="dataGeco in mesa8">
                                                 <td>
                                                     <div>
-                                                        <input ng-checked="data.estado == 'En gestión'"
-                                                               ng-click="marcarEngestion(data.id)"
-                                                               ng-model="data.estado"
+                                                        <input ng-checked="dataGeco.estado == 'En gestión'"
+                                                               ng-click="marcarEngestion(dataGeco.id,8)"
+                                                               ng-model="dataGeco.estado"
                                                                type="checkbox">
-                                                        &lt;!&ndash; <div class="loadingio-spinner-ellipsis-3nun7cb96ao">
-                                                             <div class="ldio-pettsxrv7wj">
-                                                                 <div></div>
-                                                                 <div></div>
-                                                                 <div></div>
-                                                                 <div></div>
-                                                                 <div></div>
-                                                             </div>
-                                                         </div>&ndash;&gt;
                                                     </div>
                                                 </td>
                                                 <td>
                                                     <span class="label label-primary label-xsmall"
-                                                          ng-if="data.login_gestion == galletainfo.login">{{data.login_gestion}}</span>
+                                                          ng-if="dataGeco.login_gestion == galletainfo.login">{{dataGeco.login_gestion}}</span>
                                                     <span class="label label-primary label-xsmall"
-                                                          ng-if="data.login_gestion != galletainfo.login">{{data.login_gestion}}</span>
+                                                          ng-if="dataGeco.login_gestion != galletainfo.login">{{dataGeco.login_gestion}}</span>
                                                 </td>
                                                 <td>
                                                     <button class="btn btn-default btn-xs" id=i{{$index}}
-                                                            ng-click="CopyPortaPapeles(data.tarea)"
+                                                            ng-click="CopyPortaPapeles(dataGeco.tarea)"
                                                             tooltip-placement="top" type="button"
-                                                            uib-tooltip="Copiar tarea">{{data.tarea}}
+                                                            uib-tooltip="Copiar tarea">{{dataGeco.tarea}}
                                                     </button>
                                                 </td>
-                                                <td>{{data.UneSourceSystem}}</td>
-                                                <td>{{data.num_contacto_tecnico}}</td>
-                                                <td>{{data.nombre_tecnico}}</td>
-                                                <td>{{data.TaskTypeCategory}}</td>
-                                                <td>{{data.pedido}}</td>
-
-                                                <td>
-                                                    <select class="btn btn-default btn-xs grupo-select"
-                                                            ng-model="data.tipificaciones">
-                                                        <option selected value="">Seleccione</option>
-                                                        <option value="Código de completo">Código de completo</option>
-                                                        <option value="Código de incompleto">Código de incompleto
-                                                        </option>
-                                                        <option value="Validación de parámetros">Validación de
-                                                            parámetros
-                                                        </option>
-                                                        <option value="Código de geocerca">Código de geocerca</option>
-                                                        <option value="Pendiente">Pendiente</option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <select class="btn btn-default btn-xs grupo-select"
-                                                            ng-model="data.tipificaciones2">
-                                                        <option selected value="">Seleccione</option>
-                                                        <option value="Finalizado">Finalizado</option>
-                                                        <option value="No finalizado con éxito">No finalizado con
-                                                            éxito
-                                                        </option>
-                                                        <option value="Devuelto al técnico por mal ingreso">Devuelto al
-                                                            técnico por mal ingreso
-                                                        </option>
-                                                    </select>
-                                                </td>
-                                                <td>{{data.hora_ingreso}}</td>
+                                                <td>{{dataGeco.UneSourceSystem}}</td>
+                                                <td>{{dataGeco.num_contacto_tecnico}}</td>
+                                                <td>{{dataGeco.nombre_tecnico}}</td>
+                                                <td>{{dataGeco.TaskTypeCategory}}</td>
+                                                <td>{{dataGeco.tipo_solicitud}}</td>
+                                                <td>{{dataGeco.hora_ingreso}}</td>
                                                 <td>
                                                     <button class="btn btn-default btn-xs"
+                                                            ng-disabled="dataGeco.login_gestion == null"
                                                             popover-placement="left"
                                                             tooltip-placement="top" type="button"
-                                                            uib-popover="{{data.observacion_tecnico}}"
+                                                            uib-popover="{{dataGeco.observacion_tecnico}}"
                                                             uib-tooltip="Observación técnico">
-                                                        <i aria-hidden="true" class="fa fa-commenting"></i>
+                                                        <i aria-hidden="true" class="fa fa-commenting"
+                                                           ng-disabled="dataGeco.login_gestion == null"></i>
                                                     </button>
                                                 </td>
-                                                <td>{{data.accion_tecnico}}</td>
+                                                <td>{{dataGeco.region}}</td>
+                                                <td>{{dataGeco.accion_tecnico}}</td>
                                                 <td>
-                                                    <button class="btn btn-default btn-xs" ng-click="GuardarMn(data)"
+                                                    {{dataGeco.tipificaciones}}
+                                                </td>
+                                                <td>
+                                                    <select class="btn btn-default btn-xs grupo-select"
+                                                            ng-disabled="dataGeco.login_gestion == null"
+                                                            ng-model="dataGeco.tipificaciones2"
+                                                            style="max-width: 120px">
+                                                        <option selected value="">Seleccione</option>
+                                                        <option ng-if="dataGeco.accion_tecnico != 'Ubicar Usuario' && dataGeco.accion_tecnico != 'Sin trabajo'"
+                                                                value="Nivelado">
+                                                            Nivelado
+                                                        </option>
+                                                        <option ng-if="dataGeco.accion_tecnico != 'Ubicar Usuario' && dataGeco.accion_tecnico != 'Sin trabajo'"
+                                                                value="Sin Recursos">Sin Recursos
+                                                        </option>
+                                                        <option ng-if="dataGeco.accion_tecnico != 'Ubicar Usuario' && dataGeco.accion_tecnico != 'Sin trabajo' && dataGeco.accion_tecnico != 'Asignar'"
+                                                                value="Devuelto por mal ingreso">Devuelto por mal
+                                                            ingreso
+                                                        </option>
+                                                        <option ng-if="dataGeco.accion_tecnico == 'Ubicar Usuario'"
+                                                                value="Usuario ubicado">Usuario ubicado
+                                                        </option>
+                                                        <option ng-if="dataGeco.accion_tecnico == 'Ubicar Usuario'"
+                                                                value="Usuario no ubicado">Usuario no ubicado
+                                                        </option>
+                                                        <option ng-if="dataGeco.accion_tecnico == 'Ubicar Usuario'"
+                                                                value="Devuelto por mal ingreso">Devuelto por mal
+                                                            ingreso
+                                                        </option>
+                                                        <option ng-if="dataGeco.accion_tecnico == 'Sin trabajo'"
+                                                                value="Cargado">Cargado
+                                                        </option>
+                                                        <option ng-if="dataGeco.accion_tecnico == 'Sin trabajo'"
+                                                                value="Sin trabajo">Sin trabajo
+                                                        </option>
+
+                                                    </select>
+
+                                                </td>
+                                                <td style="display: flex;justify-content: center;">
+                                                    <button class="btn btn-default btn-xs"
+                                                            ng-click="GuardarMn(dataGeco,8)"
+                                                            ng-disabled="dataGeco.login_gestion == null"
                                                             tooltip-placement="top"
                                                             type="button" uib-tooltip="Guardar">
-                                                        <i aria-hidden="true" class="fa fa-edit"></i>
+                                                        <i aria-hidden="true" class="fa fa-save"></i>
                                                     </button>
-                                                    <div ng-show="data.alerta === 'TRUE'"
+                                                    <div ng-show="dataGeco.alerta === 'TRUE' && dataGeco.tarea != '00000000'"
                                                          style="display: inline-block;">
                                                         <button class="btn btn-default btn-xs" data-backdrop="static"
-                                                                data-toggle="modal" ng-hide="data.alerta == 'FALSE'"
+                                                                data-toggle="modal" ng-hide="dataGeco.alerta == 'FALSE'"
                                                                 tooltip-placement="top" type="button"
-                                                                uib-tooltip="La tarea ya pasó por esta mesa anteriormente {{data.counter}} veces, por favor validar!">
+                                                                uib-tooltip="La tarea ya pasó por esta mesa anteriormente {{dataGeco.counter}} veces, por favor validar!">
                                                             <i aria-hidden="true" class="fa fa-exclamation"
-                                                               ng-class="{'parpadeo-rojo': data.counter > 3, 'red': data.counter > 0}"> </i>
+                                                               ng-class="{'parpadeo-rojo': dataGeco.counter > 3 && dataGeco.tarea != '00000000', 'red': dataGeco.counter > 0}"> </i>
                                                         </button>
                                                     </div>
                                                 </td>
@@ -1059,7 +860,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>-->
+                    </div>
                     <div class="tab-pane fade" id="registros">
                         <div class="row">
                             <div class="col-sm-12">
@@ -1073,14 +874,6 @@
                                 </ul>
 
                                 <ul class="nav navbar-nav pull-right">
-                                    <li>
-                                        &nbsp;
-                                        <div data-ng-if="loading">
-                                            <img data-placement="top" src="img/loader.gif"
-                                                 title="Esperando respuesta"
-                                                 tooltip/>
-                                        </div>
-                                    </li>
 
                                     <li>
                                         &nbsp;
@@ -1091,8 +884,8 @@
                                             <option value="Mesa 1">Soporte Siebel-Edatel-Elite</option>
                                             <option value="Mesa 2">Edatel- Soporte LB- Cambios Pto</option>
                                             <option value="Mesa 3">Mesa de Validaciones</option>
-                                            <!--<option value="Mesa 4">Premisas extendidas</option>-->
                                             <option value="Mesa 6">BSC</option>
+                                            <option value="Geco">Geco</option>
                                         </select>
                                     </li>
 
@@ -1171,7 +964,8 @@
                                             <th class="text-center"><span>Mesa</span></th>
                                             <th class="text-center"><span>Tipificación</span></th>
                                             <th class="text-center"><span>Tipificación 2</span></th>
-                                            <th class="text-center"><span>Obs. técnico</span></th>
+                                            <th class="text-center"><span>Region</span></th>
+                                            <th class="text-center"><span>Obs. t.</span></th>
                                             <th class="text-center"><span>Acción técnico</span></th>
                                             <th class="text-center"><span>Obs. asesor</span></th>
                                             <th class="text-center"><span>Ver +</span></th>
@@ -1200,6 +994,7 @@
                                             <td>
                                                 <button class="btn btn-default btn-xs" id=p{{$index}}
                                                         ng-click="CopyPortaPapeles(data.TaskTypeCategory)"
+                                                        ng-if="data.TaskTypeCategory"
                                                         tooltip-placement="top"
                                                         type="button" uib-tooltip="Copiar Categoría">
                                                     {{data.TaskTypeCategory}}
@@ -1334,6 +1129,19 @@
                                                             value="Validación de parámetros">Validación de
                                                         parámetros
                                                     </option>
+                                                    <option
+                                                            value="Nivelar Técnico Completo">Nivelar Técnico
+                                                        Completo
+                                                    </option>
+                                                    <option
+                                                            value="Nivelar Técnico Medio">Nivelar Técnico Medio
+                                                    </option>
+                                                    <option
+                                                            value="Ubicar usuario">Ubicar usuario
+                                                    </option>
+                                                    <option
+                                                            value="Cargar trabajo">Cargar trabajo
+                                                    </option>
                                                 </select>
                                             </td>
                                             <td>
@@ -1347,9 +1155,17 @@
                                                     <option value="Devuelto al técnico por mal ingreso">Devuelto al
                                                         técnico por mal ingreso
                                                     </option>
+                                                    <option value="Nivelado">Nivelado</option>
+                                                    <option value="Sin Recursos">Sin Recursos</option>
+                                                    <option
+                                                            value="Cargado">Cargado
+                                                    </option>
+                                                    <option
+                                                            value="Sin trabajo">Sin trabajo
+                                                    </option>
                                                 </select>
                                             </td>
-
+                                            <td>{{data.region}}</td>
                                             <td>
                                                 <button class="btn btn-default btn-xs"
                                                         popover-placement="left"

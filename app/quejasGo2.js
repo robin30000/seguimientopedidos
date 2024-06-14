@@ -130,49 +130,15 @@
                                 $route.reload();
                             });
                         } else if (data.data.state === 1) {
-                            if (data.data.alerta) {
-                                let indice = data.data.msj.indexOf(" Ahora esta bloqueado");
-                                if (indice === 26) {
-                                    swal({
-                                        type: "warning",
-                                        title: "Atención",
-                                        text: "esta tarea ha ingresado mas de una vez a este modulo, por favor validar la solicitud en detalle, observaciones, interacción(es) anterior(es) para evitar que ingrese de nuevo. si crees pertinente escala a tu supervisor",
-                                        showCancelButton: false,
-                                        confirmButtonText: "Aceptar",
-                                    }).then(() => {
-                                        $timeout(function () {
-                                            mostrarSweetAlert();
-                                        }, 600000);
-                                        Swal({
-                                            type: 'success',
-                                            title: 'Bien',
-                                            text: data.data.msj,
-                                            timer: 4000
-                                        }).then(function () {
-                                            dataQueja();
-                                            iniciarTiempo();
-                                        })
-                                    })
-                                }
-                            } else {
-                                let indice = data.data.msj.indexOf(" Ahora esta bloqueado");
-                                if (indice === 26) {
-                                    $timeout(function () {
-                                        mostrarSweetAlert();
-                                    }, 600000);
-                                } else {
-                                    $timeout.cancel();
-                                }
-                                Swal({
-                                    type: 'success',
-                                    title: 'Bien',
-                                    text: data.data.msj,
-                                    timer: 4000
-                                }).then(function () {
-                                    dataQueja();
-                                    iniciarTiempo();
-                                })
-                            }
+                            Swal({
+                                type: 'success',
+                                title: 'Bien',
+                                text: data.data.msj,
+                                timer: 4000
+                            }).then(function () {
+                                dataQueja();
+                                iniciarTiempo();
+                            })
                         } else {
                             Swal({
                                 type: 'info',

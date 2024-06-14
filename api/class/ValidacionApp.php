@@ -37,9 +37,7 @@ class ValidacionApp
 
     public function cambiaValidacionApp($data)
     {
-        ini_set('session.gc_maxlifetime', 3600); // 1 hour
-        session_set_cookie_params(3600);
-        session_start();
+
         $tipo = $data['tipo'];
         $valor = $data['valor'];
 

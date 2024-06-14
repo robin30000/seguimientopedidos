@@ -547,7 +547,7 @@ td {
 }
 
 input[type="checkbox"].switch_1 {
-    font-size: 20px;
+    font-size: 16px;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -638,8 +638,8 @@ input[type="checkbox"].switch_1:checked:after {
     }
 }
 
-.table-encabezado{
-    margin: 5px 15px;
+.heading-nav{
+    margin-top: 9px;
 }
 
 

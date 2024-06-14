@@ -29,22 +29,16 @@ if (isset($data['method'])) {
             $res = $user->mesa3($data['data']);
             echo json_encode($res);
             break;
-        case 'mesa4':
-            require_once '../class/MesasNacionales.php';
-            $user = new MesasNacionales();
-            $res = $user->mesa4($data['data']);
-            echo json_encode($res);
-            break;
         case 'mesa6':
             require_once '../class/MesasNacionales.php';
             $user = new MesasNacionales();
             $res = $user->mesa6($data['data']);
             echo json_encode($res);
             break;
-        case 'mesa7':
+        case 'Geco':
             require_once '../class/MesasNacionales.php';
             $user = new MesasNacionales();
-            $res = $user->mesa7($data['data']);
+            $res = $user->Geco($data['data']);
             echo json_encode($res);
             break;
         case 'registros':

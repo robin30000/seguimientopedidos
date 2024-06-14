@@ -309,22 +309,22 @@ function routesConfig($routeProvider, $locationProvider, $compileProvider) {
         resolve: {
             userData: loadUserData
         }
-    }).when("/registro-fallas", {
-        title: "Registrar fallas",
+    }).when("/registrar-falla", {
+        title: "Registrar falla",
         templateUrl: "./partial/falla-sistema/registro-fallas.html",
         controller: "registroFallasCtrl",
         resolve: {
             userData: loadUserData
         }
-    }).when("/mi-registro-falla", {
-        title: "Mi Registro de Falla",
+    }).when("/solicitudes-fallas", {
+        title: "Mi solicitudes fallas",
         templateUrl: "./partial/falla-sistema/mi-registro-fallas.html",
         controller: "miRegistroFallasCtrl",
         resolve: {
             userData: loadUserData
         }
-    }).when("/todos-registros-fallas", {
-        title: "Registros Fallas",
+    }).when("/registros-fallas", {
+        title: "Registros fallas",
         templateUrl: "./partial/falla-sistema/registros-fallas-sistema.html",
         controller: "registrosFallasCtrl",
         resolve: {

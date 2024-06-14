@@ -8,24 +8,19 @@
         var tiempo = new Date().getTime();
         var date1 = new Date();
         var year = date1.getFullYear();
-        var month =
-            date1.getMonth() + 1 <= 9
-                ? "0" + (date1.getMonth() + 1)
-                : date1.getMonth() + 1;
+        var month = date1.getMonth() + 1 <= 9 ? "0" + (date1.getMonth() + 1) : date1.getMonth() + 1;
         var day = date1.getDate() <= 9 ? "0" + date1.getDate() : date1.getDate();
 
         tiempo = year + "-" + month + "-" + day;
-
+        $scope.Geco = {};
         init();
 
         function init() {
             mesa1();
             mesa2();
             mesa3();
-            //mesa4();
-            //mesa5();
             mesa6();
-            /*mesa7();*/
+            mesaGeco();
             registros();
         }
 
@@ -56,15 +51,6 @@
             })
         }
 
-        function mesa4() {
-            services.myService('', 'mesasNacionalesCtrl.php', 'mesa4').then((data) => {
-                $scope.mesa4 = data.data.data;
-                $scope.Items4 = data.data.counter;
-            }).catch((e) => {
-                console.log(e)
-            })
-        }
-
         function mesa6() {
             services.myService('', 'mesasNacionalesCtrl.php', 'mesa6').then((data) => {
                 $scope.mesa6 = data.data.data;
@@ -74,14 +60,28 @@
             })
         }
 
-        function mesa7() {
-            services.myService('', 'mesasNacionalesCtrl.php', 'mesa7').then((data) => {
-                $scope.mesa7 = data.data.data;
-                $scope.Items7 = data.data.counter;
+        function mesaGeco() {
+            services.myService('', 'mesasNacionalesCtrl.php', 'Geco').then((data) => {
+                $scope.mesa8 = data.data.data;
+                $scope.Items8 = data.data.counter;
             }).catch((e) => {
                 console.log(e)
             })
         }
+
+        $scope.setInitialOption = function (data, n) {
+            console.log(data, ' test ', n);
+            if (data === 'Actividad requiere escalera' || data === 'Tarea no corresponde a precableado o extensión' || data === 'Requiere escalera (Realizar acometida)' || data === 'No corresp. a precableado o extensión') {
+                $scope.Geco.id = n
+                $scope.Geco.tipificaciones = 'Nivelar Técnico Completo';
+            } else if (data === 'Actividad requiere escalera' || data === 'Actividad requiere herramientas' || data === 'Actividad requiere Materiales' || data === 'No corresponde a cambio de equipo') {
+                $scope.Geco.id = n
+                $scope.Geco.tipificaciones = 'Nivelar Técnico Medio';
+            } else if (data === 'Ubicar Usuario') {
+                $scope.Geco.id = n
+                $scope.Geco.tipificaciones = 'Ubicar usuario';
+            }
+        };
 
         function registros(data) {
             let datos = '';
@@ -114,74 +114,42 @@
             //registros(data);
             $scope.registrosMnTiempo(data);
         }
-
         $scope.pageSizeChanged = function () {
             let data = $scope.mn
             //registros(data);
             $scope.registrosMnTiempo(data);
         }
 
-        $scope.marcarEngestion = (data) => {
+        $scope.marcarEngestion = (data, n) => {
             let datos = {'tarea': data, 'usuario': $rootScope.login, 'id': data.id}
             services.myService(datos, 'mesasNacionalesCtrl.php', 'marca').then((data) => {
                 if (data.data.state) {
-                    let miIntervalo = setInterval(function () {
-                        mostrarSweetAlert();
-                    }, 100000);
-
-                    if (data.data.alerta === '1') {
-                        console.log(1);
-                        if (data.data.msj === "tarea Bloqueada correctamente") {
-                            swal({
-                                type: "warning",
-                                title: "Atención",
-                                text: "esta tarea ha ingresado mas de una vez a este modulo, por favor validar la solicitud en detalle, observaciones, interacción(es) anterior(es) para evitar que ingrese de nuevo. si crees pertinente escala a tu supervisor",
-                                showCancelButton: false,
-                                confirmButtonText: "Aceptar",
-                            }).then(() => {
-                                Swal({
-                                    type: 'success',
-                                    title: 'Muy Bien',
-                                    text: data.data.msj,
-                                    timer: 4000
-                                }).then(() => {
-                                    setTimeout(() => {
-                                        init();
-                                    }, 400);
-                                });
-                            });
+                    Swal({
+                        type: 'success', title: 'Muy Bien', text: data.data.msj, timer: 4000
+                    }).then(() => {
+                        switch (n) {
+                            case 1:
+                                mesa1();
+                                break;
+                            case 2:
+                                mesa2();
+                                break;
+                            case 3:
+                                mesa3();
+                                break;
+                            case 6:
+                                mesa6();
+                                break;
+                            case 8:
+                                mesaGeco();
+                                break;
+                            default:
+                                break;
                         }
-                    } else if (data.data.msj === "tarea Bloqueada correctamente") {
-                        Swal({
-                            type: 'success',
-                            title: 'Muy Bien',
-                            text: data.data.msj,
-                            timer: 4000
-                        }).then(() => {
-                            setTimeout(() => {
-                                init();
-                            }, 400);
-                        });
-                    } else {
-                        console.log(3);
-                        clearInterval(miIntervalo);  // Cancelar el intervalo
-                        Swal({
-                            type: 'success',
-                            title: 'Muy Bien',
-                            text: data.data.msj,
-                            timer: 4000
-                        }).then(() => {
-                            setTimeout(() => {
-                                init();
-                            }, 400);
-                        });
-                    }
+                    });
                 } else {
                     Swal({
-                        type: 'error',
-                        title: 'Opps..',
-                        text: data.data.msj,
-                        timer: 4000
+                        type: 'error', title: 'Opps..', text: data.data.msj, timer: 4000
                     })
                 }
             }).catch((e) => {
@@ -189,32 +157,26 @@
             })
         }
 
-        $scope.GuardarMn = (data) => {
-            if (data.estado == 'Sin gestión') {
+        $scope.GuardarMn = (data,n) => {
+            if ($scope.Geco.tipificaciones) {
+                data.tipificaciones = $scope.Geco.tipificaciones;
+            }
+            if (data.estado === 'Sin gestión') {
                 Swal({
-                    type: 'error',
-                    title: 'Opps..',
-                    text: 'Debes marcar la tarea',
-                    timer: 4000
+                    type: 'error', title: 'Opps..', text: 'Debes marcar la tarea', timer: 4000
                 })
                 return;
             }
 
             if (!data.tipificaciones) {
                 Swal({
-                    type: 'error',
-                    title: 'Opps..',
-                    text: 'Debes seleccionar tipificacion',
-                    timer: 4000
+                    type: 'error', title: 'Opps..', text: 'Debes seleccionar tipificacion', timer: 4000
                 })
                 return;
             }
             if (!data.tipificaciones2) {
                 Swal({
-                    type: 'error',
-                    title: 'Opps..',
-                    text: 'Debes seleccionar tipificacion 2',
-                    timer: 4000
+                    type: 'error', title: 'Opps..', text: 'Debes seleccionar tipificacion 2', timer: 4000
                 })
                 return;
             }
@@ -240,38 +202,31 @@
                             services.myService(datos, 'mesasNacionalesCtrl.php', 'guarda').then((data) => {
                                 if (data.data.state) {
                                     Swal({
-                                        type: 'success',
-                                        title: 'Bien',
-                                        text: data.data.msj,
-                                        timer: 4000
+                                        type: 'success', title: 'Bien', text: data.data.msj, timer: 4000
                                     }).then(() => {
-                                        switch (mesa) {
-                                            case 'Mesa 1' :
+                                        switch (n) {
+                                            case 1:
                                                 mesa1();
                                                 break;
-                                            case 'Mesa 2' :
+                                            case 2:
                                                 mesa2();
                                                 break;
-                                            case 'Mesa 3' :
+                                            case 3:
                                                 mesa3();
                                                 break;
-                                            /*case 'Mesa 4' :
-                                                mesa4();
-                                                break;
-                                            case 'Mesa 5' :
+                                            case 6:
                                                 mesa6();
-                                                break;*/
-                                            case 'Mesa 6' :
-                                                mesa7();
+                                                break;
+                                            case 8:
+                                                mesaGeco();
+                                                break;
+                                            default:
                                                 break;
                                         }
                                     })
                                 } else {
                                     Swal({
-                                        type: 'error',
-                                        title: 'Opps..',
-                                        text: data.data.msj,
-                                        timer: 4000
+                                        type: 'error', title: 'Opps..', text: data.data.msj, timer: 4000
                                     })
                                 }
                             }).catch((e) => {
@@ -279,10 +234,7 @@
                             })
                         } else {
                             Swal({
-                                type: 'error',
-                                title: 'Opps..',
-                                text: 'Debes ingresar observaciones',
-                                timer: 4000
+                                type: 'error', title: 'Opps..', text: 'Debes ingresar observaciones', timer: 4000
                             })
                         }
                     });
@@ -294,10 +246,7 @@
             if (data.concepto) {
                 if (!data.buscar) {
                     Swal({
-                        type: 'error',
-                        title: 'Opps..',
-                        text: 'Ingrese el concepto a consultar',
-                        timer: 4000
+                        type: 'error', title: 'Opps..', text: 'Ingrese el concepto a consultar', timer: 4000
                     })
                     return;
                 }
@@ -306,10 +255,7 @@
             if (data.buscar) {
                 if (!data.concepto) {
                     Swal({
-                        type: 'error',
-                        title: 'Opps..',
-                        text: 'Seleccione el concepto a consultar',
-                        timer: 4000
+                        type: 'error', title: 'Opps..', text: 'Seleccione el concepto a consultar', timer: 4000
                     })
                     return;
                 }
@@ -339,10 +285,7 @@
             document.execCommand("copy");
             document.body.removeChild(copyTextTV);
             Swal({
-                type: 'info',
-                title: 'Aviso',
-                text: "El texto seleccionado fue copiado",
-                timer: 2000
+                type: 'info', title: 'Aviso', text: "El texto seleccionado fue copiado", timer: 2000
             });
         }
 
@@ -357,15 +300,12 @@
                 case 3 :
                     mesa3();
                     break;
-                /*case 4 :
-                    mesa4();
-                    break;*/
                 case 6 :
                     mesa6();
                     break;
-                /*case 7 :
-                    mesa7();
-                    break;*/
+                case 8 :
+                    mesaGeco();
+                    break;
                 case 5 :
                     registros();
                     $scope.mn = {};
@@ -375,13 +315,7 @@
         }
 
         $scope.ver_masss = (data) => {
-            $scope.dataContent = $sce.trustAsHtml('<div class="table-responsive" style="max-width: 380px;"><table class="table table-bordered table-hover table-condensed small" style="max-width: 350px;">' +
-                '<tbody><tr><td style="min-width: 80px">Cel Técnico</td><td>' + data.num_contacto_tecnico + '</td></tr>' +
-                '<tr><td style="min-width: 80px">Nombre Técnico</td><td>' + data.nombre_tecnico + '</td></tr>' +
-                '<tr><td style="min-width: 80px">Hora Ingreso</td><td>' + data.hora_ingreso + '</td></tr>' +
-                '<tr><td style="min-width: 80px">Hora Marca</td><td>' + data.hora_marca + '</td></tr>' +
-                '<tr><td style="min-width: 80px">Hora Gestión</td><td>' + data.hora_gestion + '</td></tr>' +
-                '</tbody></table></div>');
+            $scope.dataContent = $sce.trustAsHtml('<div class="table-responsive" style="max-width: 380px;"><table class="table table-bordered table-hover table-condensed small" style="max-width: 350px;">' + '<tbody><tr><td style="min-width: 80px">Cel Técnico</td><td>' + data.num_contacto_tecnico + '</td></tr>' + '<tr><td style="min-width: 80px">Nombre Técnico</td><td>' + data.nombre_tecnico + '</td></tr>' + '<tr><td style="min-width: 80px">Hora Ingreso</td><td>' + data.hora_ingreso + '</td></tr>' + '<tr><td style="min-width: 80px">Hora Marca</td><td>' + data.hora_marca + '</td></tr>' + '<tr><td style="min-width: 80px">Hora Gestión</td><td>' + data.hora_gestion + '</td></tr>' + '</tbody></table></div>');
         }
 
         $scope.registrosMnTiempo = (data) => {
@@ -410,30 +344,21 @@
         $scope.csvToip = (data) => {
             if (!data.mesas) {
                 Swal({
-                    type: 'error',
-                    title: 'Opps..',
-                    text: 'Seleccione un filtro de tipo mesa',
-                    timer: 4000
+                    type: 'error', title: 'Opps..', text: 'Seleccione un filtro de tipo mesa', timer: 4000
                 })
                 return;
             }
 
             if (!data.fechaini) {
                 Swal({
-                    type: 'error',
-                    title: 'Opps..',
-                    text: 'Ingrese la fecha inicial',
-                    timer: 4000
+                    type: 'error', title: 'Opps..', text: 'Ingrese la fecha inicial', timer: 4000
                 })
                 return;
             }
 
             if (!data.fechafin) {
                 Swal({
-                    type: 'error',
-                    title: 'Opps..',
-                    text: 'Ingrese la fecha final',
-                    timer: 4000
+                    type: 'error', title: 'Opps..', text: 'Ingrese la fecha final', timer: 4000
                 })
                 return;
             }
@@ -462,10 +387,7 @@
                     XLSX.writeFile(wb, 'mesas_nacionales_' + tiempo + '.xlsx');
                 } else {
                     Swal({
-                        type: 'error',
-                        title: 'Opps..',
-                        text: data.data.msj,
-                        timer: 4000
+                        type: 'error', title: 'Opps..', text: data.data.msj, timer: 4000
                     })
                 }
             }).catch((e) => {
@@ -480,10 +402,7 @@
         $scope.detalleMesa = (mesa) => {
             if (!mesa) {
                 Swal({
-                    type: 'error',
-                    title: 'Opps..',
-                    text: 'Selecciona un filtro valido',
-                    timer: 4000
+                    type: 'error', title: 'Opps..', text: 'Selecciona un filtro valido', timer: 4000
                 })
                 return;
             }

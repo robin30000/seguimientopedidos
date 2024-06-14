@@ -32,16 +32,9 @@
                                                 </button>
                                             </div>
                                         </li>
-                                        <li>
-                                            &nbsp;
-                                            &nbsp;
-                                            <div data-ng-if="loading">
-                                                <img title="Esperando respuesta" tooltip data-placement="top"
-                                                     src="img/loader.gif"/>
-                                            </div>
-                                        </li>
-                                        <li>
 
+                                        <li>
+                                            &nbsp;
                                             <button type="button" class="btn btn-default btn-xs"
                                                     ng-click="recargaPageGestion()" title="Actualizar"
                                                     data-toggle="tooltip" data-placement="top" ng-disabled="loading">
@@ -240,7 +233,8 @@
                                                                 data-toggle="modal" data-backdrop="static"
                                                                 ng-hide="data.alerta == 'FALSE'" tooltip-placement="top"
                                                                 uib-tooltip="La tarea ya pasó por etp anteriormente {{data.counter }} Veces, por favor validar!">
-                                                            <i class="fa fa-exclamation" ng-class="{'parpadeo-rojo': data.counter > 3, 'red': data.counter > 0}"
+                                                            <i class="fa fa-exclamation"
+                                                               ng-class="{'parpadeo-rojo': data.counter > 3, 'red': data.counter > 0}"
                                                                aria-hidden="true"> </i>
                                                         </button>
                                                     </div>
@@ -267,12 +261,7 @@
                                         &nbsp;
                                         <b>Registros ETP</b> <span class="badge badge-default">{{totalItems}}</span>
                                     </li>
-                                    <li>
-                                        <div data-ng-if="loading">
-                                            <img title="Esperando respuesta" tooltip data-placement="top"
-                                                 src="img/loader.gif"/>
-                                        </div>
-                                    </li>
+
                                     <li>
                                         &nbsp;
                                         <input style="width: 130px" type="text" name="fechaini" id="fechaini"

@@ -6,24 +6,7 @@
     function loginCtrl($scope, $rootScope, $location, $cookies, services, $uibModal, $log,) {
         $scope.login = () => {
             services.myService($scope.autenticacion, 'authenticationCtrl.php', 'login').then((data) => {
-                if (data.data.state !== 1) {
-                    Swal({
-                        title: "Oops...",
-                        text: data.data.msj,
-                        type: "warning",
-                        showCancelButton: true,
-                        confirmButtonClass: "btn-danger",
-                        confirmButtonText: "Aceptar",
-                        cancelButtonText: "Olvidé mi contraseña",
-                        allowOutsideClick: () => !Swal.isLoading(),
-                    }).then((result) => {
-                        if (result.dismiss === Swal.DismissReason.cancel) {
-                            //window.location.href = "https://gestionatucuenta.tigoune.com/sigma/app/index?breakGlass=true#/forgot-password";
-                            window.open("https://gestionatucuenta.tigoune.com/sigma/app/index?breakGlass=true#/forgot-password", "_blank");
-
-                        }
-                    });
-                } else {
+                if (data.data.state === 1) {
                     const today = new Date();
                     $rootScope.year = today.getFullYear();
                     $rootScope.nombre = data.data.data.nombre;
@@ -35,9 +18,63 @@
                     $rootScope.permiso = true;
                     $location.path("/actividades");
                     $cookies.put("usuarioseguimiento", JSON.stringify(data.data.data));
-
                     $rootScope.galletainfo = JSON.parse($cookies.get("usuarioseguimiento"));
-                    $rootScope.permiso = true;
+                } else if (data.data.state === 2) {
+                    Swal({
+                        title: "Oops...",
+                        text: data.data.msj,
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-info",
+                        confirmButtonText: "Aceptar",
+                        cancelButtonText: "Olvidé mi contraseña",
+                        cancelButtonClass: "btn-success",
+                        allowOutsideClick: () => !Swal.isLoading(),
+                    }).then((result) => {
+                        if (result.dismiss === Swal.DismissReason.cancel) {
+                            window.open("https://gestionatucuenta.tigoune.com/sigma/app/index?breakGlass=true#/forgot-password", "_blank");
+                        }
+                    });
+                } else if (data.data.state === 3) {
+                    Swal({
+                        title: "Oops...",
+                        text: data.data.msj,
+                        type: "info",
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-info",
+                        confirmButtonText: "Aceptar",
+                        cancelButtonText: "Solicitar Acceso",
+                        cancelButtonClass: "btn-success",
+                        allowOutsideClick: () => !Swal.isLoading(),
+                    }).then((result) => {
+                        if (result.dismiss === Swal.DismissReason.cancel) {
+                            let modalInstance = $uibModal.open({
+                                ariaLabelledBy: 'modal-title',
+                                ariaDescribedBy: 'modal-body',
+                                templateUrl: 'partial/modals/solicitaAcceso.html',
+                                controller: 'solicitaAccesoCtrl',
+                                controllerAs: '$ctrl',
+                                size: 'lg',
+                                resolve: {
+                                    items: function () {
+                                        return $scope.autenticacion.username;
+                                    }
+                                }
+                            });
+
+                            modalInstance.result.then(function () {
+                            }, function () {
+                                $log.info('Modal dismissed at: ' + new Date());
+                            });
+                        }
+                    });
+                } else if (data.data.state === 4) {
+                    Swal({
+                        type: 'error',
+                        title: data.data.msj,
+                        //text: data.data.msj,
+                        timer: 9000
+                    })
                 }
             }).catch((e) => {
                 console.log(e)
@@ -46,10 +83,15 @@
 
         $rootScope.logout = () => {
             services.myService($rootScope.identificacion, 'authenticationCtrl.php', 'logout').then((data) => {
-                $cookies.remove("usuarioseguimiento");
-                $location.path("/");
-                $rootScope.galletainfo = undefined;
-                $rootScope.permiso = false;
+                if (data.data.state) {
+                    $cookies.remove("usuarioseguimiento");
+                    $rootScope.galletainfo = '';
+                    $rootScope.authenticated = false;
+                    $rootScope.permiso = false;
+                    $rootScope = '';
+                    $location.path("/");
+
+                }
             }).catch((e) => {
                 console.log(e)
             })
@@ -151,54 +193,92 @@
 
     }
 
-    /*angular.module("seguimientopedidos").controller("forgetPasswordController", forgetPasswordController);
-    forgetPasswordController.$inject = ["$uibModalInstance", "items", "services", "$route", "$scope", "$timeout", "REST", "vcRecaptchaService"];
+    angular.module("seguimientopedidos").controller("solicitaAccesoCtrl", solicitaAccesoCtrl);
+    solicitaAccesoCtrl.$inject = ["$uibModalInstance", "items", "services", "$route", "$scope", "$timeout"];
 
-    function forgetPasswordController($uibModalInstance, items, services, $route, $scope, $timeout, REST, vcRecaptchaService) {
+    function solicitaAccesoCtrl($uibModalInstance, items, services, $route) {
         var $ctrl = this;
-        $ctrl.response = null;
-        $ctrl.widgetId = null;
-        $scope.loading = 0;
-        $ctrl.model = {key: REST.KEY};
-        $ctrl.setResponse = function (response) {
-            $ctrl.response = response
-        };
-        $ctrl.setWidgetId = function (widgetId) {
-            $ctrl.widgetId = widgetId
-        };
-        $ctrl.cbExpiration = function () {
-            vcRecaptchaService.reload(vm.widgetId);
-            $ctrl.response = null
-        };
+        $ctrl.usuario = {};
+        $ctrl.usuario.usuario = items;
+        $ctrl.loading = false;
 
-        $ctrl.submit = function () {
-            $scope.loading = 1;
-            let captcha = vcRecaptchaService.getResponse();
-            let data = {captcha: captcha, email: $ctrl.email}
-            services.myService(data, 'userCtrl.php', 'recuperaPassword').then((res) => {
-                $scope.loading = 0;
-                if (res.data.state) {
+        $ctrl.guardaSolicitud = (data) => {
+
+            if (!data.usuario) {
+                Swal({
+                    type: 'error',
+                    title: 'Opps..',
+                    text: 'Debes ingresar el usuario',
+                    timer: 4000
+                })
+                return;
+            }
+
+            if (!data.cc) {
+                Swal({
+                    type: 'error',
+                    title: 'Opps..',
+                    text: 'Debes ingresar la identificación',
+                    timer: 4000
+                })
+                return;
+            }
+
+            if (!data.nombre) {
+                Swal({
+                    type: 'error',
+                    title: 'Opps..',
+                    text: 'Debes ingresar el nombre',
+                    timer: 4000
+                })
+                return;
+            }
+
+            if (!data.email) {
+                Swal({
+                    type: 'error',
+                    title: 'Opps..',
+                    text: 'Debes ingresar el email',
+                    timer: 4000
+                })
+                return;
+            }
+
+            if (!data.observacion) {
+                Swal({
+                    type: 'error',
+                    title: 'Opps..',
+                    text: 'Debes ingresar observaciones',
+                    timer: 4000
+                })
+                return;
+            }
+            $ctrl.loading = true;
+            services.myService(data, 'userCtrl.php', 'guardaSolicitud').then((data) => {
+                $ctrl.loading = false;
+                console.log(data)
+                if (data.data.state) {
                     $uibModalInstance.dismiss('cancel');
                     Swal({
                         type: 'success',
                         title: 'Bien',
-                        text: res.data.msg,
-                        timer: 5000
-                    }).then(() => {
+                        text: data.data.msg,
+                        timer: 6000
+                    }).then((e) => {
                         $route.reload();
                     })
                 } else {
                     Swal({
                         type: 'error',
                         title: 'Oppss',
-                        text: res.data.msg,
+                        text: data.data.msg,
                         timer: 4000
                     })
                 }
+
             }).catch((e) => {
                 console.log(e)
             })
-
         }
 
         $ctrl.cancel = function () {
@@ -206,5 +286,5 @@
             $uibModalInstance.dismiss('cancel');
         };
 
-    }*/
+    }
 })();

@@ -184,6 +184,7 @@ class GestionQuejasGo
     public function guardaGestionQuejasGo($data)
     {
         try {
+
             /*ini_set('session.gc_maxlifetime', 3600); // 1 hour
             session_set_cookie_params(3600);
             session_start();*/
@@ -192,7 +193,7 @@ class GestionQuejasGo
             $id = $data['id'];
             $login_gestion = $data['login_gestion'];
             $observacion_seguimiento = $data['observacion_seguimiento'];
-            $tiempo = $data['tiempo'];
+            $tiempo = $data['tiempo'] ?? '00:15:05';
 
             $stmt = $this->_DB->prepare("SELECT asesor FROM quejasgo WHERE id = :id");
             $stmt->execute(array(':id' => $id));

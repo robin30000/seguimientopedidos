@@ -1498,24 +1498,6 @@ app.factory("services", [
             return $http.post(serviceBase1 + "soporteGponCtrl.php", data);
         };
 
-        obj.gestionarSoporteGpon = function (
-            id_soporte,
-            tipificacion,
-            tipificaciones,
-            observacion,
-        ) {
-            var data = {
-                method: "gestionarSoporteGpon",
-                data: {
-                    id_soporte: id_soporte,
-                    tipificacion: tipificacion,
-                    tipificaciones: tipificaciones,
-                    observacion: observacion,
-                },
-            };
-            return $http.post(serviceBase1 + "soporteGponCtrl.php", data);
-        };
-
         obj.buscarhistoricoSoporteGpon = function (datos) {
             var data = {
                 method: "buscarhistoricoSoporteGpon",
@@ -2060,7 +2042,7 @@ app.directive("cookie", function ($rootScope, $cookies) {
         link: function ($scope, el, attr, ctrl) {
             if ($cookies.get("usuarioseguimiento") !== undefined) {
                 $scope.galletainfo = JSON.parse($cookies.get("usuarioseguimiento"));
-                $rootScope.permiso = true;
+                //$rootScope.permiso = true;
             }
         },
 
