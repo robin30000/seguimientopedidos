@@ -1,0 +1,52 @@
+<div class="cuerpoModal">
+    <h4>Solicitud de acceso</h4>
+
+    <form autocomplete="off" name="formSolicitud">
+
+        <div class="form-group">
+            <label for="usuario">Usuario de red</label>
+            <input autocomplete="new-password" class="form-control input-sm" id="usuario" name="usuario"
+                   ng-model="$ctrl.usuario.usuario" placeholder="Usuario de red"
+                   required type="text">
+        </div>
+
+        <div class="form-group">
+            <label for="cc">Identificación</label>
+            <input autocomplete="new-password" class="form-control input-sm" id="cc" minlength="5"
+                   name="cc"
+                   ng-model="$ctrl.usuario.cc" placeholder="Identificación" required type="number">
+        </div>
+
+        <div class="form-group">
+            <label for="nombre">Nombre completo</label>
+            <input autocomplete="new-password" class="form-control input-sm" id="nombre" minlength="5"
+                   name="nombre" ng-model="$ctrl.usuario.nombre" placeholder="Nombre completo"
+                   required type="text">
+        </div>
+
+        <div class="form-group">
+            <label for="email">Correo electrónico corporativo</label>
+            <input autocomplete="new-password" class="form-control input-sm" id="email" name="email"
+                   ng-model="$ctrl.usuario.email" placeholder="Correo electrónico"
+                   required type="email">
+        </div>
+
+        <div class="form-group">
+            <label for="observacion">Justificación solicitud</label>
+            <textarea autocomplete="new-password" class="form-control input-sm" id="observacion" name="observacion"
+                      ng-model="$ctrl.usuario.observacion"
+                      placeholder="Observación" required
+                      rows="3" type="text"></textarea>
+        </div>
+
+        <div class="form-group">
+            <button class="btn btn-default" data-dismiss="modal" ng-click="$ctrl.cancel()" type="button">Cancelar
+            </button>
+            <button class="btn btn-info" ng-click="$ctrl.guardaSolicitud($ctrl.usuario)" ng-disabled="formSolicitud.$invalid || loading"
+                    type="submit">Solicitar acceso
+            </button>
+        </div>
+
+    </form>
+
+</div>

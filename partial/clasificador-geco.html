@@ -1,0 +1,82 @@
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-md-1 col-xs-12 pull-right">
+            <button ng-click="exporte()" class="btn btn-sm btn-success" style="margin-bottom: 10px" ng-disabled="loading">
+                <i class="fa fa-download"></i> Exportar
+            </button>
+        </div>
+
+        <div class="col-md-3 col-xs-12 pull-right">
+            <input class="form-control input-sm col-md-3 col-xs-6" ng-model="searchQuery" placeholder="Buscar..."
+                   style="float: right; margin-bottom: 10px" type="text"/>
+        </div>
+
+        <div class="col-md-2 col-xs-12 pull-right">
+            <select ng-model="highlightFilter" ng-change="applyHighlightFilter()"
+                    class="form-control input-sm col-md-3 col-xs-6"
+                    style="float: right; margin-bottom: 10px;">
+                <option value="all">Todos</option>
+                <option value="highlighted">No Cumplen</option>
+                <option value="notHighlighted">Cumplen</option>
+            </select>
+        </div>
+
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-condensed small">
+                    <thead class="table-header">
+                    <tr>
+                        <th>Zona</th>
+                        <th>Microzona</th>
+                        <th>cc técnico</th>
+                        <th>Pedido</th>
+                        <th>Habilidades técnico</th>
+                        <th>Actividad</th>
+                        <th>Tipo técnico</th>
+                        <th>Actividad trabajo</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-click="toggleRegionVisibility(regionData.region)"
+                        ng-repeat-start="regionData in datosAgrupados | filter:filterBySearchQuery"
+                        style="cursor: pointer;">
+                        <td colspan="8" style="background-color: #f2f2f2; font-weight: bold;">
+                            {{regionData.region}}
+                        </td>
+                    </tr>
+                    <tr
+                            ng-class="{'warning': isHighlighted(data)}"
+                            ng-repeat="data in regionData.datos | filter:searchQuery | filter:highlightedFilter"
+                            ng-show="regionVisibility[regionData.region]">
+                        <td>{{data.ZONA_TECNICO}}</td>
+                        <td>{{data.MICROZONA_TAREA}}</td>
+                        <td>{{data.COD_FUNCIONARIO}}</td>
+                        <td>{{data.PEDIDO_ID}}</td>
+                        <td style="width: 40%">{{data.HABILIDADES_TECNICO}}</td>
+                        <td>{{data.ACTIVIDAD}}</td>
+                        <td>{{data.TECNICO}}</td>
+                        <td>{{data.ACTIVIDAD_TRABAJO}}</td>
+                    </tr>
+                    <tr ng-repeat-end ng-show="regionVisibility[regionData.region]">
+                        <td colspan="7" style="text-align: right; font-weight: bold;">
+                            Total Consolidado Región {{regionData.region}}
+                        </td>
+                        <td>{{regionData.totalRegion}}</td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="7" style="text-align: right; font-weight: bold;">
+                            Total Consolidado General
+                        </td>
+                        <td>{{totalConsolidado}}</td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+<br><br><br>
